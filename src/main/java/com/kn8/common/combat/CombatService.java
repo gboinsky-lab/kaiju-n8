@@ -10,6 +10,7 @@ import com.kn8.common.data.def.KaijuClass;
 import com.kn8.common.data.def.WeaponDef;
 import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.registry.KN8Attachments;
+import com.kn8.common.registry.KN8Sounds;
 import com.kn8.common.vfx.VfxService;
 import com.kn8.core.combat.CombatMath;
 import com.kn8.core.power.PowerMath;
@@ -17,6 +18,7 @@ import com.kn8.core.power.PowerMath;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -45,7 +47,7 @@ public final class CombatService {
     private static final String HEAVY = "heavy";
     private static final float HIT_SOUND_VOLUME = 0.8F;
     private static final float SHOT_SOUND_VOLUME = 1.0F;
-    private static final float SHOT_SOUND_PITCH = 1.6F;
+    private static final float SWING_SOUND_VOLUME = 0.7F;
     private static final double TRACER_STEP = 1.5;
     private static final double MUZZLE_DISTANCE = 1.2;
 
@@ -158,6 +160,12 @@ public final class CombatService {
         // Animacao da propria arma (pico no tick de impacto do JSON dela); armas de fogo usam "shoot".
         AnimationBridge.playPlayer(player, AnimationBridge.weaponAction(weapon.get().item(),
                 firearm ? "shoot" : actionName));
+        if (!firearm) {
+            // Etapa 1 (0.2): o "vush" sai no inicio do golpe; o impacto tem som proprio no tick do JSON.
+            player.level().playSound(null, player.getX(), player.getEyeY(), player.getZ(),
+                    request == CombatAction.HEAVY ? KN8Sounds.BLADE_HEAVY.get() : KN8Sounds.BLADE_SWING.get(),
+                    SoundSource.PLAYERS, SWING_SOUND_VOLUME, 1.0F);
+        }
         reply(player, request, hasStamina ? CombatResult.OK : CombatResult.SLOWED_NO_STAMINA);
         return true;
     }
@@ -180,7 +188,7 @@ public final class CombatService {
         Vec3 look = player.getLookAngle();
         Optional<Entity> found = MeleeRaycast.findTarget(player.level(), player, eye, look, weapon.reach());
         if (firearm) {
-            shotEffects(player, eye, found.map(Entity::getBoundingBox).map(box -> box.getCenter())
+            shotEffects(player, weapon, eye, found.map(Entity::getBoundingBox).map(box -> box.getCenter())
                     .orElse(eye.add(look.scale(weapon.reach()))));
             // 0.1-B: clarao e fumaca na boca do cano.
             VfxService.play((ServerLevel) player.level(), VfxService.WEAPON_FIRE, eye.add(look.scale(MUZZLE_DISTANCE)),
@@ -222,10 +230,15 @@ public final class CombatService {
         }
     }
 
+    /** Pistola tem disparo proprio (mais seco); as outras armas de fogo usam o do rifle. */
+    public static SoundEvent shotSound(WeaponDef weapon) {
+        return weapon.item().getPath().contains("pistol") ? KN8Sounds.PISTOL_SHOT.get() : KN8Sounds.RIFLE_SHOT.get();
+    }
+
     /** Som do disparo e rastro de particulas ate o ponto atingido (placeholder ate a arte de efeitos). */
-    private static void shotEffects(ServerPlayer player, Vec3 from, Vec3 to) {
-        player.level().playSound(null, player.getX(), player.getEyeY(), player.getZ(), SoundEvents.CROSSBOW_SHOOT,
-                SoundSource.PLAYERS, SHOT_SOUND_VOLUME, SHOT_SOUND_PITCH);
+    private static void shotEffects(ServerPlayer player, WeaponDef weapon, Vec3 from, Vec3 to) {
+        player.level().playSound(null, player.getX(), player.getEyeY(), player.getZ(), shotSound(weapon),
+                SoundSource.PLAYERS, SHOT_SOUND_VOLUME, 1.0F);
         if (!(player.level() instanceof ServerLevel level)) {
             return;
         }
@@ -279,8 +292,8 @@ public final class CombatService {
                 kaiju.stagger(ServerConfig.PARRY_STAGGER_TICKS.get());
             }
         }
-        player.level().playSound(null, player.blockPosition(), SoundEvents.ANVIL_LAND, SoundSource.PLAYERS, 0.6F,
-                1.8F);
+        player.level().playSound(null, player.blockPosition(), KN8Sounds.PARRY.get(), SoundSource.PLAYERS, 1.0F,
+                1.0F);
         reply(player, CombatAction.BLOCK, CombatResult.PARRY);
     }
 
@@ -288,7 +301,7 @@ public final class CombatService {
     static void breakGuard(ServerPlayer player) {
         state(player).blocking = false;
         AnimationBridge.stopPlayer(player);
-        player.level().playSound(null, player.blockPosition(), SoundEvents.SHIELD_BREAK, SoundSource.PLAYERS, 1.0F,
+        player.level().playSound(null, player.blockPosition(), KN8Sounds.GUARD_BREAK.get(), SoundSource.PLAYERS, 1.0F,
                 1.0F);
         reply(player, CombatAction.BLOCK, CombatResult.GUARD_BROKEN);
     }
@@ -351,6 +364,7 @@ public final class CombatService {
         player.setDeltaMovement(burst.x, Math.max(player.getDeltaMovement().y, 0.05), burst.z);
         player.hurtMarked = true;
         AnimationBridge.playPlayer(player, AnimationBridge.PLAYER_DASH);
+        player.level().playSound(null, player.blockPosition(), KN8Sounds.DASH.get(), SoundSource.PLAYERS, 0.8F, 1.0F);
         VfxService.play((ServerLevel) player.level(), VfxService.DUST, player.position(), direction, 0.4F, 0.0F);
         reply(player, CombatAction.DASH, CombatResult.OK);
         return true;

@@ -36,6 +36,7 @@ public final class PowerData {
     private long lastStaminaSpendTick = NEVER;
     private long lastCombatTick = NEVER;
     private long panicUntilTick = NEVER;
+    private boolean winded;
     private int lastAppliedRelease = -1;
     private PowerView lastSentView;
 
@@ -147,6 +148,15 @@ public final class PowerData {
 
     void setLastCombatTick(long tick) {
         lastCombatTick = tick;
+    }
+
+    /** Sem folego para correr (Etapa 1 da 0.2); nao vai para o save: recalculado a cada tick. */
+    boolean winded() {
+        return winded;
+    }
+
+    void setWinded(boolean value) {
+        winded = value;
     }
 
     long panicUntilTick() {

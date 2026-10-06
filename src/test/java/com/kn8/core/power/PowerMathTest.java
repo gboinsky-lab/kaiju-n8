@@ -86,4 +86,17 @@ class PowerMathTest {
         assertEquals(50, PowerMath.xpForNextPoint(0, GDD));
         assertEquals(150, PowerMath.xpForNextPoint(10, GDD));
     }
+
+    @Test
+    void sprintWindedHasHysteresis() {
+        double cost = 5.0 / 20;
+        // Com stamina, corre; zerou, fica sem folego.
+        assertEquals(false, PowerMath.windedAfterTick(false, 50, cost, 20));
+        assertEquals(true, PowerMath.windedAfterTick(false, 0.1, cost, 20));
+        // Sem folego ate recuperar o minimo (nao volta a correr com 1 ponto).
+        assertEquals(true, PowerMath.windedAfterTick(true, 10, cost, 20));
+        assertEquals(false, PowerMath.windedAfterTick(true, 20, cost, 20));
+        // Custo zero no config: corrida livre.
+        assertEquals(false, PowerMath.windedAfterTick(false, 0, 0, 20));
+    }
 }

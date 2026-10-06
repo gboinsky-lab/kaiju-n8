@@ -409,5 +409,22 @@
   "kn8.menu.arsenal.suit_soon": "Equipping suits: M14",
   "kn8.suit.mk1": "Combat Suit Mk1",
   "kn8.suit.training_suit": "Training Suit",
-  "kn8.menu.profile.by_mission": "via mission"
+  "kn8.menu.profile.by_mission": "via mission",
+  "subtitles.kn8.kaiju.roar": "Kaiju roars",
+  "subtitles.kn8.kaiju.ambient": "Kaiju growls",
+  "subtitles.kn8.kaiju.hurt": "Kaiju hurts",
+  "subtitles.kn8.kaiju.death": "Kaiju dies",
+  "subtitles.kn8.kaiju.step": "Heavy footsteps",
+  "subtitles.kn8.kaiju.slam": "Ground slam",
+  "subtitles.kn8.kaiju.bite": "Bite",
+  "subtitles.kn8.weapon.rifle_shot": "Rifle shot",
+  "subtitles.kn8.weapon.pistol_shot": "Pistol shot",
+  "subtitles.kn8.weapon.blade_swing": "Blade swings",
+  "subtitles.kn8.weapon.blade_heavy": "Heavy swing",
+  "subtitles.kn8.weapon.parry": "Parry",
+  "subtitles.kn8.weapon.guard_break": "Guard broken",
+  "subtitles.kn8.suit.dash": "Suit dash",
+  "subtitles.kn8.suit.overheat_alarm": "Overheat alarm",
+  "subtitles.kn8.carcass.dismantle": "Dismantling carcass",
+  "subtitles.kn8.alert.siren": "Alert siren"
 }

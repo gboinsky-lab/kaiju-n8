@@ -29,5 +29,5 @@
     }
   ],
   "camera_shake": 0.5,
-  "sound": "minecraft:entity.generic.explode"
+  "sound": "kn8:kaiju.slam"
 }

@@ -204,3 +204,23 @@ Capturas de referência: `docs/img/menu_*.png`. Teste em pt_br e en_us; tamanho 
 | 12.8 | Bestiário em survival sem abates | Espécies como silhueta escura "???"; em criativo todas aparecem com modelo girando, fraquezas e materiais |
 | 12.9 | Arsenal | Armas com dano/alcance/cadência/peso do JSON (mude um número no JSON, `/reload`, reabra); Trajes com armadura; Fabricação "Etapa 3" |
 | 12.10 | Dev2 | Menu do Dev2 mostra os dados dele (não os do Dev1) |
+
+## 13. Sons, corrida e carcaça (0.2, Etapa 1)
+
+Sons gerados por `tools/audio/gen_sounds.py` (trocar um som = substituir o `.ogg` em `assets/kn8/sounds/`). Ligue as
+legendas (Opções → Acessibilidade) para conferir qual evento tocou. Capturas: `docs/img/corrida_stamina.png`,
+`docs/img/carcaca_tomba.png`.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 13.1 | Chegue perto de um kaiju parado | Rosnado de tempos em tempos (~10 s); Honju bem mais grave que o Yoju; passos pesados ao andar |
+| 13.2 | Bata no kaiju até morrer | Grunhido de dor a cada golpe, som de morte; o corpo **tomba de lado** em ~0,7 s e fica deitado |
+| 13.3 | Slam, mordida e investida do kaiju | Pancada grave no chão, mordida, rugido na investida (legendas "kaiju") |
+| 13.4 | Faca/espada/machado: leve e pesado | "Vush" no início do golpe (pesado mais grave); impacto ao acertar |
+| 13.5 | Rifle e pistola (jogador e soldado `/kn8 soldier spawn rifle`/`pistol`) | Tiro próprio de cada arma (pistola mais seca); nada de som de besta |
+| 13.6 | Parry, guarda quebrada, dash (Alt) | Metal batendo no parry; estalo na quebra de guarda; sopro no dash |
+| 13.7 | `/kn8 heat` até a pane | Alarme do traje |
+| 13.8 | Desmonte da carcaça | Corte molhado a cada etapa |
+| 13.9 | Survival: corra em linha reta | Stamina cai ~5/s; ao zerar, para de correr (mesmo segurando Ctrl); recupera andando; com 20+ aperte correr de novo |
+| 13.10 | Criativo: corra | Stamina não cai |
+| 13.11 | Dev2 olhando o Dev1 correr sem fôlego | Dev1 aparece andando (não correndo) para o Dev2 |

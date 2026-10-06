@@ -10,9 +10,10 @@ import net.minecraft.network.codec.StreamCodec;
  * attachment {@code kn8:power_view} do jogador local. Valores arredondados para a HUD.
  */
 public record PowerView(int trained, int effective, int cap, int surge, float stamina, float maxStamina, float heat,
-        int heatMax, int heatStage, float energy, int control, int releaseXp, int xpToNext, boolean panic) {
+        int heatMax, int heatStage, float energy, int control, int releaseXp, int xpToNext, boolean panic,
+        boolean winded) {
 
-    public static final PowerView EMPTY = new PowerView(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, false);
+    public static final PowerView EMPTY = new PowerView(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, false, false);
 
     // StreamCodec.composite aceita no maximo 6 campos por vez: dois grupos aninhados.
     private record Release(int trained, int effective, int cap, int surge, int releaseXp, int xpToNext) {
@@ -39,8 +40,9 @@ public record PowerView(int trained, int effective, int cap, int surge, float st
                     view.energy(), view.control()),
             ByteBufCodecs.VAR_INT, PowerView::heatMax,
             ByteBufCodecs.BOOL, PowerView::panic,
-            (release, resources, heatMax, panic) -> new PowerView(release.trained(), release.effective(),
+            ByteBufCodecs.BOOL, PowerView::winded,
+            (release, resources, heatMax, panic, winded) -> new PowerView(release.trained(), release.effective(),
                     release.cap(), release.surge(), resources.stamina(), resources.maxStamina(), resources.heat(),
                     heatMax, resources.heatStage(), resources.energy(), resources.control(), release.releaseXp(),
-                    release.xpToNext(), panic));
+                    release.xpToNext(), panic, winded));
 }

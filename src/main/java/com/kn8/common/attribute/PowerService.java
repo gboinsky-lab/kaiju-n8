@@ -10,6 +10,7 @@ import com.kn8.common.data.KN8Data;
 import com.kn8.common.data.def.RankDef;
 import com.kn8.common.network.NetworkSync;
 import com.kn8.common.registry.KN8Attachments;
+import com.kn8.common.registry.KN8Sounds;
 import com.kn8.common.vfx.VfxService;
 import com.kn8.core.power.HeatStage;
 import com.kn8.core.power.PowerMath;
@@ -21,6 +22,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -193,6 +195,7 @@ public final class PowerService {
             startPanic(player, data, now);
         }
 
+        sprint(player, data, now);
         HeatStage stage = heatStage(player);
         long sinceSpent = PowerData.never(data.lastStaminaSpendTick()) ? Long.MAX_VALUE
                 : now - data.lastStaminaSpendTick();
@@ -254,7 +257,7 @@ public final class PowerService {
         return new PowerView(data.trainedRelease(), effectiveRelease(player), cap(player), data.surge(),
                 (float) Math.max(0, data.stamina()), (float) maxStamina(player), (float) data.heat(),
                 params.heatMax(), heatStage(player).ordinal(), (float) Math.max(0, data.energy()), data.control(),
-                data.releaseXp(), xpToNext, inPanic(player));
+                data.releaseXp(), xpToNext, inPanic(player), data.winded());
     }
 
     private static void ensureInitialized(ServerPlayer player, PowerData data) {
@@ -266,12 +269,34 @@ public final class PowerService {
         }
     }
 
+    /**
+     * Corrida gasta stamina (GDD secao 7; Etapa 1 da 0.2). O cliente decide se corre; o servidor cobra e, sem
+     * folego, corta a corrida (o cliente do dono tambem para ao ver {@code winded} na HUD sincronizada).
+     */
+    private static void sprint(ServerPlayer player, PowerData data, long now) {
+        double cost = ServerConfig.SPRINT_STAMINA_PER_SECOND.get() / TICKS_PER_SECOND;
+        boolean free = player.isCreative() || player.isSpectator();
+        data.setWinded(!free && PowerMath.windedAfterTick(data.winded(), data.stamina(), cost,
+                ServerConfig.SPRINT_MIN_STAMINA.get()));
+        if (!player.isSprinting() || free) {
+            return;
+        }
+        if (data.winded()) {
+            player.setSprinting(false);
+            return;
+        }
+        data.setStamina(data.stamina() - cost);
+        data.setLastStaminaSpendTick(now);
+    }
+
     private static void startPanic(ServerPlayer player, PowerData data, long now) {
         int ticks = ServerConfig.PANIC_TICKS.get();
         data.setPanicUntilTick(now + ticks);
         data.setSurge(0);
         player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, ticks, SLOWNESS_II));
         player.hurt(overheatDamage(player), ServerConfig.PANIC_DAMAGE.get().floatValue());
+        player.level().playSound(null, player.blockPosition(), KN8Sounds.OVERHEAT_ALARM.get(), SoundSource.PLAYERS,
+                1.0F, 1.0F);
         KN8Constants.LOGGER.info("[kn8] Pane do traje: {} por {} ticks.", player.getGameProfile().getName(), ticks);
     }
 

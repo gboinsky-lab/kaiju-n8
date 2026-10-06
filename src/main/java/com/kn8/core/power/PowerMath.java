@@ -51,6 +51,17 @@ public final class PowerMath {
         return Math.min(max, stamina + regen);
     }
 
+    /**
+     * Corrida (GDD secao 7): enquanto corre, gasta {@code costPerTick} de stamina. Quem zera fica "sem folego" e so
+     * volta a correr ao recuperar {@code minToSprint} (histerese: sem ela o jogador piscaria entre correr e andar).
+     */
+    public static boolean windedAfterTick(boolean winded, double stamina, double costPerTick, double minToSprint) {
+        if (winded) {
+            return stamina < minToSprint;
+        }
+        return costPerTick > 0 && stamina < costPerTick;
+    }
+
     /** Estagio de calor; PANIC exige chegar ao maximo. */
     public static HeatStage heatStage(double heat, PowerParams params) {
         if (heat >= params.heatMax()) {

@@ -9,6 +9,7 @@ import org.jetbrains.annotations.Nullable;
 
 import com.kn8.KN8Constants;
 import com.kn8.common.attribute.PowerService;
+import com.kn8.common.combat.CombatService;
 import com.kn8.common.combat.MeleeRaycast;
 import com.kn8.common.combat.WeaponIndex;
 import com.kn8.common.data.KN8Data;
@@ -26,7 +27,6 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
@@ -87,7 +87,6 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
     private static final String TAG_ATTRIBUTES = "attributes";
     private static final int DEFAULT_RELEASE = 10;
     private static final float SHOT_VOLUME = 1.0F;
-    private static final float SHOT_PITCH = 1.6F;
     private static final double MUZZLE_DISTANCE = 0.9;
 
     private static final RawAnimation IDLE = RawAnimation.begin().thenLoop("soldier.movement.idle");
@@ -324,8 +323,8 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
         boolean firearm = currentWeapon != null && currentWeapon.style() == WeaponDef.Style.FIREARM;
         ServerLevel level = (ServerLevel) level();
         if (firearm) {
-            level.playSound(null, getX(), getEyeY(), getZ(), SoundEvents.CROSSBOW_SHOOT, SoundSource.HOSTILE,
-                    SHOT_VOLUME, SHOT_PITCH);
+            level.playSound(null, getX(), getEyeY(), getZ(), CombatService.shotSound(currentWeapon),
+                    SoundSource.HOSTILE, SHOT_VOLUME, 1.0F);
             VfxService.play(level, VfxService.WEAPON_FIRE, eye.add(aim.normalize().scale(MUZZLE_DISTANCE)),
                     aim.normalize(), 1.0F, 0.0F);
         }

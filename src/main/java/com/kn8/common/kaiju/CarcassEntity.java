@@ -11,6 +11,7 @@ import com.kn8.common.data.KN8Data;
 import com.kn8.common.data.def.DismantleDef;
 import com.kn8.common.data.def.KaijuDef;
 import com.kn8.common.registry.KN8Entities;
+import com.kn8.common.registry.KN8Sounds;
 import com.kn8.core.dismantle.DismantleMath;
 
 import net.minecraft.core.particles.ItemParticleOption;
@@ -24,7 +25,6 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
@@ -204,7 +204,7 @@ public class CarcassEntity extends Entity implements GeoEntity {
                     getY() + getBbHeight() * 0.5, getZ(), PARTICLES_PER_STEP, getBbWidth() * 0.3, 0.3,
                     getBbWidth() * 0.3, 0.05);
         }
-        level.playSound(null, blockPosition(), SoundEvents.SLIME_BLOCK_BREAK, SoundSource.NEUTRAL, 1.0F, 0.7F);
+        level.playSound(null, blockPosition(), KN8Sounds.DISMANTLE.get(), SoundSource.NEUTRAL, 1.0F, 1.0F);
         if (step >= steps) {
             player.displayClientMessage(Component.translatable("kn8.carcass.done"), true);
             discard();

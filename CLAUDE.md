@@ -78,7 +78,7 @@ mandam; se algo precisar mudar, marque **[DECIDIR]** e pergunte.
 | Hitbox de mob | `getDefaultDimensions` (em `LivingEntity` o `getDimensions` é final) |
 | Alcance de kaiju | Sempre entre bordas (`edgeDistance`), nunca centro a centro |
 | Config de servidor | Tipo SERVER, gerado em `<instância>/config/kn8-server.toml` |
-| Protocolo de rede | `"6"` (subir ao mudar qualquer payload) |
+| Protocolo de rede | `"7"` (subir ao mudar qualquer payload; 7 = `PowerView.winded`, 0.2) |
 | Ataque "heavy" de kaiju | [SUPOSIÇÃO] atravessa o bloqueio comum; só parry/esquiva evitam (`combat.heavyIgnoresBlock`) |
 | Pacotes de entrega | Nunca incluir `build.gradle`/`gradle.properties` (os do `kn8-main` são os corretos: PAL `transitive=false`, run `clientJoin`, repo Modrinth, bloco do Better Combat) |
 | Modelos Meshy | Armas: OBJ (`neoforge:obj`) na mão; personagens: malha presa aos ossos GeckoLib (`client/render/mesh`: `meshes/<especie>.json` + um OBJ por osso; .geo.json só com ossos; mesma textura/render type do modelo). Conversor `tools/art/meshy_convert.py`; rigging: `rig_trichonephila_mesh.py`, `rig_soldier_mesh.py`, `rig_primigenius_mesh.py` (divisão pela forma; mesmos nomes de ossos, então as animações continuam) |
@@ -102,6 +102,7 @@ mandam; se algo precisar mudar, marque **[DECIDIR]** e pergunte.
 | M10b rifle, parry, crítico, CombatStateS2C/HUD, clamp de stamina, arte embutida | ✅ |
 | M11a habilidades `area_melee`/`charge`, núcleo na cabeça da Trichonephila, GameTests do M10b | ⏳ aguardando teste |
 | Etapa A pipeline Meshy (armas OBJ na mão, pistola, espada, animação por arma) · Etapa B HUD | ⏳ aguardando teste |
+| **0.2 Etapa 1: sons + corrida** (17 eventos `KN8Sounds`, 41 `.ogg` sintetizados por `tools/audio/gen_sounds.py`; voz do kaiju mais grave quanto maior; corrida gasta stamina com "sem fôlego"; carcaça tomba ao morrer) | ✅ compila, JUnit 70/70, GameTests 31/31; corrida e carcaça vistas em jogo (`docs/img/corrida_stamina.png`, `carcaca_tomba.png`); **som não testável na nuvem** (sem áudio); aguardando roteiro §13 |
 | **0.2 Menu da Força de Defesa** (tecla M; abas Perfil, Missões, Alertas, Esquadrão, Bestiário, Arsenal; Q/E troca) | ✅ compila, testes passam, todas as abas vistas em jogo (pt_br e en_us); partes de etapas futuras com "Em breve (Etapa N)"; aguardando roteiro §12 |
 | **0.2 Machado** (`kn8:axe`, estilo `heavy`, 2,0 de comprimento) e **espada nova** do Meshy | ✅ jogador (1ª/3ª pessoa) e soldado (`/kn8 soldier spawn axe`/`sword`) vistos em jogo; arma pesada também carrega golpe; números [SUPOSIÇÃO] em `weapon/axe.json` |
 | **0.2 HUD nova** (fiel à referência "HUD de combate avançado - estilo anime"; 60% do tamanho da arte, `BASE_SIZE`) | ✅ vista em jogo; arte em `textures/gui/hud/` gerada por `tools/art/gen_hud.py` (texturas 4× desenhadas em pixel de textura, `blur` ligado); aguardando aprovação |
@@ -197,7 +198,8 @@ remedidas na malha [SUPOSIÇÃO: núcleo no peito]. `build_primigenius.py` não 
   `primigenius`; `primigenius_revived` → `primigenius_resurrected` [SUPOSIÇÃO]; Trichonephila Honju →
   `trichonephila`). Limites `maxYojuPerHonju`/`maxTotalPerHonju` ainda a definir no M16.
 - Rifle sem munição na 0.1 (GDD não define); `required_rank` das armas só vale com as patentes (M14).
-- Corrida com custo de stamina (GDD §7) ainda não implementada (dash e ataque carregado: 0.1-B).
+- [SUPOSIÇÃO] Corrida: `stamina.sprintCostPerSecond` 5 (100 de stamina = 20 s) e `sprintMinStamina` 20 para voltar a correr
+  (depois de recuperar, aperte correr de novo). Criativo/espectador não gastam.
 - 0.1-B: sem GameTest para destruição, dash e ataque carregado (só JUnit da matemática); GameTests de Carcass,
   KaijuAbility e KaijuAreaAbility ainda aninham `runAfterDelay`; sons próprios (.ogg) e ícones finais dos materiais.
 - [SUPOSIÇÃO] Hitbox nova da Trichonephila 3,4 × 1,8 (o modelo novo é baixo e largo) e partes de

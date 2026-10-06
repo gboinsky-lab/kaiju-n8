@@ -14,6 +14,7 @@ import com.kn8.KN8Constants;
 import com.kn8.common.config.ServerConfig;
 import com.kn8.common.data.KN8Data;
 import com.kn8.common.destruction.DestructionService;
+import com.kn8.common.registry.KN8Sounds;
 import com.kn8.common.soldier.SoldierEntity;
 import com.kn8.common.vfx.AbilityEffects;
 import com.kn8.common.data.def.AbilityDef;
@@ -26,6 +27,7 @@ import com.kn8.core.kaiju.KaijuState;
 import com.kn8.core.kaiju.KaijuStats;
 
 import net.minecraft.core.Holder;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -33,6 +35,7 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
@@ -55,6 +58,7 @@ import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.PartEntity;
 import software.bernie.geckolib.animatable.GeoEntity;
@@ -153,6 +157,51 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
             // Reserva o bloco de IDs pai + partes (ENTITY_COUNTER e protected via access transformer do NeoForge).
             setId(ENTITY_COUNTER.getAndAdd(parts.length + 1) + 1);
         }
+    }
+
+    // --- sons (0.2) -------------------------------------------------------------------------------------------
+
+    /** Altura de referencia do tom: kaiju maiores soam mais graves, menores mais agudos. */
+    private static final float VOICE_REFERENCE_HEIGHT = 4.0F;
+    private static final float VOICE_EXPONENT = 0.35F;
+    private static final int AMBIENT_INTERVAL_TICKS = 200;
+    private static final float STEP_VOLUME_PER_BLOCK = 0.12F;
+
+    @Override
+    protected SoundEvent getAmbientSound() {
+        return KN8Sounds.KAIJU_AMBIENT.get();
+    }
+
+    @Override
+    protected SoundEvent getHurtSound(DamageSource source) {
+        return KN8Sounds.KAIJU_HURT.get();
+    }
+
+    @Override
+    protected SoundEvent getDeathSound() {
+        return KN8Sounds.KAIJU_DEATH.get();
+    }
+
+    @Override
+    public int getAmbientSoundInterval() {
+        return AMBIENT_INTERVAL_TICKS;
+    }
+
+    @Override
+    public float getVoicePitch() {
+        float size = Math.max(getBbHeight(), getBbWidth() * 0.6F);
+        float pitch = (float) Math.pow(VOICE_REFERENCE_HEIGHT / size, VOICE_EXPONENT);
+        return Mth.clamp(pitch, 0.5F, 1.6F) * (0.95F + random.nextFloat() * 0.1F);
+    }
+
+    @Override
+    protected float getSoundVolume() {
+        return Math.max(1.0F, getBbHeight() / VOICE_REFERENCE_HEIGHT);
+    }
+
+    @Override
+    protected void playStepSound(BlockPos pos, BlockState state) {
+        playSound(KN8Sounds.KAIJU_STEP.get(), Math.min(1.5F, getBbHeight() * STEP_VOLUME_PER_BLOCK), getVoicePitch());
     }
 
     public static AttributeSupplier.Builder baseAttributes() {

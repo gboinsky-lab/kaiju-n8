@@ -1,0 +1,251 @@
+{
+  "kaiju.roar": {
+    "subtitle": "subtitles.kn8.kaiju.roar",
+    "sounds": [
+      {
+        "name": "kn8:kaiju/kaiju_roar_1",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "kn8:kaiju/kaiju_roar_2",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "kn8:kaiju/kaiju_roar_3",
+        "attenuation_distance": 64
+      }
+    ]
+  },
+  "kaiju.ambient": {
+    "subtitle": "subtitles.kn8.kaiju.ambient",
+    "sounds": [
+      {
+        "name": "kn8:kaiju/kaiju_ambient_1",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "kn8:kaiju/kaiju_ambient_2",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "kn8:kaiju/kaiju_ambient_3",
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "kaiju.hurt": {
+    "subtitle": "subtitles.kn8.kaiju.hurt",
+    "sounds": [
+      {
+        "name": "kn8:kaiju/kaiju_hurt_1",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "kn8:kaiju/kaiju_hurt_2",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "kn8:kaiju/kaiju_hurt_3",
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "kaiju.death": {
+    "subtitle": "subtitles.kn8.kaiju.death",
+    "sounds": [
+      {
+        "name": "kn8:kaiju/kaiju_death_1",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "kn8:kaiju/kaiju_death_2",
+        "attenuation_distance": 64
+      }
+    ]
+  },
+  "kaiju.step": {
+    "subtitle": "subtitles.kn8.kaiju.step",
+    "sounds": [
+      {
+        "name": "kn8:kaiju/kaiju_step_1",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "kn8:kaiju/kaiju_step_2",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "kn8:kaiju/kaiju_step_3",
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "kaiju.slam": {
+    "subtitle": "subtitles.kn8.kaiju.slam",
+    "sounds": [
+      {
+        "name": "kn8:kaiju/kaiju_slam_1",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "kn8:kaiju/kaiju_slam_2",
+        "attenuation_distance": 64
+      }
+    ]
+  },
+  "kaiju.bite": {
+    "subtitle": "subtitles.kn8.kaiju.bite",
+    "sounds": [
+      {
+        "name": "kn8:kaiju/kaiju_bite_1",
+        "attenuation_distance": 24
+      },
+      {
+        "name": "kn8:kaiju/kaiju_bite_2",
+        "attenuation_distance": 24
+      },
+      {
+        "name": "kn8:kaiju/kaiju_bite_3",
+        "attenuation_distance": 24
+      }
+    ]
+  },
+  "weapon.rifle_shot": {
+    "subtitle": "subtitles.kn8.weapon.rifle_shot",
+    "sounds": [
+      {
+        "name": "kn8:weapon/rifle_shot_1",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "kn8:weapon/rifle_shot_2",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "kn8:weapon/rifle_shot_3",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "weapon.pistol_shot": {
+    "subtitle": "subtitles.kn8.weapon.pistol_shot",
+    "sounds": [
+      {
+        "name": "kn8:weapon/pistol_shot_1",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "kn8:weapon/pistol_shot_2",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "kn8:weapon/pistol_shot_3",
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "weapon.blade_swing": {
+    "subtitle": "subtitles.kn8.weapon.blade_swing",
+    "sounds": [
+      {
+        "name": "kn8:weapon/blade_swing_1",
+        "attenuation_distance": 16
+      },
+      {
+        "name": "kn8:weapon/blade_swing_2",
+        "attenuation_distance": 16
+      },
+      {
+        "name": "kn8:weapon/blade_swing_3",
+        "attenuation_distance": 16
+      }
+    ]
+  },
+  "weapon.blade_heavy": {
+    "subtitle": "subtitles.kn8.weapon.blade_heavy",
+    "sounds": [
+      {
+        "name": "kn8:weapon/blade_heavy_1",
+        "attenuation_distance": 16
+      },
+      {
+        "name": "kn8:weapon/blade_heavy_2",
+        "attenuation_distance": 16
+      }
+    ]
+  },
+  "weapon.parry": {
+    "subtitle": "subtitles.kn8.weapon.parry",
+    "sounds": [
+      {
+        "name": "kn8:weapon/parry_1",
+        "attenuation_distance": 24
+      },
+      {
+        "name": "kn8:weapon/parry_2",
+        "attenuation_distance": 24
+      }
+    ]
+  },
+  "weapon.guard_break": {
+    "subtitle": "subtitles.kn8.weapon.guard_break",
+    "sounds": [
+      {
+        "name": "kn8:weapon/guard_break_1",
+        "attenuation_distance": 24
+      },
+      {
+        "name": "kn8:weapon/guard_break_2",
+        "attenuation_distance": 24
+      }
+    ]
+  },
+  "suit.dash": {
+    "subtitle": "subtitles.kn8.suit.dash",
+    "sounds": [
+      {
+        "name": "kn8:suit/dash_1",
+        "attenuation_distance": 16
+      },
+      {
+        "name": "kn8:suit/dash_2",
+        "attenuation_distance": 16
+      }
+    ]
+  },
+  "suit.overheat_alarm": {
+    "subtitle": "subtitles.kn8.suit.overheat_alarm",
+    "sounds": [
+      {
+        "name": "kn8:suit/overheat_alarm_1",
+        "attenuation_distance": 16
+      }
+    ]
+  },
+  "carcass.dismantle": {
+    "subtitle": "subtitles.kn8.carcass.dismantle",
+    "sounds": [
+      {
+        "name": "kn8:carcass/dismantle_1",
+        "attenuation_distance": 16
+      },
+      {
+        "name": "kn8:carcass/dismantle_2",
+        "attenuation_distance": 16
+      },
+      {
+        "name": "kn8:carcass/dismantle_3",
+        "attenuation_distance": 16
+      }
+    ]
+  },
+  "alert.siren": {
+    "subtitle": "subtitles.kn8.alert.siren",
+    "sounds": [
+      {
+        "name": "kn8:alert/siren_1",
+        "attenuation_distance": 128
+      }
+    ]
+  }
+}

@@ -98,6 +98,8 @@ public final class ServerConfig {
     public static final ModConfigSpec.DoubleValue STAMINA_PER_RELEASE;
     public static final ModConfigSpec.DoubleValue STAMINA_REGEN_PER_SECOND;
     public static final ModConfigSpec.IntValue STAMINA_REGEN_DELAY_TICKS;
+    public static final ModConfigSpec.DoubleValue SPRINT_STAMINA_PER_SECOND;
+    public static final ModConfigSpec.DoubleValue SPRINT_MIN_STAMINA;
     public static final ModConfigSpec.DoubleValue WARM_REGEN_FACTOR;
     public static final ModConfigSpec.IntValue HEAT_WARM_AT;
     public static final ModConfigSpec.IntValue HEAT_OVERLOAD_AT;
@@ -308,6 +310,10 @@ public final class ServerConfig {
                 200.0);
         STAMINA_REGEN_DELAY_TICKS = intValue("regenDelayTicks", "Ticks without spending before regeneration.",
                 20, 0, 200);
+        SPRINT_STAMINA_PER_SECOND = doubleValue("sprintCostPerSecond",
+                "Stamina spent per second while sprinting (creative/spectator are free).", 5.0, 0.0, 100.0);
+        SPRINT_MIN_STAMINA = doubleValue("sprintMinStamina",
+                "Stamina needed to sprint again after running out.", 20.0, 0.0, 1000.0);
         WARM_REGEN_FACTOR = doubleValue("warmRegenFactor", "Regeneration multiplier from the WARM heat stage on.",
                 0.75, 0.0, 1.0);
         BUILDER.pop();
