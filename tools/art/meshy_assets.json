@@ -2,7 +2,7 @@
   "_comment": "Modelos do Meshy convertidos por tools/art/meshy_convert.py. 'source' = arquivo GLB na pasta passada com --src. Armas: eixo do comprimento e lado da ponta no arquivo original, comprimento real em metros, posicao da empunhadura (fracao a partir da ponta; fracao de baixo para cima).",
   "weapons": {
     "combat_knife": {
-      "source": "Meshy_AI_Kafka_Knife_Minecraft_1005185426_texture.glb",
+      "source": "combat_knife.glb",
       "length_axis": "y",
       "tip": "-",
       "up_axis": "x",
@@ -17,7 +17,7 @@
       "blade_thickness": 1.4
     },
     "rifle": {
-      "source": "Meshy_AI_Reno_Rifle_Minecraft__1005185506_texture.glb",
+      "source": "rifle.glb",
       "length_axis": "x",
       "tip": "-",
       "up_axis": "y",
@@ -32,7 +32,7 @@
       "thickness": 1.0
     },
     "pistol": {
-      "source": "Meshy_AI_Kafka_Handgun_Minecra_1005185501_texture.glb",
+      "source": "pistol.glb",
       "length_axis": "x",
       "tip": "-",
       "up_axis": "y",
@@ -48,7 +48,7 @@
     },
     "sword": {
       "replaced_by": "tools/art/build_sword.py (modelo do Meshy saiu como agulha; 0.1-B)",
-      "source": "Meshy_AI_Hoshina_Blade_Minecra_1005185625_texture.glb",
+      "source": "sword.glb",
       "length_axis": "x",
       "tip": "-",
       "up_axis": "y",
@@ -65,20 +65,20 @@
   },
   "entities": {
     "soldier_1": {
-      "source": "Meshy_AI_Defense_Force_Soldier_1005185755_.glb",
-      "segmentation": "Meshy_AI_export_1791226720_part-segmentation.glb",
+      "source": "soldier.glb",
+      "segmentation": "soldier_parts.glb",
       "height_m": 1.9,
       "texture": 1024,
       "max_triangles": 9000
     },
     "trichonephila": {
-      "source": "Meshy_AI_Kaiju_Spider_5k_Minec_1005185750_.glb",
+      "source": "trichonephila.glb",
       "length_m": 4.5,
       "texture": 1024,
       "max_triangles": 6000
     },
     "twin_swords_sheathed": {
-      "source": "Meshy_AI_Hoshina_Sheath_Minecr_1005185743_texture.glb",
+      "source": "twin_swords_sheathed.glb",
       "length_m": 0.8,
       "texture": 512,
       "max_triangles": 2000
