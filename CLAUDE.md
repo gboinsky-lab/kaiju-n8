@@ -152,11 +152,17 @@ mandam; se algo precisar mudar, marque **[DECIDIR]** e pergunte.
 | `primigenius` | Yoju | final (brute de cabeça de crocodilo, claro) | ✅ |
 | `primigenius_resurrected` | Yoju ressurgido | final (verde), 6 de altura | ✅ registrado (0.1-B) |
 | `primigenius_honju` | Honju | final (Titã Bruto, marrom), 9 de altura | ✅ registrado (0.1-B) |
-| `primigenius_revived` | Honju ressurgido | final (Titã Bruto, roxo, hitbox 3,5×5,5) | ✅ |
+| `primigenius_revived` | Honju ressurgido | final (Titã Bruto, roxo), hitbox 5,73 × 9,0 | ✅ |
 | Trichonephila Honju | Honju | conceito escolhido: Tecedeira Abissal (falta confirmar e modelar) | pós-0.1 |
 
-Regra de design do Miguel: Honju e Yoju são **criaturas diferentes** (modelo e textura próprios); a versão
-"ressurgida" é a mesma criatura com outra paleta e danos.
+Regra de design do Miguel: Honju e Yoju são **criaturas diferentes** (modelo e textura próprios). Desde
+2026-10-06 as versões ressurgida/revivida também ganham **modelo próprio no Meshy** (antes: só outra paleta).
+
+Modelos do Meshy (GLB com o id como nome, pasta fora do Git; tabela `tools/art/meshy_assets.json`):
+`trichonephila` (~4,5 m de comprimento, 8 patas), `primigenius` e `primigenius_resurrected` (6 m de altura,
+largura ~3,1), `primigenius_honju` e `primigenius_revived` (9 m, largura ~5,7), `soldier` + `soldier_parts`
+(1,9 m), armas `rifle`, `pistol`, `combat_knife`, `sword`, `twin_swords_sheathed`, `single_sheath`, `twin_swords`.
+Os 4 Primigenius ainda precisam de script de rig (como `rig_trichonephila_mesh.py`) quando os GLB chegarem.
 
 ## Pendências e [DECIDIR]
 

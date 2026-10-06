@@ -328,8 +328,13 @@ def main():
         elif not args.only or args.only == name:
             convert_weapon(name, spec, src)
     for name, spec in config["entities"].items():
-        if not args.only or args.only == name:
-            convert_entity(name, spec, src)
+        if args.only and args.only != name:
+            continue
+        if not (src / spec["source"]).exists():
+            # Modelos chegam aos poucos: o que ainda nao foi feito no Meshy nao derruba a conversao do resto.
+            print(f"pulando {name}: {spec['source']} nao esta em {src}")
+            continue
+        convert_entity(name, spec, src)
 
 
 if __name__ == "__main__":
