@@ -13,6 +13,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -43,6 +44,12 @@ public class SoldierRenderer extends GeoEntityRenderer<SoldierEntity> {
     private static final float HAND_DOWN = 1.0F / 16.0F;
     private static final float HAND_FORWARD = 2.0F / 16.0F;
     private static final float PIXEL = 16.0F;
+    /**
+     * 0.2: o display de 3a pessoa das armas cresceu para o JOGADOR (held_scale por arma em
+     * tools/art/meshy_assets.json, punho parado na mao). O soldado continua no tamanho de antes: divide pela escala
+     * do display do item e multiplica por esta, a escala de 3a pessoa de antes (0,85 em todas as armas).
+     */
+    private static final float SOLDIER_ITEM_SCALE = 0.85F;
 
     public SoldierRenderer(EntityRendererProvider.Context context) {
         super(context, new SoldierModel());
@@ -97,6 +104,14 @@ public class SoldierRenderer extends GeoEntityRenderer<SoldierEntity> {
                 }
                 poseStack.translate(0.0F, -HAND_DOWN, -HAND_FORWARD);
                 poseStack.mulPose(Axis.XP.rotationDegrees(-90.0F));
+                BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(stack, animatable.level(),
+                        animatable, animatable.getId());
+                float displayScale = model.getTransforms().getTransform(ItemDisplayContext.THIRD_PERSON_RIGHT_HAND)
+                        .scale.x();
+                if (displayScale > 1.0E-4F) {
+                    float scale = SOLDIER_ITEM_SCALE / displayScale;
+                    poseStack.scale(scale, scale, scale);
+                }
                 super.renderStackForBone(poseStack, bone, stack, animatable, bufferSource, partialTick,
                         packedLight, packedOverlay);
             }

@@ -171,23 +171,51 @@ def gun_transform(grip, rotation_y, target, scale):
     return right, left
 
 
+# 0.2 (pedido do Miguel): armas maiores na mao do JOGADOR. O punho fica no mesmo ponto da mao (a translacao e
+# recalculada). Padrao abaixo; cada arma pode ter "held_scale": [3a pessoa, 1a pessoa] na tabela (o machado, que ja
+# era grande, cresce menos). O soldado le a escala do display e volta ao tamanho de referencia (0,85) no
+# SoldierRenderer, entao nao muda.
+HELD_SCALE_THIRD = 1.3
+HELD_SCALE_FIRST = 1.2
+
+
+def euler_xyz(degrees):
+    """Rotacao do display do item no Minecraft: Quaternionf().rotationXYZ(x, y, z) = Rx * Ry * Rz."""
+    x, y, z = (math.radians(d) for d in degrees)
+    rx = np.array([[1, 0, 0], [0, math.cos(x), -math.sin(x)], [0, math.sin(x), math.cos(x)]])
+    ry = np.array([[math.cos(y), 0, math.sin(y)], [0, 1, 0], [-math.sin(y), 0, math.cos(y)]])
+    rz = np.array([[math.cos(z), -math.sin(z), 0], [math.sin(z), math.cos(z), 0], [0, 0, 1]])
+    return rx @ ry @ rz
+
+
+def blade_transform(rotation, translation, scale, factor):
+    """Display de lamina aumentado por 'factor' com a empunhadura (GRIP_PIXEL) parada no mesmo lugar da mao:
+    ponto final = T + R * (s * g), entao T' = T + 16 * R * (s - s') * g (T em pixels, g em blocos)."""
+    grip = GRIP_PIXEL - 0.5
+    new_scale = round(scale * factor, 3)
+    shift = euler_xyz(rotation) @ (grip * (scale - new_scale)) * 16
+    moved = [round(translation[i] + shift[i], 3) for i in range(3)]
+    return {"rotation": rotation, "translation": moved, "scale": [new_scale] * 3}
+
+
+def mirrored(transform):
+    rotation = transform["rotation"]
+    return {**transform, "rotation": [rotation[0], -rotation[1], -rotation[2]]}
+
+
 def held_display(spec):
     """Display de mao: lamina = espada vanilla; arma de fogo = gun_transform com o hand_grip da tabela."""
+    held_third, held_first = spec.get("held_scale", [HELD_SCALE_THIRD, HELD_SCALE_FIRST])
     if spec.get("orientation") != "horizontal" or "hand_grip" not in spec:
-        return {
-            "thirdperson_righthand": {"rotation": [0, -90, 55], "translation": [0, 4.0, 0.5],
-                                      "scale": [0.85, 0.85, 0.85]},
-            "thirdperson_lefthand": {"rotation": [0, 90, -55], "translation": [0, 4.0, 0.5],
-                                     "scale": [0.85, 0.85, 0.85]},
-            "firstperson_righthand": {"rotation": [0, -90, 25], "translation": [1.13, 3.2, 1.13],
-                                      "scale": [0.68, 0.68, 0.68]},
-            "firstperson_lefthand": {"rotation": [0, 90, -25], "translation": [1.13, 3.2, 1.13],
-                                     "scale": [0.68, 0.68, 0.68]},
-        }
+        third = blade_transform([0, -90, 55], [0, 4.0, 0.5], 0.85, held_third)
+        first = blade_transform([0, -90, 25], [1.13, 3.2, 1.13], 0.68, held_first)
+        # Mao esquerda: mesma translacao e rotacao espelhada (o jogo espelha o X ao aplicar), como no vanilla.
+        return {"thirdperson_righthand": third, "thirdperson_lefthand": mirrored(third),
+                "firstperson_righthand": first, "firstperson_lefthand": mirrored(first)}
     third_right, third_left = gun_transform(spec["hand_grip"], GUN_THIRD["rotation_y"], GUN_THIRD["target"],
-                                            GUN_THIRD["scale"])
+                                            round(GUN_THIRD["scale"] * held_third, 3))
     first_right, first_left = gun_transform(spec["hand_grip"], GUN_FIRST["rotation_y"], GUN_FIRST["target"],
-                                            spec.get("first_person_scale", 0.7))
+                                            round(spec.get("first_person_scale", 0.7) * held_first, 3))
     return {"thirdperson_righthand": third_right, "thirdperson_lefthand": third_left,
             "firstperson_righthand": first_right, "firstperson_lefthand": first_left}
 
@@ -318,11 +346,29 @@ def label_parts(parts):
     return names
 
 
+def refresh_displays(config, only=None):
+    for name, spec in config["weapons"].items():
+        path = ASSETS / f"models/item/{name}.json"
+        if (only and name != only) or not path.exists():
+            continue
+        model = json.loads(path.read_text(encoding="utf-8"))
+        model["display"].update(held_display(spec))
+        path.write_text(json.dumps(model, indent=2) + "\n", encoding="utf-8")
+        print(f"display de {name}: 3a/1a pessoa x{spec.get('held_scale', [HELD_SCALE_THIRD, HELD_SCALE_FIRST])}")
+
+
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--src", required=True, help="pasta com os GLB do Meshy")
+    parser.add_argument("--src", help="pasta com os GLB do Meshy")
     parser.add_argument("--only", help="converter so este nome")
+    parser.add_argument("--display-only", action="store_true",
+                        help="so refaz o display de mao dos JSON de arma ja convertidos (nao precisa dos GLB)")
     args = parser.parse_args()
+    if args.display_only:
+        refresh_displays(json.loads(CONFIG.read_text(encoding="utf-8")), args.only)
+        return
+    if not args.src:
+        parser.error("--src e obrigatorio (so --display-only dispensa)")
     src = Path(args.src)
     config = json.loads(CONFIG.read_text(encoding="utf-8"))
     for name, spec in config["weapons"].items():

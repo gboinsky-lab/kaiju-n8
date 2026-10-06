@@ -84,6 +84,7 @@ mandam; se algo precisar mudar, marque **[DECIDIR]** e pergunte.
 | Pacotes de entrega | Nunca incluir `build.gradle`/`gradle.properties` (os do `kn8-main` são os corretos: PAL `transitive=false`, run `clientJoin`, repo Modrinth, bloco do Better Combat) |
 | Modelos Meshy | Armas: OBJ (`neoforge:obj`) na mão; personagens: malha presa aos ossos GeckoLib (`client/render/mesh`: `meshes/<especie>.json` + um OBJ por osso; .geo.json só com ossos; mesma textura/render type do modelo). Conversor `tools/art/meshy_convert.py`; rigging: `rig_trichonephila_mesh.py`, `rig_soldier_mesh.py`, `rig_primigenius_mesh.py` (divisão pela forma; mesmos nomes de ossos, então as animações continuam) |
 | Arma na mão (0.1-B, teste) | Lâmina: display de espada vanilla. Arma de fogo: cano ao longo do braço (`thirdperson` rotação `[0, 90, 0]`, `hand_grip` em `meshy_assets.json`), jogador em `CROSSBOW_HOLD` (`HeldWeaponPoses`). Soldado: mesma cadeia do vanilla em Y para cima (só `Rx(-90)`), item alinhado ombro→mão. Conferir com `tools/art/preview_held_items.py` |
+| Tamanho da arma na mão (0.2) | Jogador: display ×1,3 (3ª pessoa) e ×1,2 (1ª) por padrão, faca [1,5; 1,3], machado [1,1; 1,0] (`held_scale` em `meshy_assets.json`), punho parado na mão (`blade_transform`/`gun_transform`). Refazer só o display: `meshy_convert.py --display-only`. Soldado: `SoldierRenderer` divide pela escala do display e volta a 0,85 (tamanho de antes) |
 | Texturas de malha Meshy | Sem mipmap no Minecraft: textura proporcional ao modelo (soldado 512) com borda nas ilhas (`pad_texture.py`); UV quebrada pela redução → `rebake_mesh_texture.py` |
 | Pivô na GeckoLib | O X do pivô do .geo.json é invertido ao carregar: gravar `-x` (confirmado no código da GeckoLib) |
 | Escala de kaiju (aprovada) | Yoju 4–8, Honju 6–15, Daikaiju 20–30 blocos (1 bloco ≈ 1 m) — aplicar na Etapa C |
@@ -191,6 +192,10 @@ remedidas na malha [SUPOSIÇÃO: núcleo no peito]. `build_primigenius.py` não 
 
 ## Pendências e [DECIDIR]
 
+- **A arrumar quando chegarem os modelos novos dos kaiju (pedido do Miguel, 2026-10-06):** textura do soldado meio
+  bugada (manchas pretas/costuras nas placas brancas, ver print do Miguel); textura da aranha "atravessando" ao
+  andar (patas/corpo se cruzando na animação); e conferir cada detalhe dos modelos novos (sem buraco, pedaço
+  solto, costura de UV ou peça presa no osso errado) antes de entregar.
 - Prompts do Meshy para os modelos novos (ressurgido, Honju, revivido e, opcional, No. 9): `docs/PROMPTS_MESHY_0_2.md`.
 - **Decidido (2026-10-06):** Release vai até 100% para todos, por **treino**; `rankCaps` sai do config (Etapa 2 da
   0.2). Plano completo da mega atualização: `docs/MEGA_ATUALIZACAO_0_2.md`.

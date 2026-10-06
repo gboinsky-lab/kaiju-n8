@@ -2,6 +2,7 @@
   "_comment": "Modelos do Meshy convertidos por tools/art/meshy_convert.py. 'source' = arquivo GLB na pasta passada com --src. Armas: eixo do comprimento e lado da ponta no arquivo original, comprimento real em metros, posicao da empunhadura (fracao a partir da ponta; fracao de baixo para cima).",
   "weapons": {
     "combat_knife": {
+      "held_scale": [1.5, 1.3],
       "source": "combat_knife.glb",
       "length_axis": "y",
       "tip": "-",
@@ -68,6 +69,7 @@
       "thickness": 1.0
     },
     "axe": {
+      "held_scale": [1.1, 1.0],
       "source": "axe.glb",
       "length_axis": "x",
       "tip": "-",
