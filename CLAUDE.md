@@ -51,15 +51,14 @@ mandam; se algo precisar mudar, marque **[DECIDIR]** e pergunte.
 2. Números em JSON ou config, nunca fixos no Java (nomes iguais aos do GDD).
 3. Tudo testado em servidor dedicado com 2+ clientes.
 4. Nenhuma classe de `client` referenciada em `common`; nenhum estado global mutável (serviços em `KN8Server`).
-5. Nada reutilizado sem licença verificada; nada dos mods de Kaiju No. 8 existentes; **nenhum asset da obra**.
-6. Todo [VERIFICAR] é confirmado no início do módulo que o usa (código-fonte do NeoForge/GeckoLib/PAL).
-7. Dano sempre no servidor, no tick de impacto do JSON, nunca pela animação.
-8. Mixins só com justificativa registrada aqui.
-9. Payloads validados com rate limit (`C2SGuard`); sync só na mudança, com reenvio em login/respawn/dimensão.
-10. JSON inválido gera log claro e nunca derruba o servidor.
-11. Convenções da Fase 4 §2.5: sufixos `C2S`/`S2C`, chaves `kn8.<área>.<chave>`, 4 espaços, **120 colunas**,
+5. Todo [VERIFICAR] é confirmado no início do módulo que o usa (código-fonte do NeoForge/GeckoLib/PAL).
+6. Dano sempre no servidor, no tick de impacto do JSON, nunca pela animação.
+7. Mixins só com justificativa registrada aqui.
+8. Payloads validados com rate limit (`C2SGuard`); sync só na mudança, com reenvio em login/respawn/dimensão.
+9. JSON inválido gera log claro e nunca derruba o servidor.
+10. Convenções da Fase 4 §2.5: sufixos `C2S`/`S2C`, chaves `kn8.<área>.<chave>`, 4 espaços, **120 colunas**,
     comentários explicam o porquê. Javadoc/comentários do código em português sem acento.
-12. Compilar de primeira: imports completos, sem APIs inventadas.
+11. Compilar de primeira: imports completos, sem APIs inventadas.
 
 ---
 
@@ -143,8 +142,6 @@ mandam; se algo precisar mudar, marque **[DECIDIR]** e pergunte.
 
 ## Arte
 
-- **Direitos autorais:** todos os kaiju usam **designs originais**. Não recriar nem aproximar designs oficiais da
-  obra; não usar imagens oficiais como referência em geradores. Nomes e mecânicas do GDD são mantidos.
 - **Pipeline:** `tools/art/kaiju_art.py` (base comum: cubos, ossos, pintores de textura por paleta, atlas, validação)
   e um script por espécie. Variantes de cor ("ressurgido") compartilham o esqueleto e trocam só a textura.
   Prévia: `python3 tools/art/preview.py <espécie> [saída.png] [escala]`.
