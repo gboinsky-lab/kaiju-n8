@@ -52,17 +52,37 @@ def texture_of(mesh, size):
 
 
 def decimate(mesh, max_triangles):
-    """Reduz triangulos preservando UV (sem fundir vertices de costura)."""
+    """Reduz triangulos sem misturar ilhas de UV.
+
+    A reducao funde vertices de costura (mesma posicao, UVs de ilhas diferentes). Antes, cada vertice restante
+    pegava a UV do vertice original mais proximo, e um triangulo podia ficar com cantos em ilhas diferentes (bug da
+    textura da Trichonephila na 0.1-B). Agora a UV e decidida POR TRIANGULO: acha-se o triangulo original mais perto
+    do centro do triangulo reduzido e os tres cantos usam as coordenadas baricentricas dele (todos na mesma ilha).
+    O resultado tem um vertice por canto (normais suaves da malha reduzida)."""
     if max_triangles is None or len(mesh.faces) <= max_triangles:
         return mesh
     import fast_simplification
     from scipy.spatial import cKDTree
+    from trimesh.triangles import closest_point, points_to_barycentric
     ratio = 1.0 - max_triangles / len(mesh.faces)
     points, faces = fast_simplification.simplify(mesh.vertices, mesh.faces, target_reduction=ratio)
-    # UV de cada vertice restante = UV do vertice original mais proximo (a reducao so move vertices pouco).
-    _, nearest = cKDTree(mesh.vertices).query(points)
-    uv = mesh.visual.uv[nearest]
-    reduced = trimesh.Trimesh(points, faces, process=False)
+    welded = trimesh.Trimesh(points, faces, process=False)
+    # Triangulo original mais perto de cada centro: 8 candidatos pelo centro, decide a distancia real ao triangulo.
+    centers = welded.triangles_center
+    candidates = 8
+    _, near = cKDTree(mesh.triangles_center).query(centers, k=candidates)
+    flat = near.ravel()
+    projected = closest_point(mesh.triangles[flat], np.repeat(centers, candidates, axis=0))
+    distance = np.linalg.norm(projected - np.repeat(centers, candidates, axis=0), axis=1).reshape(-1, candidates)
+    source = near[np.arange(len(near)), np.argmin(distance, axis=1)]
+    corners = points[faces].reshape(-1, 3)
+    source_triangles = np.repeat(mesh.triangles[source], 3, axis=0)
+    source_uv = np.repeat(mesh.visual.uv[mesh.faces[source]], 3, axis=0)
+    bary = points_to_barycentric(source_triangles, corners)
+    uv = np.einsum("ij,ijk->ik", bary, source_uv)
+    normals = welded.vertex_normals[faces].reshape(-1, 3)
+    reduced = trimesh.Trimesh(corners, np.arange(len(corners)).reshape(-1, 3), vertex_normals=normals,
+                              process=False)
     reduced.visual = trimesh.visual.TextureVisuals(uv=uv, material=mesh.visual.material)
     return reduced
 
@@ -130,6 +150,44 @@ def gui_fit(vertices):
     return {"rotation": [0, 0, 0], "translation": translation, "scale": [round(scale, 3)] * 3}
 
 
+# Arma de fogo na mao (0.1-B): cano ao longo do braco (Ry 90), cabo para o lado de tras do braco; o ponto
+# "hand_grip" do item (coordenadas do OBJ ja convertido, medido em tools/art/preview_held_items.py) vai para o centro
+# do punho. Alvo em pixels no quadro do display: 3a pessoa (0, -2, 1); 1a pessoa (-1, 2, 2) com 3 graus para o centro.
+GUN_THIRD = {"rotation_y": 90, "target": (0.0, -2.0, 1.0), "scale": 0.85}
+GUN_FIRST = {"rotation_y": 93, "target": (-1.0, 2.0, 2.0)}
+
+
+def gun_transform(grip, rotation_y, target, scale):
+    g = [(c - 0.5) * 16 * scale for c in grip]
+    angle = math.radians(rotation_y)
+    rotated = (g[0] * math.cos(angle) + g[2] * math.sin(angle), g[1], -g[0] * math.sin(angle) + g[2] * math.cos(angle))
+    translation = [round(target[i] - rotated[i], 3) for i in range(3)]
+    right = {"rotation": [0, rotation_y, 0], "translation": translation, "scale": [scale] * 3}
+    left = {"rotation": [0, -rotation_y, 0], "translation": translation, "scale": [scale] * 3}
+    return right, left
+
+
+def held_display(spec):
+    """Display de mao: lamina = espada vanilla; arma de fogo = gun_transform com o hand_grip da tabela."""
+    if spec.get("orientation") != "horizontal" or "hand_grip" not in spec:
+        return {
+            "thirdperson_righthand": {"rotation": [0, -90, 55], "translation": [0, 4.0, 0.5],
+                                      "scale": [0.85, 0.85, 0.85]},
+            "thirdperson_lefthand": {"rotation": [0, 90, -55], "translation": [0, 4.0, 0.5],
+                                     "scale": [0.85, 0.85, 0.85]},
+            "firstperson_righthand": {"rotation": [0, -90, 25], "translation": [1.13, 3.2, 1.13],
+                                      "scale": [0.68, 0.68, 0.68]},
+            "firstperson_lefthand": {"rotation": [0, 90, -25], "translation": [1.13, 3.2, 1.13],
+                                     "scale": [0.68, 0.68, 0.68]},
+        }
+    third_right, third_left = gun_transform(spec["hand_grip"], GUN_THIRD["rotation_y"], GUN_THIRD["target"],
+                                            GUN_THIRD["scale"])
+    first_right, first_left = gun_transform(spec["hand_grip"], GUN_FIRST["rotation_y"], GUN_FIRST["target"],
+                                            spec.get("first_person_scale", 0.7))
+    return {"thirdperson_righthand": third_right, "thirdperson_lefthand": third_left,
+            "firstperson_righthand": first_right, "firstperson_lefthand": first_left}
+
+
 def convert_weapon(name, spec, src):
     mesh = load_single(src / spec["source"])[0]
     rotation, grip, scale = weapon_frame(spec, mesh.vertices)
@@ -162,14 +220,7 @@ def convert_weapon(name, spec, src):
         "automatic_culling": False,
         "textures": {"texture": f"kn8:item/{name}", "particle": f"kn8:item/{name}"},
         "display": {
-            "thirdperson_righthand": {"rotation": [0, -90, 55], "translation": [0, 4.0, 0.5],
-                                      "scale": [0.85, 0.85, 0.85]},
-            "thirdperson_lefthand": {"rotation": [0, 90, -55], "translation": [0, 4.0, 0.5],
-                                     "scale": [0.85, 0.85, 0.85]},
-            "firstperson_righthand": {"rotation": [0, -90, 25], "translation": [1.13, 3.2, 1.13],
-                                      "scale": [0.68, 0.68, 0.68]},
-            "firstperson_lefthand": {"rotation": [0, 90, -25], "translation": [1.13, 3.2, 1.13],
-                                     "scale": [0.68, 0.68, 0.68]},
+            **held_display(spec),
             "ground": {"rotation": [0, 0, 0], "translation": [0, 2, 0], "scale": [0.5, 0.5, 0.5]},
             "gui": gui_fit(vertices),
             "fixed": {"rotation": [0, 180, 0], "translation": [0, 0, 0], "scale": [1, 1, 1]},
@@ -271,7 +322,10 @@ def main():
     src = Path(args.src)
     config = json.loads(CONFIG.read_text(encoding="utf-8"))
     for name, spec in config["weapons"].items():
-        if not args.only or args.only == name:
+        if spec.get("replaced_by"):
+            # Arte refeita por outro script (ex.: espada -> build_sword.py): nao sobrescrever.
+            print(f"pulando {name}: gerado por {spec['replaced_by']}")
+        elif not args.only or args.only == name:
             convert_weapon(name, spec, src)
     for name, spec in config["entities"].items():
         if not args.only or args.only == name:

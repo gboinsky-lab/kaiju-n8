@@ -33,7 +33,14 @@ final class SoldierCombatGoal extends Goal {
     }
 
     @Override
+    public void start() {
+        // Sincronizado com o cliente: liga a pose de mira (controller "arms" do SoldierEntity).
+        soldier.setAggressive(true);
+    }
+
+    @Override
     public void stop() {
+        soldier.setAggressive(false);
         soldier.getNavigation().stop();
     }
 

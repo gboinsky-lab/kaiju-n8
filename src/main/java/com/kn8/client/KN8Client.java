@@ -9,6 +9,7 @@ import com.kn8.client.hud.KN8Hud;
 import com.kn8.client.hud.KaijuHealthBar;
 import com.kn8.client.net.ClientNetDebug;
 import com.kn8.client.render.CarcassRenderer;
+import com.kn8.client.render.HeldWeaponPoses;
 import com.kn8.client.render.KaijuRenderer;
 import com.kn8.client.render.SoldierRenderer;
 import com.kn8.client.render.mesh.MeshModels;
@@ -47,6 +48,8 @@ public final class KN8Client {
         modEventBus.addListener(KN8Client::registerRenderers);
         // Etapa A/C: malhas do Meshy presas aos ossos (cache limpo no F3+T).
         modEventBus.addListener(MeshModels::registerReloadListener);
+        // 0.1-B: pose de mira (dois bracos) ao segurar rifle/pistola.
+        modEventBus.addListener(HeldWeaponPoses::register);
         // M9: camada de animacao do jogador na PAL.
         modEventBus.addListener(PlayerAnimations::onClientSetup);
         // M10: teclas de combate (bloqueio, esquiva).

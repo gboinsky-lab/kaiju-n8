@@ -135,3 +135,23 @@ rodar o Gradle com `JAVA_HOME` no JDK 21 (`~/.gradle/jdks/eclipse_adoptium-21-am
 - Tags de bloco usadas nas categorias de destruição: conferir que todas existem em 1.21.1 (se uma faltar, o arquivo
   inteiro de tag falha ao carregar).
 - Ordem: compile → corrija → GameTests (`runGameTestServer`) → corrija, parte por parte, na ordem da tabela acima.
+
+## Correções visuais do primeiro teste em jogo (2026-10-06)
+
+Pedido do Miguel (capturas): textura da aranha bugada; soldado parado e com textura meio bugada; rifle e pistola
+errados na mão do jogador e do soldado; espada toda errada. **Feito sem compilar**: a rede desta sessão bloqueia o
+Maven do NeoForge/Minecraft. Tudo visual foi conferido num simulador fora do jogo que reproduz a cadeia de
+transformações do vanilla e da GeckoLib (`tools/art/preview_held_items.py`; ele reproduziu exatamente as capturas
+antes da correção: rifle diagonal para o chão, espada para a frente). Prévias em `docs/img/`.
+
+| Problema | Causa | Correção |
+|---|---|---|
+| Aranha: linhas douradas, manchas brancas | `meshy_convert.decimate` dava a cada vértice a UV do vértice original mais próximo; nas costuras, 2.899 de 5.998 triângulos ficaram com cantos em ilhas diferentes da textura (cobrindo até a textura inteira) | `tools/art/rebake_mesh_texture.py`: atlas novo, uma célula por triângulo (mesma forma, 90 texels/m, borda de 1 texel); triângulo bom copia a textura antiga, quebrado pega a cor do ponto bom mais próximo (posição + normal). Rig regerado. `decimate` corrigido para as próximas conversões (UV decidida por triângulo, testado: 1.170 → 11 triângulos ruins num teste com o soldado) |
+| Soldado: textura cintilando/riscos | Textura 1024 (~400 texels/m) sem mipmap e fundo preto entre as ilhas | 512 com borda de 16 texels nas ilhas (`pad_texture.py`, chamado pelo `rig_soldier_mesh.py`). As UVs do soldado estavam boas |
+| Soldado "estático" | Idle de ±2° (invisível), braços sempre pendurados, nenhuma pose de arma | Controllers `movement` (pernas e tronco: idle com respiração, andar ±30°) + `arms` (pose por classe de arma: `rifle`, `pistol`, `blade`, `unarmed` × `ready`/`walk`/`aim`; `aim` quando `Mob#isAggressive`, ligado pelo `SoldierCombatGoal`) + `action` (`attack`, `shoot_rifle`, `shoot_pistol` com coice) + `reaction`. Cabeça segue o olhar e, mirando com arma de fogo, os braços somam a inclinação/giro da cabeça (`SoldierRenderer.SoldierModel`) |
+| Rifle/pistola na mão do jogador | Display copiado da espada vanilla (`[0,-90,55]`) com o modelo deitado | Cano ao longo do braço: `thirdperson` `[0, 90, 0]` com o cabo (`hand_grip`) no centro do punho; 1ª pessoa `[0, 93, 0]`; jogador segurando rifle/pistola usa a pose `CROSSBOW_HOLD` (dois braços à frente, seguindo a mira) via `IClientItemExtensions` (`HeldWeaponPoses`) |
+| Arma na mão do soldado | `SoldierRenderer` aplicava `Rx(-90) Ry(180)` do vanilla sem converter para Y para cima (sobrava o `Ry(180)`); a `BlockAndItemGeoLayer` gira o item de novo pela rotação do osso; braços da malha abertos em "A" | `renderForBone` próprio (só volta ao pivô), item alinhado à linha ombro → mão, ponto de origem igual ao do vanilla, depois `Rx(-90)` e o display de 3ª pessoa do item (o mesmo do jogador). `item_right` agora no centro do punho |
+| Espada | Modelo do Meshy virou uma agulha preta com guarda redonda | Modelo próprio por código (`tools/art/build_sword.py`, design original): lâmina de um gume com fio prateado e faixa ciano, guarda, cabo trançado, pomo; orientação de espada vanilla. O `meshy_convert.py` pula a espada (`replaced_by`) |
+
+Pendente: compilar (`./gradlew build`, `runGameTestServer`) e o roteiro §10. Se preferir outro modelo de espada,
+mande o GLB: é só tirar o `replaced_by` da tabela e rodar o conversor.

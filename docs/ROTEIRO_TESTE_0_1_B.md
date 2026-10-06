@@ -122,7 +122,7 @@ Comandos úteis: `/kn8 kaiju spawn <espécie> [quantidade]`, `/kn8 kaiju info`, 
 | # | Passo | Esperado |
 |---|---|---|
 | 8.1 | `/kn8 soldier spawn unarmed`, `rifle`, `pistol`, `sword`, `knife` | 5 variantes; a arma certa aparece **na mão direita**, na orientação certa |
-| 8.2 | Modelo | Malha do soldado inteira (cabeça, tronco, braços, pernas), textura certa, anda e fica parado animado |
+| 8.2 | Modelo | Malha do soldado inteira (cabeça, tronco, braços, pernas), textura certa, anda e fica parado animado (ver §10) |
 | 8.3 | `/kn8 soldier spawn rifle low` / `normal` / `high` / `elite` contra o mesmo kaiju | Dano e resistência sobem com o nível (compare o tempo para matar) |
 | 8.4 | Soldado de rifle × Primigenius | Mantém ~12 blocos (recua se o kaiju chega perto), atira; o dano sai no tick do tiro |
 | 8.5 | Soldado de espada/faca/desarmado × kaiju | Aproxima até o alcance e golpeia; não fica batendo no ar |
@@ -155,3 +155,21 @@ Comandos úteis: `/kn8 kaiju spawn <espécie> [quantidade]`, `/kn8 kaiju info`, 
    matemática. Escrever depois do teste manual.
 8. Corrida com custo de stamina (GDD §7) continua não implementada.
 9. M11a e Etapas A/B continuam "aguardando teste" (este roteiro cobre só a regressão rápida delas).
+
+## 10. Correções visuais (aranha, soldado, armas na mão, espada) — 2026-10-06
+
+Feitas sem compilar (sem rede nesta sessão). Antes: `./gradlew build` e `./gradlew runGameTestServer`.
+Prévias do que é esperado: `docs/img/preview_aranha.png`, `preview_armas_jogador.png`, `preview_soldado.png`.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 10.1 | `/kn8 kaiju spawn trichonephila`, olhe de perto e de longe | Listras amarelas/pretas limpas; sem linhas douradas finas nem manchas brancas espalhadas |
+| 10.2 | `/kn8 soldier spawn rifle` e afaste-se ~10 blocos | Textura do soldado sem cintilar; sem riscos pretos/brancos nas costuras |
+| 10.3 | Soldado parado e andando (sem kaiju) | Respira (tronco sobe/desce), pernas andam, braços seguram a arma (rifle apontado para a frente e para baixo); a cabeça vira para o jogador |
+| 10.4 | Soldado de rifle × kaiju | Ao ter alvo, levanta a arma e mira (braços acompanham a altura do alvo); coice a cada tiro |
+| 10.5 | Pistola, espada, faca e sem arma | Cada um com a sua pose; espada/faca: golpe por cima; sem arma: guarda |
+| 10.6 | Jogador com rifle/pistola em 3ª pessoa (F5), parado, andando, olhando para cima/baixo | Dois braços à frente, cano para onde olha, cabo dentro da mão |
+| 10.7 | Jogador com rifle/pistola em 1ª pessoa | Arma no canto de baixo à direita, cano para a frente (levemente para o centro) |
+| 10.8 | Espada na mão (1ª e 3ª pessoa), no chão, no inventário | Espada nova (lâmina prateada com faixa ciano), na mão como uma espada vanilla |
+| 10.9 | Dev2 olhando Dev1 e o soldado | Mesmas poses nos dois clientes |
+| 10.10 | Se na mira os braços do soldado ABREM para os lados em vez de fechar na frente | Anote: é o sinal de Y das poses ([SUPOSIÇÃO] da convenção da GeckoLib) |

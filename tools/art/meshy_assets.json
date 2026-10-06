@@ -26,6 +26,8 @@
       "grip_from_bottom": 0.35,
       "texture": 512,
       "orientation": "horizontal",
+      "hand_grip": [0.13, 0.31, 0.5],
+      "first_person_scale": 0.7,
       "item_length": 1.6,
       "thickness": 1.0
     },
@@ -39,10 +41,13 @@
       "grip_from_bottom": 0.25,
       "texture": 512,
       "orientation": "horizontal",
+      "hand_grip": [0.27, 0.36, 0.5],
+      "first_person_scale": 0.8,
       "item_length": 0.75,
       "thickness": 1.1
     },
     "sword": {
+      "replaced_by": "tools/art/build_sword.py (modelo do Meshy saiu como agulha; 0.1-B)",
       "source": "Meshy_AI_Hoshina_Blade_Minecra_1005185625_texture.glb",
       "length_axis": "x",
       "tip": "-",
@@ -79,5 +84,5 @@
       "max_triangles": 2000
     }
   },
-  "_comment_weapons": "orientation: 'diagonal' (lamina, como espada vanilla) ou 'horizontal' (arma de fogo, cano para a frente). item_length: comprimento no item, em unidades (1 = um bloco; a mao do jogador tem ~0,25). thickness: multiplica a espessura (eixos 'up' e lateral) em volta da empunhadura. blade_fraction + blade_thickness: engrossa so a lamina (da ponta ate essa fracao do comprimento), sem mexer no cabo."
+  "_comment_weapons": "hand_grip (armas de fogo): ponto do cabo no OBJ convertido (unidades do item) que vai para o centro do punho; first_person_scale: escala em 1a pessoa. orientation: 'diagonal' (lamina, como espada vanilla) ou 'horizontal' (arma de fogo, cano para a frente). item_length: comprimento no item, em unidades (1 = um bloco; a mao do jogador tem ~0,25). thickness: multiplica a espessura (eixos 'up' e lateral) em volta da empunhadura. blade_fraction + blade_thickness: engrossa so a lamina (da ponta ate essa fracao do comprimento), sem mexer no cabo."
 }

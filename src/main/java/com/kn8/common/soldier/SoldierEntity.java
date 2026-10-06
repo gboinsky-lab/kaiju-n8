@@ -1,6 +1,8 @@
 // src/main/java/com/kn8/common/soldier/SoldierEntity.java
 package com.kn8.common.soldier;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
@@ -87,6 +89,25 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
 
     private static final RawAnimation IDLE = RawAnimation.begin().thenLoop("soldier.movement.idle");
     private static final RawAnimation WALK = RawAnimation.begin().thenLoop("soldier.movement.walk");
+    /** Poses dos bracos por classe de arma: rifle, pistola, lamina, sem arma. */
+    public static final String POSE_RIFLE = "rifle";
+    public static final String POSE_PISTOL = "pistol";
+    public static final String POSE_BLADE = "blade";
+    public static final String POSE_UNARMED = "unarmed";
+    /** "soldier.arms.<pose>_<postura>": ready (parado), walk (andando), aim (com alvo). */
+    private static final Map<String, RawAnimation> ARM_ANIMATIONS = new HashMap<>();
+    private static final int MOVEMENT_TRANSITION_TICKS = 4;
+    private static final int ARMS_TRANSITION_TICKS = 5;
+    private static final int ACTION_TRANSITION_TICKS = 2;
+
+    static {
+        for (String pose : new String[] {POSE_RIFLE, POSE_PISTOL, POSE_BLADE, POSE_UNARMED}) {
+            for (String stance : new String[] {"ready", "walk", "aim"}) {
+                ARM_ANIMATIONS.put(pose + "_" + stance,
+                        RawAnimation.begin().thenLoop("soldier.arms." + pose + "_" + stance));
+            }
+        }
+    }
 
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
     private final ActionTimeline timeline = new ActionTimeline();
@@ -169,6 +190,23 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
     /** Alcance do ataque atual (arma ou soco). */
     public double attackReach() {
         return weapon().map(WeaponDef::reach).orElse(2.5F);
+    }
+
+    /**
+     * Classe de pose dos bracos (cliente e servidor): vem da variante sincronizada, sem depender dos dados das
+     * armas no cliente. Variante desconhecida: lamina se tiver item na mao, senao sem arma.
+     */
+    public String armPose() {
+        String variant = variant();
+        if (POSE_RIFLE.equals(variant) || POSE_PISTOL.equals(variant)) {
+            return variant;
+        }
+        return getMainHandItem().isEmpty() ? POSE_UNARMED : POSE_BLADE;
+    }
+
+    public boolean isFirearmPose() {
+        String pose = armPose();
+        return POSE_RIFLE.equals(pose) || POSE_PISTOL.equals(pose);
     }
 
     public float keepDistance() {
@@ -259,7 +297,8 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
             return false;
         }
         actionTarget = target;
-        triggerAnim("action", isShooter() ? "shoot" : "attack");
+        triggerAnim("action", isShooter() ? (POSE_PISTOL.equals(armPose()) ? "shoot_pistol" : "shoot_rifle")
+                : "attack");
         return true;
     }
 
@@ -328,11 +367,19 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "movement", 4, state ->
+        // Cada controller mexe em ossos/canais diferentes (pernas e tronco x bracos), entao andar + mirar se somam;
+        // "action" e "reaction" vem depois e passam por cima enquanto tocam.
+        controllers.add(new AnimationController<>(this, "movement", MOVEMENT_TRANSITION_TICKS, state ->
                 state.setAndContinue(state.isMoving() ? WALK : IDLE)));
-        controllers.add(new AnimationController<>(this, "action", 0, state -> PlayState.STOP)
+        controllers.add(new AnimationController<>(this, "arms", ARMS_TRANSITION_TICKS, state -> {
+            // Mob#isAggressive e sincronizado (flags do Mob); o SoldierCombatGoal liga enquanto tem alvo.
+            String stance = isAggressive() ? "aim" : state.isMoving() ? "walk" : "ready";
+            return state.setAndContinue(ARM_ANIMATIONS.get(armPose() + "_" + stance));
+        }));
+        controllers.add(new AnimationController<>(this, "action", ACTION_TRANSITION_TICKS, state -> PlayState.STOP)
                 .triggerableAnim("attack", RawAnimation.begin().thenPlay("soldier.action.attack"))
-                .triggerableAnim("shoot", RawAnimation.begin().thenPlay("soldier.action.shoot")));
+                .triggerableAnim("shoot_rifle", RawAnimation.begin().thenPlay("soldier.action.shoot_rifle"))
+                .triggerableAnim("shoot_pistol", RawAnimation.begin().thenPlay("soldier.action.shoot_pistol")));
         controllers.add(new AnimationController<>(this, "reaction", 0, state -> PlayState.STOP)
                 .triggerableAnim("hurt", RawAnimation.begin().thenPlay("soldier.reaction.hurt")));
     }

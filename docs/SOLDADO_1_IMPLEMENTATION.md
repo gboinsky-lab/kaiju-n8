@@ -15,6 +15,8 @@ Memória técnica do Soldado 1. Leia antes de "Continue o Soldado 1". Atualize a
 | Malha presa aos ossos (`MeshRenderLayer` + `MeshModels`) | ✅ já em uso pela Trichonephila |
 | Entidade Soldado 1 (GeckoLib + malha presa aos ossos) | ✅ escrita (0.1-B, falta compilar/testar) |
 | Variantes (sem arma, rifle, pistola, espada, faca) | ✅ escrita |
+| Animação em camadas (pernas × braços por arma, mira, cabeça) e arma alinhada ao braço | ✅ escrita (correção do teste, 2026-10-06; falta compilar) |
+| Espada própria (`build_sword.py`) no lugar da do Meshy | ✅ |
 | Níveis de potência do traje (low/normal/high/elite = Release 5/10/20/30) | ✅ escrita |
 | Armadura em peças (equipável pelo jogador) | PENDENTE — depende dos trajes (M14) |
 | Bainha da espada única | PENDENTE — ASSET MESHY (prompt abaixo) |
@@ -40,6 +42,10 @@ Nomes no jogo são genéricos (os nomes dos arquivos citam personagens da obra; 
 **Correções do teste (Etapa A):** armas de fogo montadas na horizontal (`orientation: horizontal`), tamanhos no
 estilo Minecraft (`item_length`: faca 0,85, pistola 0,75, rifle 1,6, espada 1,5) e lâmina engrossada sem mexer no
 cabo (`blade_fraction` + `blade_thickness`).
+
+**Armas de fogo na mão (2026-10-06):** display `[0, 90, 0]` (cano ao longo do braço) com o ponto `hand_grip` do
+OBJ no centro do punho; gerado pelo `meshy_convert.py` (`held_display`). Conferir com
+`python3 tools/art/preview_held_items.py` antes de testar em jogo.
 
 **Ajuste fino da arma na mão:** abrir `assets/kn8/models/item/<arma>.json` no Blockbench (com o OBJ), aba Display,
 ajustar e copiar os valores de `display` de volta para `meshy_assets.json`/JSON. A orientação base é a de uma
