@@ -3,7 +3,8 @@
 Mod fan gratuito de Minecraft, desenvolvido por Miguel Augusto Gnoinsky. Este arquivo é a memória do projeto para o
 Claude Code: leia antes de qualquer tarefa. Responda sempre em **português do Brasil**.
 
-Memória técnica das novas frentes: `docs/SOLDADO_1_IMPLEMENTATION.md` e `docs/COMBAT_VFX_AND_DESTRUCTION.md`
+Memória técnica das novas frentes: `docs/SOLDADO_1_IMPLEMENTATION.md`, `docs/COMBAT_VFX_AND_DESTRUCTION.md` e
+`docs/MEGA_ATUALIZACAO_0_2.md` (plano da 0.2, em etapas)
 (ler antes de "Continue o Soldado 1", "Continue os efeitos", "Adicione este ataque").
 
 Documentos de referência (coloque em `docs/` se ainda não estiverem): **Fase 3 — GDD**, **Fase 4 — Arquitetura
@@ -175,8 +176,8 @@ acrescentar na tabela. `build_primigenius.py` não sobrescreve espécie que já 
 
 ## Pendências e [DECIDIR]
 
-- [DECIDIR] Teto de liberação duplicado (`rankCaps` no config × `release_cap` no JSON da patente). Recomendação:
-  JSON como fonte única; remover `rankCaps` no M14.
+- **Decidido (2026-10-06):** Release vai até 100% para todos, por **treino**; `rankCaps` sai do config (Etapa 2 da
+  0.2). Plano completo da mega atualização: `docs/MEGA_ATUALIZACAO_0_2.md`.
 - [SUPOSIÇÃO a confirmar] `primigenius_resurrected` fortitude 5,9 e `primigenius_honju` 6,0, sem spawn natural.
 - **Decidido (Miguel, 2026-10-06):** o Honju invoca só Yoju da **própria espécie** (`primigenius_honju` →
   `primigenius`; `primigenius_revived` → `primigenius_resurrected` [SUPOSIÇÃO]; Trichonephila Honju →
