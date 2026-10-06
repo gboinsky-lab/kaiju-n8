@@ -102,7 +102,7 @@ mandam; se algo precisar mudar, marque **[DECIDIR]** e pergunte.
 | M10b rifle, parry, crítico, CombatStateS2C/HUD, clamp de stamina, arte embutida | ✅ |
 | M11a habilidades `area_melee`/`charge`, núcleo na cabeça da Trichonephila, GameTests do M10b | ⏳ aguardando teste |
 | Etapa A pipeline Meshy (armas OBJ na mão, pistola, espada, animação por arma) · Etapa B HUD | ⏳ aguardando teste |
-| **0.2 Machado** (`kn8:axe`, estilo `heavy`, modelo do Meshy sem o nome da obra na textura) | ✅ jogador (1ª/3ª pessoa) e soldado (`/kn8 soldier spawn axe`) vistos em jogo; arma pesada também carrega golpe; números [SUPOSIÇÃO] em `weapon/axe.json` |
+| **0.2 Machado** (`kn8:axe`, estilo `heavy`, modelo do Meshy com a textura original) | ✅ jogador (1ª/3ª pessoa) e soldado (`/kn8 soldier spawn axe`) vistos em jogo; arma pesada também carrega golpe; números [SUPOSIÇÃO] em `weapon/axe.json` |
 | **0.2 HUD nova** (fiel à referência "HUD de combate avançado - estilo anime") | ✅ vista em jogo; arte em `textures/gui/hud/` gerada por `tools/art/gen_hud.py` (texturas 4× desenhadas em pixel de textura, `blur` ligado); aguardando aprovação |
 | **Modelos Meshy estilo Minecraft** (soldado, aranha 8 patas, Primigenius) | ⏳ compila, JUnit 69/69, GameTests 31/31 e **vistos em jogo** (servidor dedicado + 1 cliente na nuvem, capturas em `docs/img/jogo_*`); aguardando roteiro §11 com 2 clientes |
 | **0.1-B correções visuais** (aranha, soldado, armas na mão, espada nova) | ⏳ compila e testes passam; armas na mão do jogador (1ª/3ª pessoa) e do soldado e mira do soldado vistas em jogo; **aguardando roteiro §10** |
@@ -172,7 +172,7 @@ Modelos do Meshy (GLB com o id como nome, pasta fora do Git; tabela `tools/art/m
 `trichonephila` (~4,5 m de comprimento, 8 patas), `primigenius` e `primigenius_resurrected` (6 m de altura,
 largura ~3,1), `primigenius_honju` e `primigenius_revived` (9 m, largura ~5,7), `soldier` + `soldier_parts`
 (1,9 m), armas `rifle`, `pistol`, `combat_knife`, `sword`, `axe` (no jogo), `twin_swords_sheathed`, `single_sheath`,
-`twin_swords`. Textura com nome/marca da obra (ex.: o "KIKORU" do machado) é apagada na conversão.
+`twin_swords`.
 `primigenius` já está no jogo (`rig_primigenius_mesh.py`, com a tabela `SPECIES` de cortes por espécie); para
 `primigenius_resurrected`, `primigenius_honju` e `primigenius_revived` basta medir os cortes do modelo novo e
 acrescentar na tabela. `build_primigenius.py` não sobrescreve espécie que já tem malha (só regera as animações).
