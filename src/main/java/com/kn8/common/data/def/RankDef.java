@@ -19,7 +19,8 @@ public record RankDef(int order, int meritRequired, int releaseCap, float maxHea
     public static final Codec<RankDef> CODEC = RecordCodecBuilder.create(i -> i.group(
             Codec.intRange(0, 100).fieldOf("order").forGetter(RankDef::order),
             Codec.intRange(0, 10_000_000).fieldOf("merit_required").forGetter(RankDef::meritRequired),
-            Codec.intRange(0, 100).fieldOf("release_cap").forGetter(RankDef::releaseCap),
+            // 0.2: a patente nao limita mais o Release (teto em career.releaseMax); campo opcional e ignorado.
+            Codec.intRange(0, 100).optionalFieldOf("release_cap", 100).forGetter(RankDef::releaseCap),
             Codec.floatRange(1.0F, 1024.0F).fieldOf("max_health").forGetter(RankDef::maxHealth),
             ResourceLocation.CODEC.optionalFieldOf("promotion_mission").forGetter(RankDef::promotionMission),
             Codec.intRange(0, 64).optionalFieldOf("npc_squad_size", 0).forGetter(RankDef::npcSquadSize),

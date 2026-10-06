@@ -8,10 +8,12 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
+import com.kn8.common.career.CareerView;
 import com.kn8.common.data.KN8Data;
 import com.kn8.common.data.def.KaijuDef;
 import com.kn8.common.data.def.RankDef;
 import com.kn8.common.kaiju.KaijuEntity;
+import com.kn8.common.registry.KN8Attachments;
 import com.kn8.common.registry.KN8Entities;
 import com.kn8.common.soldier.SoldierEntity;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -66,15 +68,40 @@ final class MenuData {
         return list;
     }
 
-    /** [SUPOSICAO] ate a Etapa 2 (patentes) todo jogador e da primeira patente, com merito 0. */
+    /** Carreira do jogador local (enviada pelo servidor; vazia ate o primeiro envio). */
+    static CareerView career() {
+        LocalPlayer player = player();
+        return player == null ? CareerView.EMPTY : player.getData(KN8Attachments.CAREER_VIEW);
+    }
+
+    /** Patente atual (da carreira; antes do primeiro envio, a mais baixa dos dados). */
     static Optional<Map.Entry<ResourceLocation, RankDef>> currentRank() {
+        return rankEntry(career().rank());
+    }
+
+    /** Proxima patente; vazio no topo. */
+    static Optional<Map.Entry<ResourceLocation, RankDef>> nextRank() {
+        CareerView view = career();
+        if (view.rank().equals(CareerView.NONE)) {
+            List<Map.Entry<ResourceLocation, RankDef>> list = ranks();
+            return list.size() < 2 ? Optional.empty() : Optional.of(list.get(1));
+        }
+        return view.isTopRank() ? Optional.empty() : rankEntry(view.nextRank());
+    }
+
+    private static Optional<Map.Entry<ResourceLocation, RankDef>> rankEntry(ResourceLocation id) {
         List<Map.Entry<ResourceLocation, RankDef>> list = ranks();
+        for (Map.Entry<ResourceLocation, RankDef> entry : list) {
+            if (entry.getKey().equals(id)) {
+                return Optional.of(entry);
+            }
+        }
         return list.isEmpty() ? Optional.empty() : Optional.of(list.get(0));
     }
 
-    static Optional<Map.Entry<ResourceLocation, RankDef>> nextRank() {
-        List<Map.Entry<ResourceLocation, RankDef>> list = ranks();
-        return list.size() < 2 ? Optional.empty() : Optional.of(list.get(1));
+    /** Ordem da patente atual (0 = mais baixa). */
+    static int rankOrder() {
+        return currentRank().map(entry -> entry.getValue().order()).orElse(0);
     }
 
     static Component rankName(ResourceLocation id) {

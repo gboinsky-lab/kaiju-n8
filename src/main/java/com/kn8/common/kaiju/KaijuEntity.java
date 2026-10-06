@@ -11,6 +11,8 @@ import java.util.Set;
 import java.util.UUID;
 
 import com.kn8.KN8Constants;
+import com.kn8.common.boss.BossService;
+import com.kn8.common.boss.BossState;
 import com.kn8.common.config.ServerConfig;
 import com.kn8.common.data.KN8Data;
 import com.kn8.common.destruction.DestructionService;
@@ -114,6 +116,8 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
     private static final float LOOK_DISTANCE = 12.0F;
     private static final int TRANSITION_TICKS = 5;
     private static final String TAG_CORE_HEALTH = "kn8_core_health";
+    private static final String TAG_BOSS = "kn8_boss";
+    private static final String TAG_BOSS_PHASE = "kn8_boss_phase";
     private static final double MAX_STEP_HEIGHT = 4.0;
     private static final int CORE_SYNC_STEPS = 200;
     private static final String PACK_TAG = "pack";
@@ -345,7 +349,31 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
             tickAbility();
             updateState();
             syncCoreForClients();
+            if (bossState != null) {
+                BossService.tick(this, bossState);
+            }
         }
+    }
+
+    // --- chefe (0.2, Etapa 6) ----------------------------------------------------------------------------------
+
+    /** Estado de chefe; null = kaiju comum. */
+    private BossState bossState;
+
+    public BossState bossState() {
+        return bossState;
+    }
+
+    public void setBossState(BossState state) {
+        bossState = state;
+    }
+
+    @Override
+    public void remove(RemovalReason reason) {
+        if (bossState != null) {
+            bossState.clearBar();
+        }
+        super.remove(reason);
     }
 
     // --- habilidades (M8) ------------------------------------------------------------------------------------
@@ -806,6 +834,15 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
     }
 
     private boolean applyDamage(DamageSource source, float amount) {
+        if (bossState != null && !level().isClientSide()) {
+            if (bossState.isInvulnerable(level().getGameTime())) {
+                // Troca de fase do chefe: alguns ticks sem levar dano (boss/*.json, invuln_ticks).
+                return false;
+            }
+            if (source.getEntity() instanceof net.minecraft.world.entity.player.Player player) {
+                bossState.participants().add(player.getUUID());
+            }
+        }
         boolean hurt = super.hurt(source, amount);
         if (hurt && !level().isClientSide()) {
             triggerAnim("reaction", "hurt");
@@ -830,6 +867,10 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
     public void addAdditionalSaveData(CompoundTag tag) {
         super.addAdditionalSaveData(tag);
         tag.putFloat(TAG_CORE_HEALTH, coreHealth);
+        if (bossState != null) {
+            tag.putString(TAG_BOSS, bossState.id().toString());
+            tag.putInt(TAG_BOSS_PHASE, bossState.phase());
+        }
     }
 
     @Override
@@ -837,6 +878,12 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
         super.readAdditionalSaveData(tag);
         if (tag.contains(TAG_CORE_HEALTH)) {
             coreHealth = tag.getFloat(TAG_CORE_HEALTH);
+        }
+        if (tag.contains(TAG_BOSS)) {
+            ResourceLocation boss = ResourceLocation.tryParse(tag.getString(TAG_BOSS));
+            if (boss != null) {
+                bossState = new BossState(boss, tag.getInt(TAG_BOSS_PHASE));
+            }
         }
     }
 

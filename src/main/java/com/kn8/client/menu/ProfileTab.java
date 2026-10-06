@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.kn8.common.attribute.PowerView;
+import com.kn8.common.career.CareerView;
 import com.kn8.common.data.KN8Data;
 import com.kn8.common.data.def.RankDef;
 import com.kn8.common.data.def.WeaponDef;
@@ -60,8 +61,9 @@ final class ProfileTab implements MenuTab {
         Component rankName = rank == null ? Component.literal("-") : MenuData.rankName(rank.getKey());
         g.drawString(font, rankName, x + 18, y + 11, MenuStyle.TEXT, false);
 
-        int merit = 0;
-        int nextMerit = MenuData.nextRank().map(next -> next.getValue().meritRequired()).orElse(0);
+        CareerView career = MenuData.career();
+        int merit = career.merit();
+        int nextMerit = career.isTopRank() ? 0 : career.nextMerit();
         int my = y + 28;
         MenuStyle.small(g, font, Component.translatable("kn8.menu.profile.merit"), x, my, MenuStyle.TEXT);
         // Proxima patente sem merito exigido: a promocao vem de missao (ex.: Exame de Admissao).
@@ -75,8 +77,15 @@ final class ProfileTab implements MenuTab {
                 "kn8.menu.profile.next_rank", MenuData.rankName(entry.getKey())))
                 .orElse(Component.translatable("kn8.menu.profile.top_rank"));
         MenuStyle.small(g, font, next, x, my + 14, MenuStyle.TEXT_DIM);
-        Component soon = Component.translatable("kn8.menu.soon_stage", 2);
-        MenuStyle.scaled(g, font, soon, x, my + 21, MenuStyle.TEXT_DIM, 0.6F);
+        // Missao de avaliacao exigida pela proxima patente (ex.: Exame de Admissao).
+        if (!career.nextMission().isEmpty()) {
+            ResourceLocation mission = ResourceLocation.tryParse(career.nextMission());
+            if (mission != null) {
+                MenuStyle.scaled(g, font, Component.translatable("kn8.menu.profile.needs_mission",
+                        Component.translatable("kn8.mission." + mission.getPath() + ".name")), x, my + 21,
+                        MenuStyle.YELLOW, 0.6F);
+            }
+        }
 
         // Release.
         int ry = my + 30;
@@ -164,9 +173,11 @@ final class ProfileTab implements MenuTab {
         // Estatisticas.
         int st = wy + 9 + slot + 8;
         MenuStyle.small(g, font, Component.translatable("kn8.menu.profile.stats"), x, st, MenuStyle.TEXT);
-        stat(g, font, x, st + 10, w, "kn8.menu.profile.kills", String.valueOf(MenuData.totalKaijuKills()));
-        stat(g, font, x, st + 24, w, "kn8.menu.profile.dismantled", "-");
-        stat(g, font, x, st + 38, w, "kn8.menu.profile.missions_done", "-");
+        CareerView.Stats stats = MenuData.career().stats();
+        stat(g, font, x, st + 10, w, "kn8.menu.profile.kills", String.valueOf(Math.max(stats.kaijuKills(),
+                MenuData.totalKaijuKills())));
+        stat(g, font, x, st + 24, w, "kn8.menu.profile.dismantled", String.valueOf(stats.dismantled()));
+        stat(g, font, x, st + 38, w, "kn8.menu.profile.missions_done", String.valueOf(stats.missionsDone()));
         if (st + 52 < y + h) {
             MenuStyle.wrapped(g, font, Component.translatable("kn8.menu.profile.stats_note"), x, st + 52, w,
                     MenuStyle.TEXT_DIM, Math.max(1, (y + h - st - 52) / 7));

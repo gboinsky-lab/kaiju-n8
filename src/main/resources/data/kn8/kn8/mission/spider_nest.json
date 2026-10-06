@@ -1,0 +1,25 @@
+{
+  "category": "extermination",
+  "requires": {
+    "rank": "kn8:candidato"
+  },
+  "objectives": [
+    {
+      "type": "kill_kaiju",
+      "target": "kn8:trichonephila",
+      "count": 4
+    }
+  ],
+  "fail": {
+    "time_ticks": 12000
+  },
+  "rewards": {
+    "merit": 40,
+    "training_xp": 100,
+    "items": [
+      "kn8:muscle_fiber"
+    ]
+  },
+  "repeatable": true,
+  "cooldown_ticks": 4000
+}

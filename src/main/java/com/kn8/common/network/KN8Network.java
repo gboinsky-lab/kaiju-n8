@@ -3,6 +3,9 @@ package com.kn8.common.network;
 
 import com.kn8.common.anim.AnimTriggerS2C;
 import com.kn8.common.attribute.PowerService;
+import com.kn8.common.career.CareerService;
+import com.kn8.common.career.CareerSyncS2C;
+import com.kn8.common.career.MissionActionC2S;
 import com.kn8.common.combat.CombatInputC2S;
 import com.kn8.common.combat.CombatNetwork;
 import com.kn8.common.combat.CombatStateS2C;
@@ -38,8 +41,9 @@ public final class KN8Network {
 
     // Mudar quando o formato de algum payload mudar, para recusar clientes incompativeis com mensagem clara.
     // 2 = M6: PowerView ganhou heatMax. 3 = M9: AnimTriggerS2C. 4 = M10a: CombatInputC2S. 5 = M10b: CombatStateS2C.
-    // 6 = 0.1-B: VfxS2C (efeitos).
-    private static final String PROTOCOL_VERSION = "8";
+    // 6 = 0.1-B: VfxS2C (efeitos). 7/8 = 0.2 (PowerView.winded, sons no JSON da arma). 9 = 0.2: CareerSyncS2C,
+    // MissionActionC2S, Active.point.
+    private static final String PROTOCOL_VERSION = "9";
 
     /** Diagnostico: 20 por segundo, rajada de 40. */
     private static final C2SGuard.Limit DEBUG_LIMIT = new C2SGuard.Limit(20, 40);
@@ -49,6 +53,10 @@ public final class KN8Network {
     private static final int PROBE_MIN_INTERVAL_TICKS = 0;
     /** Poder do jogador: no maximo 4 envios por segundo (stamina e calor mudam todo tick). */
     private static final int POWER_MIN_INTERVAL_TICKS = 5;
+    /** Carreira: muda pouco (merito, missoes); no maximo 2 envios por segundo. */
+    private static final int CAREER_MIN_INTERVAL_TICKS = 10;
+    /** Menu: 4 por segundo, rajada de 4 (aceitar/abandonar missao). */
+    private static final C2SGuard.Limit MENU_LIMIT = new C2SGuard.Limit(4, 4);
 
     private KN8Network() {
     }
@@ -63,6 +71,9 @@ public final class KN8Network {
         registrar.playToClient(DataSyncS2C.TYPE, DataSyncS2C.STREAM_CODEC, DataSyncS2C::handleOnClient);
         // M5: poder do proprio jogador (privado).
         registrar.playToClient(PowerSyncS2C.TYPE, PowerSyncS2C.STREAM_CODEC, PowerSyncS2C::handleOnClient);
+        // 0.2: carreira do proprio jogador (privado) e acoes de missao vindas do menu.
+        registrar.playToClient(CareerSyncS2C.TYPE, CareerSyncS2C.STREAM_CODEC, CareerSyncS2C::handleOnClient);
+        toServer(registrar, MissionActionC2S.TYPE, MissionActionC2S.STREAM_CODEC, MENU_LIMIT, MissionActionC2S::handle);
         // M10: intencao de combate (o servidor valida tudo).
         toServer(registrar, CombatInputC2S.TYPE, CombatInputC2S.STREAM_CODEC, COMBAT_LIMIT, CombatNetwork::handle);
         // 0.1-B: efeitos visuais (desenhados no cliente).
@@ -79,6 +90,8 @@ public final class KN8Network {
                 player -> new NetProbeSyncS2C(player.getData(KN8Attachments.NET_PROBE)));
         NetworkSync.registerPrivate(PowerSyncS2C.CHANNEL, POWER_MIN_INTERVAL_TICKS,
                 player -> new PowerSyncS2C(PowerService.view(player)));
+        NetworkSync.registerPrivate(CareerSyncS2C.CHANNEL, CAREER_MIN_INTERVAL_TICKS,
+                player -> new CareerSyncS2C(CareerService.view(player)));
     }
 
     private static <T extends CustomPacketPayload> void toServer(PayloadRegistrar registrar,

@@ -10,8 +10,7 @@
   "objectives": [
     {
       "type": "reach_area",
-      "marker": "exam_gate",
-      "structure": "kn8:tachikawa"
+      "marker": "exam_gate"
     },
     {
       "type": "kill_kaiju",
@@ -20,7 +19,7 @@
     },
     {
       "type": "defeat_boss",
-      "target": "kn8:revived_honju"
+      "target": "kn8:exam_honju"
     }
   ],
   "fail": {
@@ -28,6 +27,8 @@
     "on_death": true
   },
   "rewards": {
+    "merit": 100,
+    "training_xp": 300,
     "promote_to": "kn8:oficial"
   }
 }

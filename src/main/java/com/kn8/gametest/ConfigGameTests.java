@@ -37,7 +37,7 @@ public final class ConfigGameTests {
                 "Dificuldade padrao deveria ser NORMAL");
         helper.assertTrue(ServerConfig.difficultyHealthMultiplier() == 1.0,
                 "NORMAL deveria multiplicar a vida por 1.0");
-        helper.assertTrue(ServerConfig.RANK_CAPS.get().size() == 6, "Deveria haver 6 tetos de patente");
+        helper.assertTrue(ServerConfig.RELEASE_MAX.get() == 100, "O teto de Release deveria ser 100 para todos");
         helper.succeed();
     }
 }

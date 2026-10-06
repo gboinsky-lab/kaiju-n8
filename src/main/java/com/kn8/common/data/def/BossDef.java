@@ -14,7 +14,19 @@ import net.minecraft.resources.ResourceLocation;
  * ataques ponderados, arena e recompensa. {@code player_scaling} vazio = usar o valor do config.
  */
 public record BossDef(ResourceLocation kaiju, Optional<Double> playerScaling, Optional<ResourceLocation> music,
-        Arena arena, List<Phase> phases, Rewards rewards) {
+        Arena arena, List<Phase> phases, Rewards rewards, Optional<Summon> summon, float healthMultiplier) {
+
+    /**
+     * 0.2 (decisao do Miguel): o chefe invoca so Yoju da PROPRIA especie. {@code count} por troca de fase (e ao
+     * surgir), no maximo {@code max_alive} vivos ao mesmo tempo perto dele.
+     */
+    public record Summon(ResourceLocation species, int count, int maxAlive) {
+        public static final Codec<Summon> CODEC = RecordCodecBuilder.create(i -> i.group(
+                ResourceLocation.CODEC.fieldOf("species").forGetter(Summon::species),
+                Codec.intRange(0, 16).optionalFieldOf("count", 2).forGetter(Summon::count),
+                Codec.intRange(0, 32).optionalFieldOf("max_alive", 4).forGetter(Summon::maxAlive)
+        ).apply(i, Summon::new));
+    }
 
     public record Arena(float radius, int resetAfterTicks) {
         public static final Codec<Arena> CODEC = RecordCodecBuilder.create(i -> i.group(
@@ -53,6 +65,9 @@ public record BossDef(ResourceLocation kaiju, Optional<Double> playerScaling, Op
             ResourceLocation.CODEC.optionalFieldOf("music").forGetter(BossDef::music),
             Arena.CODEC.fieldOf("arena").forGetter(BossDef::arena),
             Phase.CODEC.listOf().fieldOf("phases").forGetter(BossDef::phases),
-            Rewards.CODEC.optionalFieldOf("rewards", Rewards.NONE).forGetter(BossDef::rewards)
+            Rewards.CODEC.optionalFieldOf("rewards", Rewards.NONE).forGetter(BossDef::rewards),
+            Summon.CODEC.optionalFieldOf("summon").forGetter(BossDef::summon),
+            Codec.floatRange(0.1F, 20.0F).optionalFieldOf("health_multiplier", 1.0F)
+                    .forGetter(BossDef::healthMultiplier)
     ).apply(i, BossDef::new));
 }

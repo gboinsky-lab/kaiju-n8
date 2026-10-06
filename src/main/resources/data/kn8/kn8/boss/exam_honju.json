@@ -1,0 +1,33 @@
+{
+  "kaiju": "kn8:primigenius_honju",
+  "arena": {
+    "radius": 40,
+    "reset_after_ticks": 600
+  },
+  "phases": [
+    {
+      "until_health": 0.0,
+      "invuln_ticks": 20,
+      "attacks": [
+        {
+          "ability": "kn8:slam",
+          "weight": 2
+        },
+        {
+          "ability": "kn8:charge",
+          "weight": 1
+        }
+      ]
+    }
+  ],
+  "summon": {
+    "species": "kn8:primigenius",
+    "count": 1,
+    "max_alive": 2
+  },
+  "health_multiplier": 0.5,
+  "rewards": {
+    "loot_table": "kn8:boss/honju",
+    "merit": 100
+  }
+}

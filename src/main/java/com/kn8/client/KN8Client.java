@@ -7,6 +7,7 @@ import com.kn8.client.combat.CombatFeedback;
 import com.kn8.client.combat.CombatInput;
 import com.kn8.client.hud.KN8Hud;
 import com.kn8.client.hud.KaijuHealthBar;
+import com.kn8.client.hud.MissionTracker;
 import com.kn8.client.menu.MenuInput;
 import com.kn8.client.net.ClientNetDebug;
 import com.kn8.client.render.CarcassRenderer;
@@ -22,6 +23,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraft.client.renderer.entity.ArmorStandRenderer;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
@@ -45,6 +47,7 @@ public final class KN8Client {
         modEventBus.addListener(KN8Hud::register);
         // 0.1-B: barra de vida do kaiju mirado.
         modEventBus.addListener(KaijuHealthBar::register);
+        modEventBus.addListener(MissionTracker::register);
         // M7a: renderers de kaiju.
         modEventBus.addListener(KN8Client::registerRenderers);
         // Etapa A/C: malhas do Meshy presas aos ossos (cache limpo no F3+T).
@@ -65,6 +68,7 @@ public final class KN8Client {
                 context -> new KaijuRenderer(context, type.getId(), type.get().getWidth() / 2.0F)));
         event.registerEntityRenderer(KN8Entities.CARCASS.get(), CarcassRenderer::new);
         event.registerEntityRenderer(KN8Entities.SOLDIER.get(), SoldierRenderer::new);
+        event.registerEntityRenderer(KN8Entities.TRAINING_DUMMY.get(), ArmorStandRenderer::new);
     }
 
     private void clientSetup(FMLClientSetupEvent event) {

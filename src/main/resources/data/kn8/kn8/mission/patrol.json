@@ -14,7 +14,8 @@
     "time_ticks": 6000
   },
   "rewards": {
-    "merit": 20
+    "merit": 40,
+    "training_xp": 80
   },
   "repeatable": true,
   "cooldown_ticks": 24000

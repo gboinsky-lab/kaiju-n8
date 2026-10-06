@@ -7,9 +7,11 @@ import com.kn8.KN8Constants;
 import com.kn8.common.kaiju.CarcassEntity;
 import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.soldier.SoldierEntity;
+import com.kn8.common.training.TrainingDummyEntity;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobCategory;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -53,6 +55,15 @@ public final class KN8Entities {
                     .clientTrackingRange(KAIJU_TRACKING_RANGE_CHUNKS)
                     .build("soldier"));
 
+    /** 0.2 (Etapa 2): boneco de treino (XP de Release por golpe). */
+    public static final DeferredHolder<EntityType<?>, EntityType<TrainingDummyEntity>> TRAINING_DUMMY =
+            ENTITY_TYPES.register("training_dummy", () -> EntityType.Builder.<TrainingDummyEntity>of(
+                            TrainingDummyEntity::new, MobCategory.MISC)
+                    .sized(0.5F, 1.975F)
+                    .eyeHeight(1.7775F)
+                    .clientTrackingRange(KAIJU_TRACKING_RANGE_CHUNKS)
+                    .build("training_dummy"));
+
     /** Todas as especies, para atributos, renderers e comandos. */
     public static final List<DeferredHolder<EntityType<?>, EntityType<KaijuEntity>>> KAIJU =
             List.of(TRICHONEPHILA, PRIMIGENIUS, PRIMIGENIUS_RESURRECTED, PRIMIGENIUS_HONJU, PRIMIGENIUS_REVIVED);
@@ -72,6 +83,7 @@ public final class KN8Entities {
     /** Mod bus: atributos base; os valores reais saem do JSON no primeiro tick. */
     public static void registerAttributes(EntityAttributeCreationEvent event) {
         event.put(SOLDIER.get(), SoldierEntity.createAttributes().build());
+        event.put(TRAINING_DUMMY.get(), LivingEntity.createLivingAttributes().build());
         KAIJU.forEach(type -> event.put(type.get(), KaijuEntity.baseAttributes().build()));
     }
 }

@@ -1,0 +1,22 @@
+{
+  "category": "extermination",
+  "requires": {
+    "rank": "kn8:candidato"
+  },
+  "objectives": [
+    {
+      "type": "kill_kaiju",
+      "target": "kn8:primigenius",
+      "count": 2
+    }
+  ],
+  "fail": {
+    "time_ticks": 12000
+  },
+  "rewards": {
+    "merit": 60,
+    "training_xp": 150
+  },
+  "repeatable": true,
+  "cooldown_ticks": 6000
+}

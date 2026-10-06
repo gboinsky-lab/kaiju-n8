@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.kn8.KN8Constants;
+import com.kn8.common.career.CareerService;
 import com.kn8.common.config.ServerConfig;
 import com.kn8.common.data.KN8Data;
 import com.kn8.common.data.def.DismantleDef;
@@ -25,6 +26,7 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
@@ -230,6 +232,10 @@ public class CarcassEntity extends Entity implements GeoEntity {
                     getBbWidth() * 0.3, 0.05);
         }
         level.playSound(null, blockPosition(), KN8Sounds.DISMANTLE.get(), SoundSource.NEUTRAL, 1.0F, 1.0F);
+        if (player instanceof ServerPlayer serverPlayer) {
+            // 0.2: desmontar treina o Release e, ao terminar, da merito e conta para missoes de desmonte.
+            CareerService.onDismantleStep(serverPlayer, species(), step >= steps);
+        }
         if (step >= steps) {
             player.displayClientMessage(Component.translatable("kn8.carcass.done"), true);
             discard();

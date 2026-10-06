@@ -3,6 +3,7 @@ package com.kn8.common.registry;
 
 import com.kn8.KN8Constants;
 import com.kn8.common.combat.WeaponItem;
+import com.kn8.common.training.TrainingDummyItem;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -45,6 +46,10 @@ public final class KN8Items {
     public static final DeferredItem<DeferredSpawnEggItem> SOLDIER_SPAWN_EGG = ITEMS.register("soldier_spawn_egg",
             () -> new DeferredSpawnEggItem(KN8Entities.SOLDIER, 0x1C1F1A, 0x4DD0E1, new Item.Properties()));
 
+    /** 0.2 (Etapa 2): boneco de treino. */
+    public static final DeferredItem<TrainingDummyItem> TRAINING_DUMMY = ITEMS.register("training_dummy",
+            () -> new TrainingDummyItem(new Item.Properties().stacksTo(16)));
+
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> TAB = TABS.register("main",
             () -> CreativeModeTab.builder()
                     .title(Component.translatable("itemGroup.kn8"))
@@ -60,6 +65,7 @@ public final class KN8Items {
                         output.accept(CORE_FRAGMENT.get());
                         output.accept(INTACT_CORE.get());
                         output.accept(SOLDIER_SPAWN_EGG.get());
+                        output.accept(TRAINING_DUMMY.get());
                     })
                     .build());
 

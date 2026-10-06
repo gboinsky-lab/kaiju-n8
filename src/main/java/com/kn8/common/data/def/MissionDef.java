@@ -98,12 +98,15 @@ public record MissionDef(Category category, Optional<ResourceLocation> giver, Re
         ).apply(i, Fail::new));
     }
 
-    public record Rewards(int merit, Optional<ResourceLocation> promoteTo, List<ResourceLocation> items) {
-        public static final Rewards NONE = new Rewards(0, Optional.empty(), List.of());
+    /** {@code training_xp} (0.2): XP de treino de Release dado ao concluir. */
+    public record Rewards(int merit, Optional<ResourceLocation> promoteTo, List<ResourceLocation> items,
+            int trainingXp) {
+        public static final Rewards NONE = new Rewards(0, Optional.empty(), List.of(), 0);
         public static final Codec<Rewards> CODEC = RecordCodecBuilder.create(i -> i.group(
                 Codec.intRange(0, 1_000_000).optionalFieldOf("merit", 0).forGetter(Rewards::merit),
                 ResourceLocation.CODEC.optionalFieldOf("promote_to").forGetter(Rewards::promoteTo),
-                DefCodecs.IDS.optionalFieldOf("items", List.of()).forGetter(Rewards::items)
+                DefCodecs.IDS.optionalFieldOf("items", List.of()).forGetter(Rewards::items),
+                Codec.intRange(0, 1_000_000).optionalFieldOf("training_xp", 0).forGetter(Rewards::trainingXp)
         ).apply(i, Rewards::new));
     }
 

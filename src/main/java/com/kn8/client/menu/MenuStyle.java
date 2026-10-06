@@ -2,9 +2,12 @@ package com.kn8.client.menu;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.ItemStack;
 
@@ -154,6 +157,11 @@ public final class MenuStyle {
     public static void comingSoon(GuiGraphics g, Font font, Component text, int x, int y, int w) {
         int textWidth = Math.round(font.width(text) * SMALL);
         small(g, font, text, x + (w - textWidth) / 2, y, TEXT_DIM);
+    }
+
+    /** Som de clique de botao (o mesmo dos botoes vanilla). */
+    public static void click() {
+        Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
     }
 
     public static boolean inside(double mouseX, double mouseY, int x, int y, int w, int h) {

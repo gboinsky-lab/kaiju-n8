@@ -1,0 +1,29 @@
+{
+  "category": "boss",
+  "requires": {
+    "rank": "kn8:oficial_senior"
+  },
+  "objectives": [
+    {
+      "type": "reach_area",
+      "marker": "honju_sighting"
+    },
+    {
+      "type": "defeat_boss",
+      "target": "kn8:honju"
+    }
+  ],
+  "fail": {
+    "time_ticks": 24000,
+    "on_death": true
+  },
+  "rewards": {
+    "merit": 400,
+    "training_xp": 600,
+    "items": [
+      "kn8:intact_core"
+    ]
+  },
+  "repeatable": true,
+  "cooldown_ticks": 48000
+}

@@ -1,13 +1,9 @@
 // src/main/java/com/kn8/common/attribute/PowerService.java
 package com.kn8.common.attribute;
 
-import java.util.Comparator;
-
 import com.kn8.KN8Constants;
 import com.kn8.common.combat.CombatService;
 import com.kn8.common.config.ServerConfig;
-import com.kn8.common.data.KN8Data;
-import com.kn8.common.data.def.RankDef;
 import com.kn8.common.network.NetworkSync;
 import com.kn8.common.registry.KN8Attachments;
 import com.kn8.common.registry.KN8Sounds;
@@ -36,8 +32,8 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
  * Regras de poder do jogador no servidor (Fase 4: ReleaseService + StaminaService + HeatService + AttributeApplier,
  * reunidos aqui porque nao guardam estado proprio: todo estado esta no attachment {@code kn8:power}).
  *
- * <p>Ate o M14 nao existe item de traje nem carreira: o traje conta como vestido e o teto de liberacao e o da
- * patente de menor {@code order} nos dados (Candidato = 10), a menos que um comando force outro teto.</p>
+ * <p>O traje conta como vestido (os itens de traje chegam com o crafting) e o teto de liberacao e o mesmo para todos
+ * ({@code career.releaseMax}), a menos que um comando force outro teto.</p>
  */
 public final class PowerService {
 
@@ -63,16 +59,16 @@ public final class PowerService {
         return ServerConfig.powerParams();
     }
 
-    /** Teto atual: forcado por comando ou, ate o M14, o da patente mais baixa dos dados. */
+    /**
+     * Teto atual: forcado por comando ou {@code career.releaseMax} (100). 0.2, decisao do Miguel: a patente nao limita
+     * o Release; o teto e o mesmo para todos e se chega nele treinando.
+     */
     public static int cap(ServerPlayer player) {
         int override = data(player).capOverride();
         if (override != PowerData.NO_CAP_OVERRIDE) {
             return override;
         }
-        return KN8Data.RANK.server().values().stream()
-                .min(Comparator.comparingInt(RankDef::order))
-                .map(RankDef::releaseCap)
-                .orElse(0);
+        return ServerConfig.RELEASE_MAX.get();
     }
 
     public static boolean inPanic(ServerPlayer player) {

@@ -5,6 +5,8 @@ import java.util.function.Supplier;
 
 import com.kn8.KN8Constants;
 import com.kn8.common.attribute.PowerData;
+import com.kn8.common.career.CareerData;
+import com.kn8.common.career.CareerView;
 import com.kn8.common.combat.CombatState;
 import com.kn8.common.attribute.PowerView;
 import com.mojang.serialization.Codec;
@@ -56,6 +58,17 @@ public final class KN8Attachments {
             () -> AttachmentType.builder(() -> 0)
                     .sync(ByteBufCodecs.VAR_INT)
                     .build());
+
+    /** 0.2 (Etapas 2 e 5): carreira do jogador (PRIVADO: patente, merito, missoes). Salva e copiada na morte. */
+    public static final Supplier<AttachmentType<CareerData>> CAREER = ATTACHMENT_TYPES.register("career",
+            () -> AttachmentType.builder(() -> new CareerData())
+                    .serialize(CareerData.CODEC)
+                    .copyOnDeath()
+                    .build());
+
+    /** 0.2: visao da propria carreira no cliente (recebida por {@code CareerSyncS2C}; nunca salva). */
+    public static final Supplier<AttachmentType<CareerView>> CAREER_VIEW = ATTACHMENT_TYPES.register("career_view",
+            () -> AttachmentType.builder(() -> CareerView.EMPTY).build());
 
     /** M10: estado de combate do jogador (so no servidor, nunca salvo e nunca sincronizado). */
     public static final Supplier<AttachmentType<CombatState>> COMBAT = ATTACHMENT_TYPES.register("combat",

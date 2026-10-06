@@ -36,7 +36,22 @@ public final class ServerConfig {
     public static final ModConfigSpec.ConfigValue<List<? extends Double>> DIFFICULTY_HEALTH_MULTIPLIERS;
     public static final ModConfigSpec.ConfigValue<List<? extends Double>> DIFFICULTY_DAMAGE_MULTIPLIERS;
     public static final ModConfigSpec.DoubleValue RELEASE_DAMAGE_DIVISOR;
-    public static final ModConfigSpec.ConfigValue<List<? extends Integer>> RANK_CAPS;
+    // --- carreira e treino (0.2, Etapa 2) --------------------------------------------------------------------------
+    public static final ModConfigSpec.IntValue RELEASE_MAX;
+    public static final ModConfigSpec.DoubleValue XP_PER_KAIJU_DAMAGE;
+    public static final ModConfigSpec.IntValue XP_KILL_YOJU;
+    public static final ModConfigSpec.IntValue XP_KILL_HONJU;
+    public static final ModConfigSpec.IntValue XP_DISMANTLE_STEP;
+    public static final ModConfigSpec.IntValue DUMMY_XP_PER_HIT;
+    public static final ModConfigSpec.IntValue DUMMY_XP_PER_MINUTE;
+    public static final ModConfigSpec.IntValue MERIT_KILL_YOJU;
+    public static final ModConfigSpec.IntValue MERIT_KILL_HONJU;
+    public static final ModConfigSpec.IntValue MERIT_DISMANTLE;
+    public static final ModConfigSpec.DoubleValue MISSION_AREA_MIN;
+    public static final ModConfigSpec.DoubleValue MISSION_AREA_MAX;
+    public static final ModConfigSpec.DoubleValue MISSION_PATROL_MIN;
+    public static final ModConfigSpec.DoubleValue MISSION_PATROL_MAX;
+    public static final ModConfigSpec.DoubleValue MISSION_REACH_RADIUS;
 
     // --- spawn -----------------------------------------------------------------------------------------------
     public static final ModConfigSpec.BooleanValue NATURAL_SPAWN;
@@ -204,11 +219,35 @@ public final class ServerConfig {
                 List.of(0.6, 1.0, 1.3, 1.6, 2.0));
         RELEASE_DAMAGE_DIVISOR = doubleValue("releaseDamageDivisor",
                 "Player damage = weapon base * (1 + release% / divisor).", 25.0, 5.0, 100.0);
-        RANK_CAPS = BUILDER.comment("Release % cap per rank, in order Candidate, Officer, Senior Officer,"
-                        + " Platoon Leader, Vice-Captain, Captain.")
-                .translation(PREFIX + "rankCaps")
-                .defineList("rankCaps", List.of(10, 30, 50, 65, 85, 100), () -> 0,
-                        value -> value instanceof Integer cap && cap >= 0 && cap <= 100);
+        BUILDER.pop();
+
+        // 0.2 (decisao do Miguel): a patente nao limita mais o Release; o teto e o mesmo para todos e se alcanca
+        // treinando. A patente da vida, esquadrao e desbloqueios. Saiu o antigo "rankCaps".
+        section("career", "Ranks, merit and release training sources (0.2).");
+        RELEASE_MAX = intValue("releaseMax", "Maximum trainable release % for everyone.", 100, 1, 100);
+        XP_PER_KAIJU_DAMAGE = doubleValue("xpPerKaijuDamage", "Training XP per point of damage dealt to kaiju.",
+                0.5, 0.0, 100.0);
+        XP_KILL_YOJU = intValue("xpKillYoju", "Training XP for killing a Yoju.", 40, 0, 100000);
+        XP_KILL_HONJU = intValue("xpKillHonju", "Training XP for killing a Honju or bigger.", 200, 0, 100000);
+        XP_DISMANTLE_STEP = intValue("xpDismantleStep", "Training XP per dismantle step.", 5, 0, 100000);
+        DUMMY_XP_PER_HIT = intValue("dummyXpPerHit", "Training XP per hit on a training dummy.", 5, 0, 1000);
+        DUMMY_XP_PER_MINUTE = intValue("dummyXpPerMinute", "Maximum training XP per minute from dummies.", 60, 0,
+                100000);
+        MERIT_KILL_YOJU = intValue("meritKillYoju", "Merit for killing a Yoju.", 25, 0, 100000);
+        MERIT_KILL_HONJU = intValue("meritKillHonju", "Merit for killing a Honju or bigger.", 150, 0, 100000);
+        MERIT_DISMANTLE = intValue("meritDismantle", "Merit for finishing a carcass dismantle.", 15, 0, 100000);
+        BUILDER.pop();
+
+        section("mission", "Missions (0.2): where targets and points appear around the player.");
+        MISSION_AREA_MIN = doubleValue("areaMinDistance", "Minimum distance of a mission area (kaiju, boss).", 40.0,
+                8.0, 512.0);
+        MISSION_AREA_MAX = doubleValue("areaMaxDistance", "Maximum distance of a mission area.", 80.0, 8.0, 1024.0);
+        MISSION_PATROL_MIN = doubleValue("patrolMinDistance", "Minimum distance of the next patrol point.", 40.0,
+                8.0, 512.0);
+        MISSION_PATROL_MAX = doubleValue("patrolMaxDistance", "Maximum distance of the next patrol point.", 90.0,
+                8.0, 1024.0);
+        MISSION_REACH_RADIUS = doubleValue("reachRadius", "Horizontal distance that counts as reaching a point.",
+                6.0, 1.0, 64.0);
         BUILDER.pop();
 
         section("spawn", "Natural spawning and kaiju count limits.");
