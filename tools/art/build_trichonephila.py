@@ -310,8 +310,11 @@ def kf(*frames):
 
 LEGS_A = ["leg_left_0", "leg_right_1", "leg_left_2", "leg_right_3"]
 LEGS_B = ["leg_right_0", "leg_left_1", "leg_right_2", "leg_left_3"]
-SWING = 14  # graus de balanco das patas na caminhada
-LIFT = 1.5  # pixels que a pata sobe na fase de avanco
+# 0.2 (pedido do Miguel: "a aranha atravessa ao andar"): com 14 graus as patas vizinhas do mesmo lado, em fase
+# oposta, se aproximavam 28 graus e se cruzavam, e a base varria por dentro do corpo; subir a pata inteira (posicao)
+# tambem enfiava a base no corpo. Agora: balanco menor e a pata sobe girando na propria junta (ponta para cima).
+SWING = 7  # graus de balanco das patas na caminhada
+LIFT_DEG = 9  # graus que a ponta da pata sobe na fase de avanco
 
 
 def walk_bones():
@@ -322,10 +325,12 @@ def walk_bones():
             # Lados opostos giram com sinal oposto (espelho); os dois grupos ficam em fase oposta (marcha alternada).
             side = 1 if "right" in name else -1
             a = SWING * phase * side
+            # Pata do lado X negativo ("left") sobe com Z negativo; a do outro lado, com Z positivo.
+            lift = -LIFT_DEG * side
+            up_a, up_b = (lift, 0) if phase > 0 else (0, lift)
             bones[name] = {
-                "rotation": kf((0.0, [0, a, 0]), (0.5, [0, -a, 0]), (1.0, [0, a, 0])),
-                "position": kf((0.0, [0, 0, 0]), (0.25, [0, LIFT if phase > 0 else 0, 0]), (0.5, [0, 0, 0]),
-                               (0.75, [0, 0 if phase > 0 else LIFT, 0]), (1.0, [0, 0, 0])),
+                "rotation": kf((0.0, [0, a, 0]), (0.25, [0, 0, up_a]), (0.5, [0, -a, 0]), (0.75, [0, 0, up_b]),
+                               (1.0, [0, a, 0])),
             }
     return bones
 

@@ -6,8 +6,8 @@
         "identifier": "geometry.primigenius_revived",
         "texture_width": 16,
         "texture_height": 16,
-        "visible_bounds_width": 17.1,
-        "visible_bounds_height": 17.1,
+        "visible_bounds_width": 12.8,
+        "visible_bounds_height": 12.8,
         "visible_bounds_offset": [
           0,
           4.5,
@@ -26,135 +26,135 @@
         {
           "name": "body",
           "pivot": [
-            -0.0,
-            41.6,
-            -38.744
+            -8.0,
+            48.0,
+            4.8
           ],
           "parent": "root"
         },
         {
           "name": "head",
           "pivot": [
-            -0.0,
-            105.618,
-            -68.695
+            -12.8,
+            96.0,
+            -28.8
           ],
           "parent": "body"
         },
         {
           "name": "jaw",
           "pivot": [
-            -0.0,
-            110.4,
-            -89.6
+            -12.8,
+            102.4,
+            -46.4
           ],
           "parent": "head"
         },
         {
           "name": "horn_left",
           "pivot": [
-            18.004,
-            121.578,
-            -99.681
+            3.546,
+            121.301,
+            -41.877
           ],
           "parent": "head"
         },
         {
           "name": "horn_right",
           "pivot": [
-            -18.057,
-            120.292,
-            -100.669
+            -26.001,
+            119.166,
+            -58.315
           ],
           "parent": "head"
         },
         {
           "name": "arm_left",
           "pivot": [
-            34.146,
-            80.109,
-            -58.509
+            35.2,
+            86.4,
+            -20.8
           ],
           "parent": "body"
         },
         {
           "name": "arm_right",
           "pivot": [
-            -34.439,
-            79.678,
-            -58.859
+            -48.0,
+            86.4,
+            -24.0
           ],
           "parent": "body"
         },
         {
           "name": "forearm_left",
           "pivot": [
-            50.349,
-            47.935,
-            -70.457
+            44.8,
+            54.4,
+            -36.8
           ],
           "parent": "arm_left"
         },
         {
           "name": "forearm_right",
           "pivot": [
-            -52.483,
-            48.029,
-            -70.084
+            -43.2,
+            54.4,
+            -44.8
           ],
           "parent": "arm_right"
         },
         {
           "name": "leg_left",
           "pivot": [
-            14.978,
-            38.828,
-            -30.853
+            16.0,
+            41.6,
+            9.6
           ],
           "parent": "body"
         },
         {
           "name": "leg_right",
           "pivot": [
-            -13.186,
-            39.189,
-            -31.109
+            -28.8,
+            41.6,
+            0.0
           ],
           "parent": "body"
         },
         {
           "name": "tail_1",
           "pivot": [
-            -0.339,
-            30.641,
-            17.048
+            -6.4,
+            64.0,
+            36.8
           ],
           "parent": "body"
         },
         {
           "name": "tail_2",
           "pivot": [
-            0.785,
-            27.08,
-            46.218
+            -2.865,
+            55.162,
+            60.662
           ],
           "parent": "tail_1"
         },
         {
           "name": "tail_3",
           "pivot": [
-            -0.487,
-            36.753,
-            70.26
+            0.554,
+            52.433,
+            81.939
           ],
           "parent": "tail_2"
         },
         {
           "name": "tail_4",
           "pivot": [
-            -0.039,
-            40.589,
-            101.054
+            3.477,
+            75.817,
+            92.17
           ],
           "parent": "tail_3"
         }

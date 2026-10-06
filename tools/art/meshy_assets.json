@@ -106,7 +106,7 @@
       "source": "primigenius.glb",
       "height_m": 6.0,
       "texture": 1024,
-      "max_triangles": 9000
+      "max_triangles": 9500
     },
     "primigenius_resurrected": {
       "source": "primigenius_resurrected.glb",

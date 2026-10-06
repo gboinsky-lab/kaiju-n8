@@ -228,3 +228,16 @@ legendas (Opções → Acessibilidade) para conferir qual evento tocou. Capturas
 | 13.9 | Survival: corra em linha reta | Stamina cai ~5/s; ao zerar, para de correr (mesmo segurando Ctrl); recupera andando; com 20+ aperte correr de novo |
 | 13.10 | Criativo: corra | Stamina não cai |
 | 13.11 | Dev2 olhando o Dev1 correr sem fôlego | Dev1 aparece andando (não correndo) para o Dev2 |
+
+## 14. Modelos v2 do Meshy e aranha (0.2) — 2026-10-06
+
+Já visto na nuvem com 2 clientes (`docs/img/modelos_v2_jogo.png`, `soldado_v2_jogo.png`, `modelos_v2_hitbox.png`).
+
+| # | Passo | Esperado |
+|---|---|---|
+| 14.1 | `/summon` dos 4 Primigenius (`primigenius`, `_resurrected`, `_honju`, `_revived`) | Em pé sobre a sombra/hitbox, de frente para onde andam, cauda para trás; texturas inteiras, sem buraco |
+| 14.2 | Deixe cada um atacar (slam, investida) | Braços, mãos e garras acompanham o golpe; nada fica parado no ar nem some; chifres presos na cabeça |
+| 14.3 | F3+B | Cabeça, tronco, pernas e núcleo (peito) sobre o modelo |
+| 14.4 | Mate cada um | Carcaça tomba de lado e fica deitada; desmonte funciona |
+| 14.5 | Soldado com rifle/pistola/espada, de perto | Placas brancas limpas (sem manchas pretas ou linhas); mirando, sem buraco no quadril |
+| 14.6 | Aranha andando (de lado e de cima) | Patas alternam sem cruzar e sem entrar no corpo |

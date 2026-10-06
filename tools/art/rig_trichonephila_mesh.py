@@ -38,7 +38,9 @@ PX = 16.0
 # Medidas da malha convertida (metros, frente -Z), modelo "estilo Minecraft" de 2026-10-06 (8 patas, corpo baixo):
 # cefalotorax |x| < 0,42 na frente de ABDOMEN_START_Z; abdomen (caixa listrada) atras, |x| < 0,7, acima do chao.
 CENTER_Z = -0.5
-CORE_HALF_WIDTH = 0.42
+# 0.2: 0,5 (era 0,42). A raiz das patas colada na lateral do cefalotorax ficava na pata e, no passo, girava para
+# fora do corpo como lascas; agora fica no corpo e a pata comeca onde ja esta solta.
+CORE_HALF_WIDTH = 0.5
 ABDOMEN_START_Z = 0.3
 ABDOMEN_HALF_WIDTH = 0.7
 ABDOMEN_MIN_Y = 0.45
@@ -175,6 +177,9 @@ def main():
             name = f"leg_{side}_{number}"
             bones[name] = "body"
             pivots[name] = pivot_of(vertices, faces, labels, name) if np.any(labels == name) else pivots["body"]
+    # Tampa os cortes das juntas com a cor em volta (a pata girando nao mostra o oco do corpo).
+    from rig_soldier_mesh import cap_holes
+    vertices, uvs, normals, faces, labels = cap_holes(vertices, uvs, normals, faces, labels)
     mesh_dir = ASSETS / "meshes" / NAME
     if mesh_dir.exists():
         shutil.rmtree(mesh_dir)

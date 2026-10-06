@@ -30,17 +30,24 @@ ASSETS = ROOT / "src/main/resources/assets/kn8"
 SOURCE = ROOT / "tools/art/converted/soldier_1"
 NAME = "soldier"
 PX = 16.0
-TEXTURE_SIZE = 512
+# 1024 (0.2, modelo novo de 7 mil triangulos): em 512 as placas brancas pegavam o preto das ilhas vizinhas.
+TEXTURE_SIZE = 1024
 TOP_SLICE = 0.08
 # Faixa do punho (m acima da ponta dos dedos) usada para o osso item_right.
 HAND_BAND = (0.06, 0.11)
 # Duracao do passo (s); a GeckoLib toca a animacao no tempo real, sem acompanhar a velocidade.
 WALK_LENGTH = 0.9
 # Cortes da malha (m), medidos no perfil do modelo: quadril, pescoco, ponta dos dedos e borda de dentro dos bracos.
-HIP_Y = 0.85
-NECK_Y = 1.53
-HAND_MIN_Y = 0.66
-ARM_INNER_X = 0.235
+HIP_Y = 0.93
+NECK_Y = 1.52
+HAND_MIN_Y = 0.68
+# Borda de dentro do braco: (altura acima da qual vale, |x|). Na altura das maos as placas das coxas chegam a
+# |x| 0,255, entao abaixo da cintura o braco so comeca depois delas.
+ARM_INNER_X = [(1.02, 0.212), (0.0, 0.258)]
+# Pedaco isolado com ate tantas faces vai para o osso vizinho (absorb_fragments).
+FRAGMENT_FACES = 40
+# Brilho maximo do "preto do macacao" usado para tampar buracos (cap_holes).
+DARK_LEVEL = 30
 
 
 def load_mesh():
@@ -48,19 +55,138 @@ def load_mesh():
 
 
 def split(mesh):
-    """Divide a malha inteira pela forma (modelo "estilo Minecraft" de 2026-10-06: bracos retos, separados do tronco
-    por um vao em |x| ~0,24..0,30 m). Bracos: fora do tronco e acima da ponta dos dedos; cabeca: acima do pescoco;
+    """Divide a malha inteira pela forma (modelo "estilo Minecraft" de 2026-10-06, segunda versao com 7 mil
+    triangulos: bracos retos colados no tronco, borda em |x| ~0,21 m). Bracos: fora do tronco e acima da ponta dos dedos; cabeca: acima do pescoco;
     corpo: acima do quadril; abaixo, perna do lado (X negativo = "left", convencao do meshy_convert)."""
     vertices, uvs, normals, faces = mesh
     c = vertices[faces].mean(axis=1)
-    arm = (c[:, 1] >= HAND_MIN_Y) & (np.abs(c[:, 0]) > ARM_INNER_X)
+    inner = np.select([c[:, 1] >= y for y, _ in ARM_INNER_X], [x for _, x in ARM_INNER_X])
+    arm = (c[:, 1] >= HAND_MIN_Y) & (np.abs(c[:, 0]) > inner)
     head = ~arm & (c[:, 1] > NECK_Y)
     body = ~arm & ~head & (c[:, 1] > HIP_Y)
     leg = ~arm & ~head & ~body
     groups = {"head": head, "body": body,
               "arm_left": arm & (c[:, 0] < 0), "arm_right": arm & (c[:, 0] > 0),
               "leg_left": leg & (c[:, 0] <= 0), "leg_right": leg & (c[:, 0] > 0)}
-    return {name: (vertices, uvs, normals, faces[sel]) for name, sel in groups.items()}
+    labels = np.empty(len(faces), dtype=object)
+    for name, sel in groups.items():
+        labels[sel] = name
+    labels = absorb_fragments(vertices, faces, labels)
+    vertices, uvs, normals, faces, labels = cap_holes(vertices, uvs, normals, faces, labels,
+                                                      dark_uv(vertices, uvs, faces, labels))
+    return {name: (vertices, uvs, normals, faces[labels == name]) for name in groups}
+
+
+def dark_uv(vertices, uvs, faces, labels):
+    """Coordenada de textura de um ponto preto do macacao (centro de uma face escura do tronco)."""
+    image = np.asarray(Image.open(SOURCE / "soldier_1.png").convert("RGB")).astype(float)
+    height, width = image.shape[:2]
+    centers = uvs[faces].mean(axis=1)
+    rows = np.clip(((1 - centers[:, 1]) * height).astype(int), 0, height - 1)
+    cols = np.clip((centers[:, 0] * width).astype(int), 0, width - 1)
+    brightness = image[rows, cols].mean(axis=1)
+    candidates = np.where((labels == "body") & (brightness < DARK_LEVEL))[0]
+    return centers[candidates[np.argmin(brightness[candidates])]]
+
+
+def boundary_loops(vertices, faces):
+    """Contornos abertos (arestas usadas por uma face so) de um pedaco de malha, em ordem, com os indices originais."""
+    _, welded = np.unique(np.round(vertices, 5), axis=0, return_inverse=True)
+    welded = welded.reshape(-1)
+    count = {}
+    for a, b, c in welded[faces]:
+        for edge in ((a, b), (b, c), (c, a)):
+            key = (min(edge), max(edge))
+            count[key] = count.get(key, 0) + 1
+    neighbors = {}
+    for (a, b), uses in count.items():
+        if uses == 1:
+            neighbors.setdefault(a, []).append(b)
+            neighbors.setdefault(b, []).append(a)
+    representative = {}
+    for index, key in enumerate(welded):
+        representative.setdefault(key, index)
+    loops, seen = [], set()
+    for start in neighbors:
+        if start in seen:
+            continue
+        loop, current, previous = [], start, None
+        while current not in seen:
+            seen.add(current)
+            loop.append(representative[current])
+            options = [n for n in neighbors[current] if n != previous and n not in seen]
+            if not options:
+                break
+            previous, current = current, options[0]
+        if len(loop) >= 3:
+            loops.append(loop)
+    return loops
+
+
+def cap_holes(vertices, uvs, normals, faces, labels, fill_uv=None):
+    """O Meshy deixa aberta a lateral do tronco/quadril onde o braco encosta (e o lado de dentro do braco): com o
+    braco levantado aparecia um buraco atravessando o quadril. Fecha cada contorno aberto de cada osso com um leque de
+    triangulos (nos dois sentidos) para nunca ver o "oco" da malha. Cor: fill_uv (o preto do macacao, no soldado) ou,
+    sem ele, a da propria borda (kaiju: a pele em volta do corte da junta)."""
+    new_vertices, new_uvs, new_faces, new_labels = [], [], [], []
+    base = len(vertices)
+    for name in np.unique(labels):
+        part = faces[labels == name]
+        for loop in boundary_loops(vertices, part):
+            ring = vertices[loop]
+            center_index = base + len(new_vertices)
+            new_vertices.append(ring.mean(axis=0))
+            first = center_index + 1
+            new_vertices.extend(ring)
+            new_uvs.extend([fill_uv if fill_uv is not None else uvs[loop[0]]] * (len(loop) + 1))
+            for i in range(len(loop)):
+                a, b = first + i, first + (i + 1) % len(loop)
+                new_faces.extend([(center_index, a, b), (center_index, b, a)])
+                new_labels.extend([name, name])
+    if not new_vertices:
+        return vertices, uvs, normals, faces, labels
+    added = np.array(new_vertices)
+    vertices = np.vstack([vertices, added])
+    uvs = np.vstack([uvs, np.array(new_uvs)])
+    normals = np.vstack([normals, np.tile([0.0, 1.0, 0.0], (len(added), 1))])
+    return vertices, uvs, normals, np.vstack([faces, np.array(new_faces)]), \
+        np.concatenate([labels, np.array(new_labels, dtype=object)])
+
+
+def absorb_fragments(vertices, faces, labels, max_faces=FRAGMENT_FACES):
+    """Pedaco pequeno e isolado de um osso (ponta de dedo da luva do lado da coxa, lasca de placa) vai para o osso
+    vizinho com quem divide mais arestas: sem isso ele fica parado quando o braco levanta (0.2, soldado novo)."""
+    from scipy.sparse import coo_matrix
+    from scipy.sparse.csgraph import connected_components
+    _, welded = np.unique(np.round(vertices, 5), axis=0, return_inverse=True)
+    wf = welded.reshape(-1)[faces]
+    # Faces vizinhas = dividem uma aresta (par de vertices soldados).
+    edges = {}
+    for index, (a, b, c) in enumerate(wf):
+        for edge in ((a, b), (b, c), (c, a)):
+            edges.setdefault((min(edge), max(edge)), []).append(index)
+    pairs = [(f[i], f[j]) for f in edges.values() for i in range(len(f)) for j in range(i + 1, len(f))]
+    pairs = np.array(pairs) if pairs else np.zeros((0, 2), dtype=int)
+    for _ in range(3):
+        same = labels[pairs[:, 0]] == labels[pairs[:, 1]]
+        graph = coo_matrix((np.ones(same.sum()), (pairs[same, 0], pairs[same, 1])),
+                           shape=(len(faces), len(faces)))
+        _, component = connected_components(graph, directed=False)
+        sizes = np.bincount(component)
+        changed = False
+        for comp in np.where(sizes <= max_faces)[0]:
+            members = set(np.where(component == comp)[0])
+            votes = {}
+            for a, b in pairs:
+                if (a in members) != (b in members):
+                    other = b if a in members else a
+                    votes[labels[other]] = votes.get(labels[other], 0) + 1
+            if votes:
+                labels[list(members)] = max(votes, key=votes.get)
+                changed = True
+        if not changed:
+            break
+    return labels
 
 
 def top_point(mesh, fraction=TOP_SLICE):
