@@ -139,6 +139,8 @@ mandam; se algo precisar mudar, marque **[DECIDIR]** e pergunte.
   vanilla não chama `finalizeSpawn` quando há NBT) → `readAdditionalSaveData` aplica arma/atributos se o NBT não
   traz `HandItems`/`attributes`. Clarão do tiro (`ParticleTypes.FLASH`) era uma bola branca de vários blocos →
   chamas pequenas no cano.
+- **Teste com 2 clientes (2026-10-06):** segurar o clique direito no desmonte virava ataque carregado quando a
+  carcaça sumia (última etapa) → `CombatInput.useStartedOnCarcass` até soltar o botão.
 - **Compilar na nuvem:** os arquivos de build não estão no repositório; a sessão monta um `build.gradle` provisório
   (só local, em `.git/info/exclude`) com as versões desta página e roda servidor + cliente em Xvfb com RCON.
 - **Meshy (redução):** o GLB separa vértices nas costuras de UV e a redução abria buracos → `decimate` solda pela
@@ -189,7 +191,8 @@ remedidas na malha [SUPOSIÇÃO: núcleo no peito]. `build_primigenius.py` não 
   invasões e missões (Etapa 7). Hoje a Trichonephila ainda tem spawn natural: desligar junto com os alertas.
 - **Decidido (Miguel, 2026-10-06):** primeiro numerado = **Kaiju No. 9** (humanoide ~2 m, inteligente, comanda
   kaiju). É ele quem **revive** os kaiju (versões ressurgida/revivida). Entra depois do chefe Honju e das invasões
-  (Etapa 8 da 0.2); modelo `kaiju_no9.glb` pode chegar antes.
+  (Etapa 8 da 0.2); modelo `kaiju_no9.glb` (7,3 mil tri, 2 m, A-pose) já convertido em
+  `tools/art/converted/kaiju_no9/` (falta rig e entidade).
 - **Decidido (Miguel, 2026-10-06):** o Honju invoca só Yoju da **própria espécie** (`primigenius_honju` →
   `primigenius`; `primigenius_revived` → `primigenius_resurrected` [SUPOSIÇÃO]; Trichonephila Honju →
   `trichonephila`). Limites `maxYojuPerHonju`/`maxTotalPerHonju` ainda a definir no M16.

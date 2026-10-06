@@ -46,6 +46,7 @@ public final class CombatInput {
     /** Ultimo estado enviado do bloqueio (para mandar so as mudancas); estado de entrada deste cliente. */
     private static boolean blockSent;
     /** Ataque carregado em andamento (clique direito segurado com lamina) e quando comecou (tick do cliente). */
+    private static boolean useStartedOnCarcass;
     private static boolean charging;
     private static long chargeStartTick;
     private static long clientTicks;
@@ -69,6 +70,14 @@ public final class CombatInput {
         // M11b: mirando numa carcaca, o clique direito e o desmonte (interacao vanilla), nao o golpe pesado.
         if (event.isUseItem() && Minecraft.getInstance().hitResult instanceof EntityHitResult hit
                 && hit.getEntity() instanceof CarcassEntity) {
+            useStartedOnCarcass = true;
+            return;
+        }
+        // Clique direito que comecou numa carcaca: quando ela some (ultima etapa do desmonte) o botao continua
+        // segurado e o vanilla repete o evento; isso nao pode virar ataque carregado ate soltar (teste em jogo, 0.2).
+        if (event.isUseItem() && useStartedOnCarcass) {
+            event.setCanceled(true);
+            event.setSwingHand(false);
             return;
         }
         if (event.isAttack()) {
@@ -97,6 +106,9 @@ public final class CombatInput {
             blockSent = false;
             charging = false;
             return;
+        }
+        if (!minecraft.options.keyUse.isDown()) {
+            useStartedOnCarcass = false;
         }
         if (charging && !minecraft.options.keyUse.isDown()) {
             charging = false;

@@ -123,6 +123,12 @@
       "height_m": 9.0,
       "texture": 1024,
       "max_triangles": 12000
+    },
+    "kaiju_no9": {
+      "source": "kaiju_no9.glb",
+      "height_m": 2.0,
+      "texture": 1024,
+      "max_triangles": 8000
     }
   },
   "_comment_weapons": "hand_grip (armas de fogo): ponto do cabo no OBJ convertido (unidades do item) que vai para o centro do punho; first_person_scale: escala em 1a pessoa. orientation: 'diagonal' (lamina, como espada vanilla) ou 'horizontal' (arma de fogo, cano para a frente). item_length: comprimento no item, em unidades (1 = um bloco; a mao do jogador tem ~0,25). thickness: multiplica a espessura (eixos 'up' e lateral) em volta da empunhadura. blade_fraction + blade_thickness: engrossa so a lamina (da ponta ate essa fracao do comprimento), sem mexer no cabo.",

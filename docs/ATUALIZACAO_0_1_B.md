@@ -185,3 +185,15 @@ Pendente: compilar e o roteiro §11. Os outros modelos (Honju, ressurgido, reviv
 
 Corrigido no teste: `/summon` com NBT deixava o soldado sem arma; clarão do tiro gigante (FLASH vanilla).
 Não testado aqui: 2 clientes (sincronização), som (sem placa de áudio), combate do jogador em survival.
+
+## Testes das seções 10, 11 e 12 na nuvem (servidor dedicado + 2 clientes, 2026-10-06)
+
+| Item | Resultado |
+|---|---|
+| 10.3–10.6, 10.9 | ✅ soldados com cada arma; Dev2 vê o Dev com o rifle nos dois braços (pose sincronizada) |
+| 11.4–11.6 | ✅ kaiju novos com IA caçando soldados; carcaças usam os modelos novos |
+| 12.3, 12.4, 12.8, 12.10 | ✅ abate pelo Dev conta no Perfil (1) e registra a espécie no Bestiário (1/5, survival); Dev2 vê os próprios dados e o próprio idioma |
+| 4.2/4.3 desmonte | ✅ etapas, carcaça some, materiais (tecido, fibra, núcleo intacto) |
+| Bug achado e corrigido | segurar o clique direito ao terminar o desmonte começava ataque carregado |
+| Observação | a carcaça fica em pé na pose do kaiju vivo (não tomba); sugestão abaixo |
+| Não testado aqui | som (sem placa de áudio), dano por parte com um jogador real batendo (coberto por GameTest) |
