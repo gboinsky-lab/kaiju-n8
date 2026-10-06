@@ -178,7 +178,9 @@ acrescentar na tabela. `build_primigenius.py` não sobrescreve espécie que já 
 - [DECIDIR] Teto de liberação duplicado (`rankCaps` no config × `release_cap` no JSON da patente). Recomendação:
   JSON como fonte única; remover `rankCaps` no M14.
 - [SUPOSIÇÃO a confirmar] `primigenius_resurrected` fortitude 5,9 e `primigenius_honju` 6,0, sem spawn natural.
-- [DECIDIR] Qual Yoju o Honju invoca no M16 (limites `maxYojuPerHonju`/`maxTotalPerHonju`).
+- **Decidido (Miguel, 2026-10-06):** o Honju invoca só Yoju da **própria espécie** (`primigenius_honju` →
+  `primigenius`; `primigenius_revived` → `primigenius_resurrected` [SUPOSIÇÃO]; Trichonephila Honju →
+  `trichonephila`). Limites `maxYojuPerHonju`/`maxTotalPerHonju` ainda a definir no M16.
 - Rifle sem munição na 0.1 (GDD não define); `required_rank` das armas só vale com as patentes (M14).
 - Corrida com custo de stamina (GDD §7) ainda não implementada (dash e ataque carregado: 0.1-B).
 - 0.1-B: sem GameTest para destruição, dash e ataque carregado (só JUnit da matemática); GameTests de Carcass,
