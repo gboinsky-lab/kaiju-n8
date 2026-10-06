@@ -185,6 +185,11 @@ remedidas na malha [SUPOSIÇÃO: núcleo no peito]. `build_primigenius.py` não 
 - **Decidido (2026-10-06):** Release vai até 100% para todos, por **treino**; `rankCaps` sai do config (Etapa 2 da
   0.2). Plano completo da mega atualização: `docs/MEGA_ATUALIZACAO_0_2.md`.
 - [SUPOSIÇÃO a confirmar] `primigenius_resurrected` fortitude 5,9 e `primigenius_honju` 6,0, sem spawn natural.
+- **Decidido (Miguel, 2026-10-06):** kaiju **não nascem naturalmente** no mundo; só aparecem por alertas,
+  invasões e missões (Etapa 7). Hoje a Trichonephila ainda tem spawn natural: desligar junto com os alertas.
+- **Decidido (Miguel, 2026-10-06):** primeiro numerado = **Kaiju No. 9** (humanoide ~2 m, inteligente, comanda
+  kaiju). É ele quem **revive** os kaiju (versões ressurgida/revivida). Entra depois do chefe Honju e das invasões
+  (Etapa 8 da 0.2); modelo `kaiju_no9.glb` pode chegar antes.
 - **Decidido (Miguel, 2026-10-06):** o Honju invoca só Yoju da **própria espécie** (`primigenius_honju` →
   `primigenius`; `primigenius_revived` → `primigenius_resurrected` [SUPOSIÇÃO]; Trichonephila Honju →
   `trichonephila`). Limites `maxYojuPerHonju`/`maxTotalPerHonju` ainda a definir no M16.
