@@ -26,49 +26,54 @@ import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
  *
  * <p>Bloco de RELEASE (emblema em moldura chanfrada, valor grande "efetiva% / teto%", barra de 10 segmentos inclinados
  * em degrade azul, marca do teto, Surto em laranja e "MAX" no teto) e duas faixas menores, STAMINA (corredor) e HEAT
- * (termometro, cor por estagio; no critico/pane, OVERHEAT piscando e vinheta vermelha nas bordas da tela).</p>
+ * (termometro; no critico/pane, a barra pisca, OVERHEAT e vinheta vermelha nas bordas da tela).</p>
+ *
+ * <p>0.2: a arte e de texturas em alta resolucao ({@code textures/gui/hud/}, geradas por {@code tools/art/gen_hud.py}
+ * fiel a referencia), desenhadas em pixels da textura; so os segmentos acesos e os numeros mudam por quadro.</p>
  *
  * <p>So DESENHA o que o servidor mandou ({@code kn8:power_view}, canal privado do M5): nenhuma regra roda aqui. Os
- * valores sao suavizados entre envios. Icones em {@code textures/gui/hud_icons.png} (substituiveis por arte propria,
- * mantendo as posicoes). O estado abaixo e so de desenho deste cliente.</p>
+ * valores sao suavizados entre envios. O estado abaixo e so de desenho deste cliente.</p>
  */
 public final class KN8Hud {
 
-    private static final ResourceLocation ICONS = KN8Constants.id("textures/gui/hud_icons.png");
-    private static final int ICONS_WIDTH = 64;
-    private static final int ICONS_HEIGHT = 32;
-    private static final int EMBLEM_SIZE = 32;
-    private static final int SMALL_ICON = 12;
-    private static final int RUNNER_U = 32;
-    private static final int THERMOMETER_U = 44;
-
-    private static final int PANEL_WIDTH = 200;
-    private static final int PANEL_HEIGHT = 78;
+    // Arte da HUD (0.2): texturas em SCALE pixels por unidade da GUI, geradas por tools/art/gen_hud.py. Todas as
+    // posicoes abaixo vem do LAYOUT daquele script (unidades da GUI): mudou la, mude aqui.
+    private static final ResourceLocation FRAME = KN8Constants.id("textures/gui/hud/frame.png");
+    private static final ResourceLocation FILL_RELEASE = KN8Constants.id("textures/gui/hud/fill_release.png");
+    private static final ResourceLocation FILL_SURGE = KN8Constants.id("textures/gui/hud/fill_surge.png");
+    private static final ResourceLocation FILL_STAMINA = KN8Constants.id("textures/gui/hud/fill_stamina.png");
+    private static final ResourceLocation FILL_HEAT = KN8Constants.id("textures/gui/hud/fill_heat.png");
+    private static final ResourceLocation DIGITS = KN8Constants.id("textures/gui/hud/digits.png");
+    private static final int SCALE = 4;
+    private static final int PANEL_WIDTH = 214;
+    private static final int PANEL_HEIGHT = 97;
     private static final int MARGIN = 6;
     /** Largura da hotbar vanilla e altura da faixa de hotbar + coracoes + armadura (unidades da GUI). */
     private static final int HOTBAR_WIDTH = 182;
     private static final int STATUS_BARS_HEIGHT = 65;
 
-    // Bloco de RELEASE.
-    private static final int RELEASE_HEIGHT = 46;
-    private static final int EMBLEM_BOX = 42;
-    private static final int RELEASE_TEXT_X = 48;
-    private static final int RELEASE_BAR_Y = 31;
-    private static final int RELEASE_BAR_WIDTH = 140;
-    private static final int RELEASE_BAR_HEIGHT = 8;
-    // Faixas de STAMINA e HEAT.
-    private static final int ROW_HEIGHT = 14;
-    private static final int ROW_GAP = 2;
-    private static final int ROW_LABEL_X = 16;
-    private static final int ROW_BAR_X = 62;
-    private static final int ROW_BAR_WIDTH = 128;
-    private static final int ROW_BAR_HEIGHT = 6;
+    /** Barra: x, y, largura, altura (GUI). As texturas de preenchimento tem FILL_MARGIN de brilho em volta. */
+    private static final int[] RELEASE_BAR = {50, 39, 146, 8};
+    private static final int[] STAMINA_BAR = {71, 64, 122, 6};
+    private static final int[] HEAT_BAR = {71, 85, 122, 6};
+    private static final int FILL_MARGIN = 2;
+    private static final int[] RELEASE_FILL_SIZE = {600, 48};
+    private static final int[] ROW_FILL_SIZE = {504, 40};
 
-    private static final int SEGMENTS = 10;
-    private static final int SEGMENT_GAP = 2;
-    private static final int CUT = 6;
+    // Numeros: celula 10x13 pixels da fonte (40x52 na textura, glifo 6x9 com margem do brilho), azul e laranja.
+    private static final String DIGIT_CHARS = "0123456789%/ ";
+    private static final int DIGIT_CELL_WIDTH = 40;
+    private static final int DIGIT_CELL_HEIGHT = 52;
+    private static final int DIGITS_WIDTH = DIGIT_CELL_WIDTH * 13;
+    private static final int DIGITS_HEIGHT = DIGIT_CELL_HEIGHT * 2;
+    /** Avanco por caractere (7 pixels da fonte; espaco = 3). */
+    private static final int DIGIT_ADVANCE = 28;
+    private static final int SPACE_ADVANCE = 12;
+    private static final int VALUE_X = 69;
+    private static final int VALUE_Y = 13;
+    private static final float VALUE_CELL_HEIGHT = 16.0F;
+
     private static final float LABEL_SCALE = 0.75F;
-    private static final float VALUE_SCALE = 1.5F;
     private static final float SMOOTHING = 0.2F;
     private static final long BLINK_MS = 250;
     private static final long PULSE_MS = 900;
@@ -76,22 +81,13 @@ public final class KN8Hud {
     private static final int LINE = 10;
     private static final int CHARGE_BAR_WIDTH = 60;
 
-    private static final int COLOR_PANEL = 0xB00C1320;
-    private static final int COLOR_OUTLINE = 0xC0B8C4D0;
-    private static final int COLOR_OUTLINE_DIM = 0x60B8C4D0;
     private static final int COLOR_SEGMENT_EMPTY = 0xFF26303C;
     private static final int COLOR_LABEL = 0xFFE3E8EE;
-    private static final int COLOR_VALUE = 0xFF7FC8FF;
     private static final int COLOR_VALUE_DIM = 0xFFB7D9F5;
     private static final int COLOR_RELEASE_LIGHT = 0xFF6FD3FF;
-    private static final int COLOR_RELEASE_DARK = 0xFF1E6FD9;
     private static final int COLOR_SURGE = 0xFFFF9800;
     private static final int COLOR_CAP = 0xFFFFFFFF;
     private static final int COLOR_XP = 0xFF42A5F5;
-    private static final int COLOR_STAMINA_LIGHT = 0xFF8EE58F;
-    private static final int COLOR_STAMINA_DARK = 0xFF2E9E46;
-    private static final int[] HEAT_LIGHT = {0xFFB0BEC5, 0xFFFFE082, 0xFFFFB74D, 0xFFFF7043, 0xFFFF5252};
-    private static final int[] HEAT_DARK = {0xFF607D8B, 0xFFF9A825, 0xFFEF6C00, 0xFFD32F2F, 0xFFB71C1C};
     private static final int COLOR_ALERT = 0xFFFF1744;
     private static final int COLOR_ALERT_ALT = 0xFFFFFFFF;
     private static final int VIGNETTE_RED = 0xFF1744;
@@ -138,84 +134,105 @@ public final class KN8Hud {
         RenderSystem.defaultBlendFunc();
         graphics.pose().pushPose();
         graphics.pose().scale((float) scale, (float) scale, 1.0F);
-        Font font = minecraft.font;
         int x = origin.x();
         int y = origin.y();
-        drawRelease(graphics, font, view, x, y);
-        int rowY = y + RELEASE_HEIGHT + ROW_GAP;
-        drawStamina(graphics, font, view, x, rowY);
-        drawHeat(graphics, font, view, x, rowY + ROW_HEIGHT + ROW_GAP);
-        drawAlerts(graphics, font, overheat, x, y);
+        // Arte: em pixels da textura (1/SCALE da GUI), para ficar nitida em qualquer escala.
+        graphics.pose().pushPose();
+        graphics.pose().translate(x, y, 0);
+        graphics.pose().scale(1.0F / SCALE, 1.0F / SCALE, 1.0F);
+        graphics.blit(FRAME, 0, 0, 0, 0, PANEL_WIDTH * SCALE, PANEL_HEIGHT * SCALE, PANEL_WIDTH * SCALE,
+                PANEL_HEIGHT * SCALE);
+        drawRelease(graphics, view);
+        drawRows(graphics, view);
         graphics.pose().popPose();
+        drawReleaseText(graphics, minecraft.font, view, x, y);
+        drawAlerts(graphics, minecraft.font, overheat, x, y);
+        graphics.pose().popPose();
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.disableBlend();
     }
 
     // --- RELEASE ----------------------------------------------------------------------------------------------
 
-    private static void drawRelease(GuiGraphics graphics, Font font, PowerView view, int x, int y) {
-        bevelPanel(graphics, x, y, PANEL_WIDTH, RELEASE_HEIGHT);
-        // Emblema em moldura chanfrada.
-        int boxX = x + 2;
-        int boxY = y + 2;
-        bevelOutline(graphics, boxX, boxY, EMBLEM_BOX, EMBLEM_BOX, COLOR_OUTLINE);
-        int iconOffset = (EMBLEM_BOX - EMBLEM_SIZE) / 2;
-        graphics.blit(ICONS, boxX + iconOffset, boxY + iconOffset, 0, 0, EMBLEM_SIZE, EMBLEM_SIZE, ICONS_WIDTH,
-                ICONS_HEIGHT);
-        // Linha decorativa no alto, a direita.
-        graphics.fill(x + PANEL_WIDTH - 46, y + 3, x + PANEL_WIDTH - 8, y + 4, COLOR_OUTLINE_DIM);
-
-        int textX = x + RELEASE_TEXT_X;
-        scaled(graphics, font, Component.translatable("kn8.hud.label.release"), textX, y + 4, COLOR_LABEL,
-                LABEL_SCALE);
-        boolean atCap = view.trained() >= view.cap() && view.surge() == 0;
-        int valueColor = view.surge() > 0 ? COLOR_SURGE : COLOR_VALUE;
-        Component value = Component.translatable("kn8.hud.release.value", Math.round(shownRelease), view.cap());
-        scaled(graphics, font, value, textX, y + 13, valueColor, VALUE_SCALE);
-        if (atCap) {
-            int afterValue = textX + Math.round(font.width(value) * VALUE_SCALE) + 4;
-            scaled(graphics, font, Component.translatable("kn8.hud.max"), afterValue, y + 17,
-                    blink(COLOR_VALUE_DIM), LABEL_SCALE);
-        }
-
-        int barX = textX;
-        int barY = y + RELEASE_BAR_Y;
+    /** Segmentos acesos (azul ate o treinado, laranja no Surto), marca do teto e linha de treino. */
+    private static void drawRelease(GuiGraphics graphics, PowerView view) {
         int base = Math.min(view.trained(), view.cap());
         float total = HudMath.fraction(shownRelease, 100);
         float baseFraction = HudMath.fraction(Math.min(shownRelease, base), 100);
-        segmentBar(graphics, barX, barY, RELEASE_BAR_WIDTH, RELEASE_BAR_HEIGHT, total, baseFraction,
-                COLOR_RELEASE_LIGHT, COLOR_RELEASE_DARK, COLOR_SURGE);
-        // Marca do teto da patente.
-        int capX = barX + Math.round(RELEASE_BAR_WIDTH * HudMath.fraction(view.cap(), 100));
-        graphics.fill(capX, barY - 2, capX + 1, barY + RELEASE_BAR_HEIGHT + 1, COLOR_CAP);
+        fillBar(graphics, FILL_RELEASE, RELEASE_BAR, RELEASE_FILL_SIZE, 0, baseFraction);
+        if (total > baseFraction) {
+            fillBar(graphics, FILL_SURGE, RELEASE_BAR, RELEASE_FILL_SIZE, baseFraction, total);
+        }
+        int barX = RELEASE_BAR[0] * SCALE;
+        int barY = RELEASE_BAR[1] * SCALE;
+        int barWidth = RELEASE_BAR[2] * SCALE;
+        int barHeight = RELEASE_BAR[3] * SCALE;
+        // Marca do teto atual (ate onde o treino ja chegou a liberar).
+        int capX = barX + Math.round(barWidth * HudMath.fraction(view.cap(), 100));
+        graphics.fill(capX, barY - SCALE, capX + 2, barY + barHeight + SCALE, COLOR_CAP);
         // Linha fina de treino ate o proximo ponto (vazia no teto).
         float xp = view.xpToNext() > 0 ? HudMath.fraction(shownXp, view.xpToNext()) : 0;
-        graphics.fill(barX, barY + RELEASE_BAR_HEIGHT + 2, barX + Math.round(RELEASE_BAR_WIDTH * xp),
-                barY + RELEASE_BAR_HEIGHT + 3, COLOR_XP);
+        graphics.fill(barX, barY + barHeight + SCALE, barX + Math.round(barWidth * xp), barY + barHeight + SCALE + 2,
+                COLOR_XP);
+    }
+
+    /** "efetiva% / teto%" com os numeros em neon (laranja no Surto) e "MAX" piscando no teto. */
+    private static void drawReleaseText(GuiGraphics graphics, Font font, PowerView view, int x, int y) {
+        String value = Math.round(shownRelease) + "% / " + view.cap() + "%";
+        int row = view.surge() > 0 ? 1 : 0;
+        float cellScale = VALUE_CELL_HEIGHT / DIGIT_CELL_HEIGHT;
+        graphics.pose().pushPose();
+        graphics.pose().translate(x + VALUE_X, y + VALUE_Y, 0);
+        graphics.pose().scale(cellScale, cellScale, 1.0F);
+        int cursor = 0;
+        for (char c : value.toCharArray()) {
+            int index = DIGIT_CHARS.indexOf(c);
+            if (index < 0) {
+                continue;
+            }
+            graphics.blit(DIGITS, cursor, 0, index * DIGIT_CELL_WIDTH, row * DIGIT_CELL_HEIGHT, DIGIT_CELL_WIDTH,
+                    DIGIT_CELL_HEIGHT, DIGITS_WIDTH, DIGITS_HEIGHT);
+            cursor += c == ' ' ? SPACE_ADVANCE : DIGIT_ADVANCE;
+        }
+        graphics.pose().popPose();
+        boolean atCap = view.trained() >= view.cap() && view.surge() == 0;
+        if (atCap) {
+            int afterValue = x + VALUE_X + Math.round(cursor * cellScale) + 4;
+            scaled(graphics, font, Component.translatable("kn8.hud.max"), afterValue, y + VALUE_Y + 6,
+                    blink(COLOR_VALUE_DIM), LABEL_SCALE);
+        }
     }
 
     // --- STAMINA e HEAT ----------------------------------------------------------------------------------------
 
-    private static void drawStamina(GuiGraphics graphics, Font font, PowerView view, int x, int y) {
-        rowPanel(graphics, x, y);
-        graphics.blit(ICONS, x + 2, y + 1, RUNNER_U, 0, SMALL_ICON, SMALL_ICON, ICONS_WIDTH, ICONS_HEIGHT);
-        scaled(graphics, font, Component.translatable("kn8.hud.label.stamina"), x + ROW_LABEL_X, y + 4,
-                COLOR_LABEL, LABEL_SCALE);
-        float fraction = HudMath.fraction(shownStamina, view.maxStamina());
-        segmentBar(graphics, x + ROW_BAR_X, y + 4, ROW_BAR_WIDTH, ROW_BAR_HEIGHT, fraction, fraction,
-                COLOR_STAMINA_LIGHT, COLOR_STAMINA_DARK, COLOR_STAMINA_LIGHT);
+    private static void drawRows(GuiGraphics graphics, PowerView view) {
+        fillBar(graphics, FILL_STAMINA, STAMINA_BAR, ROW_FILL_SIZE, 0,
+                HudMath.fraction(shownStamina, view.maxStamina()));
+        boolean critical = view.heatStage() >= HeatStage.CRITICAL.ordinal();
+        if (critical && blinkOn()) {
+            // Critico/pane: o calor pisca (a vinheta vermelha e o OVERHEAT completam o aviso).
+            RenderSystem.setShaderColor(1.0F, 0.55F, 0.55F, 1.0F);
+        }
+        fillBar(graphics, FILL_HEAT, HEAT_BAR, ROW_FILL_SIZE, 0, HudMath.fraction(shownHeat, view.heatMax()));
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
     }
 
-    private static void drawHeat(GuiGraphics graphics, Font font, PowerView view, int x, int y) {
-        rowPanel(graphics, x, y);
-        graphics.blit(ICONS, x + 2, y + 1, THERMOMETER_U, 0, SMALL_ICON, SMALL_ICON, ICONS_WIDTH, ICONS_HEIGHT);
-        int stage = Math.max(0, Math.min(HEAT_LIGHT.length - 1, view.heatStage()));
-        boolean critical = stage >= HeatStage.CRITICAL.ordinal();
-        scaled(graphics, font, Component.translatable("kn8.hud.label.heat"), x + ROW_LABEL_X, y + 4,
-                critical ? blink(HEAT_LIGHT[stage]) : COLOR_LABEL, LABEL_SCALE);
-        float fraction = HudMath.fraction(shownHeat, view.heatMax());
-        int light = critical ? blink(HEAT_LIGHT[stage]) : HEAT_LIGHT[stage];
-        segmentBar(graphics, x + ROW_BAR_X, y + 4, ROW_BAR_WIDTH, ROW_BAR_HEIGHT, fraction, fraction, light,
-                HEAT_DARK[stage], light);
+    /**
+     * Desenha a faixa de segmentos acesos de {@code from} ate {@code to} (fracoes da barra), recortando a textura
+     * de preenchimento na vertical. A textura tem FILL_MARGIN de brilho em volta, que entra junto nas pontas.
+     */
+    private static void fillBar(GuiGraphics graphics, ResourceLocation texture, int[] bar, int[] size, float from,
+            float to) {
+        if (to <= from) {
+            return;
+        }
+        int margin = FILL_MARGIN * SCALE;
+        int width = bar[2] * SCALE;
+        int start = from <= 0 ? 0 : margin + Math.round(width * from);
+        int end = margin + Math.round(width * Math.min(1.0F, to)) + (to >= 1.0F ? margin : 0);
+        int originX = (bar[0] - FILL_MARGIN) * SCALE;
+        int originY = (bar[1] - FILL_MARGIN) * SCALE;
+        graphics.blit(texture, originX + start, originY, start, 0, end - start, size[1], size[0], size[1]);
     }
 
     /** OVERHEAT (critico ou pane), combo e avisos de combate, acima do painel (ou abaixo, se estiver no topo). */
@@ -253,83 +270,6 @@ public final class KN8Hud {
 
     // --- pecas de desenho ------------------------------------------------------------------------------------
 
-    /** Painel com cantos cortados (superior esquerdo e inferior direito) e contorno claro. */
-    private static void bevelPanel(GuiGraphics graphics, int x, int y, int width, int height) {
-        for (int row = 0; row < height; row++) {
-            int left = Math.max(0, CUT - row);
-            int right = Math.max(0, row - (height - 1 - CUT));
-            graphics.fill(x + left, y + row, x + width - right, y + row + 1, COLOR_PANEL);
-            // Contorno: so as pontas de cada linha (e as linhas de cima e de baixo inteiras).
-            if (row == 0 || row == height - 1) {
-                graphics.fill(x + left, y + row, x + width - right, y + row + 1, COLOR_OUTLINE);
-            } else {
-                graphics.fill(x + left, y + row, x + left + 1, y + row + 1, COLOR_OUTLINE);
-                graphics.fill(x + width - right - 1, y + row, x + width - right, y + row + 1, COLOR_OUTLINE);
-            }
-        }
-    }
-
-    /** So o contorno chanfrado (moldura do emblema). */
-    private static void bevelOutline(GuiGraphics graphics, int x, int y, int width, int height, int color) {
-        for (int row = 0; row < height; row++) {
-            int left = Math.max(0, CUT - row);
-            int right = Math.max(0, row - (height - 1 - CUT));
-            if (row == 0 || row == height - 1) {
-                graphics.fill(x + left, y + row, x + width - right, y + row + 1, color);
-            } else {
-                graphics.fill(x + left, y + row, x + left + 1, y + row + 1, color);
-                graphics.fill(x + width - right - 1, y + row, x + width - right, y + row + 1, color);
-            }
-        }
-    }
-
-    /** Faixa inclinada (paralelogramo) das linhas de STAMINA e HEAT. */
-    private static void rowPanel(GuiGraphics graphics, int x, int y) {
-        for (int row = 0; row < ROW_HEIGHT; row++) {
-            int slant = (ROW_HEIGHT - 1 - row) / 2;
-            int right = x + PANEL_WIDTH - 4 + slant;
-            graphics.fill(x, y + row, right, y + row + 1, COLOR_PANEL);
-            graphics.fill(right - 1, y + row, right, y + row + 1, COLOR_OUTLINE);
-        }
-        graphics.fill(x, y + ROW_HEIGHT - 1, x + PANEL_WIDTH - 4, y + ROW_HEIGHT, COLOR_OUTLINE_DIM);
-    }
-
-    /**
-     * Barra de 10 segmentos inclinados. Ate {@code baseFraction} usa o degrade claro->escuro; de {@code baseFraction}
-     * ate {@code fraction} usa {@code extraColor} (Surto). O segmento parcial e preenchido pela metade, quando cabe.
-     */
-    private static void segmentBar(GuiGraphics graphics, int x, int y, int width, int height, float fraction,
-            float baseFraction, int light, int dark, int extraColor) {
-        int segmentWidth = (width - SEGMENT_GAP * (SEGMENTS - 1)) / SEGMENTS;
-        for (int i = 0; i < SEGMENTS; i++) {
-            int segmentX = x + i * (segmentWidth + SEGMENT_GAP);
-            float start = i / (float) SEGMENTS;
-            float end = (i + 1) / (float) SEGMENTS;
-            int color;
-            int fillWidth = segmentWidth;
-            if (fraction >= end) {
-                color = start >= baseFraction ? extraColor : lerpColor(light, dark, i / (float) (SEGMENTS - 1));
-            } else if (fraction > start) {
-                color = start >= baseFraction ? extraColor : lerpColor(light, dark, i / (float) (SEGMENTS - 1));
-                fillWidth = Math.max(1, Math.round(segmentWidth * (fraction - start) * SEGMENTS));
-            } else {
-                color = COLOR_SEGMENT_EMPTY;
-            }
-            slantedBox(graphics, segmentX, y, segmentWidth, height, COLOR_SEGMENT_EMPTY);
-            if (color != COLOR_SEGMENT_EMPTY) {
-                slantedBox(graphics, segmentX, y, fillWidth, height, color);
-            }
-        }
-    }
-
-    /** Retangulo inclinado: cada linha deslocada meio pixel para a direita quanto mais alta. */
-    private static void slantedBox(GuiGraphics graphics, int x, int y, int width, int height, int color) {
-        for (int row = 0; row < height; row++) {
-            int shift = (height - 1 - row) / 2;
-            graphics.fill(x + shift, y + row, x + shift + width, y + row + 1, color);
-        }
-    }
-
     private static void scaled(GuiGraphics graphics, Font font, Component text, int x, int y, int color, float size) {
         graphics.pose().pushPose();
         graphics.pose().translate(x, y, 0);
@@ -355,12 +295,8 @@ public final class KN8Hud {
         }
     }
 
-    private static int lerpColor(int from, int to, float t) {
-        int a = (int) (((from >>> 24) & 0xFF) + (((to >>> 24) & 0xFF) - ((from >>> 24) & 0xFF)) * t);
-        int r = (int) (((from >> 16) & 0xFF) + (((to >> 16) & 0xFF) - ((from >> 16) & 0xFF)) * t);
-        int g = (int) (((from >> 8) & 0xFF) + (((to >> 8) & 0xFF) - ((from >> 8) & 0xFF)) * t);
-        int b = (int) ((from & 0xFF) + ((to & 0xFF) - (from & 0xFF)) * t);
-        return (a << 24) | (r << 16) | (g << 8) | b;
+    private static boolean blinkOn() {
+        return (System.currentTimeMillis() / BLINK_MS) % 2 == 0;
     }
 
     private static int blink(int color) {
