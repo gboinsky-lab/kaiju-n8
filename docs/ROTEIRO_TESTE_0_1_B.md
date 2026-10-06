@@ -207,6 +207,10 @@ Capturas de referência: `docs/img/menu_*.png`. Teste em pt_br e en_us; tamanho 
 
 ## 13. Sons, corrida e carcaça (0.2, Etapa 1)
 
+**Já testado na nuvem (2026-10-06, todos ✅, ver `docs/ATUALIZACAO_0_1_B.md`):** cada som toca no evento certo, com a
+legenda certa, e o Honju soa mais grave. **Fica para o Miguel:** ouvir se os sons ficaram bons (qualidade e volume)
+e conferir a corrida/tombo no próprio PC.
+
 Sons gerados por `tools/audio/gen_sounds.py` (trocar um som = substituir o `.ogg` em `assets/kn8/sounds/`). Ligue as
 legendas (Opções → Acessibilidade) para conferir qual evento tocou. Capturas: `docs/img/corrida_stamina.png`,
 `docs/img/carcaca_tomba.png`.
@@ -214,7 +218,7 @@ legendas (Opções → Acessibilidade) para conferir qual evento tocou. Capturas
 | # | Passo | Esperado |
 |---|---|---|
 | 13.1 | Chegue perto de um kaiju parado | Rosnado de tempos em tempos (~10 s); Honju bem mais grave que o Yoju; passos pesados ao andar |
-| 13.2 | Bata no kaiju até morrer | Grunhido de dor a cada golpe, som de morte; o corpo **tomba de lado** em ~0,7 s e fica deitado |
+| 13.2 | Bata no kaiju até morrer | Grunhido de dor a cada golpe, som de morte; o corpo **tomba de lado** em ~0,7 s e fica deitado, dentro da hitbox (F3+B) |
 | 13.3 | Slam, mordida e investida do kaiju | Pancada grave no chão, mordida, rugido na investida (legendas "kaiju") |
 | 13.4 | Faca/espada/machado: leve e pesado | "Vush" no início do golpe (pesado mais grave); impacto ao acertar |
 | 13.5 | Rifle e pistola (jogador e soldado `/kn8 soldier spawn rifle`/`pistol`) | Tiro próprio de cada arma (pistola mais seca); nada de som de besta |

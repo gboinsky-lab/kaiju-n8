@@ -18,8 +18,8 @@ import software.bernie.geckolib.renderer.GeoEntityRenderer;
  * modelo e escolhido por instancia, entao um so renderer serve para todas as especies.
  *
  * <p>0.2 (pedido do Miguel): a carcaca tomba ao morrer. Especie mais larga que alta (aranha) vira de costas;
- * bipede cai de lado. A queda dura {@link #FALL_TICKS} e so muda o desenho: a hitbox continua em pe (e nela que o
- * jogador mira para desmontar).</p>
+ * bipede cai de lado, com o corpo centrado na hitbox deitada da carcaca ({@code CarcassEntity#getDimensions}). A
+ * queda dura {@link #FALL_TICKS}.</p>
  */
 public class CarcassRenderer extends GeoEntityRenderer<CarcassEntity> {
 
@@ -39,15 +39,16 @@ public class CarcassRenderer extends GeoEntityRenderer<CarcassEntity> {
         float fall = Mth.clamp((carcass.tickCount + partialTick) / FALL_TICKS, 0.0F, 1.0F);
         // Queda acelerando (como um corpo pesado), sem quicar.
         float eased = fall * fall;
-        float width = carcass.getBbWidth();
-        float height = carcass.getBbHeight();
+        float width = carcass.standingWidth();
+        float height = carcass.standingHeight();
         if (width > height) {
             // De costas: gira 180 graus no eixo do comprimento e sobe a altura para ficar apoiada no chao.
             poseStack.translate(0.0F, height * eased, 0.0F);
             poseStack.mulPose(Axis.ZP.rotationDegrees(180.0F * eased));
         } else {
-            // De lado: gira 90 graus em volta do pe e sobe meia largura (o corpo nao afunda no chao).
-            poseStack.translate(0.0F, width * 0.5F * eased, 0.0F);
+            // De lado: gira 90 graus em volta do pe e sobe meia largura (o corpo nao afunda no chao). O giro em Z
+            // leva a cabeca para -X; meia altura para +X deixa o corpo deitado no centro da hitbox.
+            poseStack.translate(height * 0.5F * eased, width * 0.5F * eased, 0.0F);
             poseStack.mulPose(Axis.ZP.rotationDegrees(90.0F * eased));
         }
     }

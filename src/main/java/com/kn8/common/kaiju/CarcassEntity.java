@@ -134,14 +134,39 @@ public class CarcassEntity extends Entity implements GeoEntity {
         }
     }
 
+    /**
+     * Hitbox da carcaca DEITADA (0.2): o corpo tomba (ver {@code CarcassRenderer}), entao a caixa cobre o corpo no
+     * chao. Bipede (mais alto que largo) cai de lado: comprimento = altura em pe, altura = largura em pe. Especie
+     * baixa e larga (aranha) so vira de costas: mesma caixa.
+     */
     @Override
     public EntityDimensions getDimensions(Pose pose) {
-        return def().map(def -> EntityDimensions.scalable(def.dimensions().width(), def.dimensions().height()))
-                .orElse(super.getDimensions(pose));
+        if (def().isEmpty()) {
+            return super.getDimensions(pose);
+        }
+        float width = standingWidth();
+        float height = standingHeight();
+        return height > width ? EntityDimensions.scalable(height, width) : EntityDimensions.scalable(width, height);
+    }
+
+    /** Largura do kaiju em pe (dados da especie); o renderer usa para a queda. */
+    public float standingWidth() {
+        return def().map(def -> def.dimensions().width()).orElse(getBbWidth());
+    }
+
+    /** Altura do kaiju em pe (dados da especie). */
+    public float standingHeight() {
+        return def().map(def -> def.dimensions().height()).orElse(getBbHeight());
     }
 
     @Override
     public void tick() {
+        if (firstTick) {
+            // A especie padrao do synched data ja e "primigenius": nesse caso o valor nunca "muda" no cliente e o
+            // onSyncedDataUpdated nao roda, deixando a hitbox no tamanho do EntityType (2x2) so no cliente (teste
+            // em jogo da 0.2: o clique de desmonte ficava fora de alcance).
+            refreshDimensions();
+        }
         super.tick();
         // Cai e assenta no chao (sem IA).
         setDeltaMovement(getDeltaMovement().add(0, -GRAVITY, 0).multiply(FRICTION, 1.0, FRICTION));

@@ -197,3 +197,32 @@ Não testado aqui: 2 clientes (sincronização), som (sem placa de áudio), comb
 | Bug achado e corrigido | segurar o clique direito ao terminar o desmonte começava ataque carregado |
 | Observação | a carcaça fica em pé na pose do kaiju vivo (não tomba); sugestão abaixo |
 | Não testado aqui | som (sem placa de áudio), dano por parte com um jogador real batendo (coberto por GameTest) |
+
+## Teste da seção 13 na nuvem — sons, corrida e carcaça (servidor dedicado + 2 clientes, 2026-10-06)
+
+O som foi testado de verdade: o OpenAL do Dev1 rodou com o driver `wave` (`ALSOFT_DRIVERS=wave`), que grava a
+mixagem num `.wav`; cada ação ficou marcada com o horário e conferida no áudio gravado e nas legendas do jogo
+(`docs/img/sons_legendas.png`).
+
+| Item | Resultado |
+|---|---|
+| 13.1 | ✅ rosnados a cada poucos segundos; passos pesados; **Honju ~12% mais grave** que o Yoju no áudio gravado (pico 44 × 50 Hz, morte 56 × 63 Hz) |
+| 13.2 | ✅ "Kaiju ferido", "Kaiju morre"; carcaça tomba de lado (visto pelo Dev1 e pelo Dev2) |
+| 13.3 | ✅ "Impacto no chão" (slam), "Mordida" (Trichonephila), "Kaiju ruge" (investida) |
+| 13.4 | ✅ "Lâmina cortando" no leve, "Golpe pesado" no pesado e no carregado |
+| 13.5 | ✅ "Tiro de rifle" e "Tiro de pistola" do jogador e dos soldados (nada de besta) |
+| 13.6 | ✅ "Aparo" (parry), "Guarda quebrada" (stamina 0 bloqueando a mordida de frente), "Dash do traje" — o dash estava baixo demais (−17,7 dB): refeito mais encorpado (−14 dB) e volume 1,0 |
+| 13.7 | ✅ "Alarme de superaquecimento" na pane (com surge; `/kn8 heat set 100` sozinho não dispara porque o traje esfria no mesmo tick) |
+| 13.8 | ✅ "Desmontando carcaça" a cada etapa; materiais caem no chão |
+| 13.9 | ✅ correndo 5,6 m/s, stamina −5/s; aos ~20 s o servidor corta a corrida mesmo com Ctrl segurado; anda a 4,3 m/s recuperando ~15/s |
+| 13.10 | ✅ criativo corre sem gastar (a stamina até sobe) |
+| 13.11 | ✅ o servidor marca o Dev1 como "não correndo" ao ficar sem fôlego (é esse estado que vai para o Dev2) |
+
+**Bug achado e corrigido:** a carcaça do `primigenius` ficava com hitbox 2×2 **só no cliente** (o id padrão da
+entidade já é `primigenius`, o valor sincronizado "não muda" e o cliente não recalculava o tamanho) → o clique de
+desmonte saía do alcance e virava ataque carregado. E com o tombo o corpo deitado ficava fora da hitbox em pé.
+Agora a hitbox é a do corpo **deitado** (bípede: comprimento = altura em pé; aranha: igual) e o corpo é desenhado
+centrado nela (`docs/img/carcaca_hitbox_deitada.png`).
+
+**Para o Miguel ouvir (a nuvem só mede, não julga):** se cada som combina com o que representa, volume entre eles,
+se o rosnado a cada ~10 s incomoda, e se o alarme/sirene estão bons. Trocar um som = substituir o `.ogg`.

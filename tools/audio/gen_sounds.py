@@ -195,7 +195,8 @@ def blade_heavy(rng):
 
 
 def dash(rng):
-    return whoosh(0.28, 900, 3000, rng) * 0.7
+    # Mais longo e com "tum" grave: o primeiro ficou baixo demais no teste em jogo (0.2, Etapa 1).
+    return whoosh(0.36, 600, 2400, rng, low=0.6)
 
 
 def clang(rng, seconds, partials, decay):

@@ -102,7 +102,7 @@ mandam; se algo precisar mudar, marque **[DECIDIR]** e pergunte.
 | M10b rifle, parry, crítico, CombatStateS2C/HUD, clamp de stamina, arte embutida | ✅ |
 | M11a habilidades `area_melee`/`charge`, núcleo na cabeça da Trichonephila, GameTests do M10b | ⏳ aguardando teste |
 | Etapa A pipeline Meshy (armas OBJ na mão, pistola, espada, animação por arma) · Etapa B HUD | ⏳ aguardando teste |
-| **0.2 Etapa 1: sons + corrida** (17 eventos `KN8Sounds`, 41 `.ogg` sintetizados por `tools/audio/gen_sounds.py`; voz do kaiju mais grave quanto maior; corrida gasta stamina com "sem fôlego"; carcaça tomba ao morrer) | ✅ compila, JUnit 70/70, GameTests 31/31; corrida e carcaça vistas em jogo (`docs/img/corrida_stamina.png`, `carcaca_tomba.png`); **som não testável na nuvem** (sem áudio); aguardando roteiro §13 |
+| **0.2 Etapa 1: sons + corrida** (17 eventos `KN8Sounds`, 41 `.ogg` sintetizados por `tools/audio/gen_sounds.py`; voz do kaiju mais grave quanto maior; corrida gasta stamina com "sem fôlego"; carcaça tomba ao morrer, hitbox deitada) | ✅ compila, JUnit 70/70, GameTests 31/31; **roteiro §13 inteiro passou na nuvem com 2 clientes** (som gravado em WAV + legendas); falta o Miguel ouvir a qualidade dos sons |
 | **0.2 Menu da Força de Defesa** (tecla M; abas Perfil, Missões, Alertas, Esquadrão, Bestiário, Arsenal; Q/E troca) | ✅ compila, testes passam, todas as abas vistas em jogo (pt_br e en_us); partes de etapas futuras com "Em breve (Etapa N)"; aguardando roteiro §12 |
 | **0.2 Machado** (`kn8:axe`, estilo `heavy`, 2,0 de comprimento) e **espada nova** do Meshy | ✅ jogador (1ª/3ª pessoa) e soldado (`/kn8 soldier spawn axe`/`sword`) vistos em jogo; arma pesada também carrega golpe; números [SUPOSIÇÃO] em `weapon/axe.json` |
 | **0.2 HUD nova** (fiel à referência "HUD de combate avançado - estilo anime"; 60% do tamanho da arte, `BASE_SIZE`) | ✅ vista em jogo; arte em `textures/gui/hud/` gerada por `tools/art/gen_hud.py` (texturas 4× desenhadas em pixel de textura, `blur` ligado); aguardando aprovação |
@@ -147,6 +147,11 @@ mandam; se algo precisar mudar, marque **[DECIDIR]** e pergunte.
 - **Meshy (redução):** o GLB separa vértices nas costuras de UV e a redução abria buracos → `decimate` solda pela
   posição antes de reduzir. **Rig dos Honju:** dedos abaixo do corte de altura viravam perna e as costas atrás do
   ombro viravam braço (pedaços soltos no slam) → `arm_front_z` e `arm_back_z` por espécie.
+- **0.2 (teste do §13):** carcaça do `primigenius` com hitbox 2×2 só no cliente (id padrão do synched data igual à
+  espécie → `onSyncedDataUpdated` não roda) → `refreshDimensions()` no primeiro tick. Corpo tombado fora da hitbox em
+  pé → hitbox da carcaça é a do corpo deitado e o renderer centra o corpo nela. Dash baixo demais → som refeito.
+- **Testar som na nuvem:** `ALSOFT_DRIVERS=wave` + `ALSOFT_CONF` com `[wave] file=...wav` no cliente grava a
+  mixagem (float 32, 48 kHz, estéreo); desligar música/ambiente em `options.txt` e ligar `showSubtitles`.
 - **0.1-B (compilação):** único erro foi um import (`LinkedHashMap` em `DataValidation`); as APIs "a conferir" existem.
 
 ## Arte

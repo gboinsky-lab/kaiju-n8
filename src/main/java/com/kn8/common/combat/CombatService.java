@@ -364,7 +364,7 @@ public final class CombatService {
         player.setDeltaMovement(burst.x, Math.max(player.getDeltaMovement().y, 0.05), burst.z);
         player.hurtMarked = true;
         AnimationBridge.playPlayer(player, AnimationBridge.PLAYER_DASH);
-        player.level().playSound(null, player.blockPosition(), KN8Sounds.DASH.get(), SoundSource.PLAYERS, 0.8F, 1.0F);
+        player.level().playSound(null, player.blockPosition(), KN8Sounds.DASH.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
         VfxService.play((ServerLevel) player.level(), VfxService.DUST, player.position(), direction, 0.4F, 0.0F);
         reply(player, CombatAction.DASH, CombatResult.OK);
         return true;
