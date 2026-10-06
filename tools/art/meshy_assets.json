@@ -69,6 +69,19 @@
       "thickness": 1.0,
       "blade_fraction": 0.74,
       "blade_thickness": 2.6
+    },
+    "axe": {
+      "source": "axe.glb",
+      "length_axis": "x",
+      "tip": "-",
+      "up_axis": "y",
+      "length_m": 0.9,
+      "grip_from_tip": 0.82,
+      "grip_from_bottom": 0.42,
+      "texture": 512,
+      "orientation": "diagonal",
+      "item_length": 1.4,
+      "thickness": 1.0
     }
   },
   "entities": {

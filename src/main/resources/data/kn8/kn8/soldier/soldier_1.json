@@ -17,6 +17,7 @@
     "rifle": "kn8:rifle",
     "pistol": "kn8:pistol",
     "sword": "kn8:sword",
-    "knife": "kn8:combat_knife"
+    "knife": "kn8:combat_knife",
+    "axe": "kn8:axe"
   }
 }

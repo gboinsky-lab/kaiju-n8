@@ -30,6 +30,9 @@ public final class KN8Items {
             ITEMS.register("pistol", () -> new WeaponItem(new Item.Properties()));
     public static final DeferredItem<WeaponItem> SWORD =
             ITEMS.register("sword", () -> new WeaponItem(new Item.Properties()));
+    /** 0.2: machado (estilo "heavy": golpe lento e forte; modelo do Meshy, numeros [SUPOSICAO] no JSON). */
+    public static final DeferredItem<WeaponItem> AXE =
+            ITEMS.register("axe", () -> new WeaponItem(new Item.Properties()));
 
     /** 0.1-B (M11b): materiais de desmonte (tabelas em data/kn8/kn8/dismantle). */
     public static final DeferredItem<Item> KAIJU_TISSUE = ITEMS.registerSimpleItem("kaiju_tissue");
@@ -51,6 +54,7 @@ public final class KN8Items {
                         output.accept(RIFLE.get());
                         output.accept(PISTOL.get());
                         output.accept(SWORD.get());
+                        output.accept(AXE.get());
                         output.accept(KAIJU_TISSUE.get());
                         output.accept(MUSCLE_FIBER.get());
                         output.accept(CORE_FRAGMENT.get());

@@ -356,12 +356,17 @@ public final class CombatService {
         return true;
     }
 
-    /** Clique direito pressionado com lamina: comeca a carregar (so lamina com golpe pesado). */
+    /** Lamina e arma pesada (machado) carregam golpe; arma de fogo e canhao nao. */
+    private static boolean isMelee(WeaponDef weapon) {
+        return weapon.style() == WeaponDef.Style.BLADE || weapon.style() == WeaponDef.Style.HEAVY;
+    }
+
+    /** Clique direito pressionado com lamina ou arma pesada: comeca a carregar (so arma com golpe pesado). */
     static void startCharge(ServerPlayer player) {
         CombatState state = state(player);
         Optional<WeaponDef> weapon = heldWeapon(player);
         long now = now(player);
-        if (weapon.isEmpty() || weapon.get().style() != WeaponDef.Style.BLADE
+        if (weapon.isEmpty() || !isMelee(weapon.get())
                 || !weapon.get().actions().containsKey(HEAVY) || state.blocking || state.timeline.isActive(now)) {
             state.chargeStartTick = CombatState.NEVER;
             return;
