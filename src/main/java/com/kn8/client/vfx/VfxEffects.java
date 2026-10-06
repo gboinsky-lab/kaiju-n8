@@ -32,6 +32,8 @@ public final class VfxEffects {
 
     private static final Map<ResourceLocation, Effect> EFFECTS = new HashMap<>();
     private static final int BASE_COUNT = 12;
+    private static final int MUZZLE_FLAMES = 3;
+    private static final double MUZZLE_FLAME_SPEED = 0.04;
     private static final float LOW = 0.35F;
     private static final float MEDIUM = 0.7F;
     private static final float HIGH = 1.0F;
@@ -120,9 +122,16 @@ public final class VfxEffects {
         burst(level, ParticleTypes.CRIT, at, count(intensity * 0.5F, amount), 0.5, 0.2);
     }
 
-    /** Clarao e fumaca na boca do cano (o rastro do tiro ja sai do servidor). */
+    /**
+     * Clarao e fumaca na boca do cano (o rastro do tiro ja sai do servidor). Sem o FLASH vanilla: ele e o clarao
+     * de fogos de artificio (uma bola branca de varios blocos) e cobria o atirador em jogo; aqui, chamas pequenas
+     * saindo para a frente do cano.
+     */
     private static void weaponFire(ClientLevel level, Vec3 at, Vec3 dir, float intensity, float amount) {
-        level.addParticle(ParticleTypes.FLASH, at.x, at.y, at.z, 0, 0, 0);
+        for (int i = 0; i < MUZZLE_FLAMES; i++) {
+            Vec3 velocity = dir.scale(MUZZLE_FLAME_SPEED * (i + 1));
+            level.addParticle(ParticleTypes.SMALL_FLAME, at.x, at.y, at.z, velocity.x, velocity.y, velocity.z);
+        }
         burst(level, ParticleTypes.SMOKE, at.add(dir.scale(0.2)), count(intensity * 0.4F, amount), 0.15, 0.05);
     }
 

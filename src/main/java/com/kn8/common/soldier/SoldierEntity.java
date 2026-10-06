@@ -82,6 +82,9 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
             SynchedEntityData.defineId(SoldierEntity.class, EntityDataSerializers.STRING);
     private static final String TAG_VARIANT = "kn8_variant";
     private static final String TAG_LEVEL = "kn8_power_level";
+    /** Chaves que o vanilla grava em todo mob salvo (Mob / LivingEntity). */
+    private static final String TAG_HAND_ITEMS = "HandItems";
+    private static final String TAG_ATTRIBUTES = "attributes";
     private static final int DEFAULT_RELEASE = 10;
     private static final float SHOT_VOLUME = 1.0F;
     private static final float SHOT_PITCH = 1.6F;
@@ -360,6 +363,16 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
         }
         if (tag.contains(TAG_LEVEL)) {
             entityData.set(LEVEL, tag.getString(TAG_LEVEL));
+        }
+        // "/summon kn8:soldier ~ ~ ~ {kn8_variant:...}" nao chama finalizeSpawn: sem itens/atributos salvos (soldado
+        // novo, nao carregado do mundo), aplica aqui a arma da variante e os atributos do nivel.
+        if (!level().isClientSide()) {
+            if (!tag.contains(TAG_HAND_ITEMS)) {
+                setVariant(variant());
+            }
+            if (!tag.contains(TAG_ATTRIBUTES)) {
+                applyDefinition();
+            }
         }
     }
 

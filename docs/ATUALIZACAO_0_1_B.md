@@ -169,3 +169,19 @@ fora do Git (pasta `--src` do conversor), nomes = id. Conferido fora do jogo (pr
 
 `meshy_convert.py` agora pula GLB ausente; `build_primigenius.py` não sobrescreve espécie com malha.
 Pendente: compilar e o roteiro §11. Os outros modelos (Honju, ressurgido, revivido, armas) ficam para depois.
+
+## Compilado e visto em jogo (2026-10-06, sessão na nuvem com rede liberada)
+
+`./gradlew build` ✅ (69 JUnit), `runGameTestServer` ✅ 31/31, dados 0 erro / 0 aviso. Servidor dedicado + cliente
+(Xvfb, comandos por RCON), capturas em `docs/img/jogo_*.png`:
+
+| Visto | Resultado |
+|---|---|
+| Soldado novo, 4 variantes armadas | ✅ malha e textura certas; arma na mão direita, poses de §10 |
+| Soldado com alvo | ✅ mira com os dois braços fechando à frente (sinal de Y confirmado), coice e fumaça; abate a aranha |
+| Trichonephila 8 patas e Primigenius com cauda | ✅ texturas, barra de vida, sombra; hitbox (F3+B) e partes sobre o modelo |
+| Kaiju caçando soldado | ✅ andar e slam com a malha nova; morte vira carcaça com o modelo novo |
+| Jogador com rifle/pistola/espada/faca | ✅ 1ª pessoa no canto direito; 3ª pessoa com os dois braços à frente nas armas de fogo |
+
+Corrigido no teste: `/summon` com NBT deixava o soldado sem arma; clarão do tiro gigante (FLASH vanilla).
+Não testado aqui: 2 clientes (sincronização), som (sem placa de áudio), combate do jogador em survival.

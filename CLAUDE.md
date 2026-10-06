@@ -101,8 +101,8 @@ mandam; se algo precisar mudar, marque **[DECIDIR]** e pergunte.
 | M10b rifle, parry, crítico, CombatStateS2C/HUD, clamp de stamina, arte embutida | ✅ |
 | M11a habilidades `area_melee`/`charge`, núcleo na cabeça da Trichonephila, GameTests do M10b | ⏳ aguardando teste |
 | Etapa A pipeline Meshy (armas OBJ na mão, pistola, espada, animação por arma) · Etapa B HUD (referência "HUD de combate avançado - estilo anime"; ícones em `textures/gui/hud_icons.png`, gerados por `tools/art/gen_hud_icons.py`) | ⏳ aguardando teste |
-| **Modelos Meshy estilo Minecraft** (soldado, aranha 8 patas, Primigenius) | ⏳ convertidos e com rig fora do jogo; aguardando compilar + roteiro §11 |
-| **0.1-B correções visuais** (aranha, soldado, armas na mão, espada nova) | ⏳ fora do jogo (sem rede para o Maven nesta sessão: não compilado); **aguardando compilar + roteiro §10** de `docs/ROTEIRO_TESTE_0_1_B.md` |
+| **Modelos Meshy estilo Minecraft** (soldado, aranha 8 patas, Primigenius) | ⏳ compila, JUnit 69/69, GameTests 31/31 e **vistos em jogo** (servidor dedicado + 1 cliente na nuvem, capturas em `docs/img/jogo_*`); aguardando roteiro §11 com 2 clientes |
+| **0.1-B correções visuais** (aranha, soldado, armas na mão, espada nova) | ⏳ compila e testes passam; armas na mão do jogador (1ª/3ª pessoa) e do soldado e mira do soldado vistas em jogo; **aguardando roteiro §10** |
 | **0.1-B** (atualização grande, escrita no chat): escala, VFX, destruição, carcaça/desmonte, Primigenius verde e Honju marrom, barra de vida, dash/ataque carregado, Soldado 1 | ⏳ compila, JUnit (69) e GameTests (31/31) passam em 2026-10-06; **aguardando teste manual** — `docs/ROTEIRO_TESTE_0_1_B.md` (resultado e correções em `docs/ATUALIZACAO_0_1_B.md`) |
 | M11b carcaças e desmonte · M12 transformação · M13 NPCs · M14 patentes/crafting | pendentes |
 | M15 missões · M16 chefe Honju · M17 Tachikawa · M18 endurecimento/performance | pendentes |
@@ -130,6 +130,12 @@ mandam; se algo precisar mudar, marque **[DECIDIR]** e pergunte.
   Y para cima) e a `BlockAndItemGeoLayer` gira de novo pela rotação do osso. Soldado parecia parado: idle de ±2°
   e sem pose de arma → controllers `movement` (pernas) + `arms` (pose por arma, mira com alvo) + cabeça seguindo.
 - **0.1-B (espada):** o modelo do Meshy saiu como agulha → modelo próprio por código (`build_sword.py`).
+- **Modelos Meshy (em jogo, 2026-10-06):** `/summon kn8:soldier ~ ~ ~ {kn8_variant:...}` deixava a mão vazia (o
+  vanilla não chama `finalizeSpawn` quando há NBT) → `readAdditionalSaveData` aplica arma/atributos se o NBT não
+  traz `HandItems`/`attributes`. Clarão do tiro (`ParticleTypes.FLASH`) era uma bola branca de vários blocos →
+  chamas pequenas no cano.
+- **Compilar na nuvem:** os arquivos de build não estão no repositório; a sessão monta um `build.gradle` provisório
+  (só local, em `.git/info/exclude`) com as versões desta página e roda servidor + cliente em Xvfb com RCON.
 - **0.1-B (compilação):** único erro foi um import (`LinkedHashMap` em `DataValidation`); as APIs "a conferir" existem.
 
 ## Arte
@@ -179,9 +185,8 @@ acrescentar na tabela. `build_primigenius.py` não sobrescreve espécie que já 
   KaijuAbility e KaijuAreaAbility ainda aninham `runAfterDelay`; sons próprios (.ogg) e ícones finais dos materiais.
 - [SUPOSIÇÃO] Hitbox nova da Trichonephila 3,4 × 1,8 (o modelo novo é baixo e largo) e partes de
   Trichonephila/Primigenius medidas na malha nova.
-- [SUPOSIÇÃO] Sinais de Y/Z das rotações nas animações GeckoLib (braço direito: Y negativo = para dentro) vêm da
-  convenção do Blockbench; conferidos só no simulador `preview_held_items.py`. Se os braços abrirem em vez de
-  fechar na mira, inverter o Y das poses em `rig_soldier_mesh.py` (`POSES`/`AIM`).
+- Sinais de Y/Z das rotações nas animações GeckoLib (braço direito: Y negativo = para dentro): **confirmados em
+  jogo** (o soldado mirando fecha os braços à frente).
 - Sinal do eixo X para partes assimétricas nos `.geo.json`: conferir em jogo na primeira parte fora do centro.
 - Pendências antigas não bloqueantes: Dev2 com Better Combat (PT6), bloqueio de montaria e mods de skin (PT5),
   teste com 4 clientes.
