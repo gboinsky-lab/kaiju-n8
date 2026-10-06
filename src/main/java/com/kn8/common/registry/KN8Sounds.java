@@ -26,6 +26,16 @@ public final class KN8Sounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> PISTOL_SHOT = register("weapon.pistol_shot");
     public static final DeferredHolder<SoundEvent, SoundEvent> BLADE_SWING = register("weapon.blade_swing");
     public static final DeferredHolder<SoundEvent, SoundEvent> BLADE_HEAVY = register("weapon.blade_heavy");
+    // 0.2: um som por arma branca (o JSON da arma aponta para eles em "sounds").
+    public static final DeferredHolder<SoundEvent, SoundEvent> KNIFE_SWING = register("weapon.knife_swing");
+    public static final DeferredHolder<SoundEvent, SoundEvent> KNIFE_HEAVY = register("weapon.knife_heavy");
+    public static final DeferredHolder<SoundEvent, SoundEvent> KNIFE_HIT = register("weapon.knife_hit");
+    public static final DeferredHolder<SoundEvent, SoundEvent> SWORD_SWING = register("weapon.sword_swing");
+    public static final DeferredHolder<SoundEvent, SoundEvent> SWORD_HEAVY = register("weapon.sword_heavy");
+    public static final DeferredHolder<SoundEvent, SoundEvent> SWORD_HIT = register("weapon.sword_hit");
+    public static final DeferredHolder<SoundEvent, SoundEvent> AXE_SWING = register("weapon.axe_swing");
+    public static final DeferredHolder<SoundEvent, SoundEvent> AXE_HEAVY = register("weapon.axe_heavy");
+    public static final DeferredHolder<SoundEvent, SoundEvent> AXE_HIT = register("weapon.axe_hit");
     public static final DeferredHolder<SoundEvent, SoundEvent> PARRY = register("weapon.parry");
     public static final DeferredHolder<SoundEvent, SoundEvent> GUARD_BREAK = register("weapon.guard_break");
     public static final DeferredHolder<SoundEvent, SoundEvent> DASH = register("suit.dash");

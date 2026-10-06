@@ -217,10 +217,10 @@ legendas (Opções → Acessibilidade) para conferir qual evento tocou. Capturas
 
 | # | Passo | Esperado |
 |---|---|---|
-| 13.1 | Chegue perto de um kaiju parado | Rosnado de tempos em tempos (~10 s); Honju bem mais grave que o Yoju; passos pesados ao andar |
+| 13.1 | Chegue perto de um kaiju parado | Rosnado grave e longo de tempos em tempos (~10 s); rugido de boca aberta na investida; Honju mais grave que o Yoju; passos pesados ao andar |
 | 13.2 | Bata no kaiju até morrer | Grunhido de dor a cada golpe, som de morte; o corpo **tomba de lado** em ~0,7 s e fica deitado, dentro da hitbox (F3+B) |
 | 13.3 | Slam, mordida e investida do kaiju | Pancada grave no chão, mordida, rugido na investida (legendas "kaiju") |
-| 13.4 | Faca/espada/machado: leve e pesado | "Vush" no início do golpe (pesado mais grave); impacto ao acertar |
+| 13.4 | Faca/espada/machado: leve e pesado | Cada arma com som próprio: faca curta e aguda ("Faca cortando o ar", "Estocada de faca", "Faca acerta"), espada com "shing" de metal ("Espada cortando o ar", "Golpe largo de espada", "Espada acerta"), machado grave girando ("Machado girando", "Golpe pesado de machado", "Machado acerta"); o soldado com faca/espada/machado usa os mesmos |
 | 13.5 | Rifle e pistola (jogador e soldado `/kn8 soldier spawn rifle`/`pistol`) | Tiro próprio de cada arma (pistola mais seca); nada de som de besta |
 | 13.6 | Parry, guarda quebrada, dash (Alt) | Metal batendo no parry; estalo na quebra de guarda; sopro no dash |
 | 13.7 | `/kn8 heat` até a pane | Alarme do traje |

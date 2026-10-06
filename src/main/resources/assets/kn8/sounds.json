@@ -174,6 +174,147 @@
       }
     ]
   },
+  "weapon.knife_swing": {
+    "subtitle": "subtitles.kn8.weapon.knife_swing",
+    "sounds": [
+      {
+        "name": "kn8:weapon/knife_swing_1",
+        "attenuation_distance": 16
+      },
+      {
+        "name": "kn8:weapon/knife_swing_2",
+        "attenuation_distance": 16
+      },
+      {
+        "name": "kn8:weapon/knife_swing_3",
+        "attenuation_distance": 16
+      }
+    ]
+  },
+  "weapon.knife_heavy": {
+    "subtitle": "subtitles.kn8.weapon.knife_heavy",
+    "sounds": [
+      {
+        "name": "kn8:weapon/knife_heavy_1",
+        "attenuation_distance": 16
+      },
+      {
+        "name": "kn8:weapon/knife_heavy_2",
+        "attenuation_distance": 16
+      }
+    ]
+  },
+  "weapon.knife_hit": {
+    "subtitle": "subtitles.kn8.weapon.knife_hit",
+    "sounds": [
+      {
+        "name": "kn8:weapon/knife_hit_1",
+        "attenuation_distance": 16
+      },
+      {
+        "name": "kn8:weapon/knife_hit_2",
+        "attenuation_distance": 16
+      },
+      {
+        "name": "kn8:weapon/knife_hit_3",
+        "attenuation_distance": 16
+      }
+    ]
+  },
+  "weapon.sword_swing": {
+    "subtitle": "subtitles.kn8.weapon.sword_swing",
+    "sounds": [
+      {
+        "name": "kn8:weapon/sword_swing_1",
+        "attenuation_distance": 16
+      },
+      {
+        "name": "kn8:weapon/sword_swing_2",
+        "attenuation_distance": 16
+      },
+      {
+        "name": "kn8:weapon/sword_swing_3",
+        "attenuation_distance": 16
+      }
+    ]
+  },
+  "weapon.sword_heavy": {
+    "subtitle": "subtitles.kn8.weapon.sword_heavy",
+    "sounds": [
+      {
+        "name": "kn8:weapon/sword_heavy_1",
+        "attenuation_distance": 16
+      },
+      {
+        "name": "kn8:weapon/sword_heavy_2",
+        "attenuation_distance": 16
+      }
+    ]
+  },
+  "weapon.sword_hit": {
+    "subtitle": "subtitles.kn8.weapon.sword_hit",
+    "sounds": [
+      {
+        "name": "kn8:weapon/sword_hit_1",
+        "attenuation_distance": 16
+      },
+      {
+        "name": "kn8:weapon/sword_hit_2",
+        "attenuation_distance": 16
+      },
+      {
+        "name": "kn8:weapon/sword_hit_3",
+        "attenuation_distance": 16
+      }
+    ]
+  },
+  "weapon.axe_swing": {
+    "subtitle": "subtitles.kn8.weapon.axe_swing",
+    "sounds": [
+      {
+        "name": "kn8:weapon/axe_swing_1",
+        "attenuation_distance": 16
+      },
+      {
+        "name": "kn8:weapon/axe_swing_2",
+        "attenuation_distance": 16
+      },
+      {
+        "name": "kn8:weapon/axe_swing_3",
+        "attenuation_distance": 16
+      }
+    ]
+  },
+  "weapon.axe_heavy": {
+    "subtitle": "subtitles.kn8.weapon.axe_heavy",
+    "sounds": [
+      {
+        "name": "kn8:weapon/axe_heavy_1",
+        "attenuation_distance": 16
+      },
+      {
+        "name": "kn8:weapon/axe_heavy_2",
+        "attenuation_distance": 16
+      }
+    ]
+  },
+  "weapon.axe_hit": {
+    "subtitle": "subtitles.kn8.weapon.axe_hit",
+    "sounds": [
+      {
+        "name": "kn8:weapon/axe_hit_1",
+        "attenuation_distance": 16
+      },
+      {
+        "name": "kn8:weapon/axe_hit_2",
+        "attenuation_distance": 16
+      },
+      {
+        "name": "kn8:weapon/axe_hit_3",
+        "attenuation_distance": 16
+      }
+    ]
+  },
   "weapon.parry": {
     "subtitle": "subtitles.kn8.weapon.parry",
     "sounds": [

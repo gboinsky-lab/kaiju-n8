@@ -16,6 +16,7 @@ import com.kn8.common.data.KN8Data;
 import com.kn8.common.data.def.SoldierDef;
 import com.kn8.common.data.def.WeaponDef;
 import com.kn8.common.kaiju.KaijuEntity;
+import com.kn8.common.registry.KN8Sounds;
 import com.kn8.common.vfx.VfxService;
 import com.kn8.core.combat.ActionTimeline;
 import com.kn8.core.power.PowerMath;
@@ -27,6 +28,7 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
@@ -87,6 +89,7 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
     private static final String TAG_ATTRIBUTES = "attributes";
     private static final int DEFAULT_RELEASE = 10;
     private static final float SHOT_VOLUME = 1.0F;
+    private static final float MELEE_VOLUME = 0.8F;
     private static final double MUZZLE_DISTANCE = 0.9;
 
     private static final RawAnimation IDLE = RawAnimation.begin().thenLoop("soldier.movement.idle");
@@ -299,6 +302,12 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
             return false;
         }
         actionTarget = target;
+        if (currentWeapon != null && currentWeapon.style() != WeaponDef.Style.FIREARM) {
+            // 0.2: o soldado usa os mesmos sons de arma do jogador (JSON da arma).
+            level().playSound(null, getX(), getEyeY(), getZ(),
+                    CombatService.weaponSound(currentWeapon, "swing", KN8Sounds.BLADE_SWING.get()),
+                    SoundSource.HOSTILE, MELEE_VOLUME, 1.0F);
+        }
         triggerAnim("action", isShooter() ? (POSE_PISTOL.equals(armPose()) ? "shoot_pistol" : "shoot_rifle")
                 : "attack");
         return true;
@@ -338,6 +347,11 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
         if (hit.get().hurt(damageSources().mobAttack(this), damage)) {
             VfxService.play(level, firearm ? VfxService.IMPACT : VfxService.SLASH, hit.get().getBoundingBox()
                     .getCenter(), aim.normalize(), 0.8F, 0.0F);
+            if (!firearm && currentWeapon != null) {
+                level.playSound(null, hit.get().getX(), hit.get().getY(), hit.get().getZ(),
+                        CombatService.weaponSound(currentWeapon, "hit", SoundEvents.PLAYER_ATTACK_SWEEP),
+                        SoundSource.HOSTILE, MELEE_VOLUME, 1.0F);
+            }
         }
     }
 

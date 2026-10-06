@@ -15,6 +15,15 @@
       "impact_tick": 12
     }
   },
-  "combo": [1.0, 1.1, 1.3],
+  "combo": [
+    1.0,
+    1.1,
+    1.3
+  ],
+  "sounds": {
+    "swing": "kn8:weapon.sword_swing",
+    "heavy": "kn8:weapon.sword_heavy",
+    "hit": "kn8:weapon.sword_hit"
+  },
   "required_rank": "kn8:oficial"
 }

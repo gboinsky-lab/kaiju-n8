@@ -39,7 +39,7 @@ public final class KN8Network {
     // Mudar quando o formato de algum payload mudar, para recusar clientes incompativeis com mensagem clara.
     // 2 = M6: PowerView ganhou heatMax. 3 = M9: AnimTriggerS2C. 4 = M10a: CombatInputC2S. 5 = M10b: CombatStateS2C.
     // 6 = 0.1-B: VfxS2C (efeitos).
-    private static final String PROTOCOL_VERSION = "7";
+    private static final String PROTOCOL_VERSION = "8";
 
     /** Diagnostico: 20 por segundo, rajada de 40. */
     private static final C2SGuard.Limit DEBUG_LIMIT = new C2SGuard.Limit(20, 40);

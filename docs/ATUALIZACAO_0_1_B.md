@@ -226,3 +226,13 @@ centrado nela (`docs/img/carcaca_hitbox_deitada.png`).
 
 **Para o Miguel ouvir (a nuvem só mede, não julga):** se cada som combina com o que representa, volume entre eles,
 se o rosnado a cada ~10 s incomoda, e se o alarme/sirene estão bons. Trocar um som = substituir o `.ogg`.
+
+## Sons refeitos a pedido do Miguel (2026-10-06)
+
+Passos aprovados. Refeitos: **rugido** (investida), **rosnado** (espera), **dano** e **morte** do kaiju, com uma voz
+nova (`roar_voice` em `tools/audio/gen_sounds.py`): fundamental de 36–50 Hz (antes 55–140), sub-harmônico que dá o
+ronco rasgado, aspereza de ~25–35 Hz, 3 formantes de garganta que abrem com a boca e eco de criatura grande. A
+mordida usa a mesma voz por baixo. **Armas brancas com som próprio**: faca (curta e aguda, ~3 kHz), espada (arco
+médio com "shing" de metal, ~2 kHz) e machado (ar grave girando e golpe que racha, ~0,4–1,2 kHz), cada uma com
+leve, pesado e acerto; o JSON da arma diz qual som usar (`sounds`). Vistos em jogo pelas legendas, com 2 clientes,
+e gravados no WAV do Dev1. Prévia para ouvir: `previa_sons_kaiju_e_armas.mp3` (afinação do Yoju e do Honju).

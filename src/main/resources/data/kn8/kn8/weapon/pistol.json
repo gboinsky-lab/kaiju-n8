@@ -10,5 +10,8 @@
       "impact_tick": 1
     }
   },
+  "sounds": {
+    "shot": "kn8:weapon.pistol_shot"
+  },
   "required_rank": "kn8:candidato"
 }

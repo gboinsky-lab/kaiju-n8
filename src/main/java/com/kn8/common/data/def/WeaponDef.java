@@ -14,9 +14,14 @@ import net.minecraft.util.StringRepresentable;
 /**
  * Arma ({@code data/<ns>/kn8/weapon/<id>.json}). Cada acao tem multiplicador, duracao e tick de impacto: e o
  * contrato da {@code ActionTimeline} validado no PT7 (GDD secao 9).
+ *
+ * <p>{@code sounds} (0.2, opcional): id do som por momento ({@code swing} golpe leve, {@code heavy} golpe pesado,
+ * {@code hit} acerto, {@code shot} disparo). Sem a chave, o combate usa o som generico; qualquer id serve, ate um
+ * som de resource pack que o mod nao registra.</p>
  */
 public record WeaponDef(ResourceLocation item, float baseDamage, float reach, Style style,
-        Map<String, Action> actions, List<Float> combo, ResourceLocation requiredRank) {
+        Map<String, Action> actions, List<Float> combo, ResourceLocation requiredRank,
+        Map<String, ResourceLocation> sounds) {
 
     /** Familia da arma (decide animacoes e regras de combate). */
     public enum Style implements StringRepresentable {
@@ -58,6 +63,8 @@ public record WeaponDef(ResourceLocation item, float baseDamage, float reach, St
             Style.CODEC.fieldOf("style").forGetter(WeaponDef::style),
             Codec.unboundedMap(Codec.STRING, Action.CODEC).fieldOf("actions").forGetter(WeaponDef::actions),
             DefCodecs.MULTIPLIER.listOf().optionalFieldOf("combo", List.of()).forGetter(WeaponDef::combo),
-            ResourceLocation.CODEC.fieldOf("required_rank").forGetter(WeaponDef::requiredRank)
+            ResourceLocation.CODEC.fieldOf("required_rank").forGetter(WeaponDef::requiredRank),
+            Codec.unboundedMap(Codec.STRING, ResourceLocation.CODEC).optionalFieldOf("sounds", Map.of())
+                    .forGetter(WeaponDef::sounds)
     ).apply(i, WeaponDef::new));
 }

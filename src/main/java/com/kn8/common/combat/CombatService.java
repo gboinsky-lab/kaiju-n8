@@ -16,6 +16,8 @@ import com.kn8.core.combat.CombatMath;
 import com.kn8.core.power.PowerMath;
 
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -163,7 +165,8 @@ public final class CombatService {
         if (!firearm) {
             // Etapa 1 (0.2): o "vush" sai no inicio do golpe; o impacto tem som proprio no tick do JSON.
             player.level().playSound(null, player.getX(), player.getEyeY(), player.getZ(),
-                    request == CombatAction.HEAVY ? KN8Sounds.BLADE_HEAVY.get() : KN8Sounds.BLADE_SWING.get(),
+                    request == CombatAction.HEAVY ? weaponSound(weapon.get(), "heavy", KN8Sounds.BLADE_HEAVY.get())
+                            : weaponSound(weapon.get(), "swing", KN8Sounds.BLADE_SWING.get()),
                     SoundSource.PLAYERS, SWING_SOUND_VOLUME, 1.0F);
         }
         reply(player, request, hasStamina ? CombatResult.OK : CombatResult.SLOWED_NO_STAMINA);
@@ -223,16 +226,30 @@ public final class CombatService {
             }
             if (!firearm) {
                 player.level().playSound(null, target.getX(), target.getY(), target.getZ(),
-                        heavy ? SoundEvents.PLAYER_ATTACK_STRONG : SoundEvents.PLAYER_ATTACK_SWEEP,
+                        weaponSound(weapon, "hit", heavy ? SoundEvents.PLAYER_ATTACK_STRONG
+                                : SoundEvents.PLAYER_ATTACK_SWEEP),
                         SoundSource.PLAYERS, HIT_SOUND_VOLUME, 1.0F);
                 player.swing(InteractionHand.MAIN_HAND, true);
             }
         }
     }
 
-    /** Pistola tem disparo proprio (mais seco); as outras armas de fogo usam o do rifle. */
+    /** Disparo: o {@code shot} do JSON da arma; sem ele, pistola tem o seco e as outras o do rifle. */
     public static SoundEvent shotSound(WeaponDef weapon) {
-        return weapon.item().getPath().contains("pistol") ? KN8Sounds.PISTOL_SHOT.get() : KN8Sounds.RIFLE_SHOT.get();
+        return weaponSound(weapon, "shot", weapon.item().getPath().contains("pistol") ? KN8Sounds.PISTOL_SHOT.get()
+                : KN8Sounds.RIFLE_SHOT.get());
+    }
+
+    /**
+     * Som da arma no JSON ({@code sounds.<chave>}: swing, heavy, hit, shot), ou o generico. Um id que nao esta no
+     * registro vira um evento direto: o cliente toca se algum sounds.json (do mod ou de resource pack) o definir.
+     */
+    public static SoundEvent weaponSound(WeaponDef weapon, String key, SoundEvent fallback) {
+        ResourceLocation id = weapon.sounds().get(key);
+        if (id == null) {
+            return fallback;
+        }
+        return BuiltInRegistries.SOUND_EVENT.getOptional(id).orElseGet(() -> SoundEvent.createVariableRangeEvent(id));
     }
 
     /** Som do disparo e rastro de particulas ate o ponto atingido (placeholder ate a arte de efeitos). */
