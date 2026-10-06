@@ -65,7 +65,11 @@ def decimate(mesh, max_triangles):
     from scipy.spatial import cKDTree
     from trimesh.triangles import closest_point, points_to_barycentric
     ratio = 1.0 - max_triangles / len(mesh.faces)
-    points, faces = fast_simplification.simplify(mesh.vertices, mesh.faces, target_reduction=ratio)
+    # Solda os vertices pela posicao antes de reduzir: o GLB do Meshy separa os vertices nas costuras da UV e a
+    # reducao tratava cada costura como borda, abrindo buracos na malha (visto nos Primigenius de 2026-10-06).
+    shape = trimesh.Trimesh(mesh.vertices.copy(), mesh.faces.copy(), process=False)
+    shape.merge_vertices(merge_tex=True, merge_norm=True)
+    points, faces = fast_simplification.simplify(shape.vertices, shape.faces, target_reduction=ratio)
     welded = trimesh.Trimesh(points, faces, process=False)
     # Triangulo original mais perto de cada centro: 8 candidatos pelo centro, decide a distancia real ao triangulo.
     centers = welded.triangles_center

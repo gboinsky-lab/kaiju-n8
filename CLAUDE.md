@@ -139,6 +139,9 @@ mandam; se algo precisar mudar, marque **[DECIDIR]** e pergunte.
   chamas pequenas no cano.
 - **Compilar na nuvem:** os arquivos de build não estão no repositório; a sessão monta um `build.gradle` provisório
   (só local, em `.git/info/exclude`) com as versões desta página e roda servidor + cliente em Xvfb com RCON.
+- **Meshy (redução):** o GLB separa vértices nas costuras de UV e a redução abria buracos → `decimate` solda pela
+  posição antes de reduzir. **Rig dos Honju:** dedos abaixo do corte de altura viravam perna e as costas atrás do
+  ombro viravam braço (pedaços soltos no slam) → `arm_front_z` e `arm_back_z` por espécie.
 - **0.1-B (compilação):** único erro foi um import (`LinkedHashMap` em `DataValidation`); as APIs "a conferir" existem.
 
 ## Arte
@@ -158,9 +161,9 @@ mandam; se algo precisar mudar, marque **[DECIDIR]** e pergunte.
 |---|---|---|---|
 | `trichonephila` | Yoju | malha do Meshy estilo Minecraft (6.850 tri, 8 patas, 5,5 m de envergadura), hitbox 3,4 × 1,8 | ⏳ 2026-10-06 |
 | `primigenius` | Yoju | malha do Meshy estilo Minecraft (8.276 tri, 6 m, com cauda), ossos do modelo de cubos | ⏳ 2026-10-06 |
-| `primigenius_resurrected` | Yoju ressurgido | final (verde), 6 de altura | ✅ registrado (0.1-B) |
-| `primigenius_honju` | Honju | final (Titã Bruto, marrom), 9 de altura | ✅ registrado (0.1-B) |
-| `primigenius_revived` | Honju ressurgido | final (Titã Bruto, roxo), hitbox 5,73 × 9,0 | ✅ |
+| `primigenius_resurrected` | Yoju ressurgido | malha do Meshy (verde, 10 mil tri), 6 de altura | ⏳ 2026-10-06, visto em jogo |
+| `primigenius_honju` | Honju | malha do Meshy (marrom, chifres, 12 mil tri), 9 de altura | ⏳ 2026-10-06, visto em jogo |
+| `primigenius_revived` | Honju ressurgido | malha do Meshy (roxo, chifres, 12 mil tri), hitbox 5,73 × 9,0 | ⏳ 2026-10-06, visto em jogo |
 | Trichonephila Honju | Honju | conceito escolhido: Tecedeira Abissal (falta confirmar e modelar) | pós-0.1 |
 
 Regra de design do Miguel: Honju e Yoju são **criaturas diferentes** (modelo e textura próprios). Desde
@@ -171,9 +174,9 @@ Modelos do Meshy (GLB com o id como nome, pasta fora do Git; tabela `tools/art/m
 largura ~3,1), `primigenius_honju` e `primigenius_revived` (9 m, largura ~5,7), `soldier` + `soldier_parts`
 (1,9 m), armas `rifle`, `pistol`, `combat_knife`, `sword`, `axe` (no jogo), `twin_swords_sheathed`, `single_sheath`,
 `twin_swords`.
-`primigenius` já está no jogo (`rig_primigenius_mesh.py`, com a tabela `SPECIES` de cortes por espécie); para
-`primigenius_resurrected`, `primigenius_honju` e `primigenius_revived` basta medir os cortes do modelo novo e
-acrescentar na tabela. `build_primigenius.py` não sobrescreve espécie que já tem malha (só regera as animações).
+Os 4 Primigenius estão com malha do Meshy (`rig_primigenius_mesh.py <espécie>`, tabela `SPECIES` com os cortes de
+cada um: cauda, cabeça/mandíbula, chifres, braço/antebraço com `arm_front_z`/`arm_back_z`, pernas). Áreas de acerto
+remedidas na malha [SUPOSIÇÃO: núcleo no peito]. `build_primigenius.py` não sobrescreve espécie que já tem malha (só regera as animações).
 
 ## Pendências e [DECIDIR]
 

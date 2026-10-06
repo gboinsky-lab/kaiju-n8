@@ -110,7 +110,7 @@
       "source": "primigenius_resurrected.glb",
       "height_m": 6.0,
       "texture": 1024,
-      "max_triangles": 8000
+      "max_triangles": 10000
     },
     "primigenius_honju": {
       "source": "primigenius_honju.glb",

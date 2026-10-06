@@ -33,7 +33,9 @@ public final class KaijuHealthBar {
 
     private static final double MAX_DISTANCE = 48.0;
     private static final long LINGER_MS = 5000;
-    private static final int WIDTH = 182;
+    private static final int INFO_GAP = 6;
+    private static final float MIN_INFO_SCALE = 0.6F;
+    private static final int WIDTH = 220;
     private static final int TOP = 6;
     private static final int BAR_HEIGHT = 5;
     private static final int CORE_HEIGHT = 3;
@@ -86,7 +88,15 @@ public final class KaijuHealthBar {
 
         graphics.drawString(font, kaiju.getDisplayName(), x, y, COLOR_TEXT, true);
         Component info = info(kaiju);
-        graphics.drawString(font, info, x + WIDTH - font.width(info), y, COLOR_SUBTEXT, true);
+        // Nome comprido (ex.: "Resurrected Primigenius") encostava no texto da direita: diminui o texto da direita
+        // ate caber no espaco que sobra.
+        int free = WIDTH - font.width(kaiju.getDisplayName()) - INFO_GAP;
+        float infoScale = Math.min(1.0F, Math.max(MIN_INFO_SCALE, free / (float) Math.max(1, font.width(info))));
+        graphics.pose().pushPose();
+        graphics.pose().translate(x + WIDTH - font.width(info) * infoScale, y + (1.0F - infoScale) * font.lineHeight, 0);
+        graphics.pose().scale(infoScale, infoScale, 1.0F);
+        graphics.drawString(font, info, 0, 0, COLOR_SUBTEXT, true);
+        graphics.pose().popPose();
 
         int barY = y + 11;
         graphics.fill(x, barY, x + WIDTH, barY + BAR_HEIGHT, COLOR_EMPTY);

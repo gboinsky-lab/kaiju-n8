@@ -1,0 +1,19 @@
+{
+  "bones": {
+    "body": "kn8:meshes/primigenius_honju/body.obj",
+    "head": "kn8:meshes/primigenius_honju/head.obj",
+    "jaw": "kn8:meshes/primigenius_honju/jaw.obj",
+    "horn_left": "kn8:meshes/primigenius_honju/horn_left.obj",
+    "horn_right": "kn8:meshes/primigenius_honju/horn_right.obj",
+    "arm_left": "kn8:meshes/primigenius_honju/arm_left.obj",
+    "arm_right": "kn8:meshes/primigenius_honju/arm_right.obj",
+    "forearm_left": "kn8:meshes/primigenius_honju/forearm_left.obj",
+    "forearm_right": "kn8:meshes/primigenius_honju/forearm_right.obj",
+    "leg_left": "kn8:meshes/primigenius_honju/leg_left.obj",
+    "leg_right": "kn8:meshes/primigenius_honju/leg_right.obj",
+    "tail_1": "kn8:meshes/primigenius_honju/tail_1.obj",
+    "tail_2": "kn8:meshes/primigenius_honju/tail_2.obj",
+    "tail_3": "kn8:meshes/primigenius_honju/tail_3.obj",
+    "tail_4": "kn8:meshes/primigenius_honju/tail_4.obj"
+  }
+}

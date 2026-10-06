@@ -14,7 +14,7 @@ Divisao pela forma (cortes em metros na tabela SPECIES, medidos nas vistas de to
 cauda (atras e baixo), cabeca (frente e alto; mandibula = parte de baixo da boca), bracos (fora do tronco: o vao
 entre braco e tronco fecha conforme sobe, por isso a borda de dentro depende da altura), antebraco (braco abaixo do
 cotovelo), pernas (abaixo do quadril, pelo lado: X negativo = "left"), o resto e o corpo. As "fin" (barbatanas do
-modelo de cubos) ficam sem malha.
+modelo de cubos) ficam sem malha; nas especies com "horn_min_y" os chifres vao para horn_left/right.
 A GeckoLib inverte o X do pivo ao carregar: os pivos sao gravados com X negado.
 Uso: python3 tools/art/rig_primigenius_mesh.py [especie]   (padrao: primigenius; requer numpy e pillow)
 """
@@ -47,6 +47,35 @@ SPECIES = {
         # Quadril: abaixo = perna do lado.
         "hip_y": 2.3,
     },
+    # Modelos de 2026-10-06 (um GLB por especie). Honju e revivido tem chifres (horn_*) no lugar das barbatanas.
+    "primigenius_resurrected": {
+        "tail_z": 1.1, "tail_max_y": 2.8, "tail_half_width": 1.0,
+        "head_z": -1.6, "head_min_y": 3.8, "jaw_y": 4.5, "jaw_z": -2.6,
+        "arm_inner": [(0.4, 1.4), (1.9, 1.35), (2.6, 1.2), (3.0, 1.0), (3.6, 1.1), (4.2, 1.2)],
+        "arm_min_y": 0.4, "arm_max_y": 4.2, "elbow_y": 2.6,
+        "arm_front_z": -1.8, "arm_front_x": 0.9,
+        "hip_y": 2.4,
+    },
+    "primigenius_honju": {
+        "tail_z": 1.1, "tail_max_y": 7.0, "tail_half_width": 1.3,
+        "head_z": -3.6, "head_min_y": 5.8, "jaw_y": 7.0, "jaw_z": -4.7,
+        "horn_min_y": 7.6, "horn_x": 0.85,
+        "arm_inner": [(1.9, 2.05), (2.7, 1.7), (3.2, 1.45), (5.4, 1.45)],
+        "arm_min_y": 1.9, "arm_max_y": 5.4, "elbow_y": 3.8,
+        "arm_front_z": -2.2, "arm_front_x": 1.0,
+        "arm_back_z": -1.4,
+        "hip_y": 2.7,
+    },
+    "primigenius_revived": {
+        "tail_z": 1.2, "tail_max_y": 4.5, "tail_half_width": 1.5,
+        "head_z": -4.3, "head_min_y": 5.6, "jaw_y": 6.9, "jaw_z": -5.6,
+        "horn_min_y": 7.0, "horn_x": 0.95,
+        "arm_inner": [(0.4, 3.0), (2.2, 2.1), (2.8, 1.9), (3.4, 1.6), (5.2, 1.6)],
+        "arm_min_y": 0.4, "arm_max_y": 5.2, "elbow_y": 3.0,
+        "arm_front_z": -4.3, "arm_front_x": 1.2,
+        "arm_back_z": -2.4,
+        "hip_y": 2.6,
+    },
 }
 
 
@@ -60,9 +89,19 @@ def split(mesh, cfg):
     ys, xs = zip(*cfg["arm_inner"])
     inner = np.interp(y, ys, xs)
     arm = ~tail & ~head & (y >= cfg["arm_min_y"]) & (y <= cfg["arm_max_y"]) & (np.abs(x) > inner)
+    if "arm_back_z" in cfg:
+        # Lateral/costas do tronco atras do ombro nao e braco (ao girar o braco elas iam para a frente).
+        arm &= z < cfg["arm_back_z"]
+    if "arm_front_z" in cfg:
+        # Maos e dedos a frente dos pes (Honju curvado): sempre braco, mesmo abaixo de arm_min_y.
+        arm |= ~tail & ~head & (z < cfg["arm_front_z"]) & (y <= cfg["arm_max_y"]) & (np.abs(x) > cfg["arm_front_x"])
     leg = ~tail & ~head & ~arm & (y < cfg["hip_y"])
     labels[head] = "head"
     labels[head & (y < cfg["jaw_y"]) & (z < cfg["jaw_z"])] = "jaw"
+    if "horn_min_y" in cfg:
+        horn = head & (y > cfg["horn_min_y"]) & (np.abs(x) > cfg["horn_x"])
+        labels[horn & (x <= 0)] = "horn_left"
+        labels[horn & (x > 0)] = "horn_right"
     for side, mask in (("left", x <= 0), ("right", x > 0)):
         labels[arm & mask & (y >= cfg["elbow_y"])] = f"arm_{side}"
         labels[arm & mask & (y < cfg["elbow_y"])] = f"forearm_{side}"
@@ -98,6 +137,11 @@ def pivots(vertices, faces, labels, cfg):
         leg = pts(f"leg_{side}")
         result[f"leg_{side}"] = band_mean(leg, 1, cfg["hip_y"] - 0.3, cfg["hip_y"])
         result[f"fin_{side}"] = np.array([sign * 0.5, top, result["head"][2] - 0.3])
+        if np.any(labels == f"horn_{side}"):
+            horn = pts(f"horn_{side}")
+            # Base do chifre: a parte mais perto do meio da cabeca.
+            result[f"horn_{side}"] = band_mean(horn, 0, *sorted((sign * cfg["horn_x"],
+                                                                  sign * (cfg["horn_x"] + 0.3))))
     for number in range(1, 5):
         segment = pts(f"tail_{number}")
         result[f"tail_{number}"] = band_mean(segment, 2, segment[:, 2].min(), segment[:, 2].min() + 0.25)
@@ -118,6 +162,9 @@ def main():
     old_geo = json.loads((ASSETS / f"geo/entity/{name}.geo.json").read_text(encoding="utf-8"))
     old_bones = old_geo["minecraft:geometry"][0]["bones"]
     points = pivots(vertices, faces, labels, cfg)
+    for bone in old_bones:
+        # Osso sem malha (ex.: horn_* quando o modelo nao tem chifre): pivo no da cabeca.
+        points.setdefault(bone["name"], points["head"])
     mesh_dir = ASSETS / "meshes" / name
     if mesh_dir.exists():
         shutil.rmtree(mesh_dir)
