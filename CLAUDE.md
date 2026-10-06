@@ -80,7 +80,7 @@ mandam; se algo precisar mudar, marque **[DECIDIR]** e pergunte.
 | Protocolo de rede | `"6"` (subir ao mudar qualquer payload) |
 | Ataque "heavy" de kaiju | [SUPOSIÇÃO] atravessa o bloqueio comum; só parry/esquiva evitam (`combat.heavyIgnoresBlock`) |
 | Pacotes de entrega | Nunca incluir `build.gradle`/`gradle.properties` (os do `kn8-main` são os corretos: PAL `transitive=false`, run `clientJoin`, repo Modrinth, bloco do Better Combat) |
-| Modelos Meshy | Armas: OBJ (`neoforge:obj`) na mão; personagens: malha presa aos ossos GeckoLib (`client/render/mesh`: `meshes/<especie>.json` + um OBJ por osso; .geo.json só com ossos; mesma textura/render type do modelo). Conversor `tools/art/meshy_convert.py`; rigging da aranha `tools/art/rig_trichonephila_mesh.py` |
+| Modelos Meshy | Armas: OBJ (`neoforge:obj`) na mão; personagens: malha presa aos ossos GeckoLib (`client/render/mesh`: `meshes/<especie>.json` + um OBJ por osso; .geo.json só com ossos; mesma textura/render type do modelo). Conversor `tools/art/meshy_convert.py`; rigging: `rig_trichonephila_mesh.py`, `rig_soldier_mesh.py`, `rig_primigenius_mesh.py` (divisão pela forma; mesmos nomes de ossos, então as animações continuam) |
 | Arma na mão (0.1-B, teste) | Lâmina: display de espada vanilla. Arma de fogo: cano ao longo do braço (`thirdperson` rotação `[0, 90, 0]`, `hand_grip` em `meshy_assets.json`), jogador em `CROSSBOW_HOLD` (`HeldWeaponPoses`). Soldado: mesma cadeia do vanilla em Y para cima (só `Rx(-90)`), item alinhado ombro→mão. Conferir com `tools/art/preview_held_items.py` |
 | Texturas de malha Meshy | Sem mipmap no Minecraft: textura proporcional ao modelo (soldado 512) com borda nas ilhas (`pad_texture.py`); UV quebrada pela redução → `rebake_mesh_texture.py` |
 | Pivô na GeckoLib | O X do pivô do .geo.json é invertido ao carregar: gravar `-x` (confirmado no código da GeckoLib) |
@@ -101,6 +101,7 @@ mandam; se algo precisar mudar, marque **[DECIDIR]** e pergunte.
 | M10b rifle, parry, crítico, CombatStateS2C/HUD, clamp de stamina, arte embutida | ✅ |
 | M11a habilidades `area_melee`/`charge`, núcleo na cabeça da Trichonephila, GameTests do M10b | ⏳ aguardando teste |
 | Etapa A pipeline Meshy (armas OBJ na mão, pistola, espada, animação por arma) · Etapa B HUD (referência "HUD de combate avançado - estilo anime"; ícones em `textures/gui/hud_icons.png`, gerados por `tools/art/gen_hud_icons.py`) | ⏳ aguardando teste |
+| **Modelos Meshy estilo Minecraft** (soldado, aranha 8 patas, Primigenius) | ⏳ convertidos e com rig fora do jogo; aguardando compilar + roteiro §11 |
 | **0.1-B correções visuais** (aranha, soldado, armas na mão, espada nova) | ⏳ fora do jogo (sem rede para o Maven nesta sessão: não compilado); **aguardando compilar + roteiro §10** de `docs/ROTEIRO_TESTE_0_1_B.md` |
 | **0.1-B** (atualização grande, escrita no chat): escala, VFX, destruição, carcaça/desmonte, Primigenius verde e Honju marrom, barra de vida, dash/ataque carregado, Soldado 1 | ⏳ compila, JUnit (69) e GameTests (31/31) passam em 2026-10-06; **aguardando teste manual** — `docs/ROTEIRO_TESTE_0_1_B.md` (resultado e correções em `docs/ATUALIZACAO_0_1_B.md`) |
 | M11b carcaças e desmonte · M12 transformação · M13 NPCs · M14 patentes/crafting | pendentes |
@@ -148,8 +149,8 @@ mandam; se algo precisar mudar, marque **[DECIDIR]** e pergunte.
 
 | Kaiju (id) | Categoria | Arte | No jogo |
 |---|---|---|---|
-| `trichonephila` | Yoju | malha do Meshy (6 mil tri, 3 patas por lado), hitbox 3,0 × 3,4 | ✅ |
-| `primigenius` | Yoju | final (brute de cabeça de crocodilo, claro) | ✅ |
+| `trichonephila` | Yoju | malha do Meshy estilo Minecraft (6.850 tri, 8 patas, 5,5 m de envergadura), hitbox 3,4 × 1,8 | ⏳ 2026-10-06 |
+| `primigenius` | Yoju | malha do Meshy estilo Minecraft (8.276 tri, 6 m, com cauda), ossos do modelo de cubos | ⏳ 2026-10-06 |
 | `primigenius_resurrected` | Yoju ressurgido | final (verde), 6 de altura | ✅ registrado (0.1-B) |
 | `primigenius_honju` | Honju | final (Titã Bruto, marrom), 9 de altura | ✅ registrado (0.1-B) |
 | `primigenius_revived` | Honju ressurgido | final (Titã Bruto, roxo), hitbox 5,73 × 9,0 | ✅ |
@@ -162,7 +163,9 @@ Modelos do Meshy (GLB com o id como nome, pasta fora do Git; tabela `tools/art/m
 `trichonephila` (~4,5 m de comprimento, 8 patas), `primigenius` e `primigenius_resurrected` (6 m de altura,
 largura ~3,1), `primigenius_honju` e `primigenius_revived` (9 m, largura ~5,7), `soldier` + `soldier_parts`
 (1,9 m), armas `rifle`, `pistol`, `combat_knife`, `sword`, `twin_swords_sheathed`, `single_sheath`, `twin_swords`.
-Os 4 Primigenius ainda precisam de script de rig (como `rig_trichonephila_mesh.py`) quando os GLB chegarem.
+`primigenius` já está no jogo (`rig_primigenius_mesh.py`, com a tabela `SPECIES` de cortes por espécie); para
+`primigenius_resurrected`, `primigenius_honju` e `primigenius_revived` basta medir os cortes do modelo novo e
+acrescentar na tabela. `build_primigenius.py` não sobrescreve espécie que já tem malha (só regera as animações).
 
 ## Pendências e [DECIDIR]
 
@@ -174,6 +177,8 @@ Os 4 Primigenius ainda precisam de script de rig (como `rig_trichonephila_mesh.p
 - Corrida com custo de stamina (GDD §7) ainda não implementada (dash e ataque carregado: 0.1-B).
 - 0.1-B: sem GameTest para destruição, dash e ataque carregado (só JUnit da matemática); GameTests de Carcass,
   KaijuAbility e KaijuAreaAbility ainda aninham `runAfterDelay`; sons próprios (.ogg) e ícones finais dos materiais.
+- [SUPOSIÇÃO] Hitbox nova da Trichonephila 3,4 × 1,8 (o modelo novo é baixo e largo) e partes de
+  Trichonephila/Primigenius medidas na malha nova.
 - [SUPOSIÇÃO] Sinais de Y/Z das rotações nas animações GeckoLib (braço direito: Y negativo = para dentro) vêm da
   convenção do Blockbench; conferidos só no simulador `preview_held_items.py`. Se os braços abrirem em vez de
   fechar na mira, inverter o Y das poses em `rig_soldier_mesh.py` (`POSES`/`AIM`).

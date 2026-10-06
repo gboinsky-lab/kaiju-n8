@@ -155,3 +155,17 @@ antes da correção: rifle diagonal para o chão, espada para a frente). Prévia
 
 Pendente: compilar (`./gradlew build`, `runGameTestServer`) e o roteiro §10. Se preferir outro modelo de espada,
 mande o GLB: é só tirar o `replaced_by` da tabela e rodar o conversor.
+
+## Modelos novos do Meshy, estilo Minecraft (2026-10-06)
+
+O Miguel refez no Meshy o soldado, a Trichonephila (agora com 8 patas) e o Primigenius, no estilo "blocos". GLB
+fora do Git (pasta `--src` do conversor), nomes = id. Conferido fora do jogo (prévias em `docs/img/`).
+
+| Modelo | Conversão | Rig | Mudanças no jogo |
+|---|---|---|---|
+| `soldier` (8.353 tri) | sem redução; segmentação do Meshy não é mais usada (`soldier_parts.glb` veio em 14 pedaços) | `rig_soldier_mesh.py` divide pela forma: braços (vão entre braço e tronco), cabeça acima do pescoço, corpo acima do quadril, pernas pelo lado | Poses de arma reajustadas (braços retos agora, não em "A") |
+| `trichonephila` (6.850 tri, 8 patas) | sem redução, 5,5 m de envergadura, 1,7 de altura | `rig_trichonephila_mesh.py` refeito: cefalotórax/cabeça/quelíceras/abdômen + cada pata achada pela parte distante do centro (scipy) | Hitbox 3,0 × 3,4 → **3,4 × 1,8** [SUPOSIÇÃO]; partes (cabeça = núcleo, cefalotórax, abdômen) remedidas; GameTest e JUnit de escala atualizados |
+| `primigenius` (8.276 tri) | sem redução, 6 m de altura | `rig_primigenius_mesh.py` (novo): cauda (4 segmentos), cabeça/mandíbula, braço/antebraço, pernas, corpo; mesmos ossos e animações do modelo de cubos | Partes (cabeça, torso, núcleo no peito, pernas) remedidas; hitbox igual (3,13 × 6,0) |
+
+`meshy_convert.py` agora pula GLB ausente; `build_primigenius.py` não sobrescreve espécie com malha.
+Pendente: compilar e o roteiro §11. Os outros modelos (Honju, ressurgido, revivido, armas) ficam para depois.

@@ -10,11 +10,12 @@ pes em Y = 0, frente para -Z. Saida:
   - assets/kn8/geo/entity/trichonephila.geo.json : esqueleto SO de ossos (sem cubos), mesmos nomes de antes;
   - assets/kn8/animations/entity/trichonephila.animation.json : as animacoes de build_trichonephila.py.
 
-Divisao: abdomen (regiao de tras e alta), patas (fora do miolo, agrupadas por angulo em volta do centro, separando
-onde ha vao entre elas; da frente para tras = leg_<lado>_0..), o resto e o corpo. Pivo de cada pata = ponto da pata
+Divisao (modelo de 8 patas, 2026-10-06): cefalotorax = body (frente = head, presas = fang_left/right), abdomen
+atras, patas = o resto; cada pata e achada pela parte distante do centro e as faces perto do quadril vao para a
+pata cuja linha passa mais perto (da frente para tras = leg_<lado>_0..3). Pivo de cada pata = ponto da pata
 mais perto do centro (quadril). A GeckoLib inverte o X do pivo ao carregar: os pivos sao gravados com X negado.
 Substitui a arte em cubos de build_trichonephila.py (que nao deve mais ser rodado para esta especie).
-Uso: python3 tools/art/rig_trichonephila_mesh.py
+Uso: python3 tools/art/rig_trichonephila_mesh.py   (requer numpy, pillow e scipy)
 """
 import json
 import math
@@ -23,6 +24,10 @@ import sys
 from pathlib import Path
 
 import numpy as np
+from PIL import Image
+
+sys.path.insert(0, str(Path(__file__).parent))
+from pad_texture import DILATE_STEPS, dilate, uv_mask  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
 ASSETS = ROOT / "src/main/resources/assets/kn8"
@@ -30,18 +35,27 @@ SOURCE = ROOT / "tools/art/converted/trichonephila"
 NAME = "trichonephila"
 PX = 16.0
 
-# Medidas da malha convertida (metros), conferidas na vista de cima: centro de onde saem as patas e o miolo do corpo.
-CENTER_Z = -0.25
-CORE_HALF_WIDTH = 0.7
-CORE_FRONT_Z = -2.2
-ABDOMEN_START_Z = 0.25
-# Abdomen como elipsoide (centro e raios em metros): pega a bola de tras sem roubar o alto das patas traseiras.
-ABDOMEN_CENTER = (0.0, 2.55, 1.2)
-ABDOMEN_RADII = (1.15, 1.25, 1.0)
-ABDOMEN_TOLERANCE = 1.15
-LEG_GAP_DEGREES = 12.0
-# Nenhuma pata sobe acima disto: faces de "pata" mais altas sao a lateral do abdomen.
-LEG_MAX_Y = 2.7
+# Medidas da malha convertida (metros, frente -Z), modelo "estilo Minecraft" de 2026-10-06 (8 patas, corpo baixo):
+# cefalotorax |x| < 0,42 na frente de ABDOMEN_START_Z; abdomen (caixa listrada) atras, |x| < 0,7, acima do chao.
+CENTER_Z = -0.5
+CORE_HALF_WIDTH = 0.42
+ABDOMEN_START_Z = 0.3
+ABDOMEN_HALF_WIDTH = 0.7
+ABDOMEN_MIN_Y = 0.45
+# Cabeca = frente do cefalotorax; queliceras = parte baixa da frente (as presas brancas).
+HEAD_Z = -1.2
+FANG_Z = -1.45
+FANG_MAX_Y = 0.6
+# Patas: a parte distante do centro (> LEG_FAR_RADIUS) separa bem cada pata; pedacos vizinhos (distancia
+# LEG_LINK) se juntam, e pedacos na mesma direcao (< LEG_MERGE_DEGREES) sao a mesma pata. O resto de cada pata
+# (perto do quadril) vai para a pata cuja linha (vista de cima) passa mais perto.
+LEG_FAR_RADIUS = 1.3
+LEG_LINK = 0.12
+LEG_MERGE_DEGREES = 12.0
+LEG_MIN_FACES = 80
+# Pivo do quadril: so vertices abaixo disto (a pata sobe ate o "joelho" acima do corpo).
+LEG_MAX_Y = 1.7
+HIP_QUANTILE = 0.1
 
 
 def read_obj(path):
@@ -75,46 +89,63 @@ def write_obj(path, vertices, uvs, normals, faces):
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
+def leg_lines(centroids, leg, side_mask):
+    """Uma linha (vista de cima) por pata deste lado, da frente para tras."""
+    from scipy.cluster.hierarchy import fcluster, linkage
+    x, z = centroids[:, 0], centroids[:, 2]
+    radius = np.hypot(x, z - CENTER_Z)
+    angle = np.degrees(np.arctan2(z - CENTER_Z, np.abs(x)))
+    far = np.where(leg & side_mask & (radius > LEG_FAR_RADIUS))[0]
+    labels = fcluster(linkage(centroids[far], "single"), LEG_LINK, "distance")
+    pieces = [far[labels == k] for k in np.unique(labels)]
+    pieces = sorted((g for g in pieces if len(g) > LEG_MIN_FACES // 4), key=lambda g: angle[g].mean())
+    legs = []
+    for piece in pieces:
+        if legs and angle[piece].mean() - angle[legs[-1]].mean() < LEG_MERGE_DEGREES:
+            legs[-1] = np.concatenate([legs[-1], piece])
+        else:
+            legs.append(piece)
+    lines = []
+    for group in (g for g in legs if len(g) > LEG_MIN_FACES):
+        points = centroids[group][:, [0, 2]]
+        middle = points.mean(axis=0)
+        direction = np.linalg.svd(points - middle)[2][0]
+        lines.append((middle, direction))
+    return lines
+
+
 def classify(vertices, faces):
     centroids = vertices[faces].mean(axis=1)
     x, y, z = centroids[:, 0], centroids[:, 1], centroids[:, 2]
-    ellipsoid = (((x - ABDOMEN_CENTER[0]) / ABDOMEN_RADII[0]) ** 2 + ((y - ABDOMEN_CENTER[1]) / ABDOMEN_RADII[1]) ** 2
-                 + ((z - ABDOMEN_CENTER[2]) / ABDOMEN_RADII[2]) ** 2)
-    abdomen = (z > ABDOMEN_START_Z) & (ellipsoid < ABDOMEN_TOLERANCE)
-    core = (np.abs(x) < CORE_HALF_WIDTH) & (z > CORE_FRONT_Z) & (z <= ABDOMEN_START_Z)
-    leg = ~(abdomen | core)
-    abdomen = abdomen | (leg & (y > LEG_MAX_Y) & (z > ABDOMEN_START_Z))
-    leg = leg & ~abdomen
+    core = (np.abs(x) < CORE_HALF_WIDTH) & (z < ABDOMEN_START_Z)
+    abdomen = (np.abs(x) < ABDOMEN_HALF_WIDTH) & (z >= ABDOMEN_START_Z) & (y > ABDOMEN_MIN_Y)
+    leg = ~(core | abdomen)
     labels = np.array(["body"] * len(faces), dtype=object)
     labels[abdomen] = "abdomen"
-    # Angulo de cada face de pata em volta do centro: -90 = frente, +90 = tras (lado decidido pelo sinal de x).
-    angle = np.degrees(np.arctan2(z - CENTER_Z, np.abs(x)))
-    for side, mask in (("right", leg & (x > 0)), ("left", leg & (x <= 0))):
-        indices = np.where(mask)[0]
-        order = indices[np.argsort(angle[indices])]
-        clusters, current = [], [order[0]] if len(order) else []
-        for previous, index in zip(order, order[1:]):
-            if angle[index] - angle[previous] > LEG_GAP_DEGREES:
-                clusters.append(current)
-                current = []
-            current.append(index)
-        if current:
-            clusters.append(current)
-        # Grupos pequenos demais sao ruido (pedacos do corpo na borda): ficam no corpo.
-        clusters = [c for c in clusters if len(c) > 40]
-        for number, cluster in enumerate(clusters[:4]):
-            labels[cluster] = f"leg_{side}_{number}"
+    labels[core & (z < HEAD_Z)] = "head"
+    fang = core & (z < FANG_Z) & (y < FANG_MAX_Y)
+    labels[fang & (x <= 0)] = "fang_left"
+    labels[fang & (x > 0)] = "fang_right"
+    for side, side_mask in (("right", x > 0), ("left", x <= 0)):
+        lines = leg_lines(centroids, leg, side_mask)
+        if len(lines) != 4:
+            print(f"AVISO: {len(lines)} patas do lado {side} (esperado 4); confira a vista de cima")
+        members = np.where(leg & side_mask)[0]
+        distance = np.stack([np.abs((centroids[members][:, 0] - m[0]) * d[1] - (centroids[members][:, 2] - m[1]) * d[0])
+                             for m, d in lines], axis=1)
+        nearest = np.argmin(distance, axis=1)
+        for number in range(len(lines)):
+            labels[members[nearest == number]] = f"leg_{side}_{number}"
     return labels
 
 
 def pivot_of(vertices, faces, labels, name):
-    """Quadril: vertice da pata mais perto do centro, no plano horizontal."""
-    used = np.unique(faces[labels == name])
-    points = vertices[used]
+    """Quadril: media dos 10% de vertices da pata mais perto do centro (vista de cima)."""
+    points = vertices[np.unique(faces[labels == name])]
     points = points[points[:, 1] < LEG_MAX_Y]
     distance = np.hypot(points[:, 0], points[:, 2] - CENTER_Z)
-    hip = points[np.argmin(distance)]
-    return hip
+    nearest = points[distance <= np.quantile(distance, HIP_QUANTILE)]
+    return nearest.mean(axis=0)
 
 
 def geo_pivot(point):
@@ -127,9 +158,18 @@ def main():
     labels = classify(vertices, faces)
     bones = {"root": None, "body": "root", "head": "body", "fang_left": "head", "fang_right": "head",
              "abdomen": "body"}
-    pivots = {"root": np.zeros(3), "body": np.array([0, 2.0, CENTER_Z]), "head": np.array([0, 2.0, -1.5]),
-              "fang_left": np.array([0.15, 1.8, -1.9]), "fang_right": np.array([-0.15, 1.8, -1.9]),
-              "abdomen": np.array([0, 2.0, ABDOMEN_START_Z])}
+    def center(name):
+        return vertices[np.unique(faces[labels == name])].mean(axis=0)
+
+    def top_back(name):
+        """Pivo na ligacao com o pai: alto e atras (cabeca/queliceras giram em volta da junta)."""
+        points = vertices[np.unique(faces[labels == name])]
+        return np.array([points[:, 0].mean(), points[:, 1].max(), points[:, 2].max()])
+
+    pivots = {"root": np.zeros(3), "body": np.array([0.0, center("body")[1], CENTER_Z]),
+              "head": np.array([0.0, center("head")[1], HEAD_Z]),
+              "fang_left": top_back("fang_left"), "fang_right": top_back("fang_right"),
+              "abdomen": np.array([0.0, center("abdomen")[1], ABDOMEN_START_Z])}
     for side in ("left", "right"):
         for number in range(4):
             name = f"leg_{side}_{number}"
@@ -146,7 +186,12 @@ def main():
             index["bones"][name] = f"kn8:meshes/{NAME}/{name}.obj"
             print(f"{name}: {len(part)} triangulos")
     (ASSETS / "meshes" / f"{NAME}.json").write_text(json.dumps(index, indent=2) + "\n", encoding="utf-8")
-    shutil.copy(SOURCE / f"{NAME}.png", ASSETS / f"textures/entity/{NAME}.png")
+    # Textura com borda nas ilhas de UV (sem mipmap no Minecraft a costura pega o fundo).
+    image = Image.open(SOURCE / f"{NAME}.png").convert("RGBA")
+    mask = uv_mask([SOURCE / f"{NAME}.obj"], image.width, image.height)
+    padded = dilate(np.asarray(image)[..., :3], mask, DILATE_STEPS)
+    Image.fromarray(np.clip(padded, 0, 255).astype(np.uint8)).convert("RGBA").save(
+        ASSETS / f"textures/entity/{NAME}.png")
     stale = ASSETS / f"textures/entity/{NAME}_mesh.png"
     if stale.exists():
         stale.unlink()
@@ -158,7 +203,7 @@ def main():
         geo_bones.append(entry)
     geo = {"format_version": "1.12.0", "minecraft:geometry": [{
         "description": {"identifier": f"geometry.{NAME}", "texture_width": 16, "texture_height": 16,
-                        "visible_bounds_width": 6, "visible_bounds_height": 5, "visible_bounds_offset": [0, 2, 0]},
+                        "visible_bounds_width": 7, "visible_bounds_height": 4, "visible_bounds_offset": [0, 1, 0]},
         "bones": geo_bones}]}
     (ASSETS / f"geo/entity/{NAME}.geo.json").write_text(json.dumps(geo, indent=2) + "\n", encoding="utf-8")
     sys.path.insert(0, str(Path(__file__).parent))

@@ -13,33 +13,33 @@
       "name": "head",
       "offset": [
         0.0,
-        2.09,
-        2.48
+        3.75,
+        2.8
       ],
-      "width": 1.43,
-      "height": 1.5,
+      "width": 1.7,
+      "height": 2.0,
       "multiplier": 1.2
     },
     {
       "name": "torso",
       "offset": [
         0.0,
-        1.17,
-        0.07
+        2.3,
+        0.6
       ],
-      "width": 2.87,
-      "height": 4.04,
+      "width": 2.9,
+      "height": 3.6,
       "multiplier": 1.0
     },
     {
       "name": "core",
       "offset": [
         0.0,
-        1.43,
-        1.37
+        3.0,
+        1.9
       ],
-      "width": 1.04,
-      "height": 0.78,
+      "width": 1.0,
+      "height": 1.1,
       "multiplier": 3.0,
       "core": true
     },
@@ -48,10 +48,10 @@
       "offset": [
         0.0,
         0.0,
-        -0.26
+        0.5
       ],
-      "width": 2.87,
-      "height": 1.96,
+      "width": 2.9,
+      "height": 2.3,
       "multiplier": 0.8
     }
   ],

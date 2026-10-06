@@ -1,9 +1,9 @@
 {
   "bones": {
     "head": "kn8:meshes/soldier/head.obj",
+    "body": "kn8:meshes/soldier/body.obj",
     "arm_left": "kn8:meshes/soldier/arm_left.obj",
     "arm_right": "kn8:meshes/soldier/arm_right.obj",
-    "body": "kn8:meshes/soldier/body.obj",
     "leg_left": "kn8:meshes/soldier/leg_left.obj",
     "leg_right": "kn8:meshes/soldier/leg_right.obj"
   }

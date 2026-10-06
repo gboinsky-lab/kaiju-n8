@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 """Rigging do Soldado 1 (malha do Meshy presa aos ossos da GeckoLib), 0.1-B / Etapa F.
 
-Entrada: tools/art/converted/soldier_1/soldier_1_<parte>.obj (meshy_convert.py; partes da segmentacao do Meshy:
-head, torso, waist, arm_left, arm_right, legs, boots) + soldier_1.png. Em metros, pes em Y = 0, frente -Z.
+Entrada: tools/art/converted/soldier_1/soldier_1.obj + .png (meshy_convert.py, modelo inteiro). Em metros, pes em
+Y = 0, frente -Z. A divisao em partes e feita aqui pela forma (split), sem a segmentacao do Meshy.
 Saida (especie "soldier"):
-  - assets/kn8/meshes/soldier.json + meshes/soldier/<osso>.obj  (body = torso + cintura; pernas+botas separadas
-    pelo lado em leg_left / leg_right);
+  - assets/kn8/meshes/soldier.json + meshes/soldier/<osso>.obj (head, body, arm_left/right, leg_left/right);
   - assets/kn8/textures/entity/soldier.png (512, com borda nas ilhas de UV: tools/art/pad_texture.py);
   - assets/kn8/geo/entity/soldier.geo.json (so ossos; pivos no pescoco, ombros, quadris; item_right na mao direita);
   - assets/kn8/animations/entity/soldier.animation.json (pernas, poses de arma por classe, ataque, tiro, dano).
@@ -37,35 +36,31 @@ TOP_SLICE = 0.08
 HAND_BAND = (0.06, 0.11)
 # Duracao do passo (s); a GeckoLib toca a animacao no tempo real, sem acompanhar a velocidade.
 WALK_LENGTH = 0.9
-# Altura do quadril (m): acima = corpo, abaixo = perna do lado. A segmentacao do Meshy nao separa bem cintura/botas.
-HIP_Y = 1.1
+# Cortes da malha (m), medidos no perfil do modelo: quadril, pescoco, ponta dos dedos e borda de dentro dos bracos.
+HIP_Y = 0.85
+NECK_Y = 1.53
+HAND_MIN_Y = 0.66
+ARM_INNER_X = 0.235
 
 
-def load_part(part):
-    return read_obj(SOURCE / f"soldier_1_{part}.obj")
+def load_mesh():
+    return read_obj(SOURCE / "soldier_1.obj")
 
 
-def merge(parts):
-    vertices, uvs, normals, faces = [], [], [], []
-    offset = 0
-    for v, t, n, f in parts:
-        vertices.append(v)
-        uvs.append(t)
-        normals.append(n)
-        faces.append(f + offset)
-        offset += len(v)
-    return np.vstack(vertices), np.vstack(uvs), np.vstack(normals), np.vstack(faces)
-
-
-def split_trunk(mesh):
-    """Tronco + cintura + pernas + botas: acima do quadril = corpo; abaixo, perna do lado (X negativo = "left",
-    mesma convencao em que o meshy_convert nomeou os bracos)."""
+def split(mesh):
+    """Divide a malha inteira pela forma (modelo "estilo Minecraft" de 2026-10-06: bracos retos, separados do tronco
+    por um vao em |x| ~0,24..0,30 m). Bracos: fora do tronco e acima da ponta dos dedos; cabeca: acima do pescoco;
+    corpo: acima do quadril; abaixo, perna do lado (X negativo = "left", convencao do meshy_convert)."""
     vertices, uvs, normals, faces = mesh
-    centroid = vertices[faces].mean(axis=1)
-    body = centroid[:, 1] > HIP_Y
-    return {"body": (vertices, uvs, normals, faces[body]),
-            "leg_left": (vertices, uvs, normals, faces[~body & (centroid[:, 0] <= 0)]),
-            "leg_right": (vertices, uvs, normals, faces[~body & (centroid[:, 0] > 0)])}
+    c = vertices[faces].mean(axis=1)
+    arm = (c[:, 1] >= HAND_MIN_Y) & (np.abs(c[:, 0]) > ARM_INNER_X)
+    head = ~arm & (c[:, 1] > NECK_Y)
+    body = ~arm & ~head & (c[:, 1] > HIP_Y)
+    leg = ~arm & ~head & ~body
+    groups = {"head": head, "body": body,
+              "arm_left": arm & (c[:, 0] < 0), "arm_right": arm & (c[:, 0] > 0),
+              "leg_left": leg & (c[:, 0] <= 0), "leg_right": leg & (c[:, 0] > 0)}
+    return {name: (vertices, uvs, normals, faces[sel]) for name, sel in groups.items()}
 
 
 def top_point(mesh, fraction=TOP_SLICE):
@@ -75,6 +70,12 @@ def top_point(mesh, fraction=TOP_SLICE):
     span = top - used[:, 1].min()
     band = used[used[:, 1] > top - span * fraction]
     return np.array([band[:, 0].mean(), top - span * fraction * 0.5, band[:, 2].mean()])
+
+
+def bottom_center(mesh):
+    vertices, _, _, faces = mesh
+    used = vertices[np.unique(faces)]
+    return used.mean(axis=0)
 
 
 def geo_pivot(point):
@@ -92,20 +93,21 @@ def hand_point(mesh):
 
 # Poses dos bracos (graus, convencao do Blockbench/GeckoLib): X negativo = levanta para a frente. Y: braco direito
 # negativo / esquerdo positivo = para dentro (na frente do corpo). Z: direito negativo / esquerdo positivo = para
-# dentro. Os bracos da malha ja abrem ~20 graus (pose "A"), por isso o Y das poses de arma e maior que o do vanilla.
+# dentro. Os bracos da malha abrem ~9 graus (mao para fora do ombro), por isso o Y das poses de arma e um pouco
+# maior que o do vanilla.
 # [SUPOSICAO] sinais de Y/Z conferidos so no simulador (tools/art/preview_soldier.py), nao em jogo.
 POSES = {
     #             braco direito        braco esquerdo
-    "unarmed": ([0, 0, -4], [0, 0, 4]),
-    "blade": ([-28, -8, -4], [0, 0, 4]),
-    "rifle": ([-48, -38, 0], [-62, 50, 0]),
-    "pistol": ([-38, -26, 0], [-34, 46, 0]),
+    "unarmed": ([0, 0, -2], [0, 0, 2]),
+    "blade": ([-28, -4, -2], [0, 0, 2]),
+    "rifle": ([-48, -28, 0], [-62, 40, 0]),
+    "pistol": ([-38, -18, 0], [-34, 36, 0]),
 }
 AIM = {
-    "unarmed": ([-55, -30, 0], [-55, 30, 0]),
-    "blade": ([-45, -15, 0], [-30, 20, 0]),
-    "rifle": ([-88, -36, 0], [-92, 52, 0]),
-    "pistol": ([-88, -36, 0], [-88, 36, 0]),
+    "unarmed": ([-55, -22, 0], [-55, 22, 0]),
+    "blade": ([-45, -8, 0], [-30, 14, 0]),
+    "rifle": ([-88, -26, 0], [-92, 42, 0]),
+    "pistol": ([-88, -27, 0], [-88, 27, 0]),
 }
 RECOIL = {"rifle": 8, "pistol": 16}
 
@@ -190,18 +192,11 @@ def animations():
 
 
 def main():
-    meshes = {
-        "head": load_part("head"),
-        "arm_left": load_part("arm_left"),
-        "arm_right": load_part("arm_right"),
-    }
-    meshes.update(split_trunk(merge([load_part("torso"), load_part("waist"), load_part("legs"),
-                                     load_part("boots")])))
-    torso = load_part("torso")
+    meshes = split(load_mesh())
     pivots = {
         "root": np.zeros(3),
         "body": np.array([0.0, HIP_Y, 0.0]),
-        "head": np.array([0.0, top_point(torso)[1], top_point(torso)[2]]),
+        "head": np.array([0.0, NECK_Y, bottom_center(meshes["head"])[2]]),
         "arm_left": top_point(meshes["arm_left"]),
         "arm_right": top_point(meshes["arm_right"]),
         "leg_left": np.array([top_point(meshes["leg_left"])[0], HIP_Y, top_point(meshes["leg_left"])[2]]),

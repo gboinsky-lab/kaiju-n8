@@ -74,16 +74,15 @@
   "entities": {
     "soldier_1": {
       "source": "soldier.glb",
-      "segmentation": "soldier_parts.glb",
       "height_m": 1.9,
       "texture": 1024,
       "max_triangles": 9000
     },
     "trichonephila": {
       "source": "trichonephila.glb",
-      "length_m": 4.5,
+      "length_m": 5.5,
       "texture": 1024,
-      "max_triangles": 6000
+      "max_triangles": 8000
     },
     "twin_swords_sheathed": {
       "source": "twin_swords_sheathed.glb",
@@ -95,7 +94,7 @@
       "source": "primigenius.glb",
       "height_m": 6.0,
       "texture": 1024,
-      "max_triangles": 8000
+      "max_triangles": 9000
     },
     "primigenius_resurrected": {
       "source": "primigenius_resurrected.glb",

@@ -11,8 +11,8 @@ class KaijuScaleTest {
 
     @Test
     void currentSpeciesFitTheirCategory() {
-        // Trichonephila 3,0 x 3,4: no limite da folga do Yoju (4 - 15% = 3,4).
-        assertTrue(KaijuScale.fits("yoju", 3.0, 3.4));
+        // Trichonephila 3,4 x 1,8 (modelo de 2026-10-06): no limite da folga do Yoju (4 - 15% = 3,4).
+        assertTrue(KaijuScale.fits("yoju", 3.4, 1.8));
         assertTrue(KaijuScale.fits("yoju", 3.13, 6.0));
         assertTrue(KaijuScale.fits("honju", 5.73, 9.0));
     }

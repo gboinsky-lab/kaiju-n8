@@ -173,3 +173,17 @@ Prévias do que é esperado: `docs/img/preview_aranha.png`, `preview_armas_jogad
 | 10.8 | Espada na mão (1ª e 3ª pessoa), no chão, no inventário | Espada nova (lâmina prateada com faixa ciano), na mão como uma espada vanilla |
 | 10.9 | Dev2 olhando Dev1 e o soldado | Mesmas poses nos dois clientes |
 | 10.10 | Se na mira os braços do soldado ABREM para os lados em vez de fechar na frente | Anote: é o sinal de Y das poses ([SUPOSIÇÃO] da convenção da GeckoLib) |
+
+## 11. Modelos novos do Meshy (estilo Minecraft) — 2026-10-06
+
+Prévias: `docs/img/preview_soldado.png`, `preview_aranha.png`, `preview_primigenius.png`.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 11.1 | `/kn8 soldier spawn rifle` (e as outras variantes) | Soldado novo em blocos, inteiro, textura sem riscos; poses de §10 valem |
+| 11.2 | `/kn8 kaiju spawn trichonephila`, F3+B | 8 patas; hitbox ≈ 3,4 × 1,8 cobrindo o corpo; patas andam alternadas, presas mexem na mordida |
+| 11.3 | Acerte a cabeça da aranha e depois o abdômen | Cabeça = núcleo (dano ×3); a caixa da cabeça fica sobre a cabeça do modelo |
+| 11.4 | `/kn8 kaiju spawn primigenius`, F3+B | Modelo novo com cauda, 6 de altura; cabeça, torso, núcleo (peito) e pernas no lugar do modelo |
+| 11.5 | Lute com o Primigenius (slam, charge, mordida) | Animações tocam com a malha nova (braços, mandíbula, cauda) sem peças soltas |
+| 11.6 | Carcaça da aranha e do Primigenius | Carcaça usa o modelo novo |
+| 11.7 | `primigenius_resurrected` | Continua o modelo de cubos verde (o novo ainda não chegou) |

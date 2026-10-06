@@ -6,11 +6,11 @@
         "identifier": "geometry.trichonephila",
         "texture_width": 16,
         "texture_height": 16,
-        "visible_bounds_width": 6,
-        "visible_bounds_height": 5,
+        "visible_bounds_width": 7,
+        "visible_bounds_height": 4,
         "visible_bounds_offset": [
           0,
-          2,
+          1,
           0
         ]
       },
@@ -27,8 +27,8 @@
           "name": "body",
           "pivot": [
             -0.0,
-            32.0,
-            -4.0
+            17.392,
+            -8.0
           ],
           "parent": "root"
         },
@@ -36,26 +36,26 @@
           "name": "head",
           "pivot": [
             -0.0,
-            32.0,
-            -24.0
+            15.607,
+            -19.2
           ],
           "parent": "body"
         },
         {
           "name": "fang_left",
           "pivot": [
-            -2.4,
-            28.8,
-            -30.4
+            3.982,
+            10.13,
+            -21.472
           ],
           "parent": "head"
         },
         {
           "name": "fang_right",
           "pivot": [
-            2.4,
-            28.8,
-            -30.4
+            -4.456,
+            10.052,
+            -21.535
           ],
           "parent": "head"
         },
@@ -63,80 +63,80 @@
           "name": "abdomen",
           "pivot": [
             -0.0,
-            32.0,
-            4.0
+            17.997,
+            4.8
           ],
           "parent": "body"
         },
         {
           "name": "leg_left_0",
           "pivot": [
-            10.885,
-            34.792,
-            -12.207
+            7.425,
+            15.481,
+            -7.353
           ],
           "parent": "body"
         },
         {
           "name": "leg_left_1",
           "pivot": [
-            10.411,
-            39.783,
-            -5.027
+            8.591,
+            14.455,
+            -4.091
           ],
           "parent": "body"
         },
         {
           "name": "leg_left_2",
           "pivot": [
-            6.616,
-            32.093,
-            3.041
+            7.613,
+            14.332,
+            -2.407
           ],
           "parent": "body"
         },
         {
           "name": "leg_left_3",
           "pivot": [
-            -0.0,
-            32.0,
-            -4.0
+            9.874,
+            15.536,
+            4.101
           ],
           "parent": "body"
         },
         {
           "name": "leg_right_0",
           "pivot": [
-            -9.767,
-            35.642,
-            -11.654
+            -7.462,
+            15.877,
+            -7.182
           ],
           "parent": "body"
         },
         {
           "name": "leg_right_1",
           "pivot": [
-            -10.194,
-            39.749,
-            -2.661
+            -8.704,
+            14.652,
+            -1.451
           ],
           "parent": "body"
         },
         {
           "name": "leg_right_2",
           "pivot": [
-            -6.58,
-            34.112,
-            3.206
+            -7.458,
+            12.981,
+            -1.957
           ],
           "parent": "body"
         },
         {
           "name": "leg_right_3",
           "pivot": [
-            -0.0,
-            32.0,
-            -4.0
+            -9.198,
+            16.469,
+            3.708
           ],
           "parent": "body"
         }

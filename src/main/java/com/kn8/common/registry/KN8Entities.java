@@ -26,7 +26,7 @@ public final class KN8Entities {
     private static final int KAIJU_TRACKING_RANGE_CHUNKS = 10;
 
     public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> TRICHONEPHILA =
-            kaiju("trichonephila", 3.0F, 3.4F);
+            kaiju("trichonephila", 3.4F, 1.8F);
     public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> PRIMIGENIUS =
             kaiju("primigenius", 3.13F, 6.0F);
     /** 0.1-B: Yoju ressurgido (arte verde). */

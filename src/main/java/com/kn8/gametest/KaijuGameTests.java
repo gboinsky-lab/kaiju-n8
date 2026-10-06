@@ -81,9 +81,9 @@ public final class KaijuGameTests {
             // GDD: fortitude 2,5 -> vida 28,3.
             helper.assertTrue(Math.abs(kaiju.getMaxHealth() - 28.3) < HEALTH_TOLERANCE,
                     "Vida maxima " + kaiju.getMaxHealth() + " diferente da curva (28,3)");
-            // Escala nova (aprovada): Yoju de 4 a 8 blocos; o modelo do Meshy tem 4,5 de envergadura.
-            helper.assertTrue(Math.abs(kaiju.getBbWidth() - 3.0) < TOLERANCE
-                    && Math.abs(kaiju.getBbHeight() - 3.4) < TOLERANCE, "Hitbox diferente do JSON (3,0 x 3,4)");
+            // Modelo do Meshy de 2026-10-06: 5,5 de envergadura, corpo baixo (1,7 de altura).
+            helper.assertTrue(Math.abs(kaiju.getBbWidth() - 3.4) < TOLERANCE
+                    && Math.abs(kaiju.getBbHeight() - 1.8) < TOLERANCE, "Hitbox diferente do JSON (3,4 x 1,8)");
             helper.assertTrue(kaiju.kaijuId().equals(KN8Constants.id("trichonephila")),
                     "Id da especie deveria ser o do EntityType");
             kaiju.discard();

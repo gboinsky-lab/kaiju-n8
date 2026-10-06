@@ -7,6 +7,7 @@ Medidas: hitbox do JSON 2,4 x 4,6 blocos (bracos e cauda passam um pouco, como n
 grande, ate 35 ossos, textura 128x128. Animacoes: as genericas + slam e charge com os tempos do JSON.
 Uso: python3 tools/art/build_primigenius.py
 """
+import json
 import kaiju_art as art
 from kaiju_art import Cube, Model, kf
 
@@ -171,6 +172,12 @@ if __name__ == "__main__":
     for species, palette in PALETTES.items():
         anims = art.rename_animations(base_anims, BASE, species)
         art.validate(model, anims, species, REQUIRED, max_bones=35)
+        if (art.ASSETS / f"meshes/{species}.json").exists():
+            # Especie com malha do Meshy (rig_primigenius_mesh.py): so as animacoes; geo e textura sao da malha.
+            (art.ASSETS / f"animations/entity/{species}.animation.json").write_text(
+                json.dumps(anims, indent=2) + "\n", encoding="utf-8")
+            print(f"{species}: malha do Meshy, so animacoes regeradas")
+            continue
         art.write(species, model.geo(species, regions), anims, model.texture(palette, regions))
         print(f"{species}: {len(model.bones)} ossos, {sum(len(b[3]) for b in model.bones)} cubos, "
               f"{len(regions)} regioes")
