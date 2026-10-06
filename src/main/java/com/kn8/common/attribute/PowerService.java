@@ -4,6 +4,7 @@ package com.kn8.common.attribute;
 import com.kn8.KN8Constants;
 import com.kn8.common.combat.CombatService;
 import com.kn8.common.config.ServerConfig;
+import com.kn8.common.craft.SuitEvents;
 import com.kn8.common.network.NetworkSync;
 import com.kn8.common.registry.KN8Attachments;
 import com.kn8.common.registry.KN8Sounds;
@@ -186,7 +187,15 @@ public final class PowerService {
 
         boolean inCombat = !PowerData.never(data.lastCombatTick())
                 && now - data.lastCombatTick() <= ServerConfig.COMBAT_GRACE_TICKS.get();
-        data.setHeat(PowerMath.heatAfterTick(data.heat(), inPanic(player) ? 0 : data.surge(), inCombat, params));
+        double heatBefore = data.heat();
+        double heatAfter = PowerMath.heatAfterTick(heatBefore, inPanic(player) ? 0 : data.surge(), inCombat, params);
+        if (heatAfter > heatBefore) {
+            // 0.2 (Etapa 3): o traje vestido corta parte do calor que sobe (heat_resistance do suit/*.json).
+            double resistance = SuitEvents.worn(player).map(s -> (double) s.heatResistance())
+                    .orElse(0.0);
+            heatAfter = heatBefore + (heatAfter - heatBefore) * (1.0 - resistance);
+        }
+        data.setHeat(heatAfter);
         if (!inPanic(player) && data.heat() >= params.heatMax()) {
             startPanic(player, data, now);
         }

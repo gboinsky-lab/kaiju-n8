@@ -1,0 +1,15 @@
+{
+  "result": "kn8:combat_knife",
+  "category": "weapon",
+  "order": 10,
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 2
+    },
+    {
+      "item": "minecraft:stick",
+      "count": 1
+    }
+  ]
+}

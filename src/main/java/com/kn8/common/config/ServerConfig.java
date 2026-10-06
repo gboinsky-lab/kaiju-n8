@@ -52,6 +52,8 @@ public final class ServerConfig {
     public static final ModConfigSpec.DoubleValue MISSION_PATROL_MIN;
     public static final ModConfigSpec.DoubleValue MISSION_PATROL_MAX;
     public static final ModConfigSpec.DoubleValue MISSION_REACH_RADIUS;
+    public static final ModConfigSpec.DoubleValue SUPPLY_COOLANT_HEAT;
+    public static final ModConfigSpec.IntValue SUPPLY_CATALYST_XP;
 
     // --- spawn -----------------------------------------------------------------------------------------------
     public static final ModConfigSpec.BooleanValue NATURAL_SPAWN;
@@ -248,6 +250,11 @@ public final class ServerConfig {
                 8.0, 1024.0);
         MISSION_REACH_RADIUS = doubleValue("reachRadius", "Horizontal distance that counts as reaching a point.",
                 6.0, 1.0, 64.0);
+        BUILDER.pop();
+
+        section("supply", "Supplies made at the Defense Force workbench (0.2).");
+        SUPPLY_COOLANT_HEAT = doubleValue("coolantHeat", "Suit heat removed by one coolant.", 50.0, 0.0, 1000.0);
+        SUPPLY_CATALYST_XP = intValue("catalystXp", "Release training XP given by one catalyst.", 500, 0, 100000);
         BUILDER.pop();
 
         section("spawn", "Natural spawning and kaiju count limits.");

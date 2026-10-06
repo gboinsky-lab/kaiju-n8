@@ -1,0 +1,19 @@
+{
+  "result": "kn8:training_dummy",
+  "category": "training",
+  "order": 1,
+  "ingredients": [
+    {
+      "item": "minecraft:hay_block",
+      "count": 1
+    },
+    {
+      "item": "minecraft:stick",
+      "count": 4
+    },
+    {
+      "item": "minecraft:leather",
+      "count": 1
+    }
+  ]
+}

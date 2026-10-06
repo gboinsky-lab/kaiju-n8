@@ -1,0 +1,15 @@
+{
+  "result": "kn8:training_suit",
+  "category": "suit",
+  "order": 20,
+  "ingredients": [
+    {
+      "item": "minecraft:leather",
+      "count": 4
+    },
+    {
+      "item": "kn8:kaiju_tissue",
+      "count": 2
+    }
+  ]
+}

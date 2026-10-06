@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/orientable_with_bottom",
+  "textures": {
+    "top": "kn8:block/defense_workbench_top",
+    "front": "kn8:block/defense_workbench_front",
+    "side": "kn8:block/defense_workbench_side",
+    "bottom": "kn8:block/defense_workbench_bottom"
+  }
+}

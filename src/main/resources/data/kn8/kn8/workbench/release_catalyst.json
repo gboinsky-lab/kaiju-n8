@@ -1,0 +1,15 @@
+{
+  "result": "kn8:release_catalyst",
+  "category": "supply",
+  "order": 32,
+  "ingredients": [
+    {
+      "item": "kn8:core_fragment",
+      "count": 3
+    },
+    {
+      "item": "minecraft:glowstone_dust",
+      "count": 2
+    }
+  ]
+}

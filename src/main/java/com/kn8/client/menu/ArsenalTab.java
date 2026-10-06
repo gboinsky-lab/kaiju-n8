@@ -19,7 +19,7 @@ import net.minecraft.world.item.ItemStack;
 
 /**
  * Aba ARSENAL / TRAJE: armas e trajes do datapack com os numeros do JSON (dano, alcance, cadencia, peso; armadura e
- * bonus do traje). A fabricacao chega na Etapa 3 (bancada da Forca de Defesa).
+ * bonus do traje) e a fabricacao da bancada (Etapa 3, {@link CraftingSection}).
  */
 final class ArsenalTab implements MenuTab {
 
@@ -27,6 +27,10 @@ final class ArsenalTab implements MenuTab {
     private static final int ROW_HEIGHT = 22;
     private static final float TICKS_PER_SECOND = 20.0F;
 
+    /** Secao que abre na proxima vez (a bancada abre direto na fabricacao). */
+    static int requestedSection = -1;
+
+    private final CraftingSection crafting = new CraftingSection();
     private int section;
     private int selected;
     private int sectionX;
@@ -40,6 +44,10 @@ final class ArsenalTab implements MenuTab {
     @Override
     public void render(GuiGraphics g, Font font, int x, int y, int w, int h, int mouseX, int mouseY,
             float partialTick) {
+        if (requestedSection >= 0) {
+            section = requestedSection;
+            requestedSection = -1;
+        }
         MenuStyle.panel(g, x, y, w, h, MenuStyle.PANEL, MenuStyle.OUTLINE);
         MenuStyle.title(g, font, Component.translatable("kn8.menu.tab.arsenal"), x + 6, y + 6);
         sectionX = x + w / 3;
@@ -61,8 +69,8 @@ final class ArsenalTab implements MenuTab {
         switch (section) {
             case 0 -> renderWeapons(g, font, detailX, detailW, bottom);
             case 1 -> renderSuits(g, font, detailX, detailW, bottom);
-            default -> MenuStyle.comingSoon(g, font, Component.translatable("kn8.menu.arsenal.crafting_soon"), x,
-                    y + h / 2, w);
+            default -> crafting.render(g, font, x, y, w, detailX, detailW, bottom, mouseX, mouseY, listX, listY,
+                    listW);
         }
     }
 
@@ -197,6 +205,9 @@ final class ArsenalTab implements MenuTab {
                 return true;
             }
         }
+        if (section == 2) {
+            return crafting.mouseClicked(mouseX, mouseY);
+        }
         for (int i = 0; i < rows; i++) {
             if (MenuStyle.inside(mouseX, mouseY, listX, listY + i * (ROW_HEIGHT + 2), listW, ROW_HEIGHT)) {
                 selected = i;
@@ -204,5 +215,10 @@ final class ArsenalTab implements MenuTab {
             }
         }
         return false;
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double scroll) {
+        return section == 2 && crafting.mouseScrolled(mouseX, mouseY, scroll);
     }
 }

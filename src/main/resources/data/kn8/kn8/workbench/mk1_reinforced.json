@@ -1,0 +1,19 @@
+{
+  "result": "kn8:mk1_reinforced",
+  "category": "suit",
+  "order": 22,
+  "ingredients": [
+    {
+      "item": "minecraft:diamond",
+      "count": 2
+    },
+    {
+      "item": "kn8:muscle_fiber",
+      "count": 6
+    },
+    {
+      "item": "kn8:core_fragment",
+      "count": 2
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "result": "kn8:suit_coolant",
+  "count": 2,
+  "category": "supply",
+  "order": 30,
+  "ingredients": [
+    {
+      "item": "minecraft:ice",
+      "count": 1
+    },
+    {
+      "item": "kn8:kaiju_tissue",
+      "count": 1
+    }
+  ]
+}

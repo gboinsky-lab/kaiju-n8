@@ -1,0 +1,19 @@
+{
+  "result": "kn8:sword",
+  "category": "weapon",
+  "order": 13,
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 5
+    },
+    {
+      "item": "kn8:muscle_fiber",
+      "count": 2
+    },
+    {
+      "item": "kn8:kaiju_tissue",
+      "count": 2
+    }
+  ]
+}

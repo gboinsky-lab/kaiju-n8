@@ -3,10 +3,14 @@ package com.kn8.common.registry;
 
 import com.kn8.KN8Constants;
 import com.kn8.common.combat.WeaponItem;
+import com.kn8.common.craft.SupplyItem;
 import com.kn8.common.training.TrainingDummyItem;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -50,6 +54,21 @@ public final class KN8Items {
     public static final DeferredItem<TrainingDummyItem> TRAINING_DUMMY = ITEMS.register("training_dummy",
             () -> new TrainingDummyItem(new Item.Properties().stacksTo(16)));
 
+    /** 0.2 (Etapa 3): bancada, trajes (armadura vem do suit/*.json) e suprimentos. */
+    public static final DeferredItem<BlockItem> DEFENSE_WORKBENCH = ITEMS.registerSimpleBlockItem("defense_workbench",
+            KN8Blocks.DEFENSE_WORKBENCH);
+    public static final DeferredItem<ArmorItem> TRAINING_SUIT = suit("training_suit", KN8ArmorMaterials.TRAINING_SUIT);
+    public static final DeferredItem<ArmorItem> MK1 = suit("mk1", KN8ArmorMaterials.MK1);
+    public static final DeferredItem<ArmorItem> MK1_REINFORCED = suit("mk1_reinforced",
+            KN8ArmorMaterials.MK1_REINFORCED);
+    public static final DeferredItem<SupplyItem> SUIT_COOLANT = ITEMS.register("suit_coolant",
+            () -> new SupplyItem(SupplyItem.Kind.COOLANT, new Item.Properties().stacksTo(16)));
+    public static final DeferredItem<SupplyItem> STAMINA_STIM = ITEMS.register("stamina_stim",
+            () -> new SupplyItem(SupplyItem.Kind.STIM, new Item.Properties().stacksTo(16)));
+    public static final DeferredItem<SupplyItem> RELEASE_CATALYST = ITEMS.register("release_catalyst",
+            () -> new SupplyItem(SupplyItem.Kind.CATALYST, new Item.Properties().stacksTo(8)
+                    .rarity(net.minecraft.world.item.Rarity.RARE)));
+
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> TAB = TABS.register("main",
             () -> CreativeModeTab.builder()
                     .title(Component.translatable("itemGroup.kn8"))
@@ -66,9 +85,24 @@ public final class KN8Items {
                         output.accept(INTACT_CORE.get());
                         output.accept(SOLDIER_SPAWN_EGG.get());
                         output.accept(TRAINING_DUMMY.get());
+                        output.accept(DEFENSE_WORKBENCH.get());
+                        output.accept(TRAINING_SUIT.get());
+                        output.accept(MK1.get());
+                        output.accept(MK1_REINFORCED.get());
+                        output.accept(SUIT_COOLANT.get());
+                        output.accept(STAMINA_STIM.get());
+                        output.accept(RELEASE_CATALYST.get());
                     })
                     .build());
 
     private KN8Items() {
     }
+
+    private static DeferredItem<ArmorItem> suit(String name,
+            net.neoforged.neoforge.registries.DeferredHolder<ArmorMaterial, ArmorMaterial> material) {
+        return ITEMS.register(name, () -> new ArmorItem(material, ArmorItem.Type.CHESTPLATE,
+                new Item.Properties().stacksTo(1).durability(ArmorItem.Type.CHESTPLATE.getDurability(SUIT_DURABILITY))));
+    }
+
+    private static final int SUIT_DURABILITY = 25;
 }

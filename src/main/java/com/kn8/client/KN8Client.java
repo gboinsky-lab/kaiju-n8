@@ -8,6 +8,7 @@ import com.kn8.client.combat.CombatInput;
 import com.kn8.client.hud.KN8Hud;
 import com.kn8.client.hud.KaijuHealthBar;
 import com.kn8.client.hud.MissionTracker;
+import com.kn8.client.menu.DefenseForceScreen;
 import com.kn8.client.menu.MenuInput;
 import com.kn8.client.net.ClientNetDebug;
 import com.kn8.client.render.CarcassRenderer;
@@ -43,6 +44,7 @@ public final class KN8Client {
         ClientNetDebug.install();
         CombatFeedback.install();
         VfxEffects.install();
+        DefenseForceScreen.install();
         // M6: HUD de poder.
         modEventBus.addListener(KN8Hud::register);
         // 0.1-B: barra de vida do kaiju mirado.

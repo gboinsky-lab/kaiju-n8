@@ -104,6 +104,31 @@ final class MenuData {
         return currentRank().map(entry -> entry.getValue().order()).orElse(0);
     }
 
+    /** Mesma regra do servidor ({@code CareerService.isUnlocked}): livre se nenhuma patente prende o id. */
+    static boolean unlocked(ResourceLocation id) {
+        int order = rankOrder();
+        boolean lockedSomewhere = false;
+        for (Map.Entry<ResourceLocation, RankDef> entry : ranks()) {
+            if (entry.getValue().unlocks().contains(id)) {
+                if (entry.getValue().order() <= order) {
+                    return true;
+                }
+                lockedSomewhere = true;
+            }
+        }
+        return !lockedSomewhere;
+    }
+
+    /** Patente mais baixa que libera o id (para o aviso de item travado). */
+    static ResourceLocation unlockingRank(ResourceLocation id) {
+        for (Map.Entry<ResourceLocation, RankDef> entry : ranks()) {
+            if (entry.getValue().unlocks().contains(id)) {
+                return entry.getKey();
+            }
+        }
+        return CareerView.NONE;
+    }
+
     static Component rankName(ResourceLocation id) {
         return Component.translatable("kn8.rank." + id.getPath());
     }

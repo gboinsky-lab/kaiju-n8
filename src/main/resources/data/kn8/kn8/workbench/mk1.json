@@ -1,0 +1,19 @@
+{
+  "result": "kn8:mk1",
+  "category": "suit",
+  "order": 21,
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 6
+    },
+    {
+      "item": "kn8:kaiju_tissue",
+      "count": 4
+    },
+    {
+      "item": "kn8:muscle_fiber",
+      "count": 4
+    }
+  ]
+}

@@ -5,6 +5,9 @@ import java.util.Map;
 
 import org.lwjgl.glfw.GLFW;
 
+import com.kn8.common.craft.OpenWorkbenchS2C;
+import com.kn8.common.network.KN8ClientHooks;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -44,6 +47,19 @@ public class DefenseForceScreen extends Screen {
         tabs.put(Tab.SQUAD, new SquadTab());
         tabs.put(Tab.BESTIARY, new BestiaryTab());
         tabs.put(Tab.ARSENAL, new ArsenalTab());
+    }
+
+    /** A bancada (OpenWorkbenchS2C): abre o menu no Arsenal, secao de fabricacao. */
+    public static void openWorkbench() {
+        current = Tab.ARSENAL;
+        ArsenalTab.requestedSection = 2;
+        Minecraft.getInstance().setScreen(new DefenseForceScreen());
+    }
+
+    /** Instala o handler do pacote da bancada (chamado pelo KN8Client). */
+    public static void install() {
+        KN8ClientHooks.register(OpenWorkbenchS2C.TYPE,
+                payload -> openWorkbench());
     }
 
     @Override

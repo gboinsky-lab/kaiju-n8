@@ -14,6 +14,7 @@ public final class KN8Registration {
 
     public static void register(IEventBus modEventBus) {
         KN8Blocks.BLOCKS.register(modEventBus);
+        KN8ArmorMaterials.MATERIALS.register(modEventBus);
         KN8Items.ITEMS.register(modEventBus);
         KN8Items.TABS.register(modEventBus);
         KN8Entities.ENTITY_TYPES.register(modEventBus);

@@ -1,0 +1,19 @@
+{
+  "result": "kn8:pistol",
+  "category": "weapon",
+  "order": 11,
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 4
+    },
+    {
+      "item": "minecraft:redstone",
+      "count": 2
+    },
+    {
+      "item": "kn8:kaiju_tissue",
+      "count": 1
+    }
+  ]
+}
