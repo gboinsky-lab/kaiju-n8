@@ -1,0 +1,14 @@
+{
+  "item": "kn8:rifle",
+  "base_damage": 5,
+  "reach": 48.0,
+  "style": "firearm",
+  "actions": {
+    "light": {
+      "multiplier": 1.0,
+      "duration_ticks": 8,
+      "impact_tick": 1
+    }
+  },
+  "required_rank": "kn8:oficial"
+}

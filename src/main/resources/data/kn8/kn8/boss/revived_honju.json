@@ -1,0 +1,28 @@
+{
+  "kaiju": "kn8:primigenius_revived",
+  "music": "kn8:boss.exam",
+  "arena": {
+    "radius": 32,
+    "reset_after_ticks": 600
+  },
+  "phases": [
+    {
+      "until_health": 0.0,
+      "invuln_ticks": 20,
+      "attacks": [
+        {
+          "ability": "kn8:slam",
+          "weight": 3
+        },
+        {
+          "ability": "kn8:charge",
+          "weight": 2
+        }
+      ]
+    }
+  ],
+  "rewards": {
+    "loot_table": "kn8:boss/revived_honju",
+    "merit": 200
+  }
+}

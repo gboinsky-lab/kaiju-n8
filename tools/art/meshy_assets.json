@@ -1,0 +1,83 @@
+{
+  "_comment": "Modelos do Meshy convertidos por tools/art/meshy_convert.py. 'source' = arquivo GLB na pasta passada com --src. Armas: eixo do comprimento e lado da ponta no arquivo original, comprimento real em metros, posicao da empunhadura (fracao a partir da ponta; fracao de baixo para cima).",
+  "weapons": {
+    "combat_knife": {
+      "source": "Meshy_AI_Kafka_Knife_Minecraft_1005185426_texture.glb",
+      "length_axis": "y",
+      "tip": "-",
+      "up_axis": "x",
+      "length_m": 0.32,
+      "grip_from_tip": 0.78,
+      "grip_from_bottom": 0.5,
+      "texture": 512,
+      "orientation": "diagonal",
+      "item_length": 0.85,
+      "thickness": 1.0,
+      "blade_fraction": 0.6,
+      "blade_thickness": 1.4
+    },
+    "rifle": {
+      "source": "Meshy_AI_Reno_Rifle_Minecraft__1005185506_texture.glb",
+      "length_axis": "x",
+      "tip": "-",
+      "up_axis": "y",
+      "length_m": 1.0,
+      "grip_from_tip": 0.6,
+      "grip_from_bottom": 0.35,
+      "texture": 512,
+      "orientation": "horizontal",
+      "item_length": 1.6,
+      "thickness": 1.0
+    },
+    "pistol": {
+      "source": "Meshy_AI_Kafka_Handgun_Minecra_1005185501_texture.glb",
+      "length_axis": "x",
+      "tip": "-",
+      "up_axis": "y",
+      "length_m": 0.25,
+      "grip_from_tip": 0.8,
+      "grip_from_bottom": 0.25,
+      "texture": 512,
+      "orientation": "horizontal",
+      "item_length": 0.75,
+      "thickness": 1.1
+    },
+    "sword": {
+      "source": "Meshy_AI_Hoshina_Blade_Minecra_1005185625_texture.glb",
+      "length_axis": "x",
+      "tip": "-",
+      "up_axis": "y",
+      "length_m": 0.95,
+      "grip_from_tip": 0.88,
+      "grip_from_bottom": 0.5,
+      "texture": 512,
+      "orientation": "diagonal",
+      "item_length": 1.5,
+      "thickness": 1.0,
+      "blade_fraction": 0.74,
+      "blade_thickness": 2.6
+    }
+  },
+  "entities": {
+    "soldier_1": {
+      "source": "Meshy_AI_Defense_Force_Soldier_1005185755_.glb",
+      "segmentation": "Meshy_AI_export_1791226720_part-segmentation.glb",
+      "height_m": 1.9,
+      "texture": 1024,
+      "max_triangles": 9000
+    },
+    "trichonephila": {
+      "source": "Meshy_AI_Kaiju_Spider_5k_Minec_1005185750_.glb",
+      "length_m": 4.5,
+      "texture": 1024,
+      "max_triangles": 6000
+    },
+    "twin_swords_sheathed": {
+      "source": "Meshy_AI_Hoshina_Sheath_Minecr_1005185743_texture.glb",
+      "length_m": 0.8,
+      "texture": 512,
+      "max_triangles": 2000
+    }
+  },
+  "_comment_weapons": "orientation: 'diagonal' (lamina, como espada vanilla) ou 'horizontal' (arma de fogo, cano para a frente). item_length: comprimento no item, em unidades (1 = um bloco; a mao do jogador tem ~0,25). thickness: multiplica a espessura (eixos 'up' e lateral) em volta da empunhadura. blade_fraction + blade_thickness: engrossa so a lamina (da ponta ate essa fracao do comprimento), sem mexer no cabo."
+}

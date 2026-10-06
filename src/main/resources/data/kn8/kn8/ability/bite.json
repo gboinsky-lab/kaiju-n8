@@ -1,0 +1,15 @@
+{
+  "type": "kn8:melee",
+  "damage_multiplier": 1.0,
+  "windup_ticks": 6,
+  "active_ticks": 2,
+  "cooldown_ticks": 20,
+  "animation": "action.bite",
+  "vfx": [
+    {
+      "effect": "kn8:impact",
+      "intensity": 0.5
+    }
+  ],
+  "sound": "minecraft:entity.spider.hurt"
+}

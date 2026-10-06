@@ -1,0 +1,43 @@
+modLoader="javafml"
+loaderVersion="${loader_version_range}"
+license="${mod_license}"
+issueTrackerURL=""
+
+[[mods]]
+modId="${mod_id}"
+version="${mod_version}"
+displayName="${mod_name}"
+authors="Kaiju No. 8: Defense Force contributors"
+credits="Fan project nao oficial, gratuito, sem afiliacao com Shueisha, Naoya Matsumoto ou Toho. Kaiju No. 8 e seus personagens pertencem aos respectivos donos."
+description='''
+Fan mod gratuito inspirado em Kaiju No. 8: carreira na Forca de Defesa, kaiju com nucleo e a transformacao do Kaiju No. 8.
+Unofficial free fan mod inspired by Kaiju No. 8.
+'''
+
+[[dependencies.${mod_id}]]
+    modId="neoforge"
+    type="required"
+    versionRange="[${neo_version},)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="minecraft"
+    type="required"
+    versionRange="${minecraft_version_range}"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="geckolib"
+    type="required"
+    versionRange="${geckolib_version_range}"
+    ordering="AFTER"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="player_animation_library"
+    type="required"
+    versionRange="${pal_version_range}"
+    ordering="AFTER"
+    side="BOTH"

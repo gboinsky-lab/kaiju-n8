@@ -1,0 +1,17 @@
+{
+  "category": "dismantle",
+  "giver": "kn8:sweeper_supervisor",
+  "objectives": [
+    {
+      "type": "dismantle",
+      "target": "kn8:trichonephila",
+      "count": 1
+    }
+  ],
+  "rewards": {
+    "merit": 0,
+    "items": [
+      "kn8:kaiju_tissue"
+    ]
+  }
+}

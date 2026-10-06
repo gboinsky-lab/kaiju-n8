@@ -1,0 +1,8 @@
+{
+  "order": 3,
+  "merit_required": 1500,
+  "release_cap": 65,
+  "max_health": 26,
+  "npc_squad_size": 4,
+  "unlocks": []
+}

@@ -1,0 +1,29 @@
+{
+  "replace": false,
+  "values": [
+    "#minecraft:base_stone_overworld",
+    {
+      "id": "minecraft:cobblestone",
+      "required": false
+    },
+    {
+      "id": "minecraft:mossy_cobblestone",
+      "required": false
+    },
+    "#minecraft:stone_bricks",
+    {
+      "id": "minecraft:bricks",
+      "required": false
+    },
+    "#minecraft:terracotta",
+    "#minecraft:walls",
+    {
+      "id": "minecraft:sandstone",
+      "required": false
+    },
+    {
+      "id": "minecraft:red_sandstone",
+      "required": false
+    }
+  ]
+}

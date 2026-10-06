@@ -1,0 +1,22 @@
+{
+  "health": 24,
+  "armor": 6,
+  "speed": 0.3,
+  "follow_range": 40,
+  "unarmed_damage": 2.0,
+  "unarmed_interval_ticks": 12,
+  "keep_distance": 12,
+  "power_levels": {
+    "low": 5,
+    "normal": 10,
+    "high": 20,
+    "elite": 30
+  },
+  "variants": {
+    "unarmed": "minecraft:air",
+    "rifle": "kn8:rifle",
+    "pistol": "kn8:pistol",
+    "sword": "kn8:sword",
+    "knife": "kn8:combat_knife"
+  }
+}

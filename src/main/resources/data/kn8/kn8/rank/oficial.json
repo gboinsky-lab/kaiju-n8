@@ -1,0 +1,12 @@
+{
+  "order": 1,
+  "merit_required": 0,
+  "release_cap": 30,
+  "max_health": 22,
+  "npc_squad_size": 0,
+  "unlocks": [
+    "kn8:mk1",
+    "kn8:rifle"
+  ],
+  "promotion_mission": "kn8:exam"
+}

@@ -1,0 +1,344 @@
+// src/main/java/com/kn8/common/soldier/SoldierEntity.java
+package com.kn8.common.soldier;
+
+import java.util.Optional;
+
+import org.jetbrains.annotations.Nullable;
+
+import com.kn8.KN8Constants;
+import com.kn8.common.attribute.PowerService;
+import com.kn8.common.combat.MeleeRaycast;
+import com.kn8.common.combat.WeaponIndex;
+import com.kn8.common.data.KN8Data;
+import com.kn8.common.data.def.SoldierDef;
+import com.kn8.common.data.def.WeaponDef;
+import com.kn8.common.kaiju.KaijuEntity;
+import com.kn8.common.vfx.VfxService;
+import com.kn8.core.combat.ActionTimeline;
+import com.kn8.core.power.PowerMath;
+
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.entity.PartEntity;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.animation.AnimationController;
+import software.bernie.geckolib.animation.PlayState;
+import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.util.GeckoLibUtil;
+
+/**
+ * Soldado da Forca de Defesa (0.1-B / Etapa F): uma entidade so, com variante (arma) e nivel de potencia vindos de
+ * {@code data/kn8/kn8/soldier/soldier_1.json}. Aliado dos jogadores: caca kaiju, nunca ataca jogadores nem outros
+ * soldados (o raycast tambem os ignora).
+ *
+ * <p>O nivel de potencia e uma % de Release do traje, com as MESMAS formulas do jogador (PowerMath): dano,
+ * velocidade e reducao de dano. Combate no fluxo do jogador: a acao entra numa {@link ActionTimeline}, a animacao
+ * GeckoLib toca, e o dano sai no tick de impacto do JSON da arma, por raycast (acerta partes de kaiju).</p>
+ */
+public class SoldierEntity extends PathfinderMob implements GeoEntity {
+
+    public static final ResourceLocation DEFINITION = KN8Constants.id("soldier_1");
+    public static final String DEFAULT_VARIANT = "rifle";
+    public static final String DEFAULT_LEVEL = "normal";
+
+    private static final EntityDataAccessor<String> VARIANT =
+            SynchedEntityData.defineId(SoldierEntity.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<String> LEVEL =
+            SynchedEntityData.defineId(SoldierEntity.class, EntityDataSerializers.STRING);
+    private static final String TAG_VARIANT = "kn8_variant";
+    private static final String TAG_LEVEL = "kn8_power_level";
+    private static final int DEFAULT_RELEASE = 10;
+    private static final float SHOT_VOLUME = 1.0F;
+    private static final float SHOT_PITCH = 1.6F;
+    private static final double MUZZLE_DISTANCE = 0.9;
+
+    private static final RawAnimation IDLE = RawAnimation.begin().thenLoop("soldier.movement.idle");
+    private static final RawAnimation WALK = RawAnimation.begin().thenLoop("soldier.movement.walk");
+
+    private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+    private final ActionTimeline timeline = new ActionTimeline();
+    private WeaponDef currentWeapon;
+    private float currentMultiplier = 1.0F;
+    private boolean currentUnarmed;
+    private LivingEntity actionTarget;
+
+    public SoldierEntity(EntityType<? extends SoldierEntity> type, Level level) {
+        super(type, level);
+    }
+
+    public static AttributeSupplier.Builder createAttributes() {
+        return Mob.createMobAttributes()
+                .add(Attributes.MAX_HEALTH, 24.0)
+                .add(Attributes.MOVEMENT_SPEED, 0.3)
+                .add(Attributes.ARMOR, 6.0)
+                .add(Attributes.FOLLOW_RANGE, 40.0)
+                .add(Attributes.ATTACK_DAMAGE, 2.0);
+    }
+
+    // --- dados -------------------------------------------------------------------------------------------------
+
+    public Optional<SoldierDef> def() {
+        return KN8Data.SOLDIER.get(DEFINITION, false);
+    }
+
+    public String variant() {
+        return entityData.get(VARIANT);
+    }
+
+    public String powerLevel() {
+        return entityData.get(LEVEL);
+    }
+
+    /** % de Release do traje pelo nivel de potencia (JSON). */
+    public int release() {
+        return def().map(def -> def.powerLevels().getOrDefault(powerLevel(), DEFAULT_RELEASE)).orElse(DEFAULT_RELEASE);
+    }
+
+    public double damageMultiplier() {
+        return PowerMath.damageMultiplier(release(), PowerService.params());
+    }
+
+    /** Variante = arma na mao (item do JSON; {@code minecraft:air} = sem arma). */
+    public void setVariant(String variant) {
+        entityData.set(VARIANT, variant);
+        ItemStack weapon = def().map(def -> def.variants().get(variant))
+                .map(id -> new ItemStack(BuiltInRegistries.ITEM.get(id))).orElse(ItemStack.EMPTY);
+        setItemSlot(EquipmentSlot.MAINHAND, weapon.is(Items.AIR) ? ItemStack.EMPTY : weapon);
+        setDropChance(EquipmentSlot.MAINHAND, 0.0F);
+    }
+
+    public void setPowerLevel(String level) {
+        entityData.set(LEVEL, level);
+        applyDefinition();
+    }
+
+    /** Vida, armadura, velocidade (com o bonus do Release) e alcance de visao do JSON. */
+    private void applyDefinition() {
+        def().ifPresent(def -> {
+            getAttribute(Attributes.MAX_HEALTH).setBaseValue(def.health());
+            getAttribute(Attributes.ARMOR).setBaseValue(def.armor());
+            getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(def.speed()
+                    * (1.0 + PowerMath.speedBonus(release(), PowerService.params())));
+            getAttribute(Attributes.FOLLOW_RANGE).setBaseValue(def.followRange());
+            getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(def.unarmedDamage());
+            setHealth(getMaxHealth());
+        });
+    }
+
+    public Optional<WeaponDef> weapon() {
+        return WeaponIndex.find(getMainHandItem(), level().isClientSide());
+    }
+
+    public boolean isShooter() {
+        return weapon().map(weapon -> weapon.style() == WeaponDef.Style.FIREARM).orElse(false);
+    }
+
+    /** Alcance do ataque atual (arma ou soco). */
+    public double attackReach() {
+        return weapon().map(WeaponDef::reach).orElse(2.5F);
+    }
+
+    public float keepDistance() {
+        return def().map(SoldierDef::keepDistance).orElse(12.0F);
+    }
+
+    @Override
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(VARIANT, DEFAULT_VARIANT);
+        builder.define(LEVEL, DEFAULT_LEVEL);
+    }
+
+    @Override
+    @Nullable
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason,
+            @Nullable SpawnGroupData data) {
+        SpawnGroupData result = super.finalizeSpawn(level, difficulty, reason, data);
+        setVariant(variant());
+        setPowerLevel(powerLevel());
+        return result;
+    }
+
+    // --- IA ----------------------------------------------------------------------------------------------------
+
+    @Override
+    protected void registerGoals() {
+        goalSelector.addGoal(0, new FloatGoal(this));
+        goalSelector.addGoal(1, new SoldierCombatGoal(this));
+        goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8));
+        goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
+        goalSelector.addGoal(7, new RandomLookAroundGoal(this));
+        targetSelector.addGoal(1, new HurtByTargetGoal(this, SoldierEntity.class, Player.class));
+        targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, KaijuEntity.class, true));
+    }
+
+    /** Aliado: nunca mira em jogadores nem em outros soldados. */
+    @Override
+    public boolean canAttack(LivingEntity target) {
+        return !(target instanceof Player) && !(target instanceof SoldierEntity) && super.canAttack(target);
+    }
+
+    /** Release do traje reduz o dano recebido (mesma formula do jogador). */
+    @Override
+    public boolean hurt(DamageSource source, float amount) {
+        if (source.getEntity() instanceof Player || source.getEntity() instanceof SoldierEntity) {
+            // Fogo amigo nao fere (o raycast ja evita, isto cobre o resto).
+            return false;
+        }
+        double reduction = PowerMath.damageReduction(release(), PowerService.params());
+        boolean hurt = super.hurt(source, (float) (amount * (1.0 - reduction)));
+        if (hurt && !level().isClientSide()) {
+            triggerAnim("reaction", "hurt");
+        }
+        return hurt;
+    }
+
+    // --- combate -----------------------------------------------------------------------------------------------
+
+    public boolean isActing() {
+        return timeline.isActive(level().getGameTime());
+    }
+
+    /** Comeca um golpe/tiro contra o alvo (servidor); o dano sai no tick de impacto. */
+    public boolean startAttack(LivingEntity target) {
+        long now = level().getGameTime();
+        if (isActing()) {
+            return false;
+        }
+        Optional<WeaponDef> weapon = weapon();
+        int duration;
+        int impact;
+        if (weapon.isPresent() && weapon.get().actions().containsKey("light")) {
+            WeaponDef.Action action = weapon.get().actions().get("light");
+            duration = action.durationTicks();
+            impact = action.impactTick();
+            currentMultiplier = action.multiplier();
+            currentWeapon = weapon.get();
+            currentUnarmed = false;
+        } else {
+            duration = def().map(SoldierDef::unarmedIntervalTicks).orElse(12);
+            impact = duration / 2;
+            currentMultiplier = 1.0F;
+            currentWeapon = null;
+            currentUnarmed = true;
+        }
+        if (!timeline.tryStart(now, "attack", duration, Math.max(0, impact))) {
+            return false;
+        }
+        actionTarget = target;
+        triggerAnim("action", isShooter() ? "shoot" : "attack");
+        return true;
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (!level().isClientSide() && timeline.consumeImpact(level().getGameTime())) {
+            resolveImpact();
+        }
+    }
+
+    private void resolveImpact() {
+        LivingEntity target = actionTarget;
+        if (target == null || !target.isAlive()) {
+            return;
+        }
+        Vec3 eye = getEyePosition();
+        Vec3 aim = target.getBoundingBox().getCenter().subtract(eye);
+        double reach = currentUnarmed ? 2.5 : currentWeapon.reach();
+        boolean firearm = currentWeapon != null && currentWeapon.style() == WeaponDef.Style.FIREARM;
+        ServerLevel level = (ServerLevel) level();
+        if (firearm) {
+            level.playSound(null, getX(), getEyeY(), getZ(), SoundEvents.CROSSBOW_SHOOT, SoundSource.HOSTILE,
+                    SHOT_VOLUME, SHOT_PITCH);
+            VfxService.play(level, VfxService.WEAPON_FIRE, eye.add(aim.normalize().scale(MUZZLE_DISTANCE)),
+                    aim.normalize(), 1.0F, 0.0F);
+        }
+        Optional<Entity> hit = MeleeRaycast.findTarget(level, this, eye, aim, reach,
+                entity -> !(rootOf(entity) instanceof Player) && !(rootOf(entity) instanceof SoldierEntity));
+        if (hit.isEmpty()) {
+            return;
+        }
+        float base = currentUnarmed ? (float) getAttributeValue(Attributes.ATTACK_DAMAGE) : currentWeapon.baseDamage();
+        float damage = (float) (base * currentMultiplier * damageMultiplier());
+        if (hit.get().hurt(damageSources().mobAttack(this), damage)) {
+            VfxService.play(level, firearm ? VfxService.IMPACT : VfxService.SLASH, hit.get().getBoundingBox()
+                    .getCenter(), aim.normalize(), 0.8F, 0.0F);
+        }
+    }
+
+    private static Entity rootOf(Entity entity) {
+        return entity instanceof PartEntity<?> part ? part.getParent() : entity;
+    }
+
+    // --- salvar ------------------------------------------------------------------------------------------------
+
+    @Override
+    public void addAdditionalSaveData(CompoundTag tag) {
+        super.addAdditionalSaveData(tag);
+        tag.putString(TAG_VARIANT, variant());
+        tag.putString(TAG_LEVEL, powerLevel());
+    }
+
+    @Override
+    public void readAdditionalSaveData(CompoundTag tag) {
+        super.readAdditionalSaveData(tag);
+        if (tag.contains(TAG_VARIANT)) {
+            entityData.set(VARIANT, tag.getString(TAG_VARIANT));
+        }
+        if (tag.contains(TAG_LEVEL)) {
+            entityData.set(LEVEL, tag.getString(TAG_LEVEL));
+        }
+    }
+
+    // --- GeckoLib ----------------------------------------------------------------------------------------------
+
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+        controllers.add(new AnimationController<>(this, "movement", 4, state ->
+                state.setAndContinue(state.isMoving() ? WALK : IDLE)));
+        controllers.add(new AnimationController<>(this, "action", 0, state -> PlayState.STOP)
+                .triggerableAnim("attack", RawAnimation.begin().thenPlay("soldier.action.attack"))
+                .triggerableAnim("shoot", RawAnimation.begin().thenPlay("soldier.action.shoot")));
+        controllers.add(new AnimationController<>(this, "reaction", 0, state -> PlayState.STOP)
+                .triggerableAnim("hurt", RawAnimation.begin().thenPlay("soldier.reaction.hurt")));
+    }
+
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return cache;
+    }
+}

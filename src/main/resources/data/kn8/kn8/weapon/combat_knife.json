@@ -1,0 +1,24 @@
+{
+  "item": "kn8:combat_knife",
+  "base_damage": 6,
+  "reach": 3.0,
+  "style": "blade",
+  "actions": {
+    "light": {
+      "multiplier": 1.0,
+      "duration_ticks": 12,
+      "impact_tick": 4
+    },
+    "heavy": {
+      "multiplier": 2.0,
+      "duration_ticks": 24,
+      "impact_tick": 10
+    }
+  },
+  "combo": [
+    1.0,
+    1.0,
+    1.2
+  ],
+  "required_rank": "kn8:candidato"
+}

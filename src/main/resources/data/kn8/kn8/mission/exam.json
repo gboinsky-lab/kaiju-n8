@@ -1,0 +1,33 @@
+{
+  "category": "story",
+  "giver": "kn8:exam_officer",
+  "requires": {
+    "rank": "kn8:candidato",
+    "completed": [
+      "kn8:first_dismantle"
+    ]
+  },
+  "objectives": [
+    {
+      "type": "reach_area",
+      "marker": "exam_gate",
+      "structure": "kn8:tachikawa"
+    },
+    {
+      "type": "kill_kaiju",
+      "target": "kn8:primigenius",
+      "count": 3
+    },
+    {
+      "type": "defeat_boss",
+      "target": "kn8:revived_honju"
+    }
+  ],
+  "fail": {
+    "time_ticks": 36000,
+    "on_death": true
+  },
+  "rewards": {
+    "promote_to": "kn8:oficial"
+  }
+}

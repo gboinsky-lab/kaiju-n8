@@ -1,0 +1,14 @@
+{
+  "item": "kn8:pistol",
+  "base_damage": 3.5,
+  "reach": 32.0,
+  "style": "firearm",
+  "actions": {
+    "light": {
+      "multiplier": 1.0,
+      "duration_ticks": 6,
+      "impact_tick": 1
+    }
+  },
+  "required_rank": "kn8:candidato"
+}

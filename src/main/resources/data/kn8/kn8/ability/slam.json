@@ -1,0 +1,33 @@
+{
+  "type": "kn8:area_melee",
+  "damage_multiplier": 1.5,
+  "radius": 3.0,
+  "windup_ticks": 20,
+  "active_ticks": 4,
+  "cooldown_ticks": 100,
+  "animation": "action.slam",
+  "telegraph": "ground_circle",
+  "heavy": true,
+  "destruction": {
+    "radius": 3.5,
+    "power": 2,
+    "crater": true,
+    "depth": 1.5
+  },
+  "vfx": [
+    {
+      "effect": "kn8:shockwave",
+      "intensity": 1.0
+    },
+    {
+      "effect": "kn8:dust",
+      "intensity": 1.0
+    },
+    {
+      "effect": "kn8:impact",
+      "intensity": 1.0
+    }
+  ],
+  "camera_shake": 0.5,
+  "sound": "minecraft:entity.generic.explode"
+}

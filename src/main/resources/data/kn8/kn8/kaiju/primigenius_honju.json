@@ -1,0 +1,80 @@
+{
+  "class": "honju",
+  "fortitude": 6.0,
+  "size": "large",
+  "dimensions": {
+    "width": 5.73,
+    "height": 9.0
+  },
+  "speed": 0.24,
+  "intelligence": 3,
+  "parts": [
+    {
+      "name": "head",
+      "offset": [
+        0.0,
+        4.75,
+        3.19
+      ],
+      "width": 1.96,
+      "height": 2.29,
+      "multiplier": 1.2
+    },
+    {
+      "name": "torso",
+      "offset": [
+        0.0,
+        2.05,
+        0.1
+      ],
+      "width": 3.93,
+      "height": 4.5,
+      "multiplier": 1.0
+    },
+    {
+      "name": "core",
+      "offset": [
+        0.0,
+        3.68,
+        1.64
+      ],
+      "width": 1.31,
+      "height": 1.06,
+      "multiplier": 3.0,
+      "core": true
+    },
+    {
+      "name": "legs",
+      "offset": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "width": 4.25,
+      "height": 3.11,
+      "multiplier": 0.8
+    }
+  ],
+  "core": {
+    "health_fraction": 0.25,
+    "exposed_on": [
+      "heavy_hit"
+    ]
+  },
+  "abilities": [
+    "kn8:slam",
+    "kn8:charge",
+    "kn8:bite"
+  ],
+  "weaknesses": [
+    "stun_by_sound"
+  ],
+  "dismantle": "kn8:primigenius",
+  "spawn": {
+    "events": [
+      "kn8:exam"
+    ],
+    "natural": false
+  },
+  "rarity": "event"
+}

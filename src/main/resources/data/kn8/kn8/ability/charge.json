@@ -1,0 +1,28 @@
+{
+  "type": "kn8:charge",
+  "damage_multiplier": 1.2,
+  "radius": 1.5,
+  "windup_ticks": 15,
+  "active_ticks": 20,
+  "cooldown_ticks": 160,
+  "animation": "action.charge",
+  "telegraph": "line",
+  "heavy": true,
+  "destruction": {
+    "radius": 1.5,
+    "power": 2,
+    "crater": false
+  },
+  "vfx": [
+    {
+      "effect": "kn8:dust",
+      "intensity": 0.6
+    },
+    {
+      "effect": "kn8:impact",
+      "intensity": 0.8
+    }
+  ],
+  "camera_shake": 0.3,
+  "sound": "minecraft:entity.ravager.roar"
+}
