@@ -1,0 +1,13 @@
+{
+  "revive": {
+    "kn8:primigenius": "kn8:primigenius_resurrected",
+    "kn8:primigenius_honju": "kn8:primigenius_revived"
+  },
+  "revive_radius": 24,
+  "revive_cast_ticks": 60,
+  "revive_cooldown_ticks": 300,
+  "max_revived_alive": 3,
+  "command_radius": 32,
+  "flee_health": 0.3,
+  "flee_merit": 250
+}

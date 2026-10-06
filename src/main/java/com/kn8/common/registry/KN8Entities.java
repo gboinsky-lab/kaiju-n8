@@ -6,6 +6,7 @@ import java.util.List;
 import com.kn8.KN8Constants;
 import com.kn8.common.kaiju.CarcassEntity;
 import com.kn8.common.kaiju.KaijuEntity;
+import com.kn8.common.numbered.KaijuNo9Entity;
 import com.kn8.common.soldier.SoldierEntity;
 import com.kn8.common.training.TrainingDummyEntity;
 
@@ -40,6 +41,13 @@ public final class KN8Entities {
     public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> PRIMIGENIUS_REVIVED =
             kaiju("primigenius_revived", 5.73F, 9.0F);
 
+    /** 0.2 (Etapa 8): Kaiju No. 9, o primeiro numerado (humanoide de 2 m; revive carcacas). */
+    public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> KAIJU_NO9 = ENTITY_TYPES.register(
+            "kaiju_no9", () -> EntityType.Builder.<KaijuEntity>of(KaijuNo9Entity::new, MobCategory.MONSTER)
+                    .sized(0.8F, 2.0F)
+                    .clientTrackingRange(KAIJU_TRACKING_RANGE_CHUNKS)
+                    .build("kaiju_no9"));
+
     /** 0.1-B (M11b): carcaca de kaiju morto (tamanho real vem da especie, sincronizada). */
     public static final DeferredHolder<EntityType<?>, EntityType<CarcassEntity>> CARCASS = ENTITY_TYPES.register(
             "carcass", () -> EntityType.Builder.<CarcassEntity>of(CarcassEntity::new, MobCategory.MISC)
@@ -66,7 +74,8 @@ public final class KN8Entities {
 
     /** Todas as especies, para atributos, renderers e comandos. */
     public static final List<DeferredHolder<EntityType<?>, EntityType<KaijuEntity>>> KAIJU =
-            List.of(TRICHONEPHILA, PRIMIGENIUS, PRIMIGENIUS_RESURRECTED, PRIMIGENIUS_HONJU, PRIMIGENIUS_REVIVED);
+            List.of(TRICHONEPHILA, PRIMIGENIUS, PRIMIGENIUS_RESURRECTED, PRIMIGENIUS_HONJU, PRIMIGENIUS_REVIVED,
+                    KAIJU_NO9);
 
     private KN8Entities() {
     }

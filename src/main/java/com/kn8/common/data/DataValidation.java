@@ -17,6 +17,7 @@ import com.kn8.common.data.def.DismantleDef;
 import com.kn8.common.data.def.InvasionDef;
 import com.kn8.common.data.def.KaijuDef;
 import com.kn8.common.data.def.MissionDef;
+import com.kn8.common.data.def.NumberedDef;
 import com.kn8.common.data.def.RankDef;
 import com.kn8.common.data.def.SoldierDef;
 import com.kn8.common.data.def.SuitDef;
@@ -70,6 +71,7 @@ public final class DataValidation {
                 report);
         publish(KN8Data.SOLDIER, validateSoldiers(KN8Data.SOLDIER.loaded(), report), report);
         publish(KN8Data.WORKBENCH, validateWorkbench(KN8Data.WORKBENCH.loaded(), report), report);
+        publish(KN8Data.NUMBERED, validateNumbered(KN8Data.NUMBERED.loaded(), kaiju.keySet(), report), report);
         publish(KN8Data.INVASION, validateInvasions(KN8Data.INVASION.loaded(), kaiju.keySet(), bosses.keySet(), report),
                 report);
         // Patentes apontam para missoes de avaliacao, que so foram validadas agora: confere no fim (so aviso).
@@ -107,6 +109,27 @@ public final class DataValidation {
             for (WorkbenchRecipeDef.Ingredient ingredient : def.ingredients()) {
                 if (!BuiltInRegistries.ITEM.containsKey(ingredient.item())) {
                     report.error(where + ": ingrediente nao registrado " + ingredient.item());
+                    return;
+                }
+            }
+            valid.put(id, def);
+        });
+        return valid;
+    }
+
+    /** 0.2 (Etapa 8): o numerado e as especies de {@code revive} (carcaca e revivida) precisam existir. */
+    public static Map<ResourceLocation, NumberedDef> validateNumbered(Map<ResourceLocation, NumberedDef> input,
+            Set<ResourceLocation> kaiju, DataReport report) {
+        Map<ResourceLocation, NumberedDef> valid = new LinkedHashMap<>();
+        input.forEach((id, def) -> {
+            String where = "numbered " + id;
+            if (!kaiju.contains(id)) {
+                report.error(where + ": o id precisa ser um kaiju existente");
+                return;
+            }
+            for (Map.Entry<ResourceLocation, ResourceLocation> entry : def.revive().entrySet()) {
+                if (!kaiju.contains(entry.getKey()) || !kaiju.contains(entry.getValue())) {
+                    report.error(where + ": revive com especie inexistente " + entry);
                     return;
                 }
             }

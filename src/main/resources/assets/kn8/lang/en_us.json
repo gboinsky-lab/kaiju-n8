@@ -563,5 +563,14 @@
   "kn8.mission.city_defense.desc": "Sensors detected Primigenius approaching. Hold off the waves with the defense squad.",
   "kn8.configuration.invasion": "Invasions",
   "kn8.configuration.naturalChance": "Natural invasion chance per day",
-  "kn8.command.invasion.next": "Next wave in 1 second"
+  "kn8.command.invasion.next": "Next wave in 1 second",
+  "entity.kn8.kaiju_no9": "Kaiju No. 9",
+  "kn8.bestiary.kaiju_no9.desc": "The first numbered kaiju: a 2 m humanoid, intelligent and calculating. Revives kaiju carcasses and commands those nearby. When wounded, it retreats and comes back later.",
+  "kn8.no9.reviving": "Kaiju No. 9 is reviving the %s carcass! Dismantle it or interrupt him!",
+  "kn8.no9.revived": "%s was revived by Kaiju No. 9!",
+  "kn8.no9.fled": "Kaiju No. 9 retreated... it will be back.",
+  "kn8.no9.flee_merit": "You made Kaiju No. 9 retreat: +%s merit",
+  "kn8.invasion.no9_resurrection": "No. 9 Resurrection",
+  "kn8.mission.revived_threat.name": "Revived Threat",
+  "kn8.mission.revived_threat.desc": "Primigenius are advancing and an unknown humanoid signal is with them. Contain the invasion and leave no carcass behind."
 }

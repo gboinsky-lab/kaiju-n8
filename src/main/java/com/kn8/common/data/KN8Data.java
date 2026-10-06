@@ -10,6 +10,7 @@ import com.kn8.common.data.def.DismantleDef;
 import com.kn8.common.data.def.InvasionDef;
 import com.kn8.common.data.def.KaijuDef;
 import com.kn8.common.data.def.MissionDef;
+import com.kn8.common.data.def.NumberedDef;
 import com.kn8.common.data.def.RankDef;
 import com.kn8.common.data.def.SoldierDef;
 import com.kn8.common.data.def.SuitDef;
@@ -48,9 +49,13 @@ public final class KN8Data {
     public static final DataRegistry<InvasionDef> INVASION =
             new DataRegistry<>("invasion", InvasionDef.CODEC, false);
 
+    /** 0.2 (Etapa 8): comportamento dos kaiju numerados (so o servidor). */
+    public static final DataRegistry<NumberedDef> NUMBERED =
+            new DataRegistry<>("numbered", NumberedDef.CODEC, false);
+
     /** Ordem = ordem de validacao (cada um so referencia os anteriores). */
     public static final List<DataRegistry<?>> ALL =
-            List.of(RANK, ABILITY, DISMANTLE, KAIJU, BOSS, WEAPON, SUIT, MISSION, SOLDIER, WORKBENCH, INVASION);
+            List.of(RANK, ABILITY, DISMANTLE, KAIJU, BOSS, WEAPON, SUIT, MISSION, SOLDIER, WORKBENCH, INVASION, NUMBERED);
 
     private KN8Data() {
     }

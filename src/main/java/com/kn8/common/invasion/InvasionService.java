@@ -166,6 +166,19 @@ public final class InvasionService {
         });
     }
 
+    /** Kaiju que entrou na invasao no meio (revivido pelo No. 9): precisa morrer para a onda acabar. */
+    public static void join(ServerLevel level, KaijuEntity kaiju) {
+        active(level).ifPresent(invasion -> {
+            enlist(invasion, kaiju);
+            sync(level, invasion);
+        });
+    }
+
+    /** Kaiju que saiu sem morrer (o No. 9 fugindo): deixa de segurar a onda, sem contar como abate. */
+    public static void release(ServerLevel level, UUID uuid) {
+        active(level).filter(invasion -> invasion.alive.remove(uuid)).ifPresent(invasion -> sync(level, invasion));
+    }
+
     // --- ondas ---------------------------------------------------------------------------------------------------
 
     private static void startWave(ServerLevel level, Invasion invasion) {

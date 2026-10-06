@@ -1,0 +1,51 @@
+{
+  "warning_ticks": 400,
+  "spawn_min": 36,
+  "spawn_max": 52,
+  "radius": 100,
+  "time_limit_ticks": 24000,
+  "waves": [
+    {
+      "kaiju": [
+        {
+          "species": "kn8:primigenius",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "kaiju": [
+        {
+          "species": "kn8:kaiju_no9",
+          "count": 1
+        },
+        {
+          "species": "kn8:primigenius",
+          "count": 1
+        }
+      ],
+      "delay_ticks": 400
+    }
+  ],
+  "defenders": [
+    {
+      "variant": "rifle",
+      "level": "high",
+      "count": 3
+    },
+    {
+      "variant": "sword",
+      "level": "high",
+      "count": 1
+    }
+  ],
+  "rewards": {
+    "merit": 350,
+    "training_xp": 500,
+    "items": [
+      "kn8:core_fragment",
+      "kn8:release_catalyst"
+    ]
+  },
+  "natural_weight": 0
+}

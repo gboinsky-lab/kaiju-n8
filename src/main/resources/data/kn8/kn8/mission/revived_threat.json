@@ -1,0 +1,25 @@
+{
+  "category": "emergency",
+  "giver": "kn8:officer",
+  "requires": {
+    "rank": "kn8:oficial",
+    "completed": [
+      "kn8:city_defense"
+    ]
+  },
+  "objectives": [
+    {
+      "type": "defend_invasion",
+      "target": "kn8:no9_resurrection"
+    }
+  ],
+  "rewards": {
+    "merit": 300,
+    "training_xp": 400,
+    "items": [
+      "kn8:release_catalyst"
+    ]
+  },
+  "repeatable": true,
+  "cooldown_ticks": 48000
+}
