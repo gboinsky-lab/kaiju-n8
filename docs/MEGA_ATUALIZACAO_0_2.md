@@ -26,7 +26,7 @@ próxima; o Miguel testa e aprova (regra da Fase 5). Itens marcados [SUPOSIÇÃO
 | 6 | Chefe Honju | `primigenius_honju` como chefe: barra de chefe, fases por vida, invoca `primigenius` (limites no config), recompensa grande; mesma regra para `primigenius_revived` → `primigenius_resurrected` [SUPOSIÇÃO] |
 | 7 | Alerta de invasão | Evento: sirene, barra no topo, ondas de kaiju chegando numa vila/área, soldados de defesa, recompensa no fim; destruição ligada; `/kn8 invasion start|stop` e chance natural configurável |
 | H | **HUD nova** ✅ | Fiel à referência do Miguel (arte em textura, `tools/art/gen_hud.py`) |
-| M | **Menu da Força de Defesa** | Tela com abas no estilo da HUD: Status (patente, mérito, Release e treino), Missões, Alertas (invasões e kaiju avistados), Bestiário; cada aba é preenchida pela etapa correspondente |
+| M | **Menu da Força de Defesa** ✅ (layout e dados atuais; abas se completam nas etapas) | Tela com abas no estilo da HUD: Status (patente, mérito, Release e treino), Missões, Alertas (invasões e kaiju avistados), Bestiário; cada aba é preenchida pela etapa correspondente |
 
 Depois da 0.2: M12 transformação, NPCs e base (M13/M17), kaiju numerados e Daikaiju, soldados especiais (até 90%).
 

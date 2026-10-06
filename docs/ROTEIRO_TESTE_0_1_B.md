@@ -187,3 +187,20 @@ Prévias: `docs/img/preview_soldado.png`, `preview_aranha.png`, `preview_primige
 | 11.5 | Lute com o Primigenius (slam, charge, mordida) | Animações tocam com a malha nova (braços, mandíbula, cauda) sem peças soltas |
 | 11.6 | Carcaça da aranha e do Primigenius | Carcaça usa o modelo novo |
 | 11.7 | `primigenius_resurrected` | Continua o modelo de cubos verde (o novo ainda não chegou) |
+
+## 12. Menu da Força de Defesa (0.2) — tecla M
+
+Capturas de referência: `docs/img/menu_*.png`. Teste em pt_br e en_us; tamanho de GUI automático e 2.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 12.1 | M | Abre em tela cheia, jogo não pausa; M ou Esc fecha; tecla em Controles (categoria kn8) |
+| 12.2 | Q / E e clique nas abas | Troca Perfil → Missões → Alertas → Esquadrão → Bestiário → Arsenal (dá a volta) |
+| 12.3 | Perfil | Seu personagem segue o mouse; patente Candidato; Release atual/teto e XP de treino batem com a HUD (`/kn8 release set 5`); arma da mão destacada |
+| 12.4 | Mate um kaiju em survival e reabra | "Kaiju abatidos" sobe; a espécie aparece registrada no Bestiário |
+| 12.5 | Missões | 3 missões do datapack com categoria, objetivos (0/N), patente exigida e recompensa; ACEITAR desativado ("Em breve (Etapa 5)"); filtros Ativas/Concluídas vazios |
+| 12.6 | Alertas com kaiju a até 128 blocos | Lista do mais perto ao mais longe, ameaça colorida, distância e direção (N/NE/L...) corretas; estado (Parado/Perseguindo) muda ao vivo |
+| 12.7 | Esquadrão com soldados por perto | Lista com arma, nível de força e vida; clique escolhe o soldado em 3D à direita; ordens desativadas |
+| 12.8 | Bestiário em survival sem abates | Espécies como silhueta escura "???"; em criativo todas aparecem com modelo girando, fraquezas e materiais |
+| 12.9 | Arsenal | Armas com dano/alcance/cadência/peso do JSON (mude um número no JSON, `/reload`, reabra); Trajes com armadura; Fabricação "Etapa 3" |
+| 12.10 | Dev2 | Menu do Dev2 mostra os dados dele (não os do Dev1) |

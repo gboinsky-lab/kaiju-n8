@@ -171,7 +171,8 @@ public final class KaijuHealthBar {
                 .orElse(Component.translatable("kn8.kaiju_state." + state));
     }
 
-    private static Component sizeClass(KaijuDef def) {
+    /** "pequeno/medio/grande" da especie (tambem usado pelo menu da Forca de Defesa). */
+    public static Component sizeClass(KaijuDef def) {
         return KaijuScale.sizeClass(def.kaijuClass().getSerializedName(), def.dimensions().width(),
                 def.dimensions().height())
                 .map(size -> (Component) Component.translatable(

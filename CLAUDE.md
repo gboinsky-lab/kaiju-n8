@@ -67,7 +67,8 @@ mandam; se algo precisar mudar, marque **[DECIDIR]** e pergunte.
 | Área | Decisão |
 |---|---|
 | Sync público / privado | Público: `.sync()` nativo. Privado: NUNCA `.sync()` — payload manual ao dono via `NetworkSync` (PT1) |
-| Dados de jogo | Reload listener + Codec (`DataRegistry`, `KN8Data`); registry de datapack só para worldgen/damage_type |
+| Dados de jogo | Reload listener + Codec (`DataRegistry`, `KN8Data`); registry de datapack só para worldgen/damage_type. Missões e desmonte também vão ao cliente desde a 0.2 (menu) |
+| Menu (0.2) | `client/menu`: `DefenseForceScreen` + uma classe por aba (`MenuTab`), desenho por `fill` em `MenuStyle`; só lê o que o cliente já tem (PowerView, dados sincronizados, estatística vanilla `ENTITY_KILLED`, entidades por perto). Bestiário: registrado = já abatido (no criativo, tudo) |
 | Animação de entidades | GeckoLib, 4 controllers (movement/action/reaction/overlay); nomes `<espécie>.<camada>.<nome>` |
 | Animação do jogador | PAL camada `kn8:combat` prioridade 2000 via `AnimTriggerS2C` (com compensação de atraso) |
 | Multipartes | `PartEntity`, IDs consecutivos; quantidade/nomes de partes fixos por entidade |
@@ -101,6 +102,7 @@ mandam; se algo precisar mudar, marque **[DECIDIR]** e pergunte.
 | M10b rifle, parry, crítico, CombatStateS2C/HUD, clamp de stamina, arte embutida | ✅ |
 | M11a habilidades `area_melee`/`charge`, núcleo na cabeça da Trichonephila, GameTests do M10b | ⏳ aguardando teste |
 | Etapa A pipeline Meshy (armas OBJ na mão, pistola, espada, animação por arma) · Etapa B HUD | ⏳ aguardando teste |
+| **0.2 Menu da Força de Defesa** (tecla M; abas Perfil, Missões, Alertas, Esquadrão, Bestiário, Arsenal; Q/E troca) | ✅ compila, testes passam, todas as abas vistas em jogo (pt_br e en_us); partes de etapas futuras com "Em breve (Etapa N)"; aguardando roteiro §12 |
 | **0.2 Machado** (`kn8:axe`, estilo `heavy`, 2,0 de comprimento) e **espada nova** do Meshy | ✅ jogador (1ª/3ª pessoa) e soldado (`/kn8 soldier spawn axe`/`sword`) vistos em jogo; arma pesada também carrega golpe; números [SUPOSIÇÃO] em `weapon/axe.json` |
 | **0.2 HUD nova** (fiel à referência "HUD de combate avançado - estilo anime"; 60% do tamanho da arte, `BASE_SIZE`) | ✅ vista em jogo; arte em `textures/gui/hud/` gerada por `tools/art/gen_hud.py` (texturas 4× desenhadas em pixel de textura, `blur` ligado); aguardando aprovação |
 | **Modelos Meshy estilo Minecraft** (soldado, aranha 8 patas, Primigenius) | ⏳ compila, JUnit 69/69, GameTests 31/31 e **vistos em jogo** (servidor dedicado + 1 cliente na nuvem, capturas em `docs/img/jogo_*`); aguardando roteiro §11 com 2 clientes |

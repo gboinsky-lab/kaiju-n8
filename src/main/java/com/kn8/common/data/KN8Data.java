@@ -21,19 +21,20 @@ import net.minecraft.resources.ResourceLocation;
  * DeferredRegisters; o conteudo de cada uma vive nas fotos do {@link DataRegistry}.
  *
  * <p>{@code true} = sincronizado com o cliente (precisa para render, HUD, tooltips ou partes calculadas dos dois
- * lados); missoes, chefes e desmonte ficam so no servidor.</p>
+ * lados); chefes e soldados ficam so no servidor. Missoes e desmonte: sincronizados desde a 0.2 (menu da Forca
+ * de Defesa).</p>
  */
 public final class KN8Data {
 
     public static final DataRegistry<RankDef> RANK = new DataRegistry<>("rank", RankDef.CODEC, true);
     public static final DataRegistry<AbilityDef> ABILITY = new DataRegistry<>("ability", AbilityDef.CODEC, true);
     public static final DataRegistry<DismantleDef> DISMANTLE =
-            new DataRegistry<>("dismantle", DismantleDef.CODEC, false);
+            new DataRegistry<>("dismantle", DismantleDef.CODEC, true);
     public static final DataRegistry<KaijuDef> KAIJU = new DataRegistry<>("kaiju", KaijuDef.CODEC, true);
     public static final DataRegistry<BossDef> BOSS = new DataRegistry<>("boss", BossDef.CODEC, false);
     public static final DataRegistry<WeaponDef> WEAPON = new DataRegistry<>("weapon", WeaponDef.CODEC, true);
     public static final DataRegistry<SuitDef> SUIT = new DataRegistry<>("suit", SuitDef.CODEC, true);
-    public static final DataRegistry<MissionDef> MISSION = new DataRegistry<>("mission", MissionDef.CODEC, false);
+    public static final DataRegistry<MissionDef> MISSION = new DataRegistry<>("mission", MissionDef.CODEC, true);
     /** 0.1-B (Etapa F): soldados da Forca de Defesa (so o servidor precisa). */
     public static final DataRegistry<SoldierDef> SOLDIER = new DataRegistry<>("soldier", SoldierDef.CODEC, false);
 
