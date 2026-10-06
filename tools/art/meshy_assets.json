@@ -55,20 +55,17 @@
       "thickness": 1.1
     },
     "sword": {
-      "replaced_by": "tools/art/build_sword.py (modelo do Meshy saiu como agulha; 0.1-B)",
       "source": "sword.glb",
       "length_axis": "x",
       "tip": "-",
       "up_axis": "y",
       "length_m": 0.95,
-      "grip_from_tip": 0.88,
+      "grip_from_tip": 0.72,
       "grip_from_bottom": 0.5,
       "texture": 512,
       "orientation": "diagonal",
-      "item_length": 1.5,
-      "thickness": 1.0,
-      "blade_fraction": 0.74,
-      "blade_thickness": 2.6
+      "item_length": 1.6,
+      "thickness": 1.0
     },
     "axe": {
       "source": "axe.glb",
@@ -80,7 +77,7 @@
       "grip_from_bottom": 0.42,
       "texture": 512,
       "orientation": "diagonal",
-      "item_length": 1.4,
+      "item_length": 2.0,
       "thickness": 1.0
     }
   },

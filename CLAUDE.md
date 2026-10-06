@@ -101,8 +101,8 @@ mandam; se algo precisar mudar, marque **[DECIDIR]** e pergunte.
 | M10b rifle, parry, crítico, CombatStateS2C/HUD, clamp de stamina, arte embutida | ✅ |
 | M11a habilidades `area_melee`/`charge`, núcleo na cabeça da Trichonephila, GameTests do M10b | ⏳ aguardando teste |
 | Etapa A pipeline Meshy (armas OBJ na mão, pistola, espada, animação por arma) · Etapa B HUD | ⏳ aguardando teste |
-| **0.2 Machado** (`kn8:axe`, estilo `heavy`, modelo do Meshy com a textura original) | ✅ jogador (1ª/3ª pessoa) e soldado (`/kn8 soldier spawn axe`) vistos em jogo; arma pesada também carrega golpe; números [SUPOSIÇÃO] em `weapon/axe.json` |
-| **0.2 HUD nova** (fiel à referência "HUD de combate avançado - estilo anime") | ✅ vista em jogo; arte em `textures/gui/hud/` gerada por `tools/art/gen_hud.py` (texturas 4× desenhadas em pixel de textura, `blur` ligado); aguardando aprovação |
+| **0.2 Machado** (`kn8:axe`, estilo `heavy`, 2,0 de comprimento) e **espada nova** do Meshy | ✅ jogador (1ª/3ª pessoa) e soldado (`/kn8 soldier spawn axe`/`sword`) vistos em jogo; arma pesada também carrega golpe; números [SUPOSIÇÃO] em `weapon/axe.json` |
+| **0.2 HUD nova** (fiel à referência "HUD de combate avançado - estilo anime"; 60% do tamanho da arte, `BASE_SIZE`) | ✅ vista em jogo; arte em `textures/gui/hud/` gerada por `tools/art/gen_hud.py` (texturas 4× desenhadas em pixel de textura, `blur` ligado); aguardando aprovação |
 | **Modelos Meshy estilo Minecraft** (soldado, aranha 8 patas, Primigenius) | ⏳ compila, JUnit 69/69, GameTests 31/31 e **vistos em jogo** (servidor dedicado + 1 cliente na nuvem, capturas em `docs/img/jogo_*`); aguardando roteiro §11 com 2 clientes |
 | **0.1-B correções visuais** (aranha, soldado, armas na mão, espada nova) | ⏳ compila e testes passam; armas na mão do jogador (1ª/3ª pessoa) e do soldado e mira do soldado vistas em jogo; **aguardando roteiro §10** |
 | **0.1-B** (atualização grande, escrita no chat): escala, VFX, destruição, carcaça/desmonte, Primigenius verde e Honju marrom, barra de vida, dash/ataque carregado, Soldado 1 | ⏳ compila, JUnit (69) e GameTests (31/31) passam em 2026-10-06; **aguardando teste manual** — `docs/ROTEIRO_TESTE_0_1_B.md` (resultado e correções em `docs/ATUALIZACAO_0_1_B.md`) |
@@ -131,7 +131,8 @@ mandam; se algo precisar mudar, marque **[DECIDIR]** e pergunte.
   apontavam para o chão; o `SoldierRenderer` girava o item 180° a mais (cadeia do vanilla copiada sem converter para
   Y para cima) e a `BlockAndItemGeoLayer` gira de novo pela rotação do osso. Soldado parecia parado: idle de ±2°
   e sem pose de arma → controllers `movement` (pernas) + `arms` (pose por arma, mira com alvo) + cabeça seguindo.
-- **0.1-B (espada):** o modelo do Meshy saiu como agulha → modelo próprio por código (`build_sword.py`).
+- **0.1-B (espada):** o modelo do Meshy saiu como agulha → modelo próprio por código (`build_sword.py`); em
+  2026-10-06 trocado pelo novo GLB do Miguel (`blade_thickness` alarga a lâmina também; não usar nele).
 - **Modelos Meshy (em jogo, 2026-10-06):** `/summon kn8:soldier ~ ~ ~ {kn8_variant:...}` deixava a mão vazia (o
   vanilla não chama `finalizeSpawn` quando há NBT) → `readAdditionalSaveData` aplica arma/atributos se o NBT não
   traz `HandItems`/`attributes`. Clarão do tiro (`ParticleTypes.FLASH`) era uma bola branca de vários blocos →
@@ -147,8 +148,8 @@ mandam; se algo precisar mudar, marque **[DECIDIR]** e pergunte.
   Prévia: `python3 tools/art/preview.py <espécie> [saída.png] [escala]`.
 - `tools/gen_kaiju_placeholders.py` **pula** as espécies em `FINAL_ART` (não sobrescreve arte final).
 - Animações do jogador: `tools/art/gen_player_animations.py` (tempos lidos do JSON das armas).
-- Armas: `tools/art/meshy_convert.py` (o antigo `gen_item_textures.py` foi removido); espada: `build_sword.py`
-  (o conversor pula a espada: `replaced_by`). Prévia das armas na mão (jogador 3ª/1ª pessoa e soldado):
+- Armas: `tools/art/meshy_convert.py` (o antigo `gen_item_textures.py` foi removido). Espada: modelo novo do Meshy
+  (`sword.glb`, 2026-10-06); `build_sword.py` fica só como alternativa (para usar, pôr `replaced_by` na tabela). Prévia das armas na mão (jogador 3ª/1ª pessoa e soldado):
   `python3 tools/art/preview_held_items.py` → `build/preview_held_items_*.png`.
 - Malhas: `rebake_mesh_texture.py` (refaz textura de malha com UV quebrada), `pad_texture.py` (borda nas ilhas +
   reduzir); `rig_soldier_mesh.py` já gera a textura 512 com borda.

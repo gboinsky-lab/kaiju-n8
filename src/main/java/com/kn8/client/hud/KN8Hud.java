@@ -45,6 +45,8 @@ public final class KN8Hud {
     private static final ResourceLocation FILL_HEAT = KN8Constants.id("textures/gui/hud/fill_heat.png");
     private static final ResourceLocation DIGITS = KN8Constants.id("textures/gui/hud/digits.png");
     private static final int SCALE = 4;
+    /** Tamanho da HUD em relacao a arte (214 x 97 unidades da GUI); o config "scale" multiplica por cima. */
+    private static final double BASE_SIZE = 0.6;
     private static final int PANEL_WIDTH = 214;
     private static final int PANEL_HEIGHT = 97;
     private static final int MARGIN = 6;
@@ -125,7 +127,8 @@ public final class KN8Hud {
         if (overheat) {
             drawVignette(graphics, view.panic());
         }
-        double scale = ClientConfig.HUD_SCALE.get();
+        // Tamanho base da arte (teste do Miguel: em 1,0 ficava grande demais) vezes a escala do config do cliente.
+        double scale = ClientConfig.HUD_SCALE.get() * BASE_SIZE;
         HudMath.Origin origin = HudMath.origin(corner(ClientConfig.HUD_ANCHOR.get()),
                 graphics.guiWidth(), graphics.guiHeight(), PANEL_WIDTH, PANEL_HEIGHT, scale, MARGIN, HOTBAR_WIDTH,
                 STATUS_BARS_HEIGHT);
@@ -146,7 +149,13 @@ public final class KN8Hud {
         drawRows(graphics, view);
         graphics.pose().popPose();
         drawReleaseText(graphics, minecraft.font, view, x, y);
-        drawAlerts(graphics, minecraft.font, overheat, x, y);
+        graphics.pose().popPose();
+        // Avisos em texto na escala do config (sem o BASE_SIZE), para a fonte continuar legivel.
+        double textScale = ClientConfig.HUD_SCALE.get();
+        graphics.pose().pushPose();
+        graphics.pose().scale((float) textScale, (float) textScale, 1.0F);
+        drawAlerts(graphics, minecraft.font, overheat, (int) Math.round(x * BASE_SIZE),
+                (int) Math.round(y * BASE_SIZE), (int) Math.ceil(PANEL_HEIGHT * BASE_SIZE));
         graphics.pose().popPose();
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.disableBlend();
@@ -236,9 +245,9 @@ public final class KN8Hud {
     }
 
     /** OVERHEAT (critico ou pane), combo e avisos de combate, acima do painel (ou abaixo, se estiver no topo). */
-    private static void drawAlerts(GuiGraphics graphics, Font font, boolean overheat, int x, int y) {
+    private static void drawAlerts(GuiGraphics graphics, Font font, boolean overheat, int x, int y, int panelHeight) {
         boolean above = y > LINE * 3;
-        int lineY = above ? y - LINE - 1 : y + PANEL_HEIGHT + 2;
+        int lineY = above ? y - LINE - 1 : y + panelHeight + 2;
         int step = above ? -LINE : LINE;
         if (overheat) {
             graphics.drawString(font, Component.translatable("kn8.hud.overheat"), x + 2, lineY, blink(COLOR_ALERT),
