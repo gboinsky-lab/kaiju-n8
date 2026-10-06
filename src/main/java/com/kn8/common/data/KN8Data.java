@@ -7,6 +7,7 @@ import java.util.Optional;
 import com.kn8.common.data.def.AbilityDef;
 import com.kn8.common.data.def.BossDef;
 import com.kn8.common.data.def.DismantleDef;
+import com.kn8.common.data.def.InvasionDef;
 import com.kn8.common.data.def.KaijuDef;
 import com.kn8.common.data.def.MissionDef;
 import com.kn8.common.data.def.RankDef;
@@ -43,9 +44,13 @@ public final class KN8Data {
     public static final DataRegistry<WorkbenchRecipeDef> WORKBENCH =
             new DataRegistry<>("workbench", WorkbenchRecipeDef.CODEC, true);
 
+    /** 0.2 (Etapa 7): alertas de invasao (so o servidor; o cliente recebe o estado pelo InvasionStateS2C). */
+    public static final DataRegistry<InvasionDef> INVASION =
+            new DataRegistry<>("invasion", InvasionDef.CODEC, false);
+
     /** Ordem = ordem de validacao (cada um so referencia os anteriores). */
     public static final List<DataRegistry<?>> ALL =
-            List.of(RANK, ABILITY, DISMANTLE, KAIJU, BOSS, WEAPON, SUIT, MISSION, SOLDIER, WORKBENCH);
+            List.of(RANK, ABILITY, DISMANTLE, KAIJU, BOSS, WEAPON, SUIT, MISSION, SOLDIER, WORKBENCH, INVASION);
 
     private KN8Data() {
     }

@@ -1,0 +1,49 @@
+{
+  "warning_ticks": 600,
+  "spawn_min": 44,
+  "spawn_max": 64,
+  "radius": 120,
+  "time_limit_ticks": 24000,
+  "waves": [
+    {
+      "kaiju": [
+        {
+          "species": "kn8:primigenius",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "kaiju": [
+        {
+          "species": "kn8:primigenius",
+          "count": 2
+        }
+      ],
+      "boss": "kn8:honju",
+      "delay_ticks": 600
+    }
+  ],
+  "defenders": [
+    {
+      "variant": "rifle",
+      "level": "high",
+      "count": 4
+    },
+    {
+      "variant": "sword",
+      "level": "high",
+      "count": 2
+    }
+  ],
+  "rewards": {
+    "merit": 400,
+    "training_xp": 600,
+    "items": [
+      "kn8:core_fragment",
+      "kn8:core_fragment",
+      "kn8:release_catalyst"
+    ]
+  },
+  "natural_weight": 1
+}

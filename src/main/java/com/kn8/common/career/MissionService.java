@@ -10,6 +10,7 @@ import com.kn8.common.attribute.PowerService;
 import com.kn8.common.boss.BossService;
 import com.kn8.common.config.ServerConfig;
 import com.kn8.common.data.KN8Data;
+import com.kn8.common.invasion.InvasionService;
 import com.kn8.common.data.def.MissionDef;
 import com.kn8.common.registry.KN8Sounds;
 import com.kn8.common.world.KaijuSpawner;
@@ -218,6 +219,11 @@ public final class MissionService {
                 setPoint(progress, index, area);
             }
             case REACH_AREA -> setPoint(progress, index, area);
+            case DEFEND_INVASION -> {
+                // Invasao centrada na area; se ja houver uma na dimensao, defender aquela tambem vale o objetivo.
+                objective.target().ifPresent(invasion -> InvasionService.start(level, invasion, area));
+                setPoint(progress, index, InvasionService.active(level).map(value -> value.center()).orElse(area));
+            }
             case PATROL -> setPoint(progress, index, KaijuSpawner.surfaceAround(level, player.blockPosition(),
                     ServerConfig.MISSION_PATROL_MIN.get(), ServerConfig.MISSION_PATROL_MAX.get(),
                     player.getRandom()));

@@ -54,6 +54,8 @@ public final class ServerConfig {
     public static final ModConfigSpec.DoubleValue MISSION_REACH_RADIUS;
     public static final ModConfigSpec.DoubleValue SUPPLY_COOLANT_HEAT;
     public static final ModConfigSpec.IntValue SUPPLY_CATALYST_XP;
+    public static final ModConfigSpec.BooleanValue INVASION_NATURAL;
+    public static final ModConfigSpec.DoubleValue INVASION_NATURAL_CHANCE;
 
     // --- spawn -----------------------------------------------------------------------------------------------
     public static final ModConfigSpec.BooleanValue NATURAL_SPAWN;
@@ -257,8 +259,15 @@ public final class ServerConfig {
         SUPPLY_CATALYST_XP = intValue("catalystXp", "Release training XP given by one catalyst.", 500, 0, 100000);
         BUILDER.pop();
 
+        section("invasion", "Invasion alerts (0.2). Kaiju only appear through alerts, invasions and missions.");
+        INVASION_NATURAL = booleanValue("natural", "Invasions may start on their own at nightfall.", true);
+        INVASION_NATURAL_CHANCE = doubleValue("naturalChance", "Chance per in-game day of a natural invasion.",
+                0.2, 0.0, 1.0);
+        BUILDER.pop();
+
         section("spawn", "Natural spawning and kaiju count limits.");
-        NATURAL_SPAWN = booleanValue("natural", "Allow kaiju to spawn naturally in biomes.", true);
+        NATURAL_SPAWN = booleanValue("natural", "Allow kaiju to spawn naturally in biomes (0.2: off; kaiju come"
+                + " from alerts, invasions and missions).", false);
         MAX_KAIJU_PER_CHUNK = intValue("maxKaijuPerChunk", "Kaiju limit per chunk.", 4, 0, 64);
         MAX_KAIJU_PER_LEVEL = intValue("maxKaijuPerLevel", "Kaiju limit per dimension.", 60, 0, 500);
         MAX_YOJU_PER_HONJU = intValue("maxYojuPerHonju", "Yoju a Honju may keep alive at once.", 8, 0, 64);

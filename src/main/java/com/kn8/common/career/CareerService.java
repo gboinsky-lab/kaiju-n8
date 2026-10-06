@@ -225,7 +225,8 @@ public final class CareerService {
         String nextMission = next.flatMap(entry -> entry.getValue().promotionMission())
                 .filter(id -> !data.completed().contains(id)).map(ResourceLocation::toString).orElse("");
         return new CareerView(rank, nextId, data.merit(), nextMerit, nextMission,
-                new CareerView.Stats(data.kaijuKills(), data.dismantled(), data.missionsDone()),
+                new CareerView.Stats(data.kaijuKills(), data.dismantled(), data.missionsDone(),
+                        data.invasionsDefended()),
                 MissionService.activeView(player), List.copyOf(data.completed()));
     }
 

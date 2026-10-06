@@ -8,6 +8,7 @@ import com.kn8.common.career.CareerSyncS2C;
 import com.kn8.common.career.MissionActionC2S;
 import com.kn8.common.craft.CraftC2S;
 import com.kn8.common.craft.OpenWorkbenchS2C;
+import com.kn8.common.invasion.InvasionStateS2C;
 import com.kn8.common.combat.CombatInputC2S;
 import com.kn8.common.combat.CombatNetwork;
 import com.kn8.common.combat.CombatStateS2C;
@@ -44,7 +45,7 @@ public final class KN8Network {
     // Mudar quando o formato de algum payload mudar, para recusar clientes incompativeis com mensagem clara.
     // 2 = M6: PowerView ganhou heatMax. 3 = M9: AnimTriggerS2C. 4 = M10a: CombatInputC2S. 5 = M10b: CombatStateS2C.
     // 6 = 0.1-B: VfxS2C (efeitos). 7/8 = 0.2 (PowerView.winded, sons no JSON da arma). 9 = 0.2: CareerSyncS2C,
-    // MissionActionC2S, Active.point, CraftC2S, OpenWorkbenchS2C.
+    // MissionActionC2S, Active.point, CraftC2S, OpenWorkbenchS2C, InvasionStateS2C.
     private static final String PROTOCOL_VERSION = "9";
 
     /** Diagnostico: 20 por segundo, rajada de 40. */
@@ -78,6 +79,7 @@ public final class KN8Network {
         toServer(registrar, MissionActionC2S.TYPE, MissionActionC2S.STREAM_CODEC, MENU_LIMIT, MissionActionC2S::handle);
         toServer(registrar, CraftC2S.TYPE, CraftC2S.STREAM_CODEC, MENU_LIMIT, CraftC2S::handle);
         toClientHook(registrar, OpenWorkbenchS2C.TYPE, OpenWorkbenchS2C.STREAM_CODEC);
+        toClientHook(registrar, InvasionStateS2C.TYPE, InvasionStateS2C.STREAM_CODEC);
         // M10: intencao de combate (o servidor valida tudo).
         toServer(registrar, CombatInputC2S.TYPE, CombatInputC2S.STREAM_CODEC, COMBAT_LIMIT, CombatNetwork::handle);
         // 0.1-B: efeitos visuais (desenhados no cliente).

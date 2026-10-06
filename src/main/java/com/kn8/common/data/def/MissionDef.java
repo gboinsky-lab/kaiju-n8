@@ -55,7 +55,9 @@ public record MissionDef(Category category, Optional<ResourceLocation> giver, Re
         /** Chegar ao marcador {@code marker} (estrutura opcional em {@code structure}). */
         REACH_AREA("reach_area"),
         /** Visitar {@code count} pontos de patrulha. */
-        PATROL("patrol");
+        PATROL("patrol"),
+        /** 0.2 (Etapa 7): vencer a invasao {@code target} (registry invasion), que comeca perto do jogador. */
+        DEFEND_INVASION("defend_invasion");
 
         public static final Codec<ObjectiveType> CODEC = StringRepresentable.fromEnum(ObjectiveType::values);
 

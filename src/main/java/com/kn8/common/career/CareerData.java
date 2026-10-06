@@ -40,6 +40,7 @@ public final class CareerData {
     private int kaijuKills;
     private int dismantled;
     private int missionsDone;
+    private int invasionsDefended;
     private final Map<ResourceLocation, MissionProgress> active = new HashMap<>();
     private final Set<ResourceLocation> completed = new HashSet<>();
     private final Map<ResourceLocation, Long> cooldownUntil = new HashMap<>();
@@ -59,7 +60,8 @@ public final class CareerData {
             ResourceLocation.CODEC.listOf().optionalFieldOf("completed", List.of())
                     .forGetter(data -> List.copyOf(data.completed)),
             Codec.unboundedMap(ResourceLocation.CODEC, Codec.LONG).optionalFieldOf("cooldowns", Map.of())
-                    .forGetter(data -> Map.copyOf(data.cooldownUntil))
+                    .forGetter(data -> Map.copyOf(data.cooldownUntil)),
+            Codec.INT.optionalFieldOf("invasions_defended", 0).forGetter(CareerData::invasionsDefended)
     ).apply(i, CareerData::new));
 
     public CareerData() {
@@ -67,12 +69,13 @@ public final class CareerData {
 
     private CareerData(Optional<ResourceLocation> rank, int merit, int kaijuKills, int dismantled, int missionsDone,
             Map<ResourceLocation, MissionProgress> active, List<ResourceLocation> completed,
-            Map<ResourceLocation, Long> cooldowns) {
+            Map<ResourceLocation, Long> cooldowns, int invasionsDefended) {
         this.rank = rank.orElse(null);
         this.merit = merit;
         this.kaijuKills = kaijuKills;
         this.dismantled = dismantled;
         this.missionsDone = missionsDone;
+        this.invasionsDefended = invasionsDefended;
         // O Codec devolve listas imutaveis: o progresso e alterado no lugar.
         active.forEach((id, progress) -> this.active.put(id, new MissionProgress(new ArrayList<>(progress.progress()),
                 progress.acceptedTick(), new ArrayList<>(progress.points()))));
@@ -119,6 +122,15 @@ public final class CareerData {
 
     void addMissionDone() {
         missionsDone++;
+    }
+
+    public int invasionsDefended() {
+        return invasionsDefended;
+    }
+
+    /** 0.2 (Etapa 7): invasao vencida com o jogador na area. */
+    public void addInvasionDefended() {
+        invasionsDefended++;
     }
 
     public Map<ResourceLocation, MissionProgress> active() {

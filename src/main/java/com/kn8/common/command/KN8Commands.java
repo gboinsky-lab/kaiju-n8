@@ -36,6 +36,7 @@ public final class KN8Commands {
                 .then(CareerCommands.merit())
                 .then(CareerCommands.mission())
                 .then(CareerCommands.boss())
+                .then(InvasionCommands.invasion())
                 .then(DebugCommands.build()));
     }
 }

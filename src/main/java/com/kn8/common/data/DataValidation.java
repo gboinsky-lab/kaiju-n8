@@ -14,12 +14,14 @@ import com.kn8.core.kaiju.KaijuScale;
 import com.kn8.common.data.def.AbilityDef;
 import com.kn8.common.data.def.BossDef;
 import com.kn8.common.data.def.DismantleDef;
+import com.kn8.common.data.def.InvasionDef;
 import com.kn8.common.data.def.KaijuDef;
 import com.kn8.common.data.def.MissionDef;
 import com.kn8.common.data.def.RankDef;
 import com.kn8.common.data.def.SoldierDef;
 import com.kn8.common.data.def.SuitDef;
 import com.kn8.common.data.def.WeaponDef;
+import com.kn8.common.data.def.WorkbenchRecipeDef;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -67,6 +69,9 @@ public final class DataValidation {
                 validateMissions(KN8Data.MISSION.loaded(), ranks.keySet(), kaiju.keySet(), bosses.keySet(), report),
                 report);
         publish(KN8Data.SOLDIER, validateSoldiers(KN8Data.SOLDIER.loaded(), report), report);
+        publish(KN8Data.WORKBENCH, validateWorkbench(KN8Data.WORKBENCH.loaded(), report), report);
+        publish(KN8Data.INVASION, validateInvasions(KN8Data.INVASION.loaded(), kaiju.keySet(), bosses.keySet(), report),
+                report);
         // Patentes apontam para missoes de avaliacao, que so foram validadas agora: confere no fim (so aviso).
         ranks.forEach((id, rank) -> rank.promotionMission().filter(mission -> !missions.containsKey(mission))
                 .ifPresent(mission -> report.warning("rank " + id + ": promotion_mission inexistente " + mission)));
@@ -87,6 +92,54 @@ public final class DataValidation {
         registry.publishValidated(valid);
         report.count(registry.id().getPath(), valid.size());
         return registry.server();
+    }
+
+    /** 0.2 (Etapa 3): resultado e ingredientes precisam ser itens registrados (senao a receita sai). */
+    public static Map<ResourceLocation, WorkbenchRecipeDef> validateWorkbench(
+            Map<ResourceLocation, WorkbenchRecipeDef> input, DataReport report) {
+        Map<ResourceLocation, WorkbenchRecipeDef> valid = new LinkedHashMap<>();
+        input.forEach((id, def) -> {
+            String where = "workbench " + id;
+            if (!BuiltInRegistries.ITEM.containsKey(def.result())) {
+                report.error(where + ": result nao registrado " + def.result());
+                return;
+            }
+            for (WorkbenchRecipeDef.Ingredient ingredient : def.ingredients()) {
+                if (!BuiltInRegistries.ITEM.containsKey(ingredient.item())) {
+                    report.error(where + ": ingrediente nao registrado " + ingredient.item());
+                    return;
+                }
+            }
+            valid.put(id, def);
+        });
+        return valid;
+    }
+
+    /** 0.2 (Etapa 7): especies e chefes das ondas precisam existir; invasao sem kaiju sai. */
+    public static Map<ResourceLocation, InvasionDef> validateInvasions(Map<ResourceLocation, InvasionDef> input,
+            Set<ResourceLocation> kaiju, Set<ResourceLocation> bosses, DataReport report) {
+        Map<ResourceLocation, InvasionDef> valid = new LinkedHashMap<>();
+        input.forEach((id, def) -> {
+            String where = "invasion " + id;
+            for (InvasionDef.Wave wave : def.waves()) {
+                for (InvasionDef.Spawn spawn : wave.kaiju()) {
+                    if (!kaiju.contains(spawn.species())) {
+                        report.error(where + ": especie inexistente " + spawn.species());
+                        return;
+                    }
+                }
+                if (wave.boss().isPresent() && !bosses.contains(wave.boss().get())) {
+                    report.error(where + ": chefe inexistente " + wave.boss().get());
+                    return;
+                }
+            }
+            if (def.totalKaiju() == 0) {
+                report.error(where + ": nenhuma onda com kaiju");
+                return;
+            }
+            valid.put(id, def);
+        });
+        return valid;
     }
 
     /** 0.1-B: soldado precisa de ao menos um nivel e uma variante; arma inexistente vira aviso (variante sem arma). */
@@ -288,6 +341,9 @@ public final class DataValidation {
             case REACH_AREA -> objective.marker().isPresent()
                     || error(report, label + ": precisa de marker");
             case PATROL -> true;
+            // Invasoes sao validadas depois das missoes: aqui basta o arquivo ter carregado.
+            case DEFEND_INVASION -> objective.target().filter(KN8Data.INVASION.loaded()::containsKey).isPresent()
+                    || error(report, label + ": target precisa ser uma invasao existente");
         };
     }
 

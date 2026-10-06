@@ -1,0 +1,47 @@
+{
+  "warning_ticks": 400,
+  "spawn_min": 36,
+  "spawn_max": 56,
+  "radius": 96,
+  "time_limit_ticks": 12000,
+  "waves": [
+    {
+      "kaiju": [
+        {
+          "species": "kn8:trichonephila",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "kaiju": [
+        {
+          "species": "kn8:trichonephila",
+          "count": 5
+        }
+      ],
+      "delay_ticks": 400
+    }
+  ],
+  "defenders": [
+    {
+      "variant": "rifle",
+      "level": "normal",
+      "count": 2
+    },
+    {
+      "variant": "sword",
+      "level": "normal",
+      "count": 1
+    }
+  ],
+  "rewards": {
+    "merit": 80,
+    "training_xp": 150,
+    "items": [
+      "kn8:kaiju_tissue",
+      "kn8:stamina_stim"
+    ]
+  },
+  "natural_weight": 3
+}

@@ -21,10 +21,11 @@ public record CareerView(ResourceLocation rank, ResourceLocation nextRank, int m
         String nextMission, Stats stats, List<Active> active, List<ResourceLocation> completed) {
 
     /** Contadores da aba Perfil. */
-    public record Stats(int kaijuKills, int dismantled, int missionsDone) {
+    public record Stats(int kaijuKills, int dismantled, int missionsDone, int invasionsDefended) {
         public static final StreamCodec<ByteBuf, Stats> CODEC = StreamCodec.composite(
                 ByteBufCodecs.VAR_INT, Stats::kaijuKills, ByteBufCodecs.VAR_INT, Stats::dismantled,
-                ByteBufCodecs.VAR_INT, Stats::missionsDone, Stats::new);
+                ByteBufCodecs.VAR_INT, Stats::missionsDone, ByteBufCodecs.VAR_INT, Stats::invasionsDefended,
+                Stats::new);
     }
 
     /**
@@ -61,7 +62,7 @@ public record CareerView(ResourceLocation rank, ResourceLocation nextRank, int m
     }
 
     public static final ResourceLocation NONE = ResourceLocation.withDefaultNamespace("empty");
-    public static final CareerView EMPTY = new CareerView(NONE, NONE, 0, 0, "", new Stats(0, 0, 0), List.of(),
+    public static final CareerView EMPTY = new CareerView(NONE, NONE, 0, 0, "", new Stats(0, 0, 0, 0), List.of(),
             List.of());
 
     public static final StreamCodec<ByteBuf, CareerView> STREAM_CODEC = StreamCodec.composite(

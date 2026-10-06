@@ -178,9 +178,10 @@ final class ProfileTab implements MenuTab {
                 MenuData.totalKaijuKills())));
         stat(g, font, x, st + 24, w, "kn8.menu.profile.dismantled", String.valueOf(stats.dismantled()));
         stat(g, font, x, st + 38, w, "kn8.menu.profile.missions_done", String.valueOf(stats.missionsDone()));
-        if (st + 52 < y + h) {
-            MenuStyle.wrapped(g, font, Component.translatable("kn8.menu.profile.stats_note"), x, st + 52, w,
-                    MenuStyle.TEXT_DIM, Math.max(1, (y + h - st - 52) / 7));
+        stat(g, font, x, st + 52, w, "kn8.menu.profile.invasions", String.valueOf(stats.invasionsDefended()));
+        if (st + 66 < y + h) {
+            MenuStyle.wrapped(g, font, Component.translatable("kn8.menu.profile.stats_note"), x, st + 66, w,
+                    MenuStyle.TEXT_DIM, Math.max(1, (y + h - st - 66) / 7));
         }
     }
 

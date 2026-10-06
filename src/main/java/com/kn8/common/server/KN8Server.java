@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 import com.kn8.KN8Constants;
 import com.kn8.common.destruction.DestructionService;
+import com.kn8.common.invasion.Invasion;
 import com.kn8.common.network.NetworkSync;
 import com.kn8.common.network.PrivateSyncState;
 import com.kn8.core.net.RateLimiter;
@@ -48,6 +49,8 @@ public final class KN8Server {
     // se perdem ao desligar (o que ja quebrou fica no DestructionLog, que e salvo).
     private final Map<ResourceKey<Level>, Deque<DestructionService.Job>> destructionJobs = new HashMap<>();
     private final Set<ResourceKey<Level>> restoring = new HashSet<>();
+    // 0.2 (Etapa 7): invasao ativa por dimensao (nao salva).
+    private final Map<ResourceKey<Level>, Invasion> invasions = new HashMap<>();
 
     private KN8Server(MinecraftServer server) {
         this.server = server;
@@ -124,6 +127,10 @@ public final class KN8Server {
 
     public Deque<DestructionService.Job> destructionJobs(ResourceKey<Level> dimension) {
         return destructionJobs.computeIfAbsent(dimension, key -> new ArrayDeque<>());
+    }
+
+    public Map<ResourceKey<Level>, Invasion> invasions() {
+        return invasions;
     }
 
     public boolean isRestoring(ResourceKey<Level> dimension) {

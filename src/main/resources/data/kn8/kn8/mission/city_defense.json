@@ -1,0 +1,22 @@
+{
+  "category": "defense",
+  "giver": "kn8:officer",
+  "requires": {
+    "rank": "kn8:oficial"
+  },
+  "objectives": [
+    {
+      "type": "defend_invasion",
+      "target": "kn8:primigenius_raid"
+    }
+  ],
+  "rewards": {
+    "merit": 120,
+    "training_xp": 200,
+    "items": [
+      "kn8:suit_coolant"
+    ]
+  },
+  "repeatable": true,
+  "cooldown_ticks": 24000
+}

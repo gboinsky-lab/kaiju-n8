@@ -3,11 +3,15 @@ package com.kn8.client.menu;
 import java.util.List;
 import java.util.Locale;
 
+import com.kn8.client.invasion.ClientInvasion;
 import com.kn8.common.data.def.KaijuDef;
+import com.kn8.common.invasion.Invasion;
+import com.kn8.common.invasion.InvasionStateS2C;
 import com.kn8.common.kaiju.KaijuEntity;
 
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 
 /**
@@ -50,9 +54,7 @@ final class AlertsTab implements MenuTab {
         g.fill(x + 6, iy + ih - 1, x + w - 6, iy + ih, MenuStyle.RED);
         g.fill(x + 6, iy, x + 7, iy + ih, MenuStyle.RED);
         g.fill(x + w - 7, iy, x + w - 6, iy + ih, MenuStyle.RED);
-        g.drawString(font, Component.translatable("kn8.menu.alerts.invasion"), x + 12, iy + 6, MenuStyle.RED, false);
-        MenuStyle.small(g, font, Component.translatable("kn8.menu.alerts.no_invasion"), x + 12, iy + 18,
-                MenuStyle.TEXT_DIM);
+        drawInvasion(g, font, x + 12, iy, w - 24);
 
         // Kaiju avistados.
         int listY = iy + ih + 6;
@@ -70,6 +72,38 @@ final class AlertsTab implements MenuTab {
         for (int i = 0; i < visible && i + scroll < sighted.size(); i++) {
             drawRow(g, font, sighted.get(i + scroll), x + 6, listY + i * (ROW_HEIGHT + 2), w - 12);
         }
+    }
+
+    /** Quadro da invasao: nome, fase/onda, kaiju restantes, relogio e direcao do centro. */
+    private static void drawInvasion(GuiGraphics g, Font font, int x, int y, int w) {
+        InvasionStateS2C state = ClientInvasion.state();
+        if (!state.active()) {
+            g.drawString(font, Component.translatable("kn8.menu.alerts.invasion_none_title"), x, y + 6,
+                    MenuStyle.TEXT_DIM, false);
+            MenuStyle.small(g, font, Component.translatable("kn8.menu.alerts.no_invasion"), x, y + 18,
+                    MenuStyle.TEXT_DIM);
+            return;
+        }
+        Invasion.Phase phase = Invasion.Phase.values()[Math.min(state.phase(), Invasion.Phase.values().length - 1)];
+        boolean blink = (System.currentTimeMillis() / 500) % 2 == 0;
+        g.drawString(font, Component.translatable("kn8.menu.alerts.invasion").append(" · ")
+                .append(Component.translatable("kn8.invasion." + state.invasion().getPath())), x, y + 6,
+                blink ? MenuStyle.RED : MenuStyle.ORANGE, false);
+        LocalPlayer player = MenuData.player();
+        long now = player == null ? 0 : player.level().getGameTime();
+        long seconds = Math.max(0, (state.timerEnd() - now) / 20);
+        Component phaseText = Component.translatable("kn8.menu.alerts.phase." + phase.name().toLowerCase(Locale.ROOT),
+                state.wave() + 1, state.waves(), String.format(Locale.ROOT, "%d:%02d", seconds / 60, seconds % 60));
+        MenuStyle.small(g, font, phaseText, x, y + 18, MenuStyle.TEXT);
+        Component right = Component.translatable("kn8.menu.alerts.remaining", state.remaining(), state.total());
+        if (player != null) {
+            double dx = state.center().getX() + 0.5 - player.getX();
+            double dz = state.center().getZ() + 0.5 - player.getZ();
+            right = right.copy().append(" · ").append(Component.translatable("kn8.menu.alerts.distance_to",
+                    Math.round(Math.sqrt(dx * dx + dz * dz))));
+        }
+        int rightW = Math.round(font.width(right) * MenuStyle.SMALL);
+        MenuStyle.small(g, font, right, x + w - rightW, y + 18, MenuStyle.YELLOW);
     }
 
     private static void drawRow(GuiGraphics g, Font font, KaijuEntity kaiju, int x, int y, int w) {
