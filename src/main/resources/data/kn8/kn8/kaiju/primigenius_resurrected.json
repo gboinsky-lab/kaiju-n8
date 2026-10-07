@@ -62,6 +62,8 @@
     ]
   },
   "abilities": [
+    "kn8:hooved_strike",
+    "kn8:tail_swipe",
     "kn8:slam",
     "kn8:charge"
   ],
@@ -75,5 +77,11 @@
     ],
     "natural": false
   },
-  "rarity": "uncommon"
+  "rarity": "uncommon",
+  "rage": {
+    "health_below": 0.3,
+    "damage_multiplier": 1.2,
+    "speed_multiplier": 1.15,
+    "cooldown_multiplier": 0.7
+  }
 }

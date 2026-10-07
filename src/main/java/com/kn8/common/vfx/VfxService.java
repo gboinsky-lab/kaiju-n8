@@ -25,6 +25,12 @@ public final class VfxService {
     public static final ResourceLocation OVERHEAT = KN8Constants.id("overheat");
     /** 0.5: rachaduras no chao saindo do ponto de impacto (ataque especial do machado). */
     public static final ResourceLocation GROUND_CRACK = KN8Constants.id("ground_crack");
+    /** 0.6: aviso de raio de energia (particulas convergindo para a boca durante o preparo). */
+    public static final ResourceLocation ENERGY_CHARGE = KN8Constants.id("energy_charge");
+    /** 0.6: explosao de energia (impacto do raio). */
+    public static final ResourceLocation ENERGY_BURST = KN8Constants.id("energy_burst");
+    /** 0.6: teia grudando no alvo. */
+    public static final ResourceLocation WEB = KN8Constants.id("web");
 
     /** Distancia em que os jogadores recebem o efeito. */
     public static final double RANGE = 64.0;

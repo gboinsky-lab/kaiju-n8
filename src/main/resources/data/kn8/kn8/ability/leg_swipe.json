@@ -1,0 +1,21 @@
+{
+  "type": "kn8:sweep",
+  "damage_multiplier": 0.9,
+  "radius": 2.0,
+  "windup_ticks": 8,
+  "active_ticks": 3,
+  "cooldown_ticks": 50,
+  "animation": "action.leg_swipe",
+  "vfx": [
+    {
+      "effect": "kn8:impact",
+      "intensity": 0.5
+    }
+  ],
+  "sound": "kn8:kaiju.bite",
+  "behavior": {
+    "priority": 2,
+    "arc_degrees": 160,
+    "arc_center": 0
+  }
+}

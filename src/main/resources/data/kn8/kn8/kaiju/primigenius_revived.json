@@ -62,9 +62,12 @@
     ]
   },
   "abilities": [
+    "kn8:heavy_punch",
+    "kn8:bite",
+    "kn8:tail_swipe",
     "kn8:slam",
     "kn8:charge",
-    "kn8:bite"
+    "kn8:energy_blast_revived"
   ],
   "weaknesses": [
     "stun_by_sound"
@@ -75,5 +78,11 @@
       "kn8:exam"
     ]
   },
-  "rarity": "event"
+  "rarity": "event",
+  "rage": {
+    "health_below": 0.3,
+    "damage_multiplier": 1.25,
+    "speed_multiplier": 1.2,
+    "cooldown_multiplier": 0.6
+  }
 }

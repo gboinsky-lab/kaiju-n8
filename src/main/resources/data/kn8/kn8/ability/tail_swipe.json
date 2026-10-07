@@ -1,0 +1,27 @@
+{
+  "type": "kn8:sweep",
+  "damage_multiplier": 1.0,
+  "radius": 3.0,
+  "windup_ticks": 12,
+  "active_ticks": 4,
+  "cooldown_ticks": 80,
+  "animation": "action.tail_swipe",
+  "telegraph": "arc",
+  "vfx": [
+    {
+      "effect": "kn8:dust",
+      "intensity": 0.8
+    },
+    {
+      "effect": "kn8:impact",
+      "intensity": 0.6
+    }
+  ],
+  "camera_shake": 0.15,
+  "sound": "kn8:kaiju.slam",
+  "behavior": {
+    "priority": 3,
+    "arc_degrees": 220,
+    "arc_center": 180
+  }
+}

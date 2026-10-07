@@ -608,5 +608,21 @@
   "kn8.command.aura.unknown": "Aura inexistente: %s",
   "kn8.command.aura.set": "Aura %s aplicada em %s entidade(s)",
   "kn8.command.aura.cleared": "Aura de volta ao padrão em %s entidade(s)",
-  "kn8.command.aura.release": "Potência visual %s%% em %s entidade(s)"
+  "kn8.command.aura.release": "Potência visual %s%% em %s entidade(s)",
+  "kn8.menu.bestiary.attacks": "Ataques: %s",
+  "kn8.ability.bite": "Mordida",
+  "kn8.ability.claw": "Garra",
+  "kn8.ability.slam": "Pancada no chão",
+  "kn8.ability.charge": "Investida",
+  "kn8.ability.hooved_strike": "Golpe de casco",
+  "kn8.ability.tail_swipe": "Rabada",
+  "kn8.ability.heavy_punch": "Soco pesado",
+  "kn8.ability.energy_blast": "Raio de energia (Uni-órgão)",
+  "kn8.ability.energy_blast_revived": "Raio de energia revivido",
+  "kn8.ability.leg_swipe": "Varredura de patas",
+  "kn8.ability.leg_stab": "Estocada de pata",
+  "kn8.ability.multi_leg": "Ataque de várias patas",
+  "kn8.ability.web_shot": "Disparo de teia",
+  "kn8.ability.leap": "Salto de emboscada",
+  "kn8.ability.finger_gun": "Finger Gun"
 }

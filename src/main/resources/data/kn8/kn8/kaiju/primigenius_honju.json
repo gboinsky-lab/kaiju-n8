@@ -62,9 +62,12 @@
     ]
   },
   "abilities": [
+    "kn8:heavy_punch",
+    "kn8:bite",
+    "kn8:tail_swipe",
     "kn8:slam",
     "kn8:charge",
-    "kn8:bite"
+    "kn8:energy_blast"
   ],
   "weaknesses": [
     "stun_by_sound"

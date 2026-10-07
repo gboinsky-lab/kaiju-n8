@@ -62,6 +62,8 @@
     ]
   },
   "abilities": [
+    "kn8:hooved_strike",
+    "kn8:tail_swipe",
     "kn8:slam",
     "kn8:charge"
   ],

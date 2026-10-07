@@ -18,7 +18,22 @@ import net.minecraft.world.phys.Vec3;
 public record KaijuDef(KaijuClass kaijuClass, float fortitude, KaijuSize size, Dimensions dimensions,
         Overrides overrides, double speed, int intelligence, List<Part> parts, Core core,
         List<ResourceLocation> abilities, List<String> weaknesses, Optional<ResourceLocation> dismantle, Spawn spawn,
-        Rarity rarity, List<String> tags) {
+        Rarity rarity, List<String> tags, Optional<Rage> rage) {
+
+    /**
+     * 0.6 (especificacao do Miguel, "Revived Rage"/"Berserk"): com a vida abaixo de {@code health_below}, o kaiju
+     * fica enfurecido de vez: dano e velocidade multiplicados e recargas das habilidades encurtadas.
+     */
+    public record Rage(float healthBelow, float damageMultiplier, float speedMultiplier, float cooldownMultiplier) {
+        public static final Codec<Rage> CODEC = RecordCodecBuilder.create(i -> i.group(
+                Codec.floatRange(0.0F, 1.0F).fieldOf("health_below").forGetter(Rage::healthBelow),
+                Codec.floatRange(0.1F, 10.0F).optionalFieldOf("damage_multiplier", 1.0F)
+                        .forGetter(Rage::damageMultiplier),
+                Codec.floatRange(0.1F, 5.0F).optionalFieldOf("speed_multiplier", 1.0F).forGetter(Rage::speedMultiplier),
+                Codec.floatRange(0.05F, 1.0F).optionalFieldOf("cooldown_multiplier", 1.0F)
+                        .forGetter(Rage::cooldownMultiplier)
+        ).apply(i, Rage::new));
+    }
 
     /** Hitbox do corpo principal. */
     public record Dimensions(float width, float height) {
@@ -85,6 +100,7 @@ public record KaijuDef(KaijuClass kaijuClass, float fortitude, KaijuSize size, D
             ResourceLocation.CODEC.optionalFieldOf("dismantle").forGetter(KaijuDef::dismantle),
             Spawn.CODEC.optionalFieldOf("spawn", Spawn.NONE).forGetter(KaijuDef::spawn),
             Rarity.CODEC.optionalFieldOf("rarity", Rarity.COMMON).forGetter(KaijuDef::rarity),
-            DefCodecs.STRINGS.optionalFieldOf("tags", List.of()).forGetter(KaijuDef::tags)
+            DefCodecs.STRINGS.optionalFieldOf("tags", List.of()).forGetter(KaijuDef::tags),
+            Rage.CODEC.optionalFieldOf("rage").forGetter(KaijuDef::rage)
     ).apply(i, KaijuDef::new));
 }

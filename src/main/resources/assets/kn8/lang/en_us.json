@@ -608,5 +608,21 @@
   "kn8.command.aura.unknown": "Unknown aura: %s",
   "kn8.command.aura.set": "Aura %s applied to %s entity(ies)",
   "kn8.command.aura.cleared": "Aura back to default on %s entity(ies)",
-  "kn8.command.aura.release": "Visual release %s%% on %s entity(ies)"
+  "kn8.command.aura.release": "Visual release %s%% on %s entity(ies)",
+  "kn8.menu.bestiary.attacks": "Attacks: %s",
+  "kn8.ability.bite": "Bite",
+  "kn8.ability.claw": "Claw",
+  "kn8.ability.slam": "Ground slam",
+  "kn8.ability.charge": "Charge",
+  "kn8.ability.hooved_strike": "Hooved strike",
+  "kn8.ability.tail_swipe": "Tail swipe",
+  "kn8.ability.heavy_punch": "Heavy punch",
+  "kn8.ability.energy_blast": "Energy blast (Uni-organ)",
+  "kn8.ability.energy_blast_revived": "Revived energy blast",
+  "kn8.ability.leg_swipe": "Leg swipe",
+  "kn8.ability.leg_stab": "Leg stab",
+  "kn8.ability.multi_leg": "Multi-leg assault",
+  "kn8.ability.web_shot": "Web shot",
+  "kn8.ability.leap": "Ambush leap",
+  "kn8.ability.finger_gun": "Finger Gun"
 }

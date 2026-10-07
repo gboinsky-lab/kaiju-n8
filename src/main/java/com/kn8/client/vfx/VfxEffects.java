@@ -13,11 +13,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
@@ -54,6 +57,9 @@ public final class VfxEffects {
         EFFECTS.put(VfxService.SUIT_RELEASE, VfxEffects::suitRelease);
         EFFECTS.put(VfxService.OVERHEAT, VfxEffects::overheat);
         EFFECTS.put(VfxService.GROUND_CRACK, VfxEffects::groundCrack);
+        EFFECTS.put(VfxService.ENERGY_CHARGE, VfxEffects::energyCharge);
+        EFFECTS.put(VfxService.ENERGY_BURST, VfxEffects::energyBurst);
+        EFFECTS.put(VfxService.WEB, VfxEffects::web);
     }
 
     private VfxEffects() {
@@ -194,6 +200,39 @@ public final class VfxEffects {
             }
         }
         burst(level, debris, at.add(0, 0.3, 0), count(intensity * 0.6F, amount), 1.5, 0.6);
+    }
+
+    /**
+     * 0.6: aviso do raio de energia: faiscas vindo de uma esfera em volta do ponto ate ele (a boca do kaiju), durante
+     * o preparo. A intensidade e o raio da esfera.
+     */
+    private static void energyCharge(ClientLevel level, Vec3 at, Vec3 dir, float intensity, float amount) {
+        RandomSource random = level.random;
+        int count = Math.max(6, Math.round(28 * amount));
+        double radius = 2.5 * intensity;
+        for (int i = 0; i < count; i++) {
+            Vec3 offset = new Vec3(random.nextDouble() - 0.5, random.nextDouble() - 0.5, random.nextDouble() - 0.5)
+                    .normalize().scale(radius);
+            Vec3 from = at.add(offset);
+            Vec3 speed = offset.scale(-0.08);
+            level.addParticle(i % 3 == 0 ? ParticleTypes.END_ROD : ParticleTypes.ELECTRIC_SPARK, from.x, from.y,
+                    from.z, speed.x, speed.y, speed.z);
+        }
+    }
+
+    /** 0.6: explosao de energia: estouro, anel de faiscas e fumaca. */
+    private static void energyBurst(ClientLevel level, Vec3 at, Vec3 dir, float intensity, float amount) {
+        level.addParticle(ParticleTypes.EXPLOSION, at.x, at.y, at.z, 0, 0, 0);
+        burst(level, ParticleTypes.END_ROD, at, count(intensity * 1.5F, amount), 0.8, 0.5);
+        burst(level, ParticleTypes.ELECTRIC_SPARK, at, count(intensity, amount), 1.5, 0.4);
+        burst(level, ParticleTypes.LARGE_SMOKE, at, count(intensity * 0.5F, amount), 1.5, 0.05);
+    }
+
+    /** 0.6: teia: fios brancos espalhados no ponto atingido. */
+    private static void web(ClientLevel level, Vec3 at, Vec3 dir, float intensity, float amount) {
+        ItemParticleOption cobweb = new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.COBWEB));
+        burst(level, cobweb, at, count(intensity * 1.5F, amount), 1.2, 0.15);
+        burst(level, ParticleTypes.WHITE_ASH, at, count(intensity * 2.0F, amount), 1.5, 0.05);
     }
 
     /** Traje superaquecido: fumaca e pequenas chamas saindo do jogador. */

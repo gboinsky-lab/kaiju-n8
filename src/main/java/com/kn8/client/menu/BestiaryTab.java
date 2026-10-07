@@ -13,6 +13,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
@@ -114,6 +115,16 @@ final class BestiaryTab implements MenuTab {
                 def.fortitude()), String.format("%.1f", def.dimensions().height()), MenuData.kills(type)), tx, ty,
                 MenuStyle.TEXT);
         ty += 11;
+        // 0.6: ataques da especie, pelo nome (kn8.ability.<id>), numa linha.
+        MutableComponent attacks = Component.empty();
+        for (int i = 0; i < def.abilities().size(); i++) {
+            if (i > 0) {
+                attacks.append(", ");
+            }
+            attacks.append(Component.translatable("kn8.ability." + def.abilities().get(i).getPath()));
+        }
+        ty += MenuStyle.wrapped(g, font, Component.translatable("kn8.menu.bestiary.attacks", attacks), tx, ty, tw,
+                MenuStyle.TEXT_DIM, 2) + 3;
 
         // Pontos fracos: nucleo (parte marcada no JSON), quando expoe, fraquezas.
         MenuStyle.small(g, font, Component.translatable("kn8.menu.bestiary.weak_points"), tx, ty,

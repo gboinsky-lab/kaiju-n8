@@ -26,6 +26,7 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraft.client.renderer.entity.ArmorStandRenderer;
+import net.minecraft.client.renderer.entity.NoopRenderer;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
@@ -71,6 +72,7 @@ public final class KN8Client {
         KN8Entities.KAIJU.forEach(type -> event.registerEntityRenderer(type.get(),
                 context -> new KaijuRenderer(context, type.getId(), type.get().getWidth() / 2.0F)));
         event.registerEntityRenderer(KN8Entities.CARCASS.get(), CarcassRenderer::new);
+        event.registerEntityRenderer(KN8Entities.KAIJU_PROJECTILE.get(), NoopRenderer::new);
         event.registerEntityRenderer(KN8Entities.SOLDIER.get(), SoldierRenderer::new);
         event.registerEntityRenderer(KN8Entities.TRAINING_DUMMY.get(), ArmorStandRenderer::new);
     }

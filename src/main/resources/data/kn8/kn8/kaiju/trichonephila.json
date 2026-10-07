@@ -48,7 +48,12 @@
     }
   ],
   "abilities": [
-    "kn8:bite"
+    "kn8:bite",
+    "kn8:leg_stab",
+    "kn8:leg_swipe",
+    "kn8:multi_leg",
+    "kn8:web_shot",
+    "kn8:leap"
   ],
   "dismantle": "kn8:trichonephila",
   "spawn": {

@@ -6,6 +6,7 @@ import java.util.List;
 import com.kn8.KN8Constants;
 import com.kn8.common.kaiju.CarcassEntity;
 import com.kn8.common.kaiju.KaijuEntity;
+import com.kn8.common.kaiju.KaijuProjectile;
 import com.kn8.common.numbered.KaijuNo9Entity;
 import com.kn8.common.soldier.SoldierEntity;
 import com.kn8.common.training.TrainingDummyEntity;
@@ -62,6 +63,15 @@ public final class KN8Entities {
                     .eyeHeight(1.62F)
                     .clientTrackingRange(KAIJU_TRACKING_RANGE_CHUNKS)
                     .build("soldier"));
+
+    /** 0.6: projetil de habilidade de kaiju (raio de energia, teia, Finger Gun); so particulas no cliente. */
+    public static final DeferredHolder<EntityType<?>, EntityType<KaijuProjectile>> KAIJU_PROJECTILE =
+            ENTITY_TYPES.register("kaiju_projectile", () -> EntityType.Builder.<KaijuProjectile>of(
+                            KaijuProjectile::new, MobCategory.MISC)
+                    .sized(0.5F, 0.5F)
+                    .clientTrackingRange(KAIJU_TRACKING_RANGE_CHUNKS)
+                    .updateInterval(1)
+                    .build("kaiju_projectile"));
 
     /** 0.2 (Etapa 2): boneco de treino (XP de Release por golpe). */
     public static final DeferredHolder<EntityType<?>, EntityType<TrainingDummyEntity>> TRAINING_DUMMY =

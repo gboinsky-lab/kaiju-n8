@@ -19,6 +19,7 @@ import com.kn8.common.destruction.DestructionService;
 import com.kn8.common.registry.KN8Sounds;
 import com.kn8.common.soldier.SoldierEntity;
 import com.kn8.common.vfx.AbilityEffects;
+import com.kn8.common.vfx.VfxService;
 import com.kn8.common.data.def.AbilityDef;
 import com.kn8.common.data.def.KaijuDef;
 import com.kn8.core.KN8Ids;
@@ -38,6 +39,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
@@ -50,6 +52,7 @@ import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
@@ -124,6 +127,11 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
     private static final String TYPE_MELEE = "melee";
     private static final String TYPE_AREA_MELEE = "area_melee";
     private static final String TYPE_CHARGE = "charge";
+    /** 0.6: o salto so "aterrissa" depois de alguns ticks no ar; desiste se nao voltar ao chao. */
+    private static final int LEAP_MIN_AIR_TICKS = 3;
+    private static final int LEAP_MAX_TICKS = 80;
+    private static final int RAGE_CHECK_TICKS = 10;
+    private static final ResourceLocation RAGE_MODIFIER = KN8Constants.id("kaiju_rage");
     /** Folga no alcance no tick de impacto: o alvo pode ter dado um passo durante o preparo. */
     private static final double IMPACT_REACH_TOLERANCE = 1.25;
 
@@ -148,6 +156,16 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
     private long nextBasicAttackTick;
     /** Investida em andamento: direcao fixa e alvos ja atingidos (cada um so uma vez por investida). */
     private Vec3 chargeDirection;
+    /** 0.6: golpes que faltam do multi_hit em andamento, quando sai o proximo, a habilidade e o alvo. */
+    private int multiHitsLeft;
+    private long nextMultiHitTick;
+    private ResourceLocation multiHitAbility;
+    private LivingEntity multiHitTarget;
+    /** 0.6: salto em andamento (dano na aterrissagem) e quando comecou. */
+    private ResourceLocation leapAbility;
+    private long leapStartTick;
+    /** 0.6: furia ja ativada (rage do JSON; nao volta). */
+    private boolean enraged;
     private final Set<UUID> chargeHits = new HashSet<>();
     /** Verdadeiro so durante a aplicacao de dano de uma habilidade "heavy" (lido pelo bloqueio do jogador). */
     private boolean dealingHeavyHit;
@@ -349,6 +367,7 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
                 staggerTicks--;
             }
             tickAbility();
+            checkRage();
             updateState();
             syncCoreForClients();
             if (bossState != null) {
@@ -416,7 +435,7 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
         return isInReach(target, meleeReach());
     }
 
-    private boolean isInReach(LivingEntity target, double reach) {
+    boolean isInReach(LivingEntity target, double reach) {
         return edgeDistance(target) <= reach && verticallyInReach(target, reach);
     }
 
@@ -438,14 +457,9 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
             }
             return false;
         }
-        for (ResourceLocation id : abilities) {
-            Optional<AbilityDef> ability = KN8Data.ABILITY.get(id, false);
-            if (ability.isPresent() && now >= abilityReadyAt.getOrDefault(id, Long.MIN_VALUE)
-                    && isInReach(target, reachOf(ability.get()))) {
-                return startAbility(id, target);
-            }
-        }
-        return false;
+        // 0.6: prontas, ao alcance (corpo a corpo ou a distancia com linha de visao), pela prioridade do JSON.
+        Optional<ResourceLocation> chosen = KaijuAbilities.choose(this, target, abilities, abilityReadyAt, now);
+        return chosen.isPresent() && startAbility(chosen.get(), target);
     }
 
     /** Inicia uma habilidade especifica (goal de combate, comandos e testes). */
@@ -462,17 +476,27 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
         }
         currentAbility = id;
         abilityTarget = target;
-        abilityReadyAt.put(id, now + duration + ability.cooldownTicks());
+        // 0.6: enfurecido (rage do JSON da especie), as recargas encurtam.
+        double cooldown = ability.cooldownTicks() * (enraged ? def().flatMap(KaijuDef::rage)
+                .map(KaijuDef.Rage::cooldownMultiplier).orElse(1.0F) : 1.0F);
+        abilityReadyAt.put(id, now + duration + Math.round(cooldown));
         triggerAnim("action", ability.animation());
+        // 0.6 (telegraph): o efeito de aviso ("particles" do JSON) sai no inicio do preparo, para dar tempo de reagir.
+        ability.particles().ifPresent(effect -> {
+            if (level() instanceof ServerLevel server) {
+                VfxService.play(server, effect, KaijuAbilities.mouth(this), bodyForward(), 1.0F, 0.0F);
+            }
+        });
         return true;
     }
 
     /** Um tick do servidor: cancela se atordoado e resolve o impacto no tick exato do JSON. */
     private void tickAbility() {
+        long now = level().getGameTime();
+        tickFollowUps(now);
         if (currentAbility == null) {
             return;
         }
-        long now = level().getGameTime();
         if (staggerTicks > 0 && isUsingAbility()) {
             abilityTimeline.cancel();
             endAbility();
@@ -491,6 +515,65 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
             return;
         }
         resolveImpact(currentAbility, ability.get());
+    }
+
+    /**
+     * 0.6: o que continua depois do tick de impacto: golpes seguintes do {@code kn8:multi_hit} (no ritmo do JSON) e a
+     * aterrissagem do {@code kn8:leap} (dano quando volta ao chao). Atordoado, o combo para.
+     */
+    private void tickFollowUps(long now) {
+        if (multiHitsLeft > 0 && now >= nextMultiHitTick) {
+            Optional<AbilityDef> ability = KN8Data.ABILITY.get(multiHitAbility, false);
+            if (ability.isEmpty() || staggerTicks > 0) {
+                multiHitsLeft = 0;
+            } else {
+                KaijuAbilities.multiHit(this, ability.get(), multiHitTarget);
+                multiHitsLeft--;
+                nextMultiHitTick = now + ability.get().behavior().hitInterval();
+            }
+        }
+        if (leapAbility != null && now - leapStartTick > LEAP_MIN_AIR_TICKS && (onGround() || isInWater())) {
+            KN8Data.ABILITY.get(leapAbility, false).ifPresent(ability -> KaijuAbilities.land(this, ability));
+            leapAbility = null;
+        } else if (leapAbility != null && now - leapStartTick > LEAP_MAX_TICKS) {
+            leapAbility = null;
+        }
+    }
+
+    /**
+     * 0.6: furia ({@code rage} do JSON da especie): com a vida abaixo do limite, de uma vez, dano e velocidade sobem
+     * (modificadores de atributo) e as recargas encurtam; avisa com o efeito de rugido e o som.
+     */
+    private void checkRage() {
+        if (enraged || tickCount % RAGE_CHECK_TICKS != 0) {
+            return;
+        }
+        Optional<KaijuDef.Rage> rage = def().flatMap(KaijuDef::rage);
+        if (rage.isEmpty() || getHealth() / Math.max(1.0F, getMaxHealth()) > rage.get().healthBelow()) {
+            return;
+        }
+        enraged = true;
+        addRageModifier(Attributes.ATTACK_DAMAGE, rage.get().damageMultiplier() - 1.0);
+        addRageModifier(Attributes.MOVEMENT_SPEED, rage.get().speedMultiplier() - 1.0);
+        if (level() instanceof ServerLevel server) {
+            VfxService.play(server, VfxService.ROAR, KaijuAbilities.mouth(this), bodyForward(), 1.5F, 0.4F);
+            server.playSound(null, getX(), getY(), getZ(), KN8Sounds.KAIJU_ROAR.get(), SoundSource.HOSTILE, 3.0F,
+                    0.8F);
+        }
+    }
+
+    private void addRageModifier(Holder<Attribute> attribute, double amount) {
+        AttributeInstance instance = getAttribute(attribute);
+        if (instance != null && amount != 0.0) {
+            instance.removeModifier(RAGE_MODIFIER);
+            instance.addTransientModifier(new AttributeModifier(RAGE_MODIFIER, amount,
+                    AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
+        }
+    }
+
+    /** Enfurecido (rage do JSON)? */
+    public boolean isEnraged() {
+        return enraged;
     }
 
     private void endAbility() {
@@ -513,6 +596,20 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
             }
             case TYPE_AREA_MELEE -> resolveSlam(ability);
             case TYPE_CHARGE -> startCharge();
+            case KaijuAbilities.TYPE_SWEEP -> KaijuAbilities.sweep(this, ability);
+            case KaijuAbilities.TYPE_PROJECTILE -> KaijuAbilities.fire(this, id, ability, abilityTarget);
+            case KaijuAbilities.TYPE_LEAP -> {
+                KaijuAbilities.leap(this, abilityTarget);
+                leapAbility = id;
+                leapStartTick = level().getGameTime();
+            }
+            case KaijuAbilities.TYPE_MULTI_HIT -> {
+                KaijuAbilities.multiHit(this, ability, abilityTarget);
+                multiHitAbility = id;
+                multiHitTarget = abilityTarget;
+                multiHitsLeft = ability.behavior().hits() - 1;
+                nextMultiHitTick = level().getGameTime() + ability.behavior().hitInterval();
+            }
             default -> {
                 if (WARNED_MISSING.add(ability.type().withPrefix("ability_type/"))) {
                     KN8Constants.LOGGER.warn("[kn8] Tipo de habilidade {} ({}) desconhecido; so animacao.",
@@ -523,7 +620,7 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
     }
 
     /** Frente do corpo no plano horizontal (rotacao do corpo, nao da cabeca). */
-    private Vec3 bodyForward() {
+    Vec3 bodyForward() {
         float yaw = yBodyRot * Mth.DEG_TO_RAD;
         return new Vec3(-Mth.sin(yaw), 0, Mth.cos(yaw));
     }
@@ -590,7 +687,7 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
      * Dano de habilidade: {@code ATTACK_DAMAGE * damage_multiplier}. Habilidades "heavy" ficam marcadas durante a
      * aplicacao (o bloqueio comum do jogador nao segura; so parry ou esquiva). Empurrao opcional na direcao dada.
      */
-    private void dealAbilityDamage(LivingEntity target, AbilityDef ability, Vec3 push) {
+    void dealAbilityDamage(LivingEntity target, AbilityDef ability, Vec3 push) {
         float damage = (float) (getAttributeValue(Attributes.ATTACK_DAMAGE) * ability.damageMultiplier());
         dealingHeavyHit = ability.heavy();
         boolean hurt;

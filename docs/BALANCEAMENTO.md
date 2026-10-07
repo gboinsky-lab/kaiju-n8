@@ -17,12 +17,12 @@ Multiplicadores globais: `[balance] kaijuHealthMultiplier` / `kaijuDamageMultipl
 
 | Kaiju | Fortitude | Vida | Dano base | Armadura | Velocidade | Habilidades | Observação |
 |---|---|---|---|---|---|---|---|
-| Trichonephila (Yoju) | 3,5 | **57** | 3,7 | 7 | 0,30 | mordida | ✅ aprovado (era 2,5 / 28 de vida): kaiju mais fortes que soldados comuns |
-| Primigenius (Yoju) | 5,4 | 211 | 9,9 | 10,8 | 0,22 | slam, investida | [SUPOSIÇÃO] |
-| Primigenius ressurgido | 5,9 | 299 | 12,5 | 11,8 | 0,22 | slam, investida | [SUPOSIÇÃO] |
-| Primigenius Honju | 6,0 | 320 | 13,1 | 12,0 | 0,24 | slam, investida, mordida | [SUPOSIÇÃO] |
-| Primigenius revivido (Honju) | 6,4 | 422 | 15,8 | 12,8 | 0,24 | slam, investida, mordida | [SUPOSIÇÃO] |
-| Kaiju No. 9 | 6,5 | 453 | 16,6 | 13,0 | 0,32 | garra, investida | [SUPOSIÇÃO]; a garra (×1,3) tira ~21 por golpe |
+| Trichonephila (Yoju) | 3,5 | **57** | 3,7 | 7 | 0,30 | mordida, estocada, varredura de patas, várias patas, teia, salto | ✅ aprovado (era 2,5 / 28 de vida): kaiju mais fortes que soldados comuns |
+| Primigenius (Yoju) | 5,4 | 211 | 9,9 | 10,8 | 0,22 | casco, rabada, slam, investida | [SUPOSIÇÃO] |
+| Primigenius ressurgido | 5,9 | 299 | 12,5 | 11,8 | 0,22 | casco, rabada, slam, investida; fúria | [SUPOSIÇÃO] |
+| Primigenius Honju | 6,0 | 320 | 13,1 | 12,0 | 0,24 | soco pesado, mordida, rabada, slam, investida, raio de energia | [SUPOSIÇÃO] |
+| Primigenius revivido (Honju) | 6,4 | 422 | 15,8 | 12,8 | 0,24 | os do Honju (raio roxo); fúria | [SUPOSIÇÃO] |
+| Kaiju No. 9 | 6,5 | 453 | 16,6 | 13,0 | 0,32 | garra, investida, Finger Gun | [SUPOSIÇÃO]; a garra (×1,3) tira ~21 por golpe |
 
 ### Habilidades (`ability/<id>.json`)
 
@@ -31,9 +31,28 @@ Multiplicadores globais: `[balance] kaijuHealthMultiplier` / `kaijuDamageMultipl
 | Mordida | 1,0 | 6 ticks | 2 | 20 | não | — |
 | Garra (No. 9) | 1,3 | 8 | 2 | 16 | não | — |
 | Slam | 1,5 | 20 | 4 | 100 | sim | raio 3 |
-| Investida | 1,2 | 15 | 20 | 160 | sim | raio 1,5 |
+| Investida | 1,2 | 15 | 20 | 160 | sim | raio 1,5; usada de 4 a 14 blocos (0.6) |
+| Golpe de casco (0.6) | 1,1 | 8 | 2 | 30 | não | — |
+| Rabada (0.6, `kn8:sweep`) | 1,0 | 12 | 4 | 80 | não | alcance +3, setor de 220° atrás e dos lados |
+| Soco pesado (0.6) | 1,6 | 12 | 2 | 50 | sim | — |
+| Raio de energia (0.6, `kn8:projectile`) | 2,2 | 30 (aviso na boca) | 4 | 240 | sim | de 6 a 32 blocos, explosão de raio 3 |
+| Estocada de pata (0.6) | 1,4 | 10 | 2 | 40 | não | — |
+| Varredura de patas (0.6) | 0,9 | 8 | 3 | 50 | não | alcance +2, setor de 160° à frente |
+| Várias patas (0.6, `kn8:multi_hit`) | 0,5 × 4 golpes | 10 | 14 | 100 | não | um golpe a cada 3 ticks |
+| Teia (0.6) | 0,3 | 10 | 2 | 120 | não | de 4 a 16 blocos; lentidão III por 4 s |
+| Salto de emboscada (0.6, `kn8:leap`) | 1,3 | 10 | 24 | 140 | sim | de 5 a 12 blocos; área de raio 2 na queda |
+| Finger Gun (0.6, No. 9) | 1,0 | 8 | 2 | 30 | não | de 4 a 28 blocos |
 
 \* Pesada atravessa o bloqueio comum; só parry ou esquiva evitam (`[combat] heavyIgnoresBlock`) [SUPOSIÇÃO].
+
+Escolha (0.6): entre as habilidades prontas e ao alcance, vence a de maior `behavior.priority` (empate: sorteio);
+as de distância precisam de linha de visão. Todos os números das habilidades da 0.6 são [SUPOSIÇÃO].
+
+**Fúria** (`rage` no `kaiju/<id>.json`, 0.6): abaixo de 30% de vida, de uma vez. Ressurgido: dano ×1,2, velocidade
+×1,15, recargas ×0,7. Revivido: dano ×1,25, velocidade ×1,2, recargas ×0,6 [SUPOSIÇÃO].
+
+**Empurrão dos soldados no kaiju** (`[kaiju] soldierKnockback`, 0.6): 0 (antes, o empurrão vanilla de cada golpe
+impedia o kaiju de chegar perto de um grupo de soldados).
 
 ### Chefes (`boss/<id>.json`)
 
@@ -69,6 +88,11 @@ Dano = base × (1 + Release% / 25) (`[fortitudeCurve] releaseDamageDivisor`).
 | Faca | 6 | 6 | 8,4 | 13,2 | 20,4 | 30 | 12 ticks | ×2,0 / 24 ticks | 3,0 |
 | Espada | 8 | 8 | 11,2 | 17,6 | 27,2 | 40 | 14 | ×2,0 / 28 | 3,5 |
 | Machado | 11 | 11 | 15,4 | 24,2 | 37,4 | 55 | 18 | ×2,4 / 32 | 3,2 |
+
+**Ataque especial** (`special` no JSON da arma, tecla R, 0.5): Golpe Sísmico do machado = ×2,6 em área (raio 4,
+2 blocos à frente), 35 de stamina, 6 de calor, recarga de 200 ticks, empurrão 1,2, atordoa Yoju por 30 ticks
+[SUPOSIÇÃO]. **Potência com vida baixa** (`[power] desperationHealth` 0,5 / `desperationMaxPoints` 15): até
++15 pontos de Release com a vida no fim [SUPOSIÇÃO].
 | Pistola | 3,5 | 3,5 | 4,9 | 7,7 | 11,9 | 17,5 | 6 | — | 32 |
 | Rifle | 5 | 5 | 7 | 11 | 17 | 25 | 8 | — | 48 |
 

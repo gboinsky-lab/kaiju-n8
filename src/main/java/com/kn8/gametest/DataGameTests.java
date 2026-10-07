@@ -72,7 +72,7 @@ public final class DataGameTests {
         KaijuDef broken = new KaijuDef(base.kaijuClass(), base.fortitude(), base.size(), base.dimensions(),
                 base.overrides(), base.speed(), base.intelligence(), base.parts(), base.core(),
                 List.of(KN8Constants.id("does_not_exist")), base.weaknesses(), Optional.empty(), base.spawn(),
-                base.rarity(), base.tags());
+                base.rarity(), base.tags(), base.rage());
         DataReport report = new DataReport();
         Map<ResourceLocation, KaijuDef> valid = DataValidation.validateKaiju(Map.of(PRIMIGENIUS, broken),
                 Set.of(), Set.of(), report);

@@ -1,0 +1,24 @@
+{
+  "type": "kn8:melee",
+  "damage_multiplier": 1.6,
+  "windup_ticks": 12,
+  "active_ticks": 2,
+  "cooldown_ticks": 50,
+  "animation": "action.punch",
+  "heavy": true,
+  "vfx": [
+    {
+      "effect": "kn8:impact",
+      "intensity": 1.0
+    },
+    {
+      "effect": "kn8:shockwave",
+      "intensity": 0.5
+    }
+  ],
+  "camera_shake": 0.2,
+  "sound": "kn8:kaiju.slam",
+  "behavior": {
+    "priority": 2
+  }
+}
