@@ -134,6 +134,10 @@ mandam; se algo precisar mudar, marque **[DECIDIR]** e pergunte.
   segunda passada de abate. Receitas/invasões/numerados precisam de `publish` na `DataValidation` (senão o
   servidor fica sem eles). `pgrep -f`/`pkill -f` com o nome do processo casa com o próprio shell (mata a sessão):
   matar pelo PID. Ruína preta: regra de pilar no eixo errado deixava a fachada inteira de concreto cinza-escuro.
+  Teste dos roteiros (2026-10-07): promoção pelo `promote_to` da missão não mostrava "PROMOVIDO" →
+  `CareerService.promote`; rastreador de missão ficava sob a barra do kaiju → desce para baixo dela; restos de
+  kaiju enterrados em morro (sem adaptação de terreno) → `beard_thin` e só biomas planos. `/reload` não recarrega
+  estruturas de worldgen (reiniciar o servidor).
 
 - **PT1:** `syncInitialAttachments` ignora `sendToPlayer` → dados privados sem `.sync()`.
 - **PT6:** tecla L conflitava com Conquistas → esquiva em **Z**.

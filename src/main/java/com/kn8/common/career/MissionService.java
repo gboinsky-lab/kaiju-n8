@@ -262,7 +262,7 @@ public final class MissionService {
                 SoundSource.PLAYERS, 0.8F, 1.0F);
         rewards.promoteTo().ifPresent(rank -> {
             if (!CareerService.hasRank(player, rank)) {
-                CareerService.setRank(player, rank);
+                CareerService.promote(player, rank);
             }
         });
         // O merito tambem tenta promover (a missao concluida pode ser a de avaliacao da proxima patente).

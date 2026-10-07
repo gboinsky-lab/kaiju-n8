@@ -250,7 +250,7 @@ teto de Release 100, limite do boneco, contagem de abates e troca de fase do che
 
 | # | Passo | Esperado |
 |---|---|---|
-| 15.1 | Survival, bata no boneco de treino (item `kn8:training_dummy`) | "+5 XP de treino" por golpe; depois de 60 XP no minuto, aviso de limite; Shift + mão vazia pega o boneco de volta |
+| 15.1 | Survival, bata no boneco de treino (item `kn8:training_dummy`) | "+5 XP de treino" por golpe; depois de 60 XP no minuto, aviso de limite; Shift + golpe de mão vazia derruba o boneco como item |
 | 15.2 | M → Perfil | Patente Candidato, mérito, próxima patente com "precisa da missão" e estatísticas |
 | 15.3 | M → Missões → aceite "Primeiro Desmonte" e "Extermínio" | Rastreador no canto superior direito com objetivo, tempo e seta; kaiju surgem no ponto |
 | 15.4 | Conclua uma missão | Título "MISSÃO CUMPRIDA", mérito/XP/itens no chat; missão vai para "Concluídas" |

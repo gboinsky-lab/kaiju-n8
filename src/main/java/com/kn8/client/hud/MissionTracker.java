@@ -67,7 +67,8 @@ public final class MissionTracker {
                 objective.count(), target).append(" (" + done + "/" + objective.count() + ")");
 
         int x = g.guiWidth() - WIDTH - MARGIN;
-        int y = MARGIN + 30;
+        // Abaixo da barra de vida do kaiju quando ela aparece (antes uma cobria a outra).
+        int y = Math.max(MARGIN + 30, KaijuHealthBar.lastBottom() + MARGIN);
         int height = mission.hasPoint() ? 40 : 28;
         g.fill(x, y, x + WIDTH, y + height, BACKGROUND);
         g.fill(x, y, x + 2, y + height, ACCENT);

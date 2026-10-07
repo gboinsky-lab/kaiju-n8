@@ -62,6 +62,12 @@ public final class KaijuHealthBar {
 
     /** Fim (y) das barras de chefe vanilla deste quadro; desenhadas antes desta camada. */
     private static int bossBottom;
+    /** Fim (y) desta barra no ultimo quadro (0 = nao desenhada): o rastreador de missao desce para baixo dela. */
+    private static int lastBottom;
+
+    public static int lastBottom() {
+        return lastBottom;
+    }
 
     private KaijuHealthBar() {
     }
@@ -82,6 +88,7 @@ public final class KaijuHealthBar {
 
     private static void render(GuiGraphics graphics, DeltaTracker deltaTracker) {
         Minecraft minecraft = Minecraft.getInstance();
+        lastBottom = 0;
         if (minecraft.player == null || minecraft.options.hideGui) {
             return;
         }
@@ -97,6 +104,7 @@ public final class KaijuHealthBar {
         int x = (graphics.guiWidth() - WIDTH) / 2;
         int y = Math.max(TOP, bossBottom + TOP);
         int height = 30;
+        lastBottom = y + height;
         graphics.fill(x - 4, y - 3, x + WIDTH + 4, y + height, COLOR_PANEL);
         graphics.fill(x - 4, y - 3, x + WIDTH + 4, y - 2, COLOR_OUTLINE);
         graphics.fill(x - 4, y + height - 1, x + WIDTH + 4, y + height, COLOR_OUTLINE);

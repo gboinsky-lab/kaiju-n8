@@ -139,6 +139,12 @@ public final class CareerService {
                 && next.promotionMission().map(data.completed()::contains).orElse(true);
     }
 
+    /** Promocao direta (missao com {@code promote_to}): mesma patente, efeitos e aviso da promocao por merito. */
+    public static void promote(ServerPlayer player, ResourceLocation rank) {
+        setRank(player, rank);
+        announcePromotion(player, rank);
+    }
+
     private static void announcePromotion(ServerPlayer player, ResourceLocation rank) {
         Component name = Component.translatable("kn8.rank." + rank.getPath()).withStyle(ChatFormatting.AQUA);
         player.connection.send(new ClientboundSetTitleTextPacket(Component.translatable("kn8.career.promoted")

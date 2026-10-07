@@ -82,5 +82,6 @@ def _payload(out, value):
 def write(path, root):
     out = bytearray(b"\x0a\x00\x00")
     _payload(out, root)
-    with gzip.open(path, "wb") as handle:
+    # mtime 0: regerar sem mudar nada da o mesmo arquivo (sem diff a toa no Git).
+    with open(path, "wb") as raw, gzip.GzipFile(fileobj=raw, mode="wb", mtime=0) as handle:
         handle.write(bytes(out))

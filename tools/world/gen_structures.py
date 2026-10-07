@@ -370,8 +370,9 @@ WORLDGEN = [
     ("ruined_building", ["minecraft:plains", "minecraft:sunflower_plains", "minecraft:forest",
                          "minecraft:dark_forest", "minecraft:savanna", "minecraft:desert", "minecraft:taiga",
                          "minecraft:snowy_plains", "minecraft:swamp"], 26, 10, 280_430_012, "beard_thin", -1),
-    ("kaiju_remains", ["minecraft:plains", "minecraft:desert", "minecraft:badlands", "minecraft:savanna",
-                       "minecraft:snowy_plains", "minecraft:windswept_hills"], 34, 14, 280_430_013, "none", -4),
+    # beard_thin: sem adaptacao a cratera ficava enterrada em morro (visto no mundo novo, seed 8008).
+    ("kaiju_remains", ["minecraft:plains", "minecraft:desert", "minecraft:savanna", "minecraft:snowy_plains",
+                       "minecraft:sunflower_plains"], 34, 14, 280_430_013, "beard_thin", -4),
     ("watchtower", ["minecraft:plains", "minecraft:meadow", "minecraft:forest", "minecraft:taiga",
                     "minecraft:savanna", "minecraft:snowy_plains", "minecraft:birch_forest"],
      30, 12, 280_430_014, "beard_thin", -1),

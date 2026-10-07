@@ -3,7 +3,7 @@
   "biomes": "#kn8:has_structure/kaiju_remains",
   "step": "surface_structures",
   "spawn_overrides": {},
-  "terrain_adaptation": "none",
+  "terrain_adaptation": "beard_thin",
   "start_pool": "kn8:kaiju_remains/start",
   "size": 1,
   "start_height": {
