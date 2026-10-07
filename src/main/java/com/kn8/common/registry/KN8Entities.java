@@ -4,11 +4,13 @@ package com.kn8.common.registry;
 import java.util.List;
 
 import com.kn8.KN8Constants;
+import com.kn8.common.combat.SlashProjectile;
 import com.kn8.common.kaiju.CarcassEntity;
 import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.kaiju.KaijuProjectile;
 import com.kn8.common.numbered.KaijuNo9Entity;
 import com.kn8.common.soldier.SoldierEntity;
+import com.kn8.common.soldier.special.HoshinaEntity;
 import com.kn8.common.training.TrainingDummyEntity;
 
 import net.minecraft.core.registries.Registries;
@@ -67,6 +69,14 @@ public final class KN8Entities {
                     .clientTrackingRange(KAIJU_TRACKING_RANGE_CHUNKS)
                     .build("soldier"));
 
+    /** 0.6-D: Hoshina, primeiro soldado especial (perfil em special_soldier/hoshina.json). */
+    public static final DeferredHolder<EntityType<?>, EntityType<HoshinaEntity>> HOSHINA = ENTITY_TYPES.register(
+            "hoshina", () -> EntityType.Builder.<HoshinaEntity>of(HoshinaEntity::new, MobCategory.CREATURE)
+                    .sized(0.7F, 1.85F)
+                    .eyeHeight(1.6F)
+                    .clientTrackingRange(KAIJU_TRACKING_RANGE_CHUNKS)
+                    .build("hoshina"));
+
     /** 0.6: projetil de habilidade de kaiju (raio de energia, teia, Finger Gun); so particulas no cliente. */
     public static final DeferredHolder<EntityType<?>, EntityType<KaijuProjectile>> KAIJU_PROJECTILE =
             ENTITY_TYPES.register("kaiju_projectile", () -> EntityType.Builder.<KaijuProjectile>of(
@@ -75,6 +85,14 @@ public final class KN8Entities {
                     .clientTrackingRange(KAIJU_TRACKING_RANGE_CHUNKS)
                     .updateInterval(1)
                     .build("kaiju_projectile"));
+    /** 0.6-D: corte a distancia do Hoshina e da espada dele (SlashProjectile). */
+    public static final DeferredHolder<EntityType<?>, EntityType<SlashProjectile>> SLASH_PROJECTILE =
+            ENTITY_TYPES.register("slash_projectile", () -> EntityType.Builder.<SlashProjectile>of(
+                            SlashProjectile::new, MobCategory.MISC)
+                    .sized(0.5F, 0.5F)
+                    .clientTrackingRange(KAIJU_TRACKING_RANGE_CHUNKS)
+                    .updateInterval(1)
+                    .build("slash_projectile"));
 
     /** 0.2 (Etapa 2): boneco de treino (XP de Release por golpe). */
     public static final DeferredHolder<EntityType<?>, EntityType<TrainingDummyEntity>> TRAINING_DUMMY =
@@ -105,6 +123,7 @@ public final class KN8Entities {
     /** Mod bus: atributos base; os valores reais saem do JSON no primeiro tick. */
     public static void registerAttributes(EntityAttributeCreationEvent event) {
         event.put(SOLDIER.get(), SoldierEntity.createAttributes().build());
+        event.put(HOSHINA.get(), SoldierEntity.createAttributes().build());
         event.put(TRAINING_DUMMY.get(), LivingEntity.createLivingAttributes().build());
         KAIJU.forEach(type -> event.put(type.get(), KaijuEntity.baseAttributes().build()));
     }

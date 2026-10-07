@@ -1,0 +1,55 @@
+{
+  "item": "kn8:hoshina_sword",
+  "base_damage": 7,
+  "reach": 3.0,
+  "style": "blade",
+  "actions": {
+    "light": {
+      "multiplier": 1.0,
+      "duration_ticks": 10,
+      "impact_tick": 4
+    },
+    "heavy": {
+      "multiplier": 1.9,
+      "duration_ticks": 22,
+      "impact_tick": 9
+    }
+  },
+  "combo": [
+    1.0,
+    1.1,
+    1.2,
+    1.4
+  ],
+  "sounds": {
+    "swing": "kn8:weapon.sword_swing",
+    "heavy": "kn8:weapon.sword_heavy",
+    "hit": "kn8:weapon.sword_hit"
+  },
+  "special": {
+    "id": "kuuchi",
+    "type": "slash_wave",
+    "multiplier": 1.6,
+    "duration_ticks": 14,
+    "impact_tick": 5,
+    "radius": 1.2,
+    "stamina_cost": 20,
+    "heat_cost": 3,
+    "cooldown_ticks": 40,
+    "camera_shake": 0.1,
+    "vfx": [
+      {
+        "effect": "kn8:slash",
+        "intensity": 1.2
+      }
+    ],
+    "sound": "kn8:weapon.sword_heavy",
+    "slash": {
+      "count": 1,
+      "speed": 1.6,
+      "range": 12.0,
+      "width": 1.2,
+      "color": 11563263
+    }
+  }
+}

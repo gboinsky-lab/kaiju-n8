@@ -59,7 +59,18 @@ public final class SpecialAttacks {
         }
         return switch (special.type()) {
             case GROUND_SLAM -> groundSlam(level, source, special, damage, damageSource);
+            case SLASH_WAVE -> slashWave(level, source, special, damage);
         };
+    }
+
+    /**
+     * 0.6-D: corte que voa reto pelo olhar de quem ataca ({@link SlashProjectile}); o dano sai quando o corte cruza
+     * cada alvo, nao neste tick. Devolve quantos cortes sairam.
+     */
+    private static int slashWave(ServerLevel level, LivingEntity source, WeaponDef.Special special, float damage) {
+        int fired = SlashProjectile.fire(source, source.getLookAngle(), special.slash(), damage, 1.0F);
+        effects(level, special, source.getEyePosition().add(source.getLookAngle()), source);
+        return fired;
     }
 
     private static int groundSlam(ServerLevel level, LivingEntity source, WeaponDef.Special special, float damage,
@@ -99,7 +110,8 @@ public final class SpecialAttacks {
         return hits;
     }
 
-    private static boolean isAlly(LivingEntity source, LivingEntity target) {
+    /** Aliado de quem ataca (soldados, suportes de armadura, jogadores sem PvP): fica fora do golpe. */
+    public static boolean isAlly(LivingEntity source, LivingEntity target) {
         if (target instanceof ArmorStand || target instanceof SoldierEntity) {
             return true;
         }

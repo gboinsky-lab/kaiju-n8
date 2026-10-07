@@ -21,6 +21,7 @@ import com.kn8.common.data.def.MissionDef;
 import com.kn8.common.data.def.NumberedDef;
 import com.kn8.common.data.def.RankDef;
 import com.kn8.common.data.def.SoldierDef;
+import com.kn8.common.data.def.SpecialSoldierDef;
 import com.kn8.common.data.def.SuitDef;
 import com.kn8.common.data.def.WeaponDef;
 import com.kn8.common.data.def.WorkbenchRecipeDef;
@@ -74,6 +75,8 @@ public final class DataValidation {
                 validateMissions(KN8Data.MISSION.loaded(), ranks.keySet(), kaiju.keySet(), bosses.keySet(), report),
                 report);
         publish(KN8Data.SOLDIER, validateSoldiers(KN8Data.SOLDIER.loaded(), report), report);
+        publish(KN8Data.SPECIAL_SOLDIER, validateSpecialSoldiers(KN8Data.SPECIAL_SOLDIER.loaded(), auras.keySet(),
+                report), report);
         publish(KN8Data.WORKBENCH, validateWorkbench(KN8Data.WORKBENCH.loaded(), report), report);
         publish(KN8Data.NUMBERED, validateNumbered(KN8Data.NUMBERED.loaded(), kaiju.keySet(),
                 bosses.keySet(), report), report);
@@ -177,6 +180,29 @@ public final class DataValidation {
     }
 
     /** 0.1-B: soldado precisa de ao menos um nivel e uma variante; arma inexistente vira aviso (variante sem arma). */
+    /** 0.6-D: armas precisam ser itens registrados; aura desconhecida so avisa (o cliente cai na padrao). */
+    public static Map<ResourceLocation, SpecialSoldierDef> validateSpecialSoldiers(
+            Map<ResourceLocation, SpecialSoldierDef> input, Set<ResourceLocation> auras, DataReport report) {
+        Map<ResourceLocation, SpecialSoldierDef> valid = new LinkedHashMap<>();
+        input.forEach((id, def) -> {
+            String where = "special_soldier " + id;
+            if (!BuiltInRegistries.ITEM.containsKey(def.weapon())) {
+                report.error(where + ": arma nao registrada " + def.weapon());
+                return;
+            }
+            def.offhand().filter(item -> !BuiltInRegistries.ITEM.containsKey(item))
+                    .ifPresent(item -> report.warning(where + ": arma da mao esquerda nao registrada " + item));
+            if (!auras.contains(def.aura())) {
+                report.warning(where + ": aura inexistente " + def.aura());
+            }
+            if (def.techniques().isEmpty()) {
+                report.warning(where + ": sem tecnicas (so golpes basicos)");
+            }
+            valid.put(id, def);
+        });
+        return valid;
+    }
+
     public static Map<ResourceLocation, SoldierDef> validateSoldiers(Map<ResourceLocation, SoldierDef> input,
             DataReport report) {
         Map<ResourceLocation, SoldierDef> valid = new LinkedHashMap<>();

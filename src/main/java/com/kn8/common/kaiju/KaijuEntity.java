@@ -408,6 +408,28 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
         return isUsingAbility() ? Optional.ofNullable(currentAbility) : Optional.empty();
     }
 
+    /** 0.6-D: alvo da habilidade em andamento (o soldado especial reage quando e ele). */
+    public Optional<LivingEntity> abilityTarget() {
+        return isUsingAbility() ? Optional.ofNullable(abilityTarget) : Optional.empty();
+    }
+
+    /**
+     * 0.6-D: ticks ate o impacto da habilidade em andamento (o fim do telegraph); vazio sem habilidade ou depois do
+     * impacto. E o que o Hoshina usa para esquivar e contra-atacar no tempo certo.
+     */
+    public Optional<Integer> ticksToImpact() {
+        if (!isUsingAbility() || currentAbility == null) {
+            return Optional.empty();
+        }
+        return KN8Data.ABILITY.get(currentAbility, false).map(ability -> (int) (abilityTimeline.startTick()
+                + ability.windupTicks() - level().getGameTime())).filter(ticks -> ticks >= 0);
+    }
+
+    /** 0.6-D: a habilidade em andamento e "heavy" (atravessa o bloqueio; o Hoshina responde com Kaeshi-uchi)? */
+    public boolean isPreparingHeavy() {
+        return currentAbility().flatMap(id -> KN8Data.ABILITY.get(id, false)).map(AbilityDef::heavy).orElse(false);
+    }
+
     /**
      * Distancia entre as BORDAS das hitboxes, no plano horizontal (0 = encostadas). Correcao do M8: medir de centro
      * a centro falhava porque a navegacao para antes de encostar e kaiju largos nunca "alcancavam" o alvo.

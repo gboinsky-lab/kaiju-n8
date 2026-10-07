@@ -631,5 +631,12 @@
   "kn8.mission.web_queen_hunt.name": "A Tecedeira Abissal",
   "kn8.mission.web_queen_hunt.desc": "Uma Trichonephila Honju foi avistada com o bando dela. Vá ao local e derrote-a.",
   "kn8.invasion.web_queen": "Ninho da Tecedeira",
-  "kn8.ability.web_burst": "Explosão de teia"
+  "kn8.ability.web_burst": "Explosão de teia",
+  "entity.kn8.hoshina": "Vice-Capitão Hoshina",
+  "entity.kn8.slash_projectile": "Corte a Distância",
+  "item.kn8.hoshina_sword": "Espada do Hoshina",
+  "item.kn8.hoshina_spawn_egg": "Ovo do Vice-Capitão Hoshina",
+  "kn8.soldier.variant.hoshina": "Vice-Capitão Hoshina",
+  "kn8.weapon.special.kuuchi": "Kūuchi",
+  "kn8.weapon.special.kuuchi.desc": "Um corte que voa à frente e atravessa os inimigos no caminho."
 }

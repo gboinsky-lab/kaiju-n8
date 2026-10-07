@@ -631,5 +631,12 @@
   "kn8.mission.web_queen_hunt.name": "The Abyssal Weaver",
   "kn8.mission.web_queen_hunt.desc": "A Trichonephila Honju was sighted with its brood. Reach the area and defeat it.",
   "kn8.invasion.web_queen": "Weaver's Nest",
-  "kn8.ability.web_burst": "Web burst"
+  "kn8.ability.web_burst": "Web burst",
+  "entity.kn8.hoshina": "Vice-Captain Hoshina",
+  "entity.kn8.slash_projectile": "Ranged Slash",
+  "item.kn8.hoshina_sword": "Hoshina's Sword",
+  "item.kn8.hoshina_spawn_egg": "Vice-Captain Hoshina Spawn Egg",
+  "kn8.soldier.variant.hoshina": "Vice-Captain Hoshina",
+  "kn8.weapon.special.kuuchi": "Kūuchi",
+  "kn8.weapon.special.kuuchi.desc": "A slash that flies forward and cuts through every enemy in its path."
 }

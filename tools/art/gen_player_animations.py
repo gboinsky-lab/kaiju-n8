@@ -63,6 +63,22 @@ def special_slam(special):
     }}
 
 
+def special_slash(special):
+    """0.6-D: corte a distancia (slash_wave, espada do Hoshina): leva a lamina ao ombro esquerdo e corta na
+    diagonal ate a direita no tick de impacto do JSON, com o tronco girando junto."""
+    end, hit = special["duration_ticks"] * TICK, special["impact_tick"] * TICK
+    wind = hit * 0.6
+    follow = hit + (end - hit) * 0.35
+    return {"animation_length": round(end, 3), "bones": {
+        "right_arm": {"rotation": keys((0, [0, 0, 0]), (wind, [-130, 40, 40]), (hit, [-70, -30, -50]),
+                                       (follow, [-50, -40, -40]), (end, [0, 0, 0]))},
+        "left_arm": {"rotation": keys((0, [0, 0, 0]), (wind, [-30, 0, -10]), (hit, [-20, 0, -25]),
+                                      (end, [0, 0, 0]))},
+        "torso": {"rotation": keys((0, [0, 0, 0]), (wind, [0, 35, 0]), (hit, [5, -30, 0]), (end, [0, 0, 0]))},
+        "right_leg": {"rotation": keys((0, [0, 0, 0]), (hit, [-20, 0, 0]), (end, [0, 0, 0]))},
+    }}
+
+
 def shoot(action):
     """M10b: mira com os dois bracos e coice no tick de impacto do JSON do rifle."""
     end, hit = action["duration_ticks"] * TICK, action["impact_tick"] * TICK
@@ -138,6 +154,8 @@ def weapon_animations():
         special = weapon.get("special")
         if special and special["type"] == "ground_slam":
             result[f"player.{item}.special"] = special_slam(special)
+        elif special and special["type"] == "slash_wave":
+            result[f"player.{item}.special"] = special_slash(special)
     return result
 
 

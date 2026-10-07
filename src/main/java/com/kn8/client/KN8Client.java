@@ -76,7 +76,9 @@ public final class KN8Client {
                 context -> new KaijuRenderer(context, type.getId(), type.get().getWidth() / 2.0F)));
         event.registerEntityRenderer(KN8Entities.CARCASS.get(), CarcassRenderer::new);
         event.registerEntityRenderer(KN8Entities.KAIJU_PROJECTILE.get(), NoopRenderer::new);
+        event.registerEntityRenderer(KN8Entities.SLASH_PROJECTILE.get(), NoopRenderer::new);
         event.registerEntityRenderer(KN8Entities.SOLDIER.get(), SoldierRenderer::new);
+        event.registerEntityRenderer(KN8Entities.HOSHINA.get(), context -> new SoldierRenderer<>(context, "hoshina"));
         event.registerEntityRenderer(KN8Entities.TRAINING_DUMMY.get(), ArmorStandRenderer::new);
     }
 

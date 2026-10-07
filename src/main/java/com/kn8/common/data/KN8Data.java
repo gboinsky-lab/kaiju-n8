@@ -14,6 +14,7 @@ import com.kn8.common.data.def.MissionDef;
 import com.kn8.common.data.def.NumberedDef;
 import com.kn8.common.data.def.RankDef;
 import com.kn8.common.data.def.SoldierDef;
+import com.kn8.common.data.def.SpecialSoldierDef;
 import com.kn8.common.data.def.SuitDef;
 import com.kn8.common.data.def.WeaponDef;
 import com.kn8.common.data.def.WorkbenchRecipeDef;
@@ -43,6 +44,9 @@ public final class KN8Data {
     public static final DataRegistry<MissionDef> MISSION = new DataRegistry<>("mission", MissionDef.CODEC, true);
     /** 0.1-B (Etapa F): soldados da Forca de Defesa (so o servidor precisa). */
     public static final DataRegistry<SoldierDef> SOLDIER = new DataRegistry<>("soldier", SoldierDef.CODEC, false);
+    /** 0.6-D: soldados especiais (Hoshina...): perfil e tecnicas (so o servidor). */
+    public static final DataRegistry<SpecialSoldierDef> SPECIAL_SOLDIER =
+            new DataRegistry<>("special_soldier", SpecialSoldierDef.CODEC, false);
 
     /** 0.2 (Etapa 3): receitas da bancada (o cliente mostra a lista e os ingredientes). */
     public static final DataRegistry<WorkbenchRecipeDef> WORKBENCH =
@@ -59,7 +63,7 @@ public final class KN8Data {
     /** Ordem = ordem de validacao (cada um so referencia os anteriores). */
     public static final List<DataRegistry<?>> ALL =
             List.of(RANK, ABILITY, DISMANTLE, KAIJU, BOSS, WEAPON, AURA, SUIT, MISSION, SOLDIER, WORKBENCH, INVASION,
-                    NUMBERED);
+                    NUMBERED, SPECIAL_SOLDIER);
 
     private KN8Data() {
     }

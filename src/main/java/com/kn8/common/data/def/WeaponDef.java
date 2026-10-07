@@ -66,7 +66,9 @@ public record WeaponDef(ResourceLocation item, float baseDamage, float reach, St
     /** Tipos de ataque especial. Cada tipo novo ganha um resolvedor em {@code SpecialAttacks}. */
     public enum SpecialType implements StringRepresentable {
         /** Golpe no chao a frente: onda em area que fere, empurra e atordoa (machado). */
-        GROUND_SLAM("ground_slam");
+        GROUND_SLAM("ground_slam"),
+        /** 0.6-D: corte que voa reto e atravessa os alvos (espada do Hoshina; ver {@link SlashSpec}). */
+        SLASH_WAVE("slash_wave");
 
         public static final Codec<SpecialType> CODEC = StringRepresentable.fromEnum(SpecialType::values);
 
@@ -86,11 +88,13 @@ public record WeaponDef(ResourceLocation item, float baseDamage, float reach, St
      * Ataque especial. {@code id} da o nome ({@code kn8.weapon.special.<id>}); o dano e
      * {@code base_damage x multiplier} (com o Release de quem usa); o centro da area fica {@code forward} blocos a
      * frente e atinge quem tem a borda da hitbox a ate {@code radius}. {@code stagger_ticks} so vale em Yoju (como o
-     * parry). {@code vfx}, {@code camera_shake} e {@code sound} saem no tick de impacto.
+     * parry). {@code vfx}, {@code camera_shake} e {@code sound} saem no tick de impacto. {@code slash} (0.6-D) so vale
+     * no tipo {@code slash_wave}: quantos cortes, velocidade, alcance e cor.
      */
     public record Special(String id, SpecialType type, float multiplier, int durationTicks, int impactTick,
             float radius, float forward, float staminaCost, float heatCost, int cooldownTicks, float knockback,
-            int staggerTicks, float cameraShake, List<AbilityDef.Vfx> vfx, Optional<ResourceLocation> sound) {
+            int staggerTicks, float cameraShake, List<AbilityDef.Vfx> vfx, Optional<ResourceLocation> sound,
+            SlashSpec slash) {
         public static final Codec<Special> CODEC = RecordCodecBuilder.<Special>create(i -> i.group(
                 Codec.STRING.fieldOf("id").forGetter(Special::id),
                 SpecialType.CODEC.fieldOf("type").forGetter(Special::type),
@@ -106,7 +110,8 @@ public record WeaponDef(ResourceLocation item, float baseDamage, float reach, St
                 Codec.intRange(0, 400).optionalFieldOf("stagger_ticks", 0).forGetter(Special::staggerTicks),
                 Codec.floatRange(0.0F, 1.0F).optionalFieldOf("camera_shake", 0.0F).forGetter(Special::cameraShake),
                 AbilityDef.Vfx.CODEC.listOf().optionalFieldOf("vfx", List.of()).forGetter(Special::vfx),
-                ResourceLocation.CODEC.optionalFieldOf("sound").forGetter(Special::sound)
+                ResourceLocation.CODEC.optionalFieldOf("sound").forGetter(Special::sound),
+                SlashSpec.CODEC.optionalFieldOf("slash", SlashSpec.DEFAULT).forGetter(Special::slash)
         ).apply(i, Special::new)).validate(special -> special.impactTick() < special.durationTicks()
                 ? DataResult.success(special)
                 : DataResult.error(() -> "special.impact_tick " + special.impactTick()

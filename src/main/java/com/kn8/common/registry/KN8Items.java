@@ -38,6 +38,9 @@ public final class KN8Items {
     /** 0.2: machado (estilo "heavy": golpe lento e forte; modelo do Meshy, numeros [SUPOSICAO] no JSON). */
     public static final DeferredItem<WeaponItem> AXE =
             ITEMS.register("axe", () -> new WeaponItem(new Item.Properties()));
+    /** 0.6-D: espada do Hoshina (uma; ele usa o par). Arma especial: especial = corte a distancia (Kuuchi). */
+    public static final DeferredItem<WeaponItem> HOSHINA_SWORD =
+            ITEMS.register("hoshina_sword", () -> new WeaponItem(new Item.Properties()));
 
     /** 0.1-B (M11b): materiais de desmonte (tabelas em data/kn8/kn8/dismantle). */
     public static final DeferredItem<Item> KAIJU_TISSUE = ITEMS.registerSimpleItem("kaiju_tissue");
@@ -49,6 +52,8 @@ public final class KN8Items {
     /** 0.1-B: ovo do soldado (variante rifle, nivel normal; outras pelo /kn8 soldier spawn). */
     public static final DeferredItem<DeferredSpawnEggItem> SOLDIER_SPAWN_EGG = ITEMS.register("soldier_spawn_egg",
             () -> new DeferredSpawnEggItem(KN8Entities.SOLDIER, 0x1C1F1A, 0x4DD0E1, new Item.Properties()));
+    public static final DeferredItem<DeferredSpawnEggItem> HOSHINA_SPAWN_EGG = ITEMS.register("hoshina_spawn_egg",
+            () -> new DeferredSpawnEggItem(KN8Entities.HOSHINA, 0x1A1A22, 0x9B59D0, new Item.Properties()));
 
     /** 0.2 (Etapa 2): boneco de treino. */
     public static final DeferredItem<TrainingDummyItem> TRAINING_DUMMY = ITEMS.register("training_dummy",
@@ -79,11 +84,13 @@ public final class KN8Items {
                         output.accept(PISTOL.get());
                         output.accept(SWORD.get());
                         output.accept(AXE.get());
+                        output.accept(HOSHINA_SWORD.get());
                         output.accept(KAIJU_TISSUE.get());
                         output.accept(MUSCLE_FIBER.get());
                         output.accept(CORE_FRAGMENT.get());
                         output.accept(INTACT_CORE.get());
                         output.accept(SOLDIER_SPAWN_EGG.get());
+                        output.accept(HOSHINA_SPAWN_EGG.get());
                         output.accept(TRAINING_DUMMY.get());
                         output.accept(DEFENSE_WORKBENCH.get());
                         output.accept(TRAINING_SUIT.get());

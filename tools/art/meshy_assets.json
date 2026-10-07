@@ -87,6 +87,23 @@
       "orientation": "diagonal",
       "item_length": 2.0,
       "thickness": 1.0
+    },
+    "hoshina_sword": {
+      "held_scale": [
+        1.2,
+        1.1
+      ],
+      "source": "hoshina_sword.glb",
+      "length_axis": "y",
+      "tip": "-",
+      "up_axis": "x",
+      "length_m": 0.78,
+      "grip_from_tip": 0.83,
+      "grip_from_bottom": 0.5,
+      "texture": 512,
+      "orientation": "diagonal",
+      "item_length": 1.35,
+      "thickness": 1.0
     }
   },
   "entities": {

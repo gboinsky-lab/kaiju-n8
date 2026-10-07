@@ -36,10 +36,12 @@ import software.bernie.geckolib.renderer.layer.BlockAndItemGeoLayer;
  * abertos em "A", nao retos como o braco vanilla) e posto no ponto da mao equivalente ao do vanilla. Conferido fora
  * do jogo com {@code tools/art/preview_held_items.py}.</p>
  */
-public class SoldierRenderer extends GeoEntityRenderer<SoldierEntity> {
+public class SoldierRenderer<T extends SoldierEntity> extends GeoEntityRenderer<T> {
 
     private static final float SHADOW_RADIUS = 0.4F;
     private static final String HAND_BONE = "item_right";
+    /** 0.6-D: segunda arma (mao esquerda) do Hoshina; o .geo.json do soldado comum nao tem este osso. */
+    private static final String OFFHAND_BONE = "item_left";
     /** Ponto de origem do item no vanilla: 1 px abaixo do centro do punho e 2 px a frente (superficie do braco). */
     private static final float HAND_DOWN = 1.0F / 16.0F;
     private static final float HAND_FORWARD = 2.0F / 16.0F;
@@ -52,19 +54,28 @@ public class SoldierRenderer extends GeoEntityRenderer<SoldierEntity> {
     private static final float SOLDIER_ITEM_SCALE = 0.85F;
 
     public SoldierRenderer(EntityRendererProvider.Context context) {
-        super(context, new SoldierModel());
+        this(context, "soldier");
+    }
+
+    /** 0.6-D: mesmo renderizador para os soldados especiais (esqueleto, malha e animacoes de {@code species}). */
+    public SoldierRenderer(EntityRendererProvider.Context context, String species) {
+        super(context, new SoldierModel<>(species));
         this.shadowRadius = SHADOW_RADIUS;
-        addRenderLayer(new MeshRenderLayer<>(this, KN8Constants.id("soldier")));
+        addRenderLayer(new MeshRenderLayer<>(this, KN8Constants.id(species)));
         addRenderLayer(new BlockAndItemGeoLayer<>(this) {
             @Override
-            protected ItemStack getStackForBone(GeoBone bone, SoldierEntity animatable) {
-                return HAND_BONE.equals(bone.getName()) ? animatable.getMainHandItem() : null;
+            protected ItemStack getStackForBone(GeoBone bone, T animatable) {
+                if (HAND_BONE.equals(bone.getName())) {
+                    return animatable.getMainHandItem();
+                }
+                return OFFHAND_BONE.equals(bone.getName()) ? animatable.getOffhandItem() : null;
             }
 
             @Override
             protected ItemDisplayContext getTransformTypeForStack(GeoBone bone, ItemStack stack,
-                    SoldierEntity animatable) {
-                return ItemDisplayContext.THIRD_PERSON_RIGHT_HAND;
+                    T animatable) {
+                return OFFHAND_BONE.equals(bone.getName()) ? ItemDisplayContext.THIRD_PERSON_LEFT_HAND
+                        : ItemDisplayContext.THIRD_PERSON_RIGHT_HAND;
             }
 
             /**
@@ -72,7 +83,7 @@ public class SoldierRenderer extends GeoEntityRenderer<SoldierEntity> {
              * aqui so volta ao pivo do osso da mao.
              */
             @Override
-            public void renderForBone(PoseStack poseStack, SoldierEntity animatable, GeoBone bone,
+            public void renderForBone(PoseStack poseStack, T animatable, GeoBone bone,
                     RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick,
                     int packedLight, int packedOverlay) {
                 ItemStack stack = getStackForBone(bone, animatable);
@@ -90,7 +101,7 @@ public class SoldierRenderer extends GeoEntityRenderer<SoldierEntity> {
 
             @Override
             protected void renderStackForBone(PoseStack poseStack, GeoBone bone, ItemStack stack,
-                    SoldierEntity animatable, MultiBufferSource bufferSource, float partialTick, int packedLight,
+                    T animatable, MultiBufferSource bufferSource, float partialTick, int packedLight,
                     int packedOverlay) {
                 GeoBone arm = bone.getParent();
                 if (arm != null) {
@@ -122,17 +133,17 @@ public class SoldierRenderer extends GeoEntityRenderer<SoldierEntity> {
      * Modelo com a cabeca seguindo o olhar (osso "head") e, com alvo e arma de fogo, os bracos seguindo a mira
      * (inclinacao e giro da cabeca somados a pose de mira da animacao).
      */
-    private static final class SoldierModel extends DefaultedEntityGeoModel<SoldierEntity> {
+    private static final class SoldierModel<T extends SoldierEntity> extends DefaultedEntityGeoModel<T> {
 
         private static final String[] AIMING_ARMS = {"arm_right", "arm_left"};
 
-        SoldierModel() {
-            super(KN8Constants.id("soldier"), true);
+        SoldierModel(String species) {
+            super(KN8Constants.id(species), true);
         }
 
         @Override
-        public void setCustomAnimations(SoldierEntity animatable, long instanceId,
-                AnimationState<SoldierEntity> animationState) {
+        public void setCustomAnimations(T animatable, long instanceId,
+                AnimationState<T> animationState) {
             super.setCustomAnimations(animatable, instanceId, animationState);
             // Pausado a animacao nao roda de novo: somar aqui acumularia a cada quadro.
             if (!animatable.isAggressive() || !animatable.isFirearmPose() || Minecraft.getInstance().isPaused()) {
