@@ -41,6 +41,11 @@ SKELETON = {
     "hip_right": [0.5, 1.5, -0.2], "knee_right": [0.8, 0.8, -0.3], "foot_right": [0.9, 0.1, -0.4],
     "tail_base": [-0.1, 1.6, 0.6], "tail_mid": [-1.5, 0.9, 1.9], "tail_tip": [-3.1, 0.4, 2.85],
 }
+# O GLB do Meshy veio com pescoco e cabeca desviados ~20 graus para +X (cabeca ~0,5 m fora do eixo do corpo, visto
+# de cima; pedido do Miguel: "a cabeca esta no lugar errado"). Giro rigido em Y do pescoco + cabeca em volta da base
+# do pescoco, ate a cabeca ficar alinhada com o centro do corpo olhando para a frente (-Z).
+NECK_BASE = [0.05, 3.0, -1.0]
+HEAD_YAW_DEG = 22.0
 SEEDS = [
     ("body", "pelvis", "chest", 0.0, 1.0), ("body", "chest", "neck", 0.0, 0.5),
     ("body", "chest", "shoulder_left", 0.0, 0.6), ("body", "chest", "shoulder_right", 0.0, 0.6),
@@ -91,6 +96,22 @@ def label_faces(vertices, faces, skeleton):
     tail = labels == "tail"
     labels[tail] = [f"tail_{min(3, int(tail_param(p, skeleton) * 3) + 1)}" for p in centers[tail]]
     return labels
+
+
+def straighten_head(vertices, normals, faces, labels, skeleton, offset):
+    """Gira pescoco e cabeca (vertices das faces desses ossos) em volta da base do pescoco; as juntas tambem."""
+    angle = np.radians(HEAD_YAW_DEG)
+    turn = np.array([[np.cos(angle), 0, np.sin(angle)], [0, 1, 0], [-np.sin(angle), 0, np.cos(angle)]])
+    pivot = np.array(NECK_BASE) - offset
+    moving = np.unique(faces[np.isin(labels, ["neck", "head"])])
+    vertices = vertices.copy()
+    normals = normals.copy()
+    vertices[moving] = (vertices[moving] - pivot) @ turn.T + pivot
+    normals[moving] = normals[moving] @ turn.T
+    skeleton = dict(skeleton)
+    for joint in ("neck", "head"):
+        skeleton[joint] = (skeleton[joint] - pivot) @ turn.T + pivot
+    return vertices, normals, skeleton
 
 
 def tail_line(skeleton):
@@ -215,6 +236,7 @@ def main():
     vertices = vertices - offset
     skeleton = {k: v - offset for k, v in skeleton.items()}
     labels = label_faces(vertices, faces, skeleton)
+    vertices, normals, skeleton = straighten_head(vertices, normals, faces, labels, skeleton, offset)
     vertices, uvs, normals, faces, labels = cap_holes(vertices, uvs, normals, faces, labels)
     skeleton["head_base"] = skeleton["neck"] + (skeleton["head"] - skeleton["neck"]) * 0.55
     skeleton["tail_q1"] = tail_point(skeleton, 1 / 3)

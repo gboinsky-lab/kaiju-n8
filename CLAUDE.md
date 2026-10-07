@@ -172,6 +172,10 @@ mandam; se algo precisar mudar, marque **[DECIDIR]** e pergunte.
   dos soldados fica para a tabela). Carcaças ficam espalhadas pelo anel de chegada e o No. 9 chega por um lado só →
   a ressurreição em massa procura na área inteira da invasão, não só em volta dele.
 
+- **0.6-E (Miguel, cabeca do No. 10):** nas duas formas a cabeca ficava deslocada para o lado (rosto ~0,36 m fora
+  do eixo na pequena, ~0,9 m na gigante; o giro de 65 graus do `fix_head_yaw.py` nao a trouxe de volta ao meio) →
+  `head_shift` no `rig_primigenius_mesh.py` (desloca cabeca/mandibula e, aos poucos, o pescoco; ombros ficam).
+  Preondactyl tinha pescoco e cabeca desviados ~20 graus → giro rigido `HEAD_YAW_DEG` no `rig_preondactyl_mesh.py`.
 - **0.6-E:** o `build_primigenius.py` regrava as animacoes dos Primigenius sem os golpes da 0.6-A: rodar o
   `gen_ability_animations.py` depois (e conferir CRLF). GameTest do No. 10: a forma gigante quebra blocos ao surgir
   e a fila de destruicao continuava depois do teste, quebrando o lote da ressurreicao em massa → teste com

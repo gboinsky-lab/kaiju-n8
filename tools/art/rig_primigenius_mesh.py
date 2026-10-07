@@ -123,6 +123,8 @@ SPECIES = {
     # esqueleto fica no alto da subida; o gancho da ponta vai para o ultimo pedaco pela superficie.
     "kaiju_no10_small": {
         "recenter_feet": True, "jaw_y": 3.4, "jaw_z": -0.35,
+        # Miguel: a cabeca ficava deslocada para o lado (rosto ~0,36 m fora do eixo do tronco): volta ao meio.
+        "head_shift": [-0.36, 0.0], "head_shift_blend": 0.35, "head_shift_radius": 0.55,
         "skeleton": {
             "pelvis": [0.0, 2.0, 0.0], "chest": [0.0, 2.75, 0.05], "back": [0.0, 3.2, 0.35],
             "neck": [0.1, 3.2, -0.05], "head": [0.15, 3.55, -0.2],
@@ -139,6 +141,7 @@ SPECIES = {
     # esquerdo): meio da cauda no ponto mais longe no chao, ponta no alto da subida.
     "kaiju_no10_giant": {
         "recenter_feet": True, "jaw_y": 19.6, "jaw_z": -2.3,
+        "head_shift": [-0.9, 0.0], "head_shift_blend": 2.0, "head_shift_radius": 3.2,
         "skeleton": {
             "pelvis": [-0.2, 9.5, 0.3], "chest": [-0.2, 15.5, 0.2], "back": [-0.2, 18.5, 2.0],
             "neck": [0.2, 18.8, -0.5], "head": [0.5, 20.7, -1.5],
@@ -248,6 +251,35 @@ def split_skeleton(mesh, cfg):
     tail = labels == "tail"
     labels[tail] = [f"tail_{min(4, int(tail_param(point, skeleton) * 4) + 1)}" for point in centers[tail]]
     return labels
+
+
+def shift_head(vertices, faces, labels, cfg):
+    """Leva a cabeca (cabeca, mandibula, chifres) para o eixo do tronco: desloca por "head_shift" (dx, dz) inteira e,
+    no pescoco (faixa de "head_shift_blend" abaixo da cabeca, ate "head_shift_radius" do eixo), aos poucos, para nao
+    abrir a juncao. As juntas da cabeca (pescoco, cabeca) andam junto. Devolve vertices e esqueleto novos."""
+    dx, dz = cfg["head_shift"]
+    head_labels = [name for name in set(labels) if name in ("head", "jaw") or name.startswith("horn_")]
+    head_vertices = np.unique(faces[np.isin(labels, head_labels)])
+    bottom = vertices[head_vertices, 1].min()
+    blend = cfg.get("head_shift_blend", 0.3)
+    neck = np.array(cfg["skeleton"]["neck"], dtype=float)
+    weight = np.clip((vertices[:, 1] - (bottom - blend)) / blend, 0.0, 1.0)
+    near = np.hypot(vertices[:, 0] - neck[0], vertices[:, 2] - neck[2]) < cfg.get("head_shift_radius", 0.5)
+    body = np.zeros(len(vertices), dtype=bool)
+    body[np.unique(faces[labels == "body"])] = True
+    # So o pescoco (tronco) faz a transicao; ombros e bracos ficam onde estao.
+    arms = np.unique(faces[np.char.startswith(labels.astype(str), "arm") | np.char.startswith(labels.astype(str),
+                                                                                            "forearm")])
+    body[arms] = False
+    weight = np.where(near & body, weight, 0.0)
+    weight[head_vertices] = 1.0
+    vertices = vertices.copy()
+    vertices[:, 0] += weight * dx
+    vertices[:, 2] += weight * dz
+    skeleton = dict(cfg["skeleton"])
+    for joint in ("neck", "head"):
+        skeleton[joint] = [skeleton[joint][0] + dx, skeleton[joint][1], skeleton[joint][2] + dz]
+    return vertices, {**cfg, "skeleton": skeleton}
 
 
 def tail_polyline(skeleton):
@@ -418,6 +450,8 @@ def main():
     # Hierarquia e ordem dos ossos do modelo de cubos (as animacoes usam estes nomes).
     old_geo = json.loads((ASSETS / f"geo/entity/{name}.geo.json").read_text(encoding="utf-8"))
     old_bones = old_geo["minecraft:geometry"][0]["bones"]
+    if "head_shift" in cfg:
+        vertices, cfg = shift_head(vertices, faces, labels, cfg)
     points = (pivots_skeleton if skeleton_mode else pivots)(vertices, faces, labels, cfg)
     # Tampa os cortes das juntas com a cor da pele em volta (sem isso o ombro "abre" no slam e mostra o oco).
     vertices, uvs, normals, faces, labels = cap_holes(vertices, uvs, normals, faces, labels)
