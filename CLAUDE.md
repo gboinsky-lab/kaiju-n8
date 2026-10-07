@@ -3,8 +3,9 @@
 Mod fan gratuito de Minecraft, desenvolvido por Miguel Augusto Gnoinsky. Este arquivo é a memória do projeto para o
 Claude Code: leia antes de qualquer tarefa. Responda sempre em **português do Brasil**.
 
-Memória técnica das novas frentes: `docs/SOLDADO_1_IMPLEMENTATION.md`, `docs/COMBAT_VFX_AND_DESTRUCTION.md` e
-`docs/MEGA_ATUALIZACAO_0_2.md` (plano da 0.2, em etapas)
+Memória técnica das novas frentes: `docs/SOLDADO_1_IMPLEMENTATION.md`, `docs/COMBAT_VFX_AND_DESTRUCTION.md`,
+`docs/MEGA_ATUALIZACAO_0_2.md` (plano da 0.2, em etapas) e `docs/BALANCEAMENTO.md` (todos os números do jogo e onde
+ficam; atualizar ao mudar qualquer JSON/config de balanceamento)
 (ler antes de "Continue o Soldado 1", "Continue os efeitos", "Adicione este ataque").
 
 Documentos de referência (coloque em `docs/` se ainda não estiverem): **Fase 3 — GDD**, **Fase 4 — Arquitetura
