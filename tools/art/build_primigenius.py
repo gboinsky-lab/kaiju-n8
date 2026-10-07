@@ -33,6 +33,8 @@ PALETTES = {
         "core": "#E2481E", "core_hot": "#FFD27A", "core_edge": "#9E2A16",
     },
 }
+# 0.6-E: Kaiju No. 10 (malha do Meshy, mesmos ossos; a paleta so vale enquanto nao ha malha).
+PALETTES["kaiju_no10_small"] = PALETTES["kaiju_no10_giant"] = PALETTES["primigenius"]
 # Etapa C (escala aprovada): Yoju com 6 blocos de altura / Honju com 9.
 MODEL_SCALE = 6.0 / 4.6
 BASE = "primigenius"

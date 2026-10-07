@@ -119,6 +119,36 @@ SPECIES = {
             "back": [0.6, 6.6, 0.4],
         },
     },
+    # 0.6-E: Kaiju No. 10 forma pequena (4 m, de pe, cauda em "U" subindo atras do ombro direito): a ponta do
+    # esqueleto fica no alto da subida; o gancho da ponta vai para o ultimo pedaco pela superficie.
+    "kaiju_no10_small": {
+        "recenter_feet": True, "jaw_y": 3.4, "jaw_z": -0.35,
+        "skeleton": {
+            "pelvis": [0.0, 2.0, 0.0], "chest": [0.0, 2.75, 0.05], "back": [0.0, 3.2, 0.35],
+            "neck": [0.1, 3.2, -0.05], "head": [0.15, 3.55, -0.2],
+            "shoulder_left": [-0.75, 2.85, 0.0], "elbow_left": [-1.05, 2.25, -0.15],
+            "hand_left": [-1.15, 1.6, -0.35],
+            "shoulder_right": [0.75, 2.85, 0.0], "elbow_right": [1.05, 2.25, -0.15],
+            "hand_right": [1.15, 1.6, -0.35],
+            "hip_left": [-0.35, 1.9, 0.0], "knee_left": [-0.55, 1.0, -0.2], "foot_left": [-0.65, 0.15, -0.05],
+            "hip_right": [0.35, 1.9, 0.0], "knee_right": [0.55, 1.0, -0.2], "foot_right": [0.68, 0.15, -0.05],
+            "tail_base": [0.1, 1.75, 0.4], "tail_mid": [0.9, 0.95, 0.85], "tail_tip": [1.45, 3.45, 1.3],
+        },
+    },
+    # 0.6-E: forma gigante (24 m, pernas abertas; a cauda desce ate o chao bem atras e sobe de novo do lado
+    # esquerdo): meio da cauda no ponto mais longe no chao, ponta no alto da subida.
+    "kaiju_no10_giant": {
+        "recenter_feet": True, "jaw_y": 19.6, "jaw_z": -2.3,
+        "skeleton": {
+            "pelvis": [-0.2, 9.5, 0.3], "chest": [-0.2, 15.5, 0.2], "back": [-0.2, 18.5, 2.0],
+            "neck": [0.2, 18.8, -0.5], "head": [0.5, 20.7, -1.5],
+            "shoulder_left": [-4.0, 17.0, 0.0], "elbow_left": [-6.3, 12.3, -1.0], "hand_left": [-7.7, 9.0, -1.7],
+            "shoulder_right": [3.5, 17.0, 0.0], "elbow_right": [6.3, 12.3, -1.0], "hand_right": [7.5, 9.1, -1.7],
+            "hip_left": [-2.5, 9.5, 0.3], "knee_left": [-3.5, 5.0, -0.2], "foot_left": [-6.2, 0.6, -0.5],
+            "hip_right": [1.9, 9.5, 0.3], "knee_right": [3.7, 5.0, -0.2], "foot_right": [6.0, 0.6, -0.5],
+            "tail_base": [-0.5, 8.5, 3.5], "tail_mid": [-11.0, 2.5, 15.5], "tail_tip": [-10.0, 16.0, 11.5],
+        },
+    },
     "primigenius_revived": {
         "yaw_deg": 35, "recenter_feet": True, "jaw_y": 6.4, "jaw_z": -2.9,
         "skeleton": {

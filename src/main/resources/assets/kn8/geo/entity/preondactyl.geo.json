@@ -1,0 +1,137 @@
+{
+  "format_version": "1.12.0",
+  "minecraft:geometry": [
+    {
+      "description": {
+        "identifier": "geometry.preondactyl",
+        "texture_width": 16,
+        "texture_height": 16,
+        "visible_bounds_width": 9.3,
+        "visible_bounds_height": 9.3,
+        "visible_bounds_offset": [
+          0,
+          2.5,
+          0
+        ]
+      },
+      "bones": [
+        {
+          "name": "root",
+          "pivot": [
+            -0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "name": "body",
+          "pivot": [
+            -0.0,
+            25.6,
+            0.0
+          ],
+          "parent": "root"
+        },
+        {
+          "name": "neck",
+          "pivot": [
+            -3.2,
+            49.6,
+            -15.2
+          ],
+          "parent": "body"
+        },
+        {
+          "name": "head",
+          "pivot": [
+            -5.4,
+            56.64,
+            -26.64
+          ],
+          "parent": "neck"
+        },
+        {
+          "name": "wing_left",
+          "pivot": [
+            12.0,
+            48.0,
+            -5.6
+          ],
+          "parent": "body"
+        },
+        {
+          "name": "wing_left_tip",
+          "pivot": [
+            43.2,
+            67.2,
+            -5.6
+          ],
+          "parent": "wing_left"
+        },
+        {
+          "name": "wing_right",
+          "pivot": [
+            -15.2,
+            48.0,
+            -5.6
+          ],
+          "parent": "body"
+        },
+        {
+          "name": "wing_right_tip",
+          "pivot": [
+            -46.4,
+            67.2,
+            -5.6
+          ],
+          "parent": "wing_right"
+        },
+        {
+          "name": "leg_left",
+          "pivot": [
+            8.8,
+            24.0,
+            -0.8
+          ],
+          "parent": "body"
+        },
+        {
+          "name": "leg_right",
+          "pivot": [
+            -9.6,
+            24.0,
+            -0.8
+          ],
+          "parent": "body"
+        },
+        {
+          "name": "tail_1",
+          "pivot": [
+            -0.0,
+            25.6,
+            12.0
+          ],
+          "parent": "body"
+        },
+        {
+          "name": "tail_2",
+          "pivot": [
+            14.537,
+            18.331,
+            25.499
+          ],
+          "parent": "tail_1"
+        },
+        {
+          "name": "tail_3",
+          "pivot": [
+            30.455,
+            11.883,
+            37.583
+          ],
+          "parent": "tail_2"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "bones": {
+    "body": "kn8:meshes/preondactyl/body.obj",
+    "neck": "kn8:meshes/preondactyl/neck.obj",
+    "head": "kn8:meshes/preondactyl/head.obj",
+    "wing_left": "kn8:meshes/preondactyl/wing_left.obj",
+    "wing_left_tip": "kn8:meshes/preondactyl/wing_left_tip.obj",
+    "wing_right": "kn8:meshes/preondactyl/wing_right.obj",
+    "wing_right_tip": "kn8:meshes/preondactyl/wing_right_tip.obj",
+    "leg_left": "kn8:meshes/preondactyl/leg_left.obj",
+    "leg_right": "kn8:meshes/preondactyl/leg_right.obj",
+    "tail_1": "kn8:meshes/preondactyl/tail_1.obj",
+    "tail_2": "kn8:meshes/preondactyl/tail_2.obj",
+    "tail_3": "kn8:meshes/preondactyl/tail_3.obj"
+  }
+}
