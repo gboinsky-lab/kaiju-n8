@@ -1,0 +1,51 @@
+{
+  "kaiju": "kn8:trichonephila_honju",
+  "arena": {
+    "radius": 40,
+    "reset_after_ticks": 600
+  },
+  "phases": [
+    {
+      "until_health": 0.5,
+      "invuln_ticks": 30,
+      "attacks": [
+        {
+          "ability": "kn8:web_burst",
+          "weight": 2
+        },
+        {
+          "ability": "kn8:leap",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "until_health": 0.0,
+      "invuln_ticks": 40,
+      "attacks": [
+        {
+          "ability": "kn8:multi_leg",
+          "weight": 2
+        },
+        {
+          "ability": "kn8:web_burst",
+          "weight": 1
+        },
+        {
+          "ability": "kn8:leap",
+          "weight": 2
+        }
+      ]
+    }
+  ],
+  "summon": {
+    "species": "kn8:trichonephila",
+    "count": 3,
+    "max_alive": 6
+  },
+  "health_multiplier": 1.5,
+  "rewards": {
+    "loot_table": "kn8:boss/trichonephila_honju",
+    "merit": 350
+  }
+}

@@ -15,7 +15,8 @@ atras, patas = o resto; cada pata e achada pela parte distante do centro e as fa
 pata cuja linha passa mais perto (da frente para tras = leg_<lado>_0..3). Pivo de cada pata = ponto da pata
 mais perto do centro (quadril). A GeckoLib inverte o X do pivo ao carregar: os pivos sao gravados com X negado.
 Substitui a arte em cubos de build_trichonephila.py (que nao deve mais ser rodado para esta especie).
-Uso: python3 tools/art/rig_trichonephila_mesh.py   (requer numpy, pillow e scipy)
+0.6: uma tabela de medidas por especie (SPECIES): a Trichonephila Honju (modelo do Miguel, 8 m) usa o mesmo rig.
+Uso: python3 tools/art/rig_trichonephila_mesh.py [especie]   (padrao trichonephila; requer numpy, pillow e scipy)
 """
 import json
 import math
@@ -31,33 +32,65 @@ from pad_texture import DILATE_STEPS, dilate, uv_mask  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
 ASSETS = ROOT / "src/main/resources/assets/kn8"
-SOURCE = ROOT / "tools/art/converted/trichonephila"
-NAME = "trichonephila"
 PX = 16.0
-
-# Medidas da malha convertida (metros, frente -Z), modelo "estilo Minecraft" de 2026-10-06 (8 patas, corpo baixo):
-# cefalotorax |x| < 0,42 na frente de ABDOMEN_START_Z; abdomen (caixa listrada) atras, |x| < 0,7, acima do chao.
-CENTER_Z = -0.5
-# 0.2: 0,5 (era 0,42). A raiz das patas colada na lateral do cefalotorax ficava na pata e, no passo, girava para
-# fora do corpo como lascas; agora fica no corpo e a pata comeca onde ja esta solta.
-CORE_HALF_WIDTH = 0.5
-ABDOMEN_START_Z = 0.3
-ABDOMEN_HALF_WIDTH = 0.7
-ABDOMEN_MIN_Y = 0.45
-# Cabeca = frente do cefalotorax; queliceras = parte baixa da frente (as presas brancas).
-HEAD_Z = -1.2
-FANG_Z = -1.45
-FANG_MAX_Y = 0.6
+# Medidas por especie (metros, frente -Z). Os valores ativos ficam nas variaveis do modulo (use_species).
+SPECIES = {
+    # Modelo "estilo Minecraft" de 2026-10-06 (8 patas, corpo baixo): cefalotorax |x| < 0,5 na frente de
+    # ABDOMEN_START_Z; abdomen (caixa listrada) atras. 0.2: CORE_HALF_WIDTH 0,5 (era 0,42): a raiz das patas colada
+    # na lateral do cefalotorax ficava na pata e, no passo, girava para fora do corpo como lascas.
+    "trichonephila": {"center_z": -0.5, "core_half_width": 0.5, "abdomen_start_z": 0.3, "abdomen_half_width": 0.7,
+                      "abdomen_min_y": 0.45, "head_z": -1.2, "fang_z": -1.45, "fang_max_y": 0.6,
+                      "leg_far_radius": 1.3, "leg_max_y": 1.7, "bounds": [7, 4]},
+    # 0.6: Trichonephila Honju (Tecedeira Abissal, 8 m): cabeca humanoide alta na frente, cefalotorax de -2 a 0,
+    # abdomen de 0 a 3,5 bem acima do chao; patas da frente longas. Sem queliceras separadas (o rosto e a cabeca).
+    "trichonephila_honju": {"center_z": -1.0, "core_half_width": 1.2, "abdomen_start_z": 0.1,
+                            "abdomen_half_width": 1.5, "abdomen_min_y": 1.15, "head_z": -1.75, "fang_z": -99.0,
+                            "fang_max_y": 0.0, "leg_far_radius": 1.9, "leg_max_y": 3.2, "bounds": [10, 6],
+                            # Rig por caminhos (split_paths): o corte por planos misturava patas que passam por cima
+                            # e por baixo do corpo. Eixo do corpo (pontos por osso) e pes = pontos baixos afastados.
+                            "paths": {"regions": {"head": [[-0.7, 2.9, -2.8], [0.7, 4.2, -1.8]],
+                                                  "body": [[-0.75, 1.7, -1.8], [0.75, 3.2, 0.0]],
+                                                  "abdomen": [[-1.0, 1.3, 0.3], [1.0, 3.4, 3.8]]},
+                                      "axis": {"head": [[0.0, 3.4, -2.3], [0.0, 3.0, -2.0]],
+                                               "body": [[0.0, 2.6, -1.4], [0.0, 2.5, -0.6], [0.0, 2.3, 0.0]],
+                                               "abdomen": [[0.0, 2.4, 0.8], [0.0, 2.4, 1.8], [0.0, 2.0, 2.8]]},
+                                      # Pontas das 8 patas medidas nas vistas (a deteccao automatica juntava patas que
+                                      # se encostam). leg_right_3 e um pedaco solto da malha (vira osso inteiro).
+                                      "tips": {"leg_left_0": [-1.4, 0.0, -3.8], "leg_left_1": [-3.1, 0.0, -0.4],
+                                               # Joelhos altos (a pata sobe e desce): ponto extra da mesma pata.
+                                               "leg_left_1_knee": [-2.46, 3.19, -1.06],
+                                               "leg_left_2": [-2.3, 0.0, 1.5], "leg_left_3": [-3.4, 0.0, 3.5],
+                                               "leg_right_0": [2.1, 0.0, -4.0], "leg_right_1": [2.5, 1.9, -1.8],
+                                               "leg_right_2": [3.4, 0.4, 1.4], "leg_right_3": [1.6, 0.4, 3.0]}}},
+}
+NAME = "trichonephila"
+SOURCE = ROOT / "tools/art/converted/trichonephila"
+CENTER_Z = CORE_HALF_WIDTH = ABDOMEN_START_Z = ABDOMEN_HALF_WIDTH = ABDOMEN_MIN_Y = 0.0
+HEAD_Z = FANG_Z = FANG_MAX_Y = LEG_FAR_RADIUS = LEG_MAX_Y = 0.0
+BOUNDS = [7, 4]
 # Patas: a parte distante do centro (> LEG_FAR_RADIUS) separa bem cada pata; pedacos vizinhos (distancia
 # LEG_LINK) se juntam, e pedacos na mesma direcao (< LEG_MERGE_DEGREES) sao a mesma pata. O resto de cada pata
 # (perto do quadril) vai para a pata cuja linha (vista de cima) passa mais perto.
-LEG_FAR_RADIUS = 1.3
 LEG_LINK = 0.12
 LEG_MERGE_DEGREES = 12.0
 LEG_MIN_FACES = 80
-# Pivo do quadril: so vertices abaixo disto (a pata sobe ate o "joelho" acima do corpo).
-LEG_MAX_Y = 1.7
 HIP_QUANTILE = 0.1
+
+
+def use_species(name):
+    """Ativa as medidas da especie (variaveis do modulo usadas pelas funcoes abaixo)."""
+    global NAME, SOURCE, CENTER_Z, CORE_HALF_WIDTH, ABDOMEN_START_Z, ABDOMEN_HALF_WIDTH, ABDOMEN_MIN_Y, HEAD_Z
+    global FANG_Z, FANG_MAX_Y, LEG_FAR_RADIUS, LEG_MAX_Y, BOUNDS
+    spec = SPECIES[name]
+    NAME, SOURCE = name, ROOT / "tools/art/converted" / name
+    CENTER_Z, CORE_HALF_WIDTH = spec["center_z"], spec["core_half_width"]
+    ABDOMEN_START_Z, ABDOMEN_HALF_WIDTH, ABDOMEN_MIN_Y = (spec["abdomen_start_z"], spec["abdomen_half_width"],
+                                                          spec["abdomen_min_y"])
+    HEAD_Z, FANG_Z, FANG_MAX_Y = spec["head_z"], spec["fang_z"], spec["fang_max_y"]
+    LEG_FAR_RADIUS, LEG_MAX_Y, BOUNDS = spec["leg_far_radius"], spec["leg_max_y"], spec["bounds"]
+
+
+use_species("trichonephila")
 
 
 def read_obj(path):
@@ -141,6 +174,80 @@ def classify(vertices, faces):
     return labels
 
 
+def split_paths(vertices, faces, cfg):
+    """0.6: rig por caminhos na superficie (aranhas de patas que cruzam o corpo). De cada pe, o caminho mais curto
+    pela malha ate o centro do corpo sobe pela pata; os vertices do caminho ate ele entrar no corpo (largura do
+    cefalotorax/abdomen) sao sementes da pata. O eixo do corpo da as sementes de cabeca, corpo e abdomen. Cada vertice
+    vai para a semente mais perto pela superficie (Dijkstra); a face, para a maioria dos 3 vertices. Devolve os
+    rotulos e o quadril (ultima semente) de cada pata."""
+    from scipy.sparse import coo_matrix
+    from scipy.sparse.csgraph import dijkstra
+    from rig_primigenius_mesh import weld
+    welded = weld(vertices)
+    count = welded.max() + 1
+    position = np.zeros((count, 3))
+    position[welded] = vertices
+    wf = welded[faces]
+    edges = np.vstack([wf[:, [0, 1]], wf[:, [1, 2]], wf[:, [2, 0]]])
+    length = np.linalg.norm(position[edges[:, 0]] - position[edges[:, 1]], axis=1) + 1e-6
+    graph = coo_matrix((length, (edges[:, 0], edges[:, 1])), shape=(count, count)).tocsr()
+
+    def nearest(point):
+        return int(np.argmin(np.linalg.norm(position - np.array(point), axis=1)))
+
+    seeds, owners = [], []
+    for bone, points in cfg["axis"].items():
+        for point in points:
+            seeds.append(nearest(point))
+            owners.append(bone)
+    # Miolo de cada parte do corpo inteiro como semente (so pontos no eixo deixavam as patas comerem o torax).
+    for bone, (low, high) in cfg.get("regions", {}).items():
+        inside = np.where(np.all((position >= np.array(low)) & (position <= np.array(high)), axis=1))[0]
+        seeds.extend(int(i) for i in inside)
+        owners.extend([bone] * len(inside))
+    center = nearest(cfg["axis"]["body"][len(cfg["axis"]["body"]) // 2])
+    distance, predecessors = dijkstra(graph, directed=False, indices=center, return_predecessors=True)
+
+    def inside_body(p):
+        half = CORE_HALF_WIDTH if p[2] < ABDOMEN_START_Z else ABDOMEN_HALF_WIDTH
+        return abs(p[0]) < half and p[1] > ABDOMEN_MIN_Y * 0.6
+
+    # Pontas das patas dadas no SPECIES; de cada uma, o caminho mais curto ate o centro sobe pela pata ate entrar no
+    # corpo. Pata que e um pedaco solto da malha (sem caminho) vira o osso inteiro.
+    from scipy.sparse.csgraph import connected_components
+    _, piece = connected_components(graph, directed=False)
+    hips = {}
+    for key, point in cfg["tips"].items():
+        # "<pata>_knee": joelho alto da pata (sobe ate ele e desce ate o pe); mesmo osso, caminho proprio.
+        name = key[:-len("_knee")] if key.endswith("_knee") else key
+        foot = nearest(point)
+        if not np.isfinite(distance[foot]):
+            members = np.where(piece == piece[foot])[0]
+            hips[name] = position[members[np.argmin(np.linalg.norm(position[members] - position[center], axis=1))]]
+            seeds.extend(int(m) for m in members)
+            owners.extend([name] * len(members))
+            continue
+        path, node = [], foot
+        while node != center and node >= 0 and not inside_body(position[node]):
+            path.append(node)
+            node = predecessors[node]
+        if not path:
+            print(f"AVISO: {name} sem caminho ate o corpo")
+            continue
+        if not key.endswith("_knee"):
+            hips[name] = position[path[-1]].copy()
+        step = max(1, len(path) // 12)
+        for node in path[::step]:
+            seeds.append(int(node))
+            owners.append(name)
+    _, _, sources = dijkstra(graph, directed=False, indices=sorted(set(seeds)), min_only=True,
+                             return_predecessors=True)
+    owner_of = {seed: owner for seed, owner in zip(seeds, owners)}
+    vertex_label = np.array([owner_of.get(int(src), "body") for src in sources], dtype=object)
+    a, b, c = (vertex_label[wf[:, i]] for i in range(3))
+    return np.where(b == c, b, a), hips
+
+
 def pivot_of(vertices, faces, labels, name):
     """Quadril: media dos 10% de vertices da pata mais perto do centro (vista de cima)."""
     points = vertices[np.unique(faces[labels == name])]
@@ -156,8 +263,14 @@ def geo_pivot(point):
 
 
 def main():
+    use_species(sys.argv[1] if len(sys.argv) > 1 else "trichonephila")
     vertices, uvs, normals, faces = read_obj(SOURCE / f"{NAME}.obj")
-    labels = classify(vertices, faces)
+    paths = SPECIES[NAME].get("paths")
+    hips = {}
+    if paths:
+        labels, hips = split_paths(vertices, faces, paths)
+    else:
+        labels = classify(vertices, faces)
     bones = {"root": None, "body": "root", "head": "body", "fang_left": "head", "fang_right": "head",
              "abdomen": "body"}
     def center(name):
@@ -166,6 +279,9 @@ def main():
     def top_back(name):
         """Pivo na ligacao com o pai: alto e atras (cabeca/queliceras giram em volta da junta)."""
         points = vertices[np.unique(faces[labels == name])]
+        if len(points) == 0:
+            # Especie sem queliceras separadas (Honju): o osso existe (animacoes) com o pivo na cabeca.
+            return np.array([0.0, center("head")[1], HEAD_Z])
         return np.array([points[:, 0].mean(), points[:, 1].max(), points[:, 2].max()])
 
     pivots = {"root": np.zeros(3), "body": np.array([0.0, center("body")[1], CENTER_Z]),
@@ -176,7 +292,10 @@ def main():
         for number in range(4):
             name = f"leg_{side}_{number}"
             bones[name] = "body"
-            pivots[name] = pivot_of(vertices, faces, labels, name) if np.any(labels == name) else pivots["body"]
+            if name in hips:
+                pivots[name] = hips[name]
+            else:
+                pivots[name] = pivot_of(vertices, faces, labels, name) if np.any(labels == name) else pivots["body"]
     # Tampa os cortes das juntas com a cor em volta (a pata girando nao mostra o oco do corpo).
     from rig_soldier_mesh import cap_holes
     vertices, uvs, normals, faces, labels = cap_holes(vertices, uvs, normals, faces, labels)
@@ -208,12 +327,16 @@ def main():
         geo_bones.append(entry)
     geo = {"format_version": "1.12.0", "minecraft:geometry": [{
         "description": {"identifier": f"geometry.{NAME}", "texture_width": 16, "texture_height": 16,
-                        "visible_bounds_width": 7, "visible_bounds_height": 4, "visible_bounds_offset": [0, 1, 0]},
+                        "visible_bounds_width": BOUNDS[0], "visible_bounds_height": BOUNDS[1], "visible_bounds_offset": [0, 1, 0]},
         "bones": geo_bones}]}
     (ASSETS / f"geo/entity/{NAME}.geo.json").write_text(json.dumps(geo, indent=2) + "\n", encoding="utf-8")
     sys.path.insert(0, str(Path(__file__).parent))
     import build_trichonephila
     anims = build_trichonephila.animations()
+    if NAME != "trichonephila":
+        # Mesmos ossos e mesmo passo; so o nome da especie muda nas chaves (<especie>.<camada>.<nome>).
+        anims["animations"] = {key.replace("trichonephila.", NAME + ".", 1): value
+                               for key, value in anims["animations"].items()}
     (ASSETS / f"animations/entity/{NAME}.animation.json").write_text(json.dumps(anims, indent=2) + "\n",
                                                                      encoding="utf-8")
     print("pivos das patas:", {k: np.round(v, 2).tolist() for k, v in pivots.items() if k.startswith("leg")})

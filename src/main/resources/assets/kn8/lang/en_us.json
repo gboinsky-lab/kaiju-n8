@@ -624,5 +624,12 @@
   "kn8.ability.multi_leg": "Multi-leg assault",
   "kn8.ability.web_shot": "Web shot",
   "kn8.ability.leap": "Ambush leap",
-  "kn8.ability.finger_gun": "Finger Gun"
+  "kn8.ability.finger_gun": "Finger Gun",
+  "entity.kn8.trichonephila_honju": "Trichonephila Honju",
+  "kn8.bestiary.trichonephila_honju.desc": "The Abyssal Weaver: a giant spider with an almost human face. It calls nearby Trichonephila, binds soldiers in web and leaps on whoever runs.",
+  "kn8.boss.trichonephila_honju": "Trichonephila Honju",
+  "kn8.mission.web_queen_hunt.name": "The Abyssal Weaver",
+  "kn8.mission.web_queen_hunt.desc": "A Trichonephila Honju was sighted with its brood. Reach the area and defeat it.",
+  "kn8.invasion.web_queen": "Weaver's Nest",
+  "kn8.ability.web_burst": "Web burst"
 }

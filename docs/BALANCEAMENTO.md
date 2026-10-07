@@ -22,6 +22,7 @@ Multiplicadores globais: `[balance] kaijuHealthMultiplier` / `kaijuDamageMultipl
 | Primigenius ressurgido | 5,9 | 299 | 12,5 | 11,8 | 0,22 | casco, rabada, slam, investida; fúria | [SUPOSIÇÃO] |
 | Primigenius Honju | 6,0 | 320 | 13,1 | 12,0 | 0,24 | soco pesado, mordida, rabada, slam, investida, raio de energia | [SUPOSIÇÃO] |
 | Primigenius revivido (Honju) | 6,4 | 422 | 15,8 | 12,8 | 0,24 | os do Honju (raio roxo); fúria | [SUPOSIÇÃO] |
+| Trichonephila Honju (0.6-B) | 6,2 | 368 (551 como chefe) | 14,4 | 12,4 | 0,28 | os da aranha + explosão de teia; fúria (dano ×1,2, velocidade ×1,25, recargas ×0,7) | [SUPOSIÇÃO]; hitbox 6 × 4; chefe invoca 3 Trichonephila (máx. 6 vivas) |
 | Kaiju No. 9 | 6,5 | 453 | 16,6 | 13,0 | 0,32 | garra, investida, Finger Gun | [SUPOSIÇÃO]; a garra (×1,3) tira ~21 por golpe |
 
 ### Habilidades (`ability/<id>.json`)
@@ -42,6 +43,7 @@ Multiplicadores globais: `[balance] kaijuHealthMultiplier` / `kaijuDamageMultipl
 | Teia (0.6) | 0,3 | 10 | 2 | 120 | não | de 4 a 16 blocos; lentidão III por 4 s |
 | Salto de emboscada (0.6, `kn8:leap`) | 1,3 | 10 | 24 | 140 | sim | de 5 a 12 blocos; área de raio 2 na queda |
 | Finger Gun (0.6, No. 9) | 1,0 | 8 | 2 | 30 | não | de 4 a 28 blocos |
+| Explosão de teia (0.6-B, Trichonephila Honju) | 0,8 | 20 | 4 | 200 | não | de 6 a 24 blocos; área de raio 3, lentidão III por 5 s |
 
 \* Pesada atravessa o bloqueio comum; só parry ou esquiva evitam (`[combat] heavyIgnoresBlock`) [SUPOSIÇÃO].
 

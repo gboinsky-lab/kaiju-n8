@@ -1,0 +1,90 @@
+{
+  "class": "honju",
+  "fortitude": 6.2,
+  "size": "large",
+  "dimensions": {
+    "width": 6.0,
+    "height": 4.0
+  },
+  "speed": 0.28,
+  "intelligence": 3,
+  "core": {
+    "health_fraction": 0.25,
+    "exposed_on": [
+      "heavy_hit"
+    ]
+  },
+  "parts": [
+    {
+      "name": "head",
+      "offset": [
+        0,
+        2.7,
+        2.2
+      ],
+      "width": 1.4,
+      "height": 1.4,
+      "multiplier": 1.2
+    },
+    {
+      "name": "cephalothorax",
+      "offset": [
+        0,
+        1.6,
+        1.0
+      ],
+      "width": 2.4,
+      "height": 1.7,
+      "multiplier": 1.0
+    },
+    {
+      "name": "core",
+      "offset": [
+        0,
+        2.5,
+        1.5
+      ],
+      "width": 1.0,
+      "height": 0.9,
+      "multiplier": 3.0,
+      "core": true
+    },
+    {
+      "name": "abdomen",
+      "offset": [
+        0,
+        1.2,
+        -2.0
+      ],
+      "width": 3.0,
+      "height": 2.2,
+      "multiplier": 1.0
+    }
+  ],
+  "abilities": [
+    "kn8:bite",
+    "kn8:leg_stab",
+    "kn8:leg_swipe",
+    "kn8:multi_leg",
+    "kn8:web_shot",
+    "kn8:web_burst",
+    "kn8:leap"
+  ],
+  "weaknesses": [],
+  "dismantle": "kn8:trichonephila_honju",
+  "spawn": {
+    "events": [
+      "kn8:exam"
+    ]
+  },
+  "rarity": "rare",
+  "tags": [
+    "arachnid"
+  ],
+  "rage": {
+    "health_below": 0.3,
+    "damage_multiplier": 1.2,
+    "speed_multiplier": 1.25,
+    "cooldown_multiplier": 0.7
+  }
+}

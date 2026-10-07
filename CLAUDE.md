@@ -137,6 +137,7 @@ mandam; se algo precisar mudar, marque **[DECIDIR]** e pergunte.
 | **0.4 Soldados comuns** (variantes, faca de apoio, sorteio, papel no menu, sem machado) | ✅ GameTests 45/45; troca para a faca e aba Esquadrão vistas em jogo com 2 clientes; aguardando roteiro §21 |
 | **0.5 Ataque especial + aura** (Golpe Sísmico do machado na tecla R; aura por personagem, violeta com raios pela referência do Miguel; potência com vida baixa) | ✅ GameTests 49/49; aguardando teste em jogo do Miguel |
 | **0.6-A Ataques novos dos kaiju** (casco, rabada, soco pesado, raio de energia do Honju, estocada/varredura/várias patas/teia/salto da aranha, Finger Gun do No. 9; fúria dos revividos; soldado sem empurrar kaiju; kaiju quebram o caminho ao andar) | ✅ **aprovada pelo Miguel (2026-10-07)**; GameTests 56/56. Plano 0.6 em `docs/PLANO_0_6.md`, especificação em `docs/ESPECIFICACAO_HABILIDADES_MOBS.md` |
+| **0.6-B Trichonephila Honju** (Tecedeira Abissal: entidade, partes e núcleo, ataques da aranha + explosão de teia, fúria, chefe que invoca Trichonephila, desmonte de 6 etapas, invasão nível 3 `web_queen`, missão `web_queen_hunt`) | ✅ GameTests 57/57; aguardando teste em jogo |
 | M11b carcaças e desmonte · M12 transformação · M13 NPCs | pendentes (patentes/crafting do M14 entraram na 0.2) |
 | M15 missões · M16 chefe Honju · M17 Tachikawa · M18 endurecimento/performance | pendentes |
 
@@ -238,7 +239,7 @@ mandam; se algo precisar mudar, marque **[DECIDIR]** e pergunte.
 | `primigenius_resurrected` | Yoju ressurgido | malha do Meshy (verde, 10 mil tri), 6 de altura | ⏳ 2026-10-06, visto em jogo |
 | `primigenius_honju` | Honju | malha do Meshy (marrom, chifres, 12 mil tri), 9 de altura | ⏳ 2026-10-06, visto em jogo |
 | `primigenius_revived` | Honju ressurgido | malha do Meshy (roxo, chifres, 12 mil tri), hitbox 5,73 × 9,0 | ⏳ 2026-10-06, visto em jogo |
-| Trichonephila Honju | Honju | conceito escolhido: Tecedeira Abissal (falta confirmar e modelar) | pós-0.1 |
+| `trichonephila_honju` | Honju | malha do Meshy do Miguel (Tecedeira Abissal: roxa e amarela, rosto humanoide, 11.436 tri, 8 m), rig por caminhos na superfície (`rig_trichonephila_mesh.py trichonephila_honju`: pontas das patas e joelho medidos), hitbox 6 × 4 | 0.6-B |
 
 Regra de design do Miguel: Honju e Yoju são **criaturas diferentes** (modelo e textura próprios). Desde
 2026-10-06 as versões ressurgida/revivida também ganham **modelo próprio no Meshy** (antes: só outra paleta).

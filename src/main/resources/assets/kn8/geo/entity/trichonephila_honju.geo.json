@@ -1,0 +1,146 @@
+{
+  "format_version": "1.12.0",
+  "minecraft:geometry": [
+    {
+      "description": {
+        "identifier": "geometry.trichonephila_honju",
+        "texture_width": 16,
+        "texture_height": 16,
+        "visible_bounds_width": 10,
+        "visible_bounds_height": 6,
+        "visible_bounds_offset": [
+          0,
+          1,
+          0
+        ]
+      },
+      "bones": [
+        {
+          "name": "root",
+          "pivot": [
+            -0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "name": "body",
+          "pivot": [
+            -0.0,
+            40.476,
+            -16.0
+          ],
+          "parent": "root"
+        },
+        {
+          "name": "head",
+          "pivot": [
+            -0.0,
+            55.739,
+            -28.0
+          ],
+          "parent": "body"
+        },
+        {
+          "name": "fang_left",
+          "pivot": [
+            -0.0,
+            55.739,
+            -28.0
+          ],
+          "parent": "head"
+        },
+        {
+          "name": "fang_right",
+          "pivot": [
+            -0.0,
+            55.739,
+            -28.0
+          ],
+          "parent": "head"
+        },
+        {
+          "name": "abdomen",
+          "pivot": [
+            -0.0,
+            31.566,
+            1.6
+          ],
+          "parent": "body"
+        },
+        {
+          "name": "leg_left_0",
+          "pivot": [
+            20.167,
+            28.351,
+            -29.737
+          ],
+          "parent": "body"
+        },
+        {
+          "name": "leg_left_1",
+          "pivot": [
+            29.868,
+            37.742,
+            -1.862
+          ],
+          "parent": "body"
+        },
+        {
+          "name": "leg_left_2",
+          "pivot": [
+            28.226,
+            9.46,
+            34.571
+          ],
+          "parent": "body"
+        },
+        {
+          "name": "leg_left_3",
+          "pivot": [
+            29.58,
+            26.342,
+            33.916
+          ],
+          "parent": "body"
+        },
+        {
+          "name": "leg_right_0",
+          "pivot": [
+            -23.264,
+            37.302,
+            -30.025
+          ],
+          "parent": "body"
+        },
+        {
+          "name": "leg_right_1",
+          "pivot": [
+            -19.28,
+            48.282,
+            -5.459
+          ],
+          "parent": "body"
+        },
+        {
+          "name": "leg_right_2",
+          "pivot": [
+            -25.135,
+            41.93,
+            -0.558
+          ],
+          "parent": "body"
+        },
+        {
+          "name": "leg_right_3",
+          "pivot": [
+            -15.989,
+            44.873,
+            16.443
+          ],
+          "parent": "body"
+        }
+      ]
+    }
+  ]
+}

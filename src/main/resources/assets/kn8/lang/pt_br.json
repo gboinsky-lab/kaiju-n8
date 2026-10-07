@@ -624,5 +624,12 @@
   "kn8.ability.multi_leg": "Ataque de várias patas",
   "kn8.ability.web_shot": "Disparo de teia",
   "kn8.ability.leap": "Salto de emboscada",
-  "kn8.ability.finger_gun": "Finger Gun"
+  "kn8.ability.finger_gun": "Finger Gun",
+  "entity.kn8.trichonephila_honju": "Trichonephila Honju",
+  "kn8.bestiary.trichonephila_honju.desc": "A Tecedeira Abissal: aranha gigante de rosto quase humano. Chama as Trichonephila por perto, prende os soldados em teia e salta sobre quem foge.",
+  "kn8.boss.trichonephila_honju": "Trichonephila Honju",
+  "kn8.mission.web_queen_hunt.name": "A Tecedeira Abissal",
+  "kn8.mission.web_queen_hunt.desc": "Uma Trichonephila Honju foi avistada com o bando dela. Vá ao local e derrote-a.",
+  "kn8.invasion.web_queen": "Ninho da Tecedeira",
+  "kn8.ability.web_burst": "Explosão de teia"
 }

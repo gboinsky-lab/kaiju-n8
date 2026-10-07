@@ -167,6 +167,10 @@ SPECIES = {
     "trichonephila": {"action.leg_swipe": (leg_swipe, "leg_swipe"), "action.leg_stab": (leg_stab, "leg_stab"),
                       "action.multi_leg": (multi_leg, "multi_leg"), "action.web_shot": (web_shot, "web_shot"),
                       "action.leap": (leap, "leap")},
+    # 0.6-B: a Honju usa os ataques da aranha (mesmos ossos); a explosao de teia usa a animacao da teia.
+    "trichonephila_honju": {"action.leg_swipe": (leg_swipe, "leg_swipe"), "action.leg_stab": (leg_stab, "leg_stab"),
+                            "action.multi_leg": (multi_leg, "multi_leg"), "action.web_shot": (web_shot, "web_burst"),
+                            "action.leap": (leap, "leap")},
     "kaiju_no9": {"action.finger_gun": (finger_gun, "finger_gun")},
 }
 

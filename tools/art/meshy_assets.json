@@ -2,7 +2,10 @@
   "_comment": "Modelos do Meshy convertidos por tools/art/meshy_convert.py. 'source' = arquivo GLB na pasta passada com --src. Armas: eixo do comprimento e lado da ponta no arquivo original, comprimento real em metros, posicao da empunhadura (fracao a partir da ponta; fracao de baixo para cima).",
   "weapons": {
     "combat_knife": {
-      "held_scale": [1.5, 1.3],
+      "held_scale": [
+        1.5,
+        1.3
+      ],
       "source": "combat_knife.glb",
       "length_axis": "y",
       "tip": "-",
@@ -69,7 +72,10 @@
       "thickness": 1.0
     },
     "axe": {
-      "held_scale": [1.1, 1.0],
+      "held_scale": [
+        1.1,
+        1.0
+      ],
       "source": "axe.glb",
       "length_axis": "x",
       "tip": "-",
@@ -131,6 +137,12 @@
       "height_m": 2.0,
       "texture": 1024,
       "max_triangles": 8000
+    },
+    "trichonephila_honju": {
+      "source": "trichonephila_honju.glb",
+      "length_m": 8.0,
+      "texture": 1024,
+      "max_triangles": 11500
     }
   },
   "_comment_weapons": "hand_grip (armas de fogo): ponto do cabo no OBJ convertido (unidades do item) que vai para o centro do punho; first_person_scale: escala em 1a pessoa. orientation: 'diagonal' (lamina, como espada vanilla) ou 'horizontal' (arma de fogo, cano para a frente). item_length: comprimento no item, em unidades (1 = um bloco; a mao do jogador tem ~0,25). thickness: multiplica a espessura (eixos 'up' e lateral) em volta da empunhadura. blade_fraction + blade_thickness: engrossa so a lamina (da ponta ate essa fracao do comprimento), sem mexer no cabo.",
