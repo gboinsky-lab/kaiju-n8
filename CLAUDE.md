@@ -249,8 +249,11 @@ remedidas na malha [SUPOSIÇÃO: núcleo no peito]. `build_primigenius.py` não 
 - Rifle sem munição na 0.1 (GDD não define); `required_rank` das armas só vale com as patentes (M14).
 - [SUPOSIÇÃO] Corrida: `stamina.sprintCostPerSecond` 5 (100 de stamina = 20 s) e `sprintMinStamina` 20 para voltar a correr
   (depois de recuperar, aperte correr de novo). Criativo/espectador não gastam.
-- 0.1-B: sem GameTest para destruição, dash e ataque carregado (só JUnit da matemática); GameTests de Carcass,
-  KaijuAbility e KaijuAreaAbility ainda aninham `runAfterDelay`; sons próprios (.ogg) e ícones finais dos materiais.
+- 0.1-B: sem GameTest para destruição, dash e ataque carregado (só JUnit da matemática). (0.3: os GameTests de
+  Carcass, KaijuAbility e KaijuAreaAbility não aninham mais `runAfterDelay`; ícones refeitos com `pixel_shading.py`.)
+- **0.3 — propostas aguardando o Miguel** (detalhes em `docs/BALANCEAMENTO.md`): Trichonephila fortitude 2,5 → 3,5;
+  multiplicador de dano dos soldados contra kaiju; tirar o `required_rank` das armas (fica só `unlocks`); tabela de
+  desmonte própria do Honju; carreira mais longa (mérito de Vice-Capitão/Capitão).
 - [SUPOSIÇÃO] Hitbox nova da Trichonephila 3,4 × 1,8 (o modelo novo é baixo e largo) e partes de
   Trichonephila/Primigenius medidas na malha nova.
 - Sinais de Y/Z das rotações nas animações GeckoLib (braço direito: Y negativo = para dentro): **confirmados em

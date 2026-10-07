@@ -45,30 +45,29 @@ public final class CarcassGameTests {
     public static void deadKaijuBecomesADismantlableCarcass(GameTestHelper helper) {
         KaijuEntity spider = helper.spawn(KN8Entities.TRICHONEPHILA.get(), new BlockPos(4, 1, 4));
         spider.setNoAi(true);
-        helper.runAfterDelay(2, () -> {
-            spider.kill();
-            helper.runAfterDelay(3, () -> {
-                List<CarcassEntity> carcasses = helper.getLevel().getEntitiesOfClass(CarcassEntity.class,
-                        helper.getBounds());
-                helper.assertTrue(carcasses.size() == 1, "Deveria haver uma carcaca, ha " + carcasses.size());
-                CarcassEntity carcass = carcasses.get(0);
-                helper.assertTrue(carcass.species().equals(KN8Constants.id("trichonephila")),
-                        "A carcaca deveria ser da Trichonephila");
-                FakePlayer player = FakePlayerFactory.get(helper.getLevel(), PROFILE);
-                player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(KN8Items.COMBAT_KNIFE.get()));
-                for (int i = 0; i < INTERACTIONS && carcass.isAlive(); i++) {
-                    carcass.interact(player, InteractionHand.MAIN_HAND);
-                }
-                helper.assertTrue(!carcass.isAlive(), "A carcaca deveria sumir depois de todas as etapas");
-                List<ItemEntity> drops = helper.getLevel().getEntitiesOfClass(ItemEntity.class,
-                        helper.getBounds().inflate(4));
-                boolean tissue = drops.stream().anyMatch(item -> item.getItem().is(KN8Items.KAIJU_TISSUE.get()));
-                boolean core = drops.stream().anyMatch(item -> item.getItem().is(KN8Items.INTACT_CORE.get()));
-                helper.assertTrue(tissue, "Deveria soltar tecido kaiju");
-                helper.assertTrue(core, "Nucleo nao destruido deveria render o nucleo intacto");
-                drops.forEach(ItemEntity::discard);
-                helper.succeed();
-            });
+        // Passos agendados no nivel de cima, com atraso absoluto (runAfterDelay aninhado podia rodar duas vezes).
+        helper.runAfterDelay(2, spider::kill);
+        helper.runAfterDelay(5, () -> {
+            List<CarcassEntity> carcasses = helper.getLevel().getEntitiesOfClass(CarcassEntity.class,
+                    helper.getBounds());
+            helper.assertTrue(carcasses.size() == 1, "Deveria haver uma carcaca, ha " + carcasses.size());
+            CarcassEntity carcass = carcasses.get(0);
+            helper.assertTrue(carcass.species().equals(KN8Constants.id("trichonephila")),
+                    "A carcaca deveria ser da Trichonephila");
+            FakePlayer player = FakePlayerFactory.get(helper.getLevel(), PROFILE);
+            player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(KN8Items.COMBAT_KNIFE.get()));
+            for (int i = 0; i < INTERACTIONS && carcass.isAlive(); i++) {
+                carcass.interact(player, InteractionHand.MAIN_HAND);
+            }
+            helper.assertTrue(!carcass.isAlive(), "A carcaca deveria sumir depois de todas as etapas");
+            List<ItemEntity> drops = helper.getLevel().getEntitiesOfClass(ItemEntity.class,
+                    helper.getBounds().inflate(4));
+            boolean tissue = drops.stream().anyMatch(item -> item.getItem().is(KN8Items.KAIJU_TISSUE.get()));
+            boolean core = drops.stream().anyMatch(item -> item.getItem().is(KN8Items.INTACT_CORE.get()));
+            helper.assertTrue(tissue, "Deveria soltar tecido kaiju");
+            helper.assertTrue(core, "Nucleo nao destruido deveria render o nucleo intacto");
+            drops.forEach(ItemEntity::discard);
+            helper.succeed();
         });
     }
 }

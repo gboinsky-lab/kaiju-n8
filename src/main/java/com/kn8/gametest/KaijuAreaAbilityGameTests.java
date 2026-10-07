@@ -48,19 +48,21 @@ public final class KaijuAreaAbilityGameTests {
         Cow far = helper.spawn(EntityType.COW, new BlockPos(4, 1, 8));
         near.setNoAi(true);
         far.setNoAi(true);
+        // [perto, longe]: passos no nivel de cima com atraso absoluto (sem runAfterDelay aninhado).
+        float[] before = new float[2];
         helper.runAfterDelay(2, () -> {
-            float nearBefore = near.getHealth();
-            float farBefore = far.getHealth();
+            before[0] = near.getHealth();
+            before[1] = far.getHealth();
             helper.assertTrue(brute.startAbility(KN8Constants.id("slam"), near), "O slam deveria comecar");
-            helper.runAfterDelay(SLAM_IMPACT_MARGIN, () -> {
-                helper.assertTrue(near.isDeadOrDying() || near.getHealth() < nearBefore,
-                        "A vaca dentro do raio deveria levar o golpe");
-                helper.assertTrue(far.getHealth() == farBefore, "A vaca fora do raio nao deveria levar dano");
-                brute.discard();
-                near.discard();
-                far.discard();
-                helper.succeed();
-            });
+        });
+        helper.runAfterDelay(2 + SLAM_IMPACT_MARGIN, () -> {
+            helper.assertTrue(near.isDeadOrDying() || near.getHealth() < before[0],
+                    "A vaca dentro do raio deveria levar o golpe");
+            helper.assertTrue(far.getHealth() == before[1], "A vaca fora do raio nao deveria levar dano");
+            brute.discard();
+            near.discard();
+            far.discard();
+            helper.succeed();
         });
     }
 

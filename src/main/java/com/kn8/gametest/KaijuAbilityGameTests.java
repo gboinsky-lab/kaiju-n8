@@ -63,20 +63,22 @@ public final class KaijuAbilityGameTests {
     public static void biteHitsExactlyOnTheImpactTick(GameTestHelper helper) {
         KaijuEntity kaiju = spawnKaiju(helper);
         Cow cow = spawnTarget(helper);
+        // [vida antes, dano]: passos no nivel de cima com atraso absoluto (sem runAfterDelay aninhado).
+        float[] state = new float[2];
         helper.runAfterDelay(SETTLE_TICKS, () -> {
-            float healthBefore = cow.getHealth();
-            float damage = (float) kaiju.getAttributeValue(Attributes.ATTACK_DAMAGE);
+            state[0] = cow.getHealth();
+            state[1] = (float) kaiju.getAttributeValue(Attributes.ATTACK_DAMAGE);
             helper.assertTrue(kaiju.startAbility(BITE, cow), "A mordida deveria comecar");
             helper.assertTrue(!kaiju.startAbility(BITE, cow), "Nao pode iniciar outra durante a mordida");
-            helper.runAfterDelay(BEFORE_IMPACT, () ->
-                    helper.assertTrue(cow.getHealth() == healthBefore, "Dano antes do tick de impacto"));
-            helper.runAfterDelay(AFTER_IMPACT, () -> {
-                helper.assertTrue(Math.abs(cow.getHealth() - (healthBefore - damage)) < TOLERANCE,
-                        "Esperava " + (healthBefore - damage) + " de vida, veio " + cow.getHealth());
-                kaiju.discard();
-                cow.discard();
-                helper.succeed();
-            });
+        });
+        helper.runAfterDelay(SETTLE_TICKS + BEFORE_IMPACT, () ->
+                helper.assertTrue(cow.getHealth() == state[0], "Dano antes do tick de impacto"));
+        helper.runAfterDelay(SETTLE_TICKS + AFTER_IMPACT, () -> {
+            helper.assertTrue(Math.abs(cow.getHealth() - (state[0] - state[1])) < TOLERANCE,
+                    "Esperava " + (state[0] - state[1]) + " de vida, veio " + cow.getHealth());
+            kaiju.discard();
+            cow.discard();
+            helper.succeed();
         });
     }
 
@@ -98,17 +100,18 @@ public final class KaijuAbilityGameTests {
     public static void staggerCancelsTheWindup(GameTestHelper helper) {
         KaijuEntity kaiju = spawnKaiju(helper);
         Cow cow = spawnTarget(helper);
+        float[] healthBefore = new float[1];
         helper.runAfterDelay(SETTLE_TICKS, () -> {
-            float healthBefore = cow.getHealth();
+            healthBefore[0] = cow.getHealth();
             helper.assertTrue(kaiju.startAbility(BITE, cow), "A mordida deveria comecar");
             kaiju.stagger(STAGGER_TICKS);
-            helper.runAfterDelay(AFTER_IMPACT, () -> {
-                helper.assertTrue(cow.getHealth() == healthBefore, "Atordoado no preparo nao deveria causar dano");
-                helper.assertTrue(!kaiju.isUsingAbility(), "A habilidade deveria ter sido cancelada");
-                kaiju.discard();
-                cow.discard();
-                helper.succeed();
-            });
+        });
+        helper.runAfterDelay(SETTLE_TICKS + AFTER_IMPACT, () -> {
+            helper.assertTrue(cow.getHealth() == healthBefore[0], "Atordoado no preparo nao deveria causar dano");
+            helper.assertTrue(!kaiju.isUsingAbility(), "A habilidade deveria ter sido cancelada");
+            kaiju.discard();
+            cow.discard();
+            helper.succeed();
         });
     }
 }
