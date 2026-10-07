@@ -310,13 +310,17 @@ public final class ServerConfig {
         DESTRUCTION_DROP_ITEMS = booleanValue("dropItems", "Destroyed blocks drop items (off avoids item lag).", false);
         DESTRUCTION_LOG_LIMIT = intValue("logLimit", "Destroyed blocks remembered per dimension for restoration.",
                 20000, 0, 1000000);
-        PATH_CLEAR_COOLDOWN_TICKS = intValue("pathClearCooldownTicks", "Minimum ticks between path clears of a"
-                + " stuck large kaiju.", 10, 1, 200);
-        PATH_POWER_YOJU = intValue("pathPowerYoju", "Destruction power (1-4) a stuck Yoju uses to clear its path.",
-                1, 0, 4);
-        PATH_POWER_HONJU = intValue("pathPowerHonju", "Destruction power (1-4) a stuck Honju uses.", 2, 0, 4);
-        PATH_POWER_DAIKAIJU = intValue("pathPowerDaikaiju", "Destruction power (1-4) a stuck Daikaiju uses.", 3, 0,
+        // 0.6 (Miguel): kaiju quebram o caminho so de andar (presos em construcoes). Chaves novas ("walk*") para os
+        // valores novos valerem tambem em servidores com o arquivo antigo (pathPower* era 1/2/3).
+        PATH_CLEAR_COOLDOWN_TICKS = intValue("walkBreakCooldownTicks", "Minimum ticks between two path breaks of a"
+                + " kaiju that bumps into blocks while walking (or is stuck inside them).", 5, 1, 200);
+        PATH_POWER_YOJU = intValue("walkPowerYoju", "Destruction power (0-4) of a walking Yoju: breaks the block"
+                + " categories below it (3 = fragile, normal and resistant: stone, bricks, concrete; 0 = off).", 3, 0,
                 4);
+        PATH_POWER_HONJU = intValue("walkPowerHonju", "Destruction power (0-4) of a walking Honju or numbered"
+                + " kaiju.", 3, 0, 4);
+        PATH_POWER_DAIKAIJU = intValue("walkPowerDaikaiju", "Destruction power (0-4) of a walking Daikaiju.", 4,
+                0, 4);
         BUILDER.pop();
 
         section("boss", "Boss fights (GDD section 23).");

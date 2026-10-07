@@ -110,8 +110,12 @@ public final class DestructionService {
         enqueue(level, positions, power, true);
     }
 
-    /** Kaiju grande travado: abre passagem com a forca da categoria dele, com intervalo minimo entre pedidos. */
-    public static void requestPathClear(KaijuEntity kaiju) {
+    /**
+     * Kaiju batendo em blocos enquanto anda (0.6: qualquer tamanho, passeando ou perseguindo) abre passagem com a
+     * forca de andar da categoria dele ({@code destruction.walkPower*}); preso dentro de blocos
+     * ({@code inside}), quebra o que ocupa o proprio corpo. Intervalo minimo entre pedidos.
+     */
+    public static void requestPathClear(KaijuEntity kaiju, boolean inside) {
         long now = kaiju.level().getGameTime();
         if (now < kaiju.nextPathClearTick()) {
             return;
@@ -123,7 +127,9 @@ public final class DestructionService {
             case HONJU, NUMBERED -> ServerConfig.PATH_POWER_HONJU.get();
             case DAIKAIJU -> ServerConfig.PATH_POWER_DAIKAIJU.get();
         };
-        requestFront(kaiju, power, 1.0);
+        if (power > 0) {
+            requestFront(kaiju, power, inside ? 0.0 : 1.0);
+        }
     }
 
     private static boolean allowed(ServerLevel level, Entity source) {

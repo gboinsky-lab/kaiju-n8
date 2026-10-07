@@ -367,6 +367,7 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
                 staggerTicks--;
             }
             tickAbility();
+            breakWhileWalking();
             checkRage();
             updateState();
             syncCoreForClients();
@@ -726,12 +727,32 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
     }
 
     /**
-     * Kaiju grande travado num obstaculo (colisao horizontal) a caminho do alvo: pede ao DestructionService para
-     * abrir passagem (so blocos que a forca do kaiju quebra; respeita areas protegidas, mobGriefing e o config).
+     * Kaiju travado num obstaculo (colisao horizontal) a caminho do alvo: pede ao DestructionService para abrir
+     * passagem (so blocos que a forca do kaiju quebra; respeita areas protegidas, mobGriefing e o config). Desde a
+     * 0.6 vale para qualquer tamanho e tambem fora do combate ({@link #breakWhileWalking}).
      */
     public void clearPathIfBlocked() {
-        if (!level().isClientSide() && horizontalCollision && isLarge()) {
-            DestructionService.requestPathClear(this);
+        if (!level().isClientSide() && horizontalCollision) {
+            DestructionService.requestPathClear(this, false);
+        }
+    }
+
+    /**
+     * 0.6 (Miguel: kaiju ficavam presos em construcoes): todo tick no servidor. Batendo de frente em blocos enquanto
+     * tenta andar (caminho, movimento direto ou alvo), quebra a faixa da frente; preso dentro de blocos, quebra o que
+     * ocupa o corpo. Forca e intervalo em {@code [destruction] walk*}; protecoes e mobGriefing continuam valendo.
+     */
+    private void breakWhileWalking() {
+        if (isNoAi() || isUsingAbility()) {
+            return;
+        }
+        if (isInWall()) {
+            DestructionService.requestPathClear(this, true);
+            return;
+        }
+        boolean tryingToMove = getNavigation().isInProgress() || getMoveControl().hasWanted() || getTarget() != null;
+        if (horizontalCollision && tryingToMove) {
+            DestructionService.requestPathClear(this, false);
         }
     }
 

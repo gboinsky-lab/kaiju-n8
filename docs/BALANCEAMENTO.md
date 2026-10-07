@@ -54,6 +54,10 @@ as de distância precisam de linha de visão. Todos os números das habilidades 
 **Empurrão dos soldados no kaiju** (`[kaiju] soldierKnockback`, 0.6): 0 (antes, o empurrão vanilla de cada golpe
 impedia o kaiju de chegar perto de um grupo de soldados).
 
+**Quebra ao andar** (`[destruction] walk*`, 0.6): força 3 para Yoju, Honju e numerados (quebra frágil, normal e
+resistente: vidro, madeira, terra, pedra, tijolo, concreto), 4 para Daikaiju (também deepslate e ferro); um pedido a
+cada 5 ticks no máximo. Força 0 desliga [SUPOSIÇÃO].
+
 ### Chefes (`boss/<id>.json`)
 
 | Chefe | Kaiju | Vida (× JSON) | Vida final | Fases (troca em) | Invoca | Mérito |
