@@ -94,6 +94,7 @@ Dano = base × (1 + Release% / 25) (`[fortitudeCurve] releaseDamageDivisor`).
 | Faca | 6 | 6 | 8,4 | 13,2 | 20,4 | 30 | 12 ticks | ×2,0 / 24 ticks | 3,0 |
 | Espada | 8 | 8 | 11,2 | 17,6 | 27,2 | 40 | 14 | ×2,0 / 28 | 3,5 |
 | Machado | 11 | 11 | 15,4 | 24,2 | 37,4 | 55 | 18 | ×2,4 / 32 | 3,2 |
+| Espada do Hoshina (0.6-D) | 7 | 7 | 9,8 | 15,4 | 23,8 | 35 | 10 | ×1,9 / 22 | 3,0 |
 
 **Ataque especial** (`special` no JSON da arma, tecla R, 0.5): Golpe Sísmico do machado = ×2,6 em área (raio 4,
 2 blocos à frente), 35 de stamina, 6 de calor, recarga de 200 ticks, empurrão 1,2, atordoa Yoju por 30 ticks
@@ -230,6 +231,31 @@ lutou "na média". Cada jogador recebe isso × (sua parte do dano dos jogadores 
 **25%** e **150%** (`[invasion] rewardMinFactor` / `rewardMaxFactor`). Quem não causou dano em nenhum kaiju da
 invasão não ganha a recompensa final. Os abates e o dano já dão mérito e XP na hora (seção 2), então quem mais luta
 sobe mais rápido. A fuga do No. 9 só dá mérito a quem causou dano nele.
+
+**Kūuchi** (especial da espada do Hoshina, 0.6-D, tipo `slash_wave`): corte que voa 12 blocos a 1,6 bloco/tick,
+×1,6, atravessa os alvos, 20 de stamina, 3 de calor, recarga de 40 ticks [SUPOSIÇÃO].
+
+### Soldados especiais (`special_soldier/<id>.json`, 0.6-D)
+
+**Hoshina** [SUPOSIÇÃO nos números que o texto do Miguel não fixa]: vida 80, armadura 12, velocidade 0,36 (com o
+bônus do Release), resistência a empurrão 0,4, Release 40% (dano ×2,6; sobe com a vida baixa como no jogador),
+`kaiju_damage` **0,7**, aura `violet_lightning`, duas espadas do Hoshina (base 7).
+
+| Técnica | Tipo | Golpes (× dano da arma) | Tempo | Recarga | Alcance (borda) | Prioridade |
+|---|---|---|---|---|---|---|
+| Kūuchi | corte a distância | 1 × 1,3 (12 blocos) | 14 ticks, corte no 5 | 30 | 4–12 | 2 |
+| Kōsa-uchi | 2 cortes em X | 2 × 0,9 | 18, cortes no 7 | 90 | 4–12 | 3 |
+| Ran-uchi | combo com avanço | 10 × 0,35 (a cada 2 ticks) | 28 | 130 | 0–5 | 3 |
+| Kasumi-uchi | 3 golpes (20/20/60%) | 0,5 / 0,5 / 1,5 + passo lateral | 26 | 100 | 0–3,5 | 2 |
+| Yae-uchi | 8 golpes | 8 × 0,45 (1 por tick), expõe o núcleo 100 ticks | 22 | 240 | 0–3,5 | 1 (+4 contra Honju) |
+
+Reações: **esquiva** (dash 1,1, recarga 30, invulnerável 6 ticks, reage 5 ticks antes do impacto; também fecha
+distância com o alvo a mais de 7 blocos), **Kaeshi-uchi** (só contra golpe `heavy`: dash lateral, invulnerável 10
+ticks, contra-ataque ×2,5 8 ticks depois, recarga 120), **parry** (35% dos golpes corpo a corpo comuns de kaiju,
+dano ×0,3, recarga 20, abre 10 ticks para o Kaeshi-uchi).
+
+Medido em jogo (2026-10-07, com `kaiju_damage` 1,0): Trichonephila (57) em ~3 s sem tomar dano; Primigenius Honju
+em ~13 s, terminando com 33/80 de vida. Por isso o `kaiju_damage` caiu para 0,7.
 
 ### Soldados (`soldier/soldier_1.json`)
 

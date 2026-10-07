@@ -339,3 +339,17 @@ Visto na nuvem com 2 clientes (`docs/img/esquadrao_variantes.png`, `soldado_faca
 | 21.3 | Atirador com um kaiju chegando perto | Troca para a faca (som de equipar) quando o kaiju fica a menos de 3,5 blocos; volta ao rifle quando ele se afasta ou some |
 | 21.4 | Invasões | Defensores misturados (variante "random") |
 | 21.5 | M → Perfil com o Mk1 vestido | "Armadura 12 · corta 15% do calor"; sem traje, a dica de fabricar na bancada |
+
+## 22. Hoshina, o primeiro soldado especial (0.6-D)
+
+Visto na nuvem (`docs/img/hoshina_modelo.png`, `hoshina_vs_honju.png`, `hoshina_espada_kuuchi_jogador.png`).
+
+| # | Passo | Esperado |
+|---|---|---|
+| 22.1 | Ovo do Vice-Capitão Hoshina (aba de itens do kn8) | Hoshina com cabelo roxo, bainhas nas costas e uma espada em cada mão; aura roxa com faíscas em volta |
+| 22.2 | `/summon kn8:primigenius_honju ~ ~ ~10` perto dele | Ele corre (dash) até o kaiju, solta cortes roxos de longe (Kūuchi, Kōsa-uchi em X) e combos de perto |
+| 22.3 | Observar os golpes pesados do Honju (soco pesado, investida) | Hoshina desvia de lado e contra-ataca (Kaeshi-uchi); golpes comuns às vezes são aparados (faíscas + som metálico) |
+| 22.4 | Deixar o Hoshina perder vida | A aura fica mais forte (Release sobe com a vida baixa) |
+| 22.5 | M → Esquadrão | "Vice-Capitão Hoshina" na lista |
+| 22.6 | Bater nele / atirar perto dele | Não fere jogadores nem soldados; os cortes dele atravessam aliados sem ferir |
+| 22.7 | `/give @s kn8:hoshina_sword`, R | Kūuchi do jogador: corte roxo que voa 12 blocos; recarga de 2 s no HUD |

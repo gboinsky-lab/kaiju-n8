@@ -80,7 +80,8 @@ mandam; se algo precisar mudar, marque **[DECIDIR]** e pergunte.
 | Hitbox de mob | `getDefaultDimensions` (em `LivingEntity` o `getDimensions` é final) |
 | Alcance de kaiju | Sempre entre bordas (`edgeDistance`), nunca centro a centro |
 | Config de servidor | Tipo SERVER, gerado em `<instância>/config/kn8-server.toml` |
-| Protocolo de rede | `"11"` (subir ao mudar qualquer payload; 7 = `PowerView.winded`, 8 = `sounds` no JSON da arma, 9 = carreira, missões, bancada e invasão da 0.2, 10 = nível da invasão, 0.3; 11 = ataque especial `CombatAction.SPECIAL`, 0.5) |
+| Protocolo de rede | `"12"` (subir ao mudar qualquer payload; 7 = `PowerView.winded`, 8 = `sounds` no JSON da arma, 9 = carreira, missões, bancada e invasão da 0.2, 10 = nível da invasão, 0.3; 11 = ataque especial `CombatAction.SPECIAL`, 0.5; 12 = `special.slash` da espada do Hoshina, 0.6-D) |
+| Soldados especiais (0.6-D) | Perfil em `special_soldier/<id>.json` (`SpecialSoldierDef`: atributos, Release, `kaiju_damage`, aura, duas armas, técnicas `slash`/`combo`, `dash`, `counter`, `parry`). `HoshinaEntity extends SoldierEntity` (aliado, menu, alvos de kaiju iguais; `def()` vazio, sem soldier_1.json). Técnica: maior prioridade pronta e ao alcance (+`honju_priority` contra Honju); golpes no tick do JSON. Reações lidas do kaiju (`abilityTarget`, `ticksToImpact`, `isPreparingHeavy`): `heavy` → Kaeshi-uchi, outro → esquiva; parry no `hurt`. `SlashProjectile` (corte que atravessa e poupa aliados) serve o Hoshina e o especial `slash_wave` da espada dele para o jogador. Render: `SoldierRenderer<T>(context, espécie)`, segunda arma no osso `item_left` (com o display da mão direita: a GeckoLib não espelha como o vanilla). Animações: `tools/art/gen_hoshina_animations.py` (depois de `rig_soldier_mesh.py hoshina`) |
 | Ataque especial de arma (0.5) | `special` no `weapon/<id>.json` (tipo, dano, área, custo, recarga, VFX, som), tecla **R**; resolvedor `SpecialAttacks` serve jogador e (depois) soldado especial. Machado = Golpe Sísmico (`ground_slam`) |
 | Aura de poder (0.5, Miguel) | `aura/<id>.json` (cor, secundária, estilo `sparks`/`lightning`/`flame`, `min_release`, tamanho); id público `kn8:aura` (sync nativo) + `kn8:release_visual`; cada cliente desenha (`AuraRenderer`, sem pacote por tick). Jogador: aura do comando > do traje (`suit.aura`) > `defense_force`. Com vida baixa a % sobe sozinha (`[power] desperationHealth`/`desperationMaxPoints`). [DECIDIR] jogador escolher a cor |
 | Habilidades de kaiju (0.6-A) | `behavior` no `ability/*.json` (min/max_range, prioridade, health_below, setor, golpes, projétil, lentidão); tipos novos `kn8:sweep`, `kn8:projectile` (`KaijuProjectile`), `kn8:leap`, `kn8:multi_hit` em `KaijuAbilities`; escolha = maior prioridade entre as prontas e ao alcance (empate sorteado); `particles` = aviso no início do preparo; `rage` no `kaiju/*.json`. Animações por `tools/art/gen_ability_animations.py` (rodar depois dos scripts de rig) |
@@ -139,6 +140,7 @@ mandam; se algo precisar mudar, marque **[DECIDIR]** e pergunte.
 | **0.5 Ataque especial + aura** (Golpe Sísmico do machado na tecla R; aura por personagem, violeta com raios pela referência do Miguel; potência com vida baixa) | ✅ GameTests 49/49; aguardando teste em jogo do Miguel |
 | **0.6-A Ataques novos dos kaiju** (casco, rabada, soco pesado, raio de energia do Honju, estocada/varredura/várias patas/teia/salto da aranha, Finger Gun do No. 9; fúria dos revividos; soldado sem empurrar kaiju; kaiju quebram o caminho ao andar) | ✅ **aprovada pelo Miguel (2026-10-07)**; GameTests 56/56. Plano 0.6 em `docs/PLANO_0_6.md`, especificação em `docs/ESPECIFICACAO_HABILIDADES_MOBS.md` |
 | **0.6-B Trichonephila Honju** (Tecedeira Abissal: entidade, partes e núcleo, ataques da aranha + explosão de teia, fúria, chefe que invoca Trichonephila, desmonte de 6 etapas, invasão nível 3 `web_queen`, missão `web_queen_hunt`) | ✅ GameTests 57/57; vista em jogo (`docs/img/trichonephila_honju_*`: modelo, teia e salto); aguardando o Miguel |
+| **0.6-D Hoshina** (soldado especial: rig do modelo do Miguel com bainhas no tronco, duas espadas, aura roxa, Kūuchi, Kōsa-uchi, Ran-uchi, Kasumi-uchi, Yae-uchi, esquiva, Kaeshi-uchi, parry; espada do Hoshina para o jogador com Kūuchi na tecla R) | ✅ GameTests 64/64; visto em jogo (`docs/img/hoshina_*`: modelo, luta contra Honju, Kūuchi do jogador); aguardando o Miguel (roteiro §22) |
 | **0.6-C Trajes 3D** (Mk1 e Mk1 Reforçado do Miguel no jogador: tronco, braços e pernas presos ao modelo, braço em 1ª pessoa) | ✅ build e GameTests; vistos em jogo de frente, de costas, andando e em 1ª pessoa (`docs/img/trajes_3d_*`); aguardando o Miguel. Soldados continuam com o próprio modelo (já vestem o uniforme) |
 | M11b carcaças e desmonte · M12 transformação · M13 NPCs | pendentes (patentes/crafting do M14 entraram na 0.2) |
 | M15 missões · M16 chefe Honju · M17 Tachikawa · M18 endurecimento/performance | pendentes |
@@ -164,6 +166,11 @@ mandam; se algo precisar mudar, marque **[DECIDIR]** e pergunte.
   esvaziavam as ondas sozinhos → defensores dos níveis 4–5 em nível normal/alto (balanceamento da aranha e do dano
   dos soldados fica para a tabela). Carcaças ficam espalhadas pelo anel de chegada e o No. 9 chega por um lado só →
   a ressurreição em massa procura na área inteira da invasão, não só em volta dele.
+
+- **0.6-D (Hoshina):** bainhas das costas iam para o braço/cabeça no corte por forma → peça solta (componente
+  conexo) atrás de `z_min` fica no tronco (`back_items` em `rig_soldier_mesh.py`). Combos de 1–2 ticks perdiam
+  golpes pela invulnerabilidade vanilla → `invulnerableTime = 0` antes de cada golpe da técnica e de cada corte.
+  Espada da mão esquerda apontando para baixo → display da mão direita também no `item_left`.
 
 - **0.6-C (trajes):** o traje do Meshy é mais fino que o boneco do Minecraft (braço 0,2 contra 0,25 + manga da
   skin) e a skin cobria o traje; centrar a peça inteira deixava a canela atrás da calça (a bota puxa o centro) →
@@ -261,6 +268,10 @@ cada um: cauda, cabeça/mandíbula, chifres, braço/antebraço com `arm_front_z`
 remedidas na malha [SUPOSIÇÃO: núcleo no peito]. `build_primigenius.py` não sobrescreve espécie que já tem malha (só regera as animações).
 
 ## Pendências e [DECIDIR]
+
+- **[DECIDIR] 0.6-D:** como o jogador ganha a espada do Hoshina (hoje só criativo/`/give`: receita na bancada com
+  patente alta? recompensa de missão?) e onde o Hoshina aparece fora do ovo (defensor nas invasões de nível 3+?).
+  Números do Hoshina são [SUPOSIÇÃO] (`docs/BALANCEAMENTO.md`).
 
 - **Feito (2026-10-06, segunda leva do Meshy):** soldado novo (7 mil tri, textura 1024), 4 Primigenius novos,
   aranha sem atravessar ao andar. Aguardando o Miguel testar (roteiro §14). Leve sobreposição na raiz das patas da

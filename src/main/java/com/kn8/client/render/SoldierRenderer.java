@@ -74,8 +74,9 @@ public class SoldierRenderer<T extends SoldierEntity> extends GeoEntityRenderer<
             @Override
             protected ItemDisplayContext getTransformTypeForStack(GeoBone bone, ItemStack stack,
                     T animatable) {
-                return OFFHAND_BONE.equals(bone.getName()) ? ItemDisplayContext.THIRD_PERSON_LEFT_HAND
-                        : ItemDisplayContext.THIRD_PERSON_RIGHT_HAND;
+                // Tambem na mao esquerda: o vanilla espelha o display "lefthand" de novo (leftHand=true) e acaba
+                // com a rotacao da direita; a GeckoLib desenha sem esse espelho e a lamina saia para baixo (0.6-D).
+                return ItemDisplayContext.THIRD_PERSON_RIGHT_HAND;
             }
 
             /**

@@ -47,7 +47,8 @@ public final class KN8Network {
     // 6 = 0.1-B: VfxS2C (efeitos). 7/8 = 0.2 (PowerView.winded, sons no JSON da arma). 9 = 0.2: CareerSyncS2C,
     // MissionActionC2S, Active.point, CraftC2S, OpenWorkbenchS2C, InvasionStateS2C.
     // 10 = 0.3: InvasionStateS2C.level (niveis de invasao). 11 = 0.5: CombatAction.SPECIAL e weapon.special.
-    private static final String PROTOCOL_VERSION = "11";
+    // 12 = 0.6-D: weapon.special.slash (corte a distancia) no registro de armas sincronizado.
+    private static final String PROTOCOL_VERSION = "12";
 
     /** Diagnostico: 20 por segundo, rajada de 40. */
     private static final C2SGuard.Limit DEBUG_LIMIT = new C2SGuard.Limit(20, 40);

@@ -5,7 +5,7 @@
   "follow_range": 48,
   "knockback_resistance": 0.4,
   "release": 40,
-  "kaiju_damage": 1.0,
+  "kaiju_damage": 0.7,
   "aura": "kn8:violet_lightning",
   "weapon": "kn8:hoshina_sword",
   "offhand": "kn8:hoshina_sword",
