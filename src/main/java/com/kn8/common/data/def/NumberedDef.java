@@ -18,7 +18,33 @@ import net.minecraft.resources.ResourceLocation;
 public record NumberedDef(Map<ResourceLocation, ResourceLocation> revive, float reviveRadius, int reviveCastTicks,
         int reviveCooldownTicks, int maxRevivedAlive, float commandRadius, float fleeHealth, int fleeMerit,
         Map<ResourceLocation, ResourceLocation> reviveBoss, float massReviveRadius, int massReviveCastTicks,
-        int massReviveIntervalTicks) {
+        int massReviveIntervalTicks, Regeneration regeneration) {
+
+    /**
+     * Regeneracao (0.6-D, especificacao do Miguel secao 5.2): com a vida abaixo de {@code below} (fracao), cura
+     * {@code per_second} (fracao da vida maxima por segundo); abaixo de {@code fast_below}, {@code fast_per_second}.
+     * Para enquanto ele levou golpe ha menos de {@code delay_after_hit_ticks} (pressao constante segura a cura).
+     */
+    public record Regeneration(float below, float perSecond, float fastBelow, float fastPerSecond,
+            int delayAfterHitTicks) {
+        public static final Regeneration NONE = new Regeneration(0.0F, 0.0F, 0.0F, 0.0F, 0);
+        public static final Codec<Regeneration> CODEC = RecordCodecBuilder.create(i -> i.group(
+                Codec.floatRange(0.0F, 1.0F).fieldOf("below").forGetter(Regeneration::below),
+                Codec.floatRange(0.0F, 1.0F).fieldOf("per_second").forGetter(Regeneration::perSecond),
+                Codec.floatRange(0.0F, 1.0F).optionalFieldOf("fast_below", 0.0F).forGetter(Regeneration::fastBelow),
+                Codec.floatRange(0.0F, 1.0F).optionalFieldOf("fast_per_second", 0.0F)
+                        .forGetter(Regeneration::fastPerSecond),
+                DefCodecs.TICKS.optionalFieldOf("delay_after_hit_ticks", 0).forGetter(Regeneration::delayAfterHitTicks)
+        ).apply(i, Regeneration::new));
+
+        /** Fracao da vida maxima curada por segundo com a vida em {@code healthFraction} (0 = nao regenera). */
+        public float rateAt(float healthFraction) {
+            if (fastPerSecond > 0 && healthFraction < fastBelow) {
+                return fastPerSecond;
+            }
+            return healthFraction < below ? perSecond : 0.0F;
+        }
+    }
 
     public static final Codec<NumberedDef> CODEC = RecordCodecBuilder.create(i -> i.group(
             Codec.unboundedMap(ResourceLocation.CODEC, ResourceLocation.CODEC).optionalFieldOf("revive", Map.of())
@@ -37,6 +63,8 @@ public record NumberedDef(Map<ResourceLocation, ResourceLocation> revive, float 
                     .forGetter(NumberedDef::massReviveRadius),
             DefCodecs.TICKS.optionalFieldOf("mass_revive_cast_ticks", 100).forGetter(NumberedDef::massReviveCastTicks),
             DefCodecs.TICKS.optionalFieldOf("mass_revive_interval_ticks", 4)
-                    .forGetter(NumberedDef::massReviveIntervalTicks)
+                    .forGetter(NumberedDef::massReviveIntervalTicks),
+            Regeneration.CODEC.optionalFieldOf("regeneration", Regeneration.NONE)
+                    .forGetter(NumberedDef::regeneration)
     ).apply(i, NumberedDef::new));
 }

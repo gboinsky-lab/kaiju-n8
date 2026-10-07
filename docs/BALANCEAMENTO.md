@@ -23,7 +23,7 @@ Multiplicadores globais: `[balance] kaijuHealthMultiplier` / `kaijuDamageMultipl
 | Primigenius Honju | 6,0 | 320 | 13,1 | 12,0 | 0,24 | soco pesado, mordida, rabada, slam, investida, raio de energia | [SUPOSIÇÃO] |
 | Primigenius revivido (Honju) | 6,4 | 422 | 15,8 | 12,8 | 0,24 | os do Honju (raio roxo); fúria | [SUPOSIÇÃO] |
 | Trichonephila Honju (0.6-B) | 6,2 | 368 (551 como chefe) | 14,4 | 12,4 | 0,28 | os da aranha + explosão de teia; fúria (dano ×1,2, velocidade ×1,25, recargas ×0,7) | [SUPOSIÇÃO]; hitbox 6 × 4; chefe invoca 3 Trichonephila (máx. 6 vivas) |
-| Kaiju No. 9 | **8,0** (era 6,5) | 1.280 | 33,6 | 16,0 | 0,32 | garra, investida, Finger Gun | 0.6-D (Miguel: o Hoshina vence o No. 9 atual, mas não com facilidade); a garra (×1,3) tira ~44 por golpe. [DECIDIR] impacto nos jogadores |
+| Kaiju No. 9 | **8,0** (era 6,5) | 1.280 | 33,6 | 16,0 | 0,32 | garra, investida, Finger Gun | 0.6-D (Miguel: vilão principal, forte de propósito; o Hoshina vence, mas não com facilidade); a garra (×1,3) tira ~44 por golpe; regenera |
 
 ### Habilidades (`ability/<id>.json`)
 
@@ -77,7 +77,8 @@ Cada jogador a mais na arena soma +50% de vida (`[boss] playerScaling`).
 | Reviver: raio / gesto / espera | 24 blocos / 60 ticks (3 s) / 300 ticks (15 s) |
 | Máx. revividos vivos (modo normal) | 3 |
 | Comandar kaiju (raio) | 32 blocos |
-| Foge com | 30% da vida, dando 250 de mérito a quem está a até 48 blocos |
+| Foge com | **15%** da vida (era 30%; 0.6-D), dando 250 de mérito a quem está a até 48 blocos |
+| Regeneração (0.6-D, Miguel) | abaixo de 50% da vida: 2,5% da vida máxima por segundo; abaixo de 20%: 5%/s; para por 10 ticks depois de cada golpe recebido (`regeneration`) |
 | Ressurreição em massa: gesto / intervalo | 100 ticks (5 s) / 4 ticks entre um kaiju e o próximo |
 | Revive | Primigenius → ressurgido · Honju → chefe **Honju revivido** · aranha → aranha [SUPOSIÇÃO: falta modelo de aranha ressurgida] |
 
@@ -267,7 +268,7 @@ fortitude trocada fez o papel dele):
 | Adversário | Resultado |
 |---|---|
 | Primigenius Honju normal (6,0) | vence em ~10 s quase sem dano |
-| Kaiju No. 9 (8,0; foge com 30%) | vence 3/3 em 23–29 s, termina com 38–77% da vida |
+| Kaiju No. 9 (8,0; regenera; foge com 15%) | vence 3/3 em 29–36 s, termina com 64–71% da vida |
 | "No. 10 pequeno" (8,3: 1.576 de vida, 39 de dano) | vence 3/3 em ~34 s, termina com 48–70% da vida |
 | "No. 10 gigante" (9,0: 2.560 de vida, 54 de dano) | perde 2/3; a outra durou mais de 150 s sem vencedor |
 

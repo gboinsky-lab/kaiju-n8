@@ -50,6 +50,8 @@ public final class No9Service {
     public static final String MASS_TAG = KN8Constants.MOD_ID + "_mass_revive";
     private static final String MASS_DONE_TAG = KN8Constants.MOD_ID + "_mass_revive_done";
     private static final int THINK_INTERVAL = 10;
+    private static final float TICKS_PER_SECOND = 20.0F;
+    private static final int REGEN_PARTICLE_INTERVAL = 10;
     private static final int PARTICLE_INTERVAL = 4;
     private static final double ANNOUNCE_RADIUS = 64.0;
     private static final double FLEE_REWARD_RADIUS = 48.0;
@@ -74,6 +76,7 @@ public final class No9Service {
             return;
         }
         long now = level.getGameTime();
+        regenerate(level, no9, def.regeneration());
         if (no9.getPersistentData().getBoolean(MASS_TAG)) {
             // 0.3: onda de ressurreicao em massa; o gesto normal (uma carcaca por vez) fica desligado.
             tickMass(level, no9, def, now);
@@ -96,6 +99,29 @@ public final class No9Service {
         });
         if (now >= no9.nextReviveAt && no9.revived.size() < def.maxRevivedAlive() && !no9.isUsingAbility()) {
             nearestCarcass(level, no9, def).ifPresent(carcass -> startRevive(level, no9, def, carcass, now));
+        }
+    }
+
+    // --- regeneracao (0.6-D) -------------------------------------------------------------------------------------
+
+    /**
+     * Cura por tick pela fracao do JSON (mais rapida com a vida muito baixa), menos logo depois de levar golpe.
+     * Particulas verdes no corpo para quem luta ver que ele esta se recuperando.
+     */
+    static void regenerate(ServerLevel level, KaijuEntity kaiju, NumberedDef.Regeneration regeneration) {
+        if (!kaiju.isAlive() || kaiju.getHealth() >= kaiju.getMaxHealth()) {
+            return;
+        }
+        float rate = regeneration.rateAt(kaiju.getHealth() / kaiju.getMaxHealth());
+        int sinceHit = kaiju.getLastHurtByMobTimestamp() == 0 ? Integer.MAX_VALUE
+                : kaiju.tickCount - kaiju.getLastHurtByMobTimestamp();
+        if (rate <= 0 || sinceHit < regeneration.delayAfterHitTicks()) {
+            return;
+        }
+        kaiju.heal(kaiju.getMaxHealth() * rate / TICKS_PER_SECOND);
+        if (kaiju.tickCount % REGEN_PARTICLE_INTERVAL == 0) {
+            level.sendParticles(ParticleTypes.HAPPY_VILLAGER, kaiju.getX(), kaiju.getY() + kaiju.getBbHeight() * 0.6,
+                    kaiju.getZ(), 6, kaiju.getBbWidth() * 0.5, kaiju.getBbHeight() * 0.3, kaiju.getBbWidth() * 0.5, 0.0);
         }
     }
 

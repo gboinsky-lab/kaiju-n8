@@ -9,12 +9,19 @@
   "revive_cooldown_ticks": 300,
   "max_revived_alive": 3,
   "command_radius": 32,
-  "flee_health": 0.3,
+  "flee_health": 0.15,
   "flee_merit": 250,
   "revive_boss": {
     "kn8:primigenius_honju": "kn8:revived_honju"
   },
   "mass_revive_radius": 72,
   "mass_revive_cast_ticks": 100,
-  "mass_revive_interval_ticks": 4
+  "mass_revive_interval_ticks": 4,
+  "regeneration": {
+    "below": 0.5,
+    "per_second": 0.025,
+    "fast_below": 0.2,
+    "fast_per_second": 0.05,
+    "delay_after_hit_ticks": 10
+  }
 }
