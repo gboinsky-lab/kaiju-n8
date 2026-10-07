@@ -586,5 +586,9 @@
   "kn8.mission.horde_defense.name": "Horde Containment",
   "kn8.mission.horde_defense.desc": "A horde of twenty kaiju led by a Honju is marching on the city. Hold the line.",
   "kn8.mission.mass_resurrection.name": "Night of Resurrection",
-  "kn8.mission.mass_resurrection.desc": "Intelligence says Kaiju No. 9 will use the next horde to raise an army. Destroy the horde, dismantle the carcasses and face whatever comes."
+  "kn8.mission.mass_resurrection.desc": "Intelligence says Kaiju No. 9 will use the next horde to raise an army. Destroy the horde, dismantle the carcasses and face whatever comes.",
+  "kn8.invasion.no_contribution": "Invasion contained (%s), but you dealt no damage to any kaiju: no invasion reward.",
+  "kn8.invasion.contribution": "Your contribution: %s kaiju killed, %s damage (%s%% of the squad's damage) → %s%% of the reward",
+  "kn8.configuration.rewardMinFactor": "Minimum reward for a fighter",
+  "kn8.configuration.rewardMaxFactor": "Maximum reward for the top fighter"
 }

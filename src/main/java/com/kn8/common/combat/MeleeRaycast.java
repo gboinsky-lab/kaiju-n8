@@ -4,6 +4,8 @@ package com.kn8.common.combat;
 import java.util.Optional;
 import java.util.function.Predicate;
 
+import com.kn8.common.kaiju.CarcassEntity;
+
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.ClipContext;
@@ -17,7 +19,7 @@ import net.minecraft.world.phys.Vec3;
 /**
  * Raycast de golpe corpo a corpo no servidor (padrao do PT7): do olho do atacante na direcao do olhar, ate o alcance
  * da arma, parando em blocos. Enxerga as partes de kaiju (sao entidades miraveis), entao o golpe acerta a parte para
- * onde o jogador olha e o multiplicador dela vale.
+ * onde o jogador olha e o multiplicador dela vale. Carcacas sao ignoradas (0.3).
  */
 public final class MeleeRaycast {
 
@@ -39,7 +41,10 @@ public final class MeleeRaycast {
         }
         AABB area = new AABB(from, end).inflate(1.0);
         EntityHitResult hit = ProjectileUtil.getEntityHitResult(attacker, from, end, area,
-                entity -> !entity.isSpectator() && entity.isPickable() && !entity.is(attacker) && filter.test(entity),
+                // 0.3: carcacas nao seguram golpes nem tiros (o desmonte e pelo clique direito). Em invasao grande
+                // ha carcacas por toda parte e o kaiju vivo em cima delas ficava "protegido".
+                entity -> !entity.isSpectator() && entity.isPickable() && !entity.is(attacker)
+                        && !(entity instanceof CarcassEntity) && filter.test(entity),
                 from.distanceToSqr(end));
         return hit == null ? Optional.empty() : Optional.of(hit.getEntity());
     }

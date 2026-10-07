@@ -78,9 +78,9 @@ public final class KaijuGameTests {
         KaijuEntity kaiju = helper.spawn(KN8Entities.TRICHONEPHILA.get(), CENTER);
         kaiju.setNoAi(true);
         helper.runAfterDelay(SETTLE_TICKS, () -> {
-            // GDD: fortitude 2,5 -> vida 28,3.
-            helper.assertTrue(Math.abs(kaiju.getMaxHealth() - 28.3) < HEALTH_TOLERANCE,
-                    "Vida maxima " + kaiju.getMaxHealth() + " diferente da curva (28,3)");
+            // 0.3 (decisao do Miguel: kaiju mais fortes que soldados comuns): fortitude 3,5 -> vida 56,6.
+            helper.assertTrue(Math.abs(kaiju.getMaxHealth() - 56.6) < HEALTH_TOLERANCE,
+                    "Vida maxima " + kaiju.getMaxHealth() + " diferente da curva (56,6)");
             // Modelo do Meshy de 2026-10-06: 5,5 de envergadura, corpo baixo (1,7 de altura).
             helper.assertTrue(Math.abs(kaiju.getBbWidth() - 3.4) < TOLERANCE
                     && Math.abs(kaiju.getBbHeight() - 1.8) < TOLERANCE, "Hitbox diferente do JSON (3,4 x 1,8)");

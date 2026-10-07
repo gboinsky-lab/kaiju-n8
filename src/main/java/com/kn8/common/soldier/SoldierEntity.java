@@ -157,6 +157,11 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
         return PowerMath.damageMultiplier(release(), PowerService.params());
     }
 
+    /** Multiplicador do dano contra kaiju pelo nivel de potencia ({@code kaiju_damage} do JSON; padrao 1,0). */
+    public float kaijuDamageMultiplier() {
+        return def().map(def -> def.kaijuDamage().getOrDefault(powerLevel(), 1.0F)).orElse(1.0F);
+    }
+
     /** Variante = arma na mao (item do JSON; {@code minecraft:air} = sem arma). */
     public void setVariant(String variant) {
         entityData.set(VARIANT, variant);
@@ -344,7 +349,15 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
         }
         float base = currentUnarmed ? (float) getAttributeValue(Attributes.ATTACK_DAMAGE) : currentWeapon.baseDamage();
         float damage = (float) (base * currentMultiplier * damageMultiplier());
-        if (hit.get().hurt(damageSources().mobAttack(this), damage)) {
+        Entity struck = hit.get();
+        if (rootOf(struck) instanceof KaijuEntity kaiju) {
+            damage *= kaijuDamageMultiplier();
+            // [SUPOSICAO] 0.3: o soldado acerta o corpo (multiplicador 1, sem nucleo). Mirando no centro do kaiju ele
+            // pegava a parte do nucleo (x3, nucleo zerado mata) e derrubava uma aranha em 2 tiros; mirar no nucleo e
+            // nos pontos fracos fica sendo habilidade do jogador.
+            struck = kaiju;
+        }
+        if (struck.hurt(damageSources().mobAttack(this), damage)) {
             VfxService.play(level, firearm ? VfxService.IMPACT : VfxService.SLASH, hit.get().getBoundingBox()
                     .getCenter(), aim.normalize(), 0.8F, 0.0F);
             if (!firearm && currentWeapon != null) {

@@ -64,8 +64,8 @@ public final class DataValidation {
                 validateKaiju(KN8Data.KAIJU.loaded(), abilities.keySet(), dismantles.keySet(), report), report);
         Map<ResourceLocation, BossDef> bosses = publish(KN8Data.BOSS,
                 validateBosses(KN8Data.BOSS.loaded(), kaiju.keySet(), abilities.keySet(), report), report);
-        publish(KN8Data.WEAPON, validateWeapons(KN8Data.WEAPON.loaded(), ranks.keySet(), report), report);
-        publish(KN8Data.SUIT, validateSuits(KN8Data.SUIT.loaded(), ranks.keySet(), report), report);
+        publish(KN8Data.WEAPON, validateWeapons(KN8Data.WEAPON.loaded(), report), report);
+        publish(KN8Data.SUIT, validateSuits(KN8Data.SUIT.loaded(), report), report);
         Map<ResourceLocation, MissionDef> missions = publish(KN8Data.MISSION,
                 validateMissions(KN8Data.MISSION.loaded(), ranks.keySet(), kaiju.keySet(), bosses.keySet(), report),
                 report);
@@ -285,14 +285,10 @@ public final class DataValidation {
     }
 
     public static Map<ResourceLocation, WeaponDef> validateWeapons(Map<ResourceLocation, WeaponDef> input,
-            Set<ResourceLocation> ranks, DataReport report) {
+            DataReport report) {
         Map<ResourceLocation, WeaponDef> valid = new HashMap<>();
         input.forEach((id, def) -> {
             String where = "weapon " + id;
-            if (!ranks.contains(def.requiredRank())) {
-                error(report, where + ": required_rank inexistente " + def.requiredRank());
-                return;
-            }
             if (def.actions().isEmpty()) {
                 error(report, where + ": precisa de pelo menos uma acao");
                 return;
@@ -304,14 +300,13 @@ public final class DataValidation {
     }
 
     public static Map<ResourceLocation, SuitDef> validateSuits(Map<ResourceLocation, SuitDef> input,
-            Set<ResourceLocation> ranks, DataReport report) {
+            DataReport report) {
         Map<ResourceLocation, SuitDef> valid = new HashMap<>();
         input.forEach((id, def) -> {
-            if (ranks.contains(def.requiredRank())) {
-                valid.put(id, def);
-            } else {
-                error(report, "suit " + id + ": required_rank inexistente " + def.requiredRank());
+            if (!BuiltInRegistries.ITEM.containsKey(id)) {
+                report.warning("suit " + id + ": o id deveria ser o de um item de traje");
             }
+            valid.put(id, def);
         });
         return valid;
     }

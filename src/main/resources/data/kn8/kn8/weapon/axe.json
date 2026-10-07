@@ -23,6 +23,5 @@
     "swing": "kn8:weapon.axe_swing",
     "heavy": "kn8:weapon.axe_heavy",
     "hit": "kn8:weapon.axe_hit"
-  },
-  "required_rank": "kn8:oficial"
+  }
 }

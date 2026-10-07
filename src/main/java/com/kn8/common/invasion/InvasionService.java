@@ -159,10 +159,19 @@ public final class InvasionService {
         updateBar(invasion);
     }
 
-    /** Kaiju da invasao morreu (LivingDeathEvent). */
-    public static void onKaijuDeath(ServerLevel level, KaijuEntity kaiju) {
+    /** 0.3: dano de jogador em kaiju da invasao (conta para a recompensa por contribuicao). */
+    public static void onKaijuDamaged(ServerLevel level, KaijuEntity kaiju, ServerPlayer player, float amount) {
+        active(level).filter(invasion -> invasion.alive.contains(kaiju.getUUID())).ifPresent(invasion ->
+                invasion.damage.merge(player.getUUID(), amount, Float::sum));
+    }
+
+    /** Kaiju da invasao morreu (LivingDeathEvent); {@code killer} pode ser nulo (soldado, queda...). */
+    public static void onKaijuDeath(ServerLevel level, KaijuEntity kaiju, ServerPlayer killer) {
         active(level).filter(invasion -> invasion.alive.remove(kaiju.getUUID())).ifPresent(invasion -> {
             invasion.killed++;
+            if (killer != null) {
+                invasion.kills.merge(killer.getUUID(), 1, Integer::sum);
+            }
             updateBar(invasion);
             sync(level, invasion);
         });
@@ -305,6 +314,8 @@ public final class InvasionService {
         KN8Server.get(level.getServer()).invasions().remove(level.dimension());
         boolean victory = result == Invasion.Phase.VICTORY;
         List<ServerPlayer> rewarded = new ArrayList<>();
+        float teamDamage = (float) invasion.damage.values().stream().mapToDouble(Float::doubleValue).sum();
+        int fighters = (int) invasion.damage.values().stream().filter(value -> value > 0).count();
         for (ServerPlayer player : level.players()) {
             boolean participant = invasion.participants.contains(player.getUUID());
             if (participant || inArea(player, invasion)) {
@@ -314,8 +325,9 @@ public final class InvasionService {
                 player.connection.send(new ClientboundSetSubtitleTextPacket(name(invasion.id)));
             }
             if (victory && rewards && participant) {
-                reward(player, invasion);
-                rewarded.add(player);
+                if (reward(player, invasion, teamDamage, fighters)) {
+                    rewarded.add(player);
+                }
             }
         }
         if (victory) {
@@ -327,8 +339,27 @@ public final class InvasionService {
         PacketDistributor.sendToPlayersInDimension(level, InvasionStateS2C.NONE);
     }
 
-    private static void reward(ServerPlayer player, Invasion invasion) {
-        MissionDef.Rewards rewards = invasion.def.rewards();
+    /**
+     * Recompensa por contribuicao (0.3, pedido do Miguel: subir lutando, nao so por estar no local). Quem nao causou
+     * dano em kaiju da invasao nao ganha a recompensa final. Quem lutou recebe a recompensa do JSON vezes
+     * (sua parte do dano dos jogadores x numero de jogadores que lutaram), entre {@code invasion.rewardMinFactor}
+     * e {@code invasion.rewardMaxFactor}: quem lutou igual aos outros ganha 100%; quem carregou ganha mais.
+     * Abates e dano ja dao merito e XP de treino na hora (carreira), alem desta recompensa.
+     */
+    private static boolean reward(ServerPlayer player, Invasion invasion, float teamDamage, int fighters) {
+        float dealt = invasion.damage.getOrDefault(player.getUUID(), 0.0F);
+        int kills = invasion.kills.getOrDefault(player.getUUID(), 0);
+        if (dealt <= 0.0F || teamDamage <= 0.0F) {
+            player.sendSystemMessage(Component.translatable("kn8.invasion.no_contribution", name(invasion.id))
+                    .withStyle(ChatFormatting.GRAY));
+            return false;
+        }
+        double factor = Math.max(ServerConfig.INVASION_REWARD_MIN_FACTOR.get(), Math.min(
+                ServerConfig.INVASION_REWARD_MAX_FACTOR.get(), dealt / teamDamage * fighters));
+        MissionDef.Rewards base = invasion.def.rewards();
+        int merit = (int) Math.round(base.merit() * factor);
+        int xp = (int) Math.round(base.trainingXp() * factor);
+        MissionDef.Rewards rewards = new MissionDef.Rewards(merit, base.promoteTo(), base.items(), xp);
         for (ResourceLocation itemId : rewards.items()) {
             ItemStack stack = new ItemStack(BuiltInRegistries.ITEM.get(itemId));
             if (!player.getInventory().add(stack)) {
@@ -340,10 +371,13 @@ public final class InvasionService {
         }
         player.sendSystemMessage(Component.translatable("kn8.invasion.reward", name(invasion.id), rewards.merit(),
                 rewards.trainingXp()).withStyle(ChatFormatting.GOLD));
+        player.sendSystemMessage(Component.translatable("kn8.invasion.contribution", kills, Math.round(dealt),
+                Math.round(dealt / teamDamage * 100), Math.round(factor * 100)).withStyle(ChatFormatting.YELLOW));
         CareerService.data(player).addInvasionDefended();
         MissionService.progress(player, MissionDef.ObjectiveType.DEFEND_INVASION, invasion.id);
         CareerService.addMerit(player, rewards.merit());
         CareerService.changed(player);
+        return true;
     }
 
     private static void siren(ServerLevel level, Invasion invasion) {

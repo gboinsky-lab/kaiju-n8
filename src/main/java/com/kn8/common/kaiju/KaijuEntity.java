@@ -843,6 +843,13 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
                 bossState.participants().add(player.getUUID());
             }
         }
+        if (!level().isClientSide() && source.getEntity() != null && !source.is(DamageTypeTags.IS_EXPLOSION)) {
+            // 0.3: golpe de quem ataca (jogador, soldado, kaiju) ignora a invulnerabilidade vanilla de 10 ticks. O
+            // combate do mod ja acerta uma vez por acao (ActionTimeline); a invulnerabilidade so engolia os golpes
+            // de quem luta em grupo (4 soldados matavam quase no mesmo tempo que 1; 2 jogadores perdiam golpes).
+            // Fogo, lava, queda e explosao (uma vez por tick, ver hurt) continuam com ela.
+            invulnerableTime = 0;
+        }
         boolean hurt = super.hurt(source, amount);
         if (hurt && !level().isClientSide()) {
             triggerAnim("reaction", "hurt");

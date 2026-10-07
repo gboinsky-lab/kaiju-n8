@@ -80,6 +80,8 @@ mandam; se algo precisar mudar, marque **[DECIDIR]** e pergunte.
 | Alcance de kaiju | Sempre entre bordas (`edgeDistance`), nunca centro a centro |
 | Config de servidor | Tipo SERVER, gerado em `<instância>/config/kn8-server.toml` |
 | Protocolo de rede | `"10"` (subir ao mudar qualquer payload; 7 = `PowerView.winded`, 8 = `sounds` no JSON da arma, 9 = carreira, missões, bancada e invasão da 0.2, 10 = nível da invasão, 0.3) |
+| Balanceamento (0.3, Miguel) | Kaiju mais fortes que soldados comuns (Trichonephila fortitude 3,5). Dano de soldado contra kaiju × `kaiju_damage` do `soldier_1.json` (baixo 0,25, normal 0,35, alto 0,8, elite 1,0), no corpo (sem núcleo, [SUPOSIÇÃO]): comuns precisam de grupo, alto/elite resolvem (medido: aranha 12 s com 1 normal, 3,4 s com 4, 2,4 s com 1 elite). Patente de armas/trajes só nos `unlocks` das patentes. Recompensa de invasão proporcional à contribuição (dano/abates; `[invasion] rewardMinFactor`/`rewardMaxFactor`); sem dano, sem recompensa. Tudo em `docs/BALANCEAMENTO.md` |
+| Invulnerabilidade de kaiju (0.3) | Golpe de quem ataca (com entidade, sem ser explosão) zera a invulnerabilidade vanilla antes de aplicar: o combate do mod já acerta uma vez por ação. Fogo/lava/queda mantêm. Ataques (`MeleeRaycast`) ignoram carcaças |
 | Níveis de invasão (0.3) | `level` 1–5 no `invasion/*.json` (barra e aba Alertas). Nível 4 `kaiju_horde` (20 kaiju, Honju chefe); nível 5 `mass_resurrection` (horda + onda `mass_revive`: o No. 9 revive todas as carcaças da área da invasão, uma a cada `mass_revive_interval_ticks`; `revive_boss` faz o Honju voltar como chefe `revived_honju`). Só por missão/comando (`natural_weight` 0) |
 | Carreira (0.2) | `CareerData` (attachment salvo, copiado na morte) → `CareerView` privado (`CareerSyncS2C`). Patente por mérito + missão de avaliação; a patente dá vida, esquadrão e `unlocks` (receitas/armas), não teto de Release |
 | Bancada (0.2) | Receitas em `data/kn8/kn8/workbench/*.json` (sincronizadas); `CraftC2S` → servidor confere bancada a 6 blocos, patente e materiais. Trajes: armadura/resistência a calor do `suit/<id do item>.json` via `ItemAttributeModifierEvent` |
@@ -141,6 +143,10 @@ mandam; se algo precisar mudar, marque **[DECIDIR]** e pergunte.
   `CareerService.promote`; rastreador de missão ficava sob a barra do kaiju → desce para baixo dela; restos de
   kaiju enterrados em morro (sem adaptação de terreno) → `beard_thin` e só biomas planos. `/reload` não recarrega
   estruturas de worldgen (reiniciar o servidor).
+- **0.3 (balanceamento, duelo soldados × kaiju):** 4 soldados matavam quase no mesmo tempo que 1 → invulnerabilidade
+  vanilla de 10 ticks engolia os golpes dos outros (valia para 2 jogadores também) → zerada para golpes de quem
+  ataca. Kaiju vivo em cima de carcaça não levava tiro (o raycast parava na carcaça) → `MeleeRaycast` ignora
+  carcaças. GameTest `twoAttackersInTheSameTickBothHit`.
 - **0.3 (níveis de invasão):** soldados de defesa **elite** matam uma Trichonephila (28 de vida) em menos de 1 s e
   esvaziavam as ondas sozinhos → defensores dos níveis 4–5 em nível normal/alto (balanceamento da aranha e do dano
   dos soldados fica para a tabela). Carcaças ficam espalhadas pelo anel de chegada e o No. 9 chega por um lado só →
@@ -251,9 +257,12 @@ remedidas na malha [SUPOSIÇÃO: núcleo no peito]. `build_primigenius.py` não 
   (depois de recuperar, aperte correr de novo). Criativo/espectador não gastam.
 - 0.1-B: sem GameTest para destruição, dash e ataque carregado (só JUnit da matemática). (0.3: os GameTests de
   Carcass, KaijuAbility e KaijuAreaAbility não aninham mais `runAfterDelay`; ícones refeitos com `pixel_shading.py`.)
-- **0.3 — propostas aguardando o Miguel** (detalhes em `docs/BALANCEAMENTO.md`): Trichonephila fortitude 2,5 → 3,5;
-  multiplicador de dano dos soldados contra kaiju; tirar o `required_rank` das armas (fica só `unlocks`); tabela de
-  desmonte própria do Honju; carreira mais longa (mérito de Vice-Capitão/Capitão).
+- **0.3 — aprovado e feito (Miguel):** aranha 57 de vida; dano de soldado por nível; patente só nos `unlocks`;
+  desmonte próprio do Honju (8 etapas); Vice-Capitão 8.000 e Capitão 20.000 de mérito; recompensa de invasão por
+  contribuição.
+- **Modelos a caminho (Miguel):** Trichonephila **Honju** (aranha Honju, modelo próprio) e, depois, trajes da Força
+  de Defesa no Meshy (prompts em `docs/PROMPTS_MESHY_0_3.md`; render por `GeoArmorRenderer` da GeckoLib, [DECIDIR]
+  aprovado em princípio).
 - [SUPOSIÇÃO] Hitbox nova da Trichonephila 3,4 × 1,8 (o modelo novo é baixo e largo) e partes de
   Trichonephila/Primigenius medidas na malha nova.
 - Sinais de Y/Z das rotações nas animações GeckoLib (braço direito: Y negativo = para dentro): **confirmados em

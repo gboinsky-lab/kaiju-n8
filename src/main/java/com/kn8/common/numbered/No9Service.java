@@ -297,7 +297,8 @@ public final class No9Service {
         announce(level, no9, Component.translatable("kn8.no9.fled").withStyle(ChatFormatting.DARK_GREEN,
                 ChatFormatting.ITALIC));
         List<ServerPlayer> fighters = level.getEntitiesOfClass(ServerPlayer.class,
-                no9.getBoundingBox().inflate(FLEE_REWARD_RADIUS), player -> !player.isSpectator());
+                no9.getBoundingBox().inflate(FLEE_REWARD_RADIUS), player -> !player.isSpectator()
+                        && no9.attackers.contains(player.getUUID()));
         for (ServerPlayer player : fighters) {
             if (def.fleeMerit() > 0) {
                 player.sendSystemMessage(Component.translatable("kn8.no9.flee_merit", def.fleeMerit())

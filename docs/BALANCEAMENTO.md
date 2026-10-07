@@ -17,7 +17,7 @@ Multiplicadores globais: `[balance] kaijuHealthMultiplier` / `kaijuDamageMultipl
 
 | Kaiju | Fortitude | Vida | Dano base | Armadura | Velocidade | Habilidades | Observação |
 |---|---|---|---|---|---|---|---|
-| Trichonephila (Yoju) | 2,5 | **28** | 2,5 | 5 | 0,30 | mordida | ⚠ proposta: **3,5 (57 de vida)** — hoje um soldado elite a mata em < 1 s e ela some das ondas antes do jogador chegar |
+| Trichonephila (Yoju) | 3,5 | **57** | 3,7 | 7 | 0,30 | mordida | ✅ aprovado (era 2,5 / 28 de vida): kaiju mais fortes que soldados comuns |
 | Primigenius (Yoju) | 5,4 | 211 | 9,9 | 10,8 | 0,22 | slam, investida | [SUPOSIÇÃO] |
 | Primigenius ressurgido | 5,9 | 299 | 12,5 | 11,8 | 0,22 | slam, investida | [SUPOSIÇÃO] |
 | Primigenius Honju | 6,0 | 320 | 13,1 | 12,0 | 0,24 | slam, investida, mordida | [SUPOSIÇÃO] |
@@ -72,10 +72,8 @@ Dano = base × (1 + Release% / 25) (`[fortitudeCurve] releaseDamageDivisor`).
 | Pistola | 3,5 | 3,5 | 4,9 | 7,7 | 11,9 | 17,5 | 6 | — | 32 |
 | Rifle | 5 | 5 | 7 | 11 | 17 | 25 | 8 | — | 48 |
 
-⚠ proposta — **a patente da arma está em dois lugares e não bate**: o `required_rank` do JSON da arma (faca e
-pistola Candidato; rifle, espada e machado Oficial) é diferente dos `unlocks` das patentes (pistola e rifle Oficial,
-espada Oficial Sênior, machado Líder de Pelotão). Hoje quem vale na bancada são os `unlocks`. Proponho apagar o
-`required_rank` das armas e deixar só os `unlocks`.
+✅ A patente de armas e trajes fica só nos `unlocks` das patentes (o antigo `required_rank` dos JSONs de arma e
+traje foi removido na 0.3 porque divergia deles).
 
 ### Combate (`[combat]`)
 
@@ -118,12 +116,11 @@ espada Oficial Sênior, machado Líder de Pelotão). Hoje quem vale na bancada s
 | Oficial | 0 | Exame de Admissão | 22 | 0 | rifle, pistola, Mk1 |
 | Oficial Sênior | 500 | — | 24 | 2 | espada, Mk1 Reforçado |
 | Líder de Pelotão | 1.500 | — | 26 | 4 | machado, catalisador |
-| Vice-Capitão | 4.000 | — | 28 | 6 | — |
-| Capitão | 10.000 | — | 30 | 8 | — |
+| Vice-Capitão | 8.000 | — | 28 | 6 | — |
+| Capitão | 20.000 | — | 30 | 8 | — |
 
-⚠ observação: no teste, uma única invasão nível 5 deu ~1.750 de mérito (invasão + chefe + fuga do No. 9) e levou de
-Oficial Sênior a Vice-Capitão de uma vez. Se quiser carreira mais longa, dobre os méritos de Vice-Capitão e Capitão
-ou reduza a recompensa dos níveis 4–5.
+✅ 0.3: Vice-Capitão 4.000 → **8.000** e Capitão 10.000 → **20.000** (uma invasão nível 5 levava de Oficial Sênior a
+Vice-Capitão de uma vez). A recompensa das invasões agora depende da contribuição (ver seção 5).
 
 ### Trajes (`suit/<id do item>.json`, vestidos no peito)
 
@@ -163,9 +160,8 @@ A bancada em si: 7 ferros + mesa de trabalho + bloco de redstone (receita vanill
 | Carcaça | Etapas | Tempo por etapa | Materiais |
 |---|---|---|---|
 | Trichonephila | 3 | 1,5 s | 1–2 tecidos + fragmento (núcleo quebrado) ou núcleo inteiro |
-| Primigenius (todos, inclusive Honju) | 5 | 2 s | 4–6 tecidos, 1–2 fibras + fragmento ou núcleo inteiro |
-
-⚠ proposta: o Honju usa a mesma tabela do Yoju; uma tabela própria (mais etapas, mais material) recompensaria a luta.
+| Primigenius e ressurgido | 5 | 2 s | 4–6 tecidos, 1–2 fibras + fragmento ou núcleo inteiro |
+| Honju e Honju revivido (0.3) | 8 | 2,5 s | 10–14 tecidos, 4–6 fibras + 2–3 fragmentos, ou núcleo inteiro + 1 fragmento |
 
 ---
 
@@ -199,9 +195,25 @@ A bancada em si: 7 ferros + mesa de trabalho + bloco de redstone (receita vanill
 
 Chance de invasão natural por noite: 20% (`[invasion] naturalChance`) [SUPOSIÇÃO].
 
+**Recompensa por contribuição (0.3, pedido do Miguel):** o mérito e o XP da tabela acima são a recompensa de quem
+lutou "na média". Cada jogador recebe isso × (sua parte do dano dos jogadores × nº de jogadores que lutaram), entre
+**25%** e **150%** (`[invasion] rewardMinFactor` / `rewardMaxFactor`). Quem não causou dano em nenhum kaiju da
+invasão não ganha a recompensa final. Os abates e o dano já dão mérito e XP na hora (seção 2), então quem mais luta
+sobe mais rápido. A fuga do No. 9 só dá mérito a quem causou dano nele.
+
 ### Soldados (`soldier/soldier_1.json`)
 
 Vida 24, armadura 6, alcance de visão 40. Níveis de força (Release): baixo 5, normal 10, alto 20, elite 30.
-⚠ proposta: um soldado **elite** com rifle tira ~11 por tiro, 2,5 tiros por segundo; somado à aranha frágil, ondas
-inteiras acabam sem o jogador. Proponho um multiplicador de dano dos soldados contra kaiju no config (`[soldier]
-damageVsKaiju`, por exemplo 0,5) para eles ajudarem sem resolver sozinhos.
+
+✅ 0.3 (decisão do Miguel: soldados simples precisam de grupo; fortes resolvem sozinhos): dano contra kaiju ×
+`kaiju_damage` por nível — baixo **0,25**, normal **0,35**, alto **0,8**, elite **1,0**. [SUPOSIÇÃO] O tiro do
+soldado acerta o corpo (sem núcleo nem partes): mirar no núcleo é habilidade do jogador.
+
+Medido em jogo (2026-10-07, soldados com rifle contra kaiju parado):
+
+| Atacantes | Trichonephila (57) | Primigenius (211) |
+|---|---|---|
+| 1 normal | 12 s | 54 s (na luta real ele morre antes) |
+| 4 normais | 3,4 s | 13 s |
+| 1 alto | 6,4 s | 16 s |
+| 1 elite | 2,4 s | 9 s |

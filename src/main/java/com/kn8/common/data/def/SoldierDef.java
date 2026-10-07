@@ -18,11 +18,13 @@ import net.minecraft.resources.ResourceLocation;
  *   de um kaiju forte (a forca vem do numero de soldados).</li>
  *   <li>{@code variants}: nome da variante -> item da arma ({@code minecraft:air} = sem arma). O dano e o ritmo vem do
  *   JSON da propria arma (weapon/), como no jogador.</li>
+ *   <li>{@code kaiju_damage} (0.3, decisao do Miguel): nivel -> multiplicador do dano contra kaiju. Soldados comuns
+ *   so derrubam kaiju em grupo; os de nivel alto/elite resolvem sozinhos. Sem a chave do nivel, 1,0.</li>
  * </ul>
  */
 public record SoldierDef(float health, float armor, float speed, float followRange, float unarmedDamage,
         int unarmedIntervalTicks, float keepDistance, Map<String, Integer> powerLevels,
-        Map<String, ResourceLocation> variants) {
+        Map<String, ResourceLocation> variants, Map<String, Float> kaijuDamage) {
 
     public static final Codec<SoldierDef> CODEC = RecordCodecBuilder.create(i -> i.group(
             Codec.floatRange(1.0F, 1000.0F).fieldOf("health").forGetter(SoldierDef::health),
@@ -37,6 +39,8 @@ public record SoldierDef(float health, float armor, float speed, float followRan
             Codec.unboundedMap(Codec.STRING, Codec.intRange(0, 100)).fieldOf("power_levels")
                     .forGetter(SoldierDef::powerLevels),
             Codec.unboundedMap(Codec.STRING, ResourceLocation.CODEC).fieldOf("variants")
-                    .forGetter(SoldierDef::variants)
+                    .forGetter(SoldierDef::variants),
+            Codec.unboundedMap(Codec.STRING, Codec.floatRange(0.0F, 10.0F)).optionalFieldOf("kaiju_damage", Map.of())
+                    .forGetter(SoldierDef::kaijuDamage)
     ).apply(i, SoldierDef::new));
 }

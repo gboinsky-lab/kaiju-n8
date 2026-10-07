@@ -1,6 +1,6 @@
 {
   "order": 4,
-  "merit_required": 4000,
+  "merit_required": 8000,
   "max_health": 28,
   "npc_squad_size": 6,
   "unlocks": []

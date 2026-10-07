@@ -19,5 +19,11 @@
     "sword": "kn8:sword",
     "knife": "kn8:combat_knife",
     "axe": "kn8:axe"
+  },
+  "kaiju_damage": {
+    "low": 0.25,
+    "normal": 0.35,
+    "high": 0.8,
+    "elite": 1.0
   }
 }

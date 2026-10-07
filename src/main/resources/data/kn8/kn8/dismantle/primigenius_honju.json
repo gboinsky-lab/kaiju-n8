@@ -1,0 +1,35 @@
+{
+  "steps": 8,
+  "tool": "#kn8:dismantle_tools",
+  "ticks_per_step": 50,
+  "drops": [
+    {
+      "item": "kn8:kaiju_tissue",
+      "min_count": 10,
+      "max_count": 14
+    },
+    {
+      "item": "kn8:muscle_fiber",
+      "min_count": 4,
+      "max_count": 6
+    },
+    {
+      "item": "kn8:core_fragment",
+      "min_count": 2,
+      "max_count": 3,
+      "condition": "core_destroyed"
+    },
+    {
+      "item": "kn8:intact_core",
+      "min_count": 1,
+      "max_count": 1,
+      "condition": "core_intact"
+    },
+    {
+      "item": "kn8:core_fragment",
+      "min_count": 1,
+      "max_count": 1,
+      "condition": "core_intact"
+    }
+  ]
+}

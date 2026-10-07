@@ -69,7 +69,7 @@
   "weaknesses": [
     "stun_by_sound"
   ],
-  "dismantle": "kn8:primigenius",
+  "dismantle": "kn8:primigenius_honju",
   "spawn": {
     "events": [
       "kn8:exam"

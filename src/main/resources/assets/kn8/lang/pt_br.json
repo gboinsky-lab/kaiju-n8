@@ -586,5 +586,9 @@
   "kn8.mission.horde_defense.name": "Contenção da Horda",
   "kn8.mission.horde_defense.desc": "Uma horda de vinte kaiju liderada por um Honju marcha para a cidade. Segure a linha.",
   "kn8.mission.mass_resurrection.name": "Noite da Ressurreição",
-  "kn8.mission.mass_resurrection.desc": "Inteligência indica que o Kaiju No. 9 vai usar a próxima horda para formar um exército. Destrua a horda, desmonte as carcaças e enfrente o que vier."
+  "kn8.mission.mass_resurrection.desc": "Inteligência indica que o Kaiju No. 9 vai usar a próxima horda para formar um exército. Destrua a horda, desmonte as carcaças e enfrente o que vier.",
+  "kn8.invasion.no_contribution": "Invasão contida (%s), mas você não causou dano em nenhum kaiju: sem recompensa da invasão.",
+  "kn8.invasion.contribution": "Sua contribuição: %s kaiju abatidos, %s de dano (%s%% do dano da tropa) → %s%% da recompensa",
+  "kn8.configuration.rewardMinFactor": "Recompensa mínima de quem lutou",
+  "kn8.configuration.rewardMaxFactor": "Recompensa máxima de quem carregou a luta"
 }

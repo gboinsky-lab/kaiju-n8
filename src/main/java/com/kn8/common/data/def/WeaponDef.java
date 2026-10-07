@@ -18,10 +18,12 @@ import net.minecraft.util.StringRepresentable;
  * <p>{@code sounds} (0.2, opcional): id do som por momento ({@code swing} golpe leve, {@code heavy} golpe pesado,
  * {@code hit} acerto, {@code shot} disparo). Sem a chave, o combate usa o som generico; qualquer id serve, ate um
  * som de resource pack que o mod nao registra.</p>
+ *
+ * <p>A patente que libera a arma fica so nos {@code unlocks} das patentes (0.3: o antigo {@code required_rank}
+ * daqui divergia deles e foi removido; campo extra num JSON antigo e ignorado).</p>
  */
 public record WeaponDef(ResourceLocation item, float baseDamage, float reach, Style style,
-        Map<String, Action> actions, List<Float> combo, ResourceLocation requiredRank,
-        Map<String, ResourceLocation> sounds) {
+        Map<String, Action> actions, List<Float> combo, Map<String, ResourceLocation> sounds) {
 
     /** Familia da arma (decide animacoes e regras de combate). */
     public enum Style implements StringRepresentable {
@@ -63,7 +65,6 @@ public record WeaponDef(ResourceLocation item, float baseDamage, float reach, St
             Style.CODEC.fieldOf("style").forGetter(WeaponDef::style),
             Codec.unboundedMap(Codec.STRING, Action.CODEC).fieldOf("actions").forGetter(WeaponDef::actions),
             DefCodecs.MULTIPLIER.listOf().optionalFieldOf("combo", List.of()).forGetter(WeaponDef::combo),
-            ResourceLocation.CODEC.fieldOf("required_rank").forGetter(WeaponDef::requiredRank),
             Codec.unboundedMap(Codec.STRING, ResourceLocation.CODEC).optionalFieldOf("sounds", Map.of())
                     .forGetter(WeaponDef::sounds)
     ).apply(i, WeaponDef::new));

@@ -119,6 +119,16 @@ final class MenuData {
         return !lockedSomewhere;
     }
 
+    /** Patente exigida pelo item: a que o libera nos {@code unlocks}, ou a mais baixa se nenhuma o prende. */
+    static ResourceLocation requiredRank(ResourceLocation id) {
+        ResourceLocation rank = unlockingRank(id);
+        if (rank.equals(CareerView.NONE)) {
+            List<Map.Entry<ResourceLocation, RankDef>> list = ranks();
+            return list.isEmpty() ? CareerView.NONE : list.get(0).getKey();
+        }
+        return rank;
+    }
+
     /** Patente mais baixa que libera o id (para o aviso de item travado). */
     static ResourceLocation unlockingRank(ResourceLocation id) {
         for (Map.Entry<ResourceLocation, RankDef> entry : ranks()) {

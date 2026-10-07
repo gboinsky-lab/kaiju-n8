@@ -132,7 +132,7 @@ final class ArsenalTab implements MenuTab {
             sy += 8;
         }
         MenuStyle.small(g, font, Component.translatable("kn8.menu.arsenal.rank",
-                MenuData.rankName(weapon.requiredRank())), detailX + 6, sy + 2, MenuStyle.TEXT_ACCENT);
+                MenuData.rankName(MenuData.requiredRank(weapon.item()))), detailX + 6, sy + 2, MenuStyle.TEXT_ACCENT);
     }
 
     private static int stat(GuiGraphics g, Font font, int x, int y, int barW, String key, String value,
@@ -171,7 +171,7 @@ final class ArsenalTab implements MenuTab {
             MenuStyle.small(g, font, Component.translatable("kn8.suit." + list.get(i).getKey().getPath()),
                     listX + 6, ry + 4, MenuStyle.TEXT);
             MenuStyle.scaled(g, font, Component.translatable("kn8.menu.arsenal.rank",
-                    MenuData.rankName(list.get(i).getValue().requiredRank())), listX + 6, ry + 13,
+                    MenuData.rankName(MenuData.requiredRank(list.get(i).getKey()))), listX + 6, ry + 13,
                     MenuStyle.TEXT_DIM, 0.6F);
         }
         SuitDef suit = list.get(selected).getValue();

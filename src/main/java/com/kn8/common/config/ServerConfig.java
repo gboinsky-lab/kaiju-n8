@@ -56,6 +56,8 @@ public final class ServerConfig {
     public static final ModConfigSpec.IntValue SUPPLY_CATALYST_XP;
     public static final ModConfigSpec.BooleanValue INVASION_NATURAL;
     public static final ModConfigSpec.DoubleValue INVASION_NATURAL_CHANCE;
+    public static final ModConfigSpec.DoubleValue INVASION_REWARD_MIN_FACTOR;
+    public static final ModConfigSpec.DoubleValue INVASION_REWARD_MAX_FACTOR;
 
     // --- spawn -----------------------------------------------------------------------------------------------
     public static final ModConfigSpec.BooleanValue NATURAL_SPAWN;
@@ -263,6 +265,10 @@ public final class ServerConfig {
         INVASION_NATURAL = booleanValue("natural", "Invasions may start on their own at nightfall.", true);
         INVASION_NATURAL_CHANCE = doubleValue("naturalChance", "Chance per in-game day of a natural invasion.",
                 0.2, 0.0, 1.0);
+        INVASION_REWARD_MIN_FACTOR = doubleValue("rewardMinFactor", "Smallest share of the invasion reward for a"
+                + " player who dealt any damage (0.3: rewards follow each player's contribution).", 0.25, 0.0, 10.0);
+        INVASION_REWARD_MAX_FACTOR = doubleValue("rewardMaxFactor", "Largest share of the invasion reward for the"
+                + " player who carried the fight (1.0 = an even share).", 1.5, 0.0, 10.0);
         BUILDER.pop();
 
         section("spawn", "Natural spawning and kaiju count limits.");

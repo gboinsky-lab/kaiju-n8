@@ -3,11 +3,13 @@ package com.kn8.common.invasion;
 import com.kn8.KN8Constants;
 import com.kn8.common.config.ServerConfig;
 import com.kn8.common.kaiju.KaijuEntity;
+import com.kn8.common.numbered.KaijuNo9Entity;
 
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
@@ -38,7 +40,23 @@ public final class InvasionEvents {
     public static void onDeath(LivingDeathEvent event) {
         if (event.getEntity() instanceof KaijuEntity kaiju && kaiju.level() instanceof ServerLevel level
                 && kaiju.getPersistentData().getBoolean(InvasionService.TAG)) {
-            InvasionService.onKaijuDeath(level, kaiju);
+            InvasionService.onKaijuDeath(level, kaiju,
+                    event.getSource().getEntity() instanceof ServerPlayer player ? player : null);
+        }
+    }
+
+    /** 0.3: dano de jogador em kaiju (invasao: recompensa por contribuicao; No. 9: quem o fez fugir). */
+    @SubscribeEvent
+    public static void onDamage(LivingDamageEvent.Post event) {
+        if (!(event.getEntity() instanceof KaijuEntity kaiju) || !(kaiju.level() instanceof ServerLevel level)
+                || !(event.getSource().getEntity() instanceof ServerPlayer player)) {
+            return;
+        }
+        if (kaiju.getPersistentData().getBoolean(InvasionService.TAG)) {
+            InvasionService.onKaijuDamaged(level, kaiju, player, event.getNewDamage());
+        }
+        if (kaiju instanceof KaijuNo9Entity no9) {
+            no9.recordAttacker(player);
         }
     }
 

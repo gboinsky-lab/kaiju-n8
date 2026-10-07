@@ -1,6 +1,8 @@
 package com.kn8.common.invasion;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -29,6 +31,9 @@ public final class Invasion {
     final ServerBossEvent bar;
     final Set<UUID> alive = new HashSet<>();
     final Set<UUID> participants = new HashSet<>();
+    /** 0.3: dano em kaiju da invasao e abates por jogador (a recompensa final depende da contribuicao). */
+    final Map<UUID, Float> damage = new HashMap<>();
+    final Map<UUID, Integer> kills = new HashMap<>();
     Phase phase = Phase.WARNING;
     /** Indice da onda atual (FIGHT) ou da proxima (WARNING/BREAK). */
     int wave;

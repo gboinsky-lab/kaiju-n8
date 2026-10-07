@@ -1,6 +1,5 @@
 {
   "armor": 12,
   "toughness": 1.0,
-  "heat_resistance": 0.15,
-  "required_rank": "kn8:oficial"
+  "heat_resistance": 0.15
 }
