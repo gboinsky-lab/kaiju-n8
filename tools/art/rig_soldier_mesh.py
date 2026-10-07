@@ -29,6 +29,7 @@ ROOT = Path(__file__).resolve().parents[2]
 ASSETS = ROOT / "src/main/resources/assets/kn8"
 SOURCE = ROOT / "tools/art/converted/soldier_1"
 NAME = "soldier"
+STEM = "soldier_1"
 PX = 16.0
 # 1024 (0.2, modelo novo de 7 mil triangulos): em 512 as placas brancas pegavam o preto das ilhas vizinhas.
 TEXTURE_SIZE = 1024
@@ -44,6 +45,30 @@ HAND_MIN_Y = 0.68
 # Borda de dentro do braco: (altura acima da qual vale, |x|). Na altura das maos as placas das coxas chegam a
 # |x| 0,255, entao abaixo da cintura o braco so comeca depois delas.
 ARM_INNER_X = [(1.02, 0.212), (0.0, 0.258)]
+# Itens nas costas (0.6-D: bainhas do Hoshina) ficam no tronco: pecas soltas (componente conexo separado do corpo)
+# com pelo menos min_faces faces e inteiramente atras de z > z_min.
+BACK_ITEMS = None
+# 0.6-D: outras especies humanoides com o mesmo rig (soldado especial). use_species troca as medidas acima.
+SPECIES = {
+    "soldier": {"stem": "soldier_1", "hip_y": 0.93, "neck_y": 1.52, "hand_min_y": 0.68,
+                "arm_inner_x": [(1.02, 0.212), (0.0, 0.258)], "back_items": None},
+    # Hoshina (modelo do Miguel, 1,85 m): bracos a partir de |x| 0,25; as duas bainhas nas costas saem pela lateral
+    # esquerda do modelo (x < -0,28) e ficam atras do tronco (z > 0,09).
+    "hoshina": {"stem": "hoshina", "hip_y": 0.93, "neck_y": 1.50, "hand_min_y": 0.86,
+                "arm_inner_x": [(1.25, 0.24), (0.0, 0.25)], "back_items": {"z_min": 0.12, "min_faces": 500}},
+}
+
+
+def use_species(name):
+    """Ativa as medidas da especie (variaveis do modulo usadas pelas funcoes abaixo)."""
+    global NAME, STEM, SOURCE, HIP_Y, NECK_Y, HAND_MIN_Y, ARM_INNER_X, BACK_ITEMS
+    spec = SPECIES[name]
+    NAME, STEM = name, spec["stem"]
+    SOURCE = ROOT / "tools/art/converted" / STEM
+    HIP_Y, NECK_Y, HAND_MIN_Y = spec["hip_y"], spec["neck_y"], spec["hand_min_y"]
+    ARM_INNER_X, BACK_ITEMS = spec["arm_inner_x"], spec["back_items"]
+
+
 # Pedaco isolado com ate tantas faces vai para o osso vizinho (absorb_fragments).
 FRAGMENT_FACES = 40
 # Brilho maximo do "preto do macacao" usado para tampar buracos (cap_holes).
@@ -51,7 +76,7 @@ DARK_LEVEL = 30
 
 
 def load_mesh():
-    return read_obj(SOURCE / "soldier_1.obj")
+    return read_obj(SOURCE / f"{STEM}.obj")
 
 
 def split(mesh):
@@ -62,7 +87,10 @@ def split(mesh):
     c = vertices[faces].mean(axis=1)
     inner = np.select([c[:, 1] >= y for y, _ in ARM_INNER_X], [x for _, x in ARM_INNER_X])
     arm = (c[:, 1] >= HAND_MIN_Y) & (np.abs(c[:, 0]) > inner)
-    head = ~arm & (c[:, 1] > NECK_Y)
+    back = back_items(vertices, faces) if BACK_ITEMS else np.zeros(len(faces), dtype=bool)
+    # Bainhas nas costas: nao sao braco nem cabeca (iriam girar junto com eles).
+    arm &= ~back
+    head = ~arm & ~back & (c[:, 1] > NECK_Y)
     body = ~arm & ~head & (c[:, 1] > HIP_Y)
     leg = ~arm & ~head & ~body
     groups = {"head": head, "body": body,
@@ -77,9 +105,30 @@ def split(mesh):
     return {name: (vertices, uvs, normals, faces[labels == name]) for name in groups}
 
 
+def back_items(vertices, faces):
+    """Faces das pecas soltas nas costas (bainhas): componentes conexos grandes, separados do corpo, atras de z_min."""
+    from scipy.sparse import coo_matrix
+    from scipy.sparse.csgraph import connected_components
+    _, welded = np.unique(np.round(vertices, 5), axis=0, return_inverse=True)
+    wf = welded.reshape(-1)[faces]
+    rows = np.repeat(np.arange(len(faces)), 3)
+    graph = coo_matrix((np.ones(len(rows)), (rows, wf.reshape(-1) + len(faces))),
+                       shape=(len(faces) + welded.max() + 1,) * 2)
+    _, component = connected_components(graph, directed=False)
+    component = component[:len(faces)]
+    sizes = np.bincount(component)
+    z_min = vertices[faces][:, :, 2].min(axis=1)
+    back = np.zeros(len(faces), dtype=bool)
+    for comp in np.where(sizes >= BACK_ITEMS["min_faces"])[0]:
+        members = component == comp
+        if sizes[comp] < sizes.max() and z_min[members].min() > BACK_ITEMS["z_min"]:
+            back |= members
+    return back
+
+
 def dark_uv(vertices, uvs, faces, labels):
     """Coordenada de textura de um ponto preto do macacao (centro de uma face escura do tronco)."""
-    image = np.asarray(Image.open(SOURCE / "soldier_1.png").convert("RGB")).astype(float)
+    image = np.asarray(Image.open(SOURCE / f"{STEM}.png").convert("RGB")).astype(float)
     height, width = image.shape[:2]
     centers = uvs[faces].mean(axis=1)
     rows = np.clip(((1 - centers[:, 1]) * height).astype(int), 0, height - 1)
@@ -318,6 +367,7 @@ def animations():
 
 
 def main():
+    use_species(sys.argv[1] if len(sys.argv) > 1 else "soldier")
     meshes = split(load_mesh())
     pivots = {
         "root": np.zeros(3),
@@ -328,9 +378,11 @@ def main():
         "leg_left": np.array([top_point(meshes["leg_left"])[0], HIP_Y, top_point(meshes["leg_left"])[2]]),
         "leg_right": np.array([top_point(meshes["leg_right"])[0], HIP_Y, top_point(meshes["leg_right"])[2]]),
         "item_right": hand_point(meshes["arm_right"]),
+        # 0.6-D: mao esquerda (segunda arma do soldado especial; o soldado comum usa a faca de apoio nela).
+        "item_left": hand_point(meshes["arm_left"]),
     }
     parents = {"root": None, "body": "root", "head": "body", "arm_left": "body", "arm_right": "body",
-               "leg_left": "root", "leg_right": "root", "item_right": "arm_right"}
+               "leg_left": "root", "leg_right": "root", "item_right": "arm_right", "item_left": "arm_left"}
     mesh_dir = ASSETS / "meshes" / NAME
     if mesh_dir.exists():
         shutil.rmtree(mesh_dir)
@@ -341,8 +393,8 @@ def main():
         print(f"{bone}: {len(f)} triangulos")
     (ASSETS / "meshes" / f"{NAME}.json").write_text(json.dumps(index, indent=2) + "\n", encoding="utf-8")
     # Textura com borda nas ilhas e reduzida (sem mipmap no Minecraft: 1024 cintila e mostra as costuras).
-    image = Image.open(SOURCE / "soldier_1.png").convert("RGBA")
-    mask = uv_mask([SOURCE / "soldier_1.obj"], image.width, image.height)
+    image = Image.open(SOURCE / f"{STEM}.png").convert("RGBA")
+    mask = uv_mask([SOURCE / f"{STEM}.obj"], image.width, image.height)
     padded = dilate(np.asarray(image)[..., :3], mask, DILATE_STEPS)
     Image.fromarray(np.clip(padded, 0, 255).astype(np.uint8)).convert("RGBA") \
         .resize((TEXTURE_SIZE, TEXTURE_SIZE), Image.Resampling.BOX).save(ASSETS / f"textures/entity/{NAME}.png")

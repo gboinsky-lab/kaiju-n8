@@ -1,0 +1,10 @@
+{
+  "bones": {
+    "head": "kn8:meshes/hoshina/head.obj",
+    "body": "kn8:meshes/hoshina/body.obj",
+    "arm_left": "kn8:meshes/hoshina/arm_left.obj",
+    "arm_right": "kn8:meshes/hoshina/arm_right.obj",
+    "leg_left": "kn8:meshes/hoshina/leg_left.obj",
+    "leg_right": "kn8:meshes/hoshina/leg_right.obj"
+  }
+}
