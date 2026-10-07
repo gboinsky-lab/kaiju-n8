@@ -554,7 +554,7 @@
   "kn8.menu.alerts.phase.break": "Próxima onda (%s/%s) em %s",
   "kn8.menu.alerts.phase.victory": "Área defendida",
   "kn8.menu.alerts.phase.defeat": "Invasão não contida",
-  "kn8.menu.alerts.remaining": "Kaiju vivos: %s (total %s)",
+  "kn8.menu.alerts.remaining": "Kaiju vivos: %s",
   "kn8.menu.alerts.distance_to": "centro a %s m",
   "kn8.menu.profile.invasions": "Invasões contidas",
   "kn8.menu.objective.defend_invasion": "Conter a invasão",

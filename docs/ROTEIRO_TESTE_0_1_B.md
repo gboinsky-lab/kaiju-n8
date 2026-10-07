@@ -241,3 +241,61 @@ Já visto na nuvem com 2 clientes (`docs/img/modelos_v2_jogo.png`, `soldado_v2_j
 | 14.4 | Mate cada um | Carcaça tomba de lado e fica deitada; desmonte funciona |
 | 14.5 | Soldado com rifle/pistola/espada, de perto | Placas brancas limpas (sem manchas pretas ou linhas); mirando, sem buraco no quadril |
 | 14.6 | Aranha andando (de lado e de cima) | Patas alternam sem cruzar e sem entrar no corpo |
+
+## 15. Carreira, missões e chefe (0.2, Etapas 2, 5 e 6)
+
+Visto na nuvem: XP do boneco (+5 por golpe, teto por minuto), aba Missões (exame travado pelo pré-requisito),
+aceitar pelo menu faz 2 Primigenius surgirem a ~45 m e a seta do rastreador aponta certo. GameTests cobrem promoção,
+teto de Release 100, limite do boneco, contagem de abates e troca de fase do chefe.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 15.1 | Survival, bata no boneco de treino (item `kn8:training_dummy`) | "+5 XP de treino" por golpe; depois de 60 XP no minuto, aviso de limite; Shift + mão vazia pega o boneco de volta |
+| 15.2 | M → Perfil | Patente Candidato, mérito, próxima patente com "precisa da missão" e estatísticas |
+| 15.3 | M → Missões → aceite "Primeiro Desmonte" e "Extermínio" | Rastreador no canto superior direito com objetivo, tempo e seta; kaiju surgem no ponto |
+| 15.4 | Conclua uma missão | Título "MISSÃO CUMPRIDA", mérito/XP/itens no chat; missão vai para "Concluídas" |
+| 15.5 | `/kn8 boss spawn kn8:revived_honju` | Barra de chefe; ao perder vida troca de fase (rugido, invulnerável um instante) e invoca só Primigenius ressurgidos |
+| 15.6 | Exame de Admissão completo + mérito | Promoção a Oficial (título, som); vida máxima sobe |
+
+## 16. Bancada, trajes e suprimentos (0.2, Etapa 3)
+
+Visto na nuvem (`docs/img/bancada_fabricacao.png`, `traje_mk1.png`): a bancada abre o Arsenal na Fabricação,
+receitas travadas pela patente em vermelho, faca fabricada com 2 ferros + 1 graveto, Mk1 vestido (armadura 12).
+
+| # | Passo | Esperado |
+|---|---|---|
+| 16.1 | Faça a bancada (ferro em volta, mesa de trabalho no meio, bloco de redstone embaixo) e use-a | Abre o menu em Arsenal → Fabricação |
+| 16.2 | Candidato: veja pistola, rifle, Mk1 | "Travado pela patente" e "Precisa da patente: Oficial" |
+| 16.3 | Com os materiais, FABRICAR | Materiais saem, item entra, som de forja e faíscas |
+| 16.4 | Longe da bancada (sem criativo) abra o menu (M) | Botão apagado e aviso "Use perto de uma bancada" |
+| 16.5 | Vista o Mk1 (peito) e veja pelo Dev2 | Traje preto com faixas ciano; armadura 12 e menos calor ao usar Release |
+| 16.6 | Resfriador, estimulante, catalisador (clique direito) | Calor cai 50; stamina cheia; +500 XP de treino |
+
+## 17. Alertas de invasão (0.2, Etapa 7)
+
+Visto na nuvem com 2 clientes (`docs/img/invasao_alertas.png`, `invasao_barras.png`, `invasao_vitoria.png`).
+Kaiju não nascem mais sozinhos (`spawn.natural` desligado); vêm de alertas, invasões e missões.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 17.1 | `/kn8 invasion start kn8:primigenius_raid` | Sirene, chat "ALERTA DE INVASÃO" com X/Z, barra vermelha no topo para quem está na área, soldados de defesa no centro |
+| 17.2 | Espere 20 s (ou `/kn8 invasion next`) | Onda 1/3 chega de 40–60 m e marcha para o centro; aba Alertas mostra onda, tempo, vivos e distância |
+| 17.3 | Mate a onda | "Onda eliminada"; intervalo com sirene; próxima onda |
+| 17.4 | Vença a última onda | Título "ÁREA DEFENDIDA" e recompensa (mérito, XP, itens) para quem esteve na área; Perfil conta "Invasões contidas" |
+| 17.5 | `/kn8 invasion stop` no meio | Barra some; kaiju que já chegaram continuam |
+| 17.6 | Oficial: missão "Defesa da Cidade" | A invasão começa perto e o ponto vai para o rastreador |
+| 17.7 | Noite cair (config `invasion.naturalChance`, padrão 20%/dia) | Às vezes uma invasão começa sozinha perto de um jogador na superfície |
+
+## 18. Kaiju No. 9 (0.2, Etapa 8)
+
+Visto na nuvem com 2 clientes (`docs/img/no9_revivendo.png`): No. 9 reviveu as duas carcaças de Primigenius em
+ressurgidos, fugiu com 30% da vida (+250 de mérito para quem estava perto) e a invasão terminou com vitória.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 18.1 | `/kn8 invasion start kn8:no9_resurrection`, mate a onda 1 perto do centro | Carcaças ficam no chão |
+| 18.2 | Onda 2: o No. 9 (humanoide de 2 m) chega | Para perto de uma carcaça, ergue os braços, fio verde até ela; aviso "está revivendo"; 3 s depois levanta um Primigenius ressurgido (Honju vira revivido) |
+| 18.3 | Desmonte a carcaça antes dos 3 s | O gesto falha |
+| 18.4 | Lute com o No. 9 | Garra rápida e investida; os kaiju por perto atacam o mesmo alvo dele |
+| 18.5 | Tire 70% da vida dele | Some em fumaça verde ("recuou... vai voltar"), +250 de mérito; a onda segue sem ele |
+| 18.6 | Animações vistas de perto | Andar, garra, investida e gesto de reviver sem peças soltas |

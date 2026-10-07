@@ -67,10 +67,10 @@ final class InvasionCommands {
         InvasionService.Result result = InvasionService.start(ctx.getSource().getLevel(), id, center);
         if (result != InvasionService.Result.OK) {
             ctx.getSource().sendFailure(Component.translatable("kn8.command.invasion." + result.name()
-                    .toLowerCase(java.util.Locale.ROOT), id));
+                    .toLowerCase(java.util.Locale.ROOT), id.toString()));
             return 0;
         }
-        ctx.getSource().sendSuccess(() -> Component.translatable("kn8.command.invasion.started", id,
+        ctx.getSource().sendSuccess(() -> Component.translatable("kn8.command.invasion.started", id.toString(),
                 center.toShortString()), true);
         return 1;
     }

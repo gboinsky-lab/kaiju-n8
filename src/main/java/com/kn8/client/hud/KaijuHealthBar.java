@@ -20,8 +20,11 @@ import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.client.event.CustomizeGuiOverlayEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
+import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
+import net.neoforged.neoforge.common.NeoForge;
 
 /**
  * Barra de vida do kaiju (0.1-B), no topo da tela, no estilo da HUD do traje: nome, categoria e porte
@@ -57,12 +60,24 @@ public final class KaijuHealthBar {
     private static long lastSeen;
     private static float shownHealth = -1;
 
+    /** Fim (y) das barras de chefe vanilla deste quadro; desenhadas antes desta camada. */
+    private static int bossBottom;
+
     private KaijuHealthBar() {
     }
 
     /** Mod bus: no topo, junto da barra de chefe vanilla. */
     public static void register(RegisterGuiLayersEvent event) {
         event.registerAbove(VanillaGuiLayers.BOSS_OVERLAY, KN8Constants.id("kaiju_health"), KaijuHealthBar::render);
+        // 0.2: barras de chefe/invasao tambem ficam no topo; a nossa desce para baixo delas (sem isso o nome do
+        // kaiju cobria o titulo da invasao).
+        NeoForge.EVENT_BUS.addListener((RenderGuiLayerEvent.Pre layer) -> {
+            if (layer.getName().equals(VanillaGuiLayers.BOSS_OVERLAY)) {
+                bossBottom = 0;
+            }
+        });
+        NeoForge.EVENT_BUS.addListener((CustomizeGuiOverlayEvent.BossEventProgress bar) ->
+                bossBottom = Math.max(bossBottom, bar.getY() + bar.getIncrement()));
     }
 
     private static void render(GuiGraphics graphics, DeltaTracker deltaTracker) {
@@ -80,7 +95,7 @@ public final class KaijuHealthBar {
 
         Font font = minecraft.font;
         int x = (graphics.guiWidth() - WIDTH) / 2;
-        int y = TOP;
+        int y = Math.max(TOP, bossBottom + TOP);
         int height = 30;
         graphics.fill(x - 4, y - 3, x + WIDTH + 4, y + height, COLOR_PANEL);
         graphics.fill(x - 4, y - 3, x + WIDTH + 4, y - 2, COLOR_OUTLINE);
