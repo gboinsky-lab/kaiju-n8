@@ -9,7 +9,7 @@ Primigenius, Trichonephila e Preondactyl). Uma etapa por vez, cada uma testada c
 | 0.6-B | **Trichonephila Honju** (modelo recebido): rig de aranha, entidade, chefe que invoca Trichonephila, invasao/missao | Recebido |
 | 0.6-C | **Trajes 3D** Mk1 e Mk1 Reforcado (modelos recebidos) no jogador e no soldado (`GeoArmorRenderer`) | Recebidos |
 | 0.6-D | **Hoshina** (soldado especial, aura roxa): rig do modelo recebido, espadas duplas, Kuuchi, Kosa-uchi, dash, parry, Kaeshi-uchi, Ran-uchi, Kasumi-uchi, Yae-uchi | ✅ feito (2026-10-07), aguardando teste do Miguel |
-| 0.6-E | **Kaiju No. 10** (forma pequena 4 m fortitude 8,3; forma gigante 24 m fortitude 9,0) e **Preondactyl** (voador, fortitude ~6,3); invasao nivel 6 com o No. 10 na onda seguinte e chance do No. 9 aparecer | Sim |
+| 0.6-E | **Kaiju No. 10** (forma pequena 4 m fortitude 8,3; forma gigante 24 m fortitude 9,0) e **Preondactyl** (voador, fortitude ~6,3); invasao nivel 6 com o No. 10 na onda seguinte e chance do No. 9 aparecer | ✅ feito (2026-10-07), aguardando teste do Miguel. Fica para depois: formacao-bomba dos Preondactyls (21.7) e vulnerabilidade a congelamento (sem armas de gelo ainda) |
 | 0.6-F | **Hoshina + traje numerado 10** (cauda com terceira espada, sincronizacao, Full Release, Juni-hitoe) | Sim |
 | 0.6-G | **Pontos de defesa**: a invasao ataca um ponto fixo (gerador/QG da Forca de Defesa com vida); estruturas novas e grandes (base) | Nao |
 | 0.6-H | No. 9 avancado (clones, Finger Gun multiplo, casca defensiva, comando de aliados) | Opcional (asas/forma final) |

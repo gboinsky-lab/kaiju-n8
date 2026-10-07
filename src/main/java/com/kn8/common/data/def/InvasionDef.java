@@ -12,16 +12,26 @@ import net.minecraft.resources.ResourceLocation;
  * Alerta de invasao ({@code data/<ns>/kn8/invasion/<id>.json}, 0.2 Etapa 7): sirene durante {@code warning_ticks},
  * depois ondas de kaiju chegando de fora para dentro da area. A proxima onda vem {@code delay_ticks} depois de a
  * anterior ser eliminada. Soldados de defesa surgem no centro; quem esteve na area no fim ganha a recompensa.
- * {@code natural_weight} 0 = so por comando (ou missao). {@code level} (0.3): nivel de 1 a 5 mostrado ao jogador.
+ * {@code natural_weight} 0 = so por comando (ou missao). {@code level} (0.3): nivel de 1 a 6 mostrado ao jogador (6 = ameaca numerada, 0.6-E).
  */
 public record InvasionDef(int warningTicks, List<Wave> waves, float spawnMin, float spawnMax, float radius,
         int timeLimitTicks, List<Defender> defenders, MissionDef.Rewards rewards, int naturalWeight, int level) {
 
-    public record Spawn(ResourceLocation species, int count) {
+    /**
+     * Kaiju de uma onda. {@code chance} (0.6-E): cada um so aparece com essa chance (ex.: o No. 9 surgindo de surpresa
+     * na invasao do No. 10); quem pode nao aparecer nao entra no total da barra (so conta se vier).
+     */
+    public record Spawn(ResourceLocation species, int count, float chance) {
         public static final Codec<Spawn> CODEC = RecordCodecBuilder.create(i -> i.group(
                 ResourceLocation.CODEC.fieldOf("species").forGetter(Spawn::species),
-                Codec.intRange(1, 32).optionalFieldOf("count", 1).forGetter(Spawn::count)
+                Codec.intRange(1, 32).optionalFieldOf("count", 1).forGetter(Spawn::count),
+                Codec.floatRange(0.0F, 1.0F).optionalFieldOf("chance", 1.0F).forGetter(Spawn::chance)
         ).apply(i, Spawn::new));
+
+        /** Quantos com certeza aparecem (para o total da barra). */
+        public int certain() {
+            return chance >= 1.0F ? count : 0;
+        }
     }
 
     /**
@@ -37,7 +47,7 @@ public record InvasionDef(int warningTicks, List<Wave> waves, float spawnMin, fl
         ).apply(i, Wave::new));
 
         public int size() {
-            return kaiju.stream().mapToInt(Spawn::count).sum() + (boss.isPresent() ? 1 : 0);
+            return kaiju.stream().mapToInt(Spawn::certain).sum() + (boss.isPresent() ? 1 : 0);
         }
     }
 
@@ -61,7 +71,7 @@ public record InvasionDef(int warningTicks, List<Wave> waves, float spawnMin, fl
             MissionDef.Rewards.CODEC.optionalFieldOf("rewards", MissionDef.Rewards.NONE)
                     .forGetter(InvasionDef::rewards),
             Codec.intRange(0, 1000).optionalFieldOf("natural_weight", 1).forGetter(InvasionDef::naturalWeight),
-            Codec.intRange(1, 5).optionalFieldOf("level", 1).forGetter(InvasionDef::level)
+            Codec.intRange(1, 6).optionalFieldOf("level", 1).forGetter(InvasionDef::level)
     ).apply(i, InvasionDef::new));
 
     public int totalKaiju() {

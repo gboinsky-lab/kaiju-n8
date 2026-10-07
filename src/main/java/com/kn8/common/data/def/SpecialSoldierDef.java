@@ -19,6 +19,8 @@ import net.minecraft.util.StringRepresentable;
  * docs/BALANCEAMENTO.md.
  *
  * <ul>
+ *   <li>{@code max_release} (Miguel, 0.6-D): teto da % com escalada e desespero somados (Hoshina: 92 no traje
+ *   comum; 100% so com o traje numerado 10, na 0.6-F).</li>
  *   <li>{@code release}: % de Release base (formulas do jogador). Com a vida baixa sobe sozinha como no jogador
  *   ({@code [power] desperationHealth/desperationMaxPoints}), e a aura acompanha.</li>
  *   <li>{@code kaiju_damage}: multiplicador do dano contra kaiju (como o {@code kaiju_damage} dos soldados comuns).</li>
@@ -30,7 +32,7 @@ import net.minecraft.util.StringRepresentable;
  * </ul>
  */
 public record SpecialSoldierDef(float health, float armor, float speed, float followRange, float knockbackResistance,
-        int release, float kaijuDamage, ResourceLocation aura, ResourceLocation weapon,
+        int release, int maxRelease, float kaijuDamage, ResourceLocation aura, ResourceLocation weapon,
         Optional<ResourceLocation> offhand, Map<String, Technique> techniques, Dash dash, Counter counter,
         Parry parry, Escalation escalation) {
 
@@ -178,6 +180,7 @@ public record SpecialSoldierDef(float health, float armor, float speed, float fo
             Codec.floatRange(0.0F, 1.0F).optionalFieldOf("knockback_resistance", 0.0F)
                     .forGetter(SpecialSoldierDef::knockbackResistance),
             Codec.intRange(0, 100).fieldOf("release").forGetter(SpecialSoldierDef::release),
+            Codec.intRange(0, 100).optionalFieldOf("max_release", 100).forGetter(SpecialSoldierDef::maxRelease),
             Codec.floatRange(0.0F, 10.0F).optionalFieldOf("kaiju_damage", 1.0F)
                     .forGetter(SpecialSoldierDef::kaijuDamage),
             ResourceLocation.CODEC.fieldOf("aura").forGetter(SpecialSoldierDef::aura),

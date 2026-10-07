@@ -1,0 +1,23 @@
+{
+  "category": "defense",
+  "giver": "kn8:officer",
+  "requires": {
+    "rank": "kn8:lider_pelotao"
+  },
+  "objectives": [
+    {
+      "type": "defend_invasion",
+      "target": "kn8:no10_assault"
+    }
+  ],
+  "rewards": {
+    "merit": 800,
+    "training_xp": 1200,
+    "items": [
+      "kn8:release_catalyst",
+      "kn8:intact_core"
+    ]
+  },
+  "repeatable": true,
+  "cooldown_ticks": 72000
+}

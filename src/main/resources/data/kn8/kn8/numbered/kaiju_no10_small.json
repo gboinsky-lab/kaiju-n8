@@ -3,9 +3,9 @@
   "flee_health": 0.0,
   "regeneration": {
     "below": 0.5,
-    "per_second": 0.012,
+    "per_second": 0.008,
     "fast_below": 0.2,
-    "fast_per_second": 0.03,
+    "fast_per_second": 0.02,
     "delay_after_hit_ticks": 10
   },
   "transform": {

@@ -1,10 +1,11 @@
 {
-  "health": 300,
+  "health": 460,
   "armor": 20,
   "speed": 0.3,
   "follow_range": 48,
   "knockback_resistance": 0.6,
   "release": 40,
+  "max_release": 92,
   "kaiju_damage": 1.0,
   "aura": "kn8:violet_lightning",
   "weapon": "kn8:hoshina_sword",
@@ -134,7 +135,7 @@
   },
   "escalation": {
     "points_per_second": 2.0,
-    "max_points": 50,
+    "max_points": 52,
     "decay_per_second": 2.0,
     "cooldown_reduction_at_max": 0.4
   }

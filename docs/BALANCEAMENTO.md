@@ -23,6 +23,9 @@ Multiplicadores globais: `[balance] kaijuHealthMultiplier` / `kaijuDamageMultipl
 | Primigenius Honju | 6,0 | 320 | 13,1 | 12,0 | 0,24 | soco pesado, mordida, rabada, slam, investida, raio de energia | [SUPOSIÇÃO] |
 | Primigenius revivido (Honju) | 6,4 | 422 | 15,8 | 12,8 | 0,24 | os do Honju (raio roxo); fúria | [SUPOSIÇÃO] |
 | Trichonephila Honju (0.6-B) | 6,2 | 368 (551 como chefe) | 14,4 | 12,4 | 0,28 | os da aranha + explosão de teia; fúria (dano ×1,2, velocidade ×1,25, recargas ×0,7) | [SUPOSIÇÃO]; hitbox 6 × 4; chefe invoca 3 Trichonephila (máx. 6 vivas) |
+| Kaiju No. 10, forma pequena (0.6-E) | 8,3 | 1.576 | 38,6 | 16,6 | 0,34 | soco pesado, esmagamento, varredura e perfuração de cauda, Finger Cannon, vários membros, investida | 4 m (hitbox 2 × 4); regenera; vira a forma gigante depois de 60 s de batalha ou abaixo de 50% da vida; fúria abaixo de 25% (dano ×1,2, velocidade ×1,15, recargas ×0,6); comanda kaiju a até 48 blocos |
+| Kaiju No. 10, forma gigante (0.6-E) | 9,0 | **4.500** (`overrides.health`; pela fórmula seriam 2.560) | 53,7 | 18,0 | 0,26 | versões gigantes (esmagamento de raio 11, varredura de cauda 12, pancada de cauda, Finger Cannon de 64 blocos) | 24 m (hitbox 10 × 24); nasce com a vida cheia e quebra blocos num raio de 8; regenera; fúria abaixo de 25% |
+| Preondactyl (0.6-E, voador) | 6,3 | 394 | 15,1 | 12,6 | 0,30 (voo 0,55) | raio de energia, mergulho, mordida, garra, golpe de cauda | voa a 9 blocos acima do alvo, em círculo de raio 12; mergulha a cada 8 s; frente ×0,35, costas ×1,3; autodestruição abaixo de 15% (3 s de aviso, raio 6, ×3 de dano); obedece ao No. 10 [SUPOSIÇÃO] |
 | Kaiju No. 9 | **8,0** (era 6,5) | 1.280 | 33,6 | 16,0 | 0,32 | garra, investida, Finger Gun | 0.6-D (Miguel: vilão principal, forte de propósito; o Hoshina vence, mas não com facilidade); a garra (×1,3) tira ~44 por golpe; regenera |
 
 ### Habilidades (`ability/<id>.json`)
@@ -43,6 +46,15 @@ Multiplicadores globais: `[balance] kaijuHealthMultiplier` / `kaijuDamageMultipl
 | Teia (0.6) | 0,3 | 10 | 2 | 120 | não | de 4 a 16 blocos; lentidão III por 4 s |
 | Salto de emboscada (0.6, `kn8:leap`) | 1,3 | 10 | 24 | 140 | sim | de 5 a 12 blocos; área de raio 2 na queda |
 | Finger Gun (0.6, No. 9) | 1,0 | 8 | 2 | 30 | não | de 4 a 28 blocos |
+| Soco pesado do No. 10 (0.6-E) | 1,8 | 10 | 2 | 50 | sim | quebra blocos (raio 1,5) |
+| Esmagamento do No. 10 | 1,6 | 18 | 4 | 140 | sim | raio 4, cratera |
+| Varredura / perfuração de cauda do No. 10 | 1,1 / 1,4 | 10 / 8 | 2 | 70 / 60 | não | setor de 220° atrás (alcance +3,5) / alcance +3 à frente |
+| Finger Cannon (No. 10) | 1,5 | 14 | 2 | 100 | não | de 5 a 36 blocos, explosão de raio 2 |
+| Vários membros (No. 10) | 0,6 × 5 golpes | 12 | 16 | 160 | não | um golpe a cada 3 ticks |
+| Versões da forma gigante | 1,6 a 1,8 | 14 a 26 | — | 60 a 180 | as de impacto | esmagamento raio 11 (cratera de 10), varredura 12, pancada de cauda raio 8, Finger Cannon de 10 a 56 blocos (explosão 4), vários membros 0,7 × 6 |
+| Raio de energia do Preondactyl (0.6-E) | 2,2 | 32 (aviso na boca) | 4 | 220 | sim | de 6 a 44 blocos, explosão de raio 2,5 |
+| Mergulho do Preondactyl | 1,4 | 4 | 2 | 100 | sim | raio 2,5 |
+| Golpe de cauda do Preondactyl | 1,1 | 10 | 2 | 60 | não | setor de 200° atrás |
 | Explosão de teia (0.6-B, Trichonephila Honju) | 0,8 | 20 | 4 | 200 | não | de 6 a 24 blocos; área de raio 3, lentidão III por 5 s |
 
 \* Pesada atravessa o bloqueio comum; só parry ou esquiva evitam (`[combat] heavyIgnoresBlock`) [SUPOSIÇÃO].
@@ -240,14 +252,15 @@ sobe mais rápido. A fuga do No. 9 só dá mérito a quem causou dano nele.
 
 **Hoshina** (regra do Miguel: no poder total vence o No. 10 pequeno, fortitude 8,3, mas perde para a forma gigante,
 fortitude 9; vence o No. 9 atual, mas não com facilidade; com o traje numerado 10, na 0.6-F, fica ainda mais forte):
-vida 300, armadura 20, velocidade 0,30 × (1 + 0,004 × Release), resistência a empurrão 0,6, `kaiju_damage` 1,0,
+vida **460**, armadura 20, velocidade 0,30 × (1 + 0,004 × Release), resistência a empurrão 0,6, `kaiju_damage` 1,0,
 aura `violet_lightning`, duas espadas do Hoshina (base 7). Só aparece como defensor nas invasões de **nível 4 e 5**
 (`kaiju_horde`, `mass_resurrection`; variante `"hoshina"` nos `defenders`).
 
 **Escalada de combate** (`escalation`, Miguel: fica mais rápido e mais forte conforme o poder sobe): Release base
-**40%**; com alvo, +**2 por segundo** até +**50** (poder total 90% em 25 s; até 100% com o desespero da vida
-baixa); sem alvo, −2 por segundo. Dano ×2,6 → ×4,6, velocidade +16% → +36%, redução de dano 16% → 36%; na
-escalada máxima as recargas das técnicas e do dash caem **40%**.
+**40%**; com alvo, +**2 por segundo** até +**52**; sem alvo, −2 por segundo. Teto **`max_release` 92%** (Miguel: no
+traje comum o máximo é 92%; 100% só com o traje numerado 10, na 0.6-F), já contando o bônus da vida baixa. Dano
+×2,6 → ×4,7, velocidade +16% → +37%, redução de dano 16% → 37%; na escalada máxima as recargas das técnicas e do
+dash caem **40%**.
 
 | Técnica | Tipo | Golpes (× dano da arma) | Tempo | Recarga | Alcance (borda) | Prioridade |
 |---|---|---|---|---|---|---|
@@ -262,17 +275,18 @@ distância com o alvo a mais de 7 blocos), **Kaeshi-uchi** (só contra golpe `he
 ticks, contra-ataque ×2,5 8 ticks depois, recarga 120), **parry** (35% dos golpes corpo a corpo comuns de kaiju,
 dano ×0,3, recarga 20, abre 10 ticks para o Kaeshi-uchi).
 
-Duelos medidos (2026-10-07, servidor dedicado, 3 lutas cada; o No. 10 ainda não existe: Primigenius Honju com a
-fortitude trocada fez o papel dele):
+Duelos medidos (2026-10-07, servidor dedicado, Hoshina final: 460 de vida, teto 92%; 0.6-E com o No. 10 real; na
+luta contra a forma pequena a transformação ficou desligada só para o teste):
 
 | Adversário | Resultado |
 |---|---|
 | Primigenius Honju normal (6,0) | vence em ~10 s quase sem dano |
-| Kaiju No. 9 (8,0; regenera; foge com 15%) | vence 3/3 em 29–36 s, termina com 64–71% da vida |
-| "No. 10 pequeno" (8,3: 1.576 de vida, 39 de dano) | vence 3/3 em ~34 s, termina com 48–70% da vida |
-| "No. 10 gigante" (9,0: 2.560 de vida, 54 de dano) | perde 2/3; a outra durou mais de 150 s sem vencedor |
+| Kaiju No. 9 (8,0; regenera; foge com 15%) | vence 3/3 em 31–34 s, termina com 63–75% da vida |
+| Kaiju No. 10 pequeno (8,3; regenera) | vence 5/5 em 40–64 s, termina com 4–45% da vida |
+| Kaiju No. 10 gigante (9,0; 4.500 de vida) | perde 3/3 em ~2 min (deixa o gigante com 11–19%) |
 
-Recalibrar na 0.6-E com os ataques reais do No. 10.
+Calibragem: com 3.600 de vida o gigante perdia 1 em 3; com a regeneração do No. 10 em 1,2%/s o pequeno vencia o
+Hoshina metade das vezes (agora 0,8%/s; 2%/s abaixo de 20%).
 
 **Espada do Hoshina na bancada:** 8 ferro, 6 fibra muscular, 4 fragmentos de núcleo, 1 núcleo intacto; desbloqueia
 na patente **Vice-Capitão** [SUPOSIÇÃO].

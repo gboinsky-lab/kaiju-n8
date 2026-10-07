@@ -1,0 +1,85 @@
+{
+  "level": 6,
+  "warning_ticks": 600,
+  "spawn_min": 40,
+  "spawn_max": 64,
+  "radius": 144,
+  "time_limit_ticks": 48000,
+  "waves": [
+    {
+      "kaiju": [
+        {
+          "species": "kn8:preondactyl",
+          "count": 3
+        },
+        {
+          "species": "kn8:primigenius",
+          "count": 4
+        },
+        {
+          "species": "kn8:trichonephila",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "kaiju": [
+        {
+          "species": "kn8:preondactyl",
+          "count": 3
+        },
+        {
+          "species": "kn8:primigenius_resurrected",
+          "count": 3
+        },
+        {
+          "species": "kn8:kaiju_no9",
+          "count": 1,
+          "chance": 0.35
+        }
+      ],
+      "delay_ticks": 500
+    },
+    {
+      "kaiju": [
+        {
+          "species": "kn8:kaiju_no10_small",
+          "count": 1
+        },
+        {
+          "species": "kn8:preondactyl",
+          "count": 2
+        }
+      ],
+      "delay_ticks": 600
+    }
+  ],
+  "defenders": [
+    {
+      "variant": "random",
+      "level": "high",
+      "count": 4
+    },
+    {
+      "variant": "rifle",
+      "level": "elite",
+      "count": 2
+    },
+    {
+      "variant": "hoshina",
+      "count": 1
+    }
+  ],
+  "rewards": {
+    "merit": 2500,
+    "training_xp": 3000,
+    "items": [
+      "kn8:intact_core",
+      "kn8:intact_core",
+      "kn8:core_fragment",
+      "kn8:core_fragment",
+      "kn8:release_catalyst"
+    ]
+  },
+  "natural_weight": 0
+}

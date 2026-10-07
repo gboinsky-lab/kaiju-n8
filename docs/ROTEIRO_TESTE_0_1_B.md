@@ -355,3 +355,18 @@ Visto na nuvem (`docs/img/hoshina_modelo.png`, `hoshina_vs_honju.png`, `hoshina_
 | 22.6 | Bater nele / atirar perto dele | Não fere jogadores nem soldados; os cortes dele atravessam aliados sem ferir |
 | 22.7 | Bancada como Vice-Capitão | Receita da espada do Hoshina (8 ferro, 6 fibra, 4 fragmentos, 1 núcleo intacto) |
 | 22.8 | Com a espada, R | Kūuchi do jogador: corte roxo que voa 12 blocos; recarga de 2 s no HUD |
+
+## 23. Kaiju No. 10, Preondactyl e invasão nível 6 (0.6-E)
+
+| # | Passo | Esperado |
+|---|---|---|
+| 23.1 | `/kn8 kaiju spawn kaiju_no10_small` | No. 10 vermelho de 4 m com cauda; ataca com socos, cauda, Finger Cannon (projétil vermelho que explode) e rajada de golpes |
+| 23.2 | Lutar com ele por 60 s (ou tirar metade da vida) | Explosão, rugido e "O Kaiju No. 10 assumiu a forma gigante!": surge a forma de 24 m com a vida cheia, quebrando o que está em volta |
+| 23.3 | Ferir o No. 10 abaixo de 50% e parar de bater | Partículas verdes: ele regenera (mais rápido abaixo de 20%) |
+| 23.4 | `/kn8 kaiju spawn preondactyl` perto de você | Decola, circula ~9 blocos acima, atira um raio de energia (aviso na boca) e mergulha para morder |
+| 23.5 | Bater no Preondactyl de frente e por trás | Por trás tira bem mais (frente blindada ×0,35, costas ×1,3) |
+| 23.6 | Deixar o Preondactyl com pouca vida | "vai se autodestruir! Afaste-se!", contagem 3-2-1 na tela e explosão |
+| 23.7 | No. 10 + Preondactyls juntos | Os Preondactyls atacam o mesmo alvo do No. 10 |
+| 23.8 | `/kn8 invasion start kn8:no10_assault` (nível 6, "ameaça numerada") | Ondas: Preondactyls com Yoju; depois Preondactyls e ressurgidos (às vezes o No. 9 junto); por último o No. 10. Defensores fortes e o Hoshina |
+| 23.9 | Missão "Ameaça Numerada: No. 10" (Líder de Pelotão) | Aceitar inicia a invasão nível 6 |
+| 23.10 | Hoshina (§22) na luta | Release no máximo 92% na forma normal (aura) |

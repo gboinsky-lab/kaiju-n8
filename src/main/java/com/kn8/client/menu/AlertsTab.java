@@ -92,7 +92,7 @@ final class AlertsTab implements MenuTab {
                 .append(Component.translatable("kn8.invasion." + state.invasion().getPath()));
         g.drawString(font, title, x, y + 6, blink ? MenuStyle.RED : MenuStyle.ORANGE, false);
         // 0.3: selo do nivel (1 a 5) ao lado do nome, mais quente quanto maior.
-        int level = Math.max(1, Math.min(5, state.level()));
+        int level = Math.max(1, Math.min(6, state.level()));
         MenuStyle.badge(g, font, Component.translatable("kn8.menu.alerts.level", level,
                 Component.translatable("kn8.invasion.level." + level)), x + font.width(title) + 6, y + 6,
                 LEVEL_COLORS[level - 1]);

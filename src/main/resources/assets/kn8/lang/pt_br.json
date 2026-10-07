@@ -661,5 +661,9 @@
   "kn8.preondactyl.self_destruct": "O Preondactyl vai se autodestruir! Afaste-se!",
   "kn8.ability.preondactyl_energy_beam": "Raio de energia",
   "kn8.ability.preondactyl_dive_strike": "Mergulho",
-  "kn8.ability.preondactyl_tail_strike": "Golpe de cauda"
+  "kn8.ability.preondactyl_tail_strike": "Golpe de cauda",
+  "kn8.invasion.level.6": "ameaça numerada",
+  "kn8.invasion.no10_assault": "Ataque do Kaiju No. 10",
+  "kn8.mission.no10_assault_defense.name": "Ameaça Numerada: No. 10",
+  "kn8.mission.no10_assault_defense.desc": "Preondactyls cobrem o céu e o Kaiju No. 10 vem logo atrás. Dizem que o No. 9 pode aparecer. O Vice-Capitão Hoshina vai com vocês."
 }

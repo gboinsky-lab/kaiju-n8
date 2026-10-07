@@ -198,6 +198,10 @@ public final class InvasionService {
         InvasionDef.Wave wave = invasion.def.waves().get(invasion.wave);
         for (InvasionDef.Spawn spawn : wave.kaiju()) {
             for (int i = 0; i < spawn.count(); i++) {
+                if (spawn.chance() < 1.0F && level.random.nextFloat() >= spawn.chance()) {
+                    // 0.6-E: aparicao de surpresa (No. 9 na invasao do No. 10): desta vez nao veio.
+                    continue;
+                }
                 BlockPos pos = KaijuSpawner.surfaceAround(level, invasion.center, invasion.def.spawnMin(),
                         invasion.def.spawnMax(), level.random);
                 KaijuSpawner.spawn(level, spawn.species(), pos).ifPresent(kaiju -> {

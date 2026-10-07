@@ -140,12 +140,13 @@ public class HoshinaEntity extends SoldierEntity {
     @Override
     public int release() {
         int base = profile().map(SpecialSoldierDef::release).orElse(0) + (int) escalation;
+        int max = profile().map(SpecialSoldierDef::maxRelease).orElse(100);
         if (!ServerConfig.SPEC.isLoaded()) {
-            return base;
+            return Math.min(max, base);
         }
         int desperation = PowerMath.desperationBonus(getHealth() / Math.max(1.0F, getMaxHealth()),
                 ServerConfig.DESPERATION_HEALTH.get(), ServerConfig.DESPERATION_MAX_POINTS.get());
-        return Math.min(100, base + desperation);
+        return Math.min(max, base + desperation);
     }
 
     @Override
