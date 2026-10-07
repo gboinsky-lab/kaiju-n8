@@ -1,12 +1,17 @@
 #!/usr/bin/env python3
-"""Arte placeholder da Etapa 3 da 0.2 (fabricacao): bancada (bloco), trajes (icone + camada de armadura) e
+"""Arte da Etapa 3 da 0.2 (fabricacao; desde a 0.3 sombreada por pixel_shading.py): bancada (bloco), trajes (icone + camada de armadura) e
 suprimentos (icones), com os modelos de item/bloco e o blockstate. Substituivel por arte final.
 Uso: python3 tools/art/gen_craft_assets.py
 """
 import json
+import random
+import sys
 from pathlib import Path
 
 from PIL import Image, ImageDraw
+
+sys.path.insert(0, str(Path(__file__).parent))
+from pixel_shading import dot, mask, new, paint, shade  # noqa: E402
 
 ASSETS = Path(__file__).resolve().parents[2] / "src/main/resources/assets/kn8"
 
@@ -35,50 +40,77 @@ def item_model(name):
                {"parent": "minecraft:item/generated", "textures": {"layer0": f"kn8:item/{name}"}})
 
 
-# --- icones -------------------------------------------------------------------------------------------------------
+# --- icones (0.3: sombreados por pixel_shading, estilo dos itens do Minecraft) -----------------------------------
 
 def suit_icon(base, stripe, detail):
-    image = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
-    d = ImageDraw.Draw(image)
-    dark = tuple(max(0, c - 25) for c in base)
-    # Peitoral com ombreiras (formato de colete).
-    d.polygon([(2, 3), (5, 2), (7, 4), (9, 4), (11, 2), (14, 3), (14, 7), (12, 7), (12, 14), (4, 14), (4, 7),
-               (2, 7)], fill=base, outline=dark)
-    d.line([(8, 5), (8, 13)], fill=dark)
-    d.line([(5, 9), (11, 9)], fill=stripe)
-    d.line([(3, 4), (4, 4)], fill=detail)
-    d.line([(12, 4), (13, 4)], fill=detail)
-    d.point((8, 7), fill=stripe)
-    return image
+    canvas = new()
+    body, d = mask()
+    # Peitoral com ombreiras largas e gola (silhueta do peitoral vanilla, mais "tatico").
+    d.polygon([(1, 3), (5, 1), (6, 3), (9, 3), (10, 1), (14, 3), (14, 7), (12, 8), (12, 14), (3, 14), (3, 8),
+               (1, 7)], fill=255)
+    d.rectangle([7, 2, 8, 3], fill=0)
+    paint(canvas, body, base)
+    plates, d = mask()
+    d.rectangle([2, 3, 4, 6], fill=255)
+    d.rectangle([11, 3, 13, 6], fill=255)
+    paint(canvas, plates, detail, outline=False)
+    chest, d = mask()
+    d.rectangle([5, 5, 10, 8], fill=255)
+    paint(canvas, chest, shade(base, 0.12), outline=False)
+    for x in range(4, 12):
+        dot(canvas, x, 10, stripe)
+    dot(canvas, 7, 6, stripe)
+    dot(canvas, 8, 6, stripe)
+    for y in range(9, 14):
+        dot(canvas, 7, y, shade(base, -0.35))
+    return canvas
 
 
 def coolant_icon():
-    image = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
-    d = ImageDraw.Draw(image)
-    d.rectangle([5, 1, 10, 3], fill=(150, 160, 175), outline=(80, 90, 105))
-    d.rectangle([4, 4, 11, 14], fill=(40, 120, 200), outline=(20, 60, 110))
-    d.rectangle([6, 6, 7, 12], fill=(140, 220, 255))
-    d.line([(4, 9), (11, 9)], fill=(230, 240, 250))
-    return image
+    canvas = new()
+    cap, d = mask()
+    d.rectangle([5, 1, 10, 3], fill=255)
+    paint(canvas, cap, (150, 160, 175))
+    tank, d = mask()
+    d.rounded_rectangle([3, 4, 12, 14], radius=2, fill=255)
+    paint(canvas, tank, (40, 120, 200))
+    glass, d = mask()
+    d.rectangle([5, 6, 7, 12], fill=255)
+    paint(canvas, glass, (150, 225, 255), outline=False)
+    for x in range(4, 12):
+        dot(canvas, x, 9, (225, 240, 250))
+    for x, y in ((10, 6), (9, 12), (11, 11)):
+        dot(canvas, x, y, (200, 240, 255))
+    return canvas
 
 
 def stim_icon():
-    image = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
-    d = ImageDraw.Draw(image)
-    d.line([(2, 13), (4, 11)], fill=(200, 205, 215))
-    d.polygon([(4, 10), (10, 4), (12, 6), (6, 12)], fill=(80, 220, 110), outline=(30, 110, 50))
-    d.line([(6, 9), (9, 6)], fill=(190, 255, 200))
-    d.rectangle([11, 2, 14, 5], fill=(180, 185, 195), outline=(90, 95, 105))
-    return image
+    canvas = new()
+    needle, d = mask()
+    d.line([(1, 14), (4, 11)], fill=255)
+    paint(canvas, needle, (200, 205, 215), outline=False)
+    body, d = mask()
+    d.polygon([(4, 10), (10, 4), (12, 6), (6, 12)], fill=255)
+    paint(canvas, body, (70, 210, 100))
+    plunger, d = mask()
+    d.rectangle([11, 1, 14, 4], fill=255)
+    paint(canvas, plunger, (175, 180, 190))
+    for i in range(3):
+        dot(canvas, 6 + i, 8 - i, (200, 255, 210))
+    return canvas
 
 
 def catalyst_icon():
-    image = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
-    d = ImageDraw.Draw(image)
-    d.polygon([(8, 1), (13, 7), (8, 15), (3, 7)], fill=(255, 120, 30), outline=(130, 50, 10))
-    d.polygon([(8, 4), (10, 7), (8, 11), (6, 7)], fill=(255, 210, 120))
-    d.point((7, 5), fill=(255, 255, 230))
-    return image
+    canvas = new()
+    glow, d = mask()
+    d.polygon([(8, 0), (14, 7), (8, 15), (2, 7)], fill=255)
+    paint(canvas, glow, (255, 120, 30))
+    inner, d = mask()
+    d.polygon([(8, 3), (11, 7), (8, 12), (5, 7)], fill=255)
+    paint(canvas, inner, (255, 205, 110), outline=False)
+    dot(canvas, 7, 5, (255, 255, 235))
+    dot(canvas, 6, 6, (255, 245, 210))
+    return canvas
 
 
 # --- camada de armadura (64x32, mapa de humanoide) ---------------------------------------------------------------
@@ -108,40 +140,87 @@ def armor_layer(base, stripe, detail):
 
 # --- bancada ------------------------------------------------------------------------------------------------------
 
+def _metal(seed, base=(64, 70, 80)):
+    """Chapa de metal 16x16 com leve ruido (o Minecraft fica "liso demais" com cor chapada)."""
+    rnd = random.Random(seed)
+    image = Image.new("RGBA", (16, 16))
+    for y in range(16):
+        for x in range(16):
+            image.putpixel((x, y), shade(base, rnd.uniform(-0.07, 0.07)) + (255,))
+    return image
+
+
+def _frame(image, light=(118, 126, 138), dark=(30, 34, 42)):
+    d = ImageDraw.Draw(image)
+    d.line([(0, 0), (15, 0)], fill=light)
+    d.line([(0, 0), (0, 15)], fill=light)
+    d.line([(15, 1), (15, 15)], fill=dark)
+    d.line([(1, 15), (15, 15)], fill=dark)
+
+
+def _rivets(image, points):
+    for x, y in points:
+        image.putpixel((x, y), (150, 158, 170, 255))
+        image.putpixel((x + 1, y + 1), (28, 30, 36, 255))
+
+
+def _hazard(image, y0):
+    for x in range(16):
+        for y in range(y0, y0 + 2):
+            yellow = ((x + y) // 2) % 2 == 0
+            image.putpixel((x, y), (240, 190, 40, 255) if yellow else (30, 30, 34, 255))
+
+
 def bench_textures():
-    metal = (62, 68, 78)
-    dark = (34, 38, 46)
-    light = (110, 118, 130)
-    side = Image.new("RGBA", (16, 16), metal)
+    side = _metal(1)
     d = ImageDraw.Draw(side)
-    d.rectangle([0, 0, 15, 15], outline=dark)
-    d.rectangle([1, 1, 14, 2], fill=light)
-    for x in range(0, 16, 4):  # faixa de aviso amarela e preta
-        d.polygon([(x, 13), (x + 2, 13), (x + 4, 15), (x + 2, 15)], fill=(240, 190, 40))
-    d.rectangle([0, 12, 15, 12], fill=dark)
-    d.point((3, 5), fill=light)
-    d.point((12, 5), fill=light)
-    d.point((3, 10), fill=light)
-    d.point((12, 10), fill=light)
+    d.rectangle([2, 3, 13, 10], outline=(44, 48, 56))  # porta de painel
+    d.line([(3, 4), (12, 4)], fill=(96, 104, 116))
+    d.rectangle([11, 6, 12, 7], fill=(160, 166, 176))  # puxador
+    _rivets(side, [(1, 2), (13, 2), (1, 11), (13, 11)])
+    _hazard(side, 12)
+    _frame(side)
+    d.line([(1, 14), (14, 14)], fill=(40, 44, 52))
 
-    front = side.copy()
+    front = _metal(2)
     d = ImageDraw.Draw(front)
-    d.rectangle([3, 4, 12, 10], fill=(10, 30, 45), outline=dark)  # tela
-    d.line([(4, 8), (6, 6), (8, 7), (11, 5)], fill=(53, 200, 255))
-    d.point((11, 9), fill=(76, 217, 100))
+    d.rectangle([2, 2, 13, 9], fill=(16, 22, 30), outline=(40, 46, 56))  # tela
+    for x, y in ((3, 7), (4, 6), (5, 6), (6, 5), (7, 6), (8, 4), (9, 4), (10, 5), (11, 3), (12, 3)):
+        front.putpixel((x, y), (53, 200, 255, 255))
+    for x in range(3, 13):
+        front.putpixel((x, 8), (24, 70, 90, 255))
+    front.putpixel((12, 8), (76, 217, 100, 255))
+    d.rectangle([3, 10, 12, 11], fill=(44, 48, 56))  # teclado
+    for x in range(4, 12, 2):
+        front.putpixel((x, 10), (120, 128, 140, 255))
+    _hazard(front, 12)
+    _frame(front)
+    d.line([(1, 14), (14, 14)], fill=(40, 44, 52))
 
-    top = Image.new("RGBA", (16, 16), (80, 86, 96))
+    top = _metal(3, (82, 88, 98))
     d = ImageDraw.Draw(top)
-    d.rectangle([0, 0, 15, 15], outline=dark)
-    for i in range(3, 15, 4):
+    for i in (5, 10):
         d.line([(i, 1), (i, 14)], fill=(70, 76, 86))
         d.line([(1, i), (14, i)], fill=(70, 76, 86))
-    d.rectangle([2, 2, 6, 4], fill=(150, 155, 165))  # chave
-    d.rectangle([9, 9, 13, 13], fill=(255, 138, 42), outline=(140, 60, 15))  # fragmento de nucleo
-    d.line([(9, 2), (13, 6)], fill=(200, 205, 215))
+    # chave inglesa
+    for x, y in ((2, 2), (3, 3), (4, 4), (5, 5), (6, 6)):
+        top.putpixel((x, y), (176, 182, 192, 255))
+    top.putpixel((1, 2), (176, 182, 192, 255))
+    top.putpixel((2, 1), (176, 182, 192, 255))
+    # faca de combate
+    for x in range(9, 14):
+        top.putpixel((x, 3), (210, 216, 224, 255))
+    top.putpixel((8, 3), (40, 40, 44, 255))
+    top.putpixel((7, 3), (40, 40, 44, 255))
+    # fragmento de nucleo brilhando
+    d.rectangle([10, 10, 13, 13], fill=(255, 138, 42), outline=(140, 60, 15))
+    top.putpixel((11, 11), (255, 220, 150, 255))
+    # tecido de kaiju
+    d.rectangle([2, 10, 5, 12], fill=(130, 60, 70), outline=(70, 25, 35))
+    _frame(top)
 
-    bottom = Image.new("RGBA", (16, 16), dark)
-    ImageDraw.Draw(bottom).rectangle([0, 0, 15, 15], outline=(24, 26, 32))
+    bottom = _metal(4, (40, 44, 52))
+    _frame(bottom, (60, 64, 72), (24, 26, 32))
     return {"defense_workbench_side": side, "defense_workbench_front": front, "defense_workbench_top": top,
             "defense_workbench_bottom": bottom}
 
