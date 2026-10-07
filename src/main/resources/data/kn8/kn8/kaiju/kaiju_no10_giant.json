@@ -1,0 +1,89 @@
+{
+  "class": "numbered",
+  "fortitude": 9.0,
+  "size": "supergiant",
+  "dimensions": {
+    "width": 10.0,
+    "height": 24.0
+  },
+  "speed": 0.26,
+  "intelligence": 4,
+  "parts": [
+    {
+      "name": "head",
+      "offset": [
+        0.0,
+        18.72,
+        1.2
+      ],
+      "width": 5.0,
+      "height": 4.800000000000001,
+      "multiplier": 1.2
+    },
+    {
+      "name": "torso",
+      "offset": [
+        0.0,
+        10.8,
+        0.0
+      ],
+      "width": 8.0,
+      "height": 8.399999999999999,
+      "multiplier": 1.0
+    },
+    {
+      "name": "core",
+      "offset": [
+        0.0,
+        15.84,
+        2.0
+      ],
+      "width": 2.2,
+      "height": 2.2,
+      "multiplier": 3.0,
+      "core": true
+    },
+    {
+      "name": "legs",
+      "offset": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "width": 8.5,
+      "height": 10.8,
+      "multiplier": 0.8
+    }
+  ],
+  "core": {
+    "health_fraction": 0.25,
+    "exposed_on": [
+      "heavy_hit"
+    ]
+  },
+  "abilities": [
+    "kn8:no10g_heavy_punch",
+    "kn8:no10g_heavy_smash",
+    "kn8:no10g_tail_sweep",
+    "kn8:no10g_tail_smash",
+    "kn8:no10g_finger_cannon",
+    "kn8:no10g_multi_appendage"
+  ],
+  "weaknesses": [],
+  "spawn": {
+    "natural": false
+  },
+  "rarity": "event",
+  "tags": [
+    "humanoid",
+    "numbered",
+    "intelligent",
+    "giant"
+  ],
+  "rage": {
+    "health_below": 0.25,
+    "damage_multiplier": 1.25,
+    "speed_multiplier": 1.1,
+    "cooldown_multiplier": 0.55
+  }
+}

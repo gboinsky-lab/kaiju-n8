@@ -71,6 +71,52 @@ def tail_swipe(name):
     }}
 
 
+def tail_stab(name):
+    """0.6-E (No. 10): a cauda passa por cima do ombro e perfura para a frente."""
+    hit, end = ability(name)
+    load = hit * 0.6
+    return {"animation_length": end, "bones": {
+        "body": rot((0, ZERO), (load, [-10, 0, 0]), (hit, [12, 0, 0]), (end, ZERO)),
+        "tail_1": rot((0, ZERO), (load, [-45, 0, 0]), (hit, [-60, 0, 0]), (end, ZERO)),
+        "tail_2": rot((0, ZERO), (load, [-35, 0, 0]), (hit, [-50, 0, 0]), (end, ZERO)),
+        "tail_3": rot((0, ZERO), (load, [-30, 0, 0]), (hit, [-20, 0, 0]), (end, ZERO)),
+        "tail_4": rot((0, ZERO), (load, [-20, 0, 0]), (hit, [10, 0, 0]), (end, ZERO)),
+    }}
+
+
+def tail_smash(name):
+    """0.6-E (No. 10 gigante): ergue a cauda bem alto e bate no chao atras de si."""
+    hit, end = ability(name)
+    load = hit * 0.65
+    return {"animation_length": end, "bones": {
+        "body": rot((0, ZERO), (load, [12, 0, 0]), (hit, [-10, 0, 0]), (end, ZERO)),
+        "tail_1": rot((0, ZERO), (load, [-50, 0, 0]), (hit, [20, 0, 0]), (end, ZERO)),
+        "tail_2": rot((0, ZERO), (load, [-40, 0, 0]), (hit, [25, 0, 0]), (end, ZERO)),
+        "tail_3": rot((0, ZERO), (load, [-30, 0, 0]), (hit, [20, 0, 0]), (end, ZERO)),
+        "tail_4": rot((0, ZERO), (load, [-20, 0, 0]), (hit, [10, 0, 0]), (end, ZERO)),
+    }}
+
+
+def multi_strike(name):
+    """0.6-E (No. 10): rajada de golpes alternando os bracos, um por golpe do JSON (behavior.hits)."""
+    data = json.loads((ABILITIES / f"{name}.json").read_text(encoding="utf-8"))
+    behavior = data.get("behavior", {})
+    hits, step = behavior.get("hits", 1), behavior.get("hit_interval", 4) * TICK
+    first, end = ability(name)
+    end = round(first + hits * step + 0.25, 3)
+    right, left = [(0, ZERO)], [(0, ZERO)]
+    for i in range(hits):
+        t = first + i * step
+        arm = right if i % 2 == 0 else left
+        arm += [(t - step * 0.5, [-40, 0, 0]), (t, [-110, 0, 0])]
+    right.append((end, ZERO))
+    left.append((end, ZERO))
+    return {"animation_length": end, "bones": {
+        "arm_right": rot(*right), "arm_left": rot(*left),
+        "body": rot((0, ZERO), (first, [10, 0, 0]), (end - 0.1, [10, 0, 0]), (end, ZERO)),
+    }}
+
+
 def energy_blast(name):
     """Raio de energia: abre a boca, recua carregando (o aviso brilha na boca) e dispara para a frente."""
     hit, end = ability(name)
@@ -172,6 +218,17 @@ SPECIES = {
                             "action.multi_leg": (multi_leg, "multi_leg"), "action.web_shot": (web_shot, "web_burst"),
                             "action.leap": (leap, "leap")},
     "kaiju_no9": {"action.finger_gun": (finger_gun, "finger_gun")},
+    # 0.6-E: Kaiju No. 10 (ossos do Primigenius); "action.slam" e "action.charge" vem do build_primigenius.py.
+    "kaiju_no10_small": {"action.punch": (punch, "no10_heavy_punch"),
+                         "action.tail_swipe": (tail_swipe, "no10_tail_sweep"),
+                         "action.tail_stab": (tail_stab, "no10_tail_stab"),
+                         "action.finger_cannon": (finger_gun, "no10_finger_cannon"),
+                         "action.multi_strike": (multi_strike, "no10_multi_appendage")},
+    "kaiju_no10_giant": {"action.punch": (punch, "no10g_heavy_punch"),
+                         "action.tail_swipe": (tail_swipe, "no10g_tail_sweep"),
+                         "action.tail_smash": (tail_smash, "no10g_tail_smash"),
+                         "action.finger_cannon": (finger_gun, "no10g_finger_cannon"),
+                         "action.multi_strike": (multi_strike, "no10g_multi_appendage")},
 }
 
 

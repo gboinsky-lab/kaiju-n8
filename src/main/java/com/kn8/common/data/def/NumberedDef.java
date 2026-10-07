@@ -1,6 +1,7 @@
 package com.kn8.common.data.def;
 
 import java.util.Map;
+import java.util.Optional;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -18,7 +19,26 @@ import net.minecraft.resources.ResourceLocation;
 public record NumberedDef(Map<ResourceLocation, ResourceLocation> revive, float reviveRadius, int reviveCastTicks,
         int reviveCooldownTicks, int maxRevivedAlive, float commandRadius, float fleeHealth, int fleeMerit,
         Map<ResourceLocation, ResourceLocation> reviveBoss, float massReviveRadius, int massReviveCastTicks,
-        int massReviveIntervalTicks, Regeneration regeneration) {
+        int massReviveIntervalTicks, Regeneration regeneration, Optional<Transform> transform) {
+
+    /**
+     * Mudanca de forma (0.6-E, No. 10 pequeno -> gigante; Miguel: "depois de um tempo na batalha"): depois de
+     * {@code after_combat_ticks} com alvo, ou com a vida abaixo de {@code health_below} (o que vier antes), vira a
+     * especie {@code into} com {@code health_fraction} da vida maxima nova. {@code destruction_radius}: blocos que a
+     * forma nova quebra ao surgir (forca da categoria Daikaiju).
+     */
+    public record Transform(ResourceLocation into, int afterCombatTicks, float healthBelow, float healthFraction,
+            float destructionRadius) {
+        public static final Codec<Transform> CODEC = RecordCodecBuilder.create(i -> i.group(
+                ResourceLocation.CODEC.fieldOf("into").forGetter(Transform::into),
+                DefCodecs.TICKS.fieldOf("after_combat_ticks").forGetter(Transform::afterCombatTicks),
+                Codec.floatRange(0.0F, 1.0F).optionalFieldOf("health_below", 0.5F).forGetter(Transform::healthBelow),
+                Codec.floatRange(0.05F, 1.0F).optionalFieldOf("health_fraction", 1.0F)
+                        .forGetter(Transform::healthFraction),
+                Codec.floatRange(0.0F, 32.0F).optionalFieldOf("destruction_radius", 0.0F)
+                        .forGetter(Transform::destructionRadius)
+        ).apply(i, Transform::new));
+    }
 
     /**
      * Regeneracao (0.6-D, especificacao do Miguel secao 5.2): com a vida abaixo de {@code below} (fracao), cura
@@ -65,6 +85,7 @@ public record NumberedDef(Map<ResourceLocation, ResourceLocation> revive, float 
             DefCodecs.TICKS.optionalFieldOf("mass_revive_interval_ticks", 4)
                     .forGetter(NumberedDef::massReviveIntervalTicks),
             Regeneration.CODEC.optionalFieldOf("regeneration", Regeneration.NONE)
-                    .forGetter(NumberedDef::regeneration)
+                    .forGetter(NumberedDef::regeneration),
+            Transform.CODEC.optionalFieldOf("transform").forGetter(NumberedDef::transform)
     ).apply(i, NumberedDef::new));
 }

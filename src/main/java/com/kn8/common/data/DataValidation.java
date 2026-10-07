@@ -135,6 +135,10 @@ public final class DataValidation {
                 report.error(where + ": o id precisa ser um kaiju existente");
                 return;
             }
+            if (def.transform().filter(transform -> !kaiju.contains(transform.into())).isPresent()) {
+                report.error(where + ": transform.into com especie inexistente " + def.transform().get().into());
+                return;
+            }
             for (Map.Entry<ResourceLocation, ResourceLocation> entry : def.revive().entrySet()) {
                 if (!kaiju.contains(entry.getKey()) || !kaiju.contains(entry.getValue())) {
                     report.error(where + ": revive com especie inexistente " + entry);

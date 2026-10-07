@@ -303,12 +303,17 @@ public final class No9Service {
     // --- comandar e fugir ----------------------------------------------------------------------------------------
 
     private static void command(ServerLevel level, KaijuNo9Entity no9, NumberedDef def) {
-        LivingEntity target = no9.getTarget();
-        if (target == null || def.commandRadius() <= 0) {
+        command(level, no9, def.commandRadius());
+    }
+
+    /** Kaiju sem alvo a ate {@code radius} blocos passam a atacar o alvo do numerado (No. 9, No. 10). */
+    static void command(ServerLevel level, KaijuEntity leader, float radius) {
+        LivingEntity target = leader.getTarget();
+        if (target == null || radius <= 0) {
             return;
         }
         for (KaijuEntity kaiju : level.getEntitiesOfClass(KaijuEntity.class,
-                no9.getBoundingBox().inflate(def.commandRadius()), kaiju -> kaiju != no9 && kaiju.isAlive()
+                leader.getBoundingBox().inflate(radius), kaiju -> kaiju != leader && kaiju.isAlive()
                         && kaiju.getTarget() == null)) {
             kaiju.setTarget(target);
         }

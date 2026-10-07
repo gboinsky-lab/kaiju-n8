@@ -638,5 +638,22 @@
   "item.kn8.hoshina_spawn_egg": "Vice-Captain Hoshina Spawn Egg",
   "kn8.soldier.variant.hoshina": "Vice-Captain Hoshina",
   "kn8.weapon.special.kuuchi": "Kūuchi",
-  "kn8.weapon.special.kuuchi.desc": "A slash that flies forward and cuts through every enemy in its path."
+  "kn8.weapon.special.kuuchi.desc": "A slash that flies forward and cuts through every enemy in its path.",
+  "entity.kn8.kaiju_no10_small": "Kaiju No. 10",
+  "entity.kn8.kaiju_no10_giant": "Kaiju No. 10 (giant form)",
+  "kn8.bestiary.kaiju_no10_small.desc": "A brawler among the numbered: 4 m, extreme strength, a bladed tail and a Finger Cannon. Regenerates when hurt and, after a while in battle (or at half health), takes its giant form. Commands the Preondactyls.",
+  "kn8.bestiary.kaiju_no10_giant.desc": "The No. 10's giant form: 24 m, blows that leave craters and a tail that sweeps whole streets. Only a very strong squad can bring it down.",
+  "kn8.no10.giant_form": "Kaiju No. 10 has taken its giant form!",
+  "kn8.ability.no10_heavy_punch": "Heavy punch",
+  "kn8.ability.no10_heavy_smash": "Heavy smash",
+  "kn8.ability.no10_tail_sweep": "Tail sweep",
+  "kn8.ability.no10_tail_stab": "Tail stab",
+  "kn8.ability.no10_finger_cannon": "Finger Cannon",
+  "kn8.ability.no10_multi_appendage": "Multi-appendage assault",
+  "kn8.ability.no10g_heavy_punch": "Giant punch",
+  "kn8.ability.no10g_heavy_smash": "Giant smash",
+  "kn8.ability.no10g_tail_sweep": "Giant tail sweep",
+  "kn8.ability.no10g_tail_smash": "Tail smash",
+  "kn8.ability.no10g_finger_cannon": "Giant Finger Cannon",
+  "kn8.ability.no10g_multi_appendage": "Multi-appendage assault"
 }

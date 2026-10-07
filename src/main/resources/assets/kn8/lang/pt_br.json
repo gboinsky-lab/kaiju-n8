@@ -638,5 +638,22 @@
   "item.kn8.hoshina_spawn_egg": "Ovo do Vice-Capitão Hoshina",
   "kn8.soldier.variant.hoshina": "Vice-Capitão Hoshina",
   "kn8.weapon.special.kuuchi": "Kūuchi",
-  "kn8.weapon.special.kuuchi.desc": "Um corte que voa à frente e atravessa os inimigos no caminho."
+  "kn8.weapon.special.kuuchi.desc": "Um corte que voa à frente e atravessa os inimigos no caminho.",
+  "entity.kn8.kaiju_no10_small": "Kaiju No. 10",
+  "entity.kn8.kaiju_no10_giant": "Kaiju No. 10 (forma gigante)",
+  "kn8.bestiary.kaiju_no10_small.desc": "Numerado de combate físico: 4 m, força extrema, cauda afiada e Finger Cannon. Regenera quando ferido e, depois de um tempo de batalha (ou com metade da vida), assume a forma gigante. Comanda os Preondactyl.",
+  "kn8.bestiary.kaiju_no10_giant.desc": "A forma gigante do No. 10: 24 m, golpes que abrem crateras, cauda que varre ruas inteiras. Só uma equipe muito forte consegue derrubá-lo.",
+  "kn8.no10.giant_form": "O Kaiju No. 10 assumiu a forma gigante!",
+  "kn8.ability.no10_heavy_punch": "Soco pesado",
+  "kn8.ability.no10_heavy_smash": "Esmagamento",
+  "kn8.ability.no10_tail_sweep": "Varredura de cauda",
+  "kn8.ability.no10_tail_stab": "Perfuração de cauda",
+  "kn8.ability.no10_finger_cannon": "Finger Cannon",
+  "kn8.ability.no10_multi_appendage": "Ataque de vários membros",
+  "kn8.ability.no10g_heavy_punch": "Soco gigante",
+  "kn8.ability.no10g_heavy_smash": "Esmagamento gigante",
+  "kn8.ability.no10g_tail_sweep": "Varredura de cauda gigante",
+  "kn8.ability.no10g_tail_smash": "Pancada de cauda",
+  "kn8.ability.no10g_finger_cannon": "Finger Cannon gigante",
+  "kn8.ability.no10g_multi_appendage": "Ataque de vários membros"
 }
