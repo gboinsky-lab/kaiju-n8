@@ -596,5 +596,13 @@
   "kn8.soldier.variant.knife": "Batedor",
   "kn8.soldier.variant.unarmed": "Recruta",
   "kn8.menu.profile.suit_stats": "Armadura %s · corta %s%% do calor",
-  "kn8.menu.profile.suit_none": "Sem traje: fabrique na bancada e vista no peito"
+  "kn8.menu.profile.suit_none": "Sem traje: fabrique na bancada e vista no peito",
+  "key.kn8.special": "Ataque especial da arma",
+  "kn8.hud.special.ready": "%s PRONTO [%s]",
+  "kn8.hud.special.cooldown": "%s: %ss",
+  "kn8.hud.combat.denied_cooldown": "Especial recarregando",
+  "kn8.hud.combat.denied_no_special": "Esta arma não tem ataque especial",
+  "kn8.weapon.special.seismic_cleave": "Golpe Sísmico",
+  "kn8.weapon.special.seismic_cleave.desc": "Crava o machado no chão: a onda fere, empurra e atordoa os Yoju em volta.",
+  "subtitles.kn8.weapon.axe_special": "Machado racha o chão"
 }

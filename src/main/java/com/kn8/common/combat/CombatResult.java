@@ -10,7 +10,11 @@ public enum CombatResult {
     SLOWED_NO_STAMINA,
     PARRY,
     GUARD_BROKEN,
-    CRITICAL;
+    CRITICAL,
+    /** 0.5: ataque especial ainda recarregando. */
+    DENIED_COOLDOWN,
+    /** 0.5: a arma na mao nao tem ataque especial. */
+    DENIED_NO_SPECIAL;
 
     public static CombatResult byIndex(int index) {
         CombatResult[] values = values();

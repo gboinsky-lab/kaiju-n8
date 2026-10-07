@@ -11,11 +11,15 @@ import com.kn8.common.vfx.VfxService;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
 /**
@@ -37,6 +41,8 @@ public final class VfxEffects {
     private static final float LOW = 0.35F;
     private static final float MEDIUM = 0.7F;
     private static final float HIGH = 1.0F;
+    private static final int CRACK_RAYS = 9;
+    private static final double CRACK_STEP = 0.35;
 
     static {
         EFFECTS.put(VfxService.IMPACT, VfxEffects::impact);
@@ -47,6 +53,7 @@ public final class VfxEffects {
         EFFECTS.put(VfxService.ROAR, VfxEffects::roar);
         EFFECTS.put(VfxService.SUIT_RELEASE, VfxEffects::suitRelease);
         EFFECTS.put(VfxService.OVERHEAT, VfxEffects::overheat);
+        EFFECTS.put(VfxService.GROUND_CRACK, VfxEffects::groundCrack);
     }
 
     private VfxEffects() {
@@ -159,6 +166,34 @@ public final class VfxEffects {
                     at.x + Mth.cos((float) angle) * 0.5, at.y + height, at.z + Mth.sin((float) angle) * 0.5,
                     0, 0.03, 0);
         }
+    }
+
+    /**
+     * 0.5: rachaduras em raios pelo chao (lascas do proprio bloco de baixo) e pedrinhas saltando; a intensidade e o
+     * comprimento das rachaduras em blocos.
+     */
+    private static void groundCrack(ClientLevel level, Vec3 at, Vec3 dir, float intensity, float amount) {
+        RandomSource random = level.random;
+        BlockPos below = BlockPos.containing(at.x, at.y - 0.5, at.z);
+        BlockState ground = level.getBlockState(below);
+        if (ground.isAir()) {
+            ground = Blocks.STONE.defaultBlockState();
+        }
+        BlockParticleOption debris = new BlockParticleOption(ParticleTypes.BLOCK, ground);
+        int rays = Math.max(5, Math.round(CRACK_RAYS * amount));
+        for (int ray = 0; ray < rays; ray++) {
+            double angle = 2 * Math.PI * ray / rays + random.nextDouble() * 0.4;
+            double x = at.x;
+            double z = at.z;
+            // Cada raio anda em passos curtos e entorta um pouco, como uma rachadura.
+            for (double travelled = 0; travelled < intensity; travelled += CRACK_STEP) {
+                angle += (random.nextDouble() - 0.5) * 0.5;
+                x += Math.cos(angle) * CRACK_STEP;
+                z += Math.sin(angle) * CRACK_STEP;
+                level.addParticle(debris, x, at.y + 0.05, z, 0, 0.08 + random.nextDouble() * 0.12, 0);
+            }
+        }
+        burst(level, debris, at.add(0, 0.3, 0), count(intensity * 0.6F, amount), 1.5, 0.6);
     }
 
     /** Traje superaquecido: fumaca e pequenas chamas saindo do jogador. */

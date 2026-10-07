@@ -356,6 +356,20 @@ def axe_hit(rng):
     return normalize(drive(thump(s, 110, 40, rng, 0.4) * 1.3 + crack * 1.6 + flesh(s, rng, 300, 1800, 10), 1.8))
 
 
+def axe_special(rng):
+    """0.5, ataque especial do machado (Golpe Sismico): lamina cortando o chao + estrondo grave + pedras caindo."""
+    s = 1.8
+    t = t_axis(s)
+    crack = np.zeros(len(t))
+    for _ in range(9):
+        start = rng.uniform(0.0, 0.35)
+        g = t >= start
+        crack[g] += bandpass(noise(s, rng), 500, 4000)[g] * np.exp(-(t[g] - start) * 30)
+    debris = bandpass(noise(s, rng), 300, 2500) * np.exp(-t * 2.5) * (rng.uniform(0, 1, len(t)) > 0.96)
+    boom = thump(s, 62, 24, rng, 0.9)
+    return normalize(drive(boom * 1.4 + crack * 1.2 + lowpass_steep(debris, 1800, 2) * 7, 1.7))
+
+
 def dash(rng):
     # Mais longo e com "tum" grave: o primeiro ficou baixo demais no teste em jogo (0.2, Etapa 1).
     return whoosh(0.36, 600, 2400, rng, low=0.6)
@@ -433,6 +447,7 @@ SOUNDS = {
     "axe_swing": ("weapon", axe_swing, 3),
     "axe_heavy": ("weapon", axe_heavy, 2),
     "axe_hit": ("weapon", axe_hit, 3),
+    "axe_special": ("weapon", axe_special, 2),
     "parry": ("weapon", parry, 2),
     "guard_break": ("weapon", guard_break, 2),
     "dash": ("suit", dash, 2),

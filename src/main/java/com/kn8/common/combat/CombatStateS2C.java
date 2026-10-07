@@ -11,6 +11,9 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 /**
  * S2C privado (Fase 4, secao 5.1): resposta a um pedido de combate e eventos de defesa, so para o proprio jogador.
  * A HUD mostra o passo do combo, "sem stamina", "PARRY!", "CRITICO!" e "guarda quebrada".
+ *
+ * <p>Na acao {@code SPECIAL} (0.5) os dois ultimos campos levam a recarga: {@code comboStep} = ticks que faltam e
+ * {@code comboLength} = recarga total (a HUD desenha a barra do especial com eles).</p>
  */
 public record CombatStateS2C(int action, int result, int comboStep, int comboLength) implements CustomPacketPayload {
 

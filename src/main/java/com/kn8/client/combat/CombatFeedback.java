@@ -7,6 +7,7 @@ import com.kn8.common.combat.CombatAction;
 import com.kn8.common.combat.CombatResult;
 import com.kn8.common.combat.CombatStateS2C;
 import com.kn8.common.network.KN8ClientHooks;
+import com.kn8.core.combat.SpecialGeometry;
 
 import net.minecraft.network.chat.Component;
 
@@ -18,12 +19,16 @@ public final class CombatFeedback {
 
     private static final long MESSAGE_MILLIS = 1200;
     private static final long COMBO_MILLIS = 1500;
+    private static final long MILLIS_PER_TICK = 50;
 
     private static CombatResult lastResult = CombatResult.OK;
     private static long lastResultAt;
     private static int comboStep = -1;
     private static int comboLength;
     private static long comboAt;
+    /** 0.5: quando (relogio do cliente) o ataque especial fica pronto e a recarga total, vindos do servidor. */
+    private static long specialReadyAt;
+    private static long specialTotalMillis;
 
     private CombatFeedback() {
     }
@@ -41,10 +46,27 @@ public final class CombatFeedback {
             comboLength = payload.comboLength();
             comboAt = now;
         }
+        if (payload.action() == CombatAction.SPECIAL.ordinal()) {
+            // Na acao SPECIAL os campos do combo levam a recarga em ticks (CombatStateS2C).
+            specialReadyAt = now + payload.comboStep() * MILLIS_PER_TICK;
+            specialTotalMillis = payload.comboLength() * MILLIS_PER_TICK;
+        }
         if (result != CombatResult.OK) {
             lastResult = result;
             lastResultAt = now;
         }
+    }
+
+    /** Fracao da recarga do ataque especial (0 = acabou de usar, 1 = pronto). */
+    public static float specialProgress() {
+        long remaining = specialReadyAt - System.currentTimeMillis();
+        return SpecialGeometry.cooldownProgress(remaining, specialTotalMillis);
+    }
+
+    /** Segundos que faltam para o especial (arredondado para cima; 0 = pronto). */
+    public static int specialSecondsLeft() {
+        long remaining = specialReadyAt - System.currentTimeMillis();
+        return remaining <= 0 ? 0 : (int) ((remaining + 999) / 1000);
     }
 
     /** Linha do combo ("Combo 2/3"), ou null fora da janela. */

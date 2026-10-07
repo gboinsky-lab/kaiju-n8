@@ -1,11 +1,15 @@
 // src/main/java/com/kn8/client/hud/KN8Hud.java
 package com.kn8.client.hud;
 
+import java.util.Optional;
+
 import com.kn8.KN8Constants;
 import com.kn8.client.combat.CombatFeedback;
 import com.kn8.client.combat.CombatInput;
 import com.kn8.common.attribute.PowerView;
+import com.kn8.common.combat.CombatService;
 import com.kn8.common.config.ClientConfig;
+import com.kn8.common.data.def.WeaponDef;
 import com.kn8.common.registry.KN8Attachments;
 import com.kn8.core.power.HeatStage;
 import com.kn8.core.ui.HudMath;
@@ -266,6 +270,7 @@ public final class KN8Hud {
                     full ? COLOR_SURGE : COLOR_RELEASE_LIGHT);
             lineY += step;
         }
+        lineY = drawSpecial(graphics, font, x, lineY, step);
         Component combo = CombatFeedback.comboLine();
         if (combo != null) {
             graphics.drawString(font, combo, x + 2, lineY, COLOR_LABEL, true);
@@ -275,6 +280,34 @@ public final class KN8Hud {
         if (message != null) {
             graphics.drawString(font, message, x + 2, lineY, CombatFeedback.messageColor(), true);
         }
+    }
+
+    /**
+     * 0.5: linha do ataque especial quando a arma na mao tem um ({@code special} no JSON): nome, tecla e barra de
+     * recarga (cheia e piscando = pronto). Devolve a proxima linha livre.
+     */
+    private static int drawSpecial(GuiGraphics graphics, Font font, int x, int lineY, int step) {
+        Minecraft minecraft = Minecraft.getInstance();
+        if (minecraft.player == null) {
+            return lineY;
+        }
+        Optional<WeaponDef.Special> special = CombatService.heldWeapon(minecraft.player)
+                .flatMap(WeaponDef::special);
+        if (special.isEmpty()) {
+            return lineY;
+        }
+        float progress = CombatFeedback.specialProgress();
+        boolean ready = progress >= 1.0F;
+        Component name = Component.translatable("kn8.weapon.special." + special.get().id());
+        Component label = ready
+                ? Component.translatable("kn8.hud.special.ready", name, CombatInput.SPECIAL_KEY.getTranslatedKeyMessage())
+                : Component.translatable("kn8.hud.special.cooldown", name, CombatFeedback.specialSecondsLeft());
+        graphics.drawString(font, label, x + 2, lineY, ready ? blink(COLOR_SURGE) : COLOR_LABEL, true);
+        int barX = x + 4 + font.width(label) + 4;
+        graphics.fill(barX, lineY + 2, barX + CHARGE_BAR_WIDTH, lineY + 6, COLOR_SEGMENT_EMPTY);
+        graphics.fill(barX, lineY + 2, barX + Math.round(CHARGE_BAR_WIDTH * progress), lineY + 6,
+                ready ? COLOR_SURGE : COLOR_RELEASE_LIGHT);
+        return lineY + step;
     }
 
     // --- pecas de desenho ------------------------------------------------------------------------------------

@@ -28,7 +28,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 /**
  * Entrada de combate do jogador (M10a). Com uma arma do kn8 na mao: clique esquerdo = golpe leve, clique direito =
  * golpe pesado/carregado ao soltar (no lugar do ataque e do uso vanilla); V segurado = bloqueio; Z = esquiva na
- * direcao do movimento; Alt esquerdo = dash.
+ * direcao do movimento; Alt esquerdo = dash; R = ataque especial da arma (0.5).
  * Teclas configuraveis em Controles (categoria kn8). O cliente so manda a intencao; o servidor decide tudo.
  */
 @EventBusSubscriber(modid = KN8Constants.MOD_ID, value = Dist.CLIENT)
@@ -42,6 +42,10 @@ public final class CombatInput {
     /** 0.1-B: dash (GDD secao 7). */
     public static final KeyMapping DASH_KEY = new KeyMapping("key.kn8.dash", InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_LEFT_ALT, CATEGORY);
+
+    /** 0.5: ataque especial da arma (so armas especiais, com {@code special} no JSON). */
+    public static final KeyMapping SPECIAL_KEY = new KeyMapping("key.kn8.special", InputConstants.Type.KEYSYM,
+            GLFW.GLFW_KEY_R, CATEGORY);
 
     /** Ultimo estado enviado do bloqueio (para mandar so as mudancas); estado de entrada deste cliente. */
     private static boolean blockSent;
@@ -59,6 +63,7 @@ public final class CombatInput {
         event.register(BLOCK_KEY);
         event.register(DODGE_KEY);
         event.register(DASH_KEY);
+        event.register(SPECIAL_KEY);
     }
 
     @SubscribeEvent
@@ -121,6 +126,11 @@ public final class CombatInput {
             }
         }
         boolean armed = CombatService.heldWeapon(player).isPresent();
+        while (SPECIAL_KEY.consumeClick()) {
+            if (armed && minecraft.screen == null) {
+                send(CombatAction.SPECIAL, true, 0, 0);
+            }
+        }
         boolean wantBlock = armed && minecraft.screen == null && BLOCK_KEY.isDown();
         if (wantBlock != blockSent) {
             blockSent = wantBlock;

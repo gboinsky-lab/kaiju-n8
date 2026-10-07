@@ -23,5 +23,35 @@
     "swing": "kn8:weapon.axe_swing",
     "heavy": "kn8:weapon.axe_heavy",
     "hit": "kn8:weapon.axe_hit"
+  },
+  "special": {
+    "id": "seismic_cleave",
+    "type": "ground_slam",
+    "multiplier": 2.6,
+    "duration_ticks": 30,
+    "impact_tick": 16,
+    "radius": 4.0,
+    "forward": 2.0,
+    "stamina_cost": 35,
+    "heat_cost": 6,
+    "cooldown_ticks": 200,
+    "knockback": 1.2,
+    "stagger_ticks": 30,
+    "camera_shake": 0.45,
+    "vfx": [
+      {
+        "effect": "kn8:ground_crack",
+        "intensity": 4.0
+      },
+      {
+        "effect": "kn8:shockwave",
+        "intensity": 1.4
+      },
+      {
+        "effect": "kn8:dust",
+        "intensity": 1.2
+      }
+    ],
+    "sound": "kn8:weapon.axe_special"
   }
 }

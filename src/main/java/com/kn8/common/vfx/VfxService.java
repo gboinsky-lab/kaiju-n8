@@ -23,6 +23,8 @@ public final class VfxService {
     public static final ResourceLocation ROAR = KN8Constants.id("roar");
     public static final ResourceLocation SUIT_RELEASE = KN8Constants.id("suit_release");
     public static final ResourceLocation OVERHEAT = KN8Constants.id("overheat");
+    /** 0.5: rachaduras no chao saindo do ponto de impacto (ataque especial do machado). */
+    public static final ResourceLocation GROUND_CRACK = KN8Constants.id("ground_crack");
 
     /** Distancia em que os jogadores recebem o efeito. */
     public static final double RANGE = 64.0;

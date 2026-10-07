@@ -24,6 +24,10 @@ public final class CombatState {
     long criticalUntilTick = NEVER;
     /** Inicio do ataque carregado em andamento (NEVER = nao esta carregando). */
     long chargeStartTick = NEVER;
+    /** 0.5: tick em que o ataque especial volta a ficar pronto (por jogador, vale para qualquer arma). */
+    long specialReadyTick = NEVER;
+    /** 0.5: recarga total do ultimo ataque especial (para a HUD mostrar a fracao). */
+    int specialCooldownTicks;
 
     public boolean blocking() {
         return blocking;

@@ -45,6 +45,24 @@ def heavy(action):
     }}
 
 
+def special_slam(special):
+    """0.5: ataque especial ground_slam (machado): ergue a arma com as duas maos, agacha e crava no chao no tick de
+    impacto do JSON (special.impact_tick), segura um instante e volta."""
+    end, hit = special["duration_ticks"] * TICK, special["impact_tick"] * TICK
+    raise_t = hit * 0.65
+    hold = hit + (end - hit) * 0.4
+    up, down = [-175, 0, 12], [-35, 0, 5]
+    return {"animation_length": round(end, 3), "bones": {
+        "right_arm": {"rotation": keys((0, [0, 0, 0]), (raise_t, up), (hit, down), (hold, down), (end, [0, 0, 0]))},
+        "left_arm": {"rotation": keys((0, [0, 0, 0]), (raise_t, [-175, 0, -12]), (hit, [-35, 0, -5]),
+                                      (hold, [-35, 0, -5]), (end, [0, 0, 0]))},
+        "torso": {"rotation": keys((0, [0, 0, 0]), (raise_t, [-15, 0, 0]), (hit, [30, 0, 0]), (hold, [30, 0, 0]),
+                                   (end, [0, 0, 0]))},
+        "right_leg": {"rotation": keys((0, [0, 0, 0]), (hit, [-30, 0, 0]), (hold, [-30, 0, 0]), (end, [0, 0, 0]))},
+        "left_leg": {"rotation": keys((0, [0, 0, 0]), (hit, [20, 0, 0]), (hold, [20, 0, 0]), (end, [0, 0, 0]))},
+    }}
+
+
 def shoot(action):
     """M10b: mira com os dois bracos e coice no tick de impacto do JSON do rifle."""
     end, hit = action["duration_ticks"] * TICK, action["impact_tick"] * TICK
@@ -117,6 +135,9 @@ def weapon_animations():
             result[f"player.{item}.light"] = light(actions["light"])
         if "heavy" in actions:
             result[f"player.{item}.heavy"] = heavy(actions["heavy"])
+        special = weapon.get("special")
+        if special and special["type"] == "ground_slam":
+            result[f"player.{item}.special"] = special_slam(special)
     return result
 
 

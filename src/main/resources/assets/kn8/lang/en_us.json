@@ -596,5 +596,13 @@
   "kn8.soldier.variant.knife": "Scout",
   "kn8.soldier.variant.unarmed": "Recruit",
   "kn8.menu.profile.suit_stats": "Armor %s · cuts %s%% of heat",
-  "kn8.menu.profile.suit_none": "No suit: craft one at the workbench and wear it"
+  "kn8.menu.profile.suit_none": "No suit: craft one at the workbench and wear it",
+  "key.kn8.special": "Weapon special attack",
+  "kn8.hud.special.ready": "%s READY [%s]",
+  "kn8.hud.special.cooldown": "%s: %ss",
+  "kn8.hud.combat.denied_cooldown": "Special recharging",
+  "kn8.hud.combat.denied_no_special": "This weapon has no special attack",
+  "kn8.weapon.special.seismic_cleave": "Seismic Cleave",
+  "kn8.weapon.special.seismic_cleave.desc": "Drives the axe into the ground: the wave hurts, pushes and staggers nearby Yoju.",
+  "subtitles.kn8.weapon.axe_special": "Axe splits the ground"
 }

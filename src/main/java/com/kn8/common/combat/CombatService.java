@@ -94,6 +94,7 @@ public final class CombatService {
             case DASH -> dash(player, payload.dirX(), payload.dirZ());
             case CHARGE_START -> startCharge(player);
             case CHARGE_RELEASE -> releaseCharge(player);
+            case SPECIAL -> special(player);
         }
     }
 
@@ -182,7 +183,79 @@ public final class CombatService {
         WeaponDef weapon = state.currentWeapon;
         boolean heavy = state.currentAction == CombatAction.HEAVY;
         state.currentWeapon = null;
+        if (state.currentAction == CombatAction.SPECIAL && weapon.special().isPresent()) {
+            double release = PowerMath.damageMultiplier(PowerService.effectiveRelease(player), PowerService.params());
+            float damage = CombatMath.damage(weapon.baseDamage(), state.currentMultiplier, 1.0F, release);
+            SpecialAttacks.resolve(player, weapon.special().get(), damage, player.damageSources().playerAttack(player));
+            return;
+        }
         strike(player, weapon, state.currentMultiplier, heavy);
+    }
+
+    // --- ataque especial (0.5) ---------------------------------------------------------------------------------
+
+    /**
+     * Ataque especial da arma na mao (tecla R; publico para os GameTests). Precisa de stamina inteira (nao ha versao
+     * lenta) e respeita a recarga do JSON; o calor do {@code heat_cost} sobe na hora. O dano sai no tick de impacto.
+     */
+    public static boolean special(ServerPlayer player) {
+        CombatState state = state(player);
+        Optional<WeaponDef> weapon = heldWeapon(player);
+        long now = now(player);
+        if (weapon.isEmpty()) {
+            replySpecial(player, CombatResult.DENIED_NO_WEAPON);
+            return false;
+        }
+        Optional<WeaponDef.Special> special = weapon.get().special();
+        if (special.isEmpty()) {
+            replySpecial(player, CombatResult.DENIED_NO_SPECIAL);
+            return false;
+        }
+        if (state.blocking || state.timeline.isActive(now)) {
+            replySpecial(player, CombatResult.DENIED_BUSY);
+            return false;
+        }
+        if (specialCooldown(player) > 0) {
+            replySpecial(player, CombatResult.DENIED_COOLDOWN);
+            return false;
+        }
+        WeaponDef.Special def = special.get();
+        if (!PowerService.tryConsumeStamina(player, def.staminaCost())) {
+            replySpecial(player, CombatResult.DENIED_NO_STAMINA);
+            return false;
+        }
+        if (!state.timeline.tryStart(now, "special", def.durationTicks(), def.impactTick())) {
+            replySpecial(player, CombatResult.DENIED_BUSY);
+            return false;
+        }
+        if (def.heatCost() > 0) {
+            PowerService.setHeat(player, PowerService.data(player).heat() + def.heatCost());
+        }
+        state.chargeStartTick = CombatState.NEVER;
+        state.comboStep = -1;
+        state.currentAction = CombatAction.SPECIAL;
+        state.currentWeapon = weapon.get();
+        state.currentMultiplier = def.multiplier();
+        state.specialCooldownTicks = def.cooldownTicks();
+        state.specialReadyTick = now + def.cooldownTicks();
+        AnimationBridge.playPlayer(player, AnimationBridge.weaponAction(weapon.get().item(), "special"));
+        player.level().playSound(null, player.getX(), player.getEyeY(), player.getZ(),
+                weaponSound(weapon.get(), "heavy", KN8Sounds.BLADE_HEAVY.get()), SoundSource.PLAYERS,
+                SWING_SOUND_VOLUME, 0.8F);
+        replySpecial(player, CombatResult.OK);
+        return true;
+    }
+
+    /** Ticks que faltam para o ataque especial ficar pronto (0 = pronto). */
+    public static long specialCooldown(ServerPlayer player) {
+        CombatState state = state(player);
+        return state.specialReadyTick == CombatState.NEVER ? 0 : Math.max(0, state.specialReadyTick - now(player));
+    }
+
+    /** Resposta do especial: leva a recarga restante e a total (ver {@link CombatStateS2C}). */
+    private static void replySpecial(ServerPlayer player, CombatResult result) {
+        PacketDistributor.sendToPlayer(player, new CombatStateS2C(CombatAction.SPECIAL.ordinal(), result.ordinal(),
+                (int) specialCooldown(player), state(player).specialCooldownTicks));
     }
 
     private static void strike(ServerPlayer player, WeaponDef weapon, float multiplier, boolean heavy) {

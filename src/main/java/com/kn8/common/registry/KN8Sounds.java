@@ -36,6 +36,8 @@ public final class KN8Sounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> AXE_SWING = register("weapon.axe_swing");
     public static final DeferredHolder<SoundEvent, SoundEvent> AXE_HEAVY = register("weapon.axe_heavy");
     public static final DeferredHolder<SoundEvent, SoundEvent> AXE_HIT = register("weapon.axe_hit");
+    /** 0.5: ataque especial do machado (Golpe Sismico). */
+    public static final DeferredHolder<SoundEvent, SoundEvent> AXE_SPECIAL = register("weapon.axe_special");
     public static final DeferredHolder<SoundEvent, SoundEvent> PARRY = register("weapon.parry");
     public static final DeferredHolder<SoundEvent, SoundEvent> GUARD_BREAK = register("weapon.guard_break");
     public static final DeferredHolder<SoundEvent, SoundEvent> DASH = register("suit.dash");
