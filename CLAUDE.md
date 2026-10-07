@@ -4,7 +4,8 @@ Mod fan gratuito de Minecraft, desenvolvido por Miguel Augusto Gnoinsky. Este ar
 Claude Code: leia antes de qualquer tarefa. Responda sempre em **português do Brasil**.
 
 Memória técnica das novas frentes: `docs/SOLDADO_1_IMPLEMENTATION.md`, `docs/COMBAT_VFX_AND_DESTRUCTION.md`,
-`docs/MEGA_ATUALIZACAO_0_2.md` (plano da 0.2, em etapas) e `docs/BALANCEAMENTO.md` (todos os números do jogo e onde
+`docs/MEGA_ATUALIZACAO_0_2.md` (plano da 0.2, em etapas), `docs/PLANO_SOLDADOS_ESPECIAIS.md` (soldados especiais,
+armas especiais, trajes numerados e novos kaiju: ideia do Miguel, entra com os modelos dele) e `docs/BALANCEAMENTO.md` (todos os números do jogo e onde
 ficam; atualizar ao mudar qualquer JSON/config de balanceamento)
 (ler antes de "Continue o Soldado 1", "Continue os efeitos", "Adicione este ataque").
 
@@ -81,6 +82,7 @@ mandam; se algo precisar mudar, marque **[DECIDIR]** e pergunte.
 | Config de servidor | Tipo SERVER, gerado em `<instância>/config/kn8-server.toml` |
 | Protocolo de rede | `"10"` (subir ao mudar qualquer payload; 7 = `PowerView.winded`, 8 = `sounds` no JSON da arma, 9 = carreira, missões, bancada e invasão da 0.2, 10 = nível da invasão, 0.3) |
 | Balanceamento (0.3, Miguel) | Kaiju mais fortes que soldados comuns (Trichonephila fortitude 3,5). Dano de soldado contra kaiju × `kaiju_damage` do `soldier_1.json` (baixo 0,25, normal 0,35, alto 0,8, elite 1,0), no corpo (sem núcleo, [SUPOSIÇÃO]): comuns precisam de grupo, alto/elite resolvem (medido: aranha 12 s com 1 normal, 3,4 s com 4, 2,4 s com 1 elite). Patente de armas/trajes só nos `unlocks` das patentes. Recompensa de invasão proporcional à contribuição (dano/abates; `[invasion] rewardMinFactor`/`rewardMaxFactor`); sem dano, sem recompensa. Tudo em `docs/BALANCEAMENTO.md` |
+| Soldados comuns (0.4) | Variantes no `soldier_1.json`: `{weapon, sidearm, weight}` (rifle/pistola com faca de apoio, espada, faca; recruta peso 0). Arma de apoio na mão secundária: troca quando o kaiju está a menos de `sidearm_distance` (3,5). Sem variante pedida (ovo, `/summon` sem NBT, defensor `"random"`), sorteio por peso. **Soldado comum nunca usa arma especial nem traje numerado; o machado é de um soldado especial** |
 | Invulnerabilidade de kaiju (0.3) | Golpe de quem ataca (com entidade, sem ser explosão) zera a invulnerabilidade vanilla antes de aplicar: o combate do mod já acerta uma vez por ação. Fogo/lava/queda mantêm. Ataques (`MeleeRaycast`) ignoram carcaças |
 | Níveis de invasão (0.3) | `level` 1–5 no `invasion/*.json` (barra e aba Alertas). Nível 4 `kaiju_horde` (20 kaiju, Honju chefe); nível 5 `mass_resurrection` (horda + onda `mass_revive`: o No. 9 revive todas as carcaças da área da invasão, uma a cada `mass_revive_interval_ticks`; `revive_boss` faz o Honju voltar como chefe `revived_honju`). Só por missão/comando (`natural_weight` 0) |
 | Carreira (0.2) | `CareerData` (attachment salvo, copiado na morte) → `CareerView` privado (`CareerSyncS2C`). Patente por mérito + missão de avaliação; a patente dá vida, esquadrão e `unlocks` (receitas/armas), não teto de Release |
@@ -127,6 +129,7 @@ mandam; se algo precisar mudar, marque **[DECIDIR]** e pergunte.
 | **0.2 Etapa 8** (Kaiju No. 9: revive carcaças, comanda kaiju, foge; invasão `no9_resurrection`, missão Ameaça Revivida) | ✅ reviver e fuga vistos em jogo; aguardando roteiro §18 |
 | **0.2 Construções** (posto avançado, prédio destruído, restos de kaiju, torre de vigia; worldgen + baús) | ✅ vistas com `/place structure`; GameTests 41/41; aguardando roteiro §19 (mundo novo) |
 | **0.3 Níveis de invasão** (ideia do Miguel: horda de 20 com Honju; No. 9 revivendo o exército inteiro) | ✅ GameTests 42/42; nível 5 completo visto em jogo com 2 clientes (26 revividos, 7,6 ms/tick); aguardando roteiro §20 |
+| **0.4 Soldados comuns** (variantes, faca de apoio, sorteio, papel no menu, sem machado) | ✅ GameTests 45/45; troca para a faca e aba Esquadrão vistas em jogo com 2 clientes; aguardando roteiro §21 |
 | M11b carcaças e desmonte · M12 transformação · M13 NPCs | pendentes (patentes/crafting do M14 entraram na 0.2) |
 | M15 missões · M16 chefe Honju · M17 Tachikawa · M18 endurecimento/performance | pendentes |
 

@@ -3,6 +3,7 @@ package com.kn8.common.command;
 
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeSet;
 
 import com.kn8.common.data.KN8Data;
 import com.kn8.common.data.def.SoldierDef;
@@ -24,6 +25,8 @@ import net.minecraft.world.entity.MobSpawnType;
  */
 final class SoldierCommands {
 
+    private static final String RANDOM = "random";
+
     private SoldierCommands() {
     }
 
@@ -37,8 +40,11 @@ final class SoldierCommands {
                                 .executes(ctx -> spawn(ctx, StringArgumentType.getString(ctx, "level"))))));
     }
 
+    /** Variantes do JSON + "random" (0.4: sorteia pelo peso, como o ovo). */
     private static Set<String> variants() {
-        return definition().map(def -> def.variants().keySet()).orElse(Set.of());
+        Set<String> names = new TreeSet<>(definition().map(def -> def.variants().keySet()).orElse(Set.of()));
+        names.add(RANDOM);
+        return names;
     }
 
     private static Set<String> levels() {
@@ -62,12 +68,14 @@ final class SoldierCommands {
         }
         soldier.moveTo(source.getPosition().x, source.getPosition().y, source.getPosition().z,
                 source.getRotation().y, 0.0F);
-        soldier.setVariant(variant);
+        if (!RANDOM.equals(variant)) {
+            soldier.setVariant(variant);
+        }
         soldier.setPowerLevel(level);
         soldier.finalizeSpawn(source.getLevel(), source.getLevel().getCurrentDifficultyAt(soldier.blockPosition()),
                 MobSpawnType.COMMAND, null);
         source.getLevel().addFreshEntity(soldier);
-        source.sendSuccess(() -> Component.translatable("kn8.command.soldier.spawned", variant, level,
+        source.sendSuccess(() -> Component.translatable("kn8.command.soldier.spawned", soldier.variant(), level,
                 soldier.release()), true);
         return 1;
     }

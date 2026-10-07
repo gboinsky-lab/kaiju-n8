@@ -13,17 +13,34 @@
     "elite": 30
   },
   "variants": {
-    "unarmed": "minecraft:air",
-    "rifle": "kn8:rifle",
-    "pistol": "kn8:pistol",
-    "sword": "kn8:sword",
-    "knife": "kn8:combat_knife",
-    "axe": "kn8:axe"
+    "rifle": {
+      "weapon": "kn8:rifle",
+      "sidearm": "kn8:combat_knife",
+      "weight": 4
+    },
+    "pistol": {
+      "weapon": "kn8:pistol",
+      "sidearm": "kn8:combat_knife",
+      "weight": 2
+    },
+    "sword": {
+      "weapon": "kn8:sword",
+      "weight": 2
+    },
+    "knife": {
+      "weapon": "kn8:combat_knife",
+      "weight": 2
+    },
+    "unarmed": {
+      "weapon": "minecraft:air",
+      "weight": 0
+    }
   },
   "kaiju_damage": {
     "low": 0.25,
     "normal": 0.35,
     "high": 0.8,
     "elite": 1.0
-  }
+  },
+  "sidearm_distance": 3.5
 }

@@ -84,7 +84,8 @@ final class SquadTab implements MenuTab {
         if (!soldiers.isEmpty()) {
             SoldierEntity soldier = soldiers.get(selected);
             MenuData.renderEntity(g, soldier, px + 4, y + 4, px + pw - 4, y + h - 24, 0.5F, 0.0F, false);
-            Component name = soldier.getDisplayName();
+            Component name = soldier.hasCustomName() ? soldier.getDisplayName()
+                    : Component.translatable("kn8.soldier.variant." + soldier.variant());
             g.drawString(font, name, px + (pw - font.width(name)) / 2, y + h - 18, MenuStyle.TEXT, false);
         }
     }
@@ -95,8 +96,10 @@ final class SquadTab implements MenuTab {
         g.fill(x + 3, y + 2, x + 3 + ROW_HEIGHT - 4, y + ROW_HEIGHT - 2, 0xFF0A1220);
         MenuData.renderEntity(g, soldier, x + 3, y + 2, x - 1 + ROW_HEIGHT, y + ROW_HEIGHT - 2, 0.3F, 0.0F, false);
         int tx = x + ROW_HEIGHT + 4;
-        Component name = Component.translatable("kn8.menu.squad.soldier", Integer.toHexString(soldier.getId())
-                .toUpperCase());
+        // 0.4: papel da variante (Atirador, Patrulheiro...) no lugar de "Soldado".
+        Component name = Component.translatable("kn8.menu.squad.soldier_role",
+                Component.translatable("kn8.soldier.variant." + soldier.variant()),
+                Integer.toHexString(soldier.getId()).toUpperCase());
         g.drawString(font, name, tx, y + 3, MenuStyle.TEXT, false);
         // Vida a direita; o texto da esquerda e cortado antes dela.
         int barW = Math.min(60, w / 4);

@@ -285,13 +285,11 @@
   "kn8.menu.profile.surge": "Surge",
   "kn8.menu.profile.suit": "EQUIPPED SUIT",
   "kn8.menu.profile.suit_default": "Standard suit",
-  "kn8.menu.profile.suit_note": "Suits: M14",
   "kn8.menu.profile.weapons": "WEAPONS",
   "kn8.menu.profile.stats": "STATISTICS",
   "kn8.menu.profile.kills": "Kaiju killed",
   "kn8.menu.profile.dismantled": "Carcasses dismantled",
   "kn8.menu.profile.missions_done": "Missions completed",
-  "kn8.menu.profile.stats_note": "Dismantles and missions count from stage 5",
   "kn8.menu.threat.low": "Low",
   "kn8.menu.threat.medium": "Medium",
   "kn8.menu.threat.high": "High",
@@ -590,5 +588,13 @@
   "kn8.invasion.no_contribution": "Invasion contained (%s), but you dealt no damage to any kaiju: no invasion reward.",
   "kn8.invasion.contribution": "Your contribution: %s kaiju killed, %s damage (%s%% of the squad's damage) → %s%% of the reward",
   "kn8.configuration.rewardMinFactor": "Minimum reward for a fighter",
-  "kn8.configuration.rewardMaxFactor": "Maximum reward for the top fighter"
+  "kn8.configuration.rewardMaxFactor": "Maximum reward for the top fighter",
+  "kn8.menu.squad.soldier_role": "%s %s",
+  "kn8.soldier.variant.rifle": "Rifleman",
+  "kn8.soldier.variant.pistol": "Patroller",
+  "kn8.soldier.variant.sword": "Swordsman",
+  "kn8.soldier.variant.knife": "Scout",
+  "kn8.soldier.variant.unarmed": "Recruit",
+  "kn8.menu.profile.suit_stats": "Armor %s · cuts %s%% of heat",
+  "kn8.menu.profile.suit_none": "No suit: craft one at the workbench and wear it"
 }

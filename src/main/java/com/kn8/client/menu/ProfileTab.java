@@ -143,7 +143,7 @@ final class ProfileTab implements MenuTab {
     }
 
     private static void drawLoadout(GuiGraphics g, Font font, LocalPlayer player, int x, int y, int w, int h) {
-        // Traje equipado: peito kn8 se houver (os trajes chegam no M14).
+        // Traje equipado: o do peito, com armadura e resistencia a calor do suit/*.json (0.3: trajes vestiveis).
         MenuStyle.small(g, font, Component.translatable("kn8.menu.profile.suit"), x, y, MenuStyle.TEXT);
         ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
         g.fill(x, y + 9, x + 22, y + 31, MenuStyle.CARD);
@@ -153,8 +153,11 @@ final class ProfileTab implements MenuTab {
         Component suit = chest.isEmpty() ? Component.translatable("kn8.menu.profile.suit_default") : chest
                 .getHoverName();
         MenuStyle.small(g, font, suit, x + 26, y + 12, MenuStyle.TEXT);
-        MenuStyle.small(g, font, Component.translatable("kn8.menu.profile.suit_note"), x + 26, y + 21,
-                MenuStyle.TEXT_DIM);
+        Component note = KN8Data.SUIT.get(BuiltInRegistries.ITEM.getKey(chest.getItem()), true)
+                .<Component>map(def -> Component.translatable("kn8.menu.profile.suit_stats", Math.round(def.armor()),
+                        Math.round(def.heatResistance() * 100)))
+                .orElse(Component.translatable("kn8.menu.profile.suit_none"));
+        MenuStyle.small(g, font, note, x + 26, y + 21, MenuStyle.TEXT_DIM);
 
         // Armas (dados sincronizados); a da mao fica destacada.
         int wy = y + 38;
@@ -179,10 +182,6 @@ final class ProfileTab implements MenuTab {
         stat(g, font, x, st + 24, w, "kn8.menu.profile.dismantled", String.valueOf(stats.dismantled()));
         stat(g, font, x, st + 38, w, "kn8.menu.profile.missions_done", String.valueOf(stats.missionsDone()));
         stat(g, font, x, st + 52, w, "kn8.menu.profile.invasions", String.valueOf(stats.invasionsDefended()));
-        if (st + 66 < y + h) {
-            MenuStyle.wrapped(g, font, Component.translatable("kn8.menu.profile.stats_note"), x, st + 66, w,
-                    MenuStyle.TEXT_DIM, Math.max(1, (y + h - st - 66) / 7));
-        }
     }
 
     private static void stat(GuiGraphics g, Font font, int x, int y, int w, String key, String value) {

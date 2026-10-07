@@ -327,3 +327,15 @@ Visto na nuvem com 2 clientes (`docs/img/invasao_nivel5_*.png`): nível 5 comple
 | 20.4 | Desmonte carcaças no intervalo antes da onda 3 | Menos kaiju revividos |
 | 20.5 | Derrube o No. 9 durante o gesto | Ele foge e a ressurreição não acontece (ou para no meio) |
 | 20.6 | Oficial Sênior: missões "Contenção da Horda" e, depois dela e de "Ameaça Revivida", "Noite da Ressurreição" | A invasão do nível certo começa perto |
+
+## 21. Soldados comuns: variantes (0.4)
+
+Visto na nuvem com 2 clientes (`docs/img/esquadrao_variantes.png`, `soldado_faca_apoio.png`).
+
+| # | Passo | Esperado |
+|---|---|---|
+| 21.1 | Ovo de soldado várias vezes (ou `/kn8 soldier spawn random`) | Variantes sorteadas: Atirador (rifle), Patrulheiro (pistola), Espadachim (espada), Batedor (faca); nunca machado |
+| 21.2 | M → Esquadrão | Cada soldado com o papel no nome ("Atirador 5", "Batedor B"...) |
+| 21.3 | Atirador com um kaiju chegando perto | Troca para a faca (som de equipar) quando o kaiju fica a menos de 3,5 blocos; volta ao rifle quando ele se afasta ou some |
+| 21.4 | Invasões | Defensores misturados (variante "random") |
+| 21.5 | M → Perfil com o Mk1 vestido | "Armadura 12 · corta 15% do calor"; sem traje, a dica de fabricar na bancada |

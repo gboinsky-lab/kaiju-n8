@@ -182,10 +182,12 @@ public final class DataValidation {
                 report.error(where + ": precisa de power_levels e variants");
                 return;
             }
-            def.variants().forEach((name, item) -> {
-                if (!BuiltInRegistries.ITEM.containsKey(item)) {
-                    report.warning(where + ": arma da variante " + name + " nao registrada " + item);
+            def.variants().forEach((name, variant) -> {
+                if (!BuiltInRegistries.ITEM.containsKey(variant.weapon())) {
+                    report.warning(where + ": arma da variante " + name + " nao registrada " + variant.weapon());
                 }
+                variant.sidearm().filter(item -> !BuiltInRegistries.ITEM.containsKey(item)).ifPresent(item ->
+                        report.warning(where + ": arma de apoio da variante " + name + " nao registrada " + item));
             });
             valid.put(id, def);
         });

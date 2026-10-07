@@ -285,13 +285,11 @@
   "kn8.menu.profile.surge": "Surto",
   "kn8.menu.profile.suit": "TRAJE EQUIPADO",
   "kn8.menu.profile.suit_default": "Traje padrão",
-  "kn8.menu.profile.suit_note": "Trajes: M14",
   "kn8.menu.profile.weapons": "ARMAS",
   "kn8.menu.profile.stats": "ESTATÍSTICAS",
   "kn8.menu.profile.kills": "Kaiju abatidos",
   "kn8.menu.profile.dismantled": "Carcaças desmontadas",
   "kn8.menu.profile.missions_done": "Missões cumpridas",
-  "kn8.menu.profile.stats_note": "Desmontes e missões contam a partir da Etapa 5",
   "kn8.menu.threat.low": "Baixo",
   "kn8.menu.threat.medium": "Médio",
   "kn8.menu.threat.high": "Alto",
@@ -590,5 +588,13 @@
   "kn8.invasion.no_contribution": "Invasão contida (%s), mas você não causou dano em nenhum kaiju: sem recompensa da invasão.",
   "kn8.invasion.contribution": "Sua contribuição: %s kaiju abatidos, %s de dano (%s%% do dano da tropa) → %s%% da recompensa",
   "kn8.configuration.rewardMinFactor": "Recompensa mínima de quem lutou",
-  "kn8.configuration.rewardMaxFactor": "Recompensa máxima de quem carregou a luta"
+  "kn8.configuration.rewardMaxFactor": "Recompensa máxima de quem carregou a luta",
+  "kn8.menu.squad.soldier_role": "%s %s",
+  "kn8.soldier.variant.rifle": "Atirador",
+  "kn8.soldier.variant.pistol": "Patrulheiro",
+  "kn8.soldier.variant.sword": "Espadachim",
+  "kn8.soldier.variant.knife": "Batedor",
+  "kn8.soldier.variant.unarmed": "Recruta",
+  "kn8.menu.profile.suit_stats": "Armadura %s · corta %s%% do calor",
+  "kn8.menu.profile.suit_none": "Sem traje: fabrique na bancada e vista no peito"
 }

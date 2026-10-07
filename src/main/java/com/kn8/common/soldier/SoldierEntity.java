@@ -16,6 +16,7 @@ import com.kn8.common.data.KN8Data;
 import com.kn8.common.data.def.SoldierDef;
 import com.kn8.common.data.def.WeaponDef;
 import com.kn8.common.kaiju.KaijuEntity;
+import com.kn8.common.registry.KN8Items;
 import com.kn8.common.registry.KN8Sounds;
 import com.kn8.common.vfx.VfxService;
 import com.kn8.core.combat.ActionTimeline;
@@ -91,6 +92,7 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
     private static final float SHOT_VOLUME = 1.0F;
     private static final float MELEE_VOLUME = 0.8F;
     private static final double MUZZLE_DISTANCE = 0.9;
+    private static final int SWAP_COOLDOWN_TICKS = 20;
 
     private static final RawAnimation IDLE = RawAnimation.begin().thenLoop("soldier.movement.idle");
     private static final RawAnimation WALK = RawAnimation.begin().thenLoop("soldier.movement.walk");
@@ -120,6 +122,9 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
     private float currentMultiplier = 1.0F;
     private boolean currentUnarmed;
     private LivingEntity actionTarget;
+    /** 0.4: variante ja escolhida (comando, invasao, NBT); senao o finalizeSpawn sorteia. */
+    private boolean variantChosen;
+    private int swapCooldown;
 
     public SoldierEntity(EntityType<? extends SoldierEntity> type, Level level) {
         super(type, level);
@@ -162,13 +167,59 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
         return def().map(def -> def.kaijuDamage().getOrDefault(powerLevel(), 1.0F)).orElse(1.0F);
     }
 
-    /** Variante = arma na mao (item do JSON; {@code minecraft:air} = sem arma). */
+    /**
+     * Variante = arma principal na mao e arma de apoio na outra mao (0.4; itens do JSON, {@code minecraft:air} = sem
+     * arma). O atirador troca de mao quando o kaiju chega perto ({@link #updateLoadout}).
+     */
     public void setVariant(String variant) {
         entityData.set(VARIANT, variant);
-        ItemStack weapon = def().map(def -> def.variants().get(variant))
-                .map(id -> new ItemStack(BuiltInRegistries.ITEM.get(id))).orElse(ItemStack.EMPTY);
-        setItemSlot(EquipmentSlot.MAINHAND, weapon.is(Items.AIR) ? ItemStack.EMPTY : weapon);
+        variantChosen = true;
+        Optional<SoldierDef.Variant> loadout = def().map(def -> def.variants().get(variant));
+        setItemSlot(EquipmentSlot.MAINHAND, stack(loadout.map(SoldierDef.Variant::weapon)));
+        setItemSlot(EquipmentSlot.OFFHAND, stack(loadout.flatMap(SoldierDef.Variant::sidearm)));
         setDropChance(EquipmentSlot.MAINHAND, 0.0F);
+        setDropChance(EquipmentSlot.OFFHAND, 0.0F);
+    }
+
+    private static ItemStack stack(Optional<ResourceLocation> id) {
+        ItemStack stack = id.map(value -> new ItemStack(BuiltInRegistries.ITEM.get(value))).orElse(ItemStack.EMPTY);
+        return stack.is(Items.AIR) ? ItemStack.EMPTY : stack;
+    }
+
+    /**
+     * Arma de apoio (0.4): com uma arma de fogo na mao e o kaiju a menos de {@code sidearm_distance} blocos (borda da
+     * hitbox), troca para a arma de apoio (faca); com o kaiju a mais do dobro disso, volta para a arma de fogo.
+     * Espera {@link #SWAP_COOLDOWN_TICKS} entre trocas para nao ficar trocando a cada tick na beira da distancia.
+     */
+    void updateLoadout(double edge) {
+        if (swapCooldown > 0 || getOffhandItem().isEmpty() || isActing()) {
+            return;
+        }
+        float distance = def().map(SoldierDef::sidearmDistance).orElse(3.5F);
+        boolean shooting = isShooter();
+        boolean primaryIsGun = WeaponIndex.find(getOffhandItem(), false)
+                .map(weapon -> weapon.style() == WeaponDef.Style.FIREARM).orElse(false);
+        if ((shooting && edge < distance) || (!shooting && primaryIsGun && edge > distance * 2)) {
+            swapHands();
+        }
+    }
+
+    /** Sem alvo: volta para a arma principal (a de fogo, se ela estiver na outra mao). */
+    void restorePrimary() {
+        boolean primaryIsGun = WeaponIndex.find(getOffhandItem(), false)
+                .map(weapon -> weapon.style() == WeaponDef.Style.FIREARM).orElse(false);
+        if (!isShooter() && primaryIsGun) {
+            swapHands();
+        }
+    }
+
+    private void swapHands() {
+        ItemStack main = getMainHandItem();
+        setItemSlot(EquipmentSlot.MAINHAND, getOffhandItem());
+        setItemSlot(EquipmentSlot.OFFHAND, main);
+        swapCooldown = SWAP_COOLDOWN_TICKS;
+        level().playSound(null, blockPosition(), SoundEvents.ARMOR_EQUIP_GENERIC.value(), SoundSource.NEUTRAL, 0.6F,
+                1.2F);
     }
 
     public void setPowerLevel(String level) {
@@ -207,11 +258,15 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
      * armas no cliente. Variante desconhecida: lamina se tiver item na mao, senao sem arma.
      */
     public String armPose() {
-        String variant = variant();
-        if (POSE_RIFLE.equals(variant) || POSE_PISTOL.equals(variant)) {
-            return variant;
+        // 0.4: pela arma que esta na mao (o atirador pode estar com a faca de apoio).
+        ItemStack held = getMainHandItem();
+        if (held.is(KN8Items.RIFLE.get())) {
+            return POSE_RIFLE;
         }
-        return getMainHandItem().isEmpty() ? POSE_UNARMED : POSE_BLADE;
+        if (held.is(KN8Items.PISTOL.get())) {
+            return POSE_PISTOL;
+        }
+        return held.isEmpty() ? POSE_UNARMED : POSE_BLADE;
     }
 
     public boolean isFirearmPose() {
@@ -235,7 +290,9 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason,
             @Nullable SpawnGroupData data) {
         SpawnGroupData result = super.finalizeSpawn(level, difficulty, reason, data);
-        setVariant(variant());
+        // 0.4: sem variante pedida (ovo, /summon sem NBT, defensor "random"), sorteia pelo peso do JSON.
+        setVariant(variantChosen ? variant() : def().map(def -> def.randomVariant(getRandom(), DEFAULT_VARIANT))
+                .orElse(DEFAULT_VARIANT));
         setPowerLevel(powerLevel());
         return result;
     }
@@ -321,6 +378,9 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
     @Override
     public void tick() {
         super.tick();
+        if (swapCooldown > 0) {
+            swapCooldown--;
+        }
         if (!level().isClientSide() && timeline.consumeImpact(level().getGameTime())) {
             resolveImpact();
         }
@@ -386,6 +446,7 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
         super.readAdditionalSaveData(tag);
         if (tag.contains(TAG_VARIANT)) {
             entityData.set(VARIANT, tag.getString(TAG_VARIANT));
+            variantChosen = true;
         }
         if (tag.contains(TAG_LEVEL)) {
             entityData.set(LEVEL, tag.getString(TAG_LEVEL));

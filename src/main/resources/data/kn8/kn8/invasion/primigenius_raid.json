@@ -38,12 +38,12 @@
   ],
   "defenders": [
     {
-      "variant": "rifle",
+      "variant": "random",
       "level": "normal",
       "count": 3
     },
     {
-      "variant": "axe",
+      "variant": "sword",
       "level": "high",
       "count": 1
     }

@@ -56,7 +56,9 @@ public final class No9GameTests {
         no9.getPersistentData().putBoolean(No9Service.MASS_TAG, true);
         AABB area = new AABB(center).inflate(AREA);
 
-        helper.runAfterDelay(170, () -> {
+        // Espera ate o exercito levantar (gesto de 100 ticks + uma carcaca a cada 4), sem instante fixo: em lote
+        // o pensamento do No. 9 (a cada 10 ticks) pode cair alguns ticks depois.
+        helper.succeedWhen(() -> {
             helper.assertTrue(level.getEntitiesOfClass(CarcassEntity.class, area).isEmpty(),
                     "Todas as carcacas deveriam ter sido revividas");
             List<KaijuEntity> resurrected = level.getEntitiesOfClass(KaijuEntity.class, area, kaiju -> kaiju
@@ -68,7 +70,6 @@ public final class No9GameTests {
             helper.assertTrue(revivedBoss.size() == 1, "O Honju deveria voltar como chefe revivido");
             level.getEntitiesOfClass(Entity.class, area, entity -> entity instanceof KaijuEntity
                     || entity instanceof CarcassEntity).forEach(Entity::discard);
-            helper.succeed();
         });
     }
 

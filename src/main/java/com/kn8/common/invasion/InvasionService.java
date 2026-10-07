@@ -54,6 +54,7 @@ public final class InvasionService {
     /** Marca nos kaiju e soldados da invasao (dados persistentes da entidade). */
     public static final String TAG = KN8Constants.MOD_ID + "_invasion";
     private static final int LOGIC_INTERVAL = 20;
+    private static final String RANDOM_VARIANT = "random";
     private static final int SIREN_INTERVAL = 100;
     private static final double MARCH_SPEED = 1.0;
     /** Kaiju sem alvo a menos disso do centro param de marchar (passeiam/atacam na area). */
@@ -250,7 +251,10 @@ public final class InvasionService {
                 BlockPos pos = KaijuSpawner.surfaceAround(level, invasion.center, 2, 8, level.random);
                 soldier.moveTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, level.random.nextFloat() * 360.0F,
                         0.0F);
-                soldier.setVariant(defender.variant());
+                if (!RANDOM_VARIANT.equals(defender.variant())) {
+                    // "random": o finalizeSpawn sorteia pelo peso do JSON (esquadrao misturado).
+                    soldier.setVariant(defender.variant());
+                }
                 soldier.setPowerLevel(defender.level());
                 soldier.finalizeSpawn(level, level.getCurrentDifficultyAt(pos), MobSpawnType.EVENT, null);
                 soldier.getPersistentData().putBoolean(TAG, true);

@@ -10,6 +10,7 @@ import net.minecraft.world.phys.Vec3;
 /**
  * Combate do soldado: atirador mantem distancia ({@code keep_distance} do JSON, com folga) e atira com linha de
  * visada; quem usa lamina ou soco se aproxima ate o alcance (medido ate a borda da hitbox, para kaiju grandes).
+ * 0.4: o atirador com arma de apoio troca para ela quando o kaiju chega perto (SoldierEntity#updateLoadout).
  */
 final class SoldierCombatGoal extends Goal {
 
@@ -40,6 +41,7 @@ final class SoldierCombatGoal extends Goal {
 
     @Override
     public void stop() {
+        soldier.restorePrimary();
         soldier.setAggressive(false);
         soldier.getNavigation().stop();
     }
@@ -59,6 +61,7 @@ final class SoldierCombatGoal extends Goal {
         // Distancia ate a borda da hitbox do alvo (kaiju sao grandes).
         double edge = Math.sqrt(target.getBoundingBox().distanceToSqr(soldier.getEyePosition()));
         boolean sees = soldier.getSensing().hasLineOfSight(target);
+        soldier.updateLoadout(edge);
         if (soldier.isShooter()) {
             double keep = soldier.keepDistance();
             if (--repath <= 0) {

@@ -205,6 +205,10 @@ sobe mais rápido. A fuga do No. 9 só dá mérito a quem causou dano nele.
 
 Vida 24, armadura 6, alcance de visão 40. Níveis de força (Release): baixo 5, normal 10, alto 20, elite 30.
 
+Variantes comuns (0.4, peso no sorteio): Atirador rifle + faca de apoio (4), Patrulheiro pistola + faca (2),
+Espadachim espada (2), Batedor faca (2), Recruta sem arma (0). Troca para a faca com o kaiju a menos de 3,5 blocos
+(`sidearm_distance`). Soldado comum não usa machado (arma especial).
+
 ✅ 0.3 (decisão do Miguel: soldados simples precisam de grupo; fortes resolvem sozinhos): dano contra kaiju ×
 `kaiju_damage` por nível — baixo **0,25**, normal **0,35**, alto **0,8**, elite **1,0**. [SUPOSIÇÃO] O tiro do
 soldado acerta o corpo (sem núcleo nem partes): mirar no núcleo é habilidade do jogador.

@@ -25,14 +25,9 @@
   ],
   "defenders": [
     {
-      "variant": "rifle",
+      "variant": "random",
       "level": "normal",
-      "count": 2
-    },
-    {
-      "variant": "sword",
-      "level": "normal",
-      "count": 1
+      "count": 3
     }
   ],
   "rewards": {
