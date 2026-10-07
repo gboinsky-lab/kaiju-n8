@@ -1,0 +1,26 @@
+{
+  "category": "emergency",
+  "giver": "kn8:officer",
+  "requires": {
+    "rank": "kn8:oficial_senior",
+    "completed": [
+      "kn8:horde_defense",
+      "kn8:revived_threat"
+    ]
+  },
+  "objectives": [
+    {
+      "type": "defend_invasion",
+      "target": "kn8:mass_resurrection"
+    }
+  ],
+  "rewards": {
+    "merit": 1000,
+    "training_xp": 1500,
+    "items": [
+      "kn8:intact_core"
+    ]
+  },
+  "repeatable": true,
+  "cooldown_ticks": 72000
+}

@@ -313,3 +313,17 @@ aparecem sozinhas em mundo novo (ou em chunks ainda não gerados), nos biomas de
 | 19.4 | `/place structure kn8:watchtower` | Torre de 19 m com escada, sino (sirene), holofote, baú e um soldado com rifle no alto |
 | 19.5 | Mundo novo, `/locate structure kn8:defense_outpost` (e os outros) | Acha uma perto; chegando lá, a construção está assentada no terreno |
 | 19.6 | Abra os baús | Itens do mod (tecido, fibra, resfriador, estimulante, fragmento de núcleo...) |
+
+## 20. Níveis de invasão (0.3)
+
+Visto na nuvem com 2 clientes (`docs/img/invasao_nivel5_*.png`): nível 5 completo, 26 kaiju revividos de uma vez
+(o Honju volta como chefe "Honju revivido"), servidor a 7,6 ms por tick.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 20.1 | Qualquer invasão | Barra "INVASÃO NÍVEL N"; aba Alertas com selo colorido do nível (1 baixo … 5 catástrofe) |
+| 20.2 | `/kn8 invasion start kn8:kaiju_horde` | Nível 4: 10 kaiju na onda 1, 9 + Honju chefe na onda 2 (20 no total) |
+| 20.3 | `/kn8 invasion start kn8:mass_resurrection` | Nível 5: a mesma horda; depois dela o No. 9 chega, para, ergue os braços e avisa "ESTÁ REVIVENDO N CARCAÇAS"; 5 s depois o exército levanta um a um (do mais perto ao mais longe), o Honju volta como chefe com barra |
+| 20.4 | Desmonte carcaças no intervalo antes da onda 3 | Menos kaiju revividos |
+| 20.5 | Derrube o No. 9 durante o gesto | Ele foge e a ressurreição não acontece (ou para no meio) |
+| 20.6 | Oficial Sênior: missões "Contenção da Horda" e, depois dela e de "Ameaça Revivida", "Noite da Ressurreição" | A invasão do nível certo começa perto |

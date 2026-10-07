@@ -14,10 +14,10 @@ import net.minecraft.resources.ResourceLocation;
  * {@code -1} = nenhuma invasao. O relogio e calculado no cliente a partir de {@code timerEnd} (tempo do mundo).
  */
 public record InvasionStateS2C(int phase, ResourceLocation invasion, BlockPos center, int wave, int waves,
-        int remaining, int total, long timerEnd) implements CustomPacketPayload {
+        int remaining, int total, long timerEnd, int level) implements CustomPacketPayload {
 
     public static final InvasionStateS2C NONE = new InvasionStateS2C(-1, KN8Constants.id("none"), BlockPos.ZERO, 0,
-            0, 0, 0, 0L);
+            0, 0, 0, 0L, 0);
 
     public static final Type<InvasionStateS2C> TYPE = new Type<>(KN8Constants.id("invasion_state"));
 
@@ -26,7 +26,8 @@ public record InvasionStateS2C(int phase, ResourceLocation invasion, BlockPos ce
 
     private static InvasionStateS2C read(FriendlyByteBuf buf) {
         return new InvasionStateS2C(buf.readVarInt(), buf.readResourceLocation(), buf.readBlockPos(),
-                buf.readVarInt(), buf.readVarInt(), buf.readVarInt(), buf.readVarInt(), buf.readVarLong());
+                buf.readVarInt(), buf.readVarInt(), buf.readVarInt(), buf.readVarInt(), buf.readVarLong(),
+                buf.readVarInt());
     }
 
     private void write(FriendlyByteBuf buf) {
@@ -38,6 +39,7 @@ public record InvasionStateS2C(int phase, ResourceLocation invasion, BlockPos ce
         buf.writeVarInt(remaining);
         buf.writeVarInt(total);
         buf.writeVarLong(timerEnd);
+        buf.writeVarInt(level);
     }
 
     public boolean active() {

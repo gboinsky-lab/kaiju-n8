@@ -12,10 +12,10 @@ import net.minecraft.resources.ResourceLocation;
  * Alerta de invasao ({@code data/<ns>/kn8/invasion/<id>.json}, 0.2 Etapa 7): sirene durante {@code warning_ticks},
  * depois ondas de kaiju chegando de fora para dentro da area. A proxima onda vem {@code delay_ticks} depois de a
  * anterior ser eliminada. Soldados de defesa surgem no centro; quem esteve na area no fim ganha a recompensa.
- * {@code natural_weight} 0 = so por comando (ou missao).
+ * {@code natural_weight} 0 = so por comando (ou missao). {@code level} (0.3): nivel de 1 a 5 mostrado ao jogador.
  */
 public record InvasionDef(int warningTicks, List<Wave> waves, float spawnMin, float spawnMax, float radius,
-        int timeLimitTicks, List<Defender> defenders, MissionDef.Rewards rewards, int naturalWeight) {
+        int timeLimitTicks, List<Defender> defenders, MissionDef.Rewards rewards, int naturalWeight, int level) {
 
     public record Spawn(ResourceLocation species, int count) {
         public static final Codec<Spawn> CODEC = RecordCodecBuilder.create(i -> i.group(
@@ -24,12 +24,16 @@ public record InvasionDef(int warningTicks, List<Wave> waves, float spawnMin, fl
         ).apply(i, Spawn::new));
     }
 
-    /** Uma onda: kaiju comuns e, opcionalmente, um chefe ({@code boss/*.json}). */
-    public record Wave(List<Spawn> kaiju, Optional<ResourceLocation> boss, int delayTicks) {
+    /**
+     * Uma onda: kaiju comuns e, opcionalmente, um chefe ({@code boss/*.json}). {@code mass_revive} (0.3): os
+     * numerados desta onda (Kaiju No. 9) revivem de uma vez TODAS as carcacas da area, sem o limite normal.
+     */
+    public record Wave(List<Spawn> kaiju, Optional<ResourceLocation> boss, int delayTicks, boolean massRevive) {
         public static final Codec<Wave> CODEC = RecordCodecBuilder.create(i -> i.group(
                 Spawn.CODEC.listOf().optionalFieldOf("kaiju", List.of()).forGetter(Wave::kaiju),
                 ResourceLocation.CODEC.optionalFieldOf("boss").forGetter(Wave::boss),
-                DefCodecs.TICKS.optionalFieldOf("delay_ticks", 400).forGetter(Wave::delayTicks)
+                DefCodecs.TICKS.optionalFieldOf("delay_ticks", 400).forGetter(Wave::delayTicks),
+                Codec.BOOL.optionalFieldOf("mass_revive", false).forGetter(Wave::massRevive)
         ).apply(i, Wave::new));
 
         public int size() {
@@ -56,7 +60,8 @@ public record InvasionDef(int warningTicks, List<Wave> waves, float spawnMin, fl
             Defender.CODEC.listOf().optionalFieldOf("defenders", List.of()).forGetter(InvasionDef::defenders),
             MissionDef.Rewards.CODEC.optionalFieldOf("rewards", MissionDef.Rewards.NONE)
                     .forGetter(InvasionDef::rewards),
-            Codec.intRange(0, 1000).optionalFieldOf("natural_weight", 1).forGetter(InvasionDef::naturalWeight)
+            Codec.intRange(0, 1000).optionalFieldOf("natural_weight", 1).forGetter(InvasionDef::naturalWeight),
+            Codec.intRange(1, 5).optionalFieldOf("level", 1).forGetter(InvasionDef::level)
     ).apply(i, InvasionDef::new));
 
     public int totalKaiju() {

@@ -22,6 +22,8 @@ import net.minecraft.network.chat.Component;
 final class AlertsTab implements MenuTab {
 
     private static final double RADIUS = 128.0;
+    private static final int[] LEVEL_COLORS = {MenuStyle.GREEN, MenuStyle.YELLOW, MenuStyle.ORANGE, MenuStyle.RED,
+            0xFFD040FF};
     private static final int ROW_HEIGHT = 30;
 
     private List<KaijuEntity> sighted = List.of();
@@ -86,9 +88,14 @@ final class AlertsTab implements MenuTab {
         }
         Invasion.Phase phase = Invasion.Phase.values()[Math.min(state.phase(), Invasion.Phase.values().length - 1)];
         boolean blink = (System.currentTimeMillis() / 500) % 2 == 0;
-        g.drawString(font, Component.translatable("kn8.menu.alerts.invasion").append(" · ")
-                .append(Component.translatable("kn8.invasion." + state.invasion().getPath())), x, y + 6,
-                blink ? MenuStyle.RED : MenuStyle.ORANGE, false);
+        Component title = Component.translatable("kn8.menu.alerts.invasion").append(" · ")
+                .append(Component.translatable("kn8.invasion." + state.invasion().getPath()));
+        g.drawString(font, title, x, y + 6, blink ? MenuStyle.RED : MenuStyle.ORANGE, false);
+        // 0.3: selo do nivel (1 a 5) ao lado do nome, mais quente quanto maior.
+        int level = Math.max(1, Math.min(5, state.level()));
+        MenuStyle.badge(g, font, Component.translatable("kn8.menu.alerts.level", level,
+                Component.translatable("kn8.invasion.level." + level)), x + font.width(title) + 6, y + 6,
+                LEVEL_COLORS[level - 1]);
         LocalPlayer player = MenuData.player();
         long now = player == null ? 0 : player.level().getGameTime();
         long seconds = Math.max(0, (state.timerEnd() - now) / 20);

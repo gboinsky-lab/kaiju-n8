@@ -1,15 +1,20 @@
 {
-  "warning_ticks": 400,
+  "level": 4,
+  "warning_ticks": 600,
   "spawn_min": 40,
-  "spawn_max": 60,
-  "radius": 100,
-  "time_limit_ticks": 18000,
+  "spawn_max": 64,
+  "radius": 128,
+  "time_limit_ticks": 36000,
   "waves": [
     {
       "kaiju": [
         {
+          "species": "kn8:trichonephila",
+          "count": 6
+        },
+        {
           "species": "kn8:primigenius",
-          "count": 2
+          "count": 4
         }
       ]
     },
@@ -17,22 +22,14 @@
       "kaiju": [
         {
           "species": "kn8:primigenius",
-          "count": 2
+          "count": 5
         },
         {
           "species": "kn8:trichonephila",
-          "count": 2
+          "count": 4
         }
       ],
-      "delay_ticks": 500
-    },
-    {
-      "kaiju": [
-        {
-          "species": "kn8:primigenius",
-          "count": 3
-        }
-      ],
+      "boss": "kn8:honju",
       "delay_ticks": 500
     }
   ],
@@ -43,20 +40,20 @@
       "count": 3
     },
     {
-      "variant": "axe",
-      "level": "high",
+      "variant": "sword",
+      "level": "normal",
       "count": 1
     }
   ],
   "rewards": {
-    "merit": 150,
-    "training_xp": 300,
+    "merit": 700,
+    "training_xp": 900,
     "items": [
-      "kn8:muscle_fiber",
       "kn8:core_fragment",
-      "kn8:suit_coolant"
+      "kn8:core_fragment",
+      "kn8:release_catalyst",
+      "kn8:intact_core"
     ]
   },
-  "natural_weight": 2,
-  "level": 2
+  "natural_weight": 0
 }

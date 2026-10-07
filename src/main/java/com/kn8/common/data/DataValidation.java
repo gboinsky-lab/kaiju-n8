@@ -71,7 +71,8 @@ public final class DataValidation {
                 report);
         publish(KN8Data.SOLDIER, validateSoldiers(KN8Data.SOLDIER.loaded(), report), report);
         publish(KN8Data.WORKBENCH, validateWorkbench(KN8Data.WORKBENCH.loaded(), report), report);
-        publish(KN8Data.NUMBERED, validateNumbered(KN8Data.NUMBERED.loaded(), kaiju.keySet(), report), report);
+        publish(KN8Data.NUMBERED, validateNumbered(KN8Data.NUMBERED.loaded(), kaiju.keySet(),
+                bosses.keySet(), report), report);
         publish(KN8Data.INVASION, validateInvasions(KN8Data.INVASION.loaded(), kaiju.keySet(), bosses.keySet(), report),
                 report);
         // Patentes apontam para missoes de avaliacao, que so foram validadas agora: confere no fim (so aviso).
@@ -119,7 +120,7 @@ public final class DataValidation {
 
     /** 0.2 (Etapa 8): o numerado e as especies de {@code revive} (carcaca e revivida) precisam existir. */
     public static Map<ResourceLocation, NumberedDef> validateNumbered(Map<ResourceLocation, NumberedDef> input,
-            Set<ResourceLocation> kaiju, DataReport report) {
+            Set<ResourceLocation> kaiju, Set<ResourceLocation> bosses, DataReport report) {
         Map<ResourceLocation, NumberedDef> valid = new LinkedHashMap<>();
         input.forEach((id, def) -> {
             String where = "numbered " + id;
@@ -130,6 +131,12 @@ public final class DataValidation {
             for (Map.Entry<ResourceLocation, ResourceLocation> entry : def.revive().entrySet()) {
                 if (!kaiju.contains(entry.getKey()) || !kaiju.contains(entry.getValue())) {
                     report.error(where + ": revive com especie inexistente " + entry);
+                    return;
+                }
+            }
+            for (Map.Entry<ResourceLocation, ResourceLocation> entry : def.reviveBoss().entrySet()) {
+                if (!kaiju.contains(entry.getKey()) || !bosses.contains(entry.getValue())) {
+                    report.error(where + ": revive_boss com especie ou chefe inexistente " + entry);
                     return;
                 }
             }

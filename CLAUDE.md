@@ -78,7 +78,8 @@ mandam; se algo precisar mudar, marque **[DECIDIR]** e pergunte.
 | Hitbox de mob | `getDefaultDimensions` (em `LivingEntity` o `getDimensions` é final) |
 | Alcance de kaiju | Sempre entre bordas (`edgeDistance`), nunca centro a centro |
 | Config de servidor | Tipo SERVER, gerado em `<instância>/config/kn8-server.toml` |
-| Protocolo de rede | `"9"` (subir ao mudar qualquer payload; 7 = `PowerView.winded`, 8 = `sounds` no JSON da arma, 9 = carreira, missões, bancada e invasão da 0.2) |
+| Protocolo de rede | `"10"` (subir ao mudar qualquer payload; 7 = `PowerView.winded`, 8 = `sounds` no JSON da arma, 9 = carreira, missões, bancada e invasão da 0.2, 10 = nível da invasão, 0.3) |
+| Níveis de invasão (0.3) | `level` 1–5 no `invasion/*.json` (barra e aba Alertas). Nível 4 `kaiju_horde` (20 kaiju, Honju chefe); nível 5 `mass_resurrection` (horda + onda `mass_revive`: o No. 9 revive todas as carcaças da área da invasão, uma a cada `mass_revive_interval_ticks`; `revive_boss` faz o Honju voltar como chefe `revived_honju`). Só por missão/comando (`natural_weight` 0) |
 | Carreira (0.2) | `CareerData` (attachment salvo, copiado na morte) → `CareerView` privado (`CareerSyncS2C`). Patente por mérito + missão de avaliação; a patente dá vida, esquadrão e `unlocks` (receitas/armas), não teto de Release |
 | Bancada (0.2) | Receitas em `data/kn8/kn8/workbench/*.json` (sincronizadas); `CraftC2S` → servidor confere bancada a 6 blocos, patente e materiais. Trajes: armadura/resistência a calor do `suit/<id do item>.json` via `ItemAttributeModifierEvent` |
 | Invasões (0.2) | Uma por dimensão, no `KN8Server` (não salva); ondas do `invasion/*.json`; `InvasionStateS2C` público só na mudança; kaiju só por alertas/invasões/missões (`spawn.natural` desligado) |
@@ -122,6 +123,7 @@ mandam; se algo precisar mudar, marque **[DECIDIR]** e pergunte.
 | **0.2 Etapa 7** (alertas de invasão: sirene, ondas, defensores, barra, recompensa; `/kn8 invasion`; missão Defesa da Cidade) | ✅ vista em jogo com 2 clientes (vitória e recompensa); aguardando roteiro §17 |
 | **0.2 Etapa 8** (Kaiju No. 9: revive carcaças, comanda kaiju, foge; invasão `no9_resurrection`, missão Ameaça Revivida) | ✅ reviver e fuga vistos em jogo; aguardando roteiro §18 |
 | **0.2 Construções** (posto avançado, prédio destruído, restos de kaiju, torre de vigia; worldgen + baús) | ✅ vistas com `/place structure`; GameTests 41/41; aguardando roteiro §19 (mundo novo) |
+| **0.3 Níveis de invasão** (ideia do Miguel: horda de 20 com Honju; No. 9 revivendo o exército inteiro) | ✅ GameTests 42/42; nível 5 completo visto em jogo com 2 clientes (26 revividos, 7,6 ms/tick); aguardando roteiro §20 |
 | M11b carcaças e desmonte · M12 transformação · M13 NPCs | pendentes (patentes/crafting do M14 entraram na 0.2) |
 | M15 missões · M16 chefe Honju · M17 Tachikawa · M18 endurecimento/performance | pendentes |
 
@@ -138,6 +140,10 @@ mandam; se algo precisar mudar, marque **[DECIDIR]** e pergunte.
   `CareerService.promote`; rastreador de missão ficava sob a barra do kaiju → desce para baixo dela; restos de
   kaiju enterrados em morro (sem adaptação de terreno) → `beard_thin` e só biomas planos. `/reload` não recarrega
   estruturas de worldgen (reiniciar o servidor).
+- **0.3 (níveis de invasão):** soldados de defesa **elite** matam uma Trichonephila (28 de vida) em menos de 1 s e
+  esvaziavam as ondas sozinhos → defensores dos níveis 4–5 em nível normal/alto (balanceamento da aranha e do dano
+  dos soldados fica para a tabela). Carcaças ficam espalhadas pelo anel de chegada e o No. 9 chega por um lado só →
+  a ressurreição em massa procura na área inteira da invasão, não só em volta dele.
 
 - **PT1:** `syncInitialAttachments` ignora `sendToPlayer` → dados privados sem `.sync()`.
 - **PT6:** tecla L conflitava com Conquistas → esquiva em **Z**.

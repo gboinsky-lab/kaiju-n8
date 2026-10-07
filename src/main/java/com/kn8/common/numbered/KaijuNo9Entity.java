@@ -27,6 +27,9 @@ public class KaijuNo9Entity extends KaijuEntity {
     long nextReviveAt;
     boolean fled;
     final List<UUID> revived = new ArrayList<>();
+    /** 0.3: carcacas na fila da ressurreicao em massa e o tick do proximo levante. */
+    final List<UUID> massQueue = new ArrayList<>();
+    long nextMassAt;
 
     public KaijuNo9Entity(EntityType<? extends KaijuEntity> type, Level level) {
         super(type, level);

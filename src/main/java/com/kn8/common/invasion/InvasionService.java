@@ -16,6 +16,8 @@ import com.kn8.common.data.KN8Data;
 import com.kn8.common.data.def.InvasionDef;
 import com.kn8.common.data.def.MissionDef;
 import com.kn8.common.kaiju.KaijuEntity;
+import com.kn8.common.numbered.KaijuNo9Entity;
+import com.kn8.common.numbered.No9Service;
 import com.kn8.common.registry.KN8Entities;
 import com.kn8.common.registry.KN8Sounds;
 import com.kn8.common.server.KN8Server;
@@ -78,8 +80,8 @@ public final class InvasionService {
         if (active(level).isPresent()) {
             return Result.ALREADY_ACTIVE;
         }
-        ServerBossEvent bar = new ServerBossEvent(title(id, Invasion.Phase.WARNING, 0, def.get().waves().size()),
-                BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.NOTCHED_10);
+        ServerBossEvent bar = new ServerBossEvent(title(id, def.get().level(), Invasion.Phase.WARNING, 0,
+                def.get().waves().size()), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.NOTCHED_10);
         bar.setDarkenScreen(true);
         Invasion invasion = new Invasion(id, def.get(), center, level.getGameTime(), bar);
         KN8Server.get(level.getServer()).invasions().put(level.dimension(), invasion);
@@ -187,7 +189,12 @@ public final class InvasionService {
             for (int i = 0; i < spawn.count(); i++) {
                 BlockPos pos = KaijuSpawner.surfaceAround(level, invasion.center, invasion.def.spawnMin(),
                         invasion.def.spawnMax(), level.random);
-                KaijuSpawner.spawn(level, spawn.species(), pos).ifPresent(kaiju -> enlist(invasion, kaiju));
+                KaijuSpawner.spawn(level, spawn.species(), pos).ifPresent(kaiju -> {
+                    enlist(invasion, kaiju);
+                    if (wave.massRevive() && kaiju instanceof KaijuNo9Entity) {
+                        kaiju.getPersistentData().putBoolean(No9Service.MASS_TAG, true);
+                    }
+                });
             }
         }
         wave.boss().ifPresent(boss -> BossService.spawn(level, boss, KaijuSpawner.surfaceAround(level,
@@ -268,18 +275,27 @@ public final class InvasionService {
         }
     }
 
+    /** Total da invasao: o do JSON ou mais, quando o No. 9 revive kaiju no meio dela. */
+    private static int total(Invasion invasion) {
+        return Math.max(invasion.def.totalKaiju(), invasion.killed + invasion.alive.size());
+    }
+
     private static void updateBar(Invasion invasion) {
-        int total = Math.max(1, invasion.def.totalKaiju());
-        invasion.bar.setName(title(invasion.id, invasion.phase, invasion.wave, invasion.def.waves().size()));
+        int total = Math.max(1, total(invasion));
+        invasion.bar.setName(title(invasion, invasion.phase, invasion.wave, invasion.def.waves().size()));
         invasion.bar.setProgress(invasion.phase == Invasion.Phase.WARNING ? 1.0F
                 : Math.max(0.0F, 1.0F - invasion.killed / (float) total));
     }
 
-    private static Component title(ResourceLocation id, Invasion.Phase phase, int wave, int waves) {
+    private static Component title(Invasion invasion, Invasion.Phase phase, int wave, int waves) {
+        return title(invasion.id, invasion.def.level(), phase, wave, waves);
+    }
+
+    private static Component title(ResourceLocation id, int level, Invasion.Phase phase, int wave, int waves) {
         return switch (phase) {
-            case WARNING -> Component.translatable("kn8.invasion.bar.warning", name(id));
-            case BREAK -> Component.translatable("kn8.invasion.bar.break", name(id), wave + 1, waves);
-            default -> Component.translatable("kn8.invasion.bar.fight", name(id), wave + 1, waves);
+            case WARNING -> Component.translatable("kn8.invasion.bar.warning", level, name(id));
+            case BREAK -> Component.translatable("kn8.invasion.bar.break", level, name(id), wave + 1, waves);
+            default -> Component.translatable("kn8.invasion.bar.fight", level, name(id), wave + 1, waves);
         };
     }
 
@@ -352,7 +368,8 @@ public final class InvasionService {
 
     public static InvasionStateS2C state(Invasion invasion) {
         return new InvasionStateS2C(invasion.phase.ordinal(), invasion.id, invasion.center, invasion.wave,
-                invasion.def.waves().size(), invasion.alive.size(), invasion.def.totalKaiju(), invasion.timerEnd());
+                invasion.def.waves().size(), invasion.alive.size(), total(invasion), invasion.timerEnd(),
+                invasion.def.level());
     }
 
     private static void sync(ServerLevel level, Invasion invasion) {

@@ -1,13 +1,16 @@
 package com.kn8.common.numbered;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
 import com.kn8.KN8Constants;
+import com.kn8.common.boss.BossService;
 import com.kn8.common.career.CareerService;
 import com.kn8.common.data.KN8Data;
 import com.kn8.common.data.def.NumberedDef;
+import com.kn8.common.invasion.Invasion;
 import com.kn8.common.invasion.InvasionService;
 import com.kn8.common.kaiju.CarcassEntity;
 import com.kn8.common.kaiju.KaijuEntity;
@@ -43,6 +46,9 @@ public final class No9Service {
 
     /** Marca nos kaiju levantados pelo No. 9. */
     public static final String KN8_REVIVED = KN8Constants.MOD_ID + "_revived";
+    /** 0.3: este No. 9 veio numa onda {@code mass_revive}; e ja revivia o exercito (uma vez so). */
+    public static final String MASS_TAG = KN8Constants.MOD_ID + "_mass_revive";
+    private static final String MASS_DONE_TAG = KN8Constants.MOD_ID + "_mass_revive_done";
     private static final int THINK_INTERVAL = 10;
     private static final int PARTICLE_INTERVAL = 4;
     private static final double ANNOUNCE_RADIUS = 64.0;
@@ -68,6 +74,14 @@ public final class No9Service {
             return;
         }
         long now = level.getGameTime();
+        if (no9.getPersistentData().getBoolean(MASS_TAG)) {
+            // 0.3: onda de ressurreicao em massa; o gesto normal (uma carcaca por vez) fica desligado.
+            tickMass(level, no9, def, now);
+            if (no9.tickCount % THINK_INTERVAL == 0) {
+                command(level, no9, def);
+            }
+            return;
+        }
         if (no9.reviving != null) {
             tickRevive(level, no9, def, now);
             return;
@@ -90,7 +104,7 @@ public final class No9Service {
     private static Optional<CarcassEntity> nearestCarcass(ServerLevel level, KaijuNo9Entity no9, NumberedDef def) {
         AABB area = no9.getBoundingBox().inflate(def.reviveRadius());
         return level.getEntitiesOfClass(CarcassEntity.class, area, carcass -> carcass.isAlive()
-                        && def.revive().containsKey(carcass.species())).stream()
+                        && revivable(def, carcass)).stream()
                 .min(Comparator.comparingDouble(no9::distanceToSqr));
     }
 
@@ -133,11 +147,27 @@ public final class No9Service {
         }
         no9.reviving = null;
         no9.nextReviveAt = now + def.reviveCooldownTicks();
-        ResourceLocation species = def.revive().get(carcass.species());
+        revive(level, no9, def, carcass, true);
+    }
+
+    private static boolean revivable(NumberedDef def, CarcassEntity carcass) {
+        return def.revive().containsKey(carcass.species()) || def.reviveBoss().containsKey(carcass.species());
+    }
+
+    /**
+     * Levanta a carcaca: especie revivida (tabela {@code revive}) ou chefe ({@code revive_boss}, com barra e fases).
+     * O revivido entra na invasao do No. 9 e ataca o alvo dele.
+     */
+    private static Optional<KaijuEntity> revive(ServerLevel level, KaijuNo9Entity no9, NumberedDef def,
+            CarcassEntity carcass, boolean announceEach) {
         BlockPos pos = carcass.blockPosition();
         float yaw = carcass.getYRot();
+        ResourceLocation boss = def.reviveBoss().get(carcass.species());
+        ResourceLocation species = def.revive().get(carcass.species());
         carcass.discard();
-        KaijuSpawner.spawn(level, species, pos).ifPresent(revived -> {
+        Optional<KaijuEntity> result = boss != null ? BossService.spawn(level, boss, pos)
+                : species != null ? KaijuSpawner.spawn(level, species, pos) : Optional.empty();
+        result.ifPresent(revived -> {
             revived.setYRot(yaw);
             revived.getPersistentData().putBoolean(KN8_REVIVED, true);
             no9.revived.add(revived.getUUID());
@@ -150,9 +180,98 @@ public final class No9Service {
             level.sendParticles(ACID, revived.getX(), revived.getY() + revived.getBbHeight() * 0.5, revived.getZ(),
                     60, revived.getBbWidth() * 0.4, revived.getBbHeight() * 0.4, revived.getBbWidth() * 0.4, 0.0);
             level.playSound(null, pos, KN8Sounds.KAIJU_ROAR.get(), SoundSource.HOSTILE, 4.0F, 0.8F);
-            announce(level, no9, Component.translatable("kn8.no9.revived", revived.getDisplayName())
-                    .withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD));
+            if (announceEach) {
+                announce(level, no9, Component.translatable("kn8.no9.revived", revived.getDisplayName())
+                        .withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD));
+            }
         });
+        return result;
+    }
+
+    // --- ressurreicao em massa (0.3) -----------------------------------------------------------------------------
+
+    /**
+     * Onda {@code mass_revive}: quando ha carcacas no raio, o No. 9 para, faz o gesto longo e depois levanta todas, uma
+     * a cada {@code mass_revive_interval_ticks} (o exercito volta em sequencia, nao num tick so). Uma vez por No. 9.
+     */
+    private static void tickMass(ServerLevel level, KaijuNo9Entity no9, NumberedDef def, long now) {
+        if (!no9.massQueue.isEmpty()) {
+            no9.getNavigation().stop();
+            if (now >= no9.nextMassAt) {
+                no9.nextMassAt = now + def.massReviveIntervalTicks();
+                Entity entity = level.getEntity(no9.massQueue.remove(0));
+                if (entity instanceof CarcassEntity carcass && carcass.isAlive()) {
+                    revive(level, no9, def, carcass, false);
+                }
+                if (no9.massQueue.isEmpty()) {
+                    announce(level, no9, Component.translatable("kn8.no9.mass_done", no9.revived.size())
+                            .withStyle(ChatFormatting.DARK_GREEN, ChatFormatting.BOLD));
+                }
+            }
+            return;
+        }
+        if (no9.getPersistentData().getBoolean(MASS_DONE_TAG)) {
+            return;
+        }
+        List<CarcassEntity> carcasses = new ArrayList<>(level.getEntitiesOfClass(CarcassEntity.class,
+                massArea(level, no9, def), carcass -> carcass.isAlive() && revivable(def, carcass)));
+        if (no9.reviving == null) {
+            if (carcasses.isEmpty() || no9.tickCount % THINK_INTERVAL != 0) {
+                return;
+            }
+            no9.reviving = no9.getUUID(); // marca "gesto em andamento" (o alvo e a area inteira)
+            no9.reviveEndsAt = now + def.massReviveCastTicks();
+            no9.getNavigation().stop();
+            no9.triggerAnim("special", "revive");
+            level.playSound(null, no9.blockPosition(), SoundEvents.WITHER_SPAWN, SoundSource.HOSTILE, 3.0F, 0.6F);
+            announceWide(level, no9, def, Component.translatable("kn8.no9.mass_reviving", carcasses.size())
+                    .withStyle(ChatFormatting.DARK_GREEN, ChatFormatting.BOLD));
+            return;
+        }
+        no9.getNavigation().stop();
+        if (no9.tickCount % (PARTICLE_INTERVAL * 2) == 0) {
+            for (CarcassEntity carcass : carcasses) {
+                level.sendParticles(ParticleTypes.SOUL, carcass.getX(), carcass.getY() + carcass.getBbHeight() * 0.5,
+                        carcass.getZ(), 3, carcass.getBbWidth() * 0.3, 0.4, carcass.getBbWidth() * 0.3, 0.02);
+                level.sendParticles(ACID, carcass.getX(), carcass.getY() + 0.3, carcass.getZ(), 4,
+                        carcass.getBbWidth() * 0.4, 0.1, carcass.getBbWidth() * 0.4, 0.0);
+            }
+            level.sendParticles(ACID, no9.getX(), no9.getY() + 1.4, no9.getZ(), 12, 0.6, 0.6, 0.6, 0.0);
+        }
+        if (now < no9.reviveEndsAt) {
+            return;
+        }
+        no9.reviving = null;
+        no9.getPersistentData().putBoolean(MASS_DONE_TAG, true);
+        // Ordem: mais perto primeiro (a onda de ressurreicao se espalha a partir dele).
+        carcasses.sort(Comparator.comparingDouble(no9::distanceToSqr));
+        carcasses.forEach(carcass -> no9.massQueue.add(carcass.getUUID()));
+        no9.nextMassAt = now;
+    }
+
+    /**
+     * Area da ressurreicao em massa: numa invasao, a area inteira dela (as carcacas ficam espalhadas pelo anel de
+     * chegada, ate 64 blocos do centro, e o No. 9 chega por um lado so); fora dela, o raio em volta dele.
+     */
+    private static AABB massArea(ServerLevel level, KaijuNo9Entity no9, NumberedDef def) {
+        if (no9.getPersistentData().getBoolean(InvasionService.TAG)) {
+            Optional<Invasion> invasion = InvasionService.active(level);
+            if (invasion.isPresent()) {
+                double radius = Math.max(def.massReviveRadius(), invasion.get().def().radius());
+                return new AABB(invasion.get().center()).inflate(radius, def.massReviveRadius(), radius);
+            }
+        }
+        return no9.getBoundingBox().inflate(def.massReviveRadius());
+    }
+
+    private static void announceWide(ServerLevel level, Entity source, NumberedDef def, Component message) {
+        double radius = Math.max(ANNOUNCE_RADIUS, def.massReviveRadius() * 2);
+        for (ServerPlayer player : level.players()) {
+            if (player.distanceToSqr(source) <= radius * radius) {
+                player.displayClientMessage(message, true);
+                player.sendSystemMessage(message);
+            }
+        }
     }
 
     // --- comandar e fugir ----------------------------------------------------------------------------------------

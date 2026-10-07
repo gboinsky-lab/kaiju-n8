@@ -1,0 +1,22 @@
+{
+  "category": "defense",
+  "giver": "kn8:officer",
+  "requires": {
+    "rank": "kn8:oficial_senior"
+  },
+  "objectives": [
+    {
+      "type": "defend_invasion",
+      "target": "kn8:kaiju_horde"
+    }
+  ],
+  "rewards": {
+    "merit": 400,
+    "training_xp": 600,
+    "items": [
+      "kn8:release_catalyst"
+    ]
+  },
+  "repeatable": true,
+  "cooldown_ticks": 48000
+}
