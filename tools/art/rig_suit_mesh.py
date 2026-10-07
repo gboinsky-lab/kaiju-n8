@@ -33,6 +33,15 @@ COLLAR = 1.5
 # Pivos das partes do jogador (blocos, espaco do modelo: Y para baixo; direita em X negativo), de HumanoidModel.
 PIVOTS = {"body": (0.0, 0.0, 0.0), "right_arm": (-5 / 16, 2 / 16, 0.0), "left_arm": (5 / 16, 2 / 16, 0.0),
           "right_leg": (-1.9 / 16, 12 / 16, 0.0), "left_leg": (1.9 / 16, 12 / 16, 0.0)}
+# Caixa minima de cada parte (largura em X, profundidade em Z, blocos) e centro da caixa do jogador no espaco local
+# da parte: o Meshy fez o traje mais fino que o boneco do Minecraft (braco de 0,2 contra 0,25 + manga da skin) e a
+# skin cobria o traje. Como a armadura vanilla (1 px maior que a pele em cada lado), cada parte e centrada na caixa
+# do jogador e alargada ate pelo menos este tamanho (so aumenta; a altura nao muda).
+MIN_BOX = {"body": (10 / 16, 6 / 16, 0.0), "right_arm": (6 / 16, 6 / 16, -1 / 16), "left_arm": (6 / 16, 6 / 16, 1 / 16),
+           "right_leg": (5 / 16, 5 / 16, 0.0), "left_leg": (5 / 16, 5 / 16, 0.0)}
+# Altura de cada fatia do ajuste de largura (blocos = 1 px).
+SLICE = 1 / 16
+MAX_STRETCH = 1.8
 # Cortes medidos na vista de frente de cada traje (metros do OBJ convertido): borda de dentro dos bracos por altura
 # (altura acima da qual vale, |x|), ponta dos dedos e quadril.
 SUITS = {
@@ -78,6 +87,41 @@ def straighten(points, normals, pivot):
     return centered @ rot.T + pivot, normals @ rot.T
 
 
+def fit_box(points, min_width, min_depth, center_x):
+    """Fatia por fatia na altura: centra a fatia na caixa do jogador (X/Z) e alarga ate cobrir a caixa minima (nunca
+    encolhe). O traje do Meshy e mais fino que o boneco e cada fatia tem o proprio centro (a bota avanca, a canela
+    fica atras): centrar a peca inteira deixava a canela atras da calca da skin e escala unica nao cobria o miolo.
+    Centro e largura de cada fatia pelos percentis 5-95 (pecas soltas nao contam); escala e centro suavizados entre
+    fatias vizinhas para nao fazer degrau."""
+    low, high = points.min(axis=0), points.max(axis=0)
+    slices = max(1, int(np.ceil((high[1] - low[1]) / SLICE)))
+    index = np.clip(((points[:, 1] - low[1]) / SLICE).astype(int), 0, slices - 1)
+    factors = np.ones((slices, 2))
+    centers = np.tile([[(low[0] + high[0]) / 2, (low[2] + high[2]) / 2]], (slices, 1))
+    for k in range(slices):
+        member = points[index == k]
+        if len(member) < 3:
+            continue
+        x5, x95 = np.percentile(member[:, 0], [5, 95])
+        z5, z95 = np.percentile(member[:, 2], [5, 95])
+        centers[k] = [(x5 + x95) / 2, (z5 + z95) / 2]
+        factors[k] = [max(1.0, min_width / max(x95 - x5, 1e-6)), max(1.0, min_depth / max(z95 - z5, 1e-6))]
+    # Fatias quase vazias (ponta do ombro, do pe) pediam 3-8x: limite.
+    factors = np.minimum(factors, MAX_STRETCH)
+
+    def smooth(values):
+        kernel = np.ones(3) / 3
+        return np.stack([np.convolve(np.pad(values[:, i], 1, mode="edge"), kernel, "valid") for i in (0, 1)],
+                        axis=1)
+
+    factors, centers = smooth(factors), smooth(centers)
+    out = points.copy()
+    out[:, 0] = (points[:, 0] - centers[index, 0]) * factors[index, 0] + center_x
+    out[:, 2] = (points[:, 2] - centers[index, 1]) * factors[index, 1]
+    print(f"  escala x ate {factors[:, 0].max():.2f}, z ate {factors[:, 1].max():.2f}")
+    return out
+
+
 def main():
     name = sys.argv[1]
     cfg = SUITS[name]
@@ -101,6 +145,7 @@ def main():
         if part.endswith("_arm"):
             points[used], part_normals[used] = straighten(model[used], model_normals[used], np.array(pivot))
         local = points - np.array(pivot)
+        local[used] = fit_box(local[used], *MIN_BOX[part])
         write_obj(out_dir / f"{part}.obj", local, uvs, part_normals, part_faces)
         index["bones"][part] = f"kn8:meshes/suit/{name}/{part}.obj"
         print(f"{part}: {len(part_faces)} triangulos")

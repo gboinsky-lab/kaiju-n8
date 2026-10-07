@@ -139,6 +139,7 @@ mandam; se algo precisar mudar, marque **[DECIDIR]** e pergunte.
 | **0.5 Ataque especial + aura** (Golpe Sísmico do machado na tecla R; aura por personagem, violeta com raios pela referência do Miguel; potência com vida baixa) | ✅ GameTests 49/49; aguardando teste em jogo do Miguel |
 | **0.6-A Ataques novos dos kaiju** (casco, rabada, soco pesado, raio de energia do Honju, estocada/varredura/várias patas/teia/salto da aranha, Finger Gun do No. 9; fúria dos revividos; soldado sem empurrar kaiju; kaiju quebram o caminho ao andar) | ✅ **aprovada pelo Miguel (2026-10-07)**; GameTests 56/56. Plano 0.6 em `docs/PLANO_0_6.md`, especificação em `docs/ESPECIFICACAO_HABILIDADES_MOBS.md` |
 | **0.6-B Trichonephila Honju** (Tecedeira Abissal: entidade, partes e núcleo, ataques da aranha + explosão de teia, fúria, chefe que invoca Trichonephila, desmonte de 6 etapas, invasão nível 3 `web_queen`, missão `web_queen_hunt`) | ✅ GameTests 57/57; vista em jogo (`docs/img/trichonephila_honju_*`: modelo, teia e salto); aguardando o Miguel |
+| **0.6-C Trajes 3D** (Mk1 e Mk1 Reforçado do Miguel no jogador: tronco, braços e pernas presos ao modelo, braço em 1ª pessoa) | ✅ build e GameTests; vistos em jogo de frente, de costas, andando e em 1ª pessoa (`docs/img/trajes_3d_*`); aguardando o Miguel. Soldados continuam com o próprio modelo (já vestem o uniforme) |
 | M11b carcaças e desmonte · M12 transformação · M13 NPCs | pendentes (patentes/crafting do M14 entraram na 0.2) |
 | M15 missões · M16 chefe Honju · M17 Tachikawa · M18 endurecimento/performance | pendentes |
 
@@ -164,6 +165,11 @@ mandam; se algo precisar mudar, marque **[DECIDIR]** e pergunte.
   dos soldados fica para a tabela). Carcaças ficam espalhadas pelo anel de chegada e o No. 9 chega por um lado só →
   a ressurreição em massa procura na área inteira da invasão, não só em volta dele.
 
+- **0.6-C (trajes):** o traje do Meshy é mais fino que o boneco do Minecraft (braço 0,2 contra 0,25 + manga da
+  skin) e a skin cobria o traje; centrar a peça inteira deixava a canela atrás da calça (a bota puxa o centro) →
+  `fit_box` fatia por fatia: centra cada fatia na caixa do jogador e alarga até a caixa da armadura vanilla
+  (tronco 10×6 px, braços 6×6, pernas 5×5), limite 1,8×, suavizado. Captura de tela com `import -crop` guarda o
+  deslocamento: usar `+repage` antes de recortar. `/summon` não aceita rotação (usar `data merge` com `Rotation`).
 - **0.6 (Miguel):** kaiju presos em construções → força de andar do Yoju era 1 (só frágeis: vidro, folhas) e do
   Honju 2 (madeira/terra), e só kaiju grande em combate abria caminho → todo kaiju, força 3 (pedra, tijolo,
   concreto), também preso dentro de blocos. GameTest `yojuBreaksAStoneBrickWallWhileWalking`.
