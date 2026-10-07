@@ -36,6 +36,9 @@ public final class ServerConfig {
     public static final ModConfigSpec.ConfigValue<List<? extends Double>> DIFFICULTY_HEALTH_MULTIPLIERS;
     public static final ModConfigSpec.ConfigValue<List<? extends Double>> DIFFICULTY_DAMAGE_MULTIPLIERS;
     public static final ModConfigSpec.DoubleValue RELEASE_DAMAGE_DIVISOR;
+    /** 0.5 (ideia do Miguel): abaixo desta fracao de vida a % sobe ate DESPERATION_MAX_POINTS (vida 0). */
+    public static final ModConfigSpec.DoubleValue DESPERATION_HEALTH;
+    public static final ModConfigSpec.IntValue DESPERATION_MAX_POINTS;
     // --- carreira e treino (0.2, Etapa 2) --------------------------------------------------------------------------
     public static final ModConfigSpec.IntValue RELEASE_MAX;
     public static final ModConfigSpec.DoubleValue XP_PER_KAIJU_DAMAGE;
@@ -183,7 +186,6 @@ public final class ServerConfig {
 
     // --- vfx (0.1-B, Etapa D) -------------------------------------------------------------------------------------
     public static final ModConfigSpec.BooleanValue VFX_ENABLED;
-    public static final ModConfigSpec.IntValue RELEASE_AURA_MIN;
     public static final ModConfigSpec.IntValue SUIT_VFX_INTERVAL_TICKS;
 
     // --- network (M3) --------------------------------------------------------------------------------------------
@@ -225,6 +227,10 @@ public final class ServerConfig {
                 List.of(0.6, 1.0, 1.3, 1.6, 2.0));
         RELEASE_DAMAGE_DIVISOR = doubleValue("releaseDamageDivisor",
                 "Player damage = weapon base * (1 + release% / divisor).", 25.0, 5.0, 100.0);
+        DESPERATION_HEALTH = doubleValue("desperationHealth", "Health fraction below which the release rises on"
+                + " its own (fighting with your back against the wall).", 0.5, 0.0, 1.0);
+        DESPERATION_MAX_POINTS = intValue("desperationMaxPoints", "Release points added at zero health, growing"
+                + " linearly from desperationHealth (0 = off).", 15, 0, 100);
         BUILDER.pop();
 
         // 0.2 (decisao do Miguel): a patente nao limita mais o Release; o teto e o mesmo para todos e se alcanca
@@ -489,9 +495,8 @@ public final class ServerConfig {
 
         section("vfx", "Visual effects sent to clients (0.1-B). Clients choose how many particles they draw.");
         VFX_ENABLED = booleanValue("enabled", "Send visual effects (impacts, shockwaves, dust, auras).", true);
-        RELEASE_AURA_MIN = intValue("releaseAuraMin", "Release % from which a player shows the suit aura.", 20, 0,
-                100);
-        SUIT_VFX_INTERVAL_TICKS = intValue("suitVfxIntervalTicks", "Ticks between suit aura/overheat effect pulses.",
+        SUIT_VFX_INTERVAL_TICKS = intValue("suitVfxIntervalTicks", "Ticks between suit overheat effect pulses (the"
+                + " power aura is drawn by each client from data/kn8/kn8/aura/*.json).",
                 10, 2, 100);
         BUILDER.pop();
 

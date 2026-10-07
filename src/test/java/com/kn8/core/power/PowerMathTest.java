@@ -99,4 +99,16 @@ class PowerMathTest {
         // Custo zero no config: corrida livre.
         assertEquals(false, PowerMath.windedAfterTick(false, 0, 0, 20));
     }
+
+    @Test
+    void desperationRaisesReleaseOnlyBelowTheThreshold() {
+        // 0.5: limite 50% de vida, ate +15 pontos com a vida em 0.
+        assertEquals(0, PowerMath.desperationBonus(1.0, 0.5, 15));
+        assertEquals(0, PowerMath.desperationBonus(0.5, 0.5, 15));
+        assertEquals(8, PowerMath.desperationBonus(0.25, 0.5, 15));
+        assertEquals(15, PowerMath.desperationBonus(0.0, 0.5, 15));
+        // Desligado no config.
+        assertEquals(0, PowerMath.desperationBonus(0.1, 0.5, 0));
+        assertEquals(0, PowerMath.desperationBonus(0.1, 0.0, 15));
+    }
 }

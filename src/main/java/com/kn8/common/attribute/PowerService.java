@@ -5,6 +5,7 @@ import com.kn8.KN8Constants;
 import com.kn8.common.combat.CombatService;
 import com.kn8.common.config.ServerConfig;
 import com.kn8.common.craft.SuitEvents;
+import com.kn8.common.data.def.SuitDef;
 import com.kn8.common.network.NetworkSync;
 import com.kn8.common.registry.KN8Attachments;
 import com.kn8.common.registry.KN8Sounds;
@@ -83,7 +84,18 @@ public final class PowerService {
             return ServerConfig.PANIC_RELEASE.get();
         }
         PowerData data = data(player);
-        return PowerMath.effectiveRelease(data.trainedRelease(), cap(player), data.surge(), params());
+        // 0.5: com a vida baixa a % sobe sozinha (desperationHealth/desperationMaxPoints), como um Surto sem calor.
+        int desperation = PowerMath.desperationBonus(player.getHealth() / Math.max(1.0F, player.getMaxHealth()),
+                ServerConfig.DESPERATION_HEALTH.get(), ServerConfig.DESPERATION_MAX_POINTS.get());
+        return Math.min(100, PowerMath.effectiveRelease(data.trainedRelease(), cap(player), data.surge(), params())
+                + desperation);
+    }
+
+    /** 0.5: aura de poder do jogador: a do comando, senao a do traje vestido, senao a padrao. */
+    public static ResourceLocation auraOf(ServerPlayer player) {
+        return player.getData(KN8Attachments.AURA_OVERRIDE)
+                .or(() -> SuitEvents.worn(player).flatMap(SuitDef::aura))
+                .orElse(KN8Attachments.DEFAULT_AURA);
     }
 
     public static HeatStage heatStage(ServerPlayer player) {
@@ -221,7 +233,12 @@ public final class PowerService {
             data.setLastAppliedRelease(effective);
             player.setData(KN8Attachments.RELEASE_VISUAL, effective);
         }
-        suitEffects(player, effective, stage, now);
+        ResourceLocation aura = auraOf(player);
+        if (!aura.equals(player.getData(KN8Attachments.AURA))) {
+            // Publico e so na mudanca (sync nativo): todos os clientes desenham a aura com a % de RELEASE_VISUAL.
+            player.setData(KN8Attachments.AURA, aura);
+        }
+        suitEffects(player, stage, now);
         PowerView view = view(player);
         if (!view.equals(data.lastSentView())) {
             data.setLastSentView(view);
@@ -230,15 +247,12 @@ public final class PowerService {
     }
 
     /**
-     * Etapa D: aura do traje pela % liberada (fraca a maxima, intensidade = R/100) e brilho/fumaca de sobrecarga pelo
-     * calor; em pulsos, para quem esta perto. Usa o Release e o Heat que ja existem (nenhum sistema novo).
+     * Etapa D: brilho/fumaca de sobrecarga pelo calor, em pulsos, para quem esta perto. A aura de poder saiu daqui
+     * na 0.5: cada cliente desenha a partir da % publica e do {@code aura/<id>.json} (AuraRenderer), sem pulsos.
      */
-    private static void suitEffects(ServerPlayer player, int effective, HeatStage stage, long now) {
+    private static void suitEffects(ServerPlayer player, HeatStage stage, long now) {
         if (now % ServerConfig.SUIT_VFX_INTERVAL_TICKS.get() != 0 || !(player.level() instanceof ServerLevel level)) {
             return;
-        }
-        if (effective >= ServerConfig.RELEASE_AURA_MIN.get()) {
-            VfxService.play(level, VfxService.SUIT_RELEASE, player.position(), effective / 100.0F);
         }
         if (stage.ordinal() >= HeatStage.OVERLOAD.ordinal()) {
             float intensity = stage == HeatStage.OVERLOAD ? 0.4F : stage == HeatStage.CRITICAL ? 0.7F : 1.0F;

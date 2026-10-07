@@ -604,5 +604,9 @@
   "kn8.hud.combat.denied_no_special": "Esta arma não tem ataque especial",
   "kn8.weapon.special.seismic_cleave": "Golpe Sísmico",
   "kn8.weapon.special.seismic_cleave.desc": "Crava o machado no chão: a onda fere, empurra e atordoa os Yoju em volta.",
-  "subtitles.kn8.weapon.axe_special": "Machado racha o chão"
+  "subtitles.kn8.weapon.axe_special": "Machado racha o chão",
+  "kn8.command.aura.unknown": "Aura inexistente: %s",
+  "kn8.command.aura.set": "Aura %s aplicada em %s entidade(s)",
+  "kn8.command.aura.cleared": "Aura de volta ao padrão em %s entidade(s)",
+  "kn8.command.aura.release": "Potência visual %s%% em %s entidade(s)"
 }

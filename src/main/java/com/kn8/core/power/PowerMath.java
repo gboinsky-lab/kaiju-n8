@@ -124,6 +124,18 @@ public final class PowerMath {
         return new Training(points, left);
     }
 
+    /**
+     * 0.5 (ideia do Miguel): pontos de % que sobem sozinhos com a vida baixa. Zero acima de {@code threshold}; cresce
+     * em linha reta ate {@code maxPoints} com a vida em 0. Vale para o jogador e, depois, para os soldados especiais.
+     */
+    public static int desperationBonus(double healthFraction, double threshold, int maxPoints) {
+        if (threshold <= 0 || maxPoints <= 0 || healthFraction >= threshold) {
+            return 0;
+        }
+        double depth = (threshold - Math.max(0.0, healthFraction)) / threshold;
+        return (int) Math.round(maxPoints * Math.min(1.0, depth));
+    }
+
     /** % efetiva: treinado limitado pelo teto, mais o Surto (limitado), sempre entre 0 e 100. */
     public static int effectiveRelease(int trained, int cap, int surge, PowerParams params) {
         int base = Math.min(trained, cap);

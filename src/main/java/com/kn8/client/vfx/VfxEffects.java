@@ -76,7 +76,7 @@ public final class VfxEffects {
         }
     }
 
-    private static float amount() {
+    static float amount() {
         return switch (ClientConfig.PARTICLE_LEVEL.get()) {
             case LOW -> LOW;
             case MEDIUM -> MEDIUM;

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.kn8.common.data.def.AbilityDef;
+import com.kn8.common.data.def.AuraDef;
 import com.kn8.common.data.def.BossDef;
 import com.kn8.common.data.def.DismantleDef;
 import com.kn8.common.data.def.InvasionDef;
@@ -36,6 +37,8 @@ public final class KN8Data {
     public static final DataRegistry<KaijuDef> KAIJU = new DataRegistry<>("kaiju", KaijuDef.CODEC, true);
     public static final DataRegistry<BossDef> BOSS = new DataRegistry<>("boss", BossDef.CODEC, false);
     public static final DataRegistry<WeaponDef> WEAPON = new DataRegistry<>("weapon", WeaponDef.CODEC, true);
+    /** 0.5: auras de poder (o cliente desenha a de cada entidade). */
+    public static final DataRegistry<AuraDef> AURA = new DataRegistry<>("aura", AuraDef.CODEC, true);
     public static final DataRegistry<SuitDef> SUIT = new DataRegistry<>("suit", SuitDef.CODEC, true);
     public static final DataRegistry<MissionDef> MISSION = new DataRegistry<>("mission", MissionDef.CODEC, true);
     /** 0.1-B (Etapa F): soldados da Forca de Defesa (so o servidor precisa). */
@@ -55,7 +58,8 @@ public final class KN8Data {
 
     /** Ordem = ordem de validacao (cada um so referencia os anteriores). */
     public static final List<DataRegistry<?>> ALL =
-            List.of(RANK, ABILITY, DISMANTLE, KAIJU, BOSS, WEAPON, SUIT, MISSION, SOLDIER, WORKBENCH, INVASION, NUMBERED);
+            List.of(RANK, ABILITY, DISMANTLE, KAIJU, BOSS, WEAPON, AURA, SUIT, MISSION, SOLDIER, WORKBENCH, INVASION,
+                    NUMBERED);
 
     private KN8Data() {
     }

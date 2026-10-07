@@ -12,6 +12,7 @@ import java.util.Set;
 import com.kn8.KN8Constants;
 import com.kn8.core.kaiju.KaijuScale;
 import com.kn8.common.data.def.AbilityDef;
+import com.kn8.common.data.def.AuraDef;
 import com.kn8.common.data.def.BossDef;
 import com.kn8.common.data.def.DismantleDef;
 import com.kn8.common.data.def.InvasionDef;
@@ -65,6 +66,9 @@ public final class DataValidation {
         Map<ResourceLocation, BossDef> bosses = publish(KN8Data.BOSS,
                 validateBosses(KN8Data.BOSS.loaded(), kaiju.keySet(), abilities.keySet(), report), report);
         publish(KN8Data.WEAPON, validateWeapons(KN8Data.WEAPON.loaded(), report), report);
+        Map<ResourceLocation, AuraDef> auras = publish(KN8Data.AURA, new HashMap<>(KN8Data.AURA.loaded()), report);
+        KN8Data.SUIT.loaded().forEach((id, suit) -> suit.aura().filter(aura -> !auras.containsKey(aura))
+                .ifPresent(aura -> report.warning("suit " + id + ": aura inexistente " + aura)));
         publish(KN8Data.SUIT, validateSuits(KN8Data.SUIT.loaded(), report), report);
         Map<ResourceLocation, MissionDef> missions = publish(KN8Data.MISSION,
                 validateMissions(KN8Data.MISSION.loaded(), ranks.keySet(), kaiju.keySet(), bosses.keySet(), report),

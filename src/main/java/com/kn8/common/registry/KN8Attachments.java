@@ -1,6 +1,7 @@
 // src/main/java/com/kn8/common/registry/KN8Attachments.java
 package com.kn8.common.registry;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.kn8.KN8Constants;
@@ -12,6 +13,7 @@ import com.kn8.common.attribute.PowerView;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
@@ -73,6 +75,24 @@ public final class KN8Attachments {
     /** M10: estado de combate do jogador (so no servidor, nunca salvo e nunca sincronizado). */
     public static final Supplier<AttachmentType<CombatState>> COMBAT = ATTACHMENT_TYPES.register("combat",
             () -> AttachmentType.builder(() -> new CombatState()).build());
+
+    /** Aura padrao (jogador sem traje com aura propria): {@code data/kn8/kn8/aura/defense_force.json}. */
+    public static final ResourceLocation DEFAULT_AURA = KN8Constants.id("defense_force");
+
+    /**
+     * 0.5: id PUBLICO da aura de poder (sync nativo), em qualquer entidade viva que libera potencia (jogador, soldado
+     * especial). O cliente desenha com o {@code aura/<id>.json} e a % de {@link #RELEASE_VISUAL}. Nunca salva: o
+     * servidor recalcula (traje, perfil do soldado).
+     */
+    public static final Supplier<AttachmentType<ResourceLocation>> AURA = ATTACHMENT_TYPES.register("aura",
+            () -> AttachmentType.builder(() -> DEFAULT_AURA)
+                    .sync(ResourceLocation.STREAM_CODEC)
+                    .build());
+
+    /** 0.5: aura forcada por comando ({@code /kn8 aura}), por cima da do traje. So no servidor, nunca salva. */
+    public static final Supplier<AttachmentType<Optional<ResourceLocation>>> AURA_OVERRIDE =
+            ATTACHMENT_TYPES.register("aura_override", () -> AttachmentType.<Optional<ResourceLocation>>builder(
+                    () -> Optional.empty()).build());
 
     private KN8Attachments() {
     }

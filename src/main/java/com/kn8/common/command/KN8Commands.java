@@ -37,6 +37,7 @@ public final class KN8Commands {
                 .then(CareerCommands.mission())
                 .then(CareerCommands.boss())
                 .then(InvasionCommands.invasion())
+                .then(AuraCommands.aura())
                 .then(DebugCommands.build()));
     }
 }

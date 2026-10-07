@@ -1,19 +1,26 @@
 // src/main/java/com/kn8/common/data/def/SuitDef.java
 package com.kn8.common.data.def;
 
+import java.util.Optional;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.minecraft.resources.ResourceLocation;
+
 /**
  * Traje de combate ({@code data/<ns>/kn8/suit/<id do item>.json}), GDD secoes 26 e 34. A patente que libera o traje
- * fica so nos {@code unlocks} das patentes (0.3).
+ * fica so nos {@code unlocks} das patentes (0.3). {@code aura} (0.5, opcional): aura de poder de quem veste
+ * ({@code aura/<id>.json}); sem ela, a padrao da Forca de Defesa. Os trajes numerados vao trazer a sua.
  */
-public record SuitDef(float armor, float toughness, int releaseCapBonus, float heatResistance) {
+public record SuitDef(float armor, float toughness, int releaseCapBonus, float heatResistance,
+        Optional<ResourceLocation> aura) {
 
     public static final Codec<SuitDef> CODEC = RecordCodecBuilder.create(i -> i.group(
             Codec.floatRange(0.0F, 30.0F).fieldOf("armor").forGetter(SuitDef::armor),
             Codec.floatRange(0.0F, 20.0F).optionalFieldOf("toughness", 0.0F).forGetter(SuitDef::toughness),
             Codec.intRange(0, 100).optionalFieldOf("release_cap_bonus", 0).forGetter(SuitDef::releaseCapBonus),
-            Codec.floatRange(0.0F, 1.0F).optionalFieldOf("heat_resistance", 0.0F).forGetter(SuitDef::heatResistance)
+            Codec.floatRange(0.0F, 1.0F).optionalFieldOf("heat_resistance", 0.0F).forGetter(SuitDef::heatResistance),
+            ResourceLocation.CODEC.optionalFieldOf("aura").forGetter(SuitDef::aura)
     ).apply(i, SuitDef::new));
 }
