@@ -299,3 +299,17 @@ ressurgidos, fugiu com 30% da vida (+250 de mérito para quem estava perto) e a 
 | 18.4 | Lute com o No. 9 | Garra rápida e investida; os kaiju por perto atacam o mesmo alvo dele |
 | 18.5 | Tire 70% da vida dele | Some em fumaça verde ("recuou... vai voltar"), +250 de mérito; a onda segue sem ele |
 | 18.6 | Animações vistas de perto | Andar, garra, investida e gesto de reviver sem peças soltas |
+
+## 19. Construções (0.2)
+
+Vistas na nuvem com `/place structure` (`docs/img/construcao_*.png`). Geradas por `tools/world/gen_structures.py`;
+aparecem sozinhas em mundo novo (ou em chunks ainda não gerados), nos biomas de `tags/worldgen/biome/has_structure/`.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 19.1 | `/place structure kn8:defense_outpost` | Muro com portão listrado, holofotes nos cantos, sede branca com faixa ciano (bancada, baú, mesa de cartografia), heliporto, pátio com 3 bonecos e alvos, bandeira azul, 3 soldados de guarda |
+| 19.2 | `/place structure kn8:ruined_building` | Prédio cinza com o canto arrancado, rasgos de garra na fachada, entulho em volta, baú no térreo |
+| 19.3 | `/place structure kn8:kaiju_remains` | Cratera com espinha, costelas e crânio de osso, núcleo de magma no peito, baú com fragmentos |
+| 19.4 | `/place structure kn8:watchtower` | Torre de 19 m com escada, sino (sirene), holofote, baú e um soldado com rifle no alto |
+| 19.5 | Mundo novo, `/locate structure kn8:defense_outpost` (e os outros) | Acha uma perto; chegando lá, a construção está assentada no terreno |
+| 19.6 | Abra os baús | Itens do mod (tecido, fibra, resfriador, estimulante, fragmento de núcleo...) |

@@ -78,7 +78,12 @@ mandam; se algo precisar mudar, marque **[DECIDIR]** e pergunte.
 | Hitbox de mob | `getDefaultDimensions` (em `LivingEntity` o `getDimensions` é final) |
 | Alcance de kaiju | Sempre entre bordas (`edgeDistance`), nunca centro a centro |
 | Config de servidor | Tipo SERVER, gerado em `<instância>/config/kn8-server.toml` |
-| Protocolo de rede | `"8"` (subir ao mudar qualquer payload; 7 = `PowerView.winded`, 8 = `sounds` no JSON da arma, 0.2) |
+| Protocolo de rede | `"9"` (subir ao mudar qualquer payload; 7 = `PowerView.winded`, 8 = `sounds` no JSON da arma, 9 = carreira, missões, bancada e invasão da 0.2) |
+| Carreira (0.2) | `CareerData` (attachment salvo, copiado na morte) → `CareerView` privado (`CareerSyncS2C`). Patente por mérito + missão de avaliação; a patente dá vida, esquadrão e `unlocks` (receitas/armas), não teto de Release |
+| Bancada (0.2) | Receitas em `data/kn8/kn8/workbench/*.json` (sincronizadas); `CraftC2S` → servidor confere bancada a 6 blocos, patente e materiais. Trajes: armadura/resistência a calor do `suit/<id do item>.json` via `ItemAttributeModifierEvent` |
+| Invasões (0.2) | Uma por dimensão, no `KN8Server` (não salva); ondas do `invasion/*.json`; `InvasionStateS2C` público só na mudança; kaiju só por alertas/invasões/missões (`spawn.natural` desligado) |
+| Numerados (0.2) | `KaijuNo9Entity extends KaijuEntity` (mesmo `EntityType<KaijuEntity>`, fábrica própria); comportamento extra em `No9Service`, números em `numbered/<id>.json` |
+| Construções (0.2) | Templates `.nbt` gerados por `tools/world/gen_structures.py` (escritor NBT próprio, sem nbtlib) + worldgen jigsaw de 1 peça (`worldgen/structure`, `template_pool`, `structure_set`) e baús com `loot_table/chests/*` |
 | Sons de arma (0.2) | No JSON da arma: `"sounds": {"swing", "heavy", "hit", "shot"}` → id de som (qualquer id, até de resource pack); sem a chave, som genérico. `CombatService.weaponSound` serve jogador e soldado |
 | Ataque "heavy" de kaiju | [SUPOSIÇÃO] atravessa o bloqueio comum; só parry/esquiva evitam (`combat.heavyIgnoresBlock`) |
 | Pacotes de entrega | Nunca incluir `build.gradle`/`gradle.properties` (os do `kn8-main` são os corretos: PAL `transitive=false`, run `clientJoin`, repo Modrinth, bloco do Better Combat) |
@@ -112,10 +117,23 @@ mandam; se algo precisar mudar, marque **[DECIDIR]** e pergunte.
 | **Modelos Meshy estilo Minecraft** (soldado, aranha 8 patas, Primigenius) | ⏳ compila, JUnit 69/69, GameTests 31/31 e **vistos em jogo** (servidor dedicado + 1 cliente na nuvem, capturas em `docs/img/jogo_*`); aguardando roteiro §11 com 2 clientes |
 | **0.1-B correções visuais** (aranha, soldado, armas na mão, espada nova) | ⏳ compila e testes passam; armas na mão do jogador (1ª/3ª pessoa) e do soldado e mira do soldado vistas em jogo; **aguardando roteiro §10** |
 | **0.1-B** (atualização grande, escrita no chat): escala, VFX, destruição, carcaça/desmonte, Primigenius verde e Honju marrom, barra de vida, dash/ataque carregado, Soldado 1 | ⏳ compila, JUnit (69) e GameTests (31/31) passam em 2026-10-06; **aguardando teste manual** — `docs/ROTEIRO_TESTE_0_1_B.md` (resultado e correções em `docs/ATUALIZACAO_0_1_B.md`) |
-| M11b carcaças e desmonte · M12 transformação · M13 NPCs · M14 patentes/crafting | pendentes |
+| **0.2 Etapas 2, 5 e 6** (carreira: patente por mérito + exame, Release por treino até 100%, boneco de treino; missões com rastreador; chefes com fases e invocação da própria espécie) | ✅ compila, GameTests; boneco, aba Missões e rastreador vistos em jogo; aguardando roteiro §15 |
+| **0.2 Etapa 3** (bancada da Força de Defesa, trajes vestíveis training_suit/mk1/mk1_reinforced, resfriador/estimulante/catalisador) | ✅ fabricação e traje Mk1 vistos em jogo; aguardando roteiro §16 |
+| **0.2 Etapa 7** (alertas de invasão: sirene, ondas, defensores, barra, recompensa; `/kn8 invasion`; missão Defesa da Cidade) | ✅ vista em jogo com 2 clientes (vitória e recompensa); aguardando roteiro §17 |
+| **0.2 Etapa 8** (Kaiju No. 9: revive carcaças, comanda kaiju, foge; invasão `no9_resurrection`, missão Ameaça Revivida) | ✅ reviver e fuga vistos em jogo; aguardando roteiro §18 |
+| **0.2 Construções** (posto avançado, prédio destruído, restos de kaiju, torre de vigia; worldgen + baús) | ✅ vistas com `/place structure`; GameTests 41/41; aguardando roteiro §19 (mundo novo) |
+| M11b carcaças e desmonte · M12 transformação · M13 NPCs | pendentes (patentes/crafting do M14 entraram na 0.2) |
 | M15 missões · M16 chefe Honju · M17 Tachikawa · M18 endurecimento/performance | pendentes |
 
 ## Bugs e soluções (resumo)
+
+- **0.2 (super atualização):** `ResourceLocation` como argumento de `Component.translatable` derruba o comando
+  ("arguments must be Component, Number, Boolean or String") → passar `id.toString()`. Barra do kaiju cobria a barra
+  de chefe/invasão → desce para baixo das barras (`CustomizeGuiOverlayEvent.BossEventProgress`). GameTest de
+  invasão: sem jogador os chunks a 36–56 blocos descarregam (kaiju some de `level.getEntity`) → chunks forçados e
+  segunda passada de abate. Receitas/invasões/numerados precisam de `publish` na `DataValidation` (senão o
+  servidor fica sem eles). `pgrep -f`/`pkill -f` com o nome do processo casa com o próprio shell (mata a sessão):
+  matar pelo PID. Ruína preta: regra de pilar no eixo errado deixava a fachada inteira de concreto cinza-escuro.
 
 - **PT1:** `syncInitialAttachments` ignora `sendToPlayer` → dados privados sem `.sync()`.
 - **PT6:** tecla L conflitava com Conquistas → esquiva em **Z**.
@@ -208,12 +226,12 @@ remedidas na malha [SUPOSIÇÃO: núcleo no peito]. `build_primigenius.py` não 
 - **Decidido (2026-10-06):** Release vai até 100% para todos, por **treino**; `rankCaps` sai do config (Etapa 2 da
   0.2). Plano completo da mega atualização: `docs/MEGA_ATUALIZACAO_0_2.md`.
 - [SUPOSIÇÃO a confirmar] `primigenius_resurrected` fortitude 5,9 e `primigenius_honju` 6,0, sem spawn natural.
-- **Decidido (Miguel, 2026-10-06):** kaiju **não nascem naturalmente** no mundo; só aparecem por alertas,
-  invasões e missões (Etapa 7). Hoje a Trichonephila ainda tem spawn natural: desligar junto com os alertas.
+- **Feito (Miguel, 2026-10-06):** kaiju **não nascem naturalmente** (`spawn.natural` padrão `false`); vêm de
+  alertas, invasões (chance natural por dia em `invasion.naturalChance`, [SUPOSIÇÃO] 20%) e missões.
 - **Decidido (Miguel, 2026-10-06):** primeiro numerado = **Kaiju No. 9** (humanoide ~2 m, inteligente, comanda
   kaiju). É ele quem **revive** os kaiju (versões ressurgida/revivida). Entra depois do chefe Honju e das invasões
-  (Etapa 8 da 0.2); modelo `kaiju_no9.glb` (7,3 mil tri, 2 m, A-pose) já convertido em
-  `tools/art/converted/kaiju_no9/` (falta rig e entidade).
+  (Etapa 8 da 0.2): feito (rig `tools/art/rig_kaiju_no9_mesh.py`, entidade, reviver, comandar, fugir com 30%).
+  [SUPOSIÇÃO] fortitude 6,5 (452 de vida), fuga dá 250 de mérito, revive no máximo 3 vivos por vez.
 - **Decidido (Miguel, 2026-10-06):** o Honju invoca só Yoju da **própria espécie** (`primigenius_honju` →
   `primigenius`; `primigenius_revived` → `primigenius_resurrected` [SUPOSIÇÃO]; Trichonephila Honju →
   `trichonephila`). Limites `maxYojuPerHonju`/`maxTotalPerHonju` ainda a definir no M16.

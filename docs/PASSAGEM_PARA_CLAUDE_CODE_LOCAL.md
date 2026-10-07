@@ -44,32 +44,21 @@ python tools/art/meshy_convert.py --display-only     # só refaz o tamanho/posi�
 python tools/art/rig_primigenius_mesh.py <espécie>   # rig dos Primigenius (tabela SPECIES)
 ```
 
-## 4. Estado (tudo compila; JUnit 70/70 e GameTests 31/31)
+## 4. Estado (2026-10-07: tudo compila; JUnit e GameTests 41/41)
 
-| Feito na 0.2 | Situação |
-|---|---|
-| HUD nova, menu da Força de Defesa (M), machado, espada nova | Vistos em jogo; esperando sua aprovação |
-| Etapa 1: sons próprios + corrida com stamina + carcaça que tomba | Roteiro §13 testado na nuvem com 2 clientes; você aprovou os passos |
-| Rugido, rosnado, dano e morte refeitos; som único para faca, espada e machado | Vistos em jogo pelas legendas; falta você ouvir (`previa_sons_kaiju_e_armas.mp3`) |
-| Armas maiores na mão do jogador | Vistas em jogo; esperando seu teste |
+A super atualização 0.2 está na branch: Etapas 2 (carreira, Release por treino, boneco), 3 (bancada, trajes,
+suprimentos), 5 (missões), 6 (chefes), 7 (invasões; kaiju não nascem mais sozinhos), 8 (Kaiju No. 9) e as
+construções (posto avançado, prédio destruído, restos de kaiju, torre de vigia). Cada uma foi vista em jogo na
+nuvem; os roteiros §15–§19 de `docs/ROTEIRO_TESTE_0_1_B.md` ficam para o Miguel.
 
-Protocolo de rede `"8"`: servidor e clientes precisam estar na mesma versão.
+Protocolo de rede `"9"`: servidor e clientes precisam estar na mesma versão.
+Construções: `python tools/world/gen_structures.py` (sem dependências) regera os `.nbt` e o worldgen.
 
-## 5. O que vem a seguir (na ordem)
+## 5. O que vem a seguir
 
-1. **Quando você mandar os modelos novos** (prompts em `docs/PROMPTS_MESHY_0_2.md`): converter, fazer o rig,
-   **revisar cada detalhe** (sem buraco, pedaço solto, costura de textura, peça presa no osso errado) e testar com
-   2 clientes. Junto disso, arrumar:
-   - a textura do soldado, que está meio bugada (manchas pretas e costuras nas placas brancas);
-   - a textura da aranha, que "atravessa" ao andar.
-2. **Etapa 2:** Release por treino até 100%, patentes com mérito e boneco de treino; `rankCaps` sai do config.
-3. **Etapa 3:** crafting (bancada, traje Mk1, munição, melhorias).
-4. **Etapa 5:** missões (aceitar, rastrear, recompensa).
-5. **Etapa 6:** chefe Honju (fases, invoca só Yoju da própria espécie).
-6. **Etapa 7:** alertas e invasões (sirene, ondas). Aqui também sai o spawn natural da Trichonephila.
-7. **Etapa 8:** Kaiju No. 9 (rig, entidade, revive carcaças).
-
-O plano completo está em `docs/MEGA_ATUALIZACAO_0_2.md`; os roteiros de teste, em `docs/ROTEIRO_TESTE_0_1_B.md`.
+1. Miguel testa os roteiros §13–§19 com 2 clientes e aprova (ou pede ajustes).
+2. Depois da 0.2: M12 transformação, NPCs e base (M13/M17), Trichonephila Honju (modelo a pedir no Meshy), mais
+   kaiju numerados e Daikaiju, soldados especiais.
 
 ## 6. Primeira mensagem sugerida no Claude Code do PC
 

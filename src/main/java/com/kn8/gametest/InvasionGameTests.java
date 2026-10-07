@@ -46,6 +46,15 @@ public final class InvasionGameTests {
         }
     }
 
+    private static void killAlive(ServerLevel level, Invasion invasion) {
+        for (UUID uuid : List.copyOf(invasion.alive())) {
+            Entity entity = level.getEntity(uuid);
+            if (entity != null) {
+                entity.kill();
+            }
+        }
+    }
+
     @GameTest(template = TEMPLATE, batch = "kn8_invasion", timeoutTicks = 200)
     public static void invasionRunsWavesAndBreaks(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
@@ -65,14 +74,12 @@ public final class InvasionGameTests {
             helper.assertTrue(invasion.phase() == Invasion.Phase.FIGHT, "Depois do aviso vem a onda");
             helper.assertTrue(invasion.alive().size() == 3, "A primeira onda tem 3 Trichonephila, vieram "
                     + invasion.alive().size());
-            for (UUID uuid : List.copyOf(invasion.alive())) {
-                Entity entity = level.getEntity(uuid);
-                if (entity != null) {
-                    entity.kill();
-                }
-            }
+            killAlive(level, invasion);
         });
-        helper.runAfterDelay(60, () -> {
+        // Um kaiju pode terminar de carregar depois do primeiro abate: segunda passada antes de conferir.
+        helper.runAfterDelay(50, () -> InvasionService.active(level).ifPresent(invasion -> killAlive(level,
+                invasion)));
+        helper.runAfterDelay(85, () -> {
             Invasion invasion = InvasionService.active(level).orElseThrow();
             helper.assertTrue(invasion.phase() == Invasion.Phase.BREAK, "Onda eliminada: intervalo antes da proxima"
                     + " (fase " + invasion.phase() + ", vivos " + invasion.alive().size() + ", abatidos "
