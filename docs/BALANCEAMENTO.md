@@ -23,7 +23,7 @@ Multiplicadores globais: `[balance] kaijuHealthMultiplier` / `kaijuDamageMultipl
 | Primigenius Honju | 6,0 | 320 | 13,1 | 12,0 | 0,24 | soco pesado, mordida, rabada, slam, investida, raio de energia | [SUPOSIÇÃO] |
 | Primigenius revivido (Honju) | 6,4 | 422 | 15,8 | 12,8 | 0,24 | os do Honju (raio roxo); fúria | [SUPOSIÇÃO] |
 | Trichonephila Honju (0.6-B) | 6,2 | 368 (551 como chefe) | 14,4 | 12,4 | 0,28 | os da aranha + explosão de teia; fúria (dano ×1,2, velocidade ×1,25, recargas ×0,7) | [SUPOSIÇÃO]; hitbox 6 × 4; chefe invoca 3 Trichonephila (máx. 6 vivas) |
-| Kaiju No. 9 | 6,5 | 453 | 16,6 | 13,0 | 0,32 | garra, investida, Finger Gun | [SUPOSIÇÃO]; a garra (×1,3) tira ~21 por golpe |
+| Kaiju No. 9 | **8,0** (era 6,5) | 1.280 | 33,6 | 16,0 | 0,32 | garra, investida, Finger Gun | 0.6-D (Miguel: o Hoshina vence o No. 9 atual, mas não com facilidade); a garra (×1,3) tira ~44 por golpe. [DECIDIR] impacto nos jogadores |
 
 ### Habilidades (`ability/<id>.json`)
 
@@ -237,9 +237,16 @@ sobe mais rápido. A fuga do No. 9 só dá mérito a quem causou dano nele.
 
 ### Soldados especiais (`special_soldier/<id>.json`, 0.6-D)
 
-**Hoshina** [SUPOSIÇÃO nos números que o texto do Miguel não fixa]: vida 80, armadura 12, velocidade 0,36 (com o
-bônus do Release), resistência a empurrão 0,4, Release 40% (dano ×2,6; sobe com a vida baixa como no jogador),
-`kaiju_damage` **0,7**, aura `violet_lightning`, duas espadas do Hoshina (base 7).
+**Hoshina** (regra do Miguel: no poder total vence o No. 10 pequeno, fortitude 8,3, mas perde para a forma gigante,
+fortitude 9; vence o No. 9 atual, mas não com facilidade; com o traje numerado 10, na 0.6-F, fica ainda mais forte):
+vida 300, armadura 20, velocidade 0,30 × (1 + 0,004 × Release), resistência a empurrão 0,6, `kaiju_damage` 1,0,
+aura `violet_lightning`, duas espadas do Hoshina (base 7). Só aparece como defensor nas invasões de **nível 4 e 5**
+(`kaiju_horde`, `mass_resurrection`; variante `"hoshina"` nos `defenders`).
+
+**Escalada de combate** (`escalation`, Miguel: fica mais rápido e mais forte conforme o poder sobe): Release base
+**40%**; com alvo, +**2 por segundo** até +**50** (poder total 90% em 25 s; até 100% com o desespero da vida
+baixa); sem alvo, −2 por segundo. Dano ×2,6 → ×4,6, velocidade +16% → +36%, redução de dano 16% → 36%; na
+escalada máxima as recargas das técnicas e do dash caem **40%**.
 
 | Técnica | Tipo | Golpes (× dano da arma) | Tempo | Recarga | Alcance (borda) | Prioridade |
 |---|---|---|---|---|---|---|
@@ -254,8 +261,20 @@ distância com o alvo a mais de 7 blocos), **Kaeshi-uchi** (só contra golpe `he
 ticks, contra-ataque ×2,5 8 ticks depois, recarga 120), **parry** (35% dos golpes corpo a corpo comuns de kaiju,
 dano ×0,3, recarga 20, abre 10 ticks para o Kaeshi-uchi).
 
-Medido em jogo (2026-10-07, com `kaiju_damage` 1,0): Trichonephila (57) em ~3 s sem tomar dano; Primigenius Honju
-em ~13 s, terminando com 33/80 de vida. Por isso o `kaiju_damage` caiu para 0,7.
+Duelos medidos (2026-10-07, servidor dedicado, 3 lutas cada; o No. 10 ainda não existe: Primigenius Honju com a
+fortitude trocada fez o papel dele):
+
+| Adversário | Resultado |
+|---|---|
+| Primigenius Honju normal (6,0) | vence em ~10 s quase sem dano |
+| Kaiju No. 9 (8,0; foge com 30%) | vence 3/3 em 23–29 s, termina com 38–77% da vida |
+| "No. 10 pequeno" (8,3: 1.576 de vida, 39 de dano) | vence 3/3 em ~34 s, termina com 48–70% da vida |
+| "No. 10 gigante" (9,0: 2.560 de vida, 54 de dano) | perde 2/3; a outra durou mais de 150 s sem vencedor |
+
+Recalibrar na 0.6-E com os ataques reais do No. 10.
+
+**Espada do Hoshina na bancada:** 8 ferro, 6 fibra muscular, 4 fragmentos de núcleo, 1 núcleo intacto; desbloqueia
+na patente **Vice-Capitão** [SUPOSIÇÃO].
 
 ### Soldados (`soldier/soldier_1.json`)
 

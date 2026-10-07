@@ -82,6 +82,8 @@ mandam; se algo precisar mudar, marque **[DECIDIR]** e pergunte.
 | Config de servidor | Tipo SERVER, gerado em `<instância>/config/kn8-server.toml` |
 | Protocolo de rede | `"12"` (subir ao mudar qualquer payload; 7 = `PowerView.winded`, 8 = `sounds` no JSON da arma, 9 = carreira, missões, bancada e invasão da 0.2, 10 = nível da invasão, 0.3; 11 = ataque especial `CombatAction.SPECIAL`, 0.5; 12 = `special.slash` da espada do Hoshina, 0.6-D) |
 | Soldados especiais (0.6-D) | Perfil em `special_soldier/<id>.json` (`SpecialSoldierDef`: atributos, Release, `kaiju_damage`, aura, duas armas, técnicas `slash`/`combo`, `dash`, `counter`, `parry`). `HoshinaEntity extends SoldierEntity` (aliado, menu, alvos de kaiju iguais; `def()` vazio, sem soldier_1.json). Técnica: maior prioridade pronta e ao alcance (+`honju_priority` contra Honju); golpes no tick do JSON. Reações lidas do kaiju (`abilityTarget`, `ticksToImpact`, `isPreparingHeavy`): `heavy` → Kaeshi-uchi, outro → esquiva; parry no `hurt`. `SlashProjectile` (corte que atravessa e poupa aliados) serve o Hoshina e o especial `slash_wave` da espada dele para o jogador. Render: `SoldierRenderer<T>(context, espécie)`, segunda arma no osso `item_left` (com o display da mão direita: a GeckoLib não espelha como o vanilla). Animações: `tools/art/gen_hoshina_animations.py` (depois de `rig_soldier_mesh.py hoshina`) |
+| Hoshina: força e onde aparece (Miguel, 2026-10-07) | No poder total vence o No. 10 pequeno (8,3) e perde para o gigante (9); vence o No. 9 atual sem facilidade; com o traje numerado 10 (0.6-F) fica mais forte. **Escalada de combate** (`escalation`): Release 40% + 2/s com alvo até +50, velocidade e dano seguem o Release, recargas −40% no máximo. Só defensor nas invasões de nível 4–5 (variante `"hoshina"`). Espada **fabricada** na bancada (patente Vice-Capitão). No. 9 subiu para fortitude 8,0. Duelos em `docs/BALANCEAMENTO.md` |
+| Vida acima de 1024 (0.6-D) | O vanilla limita `max_health` a 1024 (No. 10 pequeno e gigante ficariam iguais): `AttributeLimits` troca o `maxValue` do `RangedAttribute` por reflexão no setup comum (100.000), sem mixin (regra 7; como o mod AttributeFix). GameTest `maxHealthGoesAbove1024` |
 | Ataque especial de arma (0.5) | `special` no `weapon/<id>.json` (tipo, dano, área, custo, recarga, VFX, som), tecla **R**; resolvedor `SpecialAttacks` serve jogador e (depois) soldado especial. Machado = Golpe Sísmico (`ground_slam`) |
 | Aura de poder (0.5, Miguel) | `aura/<id>.json` (cor, secundária, estilo `sparks`/`lightning`/`flame`, `min_release`, tamanho); id público `kn8:aura` (sync nativo) + `kn8:release_visual`; cada cliente desenha (`AuraRenderer`, sem pacote por tick). Jogador: aura do comando > do traje (`suit.aura`) > `defense_force`. Com vida baixa a % sobe sozinha (`[power] desperationHealth`/`desperationMaxPoints`). [DECIDIR] jogador escolher a cor |
 | Habilidades de kaiju (0.6-A) | `behavior` no `ability/*.json` (min/max_range, prioridade, health_below, setor, golpes, projétil, lentidão); tipos novos `kn8:sweep`, `kn8:projectile` (`KaijuProjectile`), `kn8:leap`, `kn8:multi_hit` em `KaijuAbilities`; escolha = maior prioridade entre as prontas e ao alcance (empate sorteado); `particles` = aviso no início do preparo; `rage` no `kaiju/*.json`. Animações por `tools/art/gen_ability_animations.py` (rodar depois dos scripts de rig) |
@@ -170,7 +172,9 @@ mandam; se algo precisar mudar, marque **[DECIDIR]** e pergunte.
 - **0.6-D (Hoshina):** bainhas das costas iam para o braço/cabeça no corte por forma → peça solta (componente
   conexo) atrás de `z_min` fica no tronco (`back_items` em `rig_soldier_mesh.py`). Combos de 1–2 ticks perdiam
   golpes pela invulnerabilidade vanilla → `invulnerableTime = 0` antes de cada golpe da técnica e de cada corte.
-  Espada da mão esquerda apontando para baixo → display da mão direita também no `item_left`.
+  Espada da mão esquerda apontando para baixo → display da mão direita também no `item_left`. Duelo de calibragem:
+  kaiju de fortitude 8,3 e 9 nasciam com a mesma vida (teto vanilla 1024) → `AttributeLimits`. Kaeshi-uchi às vezes
+  errava (o dash lateral deixava o Hoshina longe) → o contra-golpe vem com avanço e +3 de alcance.
 
 - **0.6-C (trajes):** o traje do Meshy é mais fino que o boneco do Minecraft (braço 0,2 contra 0,25 + manga da
   skin) e a skin cobria o traje; centrar a peça inteira deixava a canela atrás da calça (a bota puxa o centro) →
@@ -269,9 +273,9 @@ remedidas na malha [SUPOSIÇÃO: núcleo no peito]. `build_primigenius.py` não 
 
 ## Pendências e [DECIDIR]
 
-- **[DECIDIR] 0.6-D:** como o jogador ganha a espada do Hoshina (hoje só criativo/`/give`: receita na bancada com
-  patente alta? recompensa de missão?) e onde o Hoshina aparece fora do ovo (defensor nas invasões de nível 3+?).
-  Números do Hoshina são [SUPOSIÇÃO] (`docs/BALANCEAMENTO.md`).
+- **[DECIDIR] 0.6-D:** No. 9 com fortitude 8,0 bate ~34 por golpe (garra ~44): na invasão de nível 3 isso derruba
+  jogador de patente baixa em 1–2 golpes. Alternativa: `overrides.damage` no `kaiju_no9.json` (vida alta, dano
+  menor). Receita da espada e patente Vice-Capitão são [SUPOSIÇÃO].
 
 - **Feito (2026-10-06, segunda leva do Meshy):** soldado novo (7 mil tri, textura 1024), 4 Primigenius novos,
   aranha sem atravessar ao andar. Aguardando o Miguel testar (roteiro §14). Leve sobreposição na raiz das patas da

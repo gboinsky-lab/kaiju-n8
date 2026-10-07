@@ -3,6 +3,8 @@ package com.kn8.gametest;
 
 import com.kn8.KN8Constants;
 import com.kn8.common.combat.SlashProjectile;
+import com.kn8.common.data.KN8Data;
+import com.kn8.common.data.def.SpecialSoldierDef;
 import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.registry.KN8Attachments;
 import com.kn8.common.registry.KN8Entities;
@@ -55,14 +57,46 @@ public final class HoshinaGameTests {
         helper.runAfterDelay(SETTLE, () -> {
             helper.assertTrue(hoshina.getMainHandItem().is(KN8Items.HOSHINA_SWORD.get()), "Espada na mao direita");
             helper.assertTrue(hoshina.getOffhandItem().is(KN8Items.HOSHINA_SWORD.get()), "Espada na mao esquerda");
-            helper.assertTrue(hoshina.getAttributeValue(Attributes.MAX_HEALTH) == 80.0,
-                    "Vida do perfil (80): " + hoshina.getAttributeValue(Attributes.MAX_HEALTH));
+            SpecialSoldierDef profile = hoshina.profile().orElseThrow();
+            helper.assertTrue(hoshina.getAttributeValue(Attributes.MAX_HEALTH) == profile.health(),
+                    "Vida do perfil (" + profile.health() + "): " + hoshina.getAttributeValue(Attributes.MAX_HEALTH));
             helper.assertTrue(hoshina.getData(KN8Attachments.AURA).equals(KN8Constants.id("violet_lightning")),
                     "Aura roxa: " + hoshina.getData(KN8Attachments.AURA));
-            helper.assertTrue(hoshina.getData(KN8Attachments.RELEASE_VISUAL) == 40,
-                    "Release 40%: " + hoshina.getData(KN8Attachments.RELEASE_VISUAL));
+            helper.assertTrue(hoshina.getData(KN8Attachments.RELEASE_VISUAL) == profile.release(),
+                    "Release do perfil: " + hoshina.getData(KN8Attachments.RELEASE_VISUAL));
             helper.succeed();
         });
+    }
+
+    @GameTest(template = TEMPLATE)
+    public static void combatPowerEscalatesDuringTheFight(GameTestHelper helper) {
+        HoshinaEntity hoshina = hoshina(helper, new BlockPos(1, 1, 4), false);
+        IronGolem golem = golem(helper, new BlockPos(7, 1, 4));
+        int[] start = new int[1];
+        double[] speed = new double[1];
+        helper.runAfterDelay(SETTLE, () -> {
+            start[0] = hoshina.release();
+            speed[0] = hoshina.getAttributeValue(Attributes.MOVEMENT_SPEED);
+            hoshina.setTarget(golem);
+        });
+        // 2 pontos por segundo no JSON: em 3 s, +6.
+        helper.runAfterDelay(SETTLE + 60, () -> {
+            helper.assertTrue(hoshina.release() >= start[0] + 5, "O Release deveria subir na luta: " + start[0]
+                    + " -> " + hoshina.release());
+            helper.assertTrue(hoshina.getAttributeValue(Attributes.MOVEMENT_SPEED) > speed[0],
+                    "Mais poder, mais rapido");
+            helper.succeed();
+        });
+    }
+
+    @GameTest(template = TEMPLATE)
+    public static void onlyTheHardestInvasionsCallHoshina(GameTestHelper helper) {
+        KN8Data.INVASION.server().forEach((id, invasion) -> {
+            boolean calls = invasion.defenders().stream().anyMatch(d -> HoshinaEntity.VARIANT.equals(d.variant()));
+            helper.assertTrue(calls == (invasion.level() >= 4), "Hoshina so nas invasoes de nivel 4-5: " + id
+                    + " (nivel " + invasion.level() + ")");
+        });
+        helper.succeed();
     }
 
     @GameTest(template = LONG_TEMPLATE, timeoutTicks = TIMEOUT)

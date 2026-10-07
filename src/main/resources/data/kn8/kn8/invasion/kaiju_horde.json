@@ -38,6 +38,10 @@
       "variant": "random",
       "level": "normal",
       "count": 4
+    },
+    {
+      "variant": "hoshina",
+      "count": 1
     }
   ],
   "rewards": {

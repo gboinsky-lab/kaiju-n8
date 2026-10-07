@@ -6,6 +6,7 @@ import com.kn8.common.config.ServerConfig;
 import com.kn8.common.kaiju.KaijuSpawning;
 import com.kn8.common.network.KN8Network;
 import com.kn8.common.registry.KN8Entities;
+import com.kn8.common.registry.AttributeLimits;
 import com.kn8.common.registry.KN8Registration;
 
 import net.neoforged.bus.api.IEventBus;
@@ -37,6 +38,8 @@ public final class KN8 {
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
+        // 0.6-D: kaiju com mais de 1024 de vida (No. 10, chefes); ver AttributeLimits.
+        AttributeLimits.raiseMaxHealthCap();
         KN8Constants.LOGGER.info("[kn8] Setup comum concluido.");
     }
 }

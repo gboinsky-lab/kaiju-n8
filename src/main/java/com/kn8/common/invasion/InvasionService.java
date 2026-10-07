@@ -38,6 +38,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -243,15 +244,18 @@ public final class InvasionService {
 
     private static void spawnDefenders(ServerLevel level, Invasion invasion) {
         for (InvasionDef.Defender defender : invasion.def.defenders()) {
+            // 0.6-D: variante com o nome de um soldado especial ("hoshina") chama o soldado especial.
+            Optional<EntityType<? extends SoldierEntity>> special = KN8Entities.specialSoldier(defender.variant());
             for (int i = 0; i < defender.count(); i++) {
-                SoldierEntity soldier = KN8Entities.SOLDIER.get().create(level);
+                SoldierEntity soldier = special.<SoldierEntity>map(type -> type.create(level))
+                        .orElseGet(() -> KN8Entities.SOLDIER.get().create(level));
                 if (soldier == null) {
                     continue;
                 }
                 BlockPos pos = KaijuSpawner.surfaceAround(level, invasion.center, 2, 8, level.random);
                 soldier.moveTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, level.random.nextFloat() * 360.0F,
                         0.0F);
-                if (!RANDOM_VARIANT.equals(defender.variant())) {
+                if (!RANDOM_VARIANT.equals(defender.variant()) && special.isEmpty()) {
                     // "random": o finalizeSpawn sorteia pelo peso do JSON (esquadrao misturado).
                     soldier.setVariant(defender.variant());
                 }

@@ -3,5 +3,7 @@
   "merit_required": 8000,
   "max_health": 28,
   "npc_squad_size": 6,
-  "unlocks": []
+  "unlocks": [
+    "kn8:hoshina_sword"
+  ]
 }

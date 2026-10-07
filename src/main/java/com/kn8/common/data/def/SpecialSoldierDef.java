@@ -25,12 +25,14 @@ import net.minecraft.util.StringRepresentable;
  *   <li>{@code techniques}: id -> {@link Technique}. A IA escolhe a de maior {@code priority} entre as prontas e com o
  *   alvo entre {@code min_range} e {@code max_range} (borda da hitbox); empate sorteado.</li>
  *   <li>{@code dash}, {@code counter} (Kaeshi-uchi) e {@code parry}: reacoes aos golpes do kaiju.</li>
+ *   <li>{@code escalation} (Miguel): o poder de combate escala durante a luta (Release sobe, ele fica mais rapido e
+ *   mais forte, as recargas encurtam).</li>
  * </ul>
  */
 public record SpecialSoldierDef(float health, float armor, float speed, float followRange, float knockbackResistance,
         int release, float kaijuDamage, ResourceLocation aura, ResourceLocation weapon,
         Optional<ResourceLocation> offhand, Map<String, Technique> techniques, Dash dash, Counter counter,
-        Parry parry) {
+        Parry parry, Escalation escalation) {
 
     /** Forma da tecnica: cortes a distancia ou sequencia de golpes corpo a corpo. */
     public enum TechniqueType implements StringRepresentable {
@@ -149,6 +151,24 @@ public record SpecialSoldierDef(float health, float armor, float speed, float fo
         ).apply(i, Parry::new));
     }
 
+    /**
+     * Escalada de combate (Miguel, 0.6-D): com alvo, o Release sobe {@code points_per_second} ate +{@code max_points};
+     * sem alvo, cai {@code decay_per_second}. Dano, velocidade e reducao de dano seguem o Release (formulas do
+     * jogador); na escalada maxima as recargas das tecnicas e do dash caem {@code cooldown_reduction_at_max}.
+     */
+    public record Escalation(float pointsPerSecond, int maxPoints, float decayPerSecond,
+            float cooldownReductionAtMax) {
+        public static final Escalation NONE = new Escalation(0.0F, 0, 0.0F, 0.0F);
+        public static final Codec<Escalation> CODEC = RecordCodecBuilder.create(i -> i.group(
+                Codec.floatRange(0.0F, 20.0F).fieldOf("points_per_second").forGetter(Escalation::pointsPerSecond),
+                Codec.intRange(0, 100).fieldOf("max_points").forGetter(Escalation::maxPoints),
+                Codec.floatRange(0.0F, 20.0F).optionalFieldOf("decay_per_second", 2.0F)
+                        .forGetter(Escalation::decayPerSecond),
+                Codec.floatRange(0.0F, 0.9F).optionalFieldOf("cooldown_reduction_at_max", 0.0F)
+                        .forGetter(Escalation::cooldownReductionAtMax)
+        ).apply(i, Escalation::new));
+    }
+
     public static final Codec<SpecialSoldierDef> CODEC = RecordCodecBuilder.create(i -> i.group(
             Codec.floatRange(1.0F, 2000.0F).fieldOf("health").forGetter(SpecialSoldierDef::health),
             Codec.floatRange(0.0F, 30.0F).optionalFieldOf("armor", 0.0F).forGetter(SpecialSoldierDef::armor),
@@ -167,6 +187,7 @@ public record SpecialSoldierDef(float health, float armor, float speed, float fo
                     .forGetter(SpecialSoldierDef::techniques),
             Dash.CODEC.fieldOf("dash").forGetter(SpecialSoldierDef::dash),
             Counter.CODEC.fieldOf("counter").forGetter(SpecialSoldierDef::counter),
-            Parry.CODEC.fieldOf("parry").forGetter(SpecialSoldierDef::parry)
+            Parry.CODEC.fieldOf("parry").forGetter(SpecialSoldierDef::parry),
+            Escalation.CODEC.optionalFieldOf("escalation", Escalation.NONE).forGetter(SpecialSoldierDef::escalation)
     ).apply(i, SpecialSoldierDef::new));
 }

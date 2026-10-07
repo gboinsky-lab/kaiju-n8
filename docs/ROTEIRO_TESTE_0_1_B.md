@@ -346,10 +346,12 @@ Visto na nuvem (`docs/img/hoshina_modelo.png`, `hoshina_vs_honju.png`, `hoshina_
 
 | # | Passo | Esperado |
 |---|---|---|
+| 22.0 | `/kn8 invasion start kn8:kaiju_horde` (nível 4) | O Hoshina entra junto com os defensores; nas invasões de nível 1–3 ele não aparece |
 | 22.1 | Ovo do Vice-Capitão Hoshina (aba de itens do kn8) | Hoshina com cabelo roxo, bainhas nas costas e uma espada em cada mão; aura roxa com faíscas em volta |
 | 22.2 | `/summon kn8:primigenius_honju ~ ~ ~10` perto dele | Ele corre (dash) até o kaiju, solta cortes roxos de longe (Kūuchi, Kōsa-uchi em X) e combos de perto |
 | 22.3 | Observar os golpes pesados do Honju (soco pesado, investida) | Hoshina desvia de lado e contra-ataca (Kaeshi-uchi); golpes comuns às vezes são aparados (faíscas + som metálico) |
-| 22.4 | Deixar o Hoshina perder vida | A aura fica mais forte (Release sobe com a vida baixa) |
+| 22.4 | Luta longa | O Release dele sobe 2%/s (40% → 90%): aura mais forte, mais rápido, recargas mais curtas; com a vida baixa sobe mais |
 | 22.5 | M → Esquadrão | "Vice-Capitão Hoshina" na lista |
 | 22.6 | Bater nele / atirar perto dele | Não fere jogadores nem soldados; os cortes dele atravessam aliados sem ferir |
-| 22.7 | `/give @s kn8:hoshina_sword`, R | Kūuchi do jogador: corte roxo que voa 12 blocos; recarga de 2 s no HUD |
+| 22.7 | Bancada como Vice-Capitão | Receita da espada do Hoshina (8 ferro, 6 fibra, 4 fragmentos, 1 núcleo intacto) |
+| 22.8 | Com a espada, R | Kūuchi do jogador: corte roxo que voa 12 blocos; recarga de 2 s no HUD |

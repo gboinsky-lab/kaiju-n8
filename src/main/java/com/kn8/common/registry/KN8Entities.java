@@ -2,6 +2,7 @@
 package com.kn8.common.registry;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.kn8.KN8Constants;
 import com.kn8.common.combat.SlashProjectile;
@@ -109,6 +110,11 @@ public final class KN8Entities {
                     TRICHONEPHILA_HONJU, KAIJU_NO9);
 
     private KN8Entities() {
+    }
+
+    /** 0.6-D: soldado especial pelo nome (defensores de invasao: variante "hoshina"); vazio para os comuns. */
+    public static Optional<EntityType<? extends SoldierEntity>> specialSoldier(String name) {
+        return HoshinaEntity.VARIANT.equals(name) ? Optional.of(HOSHINA.get()) : Optional.empty();
     }
 
     private static DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> kaiju(String name, float width,

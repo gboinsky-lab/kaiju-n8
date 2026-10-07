@@ -84,10 +84,13 @@ public class HoshinaEntity extends SoldierEntity {
     private static final RawAnimation WALK = RawAnimation.begin().thenLoop("hoshina.movement.walk");
     private static final Map<String, RawAnimation> ARMS = new HashMap<>();
     private static final float REACH_SLACK = 1.0F;
+    /** Kaeshi-uchi: o contra-golpe vem com um avanco (o dash lateral pode deixa-lo um pouco longe). */
+    private static final float COUNTER_REACH_SLACK = 3.0F;
     private static final double SIDESTEP_SPEED = 0.6;
     private static final double DASH_LIFT = 0.15;
     private static final double REACTION_SEARCH = 16.0;
     private static final float SWING_VOLUME = 0.8F;
+    private static final float TICKS_PER_SECOND = 20.0F;
 
     static {
         for (String stance : new String[] {"ready", "walk", "aim"}) {
@@ -110,6 +113,8 @@ public class HoshinaEntity extends SoldierEntity {
     private LivingEntity counterTarget;
     private int lastVisualRelease = -1;
     private boolean profileChecked;
+    /** Pontos de Release ganhos na luta (escalada de combate); nao salvo: recomeca a cada luta. */
+    private float escalation;
     /** Contadores para os GameTests (quantas vezes cada reacao saiu). */
     private int dodges;
     private int counters;
@@ -131,10 +136,10 @@ public class HoshinaEntity extends SoldierEntity {
         return Optional.empty();
     }
 
-    /** Release base do perfil + desespero com a vida baixa (mesma regra do jogador). */
+    /** Release base do perfil + escalada de combate + desespero com a vida baixa (mesma regra do jogador). */
     @Override
     public int release() {
-        int base = profile().map(SpecialSoldierDef::release).orElse(0);
+        int base = profile().map(SpecialSoldierDef::release).orElse(0) + (int) escalation;
         if (!ServerConfig.SPEC.isLoaded()) {
             return base;
         }
@@ -288,7 +293,7 @@ public class HoshinaEntity extends SoldierEntity {
         techniqueStart = now;
         techniqueTarget = target;
         nextHit = 0;
-        readyAt.put(id, now + technique.durationTicks() + technique.cooldownTicks());
+        readyAt.put(id, now + technique.durationTicks() + scaledCooldown(technique.cooldownTicks()));
         getNavigation().stop();
         lookAt(target, 360.0F, 90.0F);
         if (technique.dashIn() > 0) {
@@ -311,6 +316,7 @@ public class HoshinaEntity extends SoldierEntity {
             profileChecked = true;
             ensureProfile();
         }
+        tickEscalation();
         updateAura();
         if (counterStrikeAt >= 0 && now >= counterStrikeAt) {
             counterStrikeAt = -1;
@@ -357,7 +363,8 @@ public class HoshinaEntity extends SoldierEntity {
             return;
         }
         boolean last = index == count - 1;
-        strike(target, technique.hits().get(index), last ? technique.finalKnockback() : 0.0F, weapon.get());
+        strike(target, technique.hits().get(index), last ? technique.finalKnockback() : 0.0F, weapon.get(),
+                REACH_SLACK);
         if (last && technique.exposeCoreTicks() > 0 && target instanceof KaijuEntity kaiju) {
             // Yae-uchi: abre a guarda do kaiju (nucleo exposto) para os aliados aproveitarem.
             kaiju.exposeCore(technique.exposeCoreTicks());
@@ -374,8 +381,8 @@ public class HoshinaEntity extends SoldierEntity {
      * Golpe corpo a corpo de tecnica: acerta se a borda do alvo estiver ao alcance da arma (com folga: os combos
      * avancam junto). Kaiju levam no corpo, com o {@code kaiju_damage} do perfil.
      */
-    private boolean strike(LivingEntity target, float multiplier, float knockback, WeaponDef weapon) {
-        if (edgeTo(target) > weapon.reach() + REACH_SLACK) {
+    private boolean strike(LivingEntity target, float multiplier, float knockback, WeaponDef weapon, float slack) {
+        if (edgeTo(target) > weapon.reach() + slack) {
             return false;
         }
         float damage = (float) (weapon.baseDamage() * multiplier * damageMultiplier());
@@ -457,7 +464,7 @@ public class HoshinaEntity extends SoldierEntity {
         Vec3 away = position().subtract(kaiju.position());
         Vec3 side = new Vec3(-away.z, 0, away.x).scale(getRandom().nextBoolean() ? 1 : -1);
         dash(side.normalize().add(new Vec3(away.x, 0, away.z).normalize().scale(0.6)), def.speed());
-        dashReadyAt = now + def.cooldownTicks();
+        dashReadyAt = now + scaledCooldown(def.cooldownTicks());
         invulnerableUntil = now + def.invulnerableTicks();
         dodges++;
         triggerAnim("action", "dash");
@@ -473,7 +480,7 @@ public class HoshinaEntity extends SoldierEntity {
             return false;
         }
         dash(target.position().subtract(position()), def.get().speed());
-        dashReadyAt = now + def.get().cooldownTicks();
+        dashReadyAt = now + scaledCooldown(def.get().cooldownTicks());
         triggerAnim("action", "dash");
         level().playSound(null, getX(), getY(), getZ(), KN8Sounds.DASH.get(), SoundSource.NEUTRAL, 0.7F, 1.2F);
         return true;
@@ -504,7 +511,9 @@ public class HoshinaEntity extends SoldierEntity {
         }
         lookAt(target, 360.0F, 90.0F);
         float multiplier = profile().map(def -> def.counter().multiplier()).orElse(1.0F);
-        strike(target, multiplier, 0.0F, weapon.get());
+        float lunge = profile().map(def -> def.counter().dashSpeed()).orElse(1.0F);
+        dash(target.position().subtract(position()), lunge);
+        strike(target, multiplier, 0.0F, weapon.get(), COUNTER_REACH_SLACK);
     }
 
     /**
@@ -543,6 +552,32 @@ public class HoshinaEntity extends SoldierEntity {
 
     // --- aura --------------------------------------------------------------------------------------------------
 
+    /** Escalada de combate: sobe com alvo vivo, cai sem alvo (pontos por segundo do JSON). */
+    private void tickEscalation() {
+        profile().map(SpecialSoldierDef::escalation).ifPresent(def -> {
+            boolean fighting = getTarget() != null && getTarget().isAlive();
+            escalation = fighting ? Math.min(def.maxPoints(), escalation + def.pointsPerSecond() / TICKS_PER_SECOND)
+                    : Math.max(0.0F, escalation - def.decayPerSecond() / TICKS_PER_SECOND);
+        });
+    }
+
+    public float escalation() {
+        return escalation;
+    }
+
+    /** Recarga encurtada pela escalada (ate cooldown_reduction_at_max na escalada maxima). */
+    private long scaledCooldown(int ticks) {
+        return profile().map(SpecialSoldierDef::escalation).filter(def -> def.maxPoints() > 0)
+                .map(def -> Math.round(ticks * (1.0 - def.cooldownReductionAtMax() * escalation / def.maxPoints())))
+                .orElse((long) ticks);
+    }
+
+    /** Velocidade do perfil com o bonus do Release atual (o soldado comum so aplica no nascimento). */
+    private void applySpeed(int release) {
+        profile().ifPresent(def -> getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(def.speed()
+                * (1.0 + PowerMath.speedBonus(release, PowerService.params()))));
+    }
+
     /** Publica a aura do perfil e a % de Release (so na mudanca: sync nativo dos attachments). */
     private void updateAura() {
         profile().ifPresent(def -> {
@@ -554,6 +589,8 @@ public class HoshinaEntity extends SoldierEntity {
         if (release != lastVisualRelease) {
             lastVisualRelease = release;
             setData(KN8Attachments.RELEASE_VISUAL, release);
+            // Mais poder, mais rapido: a velocidade acompanha o Release (escalada e desespero).
+            applySpeed(release);
         }
     }
 

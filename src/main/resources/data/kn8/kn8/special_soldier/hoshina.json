@@ -1,11 +1,11 @@
 {
-  "health": 80,
-  "armor": 12,
-  "speed": 0.36,
+  "health": 300,
+  "armor": 20,
+  "speed": 0.3,
   "follow_range": 48,
-  "knockback_resistance": 0.4,
+  "knockback_resistance": 0.6,
   "release": 40,
-  "kaiju_damage": 0.7,
+  "kaiju_damage": 1.0,
   "aura": "kn8:violet_lightning",
   "weapon": "kn8:hoshina_sword",
   "offhand": "kn8:hoshina_sword",
@@ -131,5 +131,11 @@
     "damage_factor": 0.3,
     "cooldown_ticks": 20,
     "counter_window_ticks": 10
+  },
+  "escalation": {
+    "points_per_second": 2.0,
+    "max_points": 50,
+    "decay_per_second": 2.0,
+    "cooldown_reduction_at_max": 0.4
   }
 }

@@ -53,6 +53,10 @@
       "variant": "rifle",
       "level": "high",
       "count": 1
+    },
+    {
+      "variant": "hoshina",
+      "count": 1
     }
   ],
   "rewards": {
