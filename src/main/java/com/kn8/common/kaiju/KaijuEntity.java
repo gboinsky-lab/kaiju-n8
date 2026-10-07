@@ -134,6 +134,8 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
     private final KaijuPart[] parts;
     private int appliedVersion = -1;
     private int staggerTicks;
+    /** Escala do empurrao do golpe em andamento (so dentro do hurt; 1 fora dele). */
+    private double knockbackScale = 1.0;
     /** Vida do nucleo; negativa = ainda nao inicializada (enche no primeiro tick com a definicao). */
     private float coreHealth = -1;
     private long lastExplosionTick = Long.MIN_VALUE;
@@ -850,11 +852,27 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
             // Fogo, lava, queda e explosao (uma vez por tick, ver hurt) continuam com ela.
             invulnerableTime = 0;
         }
-        boolean hurt = super.hurt(source, amount);
+        // 0.5 (Miguel): o empurrao vanilla de cada golpe de soldado impedia o kaiju de chegar perto de um grupo.
+        knockbackScale = source.getEntity() instanceof SoldierEntity
+                ? ServerConfig.SOLDIER_KNOCKBACK_ON_KAIJU.get() : 1.0;
+        boolean hurt;
+        try {
+            hurt = super.hurt(source, amount);
+        } finally {
+            knockbackScale = 1.0;
+        }
         if (hurt && !level().isClientSide()) {
             triggerAnim("reaction", "hurt");
         }
         return hurt;
+    }
+
+    @Override
+    public void knockback(double strength, double x, double z) {
+        if (knockbackScale <= 0.0) {
+            return;
+        }
+        super.knockback(strength * knockbackScale, x, z);
     }
 
     /**

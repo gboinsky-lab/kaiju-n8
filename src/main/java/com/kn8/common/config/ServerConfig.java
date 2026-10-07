@@ -151,6 +151,8 @@ public final class ServerConfig {
     public static final ModConfigSpec.IntValue BASIC_ATTACK_INTERVAL_TICKS;
     public static final ModConfigSpec.DoubleValue CHARGE_SPEED;
     public static final ModConfigSpec.DoubleValue ABILITY_KNOCKBACK;
+    /** 0.5 (Miguel): empurrao que o golpe de um soldado causa no kaiju (1 = vanilla; 0 = nenhum). */
+    public static final ModConfigSpec.DoubleValue SOLDIER_KNOCKBACK_ON_KAIJU;
     public static final ModConfigSpec.DoubleValue LARGE_KAIJU_WIDTH;
     public static final ModConfigSpec.DoubleValue STEP_HEIGHT_FRACTION;
 
@@ -434,6 +436,9 @@ public final class ServerConfig {
                 0.1, 3.0);
         ABILITY_KNOCKBACK = doubleValue("abilityKnockback", "Knockback strength of area and charge abilities.", 0.8,
                 0.0, 5.0);
+        SOLDIER_KNOCKBACK_ON_KAIJU = doubleValue("soldierKnockback", "Knockback a Defense Force soldier's hit causes"
+                + " on a kaiju, as a multiplier of vanilla (0 = none: groups of soldiers kept kaiju from reaching"
+                + " them).", 0.0, 0.0, 1.0);
         LARGE_KAIJU_WIDTH = doubleValue("largeKaijuWidth", "Kaiju at least this wide walk straight to their target"
                 + " instead of using vanilla pathfinding (which fails for wide mobs).", 2.5, 1.0, 30.0);
         STEP_HEIGHT_FRACTION = doubleValue("stepHeightFraction", "Step height of a kaiju as a fraction of its"
