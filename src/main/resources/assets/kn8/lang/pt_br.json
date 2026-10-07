@@ -655,5 +655,11 @@
   "kn8.ability.no10g_tail_sweep": "Varredura de cauda gigante",
   "kn8.ability.no10g_tail_smash": "Pancada de cauda",
   "kn8.ability.no10g_finger_cannon": "Finger Cannon gigante",
-  "kn8.ability.no10g_multi_appendage": "Ataque de vários membros"
+  "kn8.ability.no10g_multi_appendage": "Ataque de vários membros",
+  "entity.kn8.preondactyl": "Preondactyl",
+  "kn8.bestiary.preondactyl.desc": "Kaiju voador do tipo serpe. Circula acima dos alvos atirando um raio de energia pela boca e mergulha para morder e golpear. A frente é blindada: acerte pelas costas. Com a vida baixa, se autodestrói. Obedece ao Kaiju No. 10.",
+  "kn8.preondactyl.self_destruct": "O Preondactyl vai se autodestruir! Afaste-se!",
+  "kn8.ability.preondactyl_energy_beam": "Raio de energia",
+  "kn8.ability.preondactyl_dive_strike": "Mergulho",
+  "kn8.ability.preondactyl_tail_strike": "Golpe de cauda"
 }

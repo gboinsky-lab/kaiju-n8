@@ -655,5 +655,11 @@
   "kn8.ability.no10g_tail_sweep": "Giant tail sweep",
   "kn8.ability.no10g_tail_smash": "Tail smash",
   "kn8.ability.no10g_finger_cannon": "Giant Finger Cannon",
-  "kn8.ability.no10g_multi_appendage": "Multi-appendage assault"
+  "kn8.ability.no10g_multi_appendage": "Multi-appendage assault",
+  "entity.kn8.preondactyl": "Preondactyl",
+  "kn8.bestiary.preondactyl.desc": "A wyvern-type flying kaiju. It circles above its targets firing an energy beam from its mouth and dives in to bite and strike. Its front is armored: hit it from behind. At low health it self-destructs. It obeys Kaiju No. 10.",
+  "kn8.preondactyl.self_destruct": "The Preondactyl is about to self-destruct! Get away!",
+  "kn8.ability.preondactyl_energy_beam": "Energy beam",
+  "kn8.ability.preondactyl_dive_strike": "Dive",
+  "kn8.ability.preondactyl_tail_strike": "Tail strike"
 }

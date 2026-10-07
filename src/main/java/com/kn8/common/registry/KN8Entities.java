@@ -9,6 +9,7 @@ import com.kn8.common.combat.SlashProjectile;
 import com.kn8.common.kaiju.CarcassEntity;
 import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.kaiju.KaijuProjectile;
+import com.kn8.common.kaiju.PreondactylEntity;
 import com.kn8.common.numbered.KaijuNo10Entity;
 import com.kn8.common.numbered.KaijuNo9Entity;
 import com.kn8.common.soldier.SoldierEntity;
@@ -60,6 +61,9 @@ public final class KN8Entities {
             "kaiju_no10_small", 2.0F, 4.0F);
     public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> KAIJU_NO10_GIANT = numbered(
             "kaiju_no10_giant", 10.0F, 24.0F);
+    /** 0.6-E: Preondactyl, kaiju voador (flyer/preondactyl.json). */
+    public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> PREONDACTYL = flyer(
+            "preondactyl", 4.0F, 4.0F);
 
     /** 0.1-B (M11b): carcaca de kaiju morto (tamanho real vem da especie, sincronizada). */
     public static final DeferredHolder<EntityType<?>, EntityType<CarcassEntity>> CARCASS = ENTITY_TYPES.register(
@@ -113,7 +117,8 @@ public final class KN8Entities {
     /** Todas as especies, para atributos, renderers e comandos. */
     public static final List<DeferredHolder<EntityType<?>, EntityType<KaijuEntity>>> KAIJU =
             List.of(TRICHONEPHILA, PRIMIGENIUS, PRIMIGENIUS_RESURRECTED, PRIMIGENIUS_HONJU, PRIMIGENIUS_REVIVED,
-                    TRICHONEPHILA_HONJU, KAIJU_NO9, KAIJU_NO10_SMALL, KAIJU_NO10_GIANT);
+                    TRICHONEPHILA_HONJU, KAIJU_NO9, KAIJU_NO10_SMALL, KAIJU_NO10_GIANT,
+                    PREONDACTYL);
 
     private KN8Entities() {
     }
@@ -121,6 +126,15 @@ public final class KN8Entities {
     /** 0.6-D: soldado especial pelo nome (defensores de invasao: variante "hoshina"); vazio para os comuns. */
     public static Optional<EntityType<? extends SoldierEntity>> specialSoldier(String name) {
         return HoshinaEntity.VARIANT.equals(name) ? Optional.of(HOSHINA.get()) : Optional.empty();
+    }
+
+    private static DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> flyer(String name, float width,
+            float height) {
+        return ENTITY_TYPES.register(name, () -> EntityType.Builder.<KaijuEntity>of(PreondactylEntity::new,
+                        MobCategory.MONSTER)
+                .sized(width, height)
+                .clientTrackingRange(KAIJU_TRACKING_RANGE_CHUNKS)
+                .build(name));
     }
 
     private static DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> numbered(String name, float width,

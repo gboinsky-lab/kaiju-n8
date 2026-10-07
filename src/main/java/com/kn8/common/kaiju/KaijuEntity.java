@@ -235,7 +235,9 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
                 .add(Attributes.ARMOR, 0.0)
                 .add(Attributes.MOVEMENT_SPEED, BASE_SPEED)
                 .add(Attributes.FOLLOW_RANGE, BASE_FOLLOW_RANGE)
-                .add(Attributes.KNOCKBACK_RESISTANCE, BASE_KNOCKBACK_RESISTANCE);
+                .add(Attributes.KNOCKBACK_RESISTANCE, BASE_KNOCKBACK_RESISTANCE)
+                // 0.6-E: so os voadores usam (FlyingMoveControl); o valor real sai do flyer/<id>.json.
+                .add(Attributes.FLYING_SPEED, BASE_SPEED);
     }
 
     /** Id da especie = id do EntityType = id do arquivo {@code kaiju/<id>.json}. */
@@ -1054,12 +1056,17 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
 
     // --- animacao --------------------------------------------------------------------------------------------
 
-    private RawAnimation loop(String layer, String name) {
+    protected RawAnimation loop(String layer, String name) {
         return RawAnimation.begin().thenLoop(KN8Ids.animationName(kaijuId().getPath(), layer, name));
     }
 
-    private RawAnimation once(String layer, String name) {
+    protected RawAnimation once(String layer, String name) {
         return RawAnimation.begin().thenPlay(KN8Ids.animationName(kaijuId().getPath(), layer, name));
+    }
+
+    /** Animacao do controller "movement" (0.6-E: o Preondactyl troca por voo enquanto esta no ar). */
+    protected RawAnimation movementAnimation(boolean moving, RawAnimation idle, RawAnimation walk) {
+        return moving ? walk : idle;
     }
 
     @Override
@@ -1068,7 +1075,7 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
         RawAnimation walk = loop("movement", "walk");
         RawAnimation breathe = loop("overlay", "breathe");
         controllers.add(new AnimationController<>(this, "movement", TRANSITION_TICKS,
-                state -> state.setAndContinue(state.isMoving() ? walk : idle)));
+                state -> state.setAndContinue(movementAnimation(state.isMoving(), idle, walk))));
         AnimationController<KaijuEntity> action = new AnimationController<>(this, "action", 0, state -> PlayState.STOP)
                 .triggerableAnim("attack", once("action", "attack"));
         // Uma animacao disparavel por habilidade da especie; o nome e o campo "animation" do JSON da habilidade.

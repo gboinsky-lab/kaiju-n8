@@ -1,0 +1,27 @@
+{
+  "class": "yoju",
+  "fortitude": 6.3,
+  "size": "large",
+  "dimensions": {
+    "width": 4.0,
+    "height": 4.0
+  },
+  "speed": 0.3,
+  "intelligence": 3,
+  "abilities": [
+    "kn8:preondactyl_energy_beam",
+    "kn8:preondactyl_dive_strike",
+    "kn8:bite",
+    "kn8:claw",
+    "kn8:preondactyl_tail_strike"
+  ],
+  "weaknesses": [],
+  "spawn": {
+    "natural": false
+  },
+  "rarity": "event",
+  "tags": [
+    "flying",
+    "wyvern"
+  ]
+}

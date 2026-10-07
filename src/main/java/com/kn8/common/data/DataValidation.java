@@ -20,6 +20,7 @@ import com.kn8.common.data.def.KaijuDef;
 import com.kn8.common.data.def.MissionDef;
 import com.kn8.common.data.def.NumberedDef;
 import com.kn8.common.data.def.RankDef;
+import com.kn8.common.data.def.FlyerDef;
 import com.kn8.common.data.def.SoldierDef;
 import com.kn8.common.data.def.SpecialSoldierDef;
 import com.kn8.common.data.def.SuitDef;
@@ -75,6 +76,7 @@ public final class DataValidation {
                 validateMissions(KN8Data.MISSION.loaded(), ranks.keySet(), kaiju.keySet(), bosses.keySet(), report),
                 report);
         publish(KN8Data.SOLDIER, validateSoldiers(KN8Data.SOLDIER.loaded(), report), report);
+        publish(KN8Data.FLYER, validateFlyers(KN8Data.FLYER.loaded(), kaiju.keySet(), report), report);
         publish(KN8Data.SPECIAL_SOLDIER, validateSpecialSoldiers(KN8Data.SPECIAL_SOLDIER.loaded(), auras.keySet(),
                 report), report);
         publish(KN8Data.WORKBENCH, validateWorkbench(KN8Data.WORKBENCH.loaded(), report), report);
@@ -184,6 +186,20 @@ public final class DataValidation {
     }
 
     /** 0.1-B: soldado precisa de ao menos um nivel e uma variante; arma inexistente vira aviso (variante sem arma). */
+    /** 0.6-E: o id do voador precisa ser um kaiju existente (o perfil de voo completa o kaiju/<id>.json). */
+    public static Map<ResourceLocation, FlyerDef> validateFlyers(Map<ResourceLocation, FlyerDef> input,
+            Set<ResourceLocation> kaiju, DataReport report) {
+        Map<ResourceLocation, FlyerDef> valid = new LinkedHashMap<>();
+        input.forEach((id, def) -> {
+            if (!kaiju.contains(id)) {
+                report.error("flyer " + id + ": o id precisa ser um kaiju existente");
+                return;
+            }
+            valid.put(id, def);
+        });
+        return valid;
+    }
+
     /** 0.6-D: armas precisam ser itens registrados; aura desconhecida so avisa (o cliente cai na padrao). */
     public static Map<ResourceLocation, SpecialSoldierDef> validateSpecialSoldiers(
             Map<ResourceLocation, SpecialSoldierDef> input, Set<ResourceLocation> auras, DataReport report) {

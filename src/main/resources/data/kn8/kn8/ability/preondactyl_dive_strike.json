@@ -1,0 +1,31 @@
+{
+  "type": "kn8:area_melee",
+  "damage_multiplier": 1.4,
+  "radius": 2.5,
+  "windup_ticks": 4,
+  "active_ticks": 2,
+  "cooldown_ticks": 100,
+  "animation": "action.dive",
+  "heavy": true,
+  "destruction": {
+    "radius": 2.0,
+    "power": 2,
+    "crater": false,
+    "depth": 0.0
+  },
+  "vfx": [
+    {
+      "effect": "kn8:impact",
+      "intensity": 1.2
+    },
+    {
+      "effect": "kn8:dust",
+      "intensity": 1.0
+    }
+  ],
+  "camera_shake": 0.3,
+  "sound": "kn8:kaiju.slam",
+  "behavior": {
+    "priority": 3
+  }
+}
