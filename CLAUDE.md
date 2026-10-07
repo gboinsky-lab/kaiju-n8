@@ -137,7 +137,7 @@ mandam; se algo precisar mudar, marque **[DECIDIR]** e pergunte.
 | **0.4 Soldados comuns** (variantes, faca de apoio, sorteio, papel no menu, sem machado) | ✅ GameTests 45/45; troca para a faca e aba Esquadrão vistas em jogo com 2 clientes; aguardando roteiro §21 |
 | **0.5 Ataque especial + aura** (Golpe Sísmico do machado na tecla R; aura por personagem, violeta com raios pela referência do Miguel; potência com vida baixa) | ✅ GameTests 49/49; aguardando teste em jogo do Miguel |
 | **0.6-A Ataques novos dos kaiju** (casco, rabada, soco pesado, raio de energia do Honju, estocada/varredura/várias patas/teia/salto da aranha, Finger Gun do No. 9; fúria dos revividos; soldado sem empurrar kaiju; kaiju quebram o caminho ao andar) | ✅ **aprovada pelo Miguel (2026-10-07)**; GameTests 56/56. Plano 0.6 em `docs/PLANO_0_6.md`, especificação em `docs/ESPECIFICACAO_HABILIDADES_MOBS.md` |
-| **0.6-B Trichonephila Honju** (Tecedeira Abissal: entidade, partes e núcleo, ataques da aranha + explosão de teia, fúria, chefe que invoca Trichonephila, desmonte de 6 etapas, invasão nível 3 `web_queen`, missão `web_queen_hunt`) | ✅ GameTests 57/57; aguardando teste em jogo |
+| **0.6-B Trichonephila Honju** (Tecedeira Abissal: entidade, partes e núcleo, ataques da aranha + explosão de teia, fúria, chefe que invoca Trichonephila, desmonte de 6 etapas, invasão nível 3 `web_queen`, missão `web_queen_hunt`) | ✅ GameTests 57/57; vista em jogo (`docs/img/trichonephila_honju_*`: modelo, teia e salto); aguardando o Miguel |
 | M11b carcaças e desmonte · M12 transformação · M13 NPCs | pendentes (patentes/crafting do M14 entraram na 0.2) |
 | M15 missões · M16 chefe Honju · M17 Tachikawa · M18 endurecimento/performance | pendentes |
 
