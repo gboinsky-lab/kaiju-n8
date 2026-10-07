@@ -14,5 +14,18 @@ Primigenius, Trichonephila e Preondactyl). Uma etapa por vez, cada uma testada c
 | 0.6-G | **Pontos de defesa**: a invasao ataca um ponto fixo (gerador/QG da Forca de Defesa com vida); estruturas novas e grandes (base) | Nao |
 | 0.6-H | No. 9 avancado (clones, Finger Gun multiplo, casca defensiva, comando de aliados) | Opcional (asas/forma final) |
 
+## Modelos recebidos (2026-10-07, GLB fora do Git; guardar os originais)
+
+| Id | O que e | Triangulos | Observacao |
+|---|---|---|---|
+| `trichonephila_honju` | aranha Honju roxa e amarela, 8 patas | 11.436 | 0.6-B |
+| `mk1`, `mk1_reinforced` | trajes sem cabeca | 5.060 / 5.180 | 0.6-C |
+| `hoshina` | soldado especial (cabelo roxo, espadas nas costas) | 9.090 | 0.6-D |
+| `hoshina_sword` | uma espada (espelhada para o par) | 3.076 | 0.6-D |
+| `hoshina_no10` | Hoshina com o traje numerado 10 (cauda enrolada) | 11.651 | 0.6-F |
+| `kaiju_no10_small` | No. 10 forma pequena (4 m) | 12.344 | 0.6-E; cabeca vinha olhando ~65 graus para o lado: corrigida com `tools/art/fix_head_yaw.py` (`docs/img/no10_pequeno_cabeca.png`) |
+| `kaiju_no10_giant` | No. 10 forma gigante (24 m) | 17.528 | 0.6-E |
+| `preondactyl` | voador, asas abertas | 12.369 | 0.6-E |
+
 Regras da especificacao adotadas: habilidades com cooldown, prioridade, distancia, telegraph, efeitos e som; limite de
 invocacoes, clones, particulas e destruicao; nada de busca de entidades a cada tick para todos os mobs.
