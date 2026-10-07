@@ -225,10 +225,16 @@ def bench_textures():
             "defense_workbench_bottom": bottom}
 
 
+# 0.6-C: trajes com modelo 3D (tools/art/rig_suit_mesh.py, desenhado pelo SuitLayer): a camada de armadura vanilla
+# fica transparente para nao aparecer por baixo da malha.
+SUITS_3D = {"mk1", "mk1_reinforced"}
+
+
 def main():
     for name, colors in SUITS.items():
         save(suit_icon(*colors), f"textures/item/{name}.png")
-        save(armor_layer(*colors), f"textures/models/armor/{name}_layer_1.png")
+        layer = Image.new("RGBA", (64, 32), (0, 0, 0, 0)) if name in SUITS_3D else armor_layer(*colors)
+        save(layer, f"textures/models/armor/{name}_layer_1.png")
         item_model(name)
     for name, painter in (("suit_coolant", coolant_icon), ("stamina_stim", stim_icon),
                           ("release_catalyst", catalyst_icon)):

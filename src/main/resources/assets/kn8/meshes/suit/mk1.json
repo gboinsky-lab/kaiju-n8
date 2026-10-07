@@ -1,0 +1,9 @@
+{
+  "bones": {
+    "body": "kn8:meshes/suit/mk1/body.obj",
+    "right_arm": "kn8:meshes/suit/mk1/right_arm.obj",
+    "left_arm": "kn8:meshes/suit/mk1/left_arm.obj",
+    "right_leg": "kn8:meshes/suit/mk1/right_leg.obj",
+    "left_leg": "kn8:meshes/suit/mk1/left_leg.obj"
+  }
+}

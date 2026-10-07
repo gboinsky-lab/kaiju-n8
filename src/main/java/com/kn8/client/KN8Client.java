@@ -17,6 +17,7 @@ import com.kn8.client.render.HeldWeaponPoses;
 import com.kn8.client.render.KaijuRenderer;
 import com.kn8.client.render.SoldierRenderer;
 import com.kn8.client.render.mesh.MeshModels;
+import com.kn8.client.render.suit.SuitRendering;
 import com.kn8.client.vfx.VfxEffects;
 import com.kn8.common.registry.KN8Entities;
 
@@ -57,6 +58,8 @@ public final class KN8Client {
         modEventBus.addListener(KN8Client::registerRenderers);
         // Etapa A/C: malhas do Meshy presas aos ossos (cache limpo no F3+T).
         modEventBus.addListener(MeshModels::registerReloadListener);
+        // 0.6-C: traje 3D da Forca de Defesa no jogador.
+        modEventBus.addListener(SuitRendering::addLayers);
         // 0.1-B: pose de mira (dois bracos) ao segurar rifle/pistola.
         modEventBus.addListener(HeldWeaponPoses::register);
         // M9: camada de animacao do jogador na PAL.
