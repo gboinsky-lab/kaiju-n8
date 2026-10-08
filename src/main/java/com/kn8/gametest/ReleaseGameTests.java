@@ -126,7 +126,8 @@ public final class ReleaseGameTests {
         PowerService.setActive(player, 5);
         ticks(player, 1);
         helper.assertTrue(PowerService.fatigued(player), "Depois de passar do limite vem a fadiga");
-        helper.assertTrue(PowerService.activeRelease(player) == 0, "Na fadiga o Release desliga");
+        helper.assertTrue(PowerService.activeRelease(player) == 0 && PowerService.effectiveRelease(player) == 0,
+                "Na fadiga o Release desliga (nem o desespero conta)");
         PowerService.releaseInput(player, 1);
         ticks(player, 40);
         helper.assertTrue(PowerService.activeRelease(player) == 0, "Na fadiga a tecla nao sobe a %");

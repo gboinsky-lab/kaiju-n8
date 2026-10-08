@@ -129,9 +129,9 @@ public final class PowerService {
         return PowerMath.excess(activeRelease(player), limit(player));
     }
 
-    /** % efetiva usada por todas as regras: a ativa mais o desespero, e so com o traje vestido. */
+    /** % efetiva usada por todas as regras: a ativa mais o desespero, so com o traje vestido e sem fadiga. */
     public static int effectiveRelease(ServerPlayer player) {
-        if (!suitWorn(player)) {
+        if (!suitWorn(player) || fatigued(player)) {
             return 0;
         }
         // 0.5: com a vida baixa a % sobe sozinha (desperationHealth/desperationMaxPoints), sem calor.
