@@ -25,6 +25,9 @@ textura 4096 (2048 nos No. 10): reduzir para 512-1024 na conversao.
 | `Mina_Ashiro_Heavy_Can` | `mina_cannon` | 7.518 | canhao pesado da Mina (arma, deitado) | arma nova |
 | `gen_narumi_remesh_10k` | `narumi` | 9.822 | Gen Narumi (cabelo rosa e preto) | novo |
 | `Gen_Narumi_Bayonet` | `narumi_bayonet` | 7.655 | baioneta longa do Narumi (arma, em pe) | arma nova |
+| `phanero_plasmodium` | `phaneroplasmodium` | 13.514 | kaiju cogumelo **Yoju** (chapeu branco e vermelho, boca com dentes, 8 patas) | kaiju novo |
+| `myxogasterocarp` | `myxogasterocarp` | 15.450 | kaiju cogumelo **Honju** (varios chapeus escuros com vermelho, raizes como patas) | kaiju novo |
+| `philinosoma_honju` | `philinosoma` | 15.564 | lagarto gigante (vermelho, barriga clara, espinhos azuis, cauda reta) | kaiju novo |
 | `hoshina_standard` | `hoshina` | 8.450 | Hoshina com o traje normal refeito (bainhas nas costas) | **substitui** o Hoshina atual (0.6-D) |
 
 ## Observacoes da analise (para o rig)
