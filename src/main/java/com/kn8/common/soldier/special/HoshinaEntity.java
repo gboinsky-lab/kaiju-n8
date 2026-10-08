@@ -292,7 +292,8 @@ public class HoshinaEntity extends SoldierEntity {
     /** Comeca uma tecnica do perfil contra o alvo (goal, comando, testes). */
     public boolean startTechnique(String id, LivingEntity target) {
         Optional<SpecialSoldierDef.Technique> found = profile().map(def -> def.techniques().get(id));
-        if (found.isEmpty() || isUsingTechnique() || isActing() || weapon().isEmpty()) {
+        if (found.isEmpty() || isUsingTechnique() || isActing() || weapon().isEmpty()
+                || (found.get().requiresFullRelease() && !isFullRelease())) {
             return false;
         }
         long now = level().getGameTime();
@@ -601,6 +602,12 @@ public class HoshinaEntity extends SoldierEntity {
 
     public float escalation() {
         return escalation;
+    }
+
+    /** Fixa a escalada (comando e testes), limitada ao maximo do perfil. */
+    public void setEscalation(float points) {
+        float max = profile().map(def -> (float) def.escalation().maxPoints()).orElse(0.0F);
+        escalation = Mth.clamp(points, 0.0F, max);
     }
 
     /** Recarga encurtada pela escalada (ate cooldown_reduction_at_max na escalada maxima). */

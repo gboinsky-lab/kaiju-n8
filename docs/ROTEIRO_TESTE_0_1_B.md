@@ -370,3 +370,14 @@ Visto na nuvem (`docs/img/hoshina_modelo.png`, `hoshina_vs_honju.png`, `hoshina_
 | 23.8 | `/kn8 invasion start kn8:no10_assault` (nível 6, "ameaça numerada") | Ondas: Preondactyls com Yoju; depois Preondactyls e ressurgidos (às vezes o No. 9 junto); por último o No. 10. Defensores fortes e o Hoshina |
 | 23.9 | Missão "Ameaça Numerada: No. 10" (Líder de Pelotão) | Aceitar inicia a invasão nível 6 |
 | 23.10 | Hoshina (§22) na luta | Release no máximo 92% na forma normal (aura) |
+
+## 24. Hoshina com o traje numerado 10 (0.6-F)
+
+| # | Passo | Esperado |
+|---|---|---|
+| 24.1 | Ovo do Hoshina com a Arma Numerada 10 ou `/summon kn8:hoshina_no10` | Hoshina de traje escuro com a cauda enrolada atrás; duas espadas nas mãos e a **terceira espada na ponta da cauda**; a cauda balança parada |
+| 24.2 | `/kn8 kaiju spawn primigenius` atrás dele | A cauda corta sozinha o kaiju das costas (animação da cauda), mesmo com o Hoshina olhando para outro lado |
+| 24.3 | Deixar a luta seguir | A aura sobe com a escalada até **100%** (o Hoshina comum para em 92%): é a sincronização com o traje |
+| 24.4 | Em 100% (Full Release) | Mais rápido, mais dano, recargas menores; contra kaiju perto usa o **Jūni-hitoe** (12 golpes seguidos, o último forte, expõe o núcleo); não é interrompido por esquiva/contra-ataque |
+| 24.5 | Kaiju atirando nele por trás (Finger Cannon do No. 10, raio do Preondactyl) | A cauda gira para trás e defende (faíscas e som metálico): dano bem menor |
+| 24.6 | `/summon kn8:hoshina_no10` contra `kaiju_no10_giant` | Luta equilibrada a favor do Hoshina (ver `docs/BALANCEAMENTO.md`) |
