@@ -65,3 +65,16 @@ textura 4096 (2048 nos No. 10): reduzir para 512-1024 na conversao.
 - **Hoshina:** postura **bem baixa e agachada**, pernas abertas, corpo inclinado para a frente, as duas facas
   curtas seguras **ao contrario** (lamina para tras, junto do antebraco), braços abertos para os lados; aura roxa
   no contorno. Serve para refazer o idle/guarda e as tecnicas dele.
+
+## Terceira leva (2026-10-08, so guardados)
+
+| Arquivo (nome do envio) | Id sugerido | Triangulos | O que e |
+|---|---|---|---|
+| `camponotus_red_remesh` | `camponotus` | 15.435 | kaiju formiga (preta com vermelho e laranja, antenas amarelas, 6 patas) |
+| `camponotus_reborn` | `camponotus_reborn` | 15.435 | a formiga revivida (azul), mesma forma |
+| `camponotus_no9_remesh` | `kaiju_no9_camponotus` | 15.577 | No. 9 fundido a formiga (torso do No. 9 saindo do corpo da formiga): forma original do mod, v21 secao 33.3 |
+| `diclonius_remesh_15k` | `diclonius` | 15.577 | Diclonius (branco com espinhos vermelhos e azuis nas costas, cauda longa e reta) |
+
+A forma preta do No. 9 (v21 secao 33.1) chega na proxima mensagem. A Biblioteca v21 foi atualizada com a secao 33
+(formas do No. 9: preta original, fundida ao No. 10, fundida a formiga, vermelha apos absorver o No. 10, apos
+absorver Isao/No. 2, forma final), em `docs/BIBLIOTECA_KAIJU_N8_v21.md`.

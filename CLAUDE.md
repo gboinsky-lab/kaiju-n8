@@ -308,6 +308,11 @@ remedidas na malha [SUPOSIÇÃO: núcleo no peito]. `build_primigenius.py` não 
   **0.5.0** do mod; seguir as prioridades **na ordem**, uma etapa por vez (0.5.0-A, -B...). A 1.0.0 vem depois de
   corrigir tudo da 0.5.0. Auditoria (Prioridade 0), conflitos [DECIDIR] e plano: `docs/AUDITORIA_BIBLIOTECA_V21.md`.
 
+- **Pedido do Miguel (2026-10-08), a fazer quando ele autorizar:** o calor (heat) do traje so deve subir quando o
+  jogador estiver **acima do limite** ou usando a **forca total do traje** (100%); dentro do limite nao aquece (hoje o
+  uso dentro do limite aquece ate morno, `useHeatPerSecond`). Novos modelos (formiga, formiga revivida, No. 9 +
+  formiga, Diclonius; forma preta do No. 9 a caminho) so guardados: `docs/MODELOS_RECEBIDOS_2026_10_08.md`.
+  **Nao seguir para a proxima etapa ate o Miguel autorizar.**
 - **Modelos recebidos (Miguel, 2026-10-08), so guardados:** soldado, Mk1, No. 10 pequeno e gigante refeitos
   (substituem os atuais; **soldado, Hoshina e Mk1 ja trocados na 0.5.0-B**); novos Kaiju No. 8 (2 m), larva, Kafka, Kikoru (normal e Numbers 4 com asas), Reno
   (normal e Numbers 6), Mina (com o canhao), Gen Narumi (com a baioneta) e o Hoshina normal refeito (substitui). **Nao implementar ate o Miguel mandar o documento e pedir.**

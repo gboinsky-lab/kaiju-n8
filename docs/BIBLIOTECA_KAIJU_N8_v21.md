@@ -217,148 +217,6 @@ Toda arma deve definir:
 - Numbers Weapons: comportamento próprio, não simples skin/dano maior;
 - NPCs devem respeitar a arma que estão segurando, sem animação genérica incompatível.
 
-## PERFIS DE EMPUNHADURA E POSTURA — PERSONAGENS PRIORITÁRIOS
-
-Esta seção é obrigatória para evitar que os personagens usem uma empunhadura genérica de Minecraft. Antes de implementar as animações, o Claude deve pesquisar referências visuais disponíveis da obra e comparar postura, mãos, braços, cotovelos, ombros, tronco, quadril e posição da arma. Se uma referência não estiver suficientemente clara, preservar a lógica corporal conhecida do personagem e marcar qualquer adaptação como MOD, sem afirmar que é canônica.
-
-### 1. SOSHIRO HOSHINA — ESPADAS
-
-**Objetivo:** reproduzir a linguagem corporal de espadachim de Hoshina, não uma animação genérica de espada.
-
-Definir no `WeaponAnimationProfile_Hoshina`: 
-- mão dominante e mão de suporte conforme a espada utilizada;
-- posição das duas mãos no cabo;
-- rotação dos punhos;
-- posição e abertura dos cotovelos;
-- altura das espadas em guarda;
-- distância das lâminas em relação ao corpo;
-- inclinação do tronco;
-- posição do quadril e das pernas;
-- distribuição de peso antes do ataque;
-- postura baixa e móvel durante aproximação;
-- saque e retorno à bainha quando aplicável;
-- transição entre guarda, avanço, corte, recuperação e contra-ataque;
-- movimentação das duas espadas de forma independente, sem sincronização artificial;
-- ataques que utilizem pernas, quadril e rotação do tronco, e não somente braços.
-
-Para Hoshina + Numbers Weapon 10, adicionar: 
-- integração da cauda como terceiro ponto de ataque;
-- cauda pode segurar uma terceira espada quando a técnica exigir;
-- a mão do personagem não deve tentar ocupar a mesma posição da arma segurada pela cauda;
-- animações devem sincronizar olhos/cabeça, tronco, braços, pernas e cauda;
-- criar perfis separados para guarda, combo, contra-ataque e Jūni-hitoe.
-
-### 2. MINA ASHIRO — RIFLE / ARMAMENTO PESADO
-
-**Objetivo:** Mina deve parecer uma atiradora especializada em anti-Daikaiju, com postura estável e deliberada.
-
-Definir no `WeaponAnimationProfile_Mina`: 
-- qual mão controla o gatilho/empunhadura principal;
-- qual mão sustenta e estabiliza a arma;
-- posição da coronha/apoio quando a arma possuir essa estrutura;
-- alinhamento da cabeça e do visor;
-- posição dos ombros;
-- base dos pés;
-- inclinação do tronco para absorver o recuo;
-- postura de tiro parado;
-- postura de tiro ajoelhado ou estabilizado quando aplicável;
-- postura de carregamento;
-- postura de preparação do disparo carregado;
-- postura de disparo;
-- recuperação após recuo;
-- transição entre transporte, mira e disparo.
-
-Para armas anti-gigante/canhão: 
-- usar duas mãos e/ou apoio corporal conforme o modelo exigir;
-- o corpo inteiro deve reagir ao disparo;
-- o recuo não pode ser somente uma animação da arma;
-- câmera, braços, ombros e tronco devem reagir de maneira sincronizada;
-- Bakko, quando presente, deve ser integrado à postura de estabilização sem deformar a empunhadura.
-
-### 3. KIKORU SHINOMIYA — MACHADO
-
-**Objetivo:** transmitir força, velocidade e mobilidade, especialmente com Numbers Weapon 4.
-
-Definir no `WeaponAnimationProfile_Kikoru`: 
-- empunhadura de duas mãos quando a arma exigir;
-- posição da mão superior e da mão inferior no cabo;
-- distância entre as mãos;
-- rotação dos punhos;
-- posição dos cotovelos;
-- postura de guarda;
-- preparação do golpe;
-- rotação de quadril e tronco;
-- transferência de peso para a perna de apoio;
-- recuperação após o golpe;
-- postura de corrida carregando o machado;
-- postura de salto e aterrissagem;
-- golpes horizontais, verticais, diagonais e descendentes;
-- `GuardBreak`, `GroundSmash` e `DiveStrike` devem possuir posturas próprias.
-
-Para Kikoru + Numbers Weapon 4: 
-- asas/estruturas de voo permanecem separadas do modelo principal quando o asset for separado;
-- mãos continuam livres para controlar o machado;
-- voo não deve transformar a empunhadura em uma pose estática;
-- criar postura aérea, postura de dash e postura de mergulho;
-- o corpo deve inclinar de acordo com direção e velocidade do movimento;
-- ao atacar durante voo, sincronizar asas, quadril, tronco, braços, pernas e machado.
-
-### 4. GEN NARUMI — RIFLE / COMBATE HÍBRIDO
-
-**Objetivo:** representar um combatente de elite e atirador, evitando a postura genérica de soldado.
-
-Definir no `WeaponAnimationProfile_Narumi`: 
-- mão dominante no gatilho/empunhadura;
-- mão de suporte na arma;
-- posição da coronha/apoio;
-- alinhamento da cabeça com mira/visor;
-- posição dos ombros;
-- largura da base das pernas;
-- postura de mira;
-- postura de disparo rápido;
-- postura de disparo controlado;
-- postura durante deslocamento;
-- transição rifle → combate próximo;
-- recuo e recuperação;
-- recarga e manipulação da arma por etapas;
-- postura de análise do alvo antes do disparo.
-
-Para Gen + Numbers Weapon 1: 
-- manter a empunhadura compatível com a arma enquanto o sistema de percepção/predição estiver ativo;
-- cabeça e olhos devem acompanhar o alvo sem quebrar a postura da arma;
-- animações de previsão podem alterar levemente cabeça, tronco e direção da arma;
-- não usar pose genérica de mira durante todas as ações;
-- criar transições entre percepção, mira, disparo, combate próximo e reposicionamento.
-
-## REGRA PARA TODOS OS PERSONAGENS
-
-A arma deve parecer realmente **segurada pelo personagem**, e não simplesmente anexada à mão.
-
-O sistema deve validar: 
-1. mão corretamente posicionada no cabo/empunhadura;
-2. dedos e punho compatíveis com o modelo quando o asset permitir;
-3. braço conectado naturalmente ao ombro;
-4. cotovelo com rotação coerente;
-5. ombros e tronco compensando peso e movimento;
-6. quadril e pernas participando de golpes e recuos;
-7. arma alinhada ao alvo;
-8. ausência de clipping entre mão, arma, corpo e armadura;
-9. mesma lógica em primeira, segunda e terceira pessoa quando aplicável;
-10. NPCs utilizarem os mesmos perfis de empunhadura do personagem correspondente.
-
-### Pesquisa obrigatória antes da animação
-
-Quando houver material visual suficiente, o Claude deve pesquisar referências da obra para cada personagem e arma antes de definir a pose final. Deve observar especialmente: 
-- cenas de saque;
-- cenas de guarda;
-- cenas de ataque;
-- cenas de recarga/manuseio;
-- cenas de corrida com arma;
-- cenas de salto/voo com arma;
-- postura imediatamente antes e depois do golpe.
-
-Não copiar uma única pose para todas as ações. O objetivo é construir um **perfil de movimento completo por personagem + arma**.
-
 ---
 
 # PRIORIDADE 4 — COMBATE E MOVIMENTAÇÃO
@@ -1614,6 +1472,125 @@ Kaiju associado à percepção e previsão.
 Essas propriedades devem ser transferidas para Gen.
 
 ---
+
+# 33. KAIJU NO. 9 — FORMAS E VARIAÇÕES
+
+## Regra de implementação
+Cada forma do No. 9 deve ser uma identidade de combate separada. Não tratar formas como simples troca de textura ou multiplicador de HP/dano. Cada forma deve possuir modelo/anatomia, habilidades, ataques, IA, movimentação, regeneração, resistência, VFX, áudio e animações próprios.
+
+**Separar claramente:** CANON, ADAPTAÇÃO DO MOD e FORMA ORIGINAL DO MOD.
+
+### 33.1 No. 9 — Forma Preta Original
+Esta é a **primeira versão preta do No. 9**, anterior à forma relacionada à absorção do Isao Shinomiya/Numbers Weapon 2. Não misturar as duas formas.
+
+Implementar como fase própria com:
+- anatomia e silhueta específicas da primeira forma preta;
+- regeneração;
+- mutação corporal;
+- criação/manipulação de membros;
+- ataques à distância;
+- Finger Gun e variações quando aplicável;
+- defesa/endurecimento;
+- evasão e movimentação adaptativa;
+- inteligência elevada e análise do adversário;
+- criação/comando de Kaijus quando aplicável;
+- estados de IA próprios;
+- animações e VFX próprios.
+
+### 33.2 No. 9 — Forma Fundida ao No. 10 — ORIGINAL DO MOD
+**Esta fusão é uma criação do mod e não deve ser apresentada como acontecimento canônico.**
+
+O No. 9 absorve/funde-se ao No. 10 e incorpora características de combate dele. A transformação deve produzir mudança real de anatomia e gameplay.
+
+Características a implementar:
+- integração da anatomia/características do No. 10 ao corpo do No. 9;
+- força e resistência superiores;
+- cauda/appendages derivados do No. 10;
+- ataques de cauda;
+- projéteis e ataques de membros;
+- combate corpo a corpo agressivo;
+- capacidade de comando de Kaijus;
+- regeneração aprimorada;
+- combinação entre inteligência/adaptação do No. 9 e agressividade do No. 10;
+- novos combos e ataques híbridos;
+- IA específica de fusão;
+- novos padrões de alvo e fases de boss;
+- VFX, aura, sons e animações exclusivos.
+
+A fusão não deve ser apenas `No9 + dano do No10`. Ela deve alterar a forma como o boss pensa, se movimenta e luta.
+
+### 33.3 No. 9 — Forma Fundida à Formiga — ORIGINAL DO MOD
+**Forma original criada para o mod.**
+
+O No. 9 funde-se a uma criatura do tipo formiga, incorporando características biológicas e locomotoras do hospedeiro.
+
+Implementar:
+- anatomia híbrida No. 9 + formiga;
+- múltiplos membros/apoios conforme o design final;
+- maior aderência e mobilidade em superfícies;
+- escalada;
+- deslocamento rápido;
+- ataques com membros;
+- mordida/mandíbula quando compatível com o modelo;
+- capacidade de atravessar/usar terrenos de forma diferente;
+- regeneração e mutação do No. 9;
+- adaptação da IA à locomoção de formiga;
+- comportamento de perseguição e cerco;
+- ataques híbridos exclusivos;
+- VFX, áudio, aura e animações próprios.
+
+A forma deve parecer uma fusão biológica coerente, não uma formiga com a textura do No. 9.
+
+### 33.4 No. 9 — Forma Vermelha/Evoluída após absorção do No. 10
+Esta forma permanece separada da forma preta original e da forma de fusão direta usada como variante do mod.
+
+Quando usada no evento especial No.10 → No.9:
+- alterar IA;
+- alterar velocidade;
+- alterar ataques;
+- alterar regeneração;
+- alterar defesa;
+- alterar destruição;
+- alterar animações;
+- alterar VFX/aura;
+- alterar áudio;
+- criar novos padrões de boss.
+
+### 33.5 No. 9 — Forma após absorção do Isao Shinomiya / Numbers Weapon 2
+Esta é uma forma distinta e posterior. **Não confundir com a primeira forma preta.**
+
+Deve incorporar características associadas ao No. 2/Isao, incluindo:
+- enorme força;
+- energia/ondas de choque;
+- ataques de grande área;
+- defesa reforçada;
+- técnicas híbridas No. 9 + No. 2;
+- maior Fortitude;
+- adaptação avançada;
+- regeneração;
+- novas fases de boss.
+
+### 33.6 Forma Final/Adaptativa do No. 9
+Reservada para a evolução máxima definida pelo mod. Deve reunir somente habilidades que façam sentido para a progressão estabelecida, evitando simplesmente acumular todas as habilidades de todas as formas.
+
+## Máquina de estados do No. 9
+Cada forma deve possuir estados compatíveis, podendo incluir:
+`IDLE → OBSERVE → COMBAT → ADAPT → MUTATE → SUMMON → CLONE → DEFEND_CORE → REGENERATE → RETREAT → TRANSFORM → FINAL_FORM`
+
+A máquina de estados deve ser modificada por forma. A fusão com outra criatura deve mudar decisões de combate e não apenas atributos numéricos.
+
+## Transições
+As transformações devem possuir:
+- animação de transição;
+- alteração progressiva do modelo quando aplicável;
+- VFX;
+- áudio;
+- alteração de aura;
+- mudança de comportamento;
+- janela de vulnerabilidade quando fizer sentido;
+- sincronização servidor/cliente;
+- atualização de hitboxes;
+- atualização de ataques e cooldowns.
 
 # 32. KAIJU NO. 2
 
