@@ -37,3 +37,16 @@ textura 4096 (2048 nos No. 10): reduzir para 512-1024 na conversao.
   precisam ser medidos de novo).
 - `kaiju_larva`: cauda enrolada, mas e pequena.
 - As asas da Numbers 4 vieram separadas: viram ossos proprios nas costas (podem bater).
+
+## Como seguram as armas (referencias do Miguel, 2026-10-08)
+
+- **Gen Narumi + baioneta:** a arma e **maior que ele** (lamina + cano, uns 1,3-1,5x a altura dele). Duas maos,
+  na diagonal (ataque: uma mao no punho perto da ponta de tras, outra no meio, lamina para cima e para a frente);
+  parado, **apoiada no ombro** com uma mao, lamina para cima atras da cabeca.
+- **Mina + canhao:** canhao pesado **na altura da cintura/quadril**, duas maos (uma no punho, outra na alca de cima),
+  cano comprido para a frente; o canhao tem mais ou menos a altura dela.
+- **Personagem de cabelo branco com mascara (painel do manga):** fuzil grande de cano grosso **apoiado no ombro**,
+  ajoelhado, mirando. [DECIDIR] confirmar de quem e (Reno?) e se e a arma da Numbers 6.
+- **Duas laminas longas (imagem de jogo, ultimo quadro):** uma em cada mao, abertas para os lados. [DECIDIR]
+  confirmar de quem e o estilo.
+- Kikoru e Hoshina: referencias na proxima mensagem.
