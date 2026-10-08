@@ -25,7 +25,7 @@
     "count": 1,
     "max_alive": 2
   },
-  "health_multiplier": 0.5,
+  "health_multiplier": 0.444,
   "rewards": {
     "loot_table": "kn8:boss/honju",
     "merit": 100

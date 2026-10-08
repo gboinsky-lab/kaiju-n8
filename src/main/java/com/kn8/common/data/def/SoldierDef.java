@@ -28,7 +28,25 @@ import net.minecraft.util.RandomSource;
  */
 public record SoldierDef(float health, float armor, float speed, float followRange, float unarmedDamage,
         int unarmedIntervalTicks, float keepDistance, Map<String, Integer> powerLevels,
-        Map<String, Variant> variants, Map<String, Float> kaijuDamage, float sidearmDistance) {
+        Map<String, Variant> variants, Map<String, Float> kaijuDamage, float sidearmDistance,
+        Map<String, LevelStats> levelStats) {
+
+    /**
+     * Balanceamento v1.0: vida, armadura e velocidade por nivel de forca (recruta/baixo 20, normal 24, alto 28,
+     * elite 34). Nivel sem entrada usa os valores de cima do JSON.
+     */
+    public record LevelStats(float health, float armor, float speed) {
+        public static final Codec<LevelStats> CODEC = RecordCodecBuilder.create(i -> i.group(
+                Codec.floatRange(1.0F, 1000.0F).fieldOf("health").forGetter(LevelStats::health),
+                Codec.floatRange(0.0F, 30.0F).fieldOf("armor").forGetter(LevelStats::armor),
+                Codec.floatRange(0.01F, 2.0F).fieldOf("speed").forGetter(LevelStats::speed)
+        ).apply(i, LevelStats::new));
+    }
+
+    /** Vida, armadura e velocidade do nivel (ou as de cima do JSON). */
+    public LevelStats statsFor(String level) {
+        return levelStats.getOrDefault(level, new LevelStats(health, armor, speed));
+    }
 
     /**
      * Variante de soldado comum (0.4): arma principal, arma de apoio opcional (o atirador troca para ela quando o kaiju
@@ -63,7 +81,9 @@ public record SoldierDef(float health, float armor, float speed, float followRan
             Codec.unboundedMap(Codec.STRING, Codec.floatRange(0.0F, 10.0F)).optionalFieldOf("kaiju_damage", Map.of())
                     .forGetter(SoldierDef::kaijuDamage),
             Codec.floatRange(0.0F, 32.0F).optionalFieldOf("sidearm_distance", 3.5F)
-                    .forGetter(SoldierDef::sidearmDistance)
+                    .forGetter(SoldierDef::sidearmDistance),
+            Codec.unboundedMap(Codec.STRING, LevelStats.CODEC).optionalFieldOf("level_stats", Map.of())
+                    .forGetter(SoldierDef::levelStats)
     ).apply(i, SoldierDef::new));
 
     /** Sorteia uma variante pelo {@code weight} (soldados comuns sem variante pedida: ovo, invasao "random"). */

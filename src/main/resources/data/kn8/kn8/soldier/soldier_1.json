@@ -42,5 +42,27 @@
     "high": 0.8,
     "elite": 1.0
   },
-  "sidearm_distance": 3.5
+  "sidearm_distance": 3.5,
+  "level_stats": {
+    "low": {
+      "health": 20,
+      "armor": 5,
+      "speed": 0.29
+    },
+    "normal": {
+      "health": 24,
+      "armor": 6,
+      "speed": 0.3
+    },
+    "high": {
+      "health": 28,
+      "armor": 8,
+      "speed": 0.31
+    },
+    "elite": {
+      "health": 34,
+      "armor": 10,
+      "speed": 0.32
+    }
+  }
 }

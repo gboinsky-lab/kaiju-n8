@@ -62,7 +62,8 @@ public final class CombatService {
 
     /**
      * 0.5.0: tipo de dano do golpe especial de arma (tecla R). E o unico golpe do jogador que pode passar do teto por
-     * golpe em kaiju ({@code combat.maxHitFractionOfKaijuHealth}): golpe comum nunca mata kaiju de uma vez.
+     * golpe em kaiju ({@code combat.maxLightHitFraction}/{@code maxHeavyHitFraction}): golpe comum nunca mata
+     * kaiju de uma vez.
      */
     public static final ResourceKey<DamageType> WEAPON_SPECIAL =
             ResourceKey.create(Registries.DAMAGE_TYPE, KN8Constants.id("weapon_special"));
@@ -267,6 +268,11 @@ public final class CombatService {
                 SWING_SOUND_VOLUME, 0.8F);
         replySpecial(player, CombatResult.OK);
         return true;
+    }
+
+    /** Balanceamento v1.0: o golpe que esta acertando agora e pesado (ou carregado)? Decide o teto por golpe. */
+    public static boolean isHeavyStrike(ServerPlayer player) {
+        return state(player).currentAction == CombatAction.HEAVY;
     }
 
     /** Ticks que faltam para o ataque especial ficar pronto (0 = pronto). */

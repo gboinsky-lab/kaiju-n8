@@ -194,7 +194,8 @@ public final class ServerConfig {
     public static final ModConfigSpec.IntValue DODGE_DURATION_TICKS;
     public static final ModConfigSpec.DoubleValue DODGE_SPEED;
     public static final ModConfigSpec.DoubleValue CORE_EXPOSED_MULTIPLIER;
-    public static final ModConfigSpec.DoubleValue MAX_HIT_FRACTION_OF_KAIJU_HEALTH;
+    public static final ModConfigSpec.DoubleValue MAX_LIGHT_HIT_FRACTION;
+    public static final ModConfigSpec.DoubleValue MAX_HEAVY_HIT_FRACTION;
     public static final ModConfigSpec.IntValue CORE_EXPOSED_TICKS;
     public static final ModConfigSpec.IntValue PARRY_WINDOW_TICKS;
     public static final ModConfigSpec.IntValue PARRY_WINDOW_TICKS_HIGH;
@@ -547,9 +548,11 @@ public final class ServerConfig {
         CORE_EXPOSED_MULTIPLIER = doubleValue("coreExposedMultiplier", "Extra core damage multiplier after a heavy"
                 + " hit exposes the core.", 1.5, 1.0, 5.0);
         // 0.5.0 (Miguel): golpe comum nunca mata kaiju de uma vez; so o golpe especial da arma passa disso.
-        MAX_HIT_FRACTION_OF_KAIJU_HEALTH = doubleValue("maxHitFractionOfKaijuHealth", "Most a regular player hit can"
-                + " take from a kaiju, as a fraction of its maximum health (weapon specials ignore it).", 0.15, 0.01,
-                1.0);
+        // Balanceamento v1.0: golpe comum 12%, pesado (e carregado) 15%.
+        MAX_LIGHT_HIT_FRACTION = doubleValue("maxLightHitFraction", "Most a regular (light) player hit can take"
+                + " from a kaiju, as a fraction of its maximum health (weapon specials ignore it).", 0.12, 0.01, 1.0);
+        MAX_HEAVY_HIT_FRACTION = doubleValue("maxHeavyHitFraction", "Most a heavy or charged player hit can take"
+                + " from a kaiju, as a fraction of its maximum health.", 0.15, 0.01, 1.0);
         CORE_EXPOSED_TICKS = intValue("coreExposedTicks", "How long the core stays exposed.", 100, 0, 1200);
         PARRY_WINDOW_TICKS = intValue("parryWindowTicks", "A block started at most this many ticks before the hit"
                 + " is a parry.", 3, 0, 20);

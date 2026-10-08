@@ -145,7 +145,7 @@ public final class ReleaseGameTests {
             float max = first.getMaxHealth();
             first.hurt(player.damageSources().playerAttack(player), 100_000.0F);
             float lost = max - first.getHealth();
-            float cap = max * ServerConfig.MAX_HIT_FRACTION_OF_KAIJU_HEALTH.get().floatValue();
+            float cap = max * ServerConfig.MAX_LIGHT_HIT_FRACTION.get().floatValue();
             helper.assertTrue(first.isAlive() && lost <= cap + 0.01F, "Golpe comum tirou " + lost + " de " + max
                     + " (teto " + cap + ")");
             second.hurt(CombatService.specialDamage(player), 100_000.0F);

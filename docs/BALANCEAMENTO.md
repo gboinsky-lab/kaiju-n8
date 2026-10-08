@@ -1,4 +1,4 @@
-# BALANCEAMENTO.md — Todos os números do jogo (0.3, 2026-10-07)
+# BALANCEAMENTO.md — Todos os números do jogo (balanceamento v1.0, 2026-10-08)
 
 Um lugar só para ver e ajustar o balanceamento. Nada aqui está no Java (regra 2): cada número mora num JSON do
 datapack (`src/main/resources/data/kn8/kn8/...`) ou no config do servidor (`<instância>/config/kn8-server.toml`,
@@ -13,20 +13,23 @@ algo que eu mudaria (não mudei sem a sua aprovação).
 
 Vida, dano e armadura saem da **fortitude** (`kaiju/<id>.json`) pela curva do config `[fortitudeCurve]`:
 vida = 20 × 2^(fortitude − 2), dano = 2 × 1,6^(fortitude − 2), armadura = 2 × fortitude (máx. 20).
+**Balanceamento v1.0 do Miguel (2026-10-08, `docs/BALANCEAMENTO_COMPLETO_v1_0.md`):** os 10 kaiju têm vida, dano e
+armadura fixados no `overrides` do JSON (a fortitude continua valendo para o resto); a tabela abaixo já mostra os
+valores novos, com o antigo entre parênteses.
 Multiplicadores globais: `[balance] kaijuHealthMultiplier` / `kaijuDamageMultiplier` (1,0).
 
 | Kaiju | Fortitude | Vida | Dano base | Armadura | Velocidade | Habilidades | Observação |
 |---|---|---|---|---|---|---|---|
-| Trichonephila (Yoju) | 3,5 | **57** | 4,0 | 7 | 0,30 | mordida, estocada, varredura de patas, várias patas, teia, salto | ✅ aprovado (era 2,5 / 28 de vida): kaiju mais fortes que soldados comuns |
-| Primigenius (Yoju) | 5,4 | 211 | 9,9 | 10,8 | 0,22 | casco, rabada, slam, investida | [SUPOSIÇÃO] |
-| Primigenius ressurgido | 5,9 | 299 | 12,5 | 11,8 | 0,22 | casco, rabada, slam, investida; fúria | [SUPOSIÇÃO] |
-| Primigenius Honju | 6,0 | 320 | 13,1 | 12,0 | 0,24 | soco pesado, mordida, rabada, slam, investida, raio de energia | [SUPOSIÇÃO] |
-| Primigenius revivido (Honju) | 6,4 | 422 | 15,8 | 12,8 | 0,24 | os do Honju (raio roxo); fúria | [SUPOSIÇÃO] |
-| Trichonephila Honju (0.6-B) | 6,2 | 368 (551 como chefe) | 14,4 | 12,4 | 0,28 | os da aranha + explosão de teia; fúria (dano ×1,2, velocidade ×1,25, recargas ×0,7) | [SUPOSIÇÃO]; hitbox 6 × 4; chefe invoca 3 Trichonephila (máx. 6 vivas) |
-| Kaiju No. 10, forma pequena (0.6-E) | 8,3 | 1.576 | 38,6 | 16,6 | 0,34 | soco pesado, esmagamento, varredura e perfuração de cauda, Finger Cannon, vários membros, investida | 4 m (hitbox 2 × 4); regenera; vira a forma gigante depois de 60 s de batalha ou abaixo de 50% da vida; fúria abaixo de 25% (dano ×1,2, velocidade ×1,15, recargas ×0,6); comanda kaiju a até 48 blocos |
-| Kaiju No. 10, forma gigante (0.6-E) | 9,0 | **4.500** (`overrides.health`; pela fórmula seriam 2.560) | 53,7 | 18,0 | 0,26 | versões gigantes (esmagamento de raio 11, varredura de cauda 12, pancada de cauda, Finger Cannon de 64 blocos) | 24 m (hitbox 10 × 24); nasce com a vida cheia e quebra blocos num raio de 8; regenera; fúria abaixo de 25% (dano ×1,25, velocidade ×1,1, recargas ×0,55) |
-| Preondactyl (0.6-E, voador) | 6,3 | 394 | 15,1 | 12,6 | 0,30 (voo 0,55) | raio de energia, mergulho, mordida, garra, golpe de cauda | voa a 9 blocos acima do alvo, em círculo de raio 12; mergulha a cada 8 s; frente ×0,35, costas ×1,3; autodestruição abaixo de 15% (3 s de aviso, raio 6, ×3 de dano); obedece ao No. 10 [SUPOSIÇÃO] |
-| Kaiju No. 9 | **8,0** (era 6,5) | 1.280 | 33,6 | 16,0 | 0,32 | garra, investida, Finger Gun | 0.6-D (Miguel: vilão principal, forte de propósito; o Hoshina vence, mas não com facilidade); a garra (×1,3) tira ~44 por golpe; regenera |
+| Trichonephila (Yoju) | 3,5 | **65** (57) | 4,2 (4,0) | 7 | 0,31 (0,30) | mordida, estocada, varredura de patas, várias patas, teia, salto | ✅ aprovado (era 2,5 / 28 de vida): kaiju mais fortes que soldados comuns |
+| Primigenius (Yoju) | 5,4 | 220 (211) | 10,0 (9,9) | 11 (10,8) | 0,23 (0,22) | casco, rabada, slam, investida | [SUPOSIÇÃO] |
+| Primigenius ressurgido | 5,9 | 310 (299) | 12,8 (12,5) | 12 (11,8) | 0,24 (0,22) | casco, rabada, slam, investida; fúria | [SUPOSIÇÃO] |
+| Primigenius Honju | 6,0 | 360 (320) | 13,8 (13,1) | 12 | 0,25 (0,24) | soco pesado, mordida, rabada, slam, investida, raio de energia | [SUPOSIÇÃO] |
+| Primigenius revivido (Honju) | 6,4 | 460 (422) | 16,5 (15,8) | 13 (12,8) | 0,25 (0,24) | os do Honju (raio roxo); fúria | [SUPOSIÇÃO] |
+| Trichonephila Honju (0.6-B) | 6,2 | 400 (368); 600 como chefe | 15,0 (14,4) | 13 (12,4) | 0,29 (0,28) | os da aranha + explosão de teia; fúria (dano ×1,2, velocidade ×1,25, recargas ×0,7) | [SUPOSIÇÃO]; hitbox 6 × 4; chefe invoca 3 Trichonephila (máx. 6 vivas) |
+| Kaiju No. 10, forma pequena (0.6-E) | 8,3 | 1.650 (1.576) | 39,5 (38,6) | 17 (16,6) | 0,35 (0,34) | soco pesado, esmagamento, varredura e perfuração de cauda, Finger Cannon, vários membros, investida | 4 m (hitbox 2 × 4); regenera; vira a forma gigante depois de 60 s de batalha ou abaixo de 50% da vida; fúria abaixo de 25% (dano ×1,2, velocidade ×1,15, recargas ×0,6); comanda kaiju a até 48 blocos |
+| Kaiju No. 10, forma gigante (0.6-E) | 9,0 | **4.600** (4.500) | 54,5 (53,7) | 18 | 0,27 (0,26) | versões gigantes (esmagamento de raio 11, varredura de cauda 12, pancada de cauda, Finger Cannon de 64 blocos) | 24 m (hitbox 10 × 24); nasce com a vida cheia e quebra blocos num raio de 8; regenera; fúria abaixo de 25% (dano ×1,25, velocidade ×1,1, recargas ×0,55) |
+| Preondactyl (0.6-E, voador) | 6,3 | 430 (394) | 15,5 (15,1) | 13 (12,6) | 0,31 (0,30) (voo 0,55) | raio de energia, mergulho, mordida, garra, golpe de cauda | voa a 9 blocos acima do alvo, em círculo de raio 12; mergulha a cada 8 s; frente ×0,35, costas ×1,3; autodestruição abaixo de 15% (3 s de aviso, raio 6, ×3 de dano); obedece ao No. 10 [SUPOSIÇÃO] |
+| Kaiju No. 9 | 8,0 | 1.450 (1.280) | 34,5 (33,6) | 16 | 0,34 (0,32) | garra, investida, Finger Gun | 0.6-D (Miguel: vilão principal, forte de propósito; o Hoshina vence, mas não com facilidade); a garra (×1,3) tira ~44 por golpe; regenera |
 
 ### Habilidades (`ability/<id>.json`)
 
@@ -76,11 +79,12 @@ cada 5 ticks no máximo. Força 0 desliga [SUPOSIÇÃO].
 
 | Chefe | Kaiju | Vida (× JSON) | Vida final | Fases (troca em) | Invoca | Mérito |
 |---|---|---|---|---|---|---|
-| Honju do Exame | Primigenius Honju | ×0,5 | 160 | — | 1 Primigenius (máx. 2) | 100 |
-| Primigenius Honju | Primigenius Honju | ×1,5 | 480 | 50% | 2 Primigenius (máx. 4) | 300 |
-| Honju revivido | Primigenius revivido | ×2,0 | 844 | 60%, 30% | 2 ressurgidos (máx. 4) | 500 |
+| Honju do Exame | Primigenius Honju | ×0,444 | 160 | — | 1 Primigenius (máx. 2) | 100 |
+| Primigenius Honju | Primigenius Honju | ×1,333 | 480 | 50% | 2 Primigenius (máx. 4) | 300 |
+| Honju revivido | Primigenius revivido | ×1,835 | 844 | 60%, 30% | 2 ressurgidos (máx. 4) | 500 |
 
-Cada jogador a mais na arena soma +50% de vida (`[boss] playerScaling`).
+Cada jogador a mais na arena soma +50% de vida (`[boss] playerScaling`). Balanceamento v1.0: a vida dos
+chefes ficou igual (o Honju subiu para 360 e o revivido para 460, então os multiplicadores baixaram).
 
 ### Kaiju No. 9 (`numbered/kaiju_no9.json`)
 
@@ -163,7 +167,7 @@ traje foi removido na 0.3 porque divergia deles).
 | Acima do limite | no maximo **+20** (limite 40 -> ate 60%) | `[power] maxOverLimit` |
 | Desgaste acima do limite | 0,06 de vida/s por ponto acima (+20 = 1,2/s) mais o calor | `[power] overLimitDamagePerPoint` [SUPOSICAO] |
 | Fadiga ao voltar para o limite | 1 tick por tick no maximo acima (metade na metade); entre 3 s e 30 s; Lentidao IV, Fraqueza II, Cansaco II, sem Release | `[power] fatigueTicksPerStrain`, `fatigueMinTicks`, `fatigueMaxTicks` [SUPOSICAO] |
-| Golpe comum em kaiju | no maximo **15% da vida maxima** por golpe (ja com parte/nucleo); so o golpe especial da arma passa disso | `[combat] maxHitFractionOfKaijuHealth` [SUPOSICAO no 15%] |
+| Golpe em kaiju (balanceamento v1.0) | comum no maximo **12%** da vida maxima por golpe, pesado/carregado **15%** (ja com parte/nucleo); so o golpe especial da arma passa disso | `[combat] maxLightHitFraction`, `maxHeavyHitFraction` |
 | Limite pessoal inicial (talento) | comum 5-10%; **raro** (10% de chance, Miguel) 15-30% | `[talent]` |
 | Limite maximo | 100% para todos, por treino | `[career] releaseMax` |
 | XP de treino por ponto do limite | 50 + 10 x pontos ja treinados (1% custa 50; 99->100% custa 1.040) | `[training]` |
@@ -358,7 +362,9 @@ Duelos medidos (2026-10-08, servidor dedicado): contra o **No. 10 gigante** venc
 
 ### Soldados (`soldier/soldier_1.json`)
 
-Vida 24, armadura 6, alcance de visão 40. Níveis de força (Release): baixo 5, normal 10, alto 20, elite 30.
+Níveis de força (Release): baixo 5, normal 10, alto 20, elite 30. Alcance de visão 40.
+Balanceamento v1.0 (`level_stats`): vida / armadura / velocidade por nível — baixo (recruta) 20 / 5 / 0,29, normal
+24 / 6 / 0,30, alto 28 / 8 / 0,31, elite 34 / 10 / 0,32 (antes todos 24 / 6 / 0,30).
 
 Variantes comuns (0.4, peso no sorteio): Atirador rifle + faca de apoio (4), Patrulheiro pistola + faca (2),
 Espadachim espada (2), Batedor faca (2), Recruta sem arma (0). Troca para a faca com o kaiju a menos de 3,5 blocos

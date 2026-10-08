@@ -40,6 +40,7 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
@@ -950,14 +951,17 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
     /**
      * 0.5.0 (Miguel): golpe comum de jogador nunca mata kaiju de uma vez, por mais forte que ele esteja; so o golpe
      * especial da arma ({@code kn8:weapon_special}) passa do teto. O teto vale sobre o dano ja com o multiplicador da
-     * parte e do nucleo exposto ({@code combat.maxHitFractionOfKaijuHealth} da vida maxima).
+     * parte e do nucleo exposto (balanceamento v1.0: {@code combat.maxLightHitFraction} 12% no golpe comum,
+     * {@code combat.maxHeavyHitFraction} 15% no pesado/carregado).
      */
     private float capPlayerHit(DamageSource source, float amount) {
         if (!ServerConfig.SPEC.isLoaded() || !(source.getEntity() instanceof Player)
                 || source.is(CombatService.WEAPON_SPECIAL)) {
             return amount;
         }
-        return Math.min(amount, getMaxHealth() * ServerConfig.MAX_HIT_FRACTION_OF_KAIJU_HEALTH.get().floatValue());
+        boolean heavy = source.getEntity() instanceof ServerPlayer player && CombatService.isHeavyStrike(player);
+        double fraction = (heavy ? ServerConfig.MAX_HEAVY_HIT_FRACTION : ServerConfig.MAX_LIGHT_HIT_FRACTION).get();
+        return Math.min(amount, getMaxHealth() * (float) fraction);
     }
 
     /**

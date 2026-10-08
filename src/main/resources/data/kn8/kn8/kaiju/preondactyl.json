@@ -6,7 +6,12 @@
     "width": 4.0,
     "height": 4.0
   },
-  "speed": 0.3,
+  "overrides": {
+    "health": 430.0,
+    "damage": 15.5,
+    "armor": 13.0
+  },
+  "speed": 0.31,
   "intelligence": 3,
   "abilities": [
     "kn8:preondactyl_energy_beam",

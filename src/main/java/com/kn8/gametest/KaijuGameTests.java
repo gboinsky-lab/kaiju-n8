@@ -34,19 +34,19 @@ public final class KaijuGameTests {
     }
 
     @GameTest(template = TEMPLATE)
-    public static void primigeniusUsesFortitudeCurveAndJsonHitbox(GameTestHelper helper) {
+    public static void primigeniusUsesJsonBalanceAndHitbox(GameTestHelper helper) {
         KaijuEntity kaiju = helper.spawn(KN8Entities.PRIMIGENIUS.get(), CENTER);
         kaiju.setNoAi(true);
         helper.runAfterDelay(SETTLE_TICKS, () -> {
-            // GDD: fortitude 5,4 -> vida 211, dano 9,89, armadura 10,8 (dificuldade NORMAL, multiplicadores 1,0).
-            helper.assertTrue(Math.abs(kaiju.getMaxHealth() - 211.1) < HEALTH_TOLERANCE,
-                    "Vida maxima " + kaiju.getMaxHealth() + " diferente da curva (211)");
+            // Balanceamento v1.0 (overrides do JSON): vida 220, dano 10, armadura 11 (multiplicadores 1,0).
+            helper.assertTrue(Math.abs(kaiju.getMaxHealth() - 220.0) < HEALTH_TOLERANCE,
+                    "Vida maxima " + kaiju.getMaxHealth() + " diferente do JSON (220)");
             helper.assertTrue(Math.abs(kaiju.getHealth() - kaiju.getMaxHealth()) < HEALTH_TOLERANCE,
                     "Kaiju recem-invocado deveria estar com vida cheia");
-            helper.assertTrue(Math.abs(kaiju.getAttributeValue(Attributes.ATTACK_DAMAGE) - 9.89) < TOLERANCE,
-                    "Dano diferente da curva (9,89)");
-            helper.assertTrue(Math.abs(kaiju.getAttributeValue(Attributes.ARMOR) - 10.8) < TOLERANCE,
-                    "Armadura diferente da curva (10,8)");
+            helper.assertTrue(Math.abs(kaiju.getAttributeValue(Attributes.ATTACK_DAMAGE) - 10.0) < TOLERANCE,
+                    "Dano diferente do JSON (10)");
+            helper.assertTrue(Math.abs(kaiju.getAttributeValue(Attributes.ARMOR) - 11.0) < TOLERANCE,
+                    "Armadura diferente do JSON (11)");
             helper.assertTrue(Math.abs(kaiju.getBbWidth() - 3.13) < TOLERANCE
                     && Math.abs(kaiju.getBbHeight() - 6.0) < TOLERANCE, "Hitbox diferente do JSON (3,13 x 6,0)");
             helper.assertTrue(kaiju.state() == KaijuState.IDLE, "Sem IA e sem alvo deveria ficar IDLE");
@@ -78,9 +78,9 @@ public final class KaijuGameTests {
         KaijuEntity kaiju = helper.spawn(KN8Entities.TRICHONEPHILA.get(), CENTER);
         kaiju.setNoAi(true);
         helper.runAfterDelay(SETTLE_TICKS, () -> {
-            // 0.3 (decisao do Miguel: kaiju mais fortes que soldados comuns): fortitude 3,5 -> vida 56,6.
-            helper.assertTrue(Math.abs(kaiju.getMaxHealth() - 56.6) < HEALTH_TOLERANCE,
-                    "Vida maxima " + kaiju.getMaxHealth() + " diferente da curva (56,6)");
+            // Balanceamento v1.0 (era 56,6 pela curva da fortitude 3,5): vida 65.
+            helper.assertTrue(Math.abs(kaiju.getMaxHealth() - 65.0) < HEALTH_TOLERANCE,
+                    "Vida maxima " + kaiju.getMaxHealth() + " diferente do JSON (65)");
             // Modelo do Meshy de 2026-10-06: 5,5 de envergadura, corpo baixo (1,7 de altura).
             helper.assertTrue(Math.abs(kaiju.getBbWidth() - 3.4) < TOLERANCE
                     && Math.abs(kaiju.getBbHeight() - 1.8) < TOLERANCE, "Hitbox diferente do JSON (3,4 x 1,8)");

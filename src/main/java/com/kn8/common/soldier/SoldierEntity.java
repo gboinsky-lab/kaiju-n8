@@ -231,9 +231,10 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
     /** Vida, armadura, velocidade (com o bonus do Release) e alcance de visao do JSON. */
     protected void applyDefinition() {
         def().ifPresent(def -> {
-            getAttribute(Attributes.MAX_HEALTH).setBaseValue(def.health());
-            getAttribute(Attributes.ARMOR).setBaseValue(def.armor());
-            getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(def.speed()
+            SoldierDef.LevelStats stats = def.statsFor(powerLevel());
+            getAttribute(Attributes.MAX_HEALTH).setBaseValue(stats.health());
+            getAttribute(Attributes.ARMOR).setBaseValue(stats.armor());
+            getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(stats.speed()
                     * (1.0 + PowerMath.speedBonus(release(), PowerService.params())));
             getAttribute(Attributes.FOLLOW_RANGE).setBaseValue(def.followRange());
             getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(def.unarmedDamage());

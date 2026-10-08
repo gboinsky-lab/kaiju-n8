@@ -219,10 +219,25 @@ Uma etapa por vez. Cada uma tem compilacao, GameTests e teste em jogo, e espera 
 | **0.5.0-A** ✅ feita (2026-10-08) | 1 | Release novo do jogador (traje obrigatorio, limite pessoal, tecla de %, cronometro, sobrecarga sem baixar a %), atributos (forca, velocidade, resistencia, agilidade) e limpeza de `energy`/`control`/`aptitude` |
 | **0.5.0-B** ✅ feita (2026-10-08) | 2 | Traje de corpo inteiro com o Mk1 refeito (e o Reforcado); troca do soldado e do Hoshina pelos modelos refeitos |
 | **0.5.0-C** ✅ feita (2026-10-08) | 2 | No. 10 pequeno e gigante refeitos (rig novo) e perfis de locomocao (`locomotion/<id>.json`) |
+| **Bal. v1.0** ✅ feita (2026-10-08) | — | Balanceamento v1.0 do Miguel nos 10 kaiju (vida, dano, armadura, velocidade), teto 12%/15% por golpe do jogador, soldados por nivel, chefes com a mesma vida final |
+| **0.5.0-C2** | 2 (v22) | Auditoria obrigatoria de texturas e materiais (secao nova da v22): script que confere cada malha (referencias, UV, faces em area vazia/transparente da textura, ossos sem malha) e teste em jogo de cada entidade parada, andando, atacando, tomando dano e transformando |
 | **0.5.0-D** | 3 | `WeaponAnimationProfile` (saque, guarda, ataque, recuperacao, recarga, recuo), 1a pessoa, NPCs com o mesmo perfil |
 | **0.5.0-E** | 4 | Parkour do jogador (salto longo, vault, escalada curta, wall-jump/slide, ledge grab, rolamento, slide), troca de alvo, reacao ao impacto |
 | **0.5.0-F** | 5 | `CreatureMovementProfile` para kaiju e soldados (escalar, saltar, fugir, prioridade de alvo) |
 | **0.5.0-G...** | 6 | Personagens na ordem da v21, uma etapa cada: Kafka/No. 8 (+ larva), Mina, Hoshina (postura nova), Hoshina + No. 10, Reno, Reno + No. 6, Kikoru (machado `axe` e aura amarela), Kikoru + No. 4 (voo), Narumi, Narumi + No. 1; depois os kaiju novos (Phaneroplasmodium, Myxogasterocarp, Philinosoma) |
 | depois | 7-15 | Destruicao e area, zona de treino, prova de admissao, missoes e invasoes em cidades/bases, esquadrao, evento No. 10 -> No. 9, aura, audio, polimento |
 
-A proxima etapa e a **0.5.0-A** (Prioridade 1). Ela depende do conflito 1 acima.
+A proxima etapa e a **0.5.0-C2** (auditoria de texturas da v22) e depois a **0.5.0-D**.
+
+## Biblioteca v22 e Balanceamento v1.0 (Miguel, 2026-10-08)
+
+- `docs/BIBLIOTECA_KAIJU_N8_v22.md`: igual a v21 com a secao nova **"Auditoria obrigatoria de texturas, materiais e
+  integridade visual"** na Prioridade 2. O arquivo enviado termina no meio da Kikoru ("- Ground Smash;"); o resto
+  foi completado com a v21 (que e igual nessa parte).
+- `docs/BALANCEAMENTO_COMPLETO_v1_0.md`: numeros novos. Aplicado agora so o que ja existe no jogo (kaiju, soldados,
+  teto por golpe, chefes). Fica para as etapas dos personagens/eventos: perfis das formas do No. 9 (preta 2.200,
+  formiga 3.200, fusao No. 10 5.400, vermelha 6.200, com No. 2 7.500, final 9.000), Kafka/No. 8 (1.800), Mina (420),
+  Reno, Kikoru, Gen, Isao e demais personagens da tabela 12, limites de congelamento do Reno, previsao do Gen,
+  transformacao do No. 10 com sequencia/onda de choque (Prioridade 12) e limites de performance (clones 3,
+  revividos 3-4).
+

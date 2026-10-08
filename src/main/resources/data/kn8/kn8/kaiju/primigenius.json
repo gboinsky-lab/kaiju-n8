@@ -6,7 +6,12 @@
     "width": 3.13,
     "height": 6.0
   },
-  "speed": 0.22,
+  "overrides": {
+    "health": 220.0,
+    "damage": 10.0,
+    "armor": 11.0
+  },
+  "speed": 0.23,
   "intelligence": 2,
   "parts": [
     {
