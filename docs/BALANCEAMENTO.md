@@ -17,14 +17,14 @@ Multiplicadores globais: `[balance] kaijuHealthMultiplier` / `kaijuDamageMultipl
 
 | Kaiju | Fortitude | Vida | Dano base | Armadura | Velocidade | Habilidades | Observação |
 |---|---|---|---|---|---|---|---|
-| Trichonephila (Yoju) | 3,5 | **57** | 3,7 | 7 | 0,30 | mordida, estocada, varredura de patas, várias patas, teia, salto | ✅ aprovado (era 2,5 / 28 de vida): kaiju mais fortes que soldados comuns |
+| Trichonephila (Yoju) | 3,5 | **57** | 4,0 | 7 | 0,30 | mordida, estocada, varredura de patas, várias patas, teia, salto | ✅ aprovado (era 2,5 / 28 de vida): kaiju mais fortes que soldados comuns |
 | Primigenius (Yoju) | 5,4 | 211 | 9,9 | 10,8 | 0,22 | casco, rabada, slam, investida | [SUPOSIÇÃO] |
 | Primigenius ressurgido | 5,9 | 299 | 12,5 | 11,8 | 0,22 | casco, rabada, slam, investida; fúria | [SUPOSIÇÃO] |
 | Primigenius Honju | 6,0 | 320 | 13,1 | 12,0 | 0,24 | soco pesado, mordida, rabada, slam, investida, raio de energia | [SUPOSIÇÃO] |
 | Primigenius revivido (Honju) | 6,4 | 422 | 15,8 | 12,8 | 0,24 | os do Honju (raio roxo); fúria | [SUPOSIÇÃO] |
 | Trichonephila Honju (0.6-B) | 6,2 | 368 (551 como chefe) | 14,4 | 12,4 | 0,28 | os da aranha + explosão de teia; fúria (dano ×1,2, velocidade ×1,25, recargas ×0,7) | [SUPOSIÇÃO]; hitbox 6 × 4; chefe invoca 3 Trichonephila (máx. 6 vivas) |
 | Kaiju No. 10, forma pequena (0.6-E) | 8,3 | 1.576 | 38,6 | 16,6 | 0,34 | soco pesado, esmagamento, varredura e perfuração de cauda, Finger Cannon, vários membros, investida | 4 m (hitbox 2 × 4); regenera; vira a forma gigante depois de 60 s de batalha ou abaixo de 50% da vida; fúria abaixo de 25% (dano ×1,2, velocidade ×1,15, recargas ×0,6); comanda kaiju a até 48 blocos |
-| Kaiju No. 10, forma gigante (0.6-E) | 9,0 | **4.500** (`overrides.health`; pela fórmula seriam 2.560) | 53,7 | 18,0 | 0,26 | versões gigantes (esmagamento de raio 11, varredura de cauda 12, pancada de cauda, Finger Cannon de 64 blocos) | 24 m (hitbox 10 × 24); nasce com a vida cheia e quebra blocos num raio de 8; regenera; fúria abaixo de 25% |
+| Kaiju No. 10, forma gigante (0.6-E) | 9,0 | **4.500** (`overrides.health`; pela fórmula seriam 2.560) | 53,7 | 18,0 | 0,26 | versões gigantes (esmagamento de raio 11, varredura de cauda 12, pancada de cauda, Finger Cannon de 64 blocos) | 24 m (hitbox 10 × 24); nasce com a vida cheia e quebra blocos num raio de 8; regenera; fúria abaixo de 25% (dano ×1,25, velocidade ×1,1, recargas ×0,55) |
 | Preondactyl (0.6-E, voador) | 6,3 | 394 | 15,1 | 12,6 | 0,30 (voo 0,55) | raio de energia, mergulho, mordida, garra, golpe de cauda | voa a 9 blocos acima do alvo, em círculo de raio 12; mergulha a cada 8 s; frente ×0,35, costas ×1,3; autodestruição abaixo de 15% (3 s de aviso, raio 6, ×3 de dano); obedece ao No. 10 [SUPOSIÇÃO] |
 | Kaiju No. 9 | **8,0** (era 6,5) | 1.280 | 33,6 | 16,0 | 0,32 | garra, investida, Finger Gun | 0.6-D (Miguel: vilão principal, forte de propósito; o Hoshina vence, mas não com facilidade); a garra (×1,3) tira ~44 por golpe; regenera |
 
