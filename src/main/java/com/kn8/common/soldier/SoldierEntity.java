@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
 
+import com.kn8.common.anim.Locomotion;
 import com.kn8.KN8Constants;
 import com.kn8.common.attribute.PowerService;
 import com.kn8.common.combat.CombatService;
@@ -469,8 +470,8 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         // Cada controller mexe em ossos/canais diferentes (pernas e tronco x bracos), entao andar + mirar se somam;
         // "action" e "reaction" vem depois e passam por cima enquanto tocam.
-        controllers.add(new AnimationController<>(this, "movement", MOVEMENT_TRANSITION_TICKS, state ->
-                state.setAndContinue(state.isMoving() ? WALK : IDLE)));
+        controllers.add(Locomotion.drive(new AnimationController<>(this, "movement", MOVEMENT_TRANSITION_TICKS, state ->
+                state.setAndContinue(state.isMoving() ? WALK : IDLE)), Locomotion::typeId));
         controllers.add(new AnimationController<>(this, "arms", ARMS_TRANSITION_TICKS, state -> {
             // Mob#isAggressive e sincronizado (flags do Mob); o SoldierCombatGoal liga enquanto tem alvo.
             String stance = isAggressive() ? "aim" : state.isMoving() ? "walk" : "ready";

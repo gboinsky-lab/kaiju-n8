@@ -9,6 +9,7 @@ import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
 
+import com.kn8.common.anim.Locomotion;
 import com.kn8.KN8Constants;
 import com.kn8.common.attribute.PowerService;
 import com.kn8.common.combat.CombatService;
@@ -651,8 +652,8 @@ public class HoshinaEntity extends SoldierEntity {
         for (String stance : new String[] {"ready", "walk", "aim"}) {
             arms.put(stance, RawAnimation.begin().thenLoop(prefix + "arms.blade_" + stance));
         }
-        controllers.add(new AnimationController<>(this, "movement", 3, state ->
-                state.setAndContinue(state.isMoving() ? walk : idle)));
+        controllers.add(Locomotion.drive(new AnimationController<>(this, "movement", 3, state ->
+                state.setAndContinue(state.isMoving() ? walk : idle)), Locomotion::typeId));
         controllers.add(new AnimationController<>(this, "arms", 4, state -> {
             String stance = isAggressive() ? "aim" : state.isMoving() ? "walk" : "ready";
             return state.setAndContinue(arms.get(stance));

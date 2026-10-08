@@ -119,37 +119,39 @@ SPECIES = {
             "back": [0.6, 6.6, 0.4],
         },
     },
-    # 0.6-E: Kaiju No. 10 forma pequena (4 m, de pe, cauda em "U" subindo atras do ombro direito): a ponta do
-    # esqueleto fica no alto da subida; o gancho da ponta vai para o ultimo pedaco pela superficie.
+    # 0.5.0-C: No. 10 forma pequena refeita pelo Miguel (4 m; cauda enrola para tras e para a esquerda, desce ate
+    # ~0,8 m, abre ate 2 m do eixo e sobe de novo ate 2,3 m): base -> fundo -> curva de fora -> ponta.
     "kaiju_no10_small": {
-        "recenter_feet": True, "jaw_y": 3.4, "jaw_z": -0.35,
-        # Miguel: a cabeca ficava deslocada para o lado (rosto ~0,36 m fora do eixo do tronco): volta ao meio.
-        "head_shift": [-0.36, 0.0], "head_shift_blend": 0.35, "head_shift_radius": 0.55,
+        "recenter_feet": True, "jaw_y": 3.5, "jaw_z": -0.12, "head_cylinder": [3.38, 0.3],
+        # Rosto ~0,1 m fora do eixo do tronco: volta ao meio (Miguel pediu a cabeca centrada na 0.6-E).
+        "head_shift": [-0.1, 0.0], "head_shift_blend": 0.35, "head_shift_radius": 0.55,
         "skeleton": {
-            "pelvis": [0.0, 2.0, 0.0], "chest": [0.0, 2.75, 0.05], "back": [0.0, 3.2, 0.35],
-            "neck": [0.1, 3.2, -0.05], "head": [0.15, 3.55, -0.2],
-            "shoulder_left": [-0.75, 2.85, 0.0], "elbow_left": [-1.05, 2.25, -0.15],
-            "hand_left": [-1.15, 1.6, -0.35],
-            "shoulder_right": [0.75, 2.85, 0.0], "elbow_right": [1.05, 2.25, -0.15],
-            "hand_right": [1.15, 1.6, -0.35],
-            "hip_left": [-0.35, 1.9, 0.0], "knee_left": [-0.55, 1.0, -0.2], "foot_left": [-0.65, 0.15, -0.05],
-            "hip_right": [0.35, 1.9, 0.0], "knee_right": [0.55, 1.0, -0.2], "foot_right": [0.68, 0.15, -0.05],
-            "tail_base": [0.1, 1.75, 0.4], "tail_mid": [0.9, 0.95, 0.85], "tail_tip": [1.45, 3.45, 1.3],
+            "pelvis": [0.0, 2.0, 0.05], "chest": [0.0, 2.75, 0.05], "back": [0.0, 3.0, 0.4],
+            "neck": [0.05, 3.25, -0.05], "head": [0.1, 3.6, -0.1],
+            "shoulder_left": [-0.7, 2.9, 0.0], "elbow_left": [-0.89, 2.35, -0.05],
+            "hand_left": [-0.76, 1.65, -0.2],
+            "shoulder_right": [0.72, 2.9, 0.0], "elbow_right": [0.92, 2.35, -0.05],
+            "hand_right": [0.86, 1.6, -0.2],
+            "hip_left": [-0.35, 1.9, 0.0], "knee_left": [-0.56, 1.0, -0.1], "foot_left": [-0.66, 0.15, -0.15],
+            "hip_right": [0.35, 1.9, 0.0], "knee_right": [0.62, 1.0, -0.1], "foot_right": [0.72, 0.15, -0.15],
+            "tail_base": [-0.1, 1.5, 0.45], "tail_mid": [-1.1, 0.8, 1.35], "tail_bend": [-1.95, 1.6, 2.15],
+            "tail_tip": [-1.4, 2.3, 1.75],
         },
     },
-    # 0.6-E: forma gigante (24 m, pernas abertas; a cauda desce ate o chao bem atras e sobe de novo do lado
-    # esquerdo): meio da cauda no ponto mais longe no chao, ponta no alto da subida.
+    # 0.5.0-C: forma gigante refeita pelo Miguel (24 m; chifre longo para a frente, 8 m, fica na cabeca; cauda
+    # enrolada para tras e para a esquerda: desce ate ~2 m, abre ate 13 m do eixo e sobe ate 16 m).
     "kaiju_no10_giant": {
-        "recenter_feet": True, "jaw_y": 19.6, "jaw_z": -2.3,
-        "head_shift": [-0.9, 0.0], "head_shift_blend": 2.0, "head_shift_radius": 3.2,
+        "recenter_feet": True, "jaw_y": 20.3, "jaw_z": -1.3, "head_cylinder": [19.6, 2.2],
+        "head_shift": [-0.4, 0.0], "head_shift_blend": 2.0, "head_shift_radius": 3.2,
         "skeleton": {
-            "pelvis": [-0.2, 9.5, 0.3], "chest": [-0.2, 15.5, 0.2], "back": [-0.2, 18.5, 2.0],
-            "neck": [0.2, 18.8, -0.5], "head": [0.5, 20.7, -1.5],
-            "shoulder_left": [-4.0, 17.0, 0.0], "elbow_left": [-6.3, 12.3, -1.0], "hand_left": [-7.7, 9.0, -1.7],
-            "shoulder_right": [3.5, 17.0, 0.0], "elbow_right": [6.3, 12.3, -1.0], "hand_right": [7.5, 9.1, -1.7],
-            "hip_left": [-2.5, 9.5, 0.3], "knee_left": [-3.5, 5.0, -0.2], "foot_left": [-6.2, 0.6, -0.5],
-            "hip_right": [1.9, 9.5, 0.3], "knee_right": [3.7, 5.0, -0.2], "foot_right": [6.0, 0.6, -0.5],
-            "tail_base": [-0.5, 8.5, 3.5], "tail_mid": [-11.0, 2.5, 15.5], "tail_tip": [-10.0, 16.0, 11.5],
+            "pelvis": [0.0, 9.5, 0.5], "chest": [0.0, 15.5, 0.3], "back": [0.0, 18.0, 2.5],
+            "neck": [0.2, 19.0, -0.5], "head": [0.4, 21.0, -1.5],
+            "shoulder_left": [-4.3, 18.0, 0.0], "elbow_left": [-7.1, 13.0, -0.5], "hand_left": [-6.9, 9.0, -1.5],
+            "shoulder_right": [4.3, 18.0, 0.0], "elbow_right": [6.9, 13.0, -0.5], "hand_right": [6.9, 9.0, -1.5],
+            "hip_left": [-2.5, 9.5, 0.5], "knee_left": [-3.9, 5.0, 1.5], "foot_left": [-5.5, 0.6, -0.5],
+            "hip_right": [2.5, 9.5, 0.5], "knee_right": [3.7, 5.0, 1.5], "foot_right": [5.5, 0.6, -0.5],
+            "tail_base": [-0.5, 7.5, 3.5], "tail_mid": [-5.0, 2.0, 12.5], "tail_bend": [-13.0, 7.0, 15.0],
+            "tail_tip": [-10.0, 16.0, 9.5],
         },
     },
     "primigenius_revived": {
@@ -226,7 +228,12 @@ def split_skeleton(mesh, cfg):
     if "back" in skeleton:
         # Ponto no alto das costas: sem ele a pele das costas ficava mais perto das sementes da cauda.
         extra += [("body", "tail_base", "back", 0.3, 1.0), ("body", "back", "neck", 0.0, 1.0)]
-    for bone, start, end, t0, t1 in SKELETON_SEEDS + extra:
+    seeds_table = SKELETON_SEEDS
+    if "tail_bend" in skeleton:
+        # Cauda enrolada (No. 10 refeito): base -> meio -> curva -> ponta; uma reta meio -> ponta cortaria o vazio.
+        seeds_table = [row for row in SKELETON_SEEDS if row[1:3] != ("tail_mid", "tail_tip")]
+        seeds_table += [("tail", "tail_mid", "tail_bend", 0.0, 1.0), ("tail", "tail_bend", "tail_tip", 0.0, 1.0)]
+    for bone, start, end, t0, t1 in seeds_table + extra:
         for t in np.linspace(t0, t1, 6):
             point = skeleton[start] + (skeleton[end] - skeleton[start]) * t
             seeds.append(int(np.argmin(np.linalg.norm(position - point, axis=1))))
@@ -240,6 +247,12 @@ def split_skeleton(mesh, cfg):
     labels = np.where(b == c, b, a)
     centers = vertices[faces].mean(axis=1)
     x, y, z = centers[:, 0], centers[:, 1], centers[:, 2]
+    if "head_cylinder" in cfg:
+        # Cabeca larga e baixa (No. 10 refeito): pela superficie os espinhos do tronco ficam mais perto da metade de
+        # baixo do rosto; acima do queixo e perto do eixo da cabeca, e cabeca.
+        min_y, radius = cfg["head_cylinder"]
+        near = np.hypot(x - skeleton["head"][0], z - skeleton["head"][2]) < radius
+        labels[(labels == "body") & (y > min_y) & near] = "head"
     head = labels == "head"
     head_dx = x - skeleton["head"][0]
     labels[head & (y < cfg["jaw_y"]) & (z < cfg["jaw_z"])] = "jaw"
@@ -283,7 +296,8 @@ def shift_head(vertices, faces, labels, cfg):
 
 
 def tail_polyline(skeleton):
-    return [skeleton["tail_base"], skeleton["tail_mid"], skeleton["tail_tip"]]
+    bend = [skeleton["tail_bend"]] if "tail_bend" in skeleton else []
+    return [skeleton["tail_base"], skeleton["tail_mid"], *bend, skeleton["tail_tip"]]
 
 
 def tail_param(point, skeleton):

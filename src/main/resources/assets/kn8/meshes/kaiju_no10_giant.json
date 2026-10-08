@@ -2,6 +2,7 @@
   "bones": {
     "body": "kn8:meshes/kaiju_no10_giant/body.obj",
     "head": "kn8:meshes/kaiju_no10_giant/head.obj",
+    "jaw": "kn8:meshes/kaiju_no10_giant/jaw.obj",
     "arm_left": "kn8:meshes/kaiju_no10_giant/arm_left.obj",
     "arm_right": "kn8:meshes/kaiju_no10_giant/arm_right.obj",
     "forearm_left": "kn8:meshes/kaiju_no10_giant/forearm_left.obj",

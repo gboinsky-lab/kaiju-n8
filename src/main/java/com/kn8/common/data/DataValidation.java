@@ -17,6 +17,7 @@ import com.kn8.common.data.def.BossDef;
 import com.kn8.common.data.def.DismantleDef;
 import com.kn8.common.data.def.InvasionDef;
 import com.kn8.common.data.def.KaijuDef;
+import com.kn8.common.data.def.LocomotionDef;
 import com.kn8.common.data.def.MissionDef;
 import com.kn8.common.data.def.NumberedDef;
 import com.kn8.common.data.def.RankDef;
@@ -84,6 +85,7 @@ public final class DataValidation {
                 bosses.keySet(), report), report);
         publish(KN8Data.INVASION, validateInvasions(KN8Data.INVASION.loaded(), kaiju.keySet(), bosses.keySet(), report),
                 report);
+        publish(KN8Data.LOCOMOTION, validateLocomotion(KN8Data.LOCOMOTION.loaded(), report), report);
         // Patentes apontam para missoes de avaliacao, que so foram validadas agora: confere no fim (so aviso).
         ranks.forEach((id, rank) -> rank.promotionMission().filter(mission -> !missions.containsKey(mission))
                 .ifPresent(mission -> report.warning("rank " + id + ": promotion_mission inexistente " + mission)));
@@ -187,6 +189,20 @@ public final class DataValidation {
 
     /** 0.1-B: soldado precisa de ao menos um nivel e uma variante; arma inexistente vira aviso (variante sem arma). */
     /** 0.6-E: o id do voador precisa ser um kaiju existente (o perfil de voo completa o kaiju/<id>.json). */
+    /** 0.5.0-C: minimo acima do maximo nao tem como valer: o perfil sai (a animacao toca normal). */
+    public static Map<ResourceLocation, LocomotionDef> validateLocomotion(Map<ResourceLocation, LocomotionDef> input,
+            DataReport report) {
+        Map<ResourceLocation, LocomotionDef> valid = new LinkedHashMap<>();
+        input.forEach((id, def) -> {
+            if (def.minAnimationSpeed() > def.maxAnimationSpeed()) {
+                report.error("locomotion " + id + ": min_animation_speed acima de max_animation_speed");
+                return;
+            }
+            valid.put(id, def);
+        });
+        return valid;
+    }
+
     public static Map<ResourceLocation, FlyerDef> validateFlyers(Map<ResourceLocation, FlyerDef> input,
             Set<ResourceLocation> kaiju, DataReport report) {
         Map<ResourceLocation, FlyerDef> valid = new LinkedHashMap<>();

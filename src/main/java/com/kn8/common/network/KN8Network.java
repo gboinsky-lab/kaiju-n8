@@ -49,7 +49,8 @@ public final class KN8Network {
     // MissionActionC2S, Active.point, CraftC2S, OpenWorkbenchS2C, InvasionStateS2C.
     // 10 = 0.3: InvasionStateS2C.level (niveis de invasao). 11 = 0.5: CombatAction.SPECIAL e weapon.special.
     // 12 = 0.6-D: weapon.special.slash (corte a distancia) no registro de armas sincronizado.
-    private static final String PROTOCOL_VERSION = "13";
+    // 13 = 0.5.0-A: ReleaseInputC2S e PowerView novo. 14 = 0.5.0-C: registro sincronizado "locomotion".
+    private static final String PROTOCOL_VERSION = "14";
 
     /** Diagnostico: 20 por segundo, rajada de 40. */
     private static final C2SGuard.Limit DEBUG_LIMIT = new C2SGuard.Limit(20, 40);

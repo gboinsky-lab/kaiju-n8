@@ -409,3 +409,15 @@ Visto na nuvem (`docs/img/hoshina_modelo.png`, `hoshina_vs_honju.png`, `hoshina_
 | 26.4 | `/summon kn8:soldier` | Soldado novo (capacete, pose aberta), bracos e pernas animando sem pedacos soltos |
 | 26.5 | `/summon kn8:hoshina` | Hoshina novo; as bainhas ficam presas nas costas (nao giram com o braco) |
 | 26.6 | Soldado e Hoshina contra um kaiju | Andam, atacam e as tecnicas do Hoshina saem como antes |
+
+## 27. No. 10 refeito e perfis de locomocao (0.5.0-C)
+
+| # | Passo | Esperado |
+|---|---|---|
+| 27.1 | `/summon kn8:kaiju_no10_small` e olhar de frente, de lado e de costas | Modelo novo do Miguel (vermelho, chifre para a frente, cauda enrolada para tras e para a esquerda); cabeca no eixo do corpo; cauda, bracos e pernas animando sem pedacos soltos |
+| 27.2 | `/summon kn8:kaiju_no10_giant` (area aberta) | Forma gigante nova (24 m, chifre longo para a frente); cauda enrolada inteira, sem rasgos ao andar |
+| 27.3 | No. 10 pequeno perseguindo soldados | Os pes acompanham o chao (sem "patinar"); ao andar devagar a animacao desacelera, em furia acelera |
+| 27.4 | Forma gigante andando | Passos lentos e pesados, um som de passo por pe e poeira do bloco do chao a cada passo |
+| 27.5 | Soldados e Hoshina andando/correndo | A animacao de andar acompanha a velocidade (Hoshina correndo anima mais rapido que soldado andando) |
+| 27.6 | Batalha da forma pequena ate virar gigante (60 s ou abaixo de 50%) | A troca de forma continua funcionando com os modelos novos |
+| 27.7 | Servidor dedicado + 2 clientes | Os dois veem a mesma cadencia de passos |

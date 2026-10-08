@@ -96,6 +96,26 @@ Cada jogador a mais na arena soma +50% de vida (`[boss] playerScaling`).
 
 ---
 
+### Locomocao (`locomotion/<id>.json`, 0.5.0-C)
+
+A animacao de andar toca na velocidade em que os pes acompanham o chao: `velocidade = blocos andados por tick x
+duracao da volta da animacao / passada`, entre `min_animation_speed` (padrao 0,35) e `max_animation_speed` (2,5);
+parado, 1,0. Um som de passo a cada meia passada (`step_distance`); `step_dust` = particulas do chao por passo.
+Passadas [SUPOSICAO] ~1,2 x altura do quadril (mais curta que a real: passo pesado sem parecer congelado).
+
+| Id | Passada (blocos) | Poeira | Observacao |
+|---|---|---|---|
+| `primigenius`, `primigenius_resurrected` | 3,2 | 0 | 6 m |
+| `primigenius_honju`, `primigenius_revived` | 4,5 | 4 | 9 m |
+| `trichonephila` | 2,5 | 0 | 8 patas |
+| `trichonephila_honju` | 3,5 | 3 | 8 m |
+| `kaiju_no9` | 1,4 | 0 | 2 m |
+| `kaiju_no10_small` | 2,6 | 0 | 4 m |
+| `kaiju_no10_giant` | 12,0 | 16 | 24 m; minimo 0,3 (passos lentos e pesados) |
+| `preondactyl` | 2,0 | 0 | no chao; no ar usa a animacao de voo |
+| `soldier` | 1,6 | 0 | id do tipo de entidade |
+| `hoshina`, `hoshina_no10` | 1,7 | 0 | |
+
 ## 2. Jogador
 
 ### Armas (`weapon/<id>.json`)

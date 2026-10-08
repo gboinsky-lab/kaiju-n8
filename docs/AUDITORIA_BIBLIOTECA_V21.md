@@ -218,7 +218,7 @@ Uma etapa por vez. Cada uma tem compilacao, GameTests e teste em jogo, e espera 
 |---|---|---|
 | **0.5.0-A** ✅ feita (2026-10-08) | 1 | Release novo do jogador (traje obrigatorio, limite pessoal, tecla de %, cronometro, sobrecarga sem baixar a %), atributos (forca, velocidade, resistencia, agilidade) e limpeza de `energy`/`control`/`aptitude` |
 | **0.5.0-B** ✅ feita (2026-10-08) | 2 | Traje de corpo inteiro com o Mk1 refeito (e o Reforcado); troca do soldado e do Hoshina pelos modelos refeitos |
-| **0.5.0-C** | 2 | No. 10 pequeno e gigante refeitos (rig novo) e perfis de locomocao |
+| **0.5.0-C** ✅ feita (2026-10-08) | 2 | No. 10 pequeno e gigante refeitos (rig novo) e perfis de locomocao (`locomotion/<id>.json`) |
 | **0.5.0-D** | 3 | `WeaponAnimationProfile` (saque, guarda, ataque, recuperacao, recarga, recuo), 1a pessoa, NPCs com o mesmo perfil |
 | **0.5.0-E** | 4 | Parkour do jogador (salto longo, vault, escalada curta, wall-jump/slide, ledge grab, rolamento, slide), troca de alvo, reacao ao impacto |
 | **0.5.0-F** | 5 | `CreatureMovementProfile` para kaiju e soldados (escalar, saltar, fugir, prioridade de alvo) |

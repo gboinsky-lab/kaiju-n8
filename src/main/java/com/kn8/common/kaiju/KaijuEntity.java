@@ -10,6 +10,7 @@ import java.util.OptionalDouble;
 import java.util.Set;
 import java.util.UUID;
 
+import com.kn8.common.anim.Locomotion;
 import com.kn8.KN8Constants;
 import com.kn8.common.boss.BossService;
 import com.kn8.common.boss.BossState;
@@ -227,6 +228,13 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
     @Override
     protected void playStepSound(BlockPos pos, BlockState state) {
         playSound(KN8Sounds.KAIJU_STEP.get(), Math.min(1.5F, getBbHeight() * STEP_VOLUME_PER_BLOCK), getVoicePitch());
+        Locomotion.stepDust(this, kaijuId(), pos, state);
+    }
+
+    /** 0.5.0-C: um passo por pe na passada do perfil de locomocao (o vanilla da um por bloco). */
+    @Override
+    protected float nextStep() {
+        return Locomotion.nextStep(this, kaijuId(), super.nextStep());
     }
 
     public static AttributeSupplier.Builder baseAttributes() {
@@ -1089,8 +1097,8 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
         RawAnimation idle = loop("movement", "idle");
         RawAnimation walk = loop("movement", "walk");
         RawAnimation breathe = loop("overlay", "breathe");
-        controllers.add(new AnimationController<>(this, "movement", TRANSITION_TICKS,
-                state -> state.setAndContinue(movementAnimation(state.isMoving(), idle, walk))));
+        controllers.add(Locomotion.drive(new AnimationController<>(this, "movement", TRANSITION_TICKS,
+                state -> state.setAndContinue(movementAnimation(state.isMoving(), idle, walk))), KaijuEntity::kaijuId));
         AnimationController<KaijuEntity> action = new AnimationController<>(this, "action", 0, state -> PlayState.STOP)
                 .triggerableAnim("attack", once("action", "attack"));
         // Uma animacao disparavel por habilidade da especie; o nome e o campo "animation" do JSON da habilidade.
