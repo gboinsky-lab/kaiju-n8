@@ -134,6 +134,9 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
     private long reloadStartTick = -1;
     private WeaponProfileDef.Reload reloading;
     private int reloadStage = -1;
+    /** 0.5.0-D2: pentes reserva (-1 = ainda nao recebeu os do perfil) e sem municao (fica na arma de apoio). */
+    private int spareMagazines = -1;
+    private boolean outOfAmmo;
 
     public SoldierEntity(EntityType<? extends SoldierEntity> type, Level level) {
         super(type, level);
@@ -208,7 +211,7 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
         boolean shooting = isShooter();
         boolean primaryIsGun = WeaponIndex.find(getOffhandItem(), false)
                 .map(weapon -> weapon.style() == WeaponDef.Style.FIREARM).orElse(false);
-        if ((shooting && edge < distance) || (!shooting && primaryIsGun && edge > distance * 2)) {
+        if ((shooting && edge < distance) || (!shooting && primaryIsGun && !outOfAmmo && edge > distance * 2)) {
             swapHands();
         }
     }
@@ -217,7 +220,7 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
     void restorePrimary() {
         boolean primaryIsGun = WeaponIndex.find(getOffhandItem(), false)
                 .map(weapon -> weapon.style() == WeaponDef.Style.FIREARM).orElse(false);
-        if (!isShooter() && primaryIsGun) {
+        if (!isShooter() && primaryIsGun && !outOfAmmo) {
             swapHands();
         }
     }
@@ -244,6 +247,16 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
         return weapon().flatMap(weapon -> WeaponHandling.profile(weapon, level().isClientSide()));
     }
 
+    /** Pentes reserva que restam (para os GameTests; -1 = ainda nao recebeu os do perfil). */
+    public int spareMagazines() {
+        return spareMagazines;
+    }
+
+    /** Ajusta o pente atual (GameTests). */
+    public void setRounds(int value) {
+        rounds = value;
+    }
+
     /** Tiros no pente agora (para os GameTests). */
     public int rounds() {
         return weaponProfile().flatMap(WeaponProfileDef::reload).map(reload -> rounds < 0 ? reload.magazine() : rounds)
@@ -265,7 +278,17 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
         if (rounds > 0) {
             return true;
         }
+        if (spareMagazines < 0) {
+            spareMagazines = weaponProfile().map(profile -> profile.npc().spareMagazines()).orElse(0);
+        }
+        if (spareMagazines == 0) {
+            // Acabou a municao: fica na arma de apoio (ou sem arma) ate o fim da luta.
+            outOfAmmo = true;
+            swapHands();
+            return false;
+        }
         if (timeline.tryStart(now, "reload", reload.get().totalTicks(), ActionTimeline.NO_IMPACT)) {
+            spareMagazines--;
             reloading = reload.get();
             reloadStartTick = now;
             reloadStage = -1;

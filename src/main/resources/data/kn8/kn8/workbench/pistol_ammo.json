@@ -1,0 +1,16 @@
+{
+  "result": "kn8:pistol_ammo",
+  "count": 16,
+  "category": "weapon",
+  "order": 16,
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 1
+    },
+    {
+      "item": "minecraft:gunpowder",
+      "count": 1
+    }
+  ]
+}

@@ -7,6 +7,8 @@
   },
   "reload": {
     "magazine": 30,
+    "magazine_item": "kn8:rifle_magazine",
+    "ammo_item": "kn8:rifle_ammo",
     "stages": [
       {
         "name": "eject",
@@ -33,6 +35,7 @@
   },
   "first_person": false,
   "npc": {
-    "arm_pose": "rifle"
+    "arm_pose": "rifle",
+    "spare_magazines": 3
   }
 }

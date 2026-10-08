@@ -6,7 +6,11 @@
   "unlocks": [
     "kn8:mk1",
     "kn8:rifle",
-    "kn8:pistol"
+    "kn8:pistol",
+    "kn8:rifle_magazine",
+    "kn8:pistol_magazine",
+    "kn8:rifle_ammo",
+    "kn8:pistol_ammo"
   ],
   "promotion_mission": "kn8:exam"
 }

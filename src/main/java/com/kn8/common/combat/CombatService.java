@@ -156,8 +156,9 @@ public final class CombatService {
             return false;
         }
         boolean firearm = weapon.get().style() == WeaponDef.Style.FIREARM;
-        if (firearm && !WeaponHandling.canFire(player, state, weapon.get(), now)) {
-            reply(player, request, CombatResult.RELOADING);
+        CombatResult blocked = firearm ? WeaponHandling.canFire(player, state, weapon.get(), now) : null;
+        if (blocked != null) {
+            reply(player, request, blocked);
             return false;
         }
         double cost = LIGHT.equals(actionName) ? ServerConfig.LIGHT_STAMINA_COST.get()

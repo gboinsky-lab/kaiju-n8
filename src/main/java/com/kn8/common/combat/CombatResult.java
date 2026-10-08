@@ -16,7 +16,9 @@ public enum CombatResult {
     /** 0.5: a arma na mao nao tem ataque especial. */
     DENIED_NO_SPECIAL,
     /** 0.5.0-D: pente vazio (a recarga comecou) ou recarregando. */
-    RELOADING;
+    RELOADING,
+    /** 0.5.0-D2: pente vazio e nenhum pente carregado na mochila. */
+    DENIED_NO_MAGAZINE;
 
     public static CombatResult byIndex(int index) {
         CombatResult[] values = values();

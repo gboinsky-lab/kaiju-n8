@@ -2,6 +2,7 @@
 package com.kn8.common.registry;
 
 import com.kn8.KN8Constants;
+import com.kn8.common.combat.MagazineItem;
 import com.kn8.common.combat.WeaponItem;
 import com.kn8.common.craft.SupplyItem;
 import com.kn8.common.training.TrainingDummyItem;
@@ -41,6 +42,17 @@ public final class KN8Items {
     /** 0.6-D: espada do Hoshina (uma; ele usa o par). Arma especial: especial = corte a distancia (Kuuchi). */
     public static final DeferredItem<WeaponItem> HOSHINA_SWORD =
             ITEMS.register("hoshina_sword", () -> new WeaponItem(new Item.Properties()));
+
+    /**
+     * 0.5.0-D2 (Miguel: sem municao infinita): pentes (guardam os tiros, carregados com a municao) e municao de
+     * cada arma de fogo. Capacidade no weapon_profile; receitas na bancada.
+     */
+    public static final DeferredItem<MagazineItem> RIFLE_MAGAZINE =
+            ITEMS.register("rifle_magazine", () -> new MagazineItem(new Item.Properties()));
+    public static final DeferredItem<MagazineItem> PISTOL_MAGAZINE =
+            ITEMS.register("pistol_magazine", () -> new MagazineItem(new Item.Properties()));
+    public static final DeferredItem<Item> RIFLE_AMMO = ITEMS.registerSimpleItem("rifle_ammo");
+    public static final DeferredItem<Item> PISTOL_AMMO = ITEMS.registerSimpleItem("pistol_ammo");
 
     /** 0.1-B (M11b): materiais de desmonte (tabelas em data/kn8/kn8/dismantle). */
     public static final DeferredItem<Item> KAIJU_TISSUE = ITEMS.registerSimpleItem("kaiju_tissue");
@@ -88,6 +100,10 @@ public final class KN8Items {
                         output.accept(SWORD.get());
                         output.accept(AXE.get());
                         output.accept(HOSHINA_SWORD.get());
+                        output.accept(full(RIFLE_MAGAZINE.get(), parameters));
+                        output.accept(full(PISTOL_MAGAZINE.get(), parameters));
+                        output.accept(RIFLE_AMMO.get());
+                        output.accept(PISTOL_AMMO.get());
                         output.accept(KAIJU_TISSUE.get());
                         output.accept(MUSCLE_FIBER.get());
                         output.accept(CORE_FRAGMENT.get());
@@ -107,6 +123,14 @@ public final class KN8Items {
                     .build());
 
     private KN8Items() {
+    }
+
+    /** Pente cheio para a aba criativa (a capacidade vem do perfil da arma, ja carregado no servidor/cliente). */
+    private static ItemStack full(MagazineItem item, CreativeModeTab.ItemDisplayParameters parameters) {
+        ItemStack stack = new ItemStack(item);
+        MagazineItem.setRounds(stack, Math.max(1, com.kn8.common.combat.WeaponHandling.magazineCapacity(item,
+                true)));
+        return stack;
     }
 
     private static DeferredItem<ArmorItem> suit(String name,

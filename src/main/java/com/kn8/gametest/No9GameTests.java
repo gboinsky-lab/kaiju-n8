@@ -33,6 +33,9 @@ public final class No9GameTests {
     private No9GameTests() {
     }
 
+    /** Raio (em chunks) forcado em volta do teste da ressurreicao em massa: cobre as carcacas a ate 14 blocos. */
+    private static final int FORCED_CHUNK_RADIUS = 2;
+
     private static CarcassEntity carcass(ServerLevel level, KaijuEntity dead, double x, double y, double z) {
         dead.moveTo(x, y, z, 0.0F, 0.0F);
         CarcassEntity carcass = CarcassEntity.from(dead).orElseThrow();
@@ -45,8 +48,10 @@ public final class No9GameTests {
     public static void no9MassRevivesEverything(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         BlockPos center = helper.absolutePos(new BlockPos(4, 1, 4));
-        // So as carcacas deste teste contam: os lotes reaproveitam posicoes e uma carcaca deixada por outro teste
-        // (de uma especie que nao revive) na area derrubava o teste de vez em quando.
+        // As carcacas ficam ate 14 blocos fora da estrutura do teste; sem jogador, o chunk delas as vezes nao carrega
+        // e o No. 9 nao as ve (falhava em ~1 de 3 rodadas, como o teste de invasao): chunks forcados durante o teste.
+        forceChunks(level, center, true);
+        // So as carcacas deste teste contam (os lotes reaproveitam posicoes).
         List<CarcassEntity> army = List.of(
                 carcass(level, KN8Entities.PRIMIGENIUS.get().create(level), center.getX() + 8.5, center.getY(),
                         center.getZ() + 0.5),
@@ -73,7 +78,16 @@ public final class No9GameTests {
             helper.assertTrue(revivedBoss.size() == 1, "O Honju deveria voltar como chefe revivido");
             level.getEntitiesOfClass(Entity.class, area, entity -> entity instanceof KaijuEntity
                     || entity instanceof CarcassEntity).forEach(Entity::discard);
+            forceChunks(level, center, false);
         });
+    }
+
+    private static void forceChunks(ServerLevel level, BlockPos center, boolean forced) {
+        for (int dx = -FORCED_CHUNK_RADIUS; dx <= FORCED_CHUNK_RADIUS; dx++) {
+            for (int dz = -FORCED_CHUNK_RADIUS; dz <= FORCED_CHUNK_RADIUS; dz++) {
+                level.setChunkForced((center.getX() >> 4) + dx, (center.getZ() >> 4) + dz, forced);
+            }
+        }
     }
 
     @GameTest(template = TEMPLATE, batch = "kn8_no9", timeoutTicks = 260)

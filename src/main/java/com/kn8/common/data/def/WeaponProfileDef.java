@@ -23,12 +23,14 @@ import net.minecraft.util.StringRepresentable;
  *   {@code player.<perfil>.draw} e som;</li>
  *   <li>a guarda (bloqueio) usa {@code player.<perfil>.guard};</li>
  *   <li>{@code reload}: armas de fogo: pente de {@code magazine} tiros e recarga por etapas (cada uma com tempo e
- *   som; animacao {@code player.<perfil>.reload}). [SUPOSICAO] municao de reserva infinita (o GDD nao tem
- *   municao);</li>
+ *   som; animacao {@code player.<perfil>.reload}). 0.5.0-D2 (Miguel: sem municao infinita): a recarga troca o pente
+ *   da arma por um pente carregado ({@code magazine_item}) da mochila; o pente vazio fica com o jogador e e
+ *   recarregado com a municao ({@code ammo_item}). Criativo nao gasta;</li>
  *   <li>{@code recoil}: coice da camera de quem atira (graus para cima, desvio lateral maximo, ticks para
  *   voltar parte dele) e do corpo ({@code body_kick}, multiplica o coice da animacao de tiro);</li>
  *   <li>{@code first_person}: os golpes da PAL tambem aparecem em primeira pessoa (bracos do modelo);</li>
- *   <li>{@code npc}: pose dos bracos do soldado com essa arma (rifle, pistol, blade, unarmed).</li>
+ *   <li>{@code npc}: pose dos bracos do soldado com essa arma (rifle, pistol, blade, unarmed) e quantos pentes
+ *   reserva ele leva ({@code spare_magazines}; acabaram, ele passa para a arma de apoio).</li>
  * </ul>
  */
 public record WeaponProfileDef(Hands hands, boolean stance, Draw draw, Optional<Reload> reload,
@@ -70,10 +72,13 @@ public record WeaponProfileDef(Hands hands, boolean stance, Draw draw, Optional<
         ).apply(i, Stage::new));
     }
 
-    public record Reload(int magazine, List<Stage> stages) {
+    public record Reload(int magazine, List<Stage> stages, Optional<ResourceLocation> magazineItem,
+            Optional<ResourceLocation> ammoItem) {
         public static final Codec<Reload> CODEC = RecordCodecBuilder.create(i -> i.group(
                 Codec.intRange(1, 1000).fieldOf("magazine").forGetter(Reload::magazine),
-                Stage.CODEC.listOf().fieldOf("stages").forGetter(Reload::stages)
+                Stage.CODEC.listOf().fieldOf("stages").forGetter(Reload::stages),
+                ResourceLocation.CODEC.optionalFieldOf("magazine_item").forGetter(Reload::magazineItem),
+                ResourceLocation.CODEC.optionalFieldOf("ammo_item").forGetter(Reload::ammoItem)
         ).apply(i, Reload::new));
 
         public int totalTicks() {
@@ -90,10 +95,11 @@ public record WeaponProfileDef(Hands hands, boolean stance, Draw draw, Optional<
         ).apply(i, Recoil::new));
     }
 
-    public record Npc(String armPose) {
-        public static final Npc DEFAULT = new Npc("blade");
+    public record Npc(String armPose, int spareMagazines) {
+        public static final Npc DEFAULT = new Npc("blade", 0);
         public static final Codec<Npc> CODEC = RecordCodecBuilder.create(i -> i.group(
-                Codec.STRING.optionalFieldOf("arm_pose", "blade").forGetter(Npc::armPose)
+                Codec.STRING.optionalFieldOf("arm_pose", "blade").forGetter(Npc::armPose),
+                Codec.intRange(0, 100).optionalFieldOf("spare_magazines", 0).forGetter(Npc::spareMagazines)
         ).apply(i, Npc::new));
     }
 

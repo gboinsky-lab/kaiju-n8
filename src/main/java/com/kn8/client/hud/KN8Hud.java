@@ -8,8 +8,10 @@ import com.kn8.client.combat.CombatFeedback;
 import com.kn8.client.combat.CombatInput;
 import com.kn8.common.attribute.PowerView;
 import com.kn8.common.combat.CombatService;
+import com.kn8.common.combat.WeaponHandling;
 import com.kn8.common.config.ClientConfig;
 import com.kn8.common.data.def.WeaponDef;
+import com.kn8.common.data.def.WeaponProfileDef;
 import com.kn8.common.registry.KN8Attachments;
 import com.kn8.core.power.HeatStage;
 import com.kn8.core.ui.HudMath;
@@ -322,13 +324,22 @@ public final class KN8Hud {
 
     /** 0.5.0-D: pente da arma de fogo ("Pente 12/30") e barra da recarga por etapas. */
     private static int drawAmmo(GuiGraphics graphics, Font font, int x, int lineY, int step) {
-        if (CombatFeedback.magazine() <= 0) {
+        Minecraft minecraft = Minecraft.getInstance();
+        if (minecraft.player == null) {
             return lineY;
         }
+        // 0.5.0-D2: tiros no item da arma e reserva nos pentes da mochila (o cliente ja tem o inventario).
+        Optional<WeaponProfileDef.Reload> held = CombatService.heldWeapon(minecraft.player)
+                .flatMap(weapon -> WeaponHandling.profile(weapon, true)).flatMap(WeaponProfileDef::reload);
+        if (held.isEmpty()) {
+            return lineY;
+        }
+        int rounds = WeaponHandling.gunRounds(minecraft.player.getMainHandItem(), held.get());
+        int reserve = WeaponHandling.spareRounds(minecraft.player, held.get());
         float reload = CombatFeedback.reloadProgress();
-        boolean empty = CombatFeedback.rounds() == 0;
+        boolean empty = rounds == 0;
         Component label = reload >= 0.0F ? Component.translatable("kn8.hud.reloading")
-                : Component.translatable("kn8.hud.ammo", CombatFeedback.rounds(), CombatFeedback.magazine());
+                : Component.translatable("kn8.hud.ammo_reserve", rounds, held.get().magazine(), reserve);
         graphics.drawString(font, label, x + 2, lineY, empty || reload >= 0.0F ? blink(COLOR_SURGE) : COLOR_LABEL,
                 true);
         if (reload >= 0.0F) {

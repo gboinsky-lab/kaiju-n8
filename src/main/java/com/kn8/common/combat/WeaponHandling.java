@@ -8,19 +8,28 @@ import com.kn8.common.anim.AnimationBridge;
 import com.kn8.common.data.KN8Data;
 import com.kn8.common.data.def.WeaponDef;
 import com.kn8.common.data.def.WeaponProfileDef;
+import com.kn8.common.registry.KN8DataComponents;
 import com.kn8.core.combat.ActionTimeline;
 
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 /**
  * Manuseio da arma pelo perfil da familia dela (0.5.0-D, {@code weapon_profile/<id>.json}): saque ao trocar de arma,
  * guarda, pente e recarga por etapas. Ocupa a mesma {@code ActionTimeline} dos golpes, entao nada sai durante o
  * saque ou a recarga; o servidor decide e a animacao vai para todos pela ponte de sempre.
+ *
+ * <p>0.5.0-D2 (Miguel: sem municao infinita): os tiros ficam no proprio item da arma ({@code kn8:rounds}; sem o
+ * componente = pente cheio de fabrica). A recarga troca o pente da arma pelo pente carregado da mochila com mais
+ * tiros ({@link MagazineItem}); o pente que saiu volta para a mochila com o que sobrou. Criativo nao gasta.</p>
  */
 public final class WeaponHandling {
 
@@ -82,29 +91,96 @@ public final class WeaponHandling {
                 .orElse(AnimationBridge.PLAYER_BLOCK);
     }
 
-    /** Tiros que restam no pente (cheio na primeira vez que a arma aparece). */
-    static int rounds(CombatState state, WeaponDef weapon, WeaponProfileDef.Reload reload) {
-        return state.rounds.getOrDefault(weapon.item(), reload.magazine());
+    /** Tiros no pente que esta dentro da arma (item na mao). */
+    public static int gunRounds(ItemStack gun, WeaponProfileDef.Reload reload) {
+        return gun.getOrDefault(KN8DataComponents.ROUNDS.get(), reload.magazine());
+    }
+
+    /** Capacidade do pente avulso: a do perfil que aponta para ele (0 = nao e pente de nenhuma arma). */
+    public static int magazineCapacity(Item item, boolean clientSide) {
+        ResourceLocation id = BuiltInRegistries.ITEM.getKey(item);
+        return KN8Data.WEAPON_PROFILE.forSide(clientSide).values().stream().flatMap(def -> def.reload().stream())
+                .filter(reload -> reload.magazineItem().filter(id::equals).isPresent())
+                .mapToInt(WeaponProfileDef.Reload::magazine).findFirst().orElse(0);
+    }
+
+    /** Pente carregado da mochila com mais tiros (vazio se nao ha). */
+    private static Optional<ItemStack> bestMagazine(Player player, WeaponProfileDef.Reload reload) {
+        if (reload.magazineItem().isEmpty()) {
+            return Optional.empty();
+        }
+        Item magazine = BuiltInRegistries.ITEM.get(reload.magazineItem().get());
+        ItemStack best = null;
+        for (ItemStack stack : player.getInventory().items) {
+            if (stack.is(magazine) && MagazineItem.rounds(stack) > 0
+                    && (best == null || MagazineItem.rounds(stack) > MagazineItem.rounds(best))) {
+                best = stack;
+            }
+        }
+        return Optional.ofNullable(best);
+    }
+
+    /** Tiros nos pentes carregados da mochila (reserva da HUD; serve nos dois lados). */
+    public static int spareRounds(Player player, WeaponProfileDef.Reload reload) {
+        if (reload.magazineItem().isEmpty()) {
+            return 0;
+        }
+        Item magazine = BuiltInRegistries.ITEM.get(reload.magazineItem().get());
+        return player.getInventory().items.stream().filter(stack -> stack.is(magazine))
+                .mapToInt(MagazineItem::rounds).sum();
+    }
+
+    /** Carrega o pente com a municao da mochila (criativo: enche). Devolve quantos tiros entraram. */
+    public static int loadMagazine(Player player, ItemStack magazine, int capacity) {
+        int missing = capacity - MagazineItem.rounds(magazine);
+        if (missing <= 0) {
+            return 0;
+        }
+        if (player.getAbilities().instabuild) {
+            MagazineItem.setRounds(magazine, capacity);
+            return missing;
+        }
+        ResourceLocation id = BuiltInRegistries.ITEM.getKey(magazine.getItem());
+        Optional<Item> ammo = KN8Data.WEAPON_PROFILE.forSide(false).values().stream()
+                .flatMap(def -> def.reload().stream())
+                .filter(reload -> reload.magazineItem().filter(id::equals).isPresent())
+                .flatMap(reload -> reload.ammoItem().stream()).findFirst().map(BuiltInRegistries.ITEM::get);
+        if (ammo.isEmpty()) {
+            return 0;
+        }
+        int loaded = 0;
+        for (ItemStack stack : player.getInventory().items) {
+            if (loaded >= missing) {
+                break;
+            }
+            if (stack.is(ammo.get())) {
+                int take = Math.min(stack.getCount(), missing - loaded);
+                stack.shrink(take);
+                loaded += take;
+            }
+        }
+        MagazineItem.setRounds(magazine, MagazineItem.rounds(magazine) + loaded);
+        return loaded;
     }
 
     /**
-     * Antes de um tiro: com o pente vazio comeca a recarga e recusa o tiro ({@code false}). Arma sem pente sempre
-     * pode atirar.
+     * Antes de um tiro: {@code null} = pode atirar; pente vazio comeca a recarga ({@code RELOADING}) ou avisa que
+     * nao ha pente carregado na mochila ({@code DENIED_NO_MAGAZINE}). Arma sem pente sempre pode atirar.
      */
-    static boolean canFire(ServerPlayer player, CombatState state, WeaponDef weapon, long now) {
+    static CombatResult canFire(ServerPlayer player, CombatState state, WeaponDef weapon, long now) {
         Optional<WeaponProfileDef.Reload> reload = profile(weapon, false).flatMap(WeaponProfileDef::reload);
-        if (reload.isEmpty() || rounds(state, weapon, reload.get()) > 0) {
-            return true;
+        if (reload.isEmpty() || gunRounds(player.getMainHandItem(), reload.get()) > 0) {
+            return null;
         }
-        startReload(player, state, weapon, now);
-        return false;
+        return startReload(player, state, weapon, now) ? CombatResult.RELOADING : CombatResult.DENIED_NO_MAGAZINE;
     }
 
     /** Depois de um tiro aceito: gasta um do pente; vazio, a recarga comeca quando o tiro terminar. */
     static void spendRound(ServerPlayer player, CombatState state, WeaponDef weapon, long now) {
         profile(weapon, false).flatMap(WeaponProfileDef::reload).ifPresent(reload -> {
-            int left = Math.max(0, rounds(state, weapon, reload) - 1);
-            state.rounds.put(weapon.item(), left);
+            ItemStack gun = player.getMainHandItem();
+            int left = Math.max(0, gunRounds(gun, reload) - 1);
+            gun.set(KN8DataComponents.ROUNDS.get(), left);
             state.pendingReload = left == 0;
             sendAmmo(player, state, Optional.of(weapon), now);
         });
@@ -112,15 +188,14 @@ public final class WeaponHandling {
 
     /** Tiros no pente da arma na mao (-1 = sem pente); publico para os GameTests e comandos. */
     public static int rounds(ServerPlayer player) {
-        CombatState state = CombatService.state(player);
         return CombatService.heldWeapon(player).flatMap(weapon -> profile(weapon, false)
-                .flatMap(WeaponProfileDef::reload).map(reload -> rounds(state, weapon, reload))).orElse(-1);
+                .flatMap(WeaponProfileDef::reload).map(reload -> gunRounds(player.getMainHandItem(), reload)))
+                .orElse(-1);
     }
 
     /** Ajusta o pente da arma na mao (GameTests). */
     public static void setRounds(ServerPlayer player, int rounds) {
-        CombatService.heldWeapon(player).ifPresent(weapon -> CombatService.state(player).rounds.put(weapon.item(),
-                rounds));
+        player.getMainHandItem().set(KN8DataComponents.ROUNDS.get(), rounds);
     }
 
     /** Recarga manual (tecla R numa arma de fogo sem especial). */
@@ -133,7 +208,11 @@ public final class WeaponHandling {
         Optional<WeaponProfileDef> profile = profile(weapon, false);
         Optional<WeaponProfileDef.Reload> reload = profile.flatMap(WeaponProfileDef::reload);
         if (reload.isEmpty() || state.reloadStartTick != CombatState.NEVER
-                || rounds(state, weapon, reload.get()) >= reload.get().magazine()) {
+                || gunRounds(player.getMainHandItem(), reload.get()) >= reload.get().magazine()) {
+            return false;
+        }
+        if (!player.getAbilities().instabuild && bestMagazine(player, reload.get()).isEmpty()) {
+            player.displayClientMessage(Component.translatable("kn8.hud.combat.denied_no_magazine"), true);
             return false;
         }
         if (!state.timeline.tryStart(now, RELOAD, reload.get().totalTicks(), ActionTimeline.NO_IMPACT)) {
@@ -161,13 +240,27 @@ public final class WeaponHandling {
             stageStart += stages.get(index).ticks();
         }
         if (elapsed >= state.reloadProfile.totalTicks()) {
-            state.rounds.put(state.reloadItem, state.reloadProfile.magazine());
+            swapMagazine(player, state.reloadProfile);
             state.reloadStartTick = CombatState.NEVER;
             state.reloadProfile = null;
             sendAmmo(player, state, CombatService.heldWeapon(player), now);
         } else if (state.reloadStage == 0 && elapsed == 0) {
             sendAmmo(player, state, CombatService.heldWeapon(player), now);
         }
+    }
+
+    /** Fim da recarga: o pente carregado entra na arma e o que saiu volta para a mochila com o que sobrou. */
+    private static void swapMagazine(ServerPlayer player, WeaponProfileDef.Reload reload) {
+        ItemStack gun = player.getMainHandItem();
+        if (player.getAbilities().instabuild) {
+            gun.set(KN8DataComponents.ROUNDS.get(), reload.magazine());
+            return;
+        }
+        bestMagazine(player, reload).ifPresent(magazine -> {
+            int incoming = MagazineItem.rounds(magazine);
+            MagazineItem.setRounds(magazine, gunRounds(gun, reload));
+            gun.set(KN8DataComponents.ROUNDS.get(), incoming);
+        });
     }
 
     /** Estado do pente da arma na mao para a HUD do dono. */
@@ -181,7 +274,7 @@ public final class WeaponHandling {
         int total = reload.get().totalTicks();
         int left = state.reloadStartTick == CombatState.NEVER ? 0
                 : (int) Math.max(0, total - (now - state.reloadStartTick));
-        PacketDistributor.sendToPlayer(player, new AmmoS2C(rounds(state, weapon.get(), reload.get()),
+        PacketDistributor.sendToPlayer(player, new AmmoS2C(gunRounds(player.getMainHandItem(), reload.get()),
                 reload.get().magazine(), left, total));
     }
 

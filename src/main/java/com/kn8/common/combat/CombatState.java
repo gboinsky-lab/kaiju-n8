@@ -1,9 +1,6 @@
 // src/main/java/com/kn8/common/combat/CombatState.java
 package com.kn8.common.combat;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.kn8.common.data.def.WeaponDef;
 import com.kn8.common.data.def.WeaponProfileDef;
 import com.kn8.core.combat.ActionTimeline;
@@ -36,8 +33,6 @@ public final class CombatState {
     int specialCooldownTicks;
     /** 0.5.0-D: item da mao principal no ultimo tick (saque ao trocar). */
     ResourceLocation lastHeldItem;
-    /** 0.5.0-D: tiros no pente por arma (item); sem entrada = pente cheio. */
-    final Map<ResourceLocation, Integer> rounds = new HashMap<>();
     long reloadStartTick = NEVER;
     WeaponProfileDef.Reload reloadProfile;
     ResourceLocation reloadItem;

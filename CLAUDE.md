@@ -189,8 +189,10 @@ mandam; se algo precisar mudar, marque **[DECIDIR]** e pergunte.
   pistola (vista do vanilla). `profile()` ja existia no `HoshinaEntity` (perfil do soldado especial) → o do
   soldado comum virou `weaponProfile()`. Xvfb da sessao tinha caido (`glfwInit failed`): subir de novo com
   `Xvfb :99 -screen 0 1280x720x24`.
-  `no9MassRevivesEverything` oscilava (2 vezes em ~6 rodadas): contava toda carcaca na area e os lotes reaproveitam
-  posicoes → confere so as tres carcacas que o proprio teste cria.
+  `no9MassRevivesEverything` oscilava (~1 em 3 rodadas): duas carcacas ficam ate 14 blocos fora da estrutura do
+  teste e, sem jogador, o chunk delas as vezes nao carregava (o No. 9 nao as via) → chunks forcados durante o teste
+  (como no de invasao) e o teste confere so as proprias carcacas. A primeira tentativa (so contar as proprias) nao
+  resolveu: a causa era o chunk.
 - **0.5.0-C (No. 10 refeito):** cauda enrolada (desce, abre e sobe) cortada so por base -> meio -> ponta deixava
   a volta de fora sem dono → junta opcional `tail_bend` no `rig_primigenius_mesh.py`; metade de baixo do rosto ia
   para o tronco (espinhos mais perto pela superficie) → `head_cylinder` (acima do queixo e perto do eixo = cabeca).

@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import com.kn8.KN8Constants;
 import com.kn8.common.combat.CombatService;
+import com.kn8.common.combat.MagazineItem;
 import com.kn8.common.combat.WeaponHandling;
 import com.kn8.common.data.KN8Data;
 import com.kn8.common.registry.KN8Entities;
@@ -26,7 +27,8 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
 /**
  * GameTests da 0.5.0-D (Biblioteca v21/v22 Prioridade 3): perfil de cada familia de arma carregado, saque que segura
- * os golpes, pente e recarga por etapas da arma de fogo e soldado com a pose e o pente do perfil. O FakePlayer nao
+ * os golpes, pente e recarga por etapas da arma de fogo e soldado com a pose e o pente do perfil. 0.5.0-D2: a recarga
+ * troca pelo pente carregado da mochila, sem pente nao recarrega e carregar o pente gasta municao. O FakePlayer nao
  * recebe o tick de jogador: o teste chama {@link CombatService#tick} a cada tick. Um perfil por teste.
  */
 @GameTestHolder(KN8Constants.MOD_ID)
@@ -78,6 +80,10 @@ public final class WeaponProfileGameTests {
         int magazine = KN8Data.WEAPON_PROFILE.server().get(KN8Constants.id("rifle")).reload().get().magazine();
         int reload = KN8Data.WEAPON_PROFILE.server().get(KN8Constants.id("rifle")).reload().get().totalTicks();
         int shot = KN8Data.WEAPON.server().get(KN8Constants.id("rifle")).actions().get("light").durationTicks();
+        // Um pente carregado na mochila: e ele que entra na arma; o vazio da arma volta para a mochila.
+        ItemStack spare = new ItemStack(KN8Items.RIFLE_MAGAZINE.get());
+        MagazineItem.setRounds(spare, magazine);
+        player.getInventory().add(spare);
         helper.onEachTick(() -> CombatService.tick(player));
         helper.runAfterDelay(2, () -> {
             helper.assertTrue(WeaponHandling.rounds(player) == magazine, "Pente deveria comecar cheio");
@@ -91,8 +97,38 @@ public final class WeaponProfileGameTests {
         helper.runAfterDelay(2 + shot + reload + 4, () -> {
             helper.assertTrue(WeaponHandling.rounds(player) == magazine,
                     "Depois das etapas o pente deveria estar cheio, veio " + WeaponHandling.rounds(player));
+            helper.assertTrue(MagazineItem.rounds(spare) == 0, "O pente que saiu da arma (vazio) volta para a mochila");
             helper.succeed();
         });
+    }
+
+    @GameTest(template = TEMPLATE)
+    public static void noLoadedMagazineMeansNoReload(GameTestHelper helper) {
+        FakePlayer player = player(helper, "nomag", new ItemStack(KN8Items.RIFLE.get()));
+        helper.onEachTick(() -> CombatService.tick(player));
+        helper.runAfterDelay(2, () -> {
+            WeaponHandling.setRounds(player, 0);
+            helper.assertFalse(CombatService.attack(player, "light"), "Sem tiro no pente nao atira");
+        });
+        helper.runAfterDelay(6, () -> {
+            helper.assertTrue(WeaponHandling.rounds(player) == 0, "Sem pente carregado na mochila nao recarrega");
+            helper.succeed();
+        });
+    }
+
+    @GameTest(template = TEMPLATE)
+    public static void loadingAMagazineSpendsAmmo(GameTestHelper helper) {
+        FakePlayer player = player(helper, "load", ItemStack.EMPTY);
+        int capacity = WeaponHandling.magazineCapacity(KN8Items.RIFLE_MAGAZINE.get(), false);
+        ItemStack ammo = new ItemStack(KN8Items.RIFLE_AMMO.get(), capacity + 10);
+        player.getInventory().add(ammo);
+        ItemStack magazine = new ItemStack(KN8Items.RIFLE_MAGAZINE.get());
+        int loaded = WeaponHandling.loadMagazine(player, magazine, capacity);
+        helper.assertTrue(loaded == capacity && MagazineItem.rounds(magazine) == capacity,
+                "O pente deveria encher com " + capacity + ", entraram " + loaded);
+        int left = player.getInventory().countItem(KN8Items.RIFLE_AMMO.get());
+        helper.assertTrue(left == 10, "Deveriam sobrar 10 municoes, sobraram " + left);
+        helper.succeed();
     }
 
     @GameTest(template = TEMPLATE)

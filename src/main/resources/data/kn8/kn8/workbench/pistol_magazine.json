@@ -1,0 +1,15 @@
+{
+  "result": "kn8:pistol_magazine",
+  "category": "weapon",
+  "order": 14,
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 2
+    },
+    {
+      "item": "minecraft:redstone",
+      "count": 1
+    }
+  ]
+}

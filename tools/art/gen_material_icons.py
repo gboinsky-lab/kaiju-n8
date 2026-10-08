@@ -64,9 +64,50 @@ def core():
     return canvas
 
 
+def magazine(curved, width):
+    """0.5.0-D2: pente (cinza escuro, cartucho de latao aparecendo em cima). Provisorio ate o modelo do Miguel."""
+    canvas = new()
+    body, d = mask()
+    left = 8 - width // 2
+    if curved:
+        d.polygon([(left, 3), (left + width, 3), (left + width + 2, 13), (left + 2, 13)], fill=255)
+    else:
+        d.rectangle([left, 3, left + width, 13], fill=255)
+    paint(canvas, body, (58, 62, 70))
+    base, d = mask()
+    shift = 2 if curved else 0
+    d.rectangle([left + shift - 1, 13, left + width + shift + 1, 14], fill=255)
+    paint(canvas, base, (40, 42, 48), outline=False)
+    top, d = mask()
+    d.rectangle([left + 1, 1, left + width - 1, 3], fill=255)
+    paint(canvas, top, (214, 170, 70), outline=False)
+    for y in (6, 9):
+        dot(canvas, left + 1 + (1 if curved and y > 7 else 0), y, (110, 116, 126))
+    return canvas
+
+
+def ammo(count, length):
+    """0.5.0-D2: cartuchos de latao com ponta de cobre lado a lado. Provisorio ate o modelo do Miguel."""
+    canvas = new()
+    gap = 12 // count
+    for i in range(count):
+        x = 2 + i * gap
+        top = 14 - length
+        shell, d = mask()
+        d.rectangle([x, top + 3, x + 1, 14], fill=255)
+        paint(canvas, shell, (214, 170, 70))
+        tip, d = mask()
+        d.rectangle([x, top, x + 1, top + 2], fill=255)
+        paint(canvas, tip, (184, 104, 60), outline=False)
+        dot(canvas, x, top + 4, (250, 220, 140))
+    return canvas
+
+
 def main():
     for name, painter in (("kaiju_tissue", tissue), ("muscle_fiber", fiber), ("core_fragment", fragment),
-                          ("intact_core", core)):
+                          ("intact_core", core), ("rifle_magazine", lambda: magazine(True, 4)),
+                          ("pistol_magazine", lambda: magazine(False, 3)), ("rifle_ammo", lambda: ammo(4, 11)),
+                          ("pistol_ammo", lambda: ammo(4, 7))):
         image = painter()
         image.save(ASSETS / f"textures/item/{name}.png")
         model = {"parent": "minecraft:item/generated", "textures": {"layer0": f"kn8:item/{name}"}}
