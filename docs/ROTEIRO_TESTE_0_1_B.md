@@ -398,3 +398,14 @@ Visto na nuvem (`docs/img/hoshina_modelo.png`, `hoshina_vs_honju.png`, `hoshina_
 | 25.8 | Menu (M) > Perfil | Limite (com estrela se o talento for raro), "Acima do limite" e linha "Corpo: FOR / VEL / RES / AGI" |
 | 25.9 | Bater em kaiju ou no boneco, correr, apanhar, esquivar/dash/parry | Sobem forca, velocidade, resistencia e agilidade (`/kn8 power` mostra os niveis) |
 | 25.10 | Servidor dedicado + 2 clientes | Cada um ve a aura do outro subir e descer; a HUD de cada um e so dele |
+
+## 26. Traje de corpo inteiro, soldado e Hoshina refeitos (0.5.0-B)
+
+| # | Passo | Esperado |
+|---|---|---|
+| 26.1 | Vestir o **Mk1** (modelo novo do Miguel) e olhar de frente, de costas (F5) e andando | Traje no corpo todo: tronco, bracos ate a mao, pernas e botas; "espinha" branca nas costas; **a skin nao aparece** em nenhum lugar (segunda pele escura por baixo) |
+| 26.2 | Mesmo com o **Mk1 Reforcado** | Igual: sem skin aparecendo |
+| 26.3 | Primeira pessoa com o traje | A luva/braco do traje no lugar do braco da skin |
+| 26.4 | `/summon kn8:soldier` | Soldado novo (capacete, pose aberta), bracos e pernas animando sem pedacos soltos |
+| 26.5 | `/summon kn8:hoshina` | Hoshina novo; as bainhas ficam presas nas costas (nao giram com o braco) |
+| 26.6 | Soldado e Hoshina contra um kaiju | Andam, atacam e as tecnicas do Hoshina saem como antes |

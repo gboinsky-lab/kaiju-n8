@@ -42,13 +42,21 @@ MIN_BOX = {"body": (10 / 16, 6 / 16, 0.0), "right_arm": (6 / 16, 6 / 16, -1 / 16
 # Altura de cada fatia do ajuste de largura (blocos = 1 px).
 SLICE = 1 / 16
 MAX_STRETCH = 1.8
+# 0.5.0-B (traje de corpo inteiro, Biblioteca v21): "segunda pele" escura em volta de cada parte do jogador, um pouco
+# maior que a camada externa da skin (0,25 px), para a skin nunca aparecer pelos vaos da malha do Meshy. Caixas do
+# HumanoidModel em px (x0, y0, z0, largura, altura, profundidade), no espaco local da ModelPart.
+LINER_BOXES = {"body": (-4, 0, -2, 8, 12, 4), "right_arm": (-3, -2, -2, 4, 12, 4), "left_arm": (-1, -2, -2, 4, 12, 4),
+               "right_leg": (-2, 0, -2, 4, 12, 4), "left_leg": (-2, 0, -2, 4, 12, 4)}
+LINER_INFLATE_PX = 0.3
 # Cortes medidos na vista de frente de cada traje (metros do OBJ convertido): borda de dentro dos bracos por altura
 # (altura acima da qual vale, |x|), ponta dos dedos e quadril.
 SUITS = {
-    "mk1": {"arm_inner_x": [(1.20, 0.20), (0.95, 0.26), (0.0, 0.28)], "hand_min_y": 0.74, "hip_y": 0.82},
+    # 0.5.0-B: Mk1 refeito pelo Miguel (costas com a "espinha"): vao entre braco e tronco medido por altura.
+    "mk1": {"arm_inner_x": [(1.20, 0.19), (1.05, 0.175), (0.95, 0.205), (0.0, 0.215)], "hand_min_y": 0.76,
+            "hip_y": 0.80, "max_stretch": 2.4, "arm_reach": 11 / 16, "liner": True},
     # Luvas grandes descem ate ~0,64, por fora das coxas (|x| > 0,38).
     "mk1_reinforced": {"arm_inner_x": [(1.22, 0.24), (0.90, 0.30), (0.0, 0.38)], "hand_min_y": 0.62,
-                       "hip_y": 0.80},
+                       "hip_y": 0.80, "liner": True},
 }
 
 
@@ -87,7 +95,7 @@ def straighten(points, normals, pivot):
     return centered @ rot.T + pivot, normals @ rot.T
 
 
-def fit_box(points, min_width, min_depth, center_x):
+def fit_box(points, min_width, min_depth, center_x, max_stretch=MAX_STRETCH):
     """Fatia por fatia na altura: centra a fatia na caixa do jogador (X/Z) e alarga ate cobrir a caixa minima (nunca
     encolhe). O traje do Meshy e mais fino que o boneco e cada fatia tem o proprio centro (a bota avanca, a canela
     fica atras): centrar a peca inteira deixava a canela atras da calca da skin e escala unica nao cobria o miolo.
@@ -107,7 +115,7 @@ def fit_box(points, min_width, min_depth, center_x):
         centers[k] = [(x5 + x95) / 2, (z5 + z95) / 2]
         factors[k] = [max(1.0, min_width / max(x95 - x5, 1e-6)), max(1.0, min_depth / max(z95 - z5, 1e-6))]
     # Fatias quase vazias (ponta do ombro, do pe) pediam 3-8x: limite.
-    factors = np.minimum(factors, MAX_STRETCH)
+    factors = np.minimum(factors, max_stretch)
 
     def smooth(values):
         kernel = np.ones(3) / 3
@@ -135,6 +143,7 @@ def main():
     if out_dir.exists():
         shutil.rmtree(out_dir)
     index = {"bones": {}}
+    image_rgb = np.asarray(Image.open(source / f"{name}.png").convert("RGB")).astype(float)
     for part, pivot in PIVOTS.items():
         part_faces = faces[labels == part]
         if not len(part_faces):
@@ -145,8 +154,21 @@ def main():
         if part.endswith("_arm"):
             points[used], part_normals[used] = straighten(model[used], model_normals[used], np.array(pivot))
         local = points - np.array(pivot)
-        local[used] = fit_box(local[used], *MIN_BOX[part])
-        write_obj(out_dir / f"{part}.obj", local, uvs, part_normals, part_faces)
+        local[used] = fit_box(local[used], *MIN_BOX[part], cfg.get("max_stretch", MAX_STRETCH))
+        reach = cfg.get("arm_reach")
+        if reach and part.endswith("_arm"):
+            # 0.5.0-B: a manga do Mk1 novo terminava antes da mao do jogador (a mao da skin aparecia): estica o braco
+            # em Y a partir do ombro ate cobrir a mao (o braco do jogador vai de -2 a 10 px do pivo).
+            bottom = local[used][:, 1].max()
+            if bottom < reach:
+                local[used, 1] *= reach / bottom
+                print(f"  braco esticado {reach / bottom:.2f}x ate a mao")
+        if cfg.get("liner"):
+            local, liner_uvs, part_normals, part_faces = add_liner(part, local, uvs, part_normals, part_faces,
+                                                                  dark_uv(image_rgb, uvs, part_faces))
+        else:
+            liner_uvs = uvs
+        write_obj(out_dir / f"{part}.obj", local, liner_uvs, part_normals, part_faces)
         index["bones"][part] = f"kn8:meshes/suit/{name}/{part}.obj"
         print(f"{part}: {len(part_faces)} triangulos")
     (ASSETS / "meshes/suit" / f"{name}.json").write_text(json.dumps(index, indent=2) + "\n", encoding="utf-8")
@@ -156,6 +178,43 @@ def main():
     texture = ASSETS / "textures/models/suit" / f"{name}.png"
     texture.parent.mkdir(parents=True, exist_ok=True)
     Image.fromarray(np.clip(padded, 0, 255).astype(np.uint8)).convert("RGBA").save(texture)
+
+
+def dark_uv(image, uvs, faces):
+    """UV do ponto mais escuro (preto do macacao) entre os centros das faces da parte, para pintar a segunda pele."""
+    height, width = image.shape[:2]
+    centers = uvs[faces].mean(axis=1)
+    px = np.clip((centers[:, 0] * width).astype(int), 0, width - 1)
+    py = np.clip(((1.0 - centers[:, 1]) * height).astype(int), 0, height - 1)
+    brightness = image[py, px].sum(axis=1)
+    darkest = np.argsort(brightness)[:max(1, len(brightness) // 20)]
+    return centers[darkest[len(darkest) // 2]]
+
+
+def add_liner(part, local, uvs, normals, faces, uv):
+    """Soma a caixa da segunda pele (dos dois lados, 24 triangulos) a malha da parte."""
+    x0, y0, z0, w, h, d = LINER_BOXES[part]
+    pad = LINER_INFLATE_PX
+    lo = np.array([x0 - pad, y0 - pad, z0 - pad]) / 16
+    hi = np.array([x0 + w + pad, y0 + h + pad, z0 + d + pad]) / 16
+    corners = np.array([[lo[0] if i & 1 == 0 else hi[0], lo[1] if i & 2 == 0 else hi[1],
+                         lo[2] if i & 4 == 0 else hi[2]] for i in range(8)])
+    quads = [((0, 2, 6, 4), (-1, 0, 0)), ((1, 5, 7, 3), (1, 0, 0)), ((0, 4, 5, 1), (0, -1, 0)),
+             ((2, 3, 7, 6), (0, 1, 0)), ((0, 1, 3, 2), (0, 0, -1)), ((4, 6, 7, 5), (0, 0, 1))]
+    base = len(local)
+    new_vertices, new_normals, new_faces = [], [], []
+    for quad, normal in quads:
+        start = base + len(new_vertices)
+        new_vertices.extend(corners[list(quad)])
+        new_normals.extend([normal] * 4)
+        a, b, c, e = range(start, start + 4)
+        # Os dois sentidos: a caixa aparece de qualquer lado, com ou sem descarte de face de tras.
+        new_faces.extend([(a, b, c), (a, c, e), (a, c, b), (a, e, c)])
+    local = np.vstack([local, new_vertices])
+    normals = np.vstack([normals, np.array(new_normals, dtype=float)])
+    uvs = np.vstack([uvs, np.tile(uv, (len(new_vertices), 1))])
+    faces = np.vstack([faces, np.array(new_faces)])
+    return local, uvs, normals, faces
 
 
 if __name__ == "__main__":
