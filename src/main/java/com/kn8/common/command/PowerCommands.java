@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 
 import com.kn8.common.attribute.PowerService;
 import com.kn8.common.attribute.PowerView;
+import com.kn8.core.power.BodyStat;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
@@ -23,15 +24,17 @@ import net.minecraft.server.level.ServerPlayer;
  * Comandos de atributos (Fase 4, secao 10.2), todos com jogador opcional no fim:
  * <ul>
  *   <li>{@code /kn8 power [jogador]}: valores do SERVIDOR (comparar com {@code /kn8client power});</li>
- *   <li>{@code /kn8 release set|xp|surge <n>}, {@code /kn8 release cap <n>|clear};</li>
+ *   <li>{@code /kn8 release set|xp|active <n>}, {@code /kn8 release cap <n>|clear} (0.5.0: {@code set} = limite
+ *   pessoal, {@code active} = % liberada; sem traje a % volta a 0);</li>
+ *   <li>{@code /kn8 body <forca|velocidade|resistencia|agilidade> <nivel>} (0.5.0);</li>
  *   <li>{@code /kn8 heat set <n>}, {@code /kn8 stamina set|consume <n>}, {@code /kn8 energy set <n>}.</li>
  * </ul>
  */
 final class PowerCommands {
 
     private static final int MAX_XP = 1_000_000;
-    private static final int MAX_SURGE_ARGUMENT = 50;
     private static final double MAX_RESOURCE = 10_000.0;
+    private static final int MAX_BODY_LEVEL = 1000;
 
     private PowerCommands() {
     }
@@ -47,7 +50,7 @@ final class PowerCommands {
         return Commands.literal("release")
                 .then(Commands.literal("set").then(intAction(0, 100, PowerService::setTrainedRelease)))
                 .then(Commands.literal("xp").then(intAction(0, MAX_XP, PowerService::addTrainingXp)))
-                .then(Commands.literal("surge").then(intAction(0, MAX_SURGE_ARGUMENT, PowerService::setSurge)))
+                .then(Commands.literal("active").then(intAction(0, 100, PowerService::setActive)))
                 .then(Commands.literal("cap")
                         .then(Commands.literal("clear")
                                 .executes(ctx -> apply(ctx, self(ctx), player -> PowerService.setCapOverride(player,
@@ -56,6 +59,16 @@ final class PowerCommands {
                                         .executes(ctx -> apply(ctx, EntityArgument.getPlayer(ctx, "target"),
                                                 player -> PowerService.setCapOverride(player, -1)))))
                         .then(intAction(0, 100, PowerService::setCapOverride)));
+    }
+
+    /** 0.5.0: fixa o nivel de um atributo do corpo. */
+    static LiteralArgumentBuilder<CommandSourceStack> body() {
+        LiteralArgumentBuilder<CommandSourceStack> root = Commands.literal("body");
+        for (BodyStat stat : BodyStat.values()) {
+            root.then(Commands.literal(stat.key()).then(intAction(0, MAX_BODY_LEVEL,
+                    (player, level) -> PowerService.setBodyLevel(player, stat, level))));
+        }
+        return root;
     }
 
     static LiteralArgumentBuilder<CommandSourceStack> heat() {
@@ -109,8 +122,12 @@ final class PowerCommands {
     static int show(CommandSourceStack source, ServerPlayer target) {
         PowerView view = PowerService.view(target);
         source.sendSuccess(() -> Component.translatable("kn8.command.power.show", target.getDisplayName(),
-                view.trained(), view.effective(), view.cap(), view.surge(), view.releaseXp(), view.xpToNext()),
+                view.trained(), view.effective(), view.cap(), view.excess(), view.releaseXp(), view.xpToNext()),
                 false);
+        source.sendSuccess(() -> Component.translatable("kn8.command.power.body", view.active(),
+                Component.translatable(view.suit() ? "kn8.command.power.suit_on" : "kn8.command.power.suit_off"),
+                Component.translatable(view.talentRare() ? "kn8.release.rare" : "kn8.release.common"),
+                view.strength(), view.speed(), view.resistance(), view.agility()), false);
         source.sendSuccess(() -> Component.translatable("kn8.command.power.resources",
                 String.format("%.1f/%.1f", view.stamina(), view.maxStamina()), String.format("%.1f", view.heat()),
                 Component.translatable("kn8.heat_stage." + view.heatStage()), String.format("%.1f", view.energy()),

@@ -13,6 +13,7 @@ import com.kn8.common.registry.KN8Attachments;
 import com.kn8.common.registry.KN8Sounds;
 import com.kn8.common.vfx.VfxService;
 import com.kn8.core.combat.CombatMath;
+import com.kn8.core.power.BodyStat;
 import com.kn8.core.power.PowerMath;
 
 import net.minecraft.core.particles.ParticleTypes;
@@ -185,7 +186,9 @@ public final class CombatService {
         state.currentWeapon = null;
         if (state.currentAction == CombatAction.SPECIAL && weapon.special().isPresent()) {
             double release = PowerMath.damageMultiplier(PowerService.effectiveRelease(player), PowerService.params());
-            float damage = CombatMath.damage(weapon.baseDamage(), state.currentMultiplier, 1.0F, release);
+            // 0.5.0: a forca do corpo vale tambem no especial (golpe da arma).
+            float damage = CombatMath.damage(weapon.baseDamage(), state.currentMultiplier, 1.0F, release)
+                    * PowerService.strengthMultiplier(player);
             SpecialAttacks.resolve(player, weapon.special().get(), damage, player.damageSources().playerAttack(player));
             return;
         }
@@ -281,8 +284,10 @@ public final class CombatService {
         CombatState state = state(player);
         boolean critical = state.criticalUntilTick != CombatState.NEVER && now(player) < state.criticalUntilTick;
         double release = PowerMath.damageMultiplier(PowerService.effectiveRelease(player), PowerService.params());
-        float damage = CombatMath.withCritical(CombatMath.damage(weapon.baseDamage(), multiplier, 1.0F, release),
-                critical, ServerConfig.CRITICAL_MULTIPLIER.get());
+        // 0.5.0: a forca do corpo so vale no corpo a corpo (arma de fogo nao depende do braco).
+        float strength = firearm ? 1.0F : PowerService.strengthMultiplier(player);
+        float damage = CombatMath.withCritical(CombatMath.damage(weapon.baseDamage(), multiplier, 1.0F, release)
+                * strength, critical, ServerConfig.CRITICAL_MULTIPLIER.get());
         if (heavy && !firearm && root instanceof KaijuEntity kaiju) {
             // GDD secao 12: golpe pesado expoe o nucleo (multiplicador extra por alguns segundos).
             kaiju.exposeCore(ServerConfig.CORE_EXPOSED_TICKS.get());
@@ -376,6 +381,7 @@ public final class CombatService {
         CombatState state = state(player);
         state.criticalUntilTick = now(player) + ServerConfig.CRITICAL_WINDOW_TICKS.get();
         PowerService.restoreStamina(player, ServerConfig.PARRY_STAMINA_REFUND.get());
+        PowerService.addBodyXp(player, BodyStat.AGILITY, ServerConfig.BODY_XP_AGILITY_PER_ACTION.get());
         if (attacker instanceof KaijuEntity kaiju) {
             boolean honju = kaiju.def().map(def -> def.kaijuClass() != KaijuClass.YOJU).orElse(true);
             if (!honju || PowerService.effectiveRelease(player) >= ServerConfig.PARRY_HIGH_RELEASE.get()) {
@@ -404,7 +410,9 @@ public final class CombatService {
             return false;
         }
         // GDD secao 7: sem stamina nao esquiva.
-        if (!PowerService.tryConsumeStamina(player, ServerConfig.DODGE_STAMINA_COST.get())) {
+        // 0.5.0: a agilidade barateia a esquiva.
+        if (!PowerService.tryConsumeStamina(player, ServerConfig.DODGE_STAMINA_COST.get()
+                * PowerService.agilityCostFactor(player))) {
             reply(player, CombatAction.DODGE, CombatResult.DENIED_NO_STAMINA);
             return false;
         }
@@ -424,6 +432,7 @@ public final class CombatService {
         // O movimento do jogador e do cliente: hurtMarked manda a velocidade nova para ele.
         player.hurtMarked = true;
         AnimationBridge.playPlayer(player, AnimationBridge.PLAYER_DODGE);
+        PowerService.addBodyXp(player, BodyStat.AGILITY, ServerConfig.BODY_XP_AGILITY_PER_ACTION.get());
         reply(player, CombatAction.DODGE, CombatResult.OK);
         return true;
     }
@@ -437,7 +446,8 @@ public final class CombatService {
             reply(player, CombatAction.DASH, CombatResult.DENIED_BUSY);
             return false;
         }
-        if (!PowerService.tryConsumeStamina(player, ServerConfig.DASH_STAMINA_COST.get())) {
+        if (!PowerService.tryConsumeStamina(player, ServerConfig.DASH_STAMINA_COST.get()
+                * PowerService.agilityCostFactor(player))) {
             reply(player, CombatAction.DASH, CombatResult.DENIED_NO_STAMINA);
             return false;
         }
@@ -456,6 +466,7 @@ public final class CombatService {
         AnimationBridge.playPlayer(player, AnimationBridge.PLAYER_DASH);
         player.level().playSound(null, player.blockPosition(), KN8Sounds.DASH.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
         VfxService.play((ServerLevel) player.level(), VfxService.DUST, player.position(), direction, 0.4F, 0.0F);
+        PowerService.addBodyXp(player, BodyStat.AGILITY, ServerConfig.BODY_XP_AGILITY_PER_ACTION.get());
         reply(player, CombatAction.DASH, CombatResult.OK);
         return true;
     }

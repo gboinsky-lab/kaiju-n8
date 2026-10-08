@@ -23,7 +23,6 @@ public final class PowerGameTests {
 
     private static final String TEMPLATE = "empty_3x3";
     private static final double GDD_DIVISOR = 25.0;
-    private static final int GDD_SURGE_MAX = 20;
     private static final double GDD_STAMINA_BASE = 100.0;
     private static final int GDD_HEAT_MAX = 100;
 
@@ -34,7 +33,8 @@ public final class PowerGameTests {
     public static void powerConfigMatchesGdd(GameTestHelper helper) {
         PowerParams params = ServerConfig.powerParams();
         helper.assertTrue(params.releaseDamageDivisor() == GDD_DIVISOR, "Divisor de dano diferente do GDD");
-        helper.assertTrue(params.surgeMax() == GDD_SURGE_MAX, "Surto maximo diferente do GDD");
+        helper.assertTrue(params.useHeatPerSecond() * 60 <= params.heatWarmAt() + 1,
+                "Dentro do limite o uso so deveria chegar a WARM em ~1 minuto");
         helper.assertTrue(params.staminaBase() == GDD_STAMINA_BASE, "Stamina base diferente do GDD");
         helper.assertTrue(params.heatMax() == GDD_HEAT_MAX, "Calor maximo diferente do GDD");
         helper.assertTrue(params.heatWarmAt() < params.heatOverloadAt()

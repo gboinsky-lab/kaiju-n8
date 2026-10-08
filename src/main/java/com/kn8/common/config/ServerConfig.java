@@ -5,7 +5,9 @@ import java.util.List;
 
 import com.kn8.core.kaiju.KaijuStats;
 import com.kn8.core.math.FortitudeCurve;
+import com.kn8.core.power.BodyParams;
 import com.kn8.core.power.PowerParams;
+import com.kn8.core.power.TalentParams;
 
 import net.neoforged.neoforge.common.ModConfigSpec;
 
@@ -117,7 +119,8 @@ public final class ServerConfig {
     public static final ModConfigSpec.DoubleValue DAMAGE_REDUCTION_PER_RELEASE;
     public static final ModConfigSpec.DoubleValue MAX_DAMAGE_REDUCTION;
     public static final ModConfigSpec.DoubleValue KNOCKBACK_PER_RELEASE;
-    public static final ModConfigSpec.IntValue SURGE_MAX;
+    public static final ModConfigSpec.DoubleValue RELEASE_RAISE_PER_SECOND;
+    public static final ModConfigSpec.DoubleValue RELEASE_LOWER_PER_SECOND;
     public static final ModConfigSpec.DoubleValue STAMINA_BASE;
     public static final ModConfigSpec.DoubleValue STAMINA_PER_RELEASE;
     public static final ModConfigSpec.DoubleValue STAMINA_REGEN_PER_SECOND;
@@ -129,20 +132,37 @@ public final class ServerConfig {
     public static final ModConfigSpec.IntValue HEAT_OVERLOAD_AT;
     public static final ModConfigSpec.IntValue HEAT_CRITICAL_AT;
     public static final ModConfigSpec.IntValue HEAT_MAX;
-    public static final ModConfigSpec.DoubleValue SURGE_HEAT_PER_10_PER_SECOND;
+    public static final ModConfigSpec.DoubleValue EXCESS_HEAT_PER_10_PER_SECOND;
+    public static final ModConfigSpec.DoubleValue USE_HEAT_PER_SECOND;
     public static final ModConfigSpec.DoubleValue COOL_OUT_OF_COMBAT_PER_SECOND;
     public static final ModConfigSpec.DoubleValue COOL_IN_COMBAT_PER_SECOND;
     public static final ModConfigSpec.IntValue COMBAT_GRACE_TICKS;
     public static final ModConfigSpec.DoubleValue OVERLOAD_DAMAGE_BONUS;
     public static final ModConfigSpec.DoubleValue OVERLOAD_DRAIN_PER_SECOND;
     public static final ModConfigSpec.DoubleValue CRITICAL_DRAIN_PER_SECOND;
-    public static final ModConfigSpec.IntValue PANIC_TICKS;
-    public static final ModConfigSpec.IntValue PANIC_RELEASE;
-    public static final ModConfigSpec.DoubleValue PANIC_DAMAGE;
+    public static final ModConfigSpec.DoubleValue MAX_HEAT_DRAIN_PER_SECOND;
     public static final ModConfigSpec.DoubleValue ENERGY_MAX;
     public static final ModConfigSpec.DoubleValue ENERGY_REGEN_PER_SECOND;
     public static final ModConfigSpec.IntValue TRAINING_XP_BASE;
     public static final ModConfigSpec.IntValue TRAINING_XP_PER_POINT;
+
+    // --- talento de Release e atributos do corpo (0.5.0, Biblioteca v21 Prioridade 1) ----------------------------
+    public static final ModConfigSpec.IntValue TALENT_COMMON_MIN;
+    public static final ModConfigSpec.IntValue TALENT_COMMON_MAX;
+    public static final ModConfigSpec.DoubleValue TALENT_RARE_CHANCE;
+    public static final ModConfigSpec.IntValue TALENT_RARE_MIN;
+    public static final ModConfigSpec.IntValue TALENT_RARE_MAX;
+    public static final ModConfigSpec.IntValue BODY_MAX_LEVEL;
+    public static final ModConfigSpec.IntValue BODY_XP_BASE;
+    public static final ModConfigSpec.IntValue BODY_XP_PER_LEVEL;
+    public static final ModConfigSpec.DoubleValue BODY_STRENGTH_DAMAGE_PER_LEVEL;
+    public static final ModConfigSpec.DoubleValue BODY_SPEED_PER_LEVEL;
+    public static final ModConfigSpec.DoubleValue BODY_RESISTANCE_PER_LEVEL;
+    public static final ModConfigSpec.DoubleValue BODY_AGILITY_STAMINA_PER_LEVEL;
+    public static final ModConfigSpec.DoubleValue BODY_XP_STRENGTH_PER_DAMAGE;
+    public static final ModConfigSpec.DoubleValue BODY_XP_SPEED_PER_BLOCK;
+    public static final ModConfigSpec.DoubleValue BODY_XP_RESISTANCE_PER_DAMAGE;
+    public static final ModConfigSpec.IntValue BODY_XP_AGILITY_PER_ACTION;
 
     // --- kaiju AI (M7a) -------------------------------------------------------------------------------------------
     public static final ModConfigSpec.DoubleValue FOLLOW_RANGE_BASE;
@@ -373,7 +393,11 @@ public final class ServerConfig {
                 0.4, 0.0, 0.9);
         KNOCKBACK_PER_RELEASE = doubleValue("knockbackPerRelease", "Knockback resistance per release point.",
                 0.005, 0.0, 0.02);
-        SURGE_MAX = intValue("surgeMax", "Maximum points a player can surge above the trained release.", 20, 0, 50);
+        // 0.5.0 (Miguel): o jogador sobe o Release segurando a tecla (so com traje) e desce com Shift + tecla.
+        RELEASE_RAISE_PER_SECOND = doubleValue("raisePerSecond", "Release points gained per second while holding"
+                + " the release key.", 20.0, 1.0, 200.0);
+        RELEASE_LOWER_PER_SECOND = doubleValue("lowerPerSecond", "Release points lost per second while holding"
+                + " sneak + the release key.", 40.0, 1.0, 200.0);
         BUILDER.pop();
 
         section("stamina", "Stamina (GDD section 7).");
@@ -395,9 +419,13 @@ public final class ServerConfig {
         HEAT_WARM_AT = intValue("warmAt", "Heat where the WARM stage starts.", 40, 0, 1000);
         HEAT_OVERLOAD_AT = intValue("overloadAt", "Heat where the OVERLOAD stage starts.", 70, 0, 1000);
         HEAT_CRITICAL_AT = intValue("criticalAt", "Heat where the CRITICAL stage starts.", 90, 0, 1000);
-        HEAT_MAX = intValue("max", "Maximum heat; reaching it triggers a suit panic.", 100, 1, 1000);
-        SURGE_HEAT_PER_10_PER_SECOND = doubleValue("surgeHeatPer10PerSecond",
-                "Heat per second for every 10 surge points.", 2.0, 0.0, 100.0);
+        HEAT_MAX = intValue("max", "Maximum heat (PANIC stage: heavy body damage while above the limit).", 100, 1,
+                1000);
+        EXCESS_HEAT_PER_10_PER_SECOND = doubleValue("excessHeatPer10PerSecond",
+                "Heat per second for every 10 release points above the personal limit.", 2.0, 0.0, 100.0);
+        USE_HEAT_PER_SECOND = doubleValue("useHeatPerSecond", "Heat per second while using the whole personal"
+                + " limit; it never goes past warmAt (about one minute of safe use, then fatigue).", 0.67, 0.0,
+                100.0);
         COOL_OUT_OF_COMBAT_PER_SECOND = doubleValue("coolOutOfCombatPerSecond", "Cooling per second out of combat.",
                 10.0, 0.0, 100.0);
         COOL_IN_COMBAT_PER_SECOND = doubleValue("coolInCombatPerSecond", "Cooling per second in combat.", 3.0, 0.0,
@@ -410,9 +438,10 @@ public final class ServerConfig {
                 0.5, 0.0, 20.0);
         CRITICAL_DRAIN_PER_SECOND = doubleValue("criticalDrainPerSecond", "Health lost per second in CRITICAL.",
                 1.0, 0.0, 20.0);
-        PANIC_TICKS = intValue("panicTicks", "Duration of a suit panic.", 200, 0, 1200);
-        PANIC_RELEASE = intValue("panicRelease", "Release percentage forced during a suit panic.", 1, 0, 100);
-        PANIC_DAMAGE = doubleValue("panicDamage", "Damage taken when the suit panics.", 4.0, 0.0, 100.0);
+        // 0.5.0 (Biblioteca v21): o calor maximo nao derruba mais o Release; so desgasta o corpo enquanto a %
+        // estiver acima do limite pessoal.
+        MAX_HEAT_DRAIN_PER_SECOND = doubleValue("maxHeatDrainPerSecond", "Health lost per second at maximum heat"
+                + " while above the personal limit.", 2.0, 0.0, 100.0);
         BUILDER.pop();
 
         section("energy", "Kaiju energy (GDD sections 5 and 13).");
@@ -425,6 +454,35 @@ public final class ServerConfig {
         TRAINING_XP_BASE = intValue("xpBase", "Training XP from 0 to 1%.", 50, 1, 100000);
         TRAINING_XP_PER_POINT = intValue("xpPerPoint", "Extra training XP per point already trained.", 10, 0,
                 100000);
+        BUILDER.pop();
+
+        section("talent", "Release talent (0.5.0): random starting personal limit, rolled once per player.");
+        TALENT_COMMON_MIN = intValue("commonMin", "Lowest common starting limit (%).", 5, 0, 100);
+        TALENT_COMMON_MAX = intValue("commonMax", "Highest common starting limit (%).", 10, 0, 100);
+        TALENT_RARE_CHANCE = doubleValue("rareChance", "Chance of a rare talent.", 0.1, 0.0, 1.0);
+        TALENT_RARE_MIN = intValue("rareMin", "Lowest rare starting limit (%).", 15, 0, 100);
+        TALENT_RARE_MAX = intValue("rareMax", "Highest rare starting limit (%).", 30, 0, 100);
+        BUILDER.pop();
+
+        section("body", "Body attributes (0.5.0): strength, speed, resistance and agility, trained by use.");
+        BODY_MAX_LEVEL = intValue("maxLevel", "Maximum level of each body attribute.", 100, 1, 1000);
+        BODY_XP_BASE = intValue("xpBase", "XP from level 0 to 1.", 20, 1, 100000);
+        BODY_XP_PER_LEVEL = intValue("xpPerLevel", "Extra XP per level already reached.", 4, 0, 100000);
+        BODY_STRENGTH_DAMAGE_PER_LEVEL = doubleValue("strengthDamagePerLevel", "Melee damage bonus per strength"
+                + " level.", 0.003, 0.0, 0.1);
+        BODY_SPEED_PER_LEVEL = doubleValue("speedPerLevel", "Movement speed bonus per speed level.", 0.0015, 0.0,
+                0.1);
+        BODY_RESISTANCE_PER_LEVEL = doubleValue("resistancePerLevel", "Incoming damage reduction per resistance"
+                + " level.", 0.002, 0.0, 0.01);
+        BODY_AGILITY_STAMINA_PER_LEVEL = doubleValue("agilityStaminaPerLevel", "Dodge/dash stamina cost reduction"
+                + " per agility level.", 0.003, 0.0, 0.01);
+        BODY_XP_STRENGTH_PER_DAMAGE = doubleValue("xpStrengthPerDamage", "Strength XP per point of melee damage"
+                + " dealt to kaiju or training dummies.", 0.5, 0.0, 100.0);
+        BODY_XP_SPEED_PER_BLOCK = doubleValue("xpSpeedPerBlock", "Speed XP per block sprinted.", 0.2, 0.0, 100.0);
+        BODY_XP_RESISTANCE_PER_DAMAGE = doubleValue("xpResistancePerDamage", "Resistance XP per point of damage"
+                + " taken in combat.", 1.0, 0.0, 100.0);
+        BODY_XP_AGILITY_PER_ACTION = intValue("xpAgilityPerAction", "Agility XP per dodge, dash or parry.", 3, 0,
+                1000);
         BUILDER.pop();
 
         section("kaiju", "Kaiju behaviour (M7a). Strength comes from the fortitude curve and the multipliers above.");
@@ -535,11 +593,25 @@ public final class ServerConfig {
     public static PowerParams powerParams() {
         return new PowerParams(RELEASE_DAMAGE_DIVISOR.get(), SPEED_PER_RELEASE.get(),
                 DAMAGE_REDUCTION_PER_RELEASE.get(), MAX_DAMAGE_REDUCTION.get(), KNOCKBACK_PER_RELEASE.get(),
-                SURGE_MAX.get(), STAMINA_BASE.get(), STAMINA_PER_RELEASE.get(), STAMINA_REGEN_PER_SECOND.get(),
-                STAMINA_REGEN_DELAY_TICKS.get(), WARM_REGEN_FACTOR.get(), HEAT_WARM_AT.get(), HEAT_OVERLOAD_AT.get(),
-                HEAT_CRITICAL_AT.get(), HEAT_MAX.get(), SURGE_HEAT_PER_10_PER_SECOND.get(),
+                RELEASE_RAISE_PER_SECOND.get(), RELEASE_LOWER_PER_SECOND.get(), STAMINA_BASE.get(),
+                STAMINA_PER_RELEASE.get(), STAMINA_REGEN_PER_SECOND.get(), STAMINA_REGEN_DELAY_TICKS.get(),
+                WARM_REGEN_FACTOR.get(), HEAT_WARM_AT.get(), HEAT_OVERLOAD_AT.get(), HEAT_CRITICAL_AT.get(),
+                HEAT_MAX.get(), EXCESS_HEAT_PER_10_PER_SECOND.get(), USE_HEAT_PER_SECOND.get(),
                 COOL_OUT_OF_COMBAT_PER_SECOND.get(), COOL_IN_COMBAT_PER_SECOND.get(), ENERGY_MAX.get(),
                 ENERGY_REGEN_PER_SECOND.get(), TRAINING_XP_BASE.get(), TRAINING_XP_PER_POINT.get());
+    }
+
+    /** Talento de Release (0.5.0) com os valores atuais do config. */
+    public static TalentParams talentParams() {
+        return new TalentParams(TALENT_COMMON_MIN.get(), TALENT_COMMON_MAX.get(), TALENT_RARE_CHANCE.get(),
+                TALENT_RARE_MIN.get(), TALENT_RARE_MAX.get());
+    }
+
+    /** Atributos do corpo (0.5.0) com os valores atuais do config. */
+    public static BodyParams bodyParams() {
+        return new BodyParams(BODY_MAX_LEVEL.get(), BODY_XP_BASE.get(), BODY_XP_PER_LEVEL.get(),
+                BODY_STRENGTH_DAMAGE_PER_LEVEL.get(), BODY_SPEED_PER_LEVEL.get(), BODY_RESISTANCE_PER_LEVEL.get(),
+                BODY_AGILITY_STAMINA_PER_LEVEL.get());
     }
 
     /** Multiplicadores do config para os atributos de kaiju (global e dificuldade atual). */

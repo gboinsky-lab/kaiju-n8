@@ -9,9 +9,9 @@ import org.junit.jupiter.api.Test;
 class PowerMathTest {
 
     // Mesmos padroes de ServerConfig (GDD).
-    static final PowerParams GDD = new PowerParams(25, 0.004, 0.004, 0.4, 0.005, 20,
+    static final PowerParams GDD = new PowerParams(25, 0.004, 0.004, 0.4, 0.005, 20, 40,
             100, 0.5, 15, 20, 0.75,
-            40, 70, 90, 100, 2.0, 10, 3,
+            40, 70, 90, 100, 2.0, 0.67, 10, 3,
             100, 1.0,
             50, 10);
     private static final double DELTA = 1e-9;
@@ -53,22 +53,84 @@ class PowerMathTest {
     }
 
     @Test
-    void surgeHeatsAndRestCools() {
-        // Surto de 20 = 2 x 2/s = 4/s = 0,2 por tick.
-        assertEquals(10.2, PowerMath.heatAfterTick(10, 20, true, GDD), DELTA);
-        // Fora de combate esfria 10/s = 0,5 por tick; em combate 3/s = 0,15.
-        assertEquals(9.5, PowerMath.heatAfterTick(10, 0, false, GDD), DELTA);
-        assertEquals(9.85, PowerMath.heatAfterTick(10, 0, true, GDD), DELTA);
-        assertEquals(0, PowerMath.heatAfterTick(0.1, 0, false, GDD), DELTA);
-        assertEquals(100, PowerMath.heatAfterTick(99.99, 20, true, GDD), DELTA);
+    void excessOverTheLimitHeatsAndRestCools() {
+        // 0.5.0: ativa 30 com limite 10 = 20 de excesso = 2 x 2/s = 4/s = 0,2 por tick.
+        assertEquals(10.2, PowerMath.heatAfterTick(10, 30, 10, true, GDD), DELTA);
+        // Desligado: fora de combate esfria 10/s = 0,5 por tick; em combate 3/s = 0,15.
+        assertEquals(9.5, PowerMath.heatAfterTick(10, 0, 10, false, GDD), DELTA);
+        assertEquals(9.85, PowerMath.heatAfterTick(10, 0, 10, true, GDD), DELTA);
+        assertEquals(0, PowerMath.heatAfterTick(0.1, 0, 10, false, GDD), DELTA);
+        // Acima do limite o calor chega ao maximo (a % nao cai: so o corpo desgasta).
+        assertEquals(100, PowerMath.heatAfterTick(99.99, 30, 10, true, GDD), DELTA);
     }
 
     @Test
-    void effectiveReleaseRespectsCapAndSurgeLimit() {
-        assertEquals(10, PowerMath.effectiveRelease(25, 10, 0, GDD));
-        assertEquals(30, PowerMath.effectiveRelease(25, 10, 20, GDD));
-        assertEquals(30, PowerMath.effectiveRelease(25, 10, 50, GDD));
-        assertEquals(100, PowerMath.effectiveRelease(100, 100, 20, GDD));
+    void useInsideTheLimitOnlyWarmsAboutAMinute() {
+        // No limite: 0,67/s; metade do limite: metade disso.
+        assertEquals(10 + 0.67 / 20, PowerMath.heatAfterTick(10, 10, 10, true, GDD), DELTA);
+        assertEquals(10 + 0.335 / 20, PowerMath.heatAfterTick(10, 5, 10, true, GDD), DELTA);
+        // Nunca passa de WARM (40) dentro do limite...
+        assertEquals(40, PowerMath.heatAfterTick(39.99, 10, 10, true, GDD), DELTA);
+        // ...e o que veio de cima esfria ate WARM.
+        assertEquals(79.85, PowerMath.heatAfterTick(80, 10, 10, true, GDD), DELTA);
+        assertEquals(40, PowerMath.heatAfterTick(40.1, 10, 10, true, GDD), DELTA);
+        // ~60 s no limite para chegar a WARM.
+        double heat = 0;
+        int ticks = 0;
+        while (heat < 40 && ticks < 10_000) {
+            heat = PowerMath.heatAfterTick(heat, 10, 10, true, GDD);
+            ticks++;
+        }
+        assertEquals(60, ticks / 20.0, 1.0);
+    }
+
+    @Test
+    void releaseKeyRaisesAndLowersInsideZeroToHundred() {
+        // 20/s = 1 por tick subindo; 40/s = 2 por tick descendo.
+        assertEquals(11, PowerMath.releaseAfterInput(10, 1, GDD), DELTA);
+        assertEquals(8, PowerMath.releaseAfterInput(10, -1, GDD), DELTA);
+        assertEquals(10, PowerMath.releaseAfterInput(10, 0, GDD), DELTA);
+        assertEquals(100, PowerMath.releaseAfterInput(99.5, 1, GDD), DELTA);
+        assertEquals(0, PowerMath.releaseAfterInput(1, -1, GDD), DELTA);
+        assertEquals(0, PowerMath.excess(8, 10));
+        assertEquals(5, PowerMath.excess(15, 10));
+    }
+
+    @Test
+    void effectiveReleaseIsActivePlusDesperation() {
+        assertEquals(10, PowerMath.effectiveRelease(10, 0));
+        assertEquals(25, PowerMath.effectiveRelease(10, 15));
+        assertEquals(100, PowerMath.effectiveRelease(95, 15));
+        assertEquals(0, PowerMath.effectiveRelease(0, -3));
+    }
+
+    @Test
+    void talentRollIsCommonOrRareInsideItsRange() {
+        TalentParams talent = new TalentParams(5, 10, 0.1, 15, 30);
+        // Comum: chance >= 0,1.
+        assertEquals(new TalentParams.Talent(5, false), talent.roll(0.5, 0.0));
+        assertEquals(new TalentParams.Talent(10, false), talent.roll(0.5, 0.999));
+        // Raro: chance < 0,1.
+        assertEquals(new TalentParams.Talent(15, true), talent.roll(0.05, 0.0));
+        assertEquals(new TalentParams.Talent(30, true), talent.roll(0.05, 0.9999));
+        java.util.Random random = new java.util.Random(8);
+        for (int i = 0; i < 1000; i++) {
+            TalentParams.Talent roll = talent.roll(random.nextDouble(), random.nextDouble());
+            int value = roll.limit();
+            boolean inside = roll.rare() ? value >= 15 && value <= 30 : value >= 5 && value <= 10;
+            assertEquals(true, inside, "fora da faixa: " + roll);
+        }
+    }
+
+    @Test
+    void bodyLevelsCostMoreAndStopAtTheMax() {
+        BodyParams body = new BodyParams(100, 20, 4, 0.003, 0.0015, 0.002, 0.003);
+        assertEquals(20, body.xpForNext(0));
+        assertEquals(60, body.xpForNext(10));
+        // 20 + 24 = 44 para o nivel 2; sobram 6.
+        assertEquals(new PowerMath.Training(2, 6), body.convert(0, 50));
+        // No maximo guarda no maximo um nivel de XP.
+        assertEquals(new PowerMath.Training(100, 420), body.convert(100, 99_999));
     }
 
     @Test

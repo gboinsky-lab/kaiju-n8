@@ -9,10 +9,13 @@ import com.kn8.KN8Constants;
 import com.kn8.common.attribute.PowerService;
 import com.kn8.common.data.KN8Data;
 import com.kn8.common.registry.KN8Attachments;
+import com.kn8.common.registry.KN8Items;
 import com.mojang.authlib.GameProfile;
 
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.util.FakePlayer;
 import net.neoforged.neoforge.common.util.FakePlayerFactory;
 import net.neoforged.neoforge.gametest.GameTestHolder;
@@ -42,11 +45,14 @@ public final class AuraGameTests {
     @GameTest(template = "empty_9x7x9")
     public static void lowHealthRaisesRelease(GameTestHelper helper) {
         FakePlayer player = player(helper, "low");
+        // 0.5.0: o Release so existe com traje e com a % liberada na tecla.
+        player.setItemSlot(EquipmentSlot.CHEST, new ItemStack(KN8Items.MK1.get()));
+        PowerService.setActive(player, 30);
         int full = PowerService.effectiveRelease(player);
         player.setHealth(0.1F);
         int low = PowerService.effectiveRelease(player);
         player.setHealth(player.getMaxHealth());
-        helper.assertTrue(full == 30, "Com vida cheia a % deveria ser a treinada (30), veio " + full);
+        helper.assertTrue(full == 30, "Com vida cheia a % deveria ser a liberada (30), veio " + full);
         helper.assertTrue(low > full + 10, "Com a vida quase no fim a % deveria subir uns 15 pontos, veio " + low);
         helper.succeed();
     }

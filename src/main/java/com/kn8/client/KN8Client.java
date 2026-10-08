@@ -3,6 +3,7 @@ package com.kn8.client;
 
 import com.kn8.KN8Constants;
 import com.kn8.client.anim.PlayerAnimations;
+import com.kn8.client.attribute.ReleaseInput;
 import com.kn8.client.combat.CombatFeedback;
 import com.kn8.client.combat.CombatInput;
 import com.kn8.client.hud.KN8Hud;
@@ -68,6 +69,7 @@ public final class KN8Client {
         modEventBus.addListener(CombatInput::registerKeys);
         // 0.2: menu da Forca de Defesa (tecla M).
         modEventBus.addListener(MenuInput::registerKeys);
+        modEventBus.addListener(ReleaseInput::registerKeys);
     }
 
     /** Um renderer GeckoLib por especie; a sombra acompanha mais ou menos a largura da hitbox registrada. */

@@ -11,6 +11,9 @@ package com.kn8.core.power;
  * knockback     = knockbackPerRelease * R
  * stamina max   = staminaBase + staminaPerRelease * R
  * </pre>
+ *
+ * <p>0.5.0 (Biblioteca v21): R e a % ATIVA que o jogador liberou na tecla (so com traje), nao mais o treinado. O
+ * treinado virou o limite pessoal: passar dele aquece o traje e desgasta o corpo, sem baixar a %.</p>
  */
 public final class PowerMath {
 
@@ -80,16 +83,44 @@ public final class PowerMath {
     }
 
     /**
-     * Calor depois de um tick: o Surto gera {@code surgeHeatPer10PerSecond} a cada 10 pontos acima do treinado;
-     * sem Surto o traje esfria (mais rapido fora de combate). Resultado entre 0 e o maximo.
+     * 0.5.0: % ativa depois de um tick com a tecla de Release: {@code direction} +1 sobe, -1 desce, 0 mantem.
+     * Fica entre 0 e 100 e pode passar do limite pessoal (o excesso gera calor e desgasta o corpo).
      */
-    public static double heatAfterTick(double heat, int surge, boolean inCombat, PowerParams params) {
+    public static double releaseAfterInput(double active, int direction, PowerParams params) {
+        double step = direction > 0 ? params.releaseRaisePerSecond() : direction < 0
+                ? -params.releaseLowerPerSecond() : 0.0;
+        return Math.max(0.0, Math.min(100.0, active + step / PowerParams.TICKS_PER_SECOND));
+    }
+
+    /** Pontos acima do limite pessoal (0 dentro dele). */
+    public static int excess(int active, int limit) {
+        return Math.max(0, active - Math.max(0, limit));
+    }
+
+    /**
+     * Calor depois de um tick (0.5.0, decisao do Miguel). Acima do limite pessoal cada 10 pontos de excesso geram
+     * {@code excessHeatPer10PerSecond}, ate o maximo. Dentro do limite o uso aquece {@code useHeatPerSecond} vezes a
+     * fracao usada do limite, mas so ate o estagio WARM (cansaco sem dano; ~1 minuto no limite); o que passou disso
+     * esfria ate WARM. Com o Release desligado o traje esfria (mais rapido fora de combate). Resultado entre 0 e o
+     * maximo.
+     */
+    public static double heatAfterTick(double heat, int active, int limit, boolean inCombat, PowerParams params) {
+        double cooling = (inCombat ? params.coolInCombatPerSecond() : params.coolOutOfCombatPerSecond())
+                / PowerParams.TICKS_PER_SECOND;
+        int over = excess(active, limit);
         double next;
-        if (surge > 0) {
-            next = heat + params.surgeHeatPer10PerSecond() * (surge / 10.0) / PowerParams.TICKS_PER_SECOND;
+        if (over > 0) {
+            next = heat + params.excessHeatPer10PerSecond() * (over / 10.0) / PowerParams.TICKS_PER_SECOND;
+        } else if (active > 0) {
+            double used = limit > 0 ? Math.min(1.0, active / (double) limit) : 1.0;
+            double cap = params.heatWarmAt();
+            if (heat < cap) {
+                next = Math.min(cap, heat + params.useHeatPerSecond() * used / PowerParams.TICKS_PER_SECOND);
+            } else {
+                next = Math.max(cap, heat - cooling);
+            }
         } else {
-            double cooling = inCombat ? params.coolInCombatPerSecond() : params.coolOutOfCombatPerSecond();
-            next = heat - cooling / PowerParams.TICKS_PER_SECOND;
+            next = heat - cooling;
         }
         return Math.max(0.0, Math.min(params.heatMax(), next));
     }
@@ -136,10 +167,8 @@ public final class PowerMath {
         return (int) Math.round(maxPoints * Math.min(1.0, depth));
     }
 
-    /** % efetiva: treinado limitado pelo teto, mais o Surto (limitado), sempre entre 0 e 100. */
-    public static int effectiveRelease(int trained, int cap, int surge, PowerParams params) {
-        int base = Math.min(trained, cap);
-        int boost = Math.max(0, Math.min(surge, params.surgeMax()));
-        return Math.max(0, Math.min(100, base + boost));
+    /** 0.5.0: % efetiva = % ativa (escolhida na tecla) mais o desespero, entre 0 e 100. */
+    public static int effectiveRelease(int active, int desperation) {
+        return Math.max(0, Math.min(100, active + Math.max(0, desperation)));
     }
 }

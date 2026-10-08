@@ -101,7 +101,8 @@ final class ProfileTab implements MenuTab {
                 x + Math.round(font.width(current) * MenuStyle.SMALL) + 4, ry + 9, MenuStyle.TEXT_ACCENT, 1.0F);
         MenuStyle.bar(g, x + 56, ry + 11, w - 90, 5, view.effective() / 100.0F, MenuStyle.ACCENT_DARK,
                 MenuStyle.ACCENT);
-        Component cap = Component.literal(view.cap() + "%");
+        // 0.5.0: a direita fica o limite pessoal (o talento raro aparece com estrela).
+        Component cap = Component.literal((view.talentRare() ? "\u2605" : "") + view.trained() + "%");
         g.drawString(font, cap, x + w - font.width(cap), ry + 9, MenuStyle.TEXT, false);
 
         int ty = ry + 24;
@@ -120,9 +121,12 @@ final class ProfileTab implements MenuTab {
         row(g, font, x, sy + 9, w, "kn8.menu.profile.heat",
                 Math.round(view.heat()) + " / " + view.heatMax(), view.heatStage() >= 3 ? MenuStyle.RED
                         : MenuStyle.ORANGE);
-        row(g, font, x, sy + 18, w, "kn8.menu.profile.energy", String.valueOf(Math.round(view.energy())),
-                MenuStyle.YELLOW);
-        row(g, font, x, sy + 27, w, "kn8.menu.profile.surge", "+" + view.surge(), MenuStyle.ORANGE);
+        row(g, font, x, sy + 18, w, "kn8.menu.profile.excess", view.suit() ? "+" + view.excess()
+                : Component.translatable("kn8.menu.profile.no_suit").getString(), view.suit() ? MenuStyle.ORANGE
+                : MenuStyle.TEXT_DIM);
+        // 0.5.0: atributos do corpo (forca, velocidade, resistencia, agilidade).
+        row(g, font, x, sy + 27, w, "kn8.menu.profile.body", Component.translatable("kn8.menu.profile.body_values",
+                view.strength(), view.speed(), view.resistance(), view.agility()).getString(), MenuStyle.TEXT);
     }
 
     private static void row(GuiGraphics g, Font font, int x, int y, int w, String key, String value, int color) {

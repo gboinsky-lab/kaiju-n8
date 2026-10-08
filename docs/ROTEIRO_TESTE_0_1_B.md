@@ -381,3 +381,18 @@ Visto na nuvem (`docs/img/hoshina_modelo.png`, `hoshina_vs_honju.png`, `hoshina_
 | 24.4 | Em 100% (Full Release) | Mais rápido, mais dano, recargas menores; contra kaiju perto usa o **Jūni-hitoe** (12 golpes seguidos, o último forte, expõe o núcleo); não é interrompido por esquiva/contra-ataque |
 | 24.5 | Kaiju atirando nele por trás (Finger Cannon do No. 10, raio do Preondactyl) | A cauda gira para trás e defende (faíscas e som metálico): dano bem menor |
 | 24.6 | `/summon kn8:hoshina_no10` contra `kaiju_no10_giant` | Luta equilibrada a favor do Hoshina (ver `docs/BALANCEAMENTO.md`) |
+
+## 25. Release do jogador e atributos do corpo (0.5.0-A)
+
+| # | Passo | Esperado |
+|---|---|---|
+| 25.1 | Entrar num mundo novo (ou com um jogador novo) | Mensagem no chat com o limite inicial: comum 5-10% ou "Talento raro!" 15-30%. A HUD mostra `0% / limite%` |
+| 25.2 | Sem traje, segurar **G** | Aviso "O Release so funciona com o traje da Forca de Defesa vestido."; a % fica em 0 |
+| 25.3 | Vestir o traje (Mk1, peitoral) e segurar **G** | A % sobe (~20 por segundo) e a aura aparece junto; soltar deixa a % onde parou |
+| 25.4 | Ficar dentro do limite por ~1 minuto | O calor sobe devagar ate "morno" e para ali (cansaco: stamina volta mais devagar), sem dano |
+| 25.5 | Passar do limite (segurar G alem da marca da barra) | A parte acima do limite fica laranja; o calor sobe rapido; em sobrecarga, critico e maximo o corpo perde vida (alarme no maximo). **A % nao cai sozinha** |
+| 25.6 | **Shift + G** | A % desce (~40 por segundo); voltando para dentro do limite o dano para e o traje esfria ate morno |
+| 25.7 | Tirar o traje com o Release ligado | A % zera e a aura some |
+| 25.8 | Menu (M) > Perfil | Limite (com estrela se o talento for raro), "Acima do limite" e linha "Corpo: FOR / VEL / RES / AGI" |
+| 25.9 | Bater em kaiju ou no boneco, correr, apanhar, esquivar/dash/parry | Sobem forca, velocidade, resistencia e agilidade (`/kn8 power` mostra os niveis) |
+| 25.10 | Servidor dedicado + 2 clientes | Cada um ve a aura do outro subir e descer; a HUD de cada um e so dele |

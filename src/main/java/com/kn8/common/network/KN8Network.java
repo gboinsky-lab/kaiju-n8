@@ -13,6 +13,7 @@ import com.kn8.common.combat.CombatInputC2S;
 import com.kn8.common.combat.CombatNetwork;
 import com.kn8.common.combat.CombatStateS2C;
 import com.kn8.common.attribute.PowerSyncS2C;
+import com.kn8.common.attribute.ReleaseInputC2S;
 import com.kn8.common.data.DataSyncS2C;
 import com.kn8.common.network.debug.NetPingC2S;
 import com.kn8.common.vfx.VfxS2C;
@@ -48,7 +49,7 @@ public final class KN8Network {
     // MissionActionC2S, Active.point, CraftC2S, OpenWorkbenchS2C, InvasionStateS2C.
     // 10 = 0.3: InvasionStateS2C.level (niveis de invasao). 11 = 0.5: CombatAction.SPECIAL e weapon.special.
     // 12 = 0.6-D: weapon.special.slash (corte a distancia) no registro de armas sincronizado.
-    private static final String PROTOCOL_VERSION = "12";
+    private static final String PROTOCOL_VERSION = "13";
 
     /** Diagnostico: 20 por segundo, rajada de 40. */
     private static final C2SGuard.Limit DEBUG_LIMIT = new C2SGuard.Limit(20, 40);
@@ -62,6 +63,8 @@ public final class KN8Network {
     private static final int CAREER_MIN_INTERVAL_TICKS = 10;
     /** Menu: 4 por segundo, rajada de 4 (aceitar/abandonar missao). */
     private static final C2SGuard.Limit MENU_LIMIT = new C2SGuard.Limit(4, 4);
+    /** Tecla de Release: pressionar/soltar, ate 10 por segundo com rajada de 10. */
+    private static final C2SGuard.Limit RELEASE_LIMIT = new C2SGuard.Limit(10, 10);
 
     private KN8Network() {
     }
@@ -82,6 +85,9 @@ public final class KN8Network {
         toServer(registrar, CraftC2S.TYPE, CraftC2S.STREAM_CODEC, MENU_LIMIT, CraftC2S::handle);
         toClientHook(registrar, OpenWorkbenchS2C.TYPE, OpenWorkbenchS2C.STREAM_CODEC);
         toClientHook(registrar, InvasionStateS2C.TYPE, InvasionStateS2C.STREAM_CODEC);
+        // 0.5.0: tecla de Release (so na mudanca; o servidor sobe/desce a % no tick).
+        toServer(registrar, ReleaseInputC2S.TYPE, ReleaseInputC2S.STREAM_CODEC, RELEASE_LIMIT,
+                ReleaseInputC2S::handle);
         // M10: intencao de combate (o servidor valida tudo).
         toServer(registrar, CombatInputC2S.TYPE, CombatInputC2S.STREAM_CODEC, COMBAT_LIMIT, CombatNetwork::handle);
         // 0.1-B: efeitos visuais (desenhados no cliente).

@@ -131,15 +131,39 @@ traje foi removido na 0.3 porque divergia deles).
 
 ### Release, stamina e calor
 
-| Número | Valor | Onde |
+0.5.0 (Biblioteca v21, decisao do Miguel de 2026-10-08):
+- O Release so funciona com o traje vestido.
+- Sobe segurando **G** e desce com **Shift + G**.
+- O limite pessoal e sorteado uma vez e sobe treinando.
+- Acima do limite a % nao cai: o traje esquenta e o corpo desgasta.
+
+| Numero | Valor | Onde |
 |---|---|---|
-| Release máximo | 100% para todos, por treino | `[career] releaseMax` |
-| XP de treino por ponto | 50 + 10 × pontos já treinados (1% custa 50; 99→100% custa 1.040) | `[training]` |
-| Por ponto de Release | +0,4% velocidade, −0,4% de dano recebido (máx. 40%), +0,5 de stamina | `[power]`, `[stamina]` |
+| Subir / descer na tecla | 20 por segundo / 40 por segundo | `[power] raisePerSecond`, `lowerPerSecond` |
+| Limite pessoal inicial (talento) | comum 5-10%; **raro** (10% de chance) 15-30% [SUPOSICAO na chance] | `[talent]` |
+| Limite maximo | 100% para todos, por treino | `[career] releaseMax` |
+| XP de treino por ponto do limite | 50 + 10 x pontos ja treinados (1% custa 50; 99->100% custa 1.040) | `[training]` |
+| Por ponto de Release ativo | +0,4% velocidade, -0,4% de dano recebido (max. 40%), +0,5 de stamina | `[power]`, `[stamina]` |
 | Stamina | 100 + 0,5 por ponto; recupera 15/s depois de 1 s | `[stamina]` |
-| Corrida | gasta 5/s; volta a correr com 20 | `[stamina]` [SUPOSIÇÃO] |
-| Calor | morno 40, sobrecarga 70 (+10% dano, −0,5 vida/s), crítico 90 (−1/s), pane em 100 (4 de dano, Release 1% por 10 s) | `[heat]` |
+| Corrida | gasta 5/s; volta a correr com 20 | `[stamina]` [SUPOSICAO] |
+| Uso dentro do limite | aquece 0,67/s no limite inteiro, so ate morno (40): ~1 minuto e cansa (stamina regenera 25% mais devagar), sem dano | `[heat] useHeatPerSecond` |
+| Acima do limite | +2 de calor/s a cada 10 pontos de excesso | `[heat] excessHeatPer10PerSecond` |
+| Calor (so com a % acima do limite) | sobrecarga 70 (+10% dano, -0,5 vida/s), critico 90 (-1/s, Lentidao I), maximo 100 (-2/s, Lentidao II, alarme). A % **nao cai** | `[heat]` |
 | Esfriar | 10/s fora de combate, 3/s em combate | `[heat]` |
+
+### Atributos do corpo (0.5.0, `[body]`)
+
+Forca, velocidade, resistencia e agilidade vao de 0 a 100, valem com ou sem traje e sao treinados pelo uso.
+Numeros [SUPOSICAO].
+
+| Atributo | Treina com | Bonus no nivel 100 |
+|---|---|---|
+| Forca | 0,5 XP por ponto de dano corpo a corpo em kaiju ou no boneco (o boneco respeita o limite por minuto) | +30% de dano corpo a corpo (nao vale na arma de fogo) |
+| Velocidade | 0,2 XP por bloco corrido no chao | +15% de velocidade |
+| Resistencia | 1 XP por ponto de dano recebido de alguem (nao do traje) | -20% de dano recebido |
+| Agilidade | 3 XP por esquiva, dash ou parry | -30% de stamina na esquiva e no dash |
+
+Cada nivel custa 20 + 4 x nivel de XP (do 0 ao 100: ~21.800).
 
 ### Fontes de XP de treino e mérito (`[career]`)
 

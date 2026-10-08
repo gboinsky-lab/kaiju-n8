@@ -46,7 +46,7 @@ public final class ClientPowerDebug {
         }
         PowerView view = player.getData(KN8Attachments.POWER_VIEW);
         ctx.getSource().sendSuccess(() -> Component.translatable("kn8.client.power.self", view.trained(),
-                view.effective(), view.cap(), view.surge(),
+                view.effective(), view.cap(), view.excess(),
                 String.format("%.1f/%.1f", view.stamina(), view.maxStamina()), String.format("%.1f", view.heat()),
                 Component.translatable("kn8.heat_stage." + view.heatStage()), String.format("%.1f", view.energy())),
                 false);

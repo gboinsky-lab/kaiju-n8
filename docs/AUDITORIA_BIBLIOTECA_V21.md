@@ -173,6 +173,39 @@ limite de soldados e projeteis; configs declaradas e sem uso (limpeza).
 
 ---
 
+## Decisoes do Miguel sobre os conflitos (2026-10-08)
+
+1. **Release:**
+   - **Tecla** para subir o Release. A aura aparece junto enquanto sobe e fica enquanto ele estiver ativo.
+   - **So funciona com o traje**, como no anime.
+   - **Limite pessoal aleatorio** por jogador:
+     - comum: 5-10%;
+     - raro: 15-30% inicial.
+   - **Acima do limite** a % nao cai. O dano so vem se exceder o limite, junto com o calor: quanto mais usa, mais o
+     traje sobrecarrega e mais o corpo desgasta.
+2. **Hoshina com a No. 10 em fases:**
+   - fase 1: forma normal (duas espadas);
+   - fase 2: quando comeca a perder, empunha uma **katana de duas maos**;
+   - fase 3: duas espadas + a **terceira espada na cauda**.
+3. **Invasao especial No. 10 + No. 9:** a invasao do No. 10 normal continua. Ha tambem uma versao especial em que o
+   No. 9 assume o corpo do No. 10 e revive os kaiju em volta. O modelo dos dois fundidos chegou:
+   `kaiju_no9_fusion`, 16.624 triangulos, cauda curvada para o lado.
+4. **Missoes e admissao:**
+   - O **exame de admissao** aprova o jogador na Forca de Defesa. Nele o jogador recebe traje, arma etc., elimina
+     kaiju e e admitido.
+   - O resto das missoes acontece **nas cidades ou postos de defesa**, com objetivos: salvar aliados, proteger
+     civis ou a cidade e eliminar kaiju.
+5. **Kafka:**
+   - E um **aliado** com duas formas (normal e Kaiju No. 8), cada uma com spawn proprio.
+   - O **jogador tambem pode virar o Kaiju No. 8**, mas so depois de achar o **inseto (larva)**:
+     - ele e raro de encontrar;
+     - infecta o corpo do jogador;
+     - o jogador recebe um aviso de que foi infectado.
+6. **Personagens sem modelo** ficam para o futuro. Agora, so o que ja tem modelo.
+
+Itens 3 (modelos refeitos: vale o chat) e 7 (referencias: usar as do Miguel, o resto marcado como MOD) seguem a
+proposta acima.
+
 ## Plano de etapas (ordem da v21)
 
 Versao (Miguel, 2026-10-08): esta atualizacao e a **0.5.0** do mod; a **1.0.0** vem depois que tudo da 0.5.0 estiver
@@ -183,7 +216,7 @@ Uma etapa por vez. Cada uma tem compilacao, GameTests e teste em jogo, e espera 
 
 | Etapa | Prioridade | Conteudo |
 |---|---|---|
-| **0.5.0-A** | 1 | Release novo do jogador (traje obrigatorio, limite pessoal, tecla de %, cronometro, sobrecarga sem baixar a %), atributos (forca, velocidade, resistencia, agilidade) e limpeza de `energy`/`control`/`aptitude` |
+| **0.5.0-A** ✅ feita (2026-10-08) | 1 | Release novo do jogador (traje obrigatorio, limite pessoal, tecla de %, cronometro, sobrecarga sem baixar a %), atributos (forca, velocidade, resistencia, agilidade) e limpeza de `energy`/`control`/`aptitude` |
 | **0.5.0-B** | 2 | Traje de corpo inteiro com o Mk1 refeito (e o Reforcado); troca do soldado e do Hoshina pelos modelos refeitos |
 | **0.5.0-C** | 2 | No. 10 pequeno e gigante refeitos (rig novo) e perfis de locomocao |
 | **0.5.0-D** | 3 | `WeaponAnimationProfile` (saque, guarda, ataque, recuperacao, recarga, recuo), 1a pessoa, NPCs com o mesmo perfil |

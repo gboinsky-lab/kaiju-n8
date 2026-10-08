@@ -10,12 +10,16 @@ import com.kn8.common.network.NetworkSync;
 import com.kn8.common.registry.KN8Attachments;
 import com.kn8.common.registry.KN8Sounds;
 import com.kn8.common.vfx.VfxService;
+import com.kn8.core.power.BodyParams;
+import com.kn8.core.power.BodyStat;
 import com.kn8.core.power.HeatStage;
 import com.kn8.core.power.PowerMath;
 import com.kn8.core.power.PowerParams;
+import com.kn8.core.power.TalentParams;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -34,8 +38,15 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
  * Regras de poder do jogador no servidor (Fase 4: ReleaseService + StaminaService + HeatService + AttributeApplier,
  * reunidos aqui porque nao guardam estado proprio: todo estado esta no attachment {@code kn8:power}).
  *
- * <p>O traje conta como vestido (os itens de traje chegam com o crafting) e o teto de liberacao e o mesmo para todos
- * ({@code career.releaseMax}), a menos que um comando force outro teto.</p>
+ * <p>0.5.0 (Biblioteca v21 Prioridade 1, decisoes do Miguel de 2026-10-08):</p>
+ * <ul>
+ *   <li>o Release <b>so funciona com o traje</b> da Forca de Defesa vestido;</li>
+ *   <li>o jogador <b>sobe</b> a % segurando a tecla de Release (e desce com Shift); a aura aparece junto;</li>
+ *   <li>o "treinado" virou o <b>limite pessoal</b>: sorteado uma vez (talento comum 5-10%, raro 15-30%) e subido
+ *   treinando, ate {@code career.releaseMax};</li>
+ *   <li>passar do limite <b>nao baixa a %</b>: aquece o traje e, com o traje sobrecarregado, desgasta o corpo (dano
+ *   por segundo so enquanto estiver acima do limite). Dentro do limite o uso so cansa (calor ate WARM).</li>
+ * </ul>
  */
 public final class PowerService {
 
@@ -45,6 +56,9 @@ public final class PowerService {
     private static final ResourceLocation DAMAGE_MODIFIER = KN8Constants.id("release_damage");
     private static final ResourceLocation SPEED_MODIFIER = KN8Constants.id("release_speed");
     private static final ResourceLocation KNOCKBACK_MODIFIER = KN8Constants.id("release_knockback");
+    private static final ResourceLocation BODY_SPEED_MODIFIER = KN8Constants.id("body_speed");
+    /** Intervalo do alarme do traje no calor maximo (so aviso sonoro, nao e balanceamento). */
+    private static final int ALARM_INTERVAL_TICKS = 40;
     private static final int TICKS_PER_SECOND = 20;
     private static final int CRITICAL_SLOWNESS_TICKS = 40;
     private static final int SLOWNESS_I = 0;
@@ -73,22 +87,90 @@ public final class PowerService {
         return ServerConfig.RELEASE_MAX.get();
     }
 
+    /** Calor no maximo (estagio PANIC): so aviso; a % nao cai mais (0.5.0). */
     public static boolean inPanic(ServerPlayer player) {
-        long until = data(player).panicUntilTick();
-        return !PowerData.never(until) && now(player) < until;
+        return data(player).heat() >= params().heatMax();
     }
 
-    /** % efetiva usada por todas as regras (durante o panico do traje, cai para o valor do config). */
+    /** Traje da Forca de Defesa vestido? Sem ele nao ha Release (0.5.0, "igual ao anime"). */
+    public static boolean suitWorn(ServerPlayer player) {
+        return SuitEvents.worn(player).isPresent();
+    }
+
+    /** Limite pessoal: o treinado, limitado pelo teto. */
+    public static int limit(ServerPlayer player) {
+        return Math.min(data(player).trainedRelease(), cap(player));
+    }
+
+    /** % liberada na tecla (0 sem traje). */
+    public static int activeRelease(ServerPlayer player) {
+        return suitWorn(player) ? (int) Math.round(data(player).active()) : 0;
+    }
+
+    /** Pontos acima do limite pessoal. */
+    public static int excess(ServerPlayer player) {
+        return PowerMath.excess(activeRelease(player), limit(player));
+    }
+
+    /** % efetiva usada por todas as regras: a ativa mais o desespero, e so com o traje vestido. */
     public static int effectiveRelease(ServerPlayer player) {
-        if (inPanic(player)) {
-            return ServerConfig.PANIC_RELEASE.get();
+        if (!suitWorn(player)) {
+            return 0;
         }
-        PowerData data = data(player);
-        // 0.5: com a vida baixa a % sobe sozinha (desperationHealth/desperationMaxPoints), como um Surto sem calor.
+        // 0.5: com a vida baixa a % sobe sozinha (desperationHealth/desperationMaxPoints), sem calor.
         int desperation = PowerMath.desperationBonus(player.getHealth() / Math.max(1.0F, player.getMaxHealth()),
                 ServerConfig.DESPERATION_HEALTH.get(), ServerConfig.DESPERATION_MAX_POINTS.get());
-        return Math.min(100, PowerMath.effectiveRelease(data.trainedRelease(), cap(player), data.surge(), params())
-                + desperation);
+        return PowerMath.effectiveRelease(activeRelease(player), desperation);
+    }
+
+    // --- atributos do corpo (0.5.0) --------------------------------------------------------------------------
+
+    public static BodyParams bodyParams() {
+        return ServerConfig.bodyParams();
+    }
+
+    public static int bodyLevel(ServerPlayer player, BodyStat stat) {
+        return data(player).bodyLevel(stat);
+    }
+
+    /** Multiplicador de dano corpo a corpo pela forca. */
+    public static float strengthMultiplier(ServerPlayer player) {
+        return (float) (1.0 + bodyParams().strengthDamagePerLevel() * bodyLevel(player, BodyStat.STRENGTH));
+    }
+
+    /** Fator do dano recebido pela resistencia (1 = sem reducao). */
+    public static float resistanceFactor(ServerPlayer player) {
+        return (float) Math.max(0.0, 1.0 - bodyParams().resistancePerLevel() * bodyLevel(player,
+                BodyStat.RESISTANCE));
+    }
+
+    /** Fator do custo de stamina da esquiva e do dash pela agilidade. */
+    public static double agilityCostFactor(ServerPlayer player) {
+        return Math.max(0.0, 1.0 - bodyParams().agilityStaminaPerLevel() * bodyLevel(player, BodyStat.AGILITY));
+    }
+
+    /** Soma XP a um atributo do corpo (fracoes acumulam) e converte em niveis. */
+    public static void addBodyXp(ServerPlayer player, BodyStat stat, double amount) {
+        PowerData data = data(player);
+        int whole = data.takeBodyXp(stat, amount);
+        if (whole <= 0) {
+            return;
+        }
+        PowerMath.Training result = bodyParams().convert(data.bodyLevel(stat), data.bodyXp(stat) + whole);
+        boolean levelUp = result.trained() > data.bodyLevel(stat);
+        data.setBody(stat, result.trained(), result.xp());
+        if (levelUp) {
+            data.setLastAppliedRelease(-1);
+        }
+        changed(player);
+    }
+
+    /** Fixa o nivel de um atributo (comando e testes). */
+    public static void setBodyLevel(ServerPlayer player, BodyStat stat, int level) {
+        PowerData data = data(player);
+        data.setBody(stat, Math.min(level, bodyParams().maxLevel()), 0);
+        data.setLastAppliedRelease(-1);
+        changed(player);
     }
 
     /** 0.5: aura de poder do jogador: a do comando, senao a do traje vestido, senao a padrao. */
@@ -99,7 +181,7 @@ public final class PowerService {
     }
 
     public static HeatStage heatStage(ServerPlayer player) {
-        return inPanic(player) ? HeatStage.PANIC : PowerMath.heatStage(data(player).heat(), params());
+        return PowerMath.heatStage(data(player).heat(), params());
     }
 
     // --- alteracoes (sempre marcam o canal privado para envio) -----------------------------------------------
@@ -139,10 +221,41 @@ public final class PowerService {
         data.setReleaseXp(result.xp());
     }
 
-    /** Surto (GDD secao 6): ate {@code power.surgeMax} pontos acima do treinado, gerando calor. */
-    public static void setSurge(ServerPlayer player, int points) {
-        data(player).setSurge(Math.min(points, params().surgeMax()));
+    /** Fixa a % ativa (comando e testes); sem traje fica em 0 no proximo tick. */
+    public static void setActive(ServerPlayer player, int value) {
+        data(player).setActive(value);
         changed(player);
+    }
+
+    /**
+     * Tecla de Release (payload {@code kn8:release_input}): +1 segura para subir, -1 para descer, 0 soltou. Subir sem
+     * traje avisa e nao faz nada.
+     */
+    public static void releaseInput(ServerPlayer player, int direction) {
+        if (direction > 0 && !suitWorn(player)) {
+            player.displayClientMessage(Component.translatable("kn8.release.need_suit"), true);
+            data(player).setReleaseInput(0);
+            return;
+        }
+        data(player).setReleaseInput(direction);
+    }
+
+    /**
+     * Sorteia o limite pessoal uma vez por jogador (0.5.0): talento comum ou raro. Quem ja tinha treinado mais que o
+     * sorteio fica com o treinado.
+     */
+    private static void ensureTalent(ServerPlayer player, PowerData data) {
+        if (data.talentRolled()) {
+            return;
+        }
+        TalentParams.Talent talent = ServerConfig.talentParams().roll(player.getRandom().nextDouble(),
+                player.getRandom().nextDouble());
+        data.setTalent(talent.rare());
+        data.setTrainedRelease(Math.max(data.trainedRelease(), talent.limit()));
+        player.displayClientMessage(Component.translatable(talent.rare() ? "kn8.release.talent_rare"
+                : "kn8.release.talent", data.trainedRelease()), false);
+        KN8Constants.LOGGER.info("[kn8] Talento de Release de {}: {}% ({})", player.getGameProfile().getName(),
+                data.trainedRelease(), talent.rare() ? "raro" : "comum");
     }
 
     public static void setHeat(ServerPlayer player, double heat) {
@@ -190,17 +303,30 @@ public final class PowerService {
 
     // --- tick ----------------------------------------------------------------------------------------------------
 
-    /** Um tick do servidor para este jogador: stamina, calor, energia, panico, efeitos e envio ao dono. */
-    static void tick(ServerPlayer player) {
+    /**
+     * Um tick do servidor para este jogador: talento, % ativa, calor, stamina, energia, efeitos e envio ao dono.
+     * Publico para os GameTests (o FakePlayer nao recebe o PlayerTickEvent).
+     */
+    public static void tick(ServerPlayer player) {
         PowerData data = data(player);
         PowerParams params = params();
         long now = now(player);
         ensureInitialized(player, data);
 
+        ensureTalent(player, data);
+        boolean suit = suitWorn(player);
+        if (suit) {
+            data.setActive(PowerMath.releaseAfterInput(data.active(), data.releaseInput(), params));
+        } else {
+            // Sem traje nao ha Release: a % zera e a tecla e ignorada ate vestir de novo.
+            data.setActive(0);
+            data.setReleaseInput(0);
+        }
         boolean inCombat = !PowerData.never(data.lastCombatTick())
                 && now - data.lastCombatTick() <= ServerConfig.COMBAT_GRACE_TICKS.get();
         double heatBefore = data.heat();
-        double heatAfter = PowerMath.heatAfterTick(heatBefore, inPanic(player) ? 0 : data.surge(), inCombat, params);
+        double heatAfter = PowerMath.heatAfterTick(heatBefore, activeRelease(player), limit(player), inCombat,
+                params);
         if (heatAfter > heatBefore) {
             // 0.2 (Etapa 3): o traje vestido corta parte do calor que sobe (heat_resistance do suit/*.json).
             double resistance = SuitEvents.worn(player).map(s -> (double) s.heatResistance())
@@ -208,11 +334,9 @@ public final class PowerService {
             heatAfter = heatBefore + (heatAfter - heatBefore) * (1.0 - resistance);
         }
         data.setHeat(heatAfter);
-        if (!inPanic(player) && data.heat() >= params.heatMax()) {
-            startPanic(player, data, now);
-        }
 
         sprint(player, data, now);
+        trainSpeed(player, data);
         HeatStage stage = heatStage(player);
         long sinceSpent = PowerData.never(data.lastStaminaSpendTick()) ? Long.MAX_VALUE
                 : now - data.lastStaminaSpendTick();
@@ -230,6 +354,9 @@ public final class PowerService {
         int effective = effectiveRelease(player);
         if (effective != data.lastAppliedRelease()) {
             applyModifiers(player, effective, params);
+            setModifier(player, Attributes.MOVEMENT_SPEED, BODY_SPEED_MODIFIER,
+                    bodyParams().speedPerLevel() * data.bodyLevel(BodyStat.SPEED),
+                    AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
             data.setLastAppliedRelease(effective);
             player.setData(KN8Attachments.RELEASE_VISUAL, effective);
         }
@@ -273,10 +400,12 @@ public final class PowerService {
         PowerParams params = params();
         int xpToNext = data.trainedRelease() >= cap(player) ? 0 : PowerMath.xpForNextPoint(data.trainedRelease(),
                 params);
-        return new PowerView(data.trainedRelease(), effectiveRelease(player), cap(player), data.surge(),
+        return new PowerView(data.trainedRelease(), effectiveRelease(player), cap(player), excess(player),
                 (float) Math.max(0, data.stamina()), (float) maxStamina(player), (float) data.heat(),
                 params.heatMax(), heatStage(player).ordinal(), (float) Math.max(0, data.energy()), data.control(),
-                data.releaseXp(), xpToNext, inPanic(player), data.winded());
+                data.releaseXp(), xpToNext, inPanic(player), data.winded(), activeRelease(player), suitWorn(player),
+                data.talentRare(), data.bodyLevel(BodyStat.STRENGTH), data.bodyLevel(BodyStat.SPEED),
+                data.bodyLevel(BodyStat.RESISTANCE), data.bodyLevel(BodyStat.AGILITY));
     }
 
     private static void ensureInitialized(ServerPlayer player, PowerData data) {
@@ -308,32 +437,53 @@ public final class PowerService {
         data.setLastStaminaSpendTick(now);
     }
 
-    private static void startPanic(ServerPlayer player, PowerData data, long now) {
-        int ticks = ServerConfig.PANIC_TICKS.get();
-        data.setPanicUntilTick(now + ticks);
-        data.setSurge(0);
-        player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, ticks, SLOWNESS_II));
-        player.hurt(overheatDamage(player), ServerConfig.PANIC_DAMAGE.get().floatValue());
-        player.level().playSound(null, player.blockPosition(), KN8Sounds.OVERHEAT_ALARM.get(), SoundSource.PLAYERS,
-                1.0F, 1.0F);
-        KN8Constants.LOGGER.info("[kn8] Pane do traje: {} por {} ticks.", player.getGameProfile().getName(), ticks);
-    }
-
+    /**
+     * 0.5.0: o corpo so desgasta enquanto a % estiver ACIMA do limite pessoal (decisao do Miguel), e mais quanto mais
+     * quente o traje; no calor maximo o desgaste e pesado e o alarme toca, mas a % nao cai.
+     */
     private static void applyHeatEffects(ServerPlayer player, HeatStage stage, long now) {
+        if (excess(player) <= 0) {
+            return;
+        }
+        if (stage == HeatStage.PANIC) {
+            PowerData data = data(player);
+            if (PowerData.never(data.lastAlarmTick()) || now - data.lastAlarmTick() >= ALARM_INTERVAL_TICKS) {
+                data.setLastAlarmTick(now);
+                player.level().playSound(null, player.blockPosition(), KN8Sounds.OVERHEAT_ALARM.get(),
+                        SoundSource.PLAYERS, 1.0F, 1.0F);
+            }
+        }
         if (now % TICKS_PER_SECOND != 0) {
             return;
         }
         double drain = switch (stage) {
             case OVERLOAD -> ServerConfig.OVERLOAD_DRAIN_PER_SECOND.get();
             case CRITICAL -> ServerConfig.CRITICAL_DRAIN_PER_SECOND.get();
+            case PANIC -> ServerConfig.MAX_HEAT_DRAIN_PER_SECOND.get();
             default -> 0.0;
         };
         if (drain > 0) {
             player.hurt(overheatDamage(player), (float) drain);
         }
-        if (stage == HeatStage.CRITICAL) {
-            player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, CRITICAL_SLOWNESS_TICKS, SLOWNESS_I));
+        if (stage == HeatStage.CRITICAL || stage == HeatStage.PANIC) {
+            player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, CRITICAL_SLOWNESS_TICKS,
+                    stage == HeatStage.PANIC ? SLOWNESS_II : SLOWNESS_I));
         }
+    }
+
+    /** Velocidade treina correndo: XP por bloco corrido no chao (0.5.0). */
+    private static void trainSpeed(ServerPlayer player, PowerData data) {
+        double x = player.getX();
+        double z = player.getZ();
+        if (!Double.isNaN(data.lastX()) && player.isSprinting() && player.onGround() && !player.isCreative()
+                && !player.isSpectator()) {
+            double moved = Math.hypot(x - data.lastX(), z - data.lastZ());
+            // Teleporte ou montaria nao contam: um passo de corrida nunca passa de ~1 bloco por tick.
+            if (moved < 1.0) {
+                addBodyXp(player, BodyStat.SPEED, moved * ServerConfig.BODY_XP_SPEED_PER_BLOCK.get());
+            }
+        }
+        data.setLastPosition(x, z);
     }
 
     private static void applyModifiers(ServerPlayer player, int release, PowerParams params) {

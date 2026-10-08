@@ -3,6 +3,7 @@ package com.kn8.common.attribute;
 
 import com.kn8.KN8Constants;
 import com.kn8.common.config.ServerConfig;
+import com.kn8.core.power.BodyStat;
 import com.kn8.core.power.HeatStage;
 import com.kn8.core.power.PowerMath;
 
@@ -10,6 +11,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
@@ -61,7 +63,19 @@ public final class PowerEvents {
         if (event.getEntity() instanceof ServerPlayer target && !event.getSource().is(PowerService.SUIT_OVERHEAT)) {
             PowerService.markCombat(target);
             double reduction = PowerMath.damageReduction(PowerService.effectiveRelease(target), PowerService.params());
-            event.setAmount((float) (event.getAmount() * (1.0 - reduction)));
+            // 0.5.0: a resistencia do corpo reduz por cima do Release (e vale sem traje).
+            event.setAmount((float) (event.getAmount() * (1.0 - reduction) * PowerService.resistanceFactor(target)));
+        }
+    }
+
+    /** 0.5.0: apanhar em combate (de alguem, nao do proprio traje ou de queda) treina a resistencia. */
+    @SubscribeEvent
+    public static void onDamageTaken(LivingDamageEvent.Post event) {
+        if (ServerConfig.SPEC.isLoaded() && event.getEntity() instanceof ServerPlayer player
+                && event.getSource().getEntity() != null && event.getSource().getEntity() != player
+                && !event.getSource().is(PowerService.SUIT_OVERHEAT)) {
+            PowerService.addBodyXp(player, BodyStat.RESISTANCE,
+                    event.getNewDamage() * ServerConfig.BODY_XP_RESISTANCE_PER_DAMAGE.get());
         }
     }
 }

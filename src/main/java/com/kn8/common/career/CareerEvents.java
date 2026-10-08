@@ -1,10 +1,12 @@
 package com.kn8.common.career;
 
 import com.kn8.KN8Constants;
+import com.kn8.common.attribute.PowerService;
 import com.kn8.common.boss.BossService;
 import com.kn8.common.config.ServerConfig;
 import com.kn8.common.data.def.KaijuClass;
 import com.kn8.common.kaiju.KaijuEntity;
+import com.kn8.core.power.BodyStat;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -54,6 +56,11 @@ public final class CareerEvents {
         if (event.getEntity() instanceof KaijuEntity && event.getSource().getEntity() instanceof ServerPlayer player
                 && ServerConfig.SPEC.isLoaded()) {
             CareerService.onKaijuDamaged(player, event.getNewDamage());
+            // 0.5.0: golpe corpo a corpo (o jogador e a entidade direta, nao um projetil) treina a forca.
+            if (event.getSource().getDirectEntity() == player) {
+                PowerService.addBodyXp(player, BodyStat.STRENGTH,
+                        event.getNewDamage() * ServerConfig.BODY_XP_STRENGTH_PER_DAMAGE.get());
+            }
         }
     }
 

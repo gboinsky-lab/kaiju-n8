@@ -167,7 +167,10 @@ public final class KN8Hud {
 
     // --- RELEASE ----------------------------------------------------------------------------------------------
 
-    /** Segmentos acesos (azul ate o treinado, laranja no Surto), marca do teto e linha de treino. */
+    /**
+     * Segmentos acesos (azul ate o limite pessoal, laranja no que passou dele), marca do limite e linha de treino.
+     * 0.5.0: a barra mostra a % liberada na tecla; o limite e o "treinado".
+     */
     private static void drawRelease(GuiGraphics graphics, PowerView view) {
         int base = Math.min(view.trained(), view.cap());
         float total = HudMath.fraction(shownRelease, 100);
@@ -180,8 +183,8 @@ public final class KN8Hud {
         int barY = RELEASE_BAR[1] * SCALE;
         int barWidth = RELEASE_BAR[2] * SCALE;
         int barHeight = RELEASE_BAR[3] * SCALE;
-        // Marca do teto atual (ate onde o treino ja chegou a liberar).
-        int capX = barX + Math.round(barWidth * HudMath.fraction(view.cap(), 100));
+        // Marca do limite pessoal (passar dele aquece o traje e desgasta o corpo).
+        int capX = barX + Math.round(barWidth * HudMath.fraction(base, 100));
         graphics.fill(capX, barY - SCALE, capX + 2, barY + barHeight + SCALE, COLOR_CAP);
         // Linha fina de treino ate o proximo ponto (vazia no teto).
         float xp = view.xpToNext() > 0 ? HudMath.fraction(shownXp, view.xpToNext()) : 0;
@@ -189,10 +192,10 @@ public final class KN8Hud {
                 COLOR_XP);
     }
 
-    /** "efetiva% / teto%" com os numeros em neon (laranja no Surto) e "MAX" piscando no teto. */
+    /** "efetiva% / limite%" em neon (laranja acima do limite) e "MAX" piscando no teto do treino. */
     private static void drawReleaseText(GuiGraphics graphics, Font font, PowerView view, int x, int y) {
-        String value = Math.round(shownRelease) + "% / " + view.cap() + "%";
-        int row = view.surge() > 0 ? 1 : 0;
+        String value = Math.round(shownRelease) + "% / " + Math.min(view.trained(), view.cap()) + "%";
+        int row = view.excess() > 0 ? 1 : 0;
         float cellScale = VALUE_CELL_HEIGHT / DIGIT_CELL_HEIGHT;
         graphics.pose().pushPose();
         graphics.pose().translate(x + VALUE_X, y + VALUE_Y, 0);
@@ -208,7 +211,7 @@ public final class KN8Hud {
             cursor += c == ' ' ? SPACE_ADVANCE : DIGIT_ADVANCE;
         }
         graphics.pose().popPose();
-        boolean atCap = view.trained() >= view.cap() && view.surge() == 0;
+        boolean atCap = view.trained() >= view.cap() && view.excess() == 0;
         if (atCap) {
             int afterValue = x + VALUE_X + Math.round(cursor * cellScale) + 4;
             scaled(graphics, font, Component.translatable("kn8.hud.max"), afterValue, y + VALUE_Y + 6,

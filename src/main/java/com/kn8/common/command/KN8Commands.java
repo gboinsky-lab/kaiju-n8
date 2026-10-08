@@ -25,6 +25,7 @@ public final class KN8Commands {
                 .then(DataCommands.build())
                 .then(PowerCommands.power())
                 .then(PowerCommands.release())
+                .then(PowerCommands.body())
                 .then(PowerCommands.heat())
                 .then(PowerCommands.stamina())
                 .then(PowerCommands.energy())

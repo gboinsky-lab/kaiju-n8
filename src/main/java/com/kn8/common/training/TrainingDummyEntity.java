@@ -1,7 +1,10 @@
 package com.kn8.common.training;
 
+import com.kn8.common.attribute.PowerService;
 import com.kn8.common.career.CareerService;
+import com.kn8.common.config.ServerConfig;
 import com.kn8.common.registry.KN8Items;
+import com.kn8.core.power.BodyStat;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -57,6 +60,10 @@ public class TrainingDummyEntity extends ArmorStand {
             return true;
         }
         int xp = CareerService.onDummyHit(player);
+        if (xp > 0 && source.getDirectEntity() == player) {
+            // 0.5.0: bater no boneco treina a forca, no mesmo limite por minuto do XP de Release.
+            PowerService.addBodyXp(player, BodyStat.STRENGTH, amount * ServerConfig.BODY_XP_STRENGTH_PER_DAMAGE.get());
+        }
         level().broadcastEntityEvent(this, HIT_WOBBLE_EVENT);
         level().playSound(null, blockPosition(), SoundEvents.WOOL_HIT, SoundSource.PLAYERS, 1.0F,
                 0.8F + random.nextFloat() * 0.4F);
