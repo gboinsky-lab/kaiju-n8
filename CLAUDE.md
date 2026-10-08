@@ -290,6 +290,10 @@ remedidas na malha [SUPOSIÇÃO: núcleo no peito]. `build_primigenius.py` não 
 
 ## Pendências e [DECIDIR]
 
+- **Versao 0.5.0 (Miguel, 2026-10-08):** a Biblioteca v21 (`docs/BIBLIOTECA_KAIJU_N8_v21.md`) e a atualizacao
+  **0.5.0** do mod; seguir as prioridades **na ordem**, uma etapa por vez (0.5.0-A, -B...). A 1.0.0 vem depois de
+  corrigir tudo da 0.5.0. Auditoria (Prioridade 0), conflitos [DECIDIR] e plano: `docs/AUDITORIA_BIBLIOTECA_V21.md`.
+
 - **Modelos recebidos (Miguel, 2026-10-08), so guardados:** soldado, Mk1, No. 10 pequeno e gigante refeitos
   (substituem os atuais); novos Kaiju No. 8 (2 m), larva, Kafka, Kikoru (normal e Numbers 4 com asas), Reno
   (normal e Numbers 6), Mina (com o canhao), Gen Narumi (com a baioneta) e o Hoshina normal refeito (substitui). **Nao implementar ate o Miguel mandar o documento e pedir.**
