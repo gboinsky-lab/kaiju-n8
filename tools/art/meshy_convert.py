@@ -97,7 +97,8 @@ def write_obj(path, vertices, uvs, normals, faces, material_ref):
     mtl.write_text(f"newmtl main\nKd 1.0 1.0 1.0\nmap_Kd {material_ref}\n", encoding="utf-8")
     lines = [f"mtllib {mtl.name}", f"o {path.stem}", "usemtl main"]
     lines += [f"v {x:.5f} {y:.5f} {z:.5f}" for x, y, z in vertices]
-    lines += [f"vt {u:.5f} {v:.5f}" for u, v in uvs]
+    # 0.5.0-C2: UV presa em [0, 1]; o Meshy deixa ate 0,2% de sobra e a textura repete (puxa pixels do outro lado).
+    lines += [f"vt {min(max(u, 0.0), 1.0):.5f} {min(max(v, 0.0), 1.0):.5f}" for u, v in uvs]
     lines += [f"vn {x:.4f} {y:.4f} {z:.4f}" for x, y, z in normals]
     for a, b, c in faces + 1:
         lines.append(f"f {a}/{a}/{a} {b}/{b}/{b} {c}/{c}/{c}")
