@@ -78,11 +78,7 @@ public class HoshinaEntity extends SoldierEntity {
     public static final String VARIANT = "hoshina";
     /** Tecnicas com animacao propria (hoshina.action.<id>); outras do JSON tocam o golpe basico. */
     public static final List<String> ANIMATED = List.of("kuuchi", "kosa_uchi", "ran_uchi", "kasumi_uchi", "yae_uchi",
-            "kaeshi_uchi", "dash", "parry");
-
-    private static final RawAnimation IDLE = RawAnimation.begin().thenLoop("hoshina.movement.idle");
-    private static final RawAnimation WALK = RawAnimation.begin().thenLoop("hoshina.movement.walk");
-    private static final Map<String, RawAnimation> ARMS = new HashMap<>();
+            "kaeshi_uchi", "dash", "parry", "juni_hitoe");
     private static final float REACH_SLACK = 1.0F;
     /** Kaeshi-uchi: o contra-golpe vem com um avanco (o dash lateral pode deixa-lo um pouco longe). */
     private static final float COUNTER_REACH_SLACK = 3.0F;
@@ -92,11 +88,6 @@ public class HoshinaEntity extends SoldierEntity {
     private static final float SWING_VOLUME = 0.8F;
     private static final float TICKS_PER_SECOND = 20.0F;
 
-    static {
-        for (String stance : new String[] {"ready", "walk", "aim"}) {
-            ARMS.put(stance, RawAnimation.begin().thenLoop("hoshina.arms.blade_" + stance));
-        }
-    }
 
     private final Map<String, Long> readyAt = new HashMap<>();
     private String techniqueId;
@@ -127,7 +118,22 @@ public class HoshinaEntity extends SoldierEntity {
     // --- perfil ------------------------------------------------------------------------------------------------
 
     public Optional<SpecialSoldierDef> profile() {
-        return KN8Data.SPECIAL_SOLDIER.get(PROFILE, false);
+        return KN8Data.SPECIAL_SOLDIER.get(profileId(), false);
+    }
+
+    /** Perfil em special_soldier/ (0.6-F: o Hoshina com o traje numerado 10 usa outro). */
+    protected ResourceLocation profileId() {
+        return PROFILE;
+    }
+
+    /** Variante sincronizada (nome no menu e nos defensores de invasao). */
+    protected String variantName() {
+        return VARIANT;
+    }
+
+    /** Prefixo das animacoes ({@code <prefixo>.<camada>.<nome>}). */
+    protected String animPrefix() {
+        return VARIANT;
     }
 
     /** Nao usa o soldier_1.json (variantes e niveis de soldado comum). */
@@ -157,7 +163,7 @@ public class HoshinaEntity extends SoldierEntity {
     /** As duas espadas do perfil; a variante sincronizada so da o nome no menu. */
     @Override
     public void setVariant(String variant) {
-        super.setVariant(VARIANT);
+        super.setVariant(variantName());
         profile().ifPresent(def -> {
             setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(BuiltInRegistries.ITEM.get(def.weapon())));
             setItemSlot(EquipmentSlot.OFFHAND, def.offhand()
@@ -185,7 +191,7 @@ public class HoshinaEntity extends SoldierEntity {
     private void ensureProfile() {
         profile().ifPresent(def -> {
             if (getMainHandItem().isEmpty()) {
-                setVariant(VARIANT);
+                setVariant(variantName());
             }
             if (getAttribute(Attributes.MAX_HEALTH).getBaseValue() != def.health()) {
                 applyDefinition();
@@ -198,7 +204,7 @@ public class HoshinaEntity extends SoldierEntity {
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason,
             @Nullable SpawnGroupData data) {
         SpawnGroupData result = super.finalizeSpawn(level, difficulty, reason, data);
-        setVariant(VARIANT);
+        setVariant(variantName());
         applyDefinition();
         return result;
     }
@@ -264,7 +270,8 @@ public class HoshinaEntity extends SoldierEntity {
         List<String> tied = new ArrayList<>();
         for (Map.Entry<String, SpecialSoldierDef.Technique> entry : def.get().techniques().entrySet()) {
             SpecialSoldierDef.Technique candidate = entry.getValue();
-            if (now < readyAt.getOrDefault(entry.getKey(), 0L) || edge < candidate.minRange()
+            if ((candidate.requiresFullRelease() && !isFullRelease())
+                    || now < readyAt.getOrDefault(entry.getKey(), 0L) || edge < candidate.minRange()
                     || edge > candidate.maxRange()
                     || (candidate.type() == SpecialSoldierDef.TechniqueType.SLASH && !sees)) {
                 continue;
@@ -326,9 +333,36 @@ public class HoshinaEntity extends SoldierEntity {
         if (technique != null) {
             tickTechnique(now);
         }
-        if (isAlive()) {
+        // Tecnica de Full Release (Juni-hitoe) nao e interrompida por esquiva nem contra-ataque.
+        if (isAlive() && !(technique != null && technique.requiresFullRelease())) {
             react(now);
         }
+        if (isAlive()) {
+            tickExtra(now);
+        }
+    }
+
+    /** 0.6-F: comportamento extra por tick no servidor (a cauda do traje numerado 10). */
+    protected void tickExtra(long now) {
+    }
+
+    /** 0.6-F: Full Release (traje numerado 10 a 100%); o Hoshina comum nunca chega. */
+    public boolean isFullRelease() {
+        return false;
+    }
+
+    /** Fator das recargas (escalada a parte): o Full Release encurta. */
+    protected double cooldownFactor() {
+        return 1.0;
+    }
+
+    /** Fator da velocidade sobre o bonus do Release: o Full Release acelera. */
+    protected double speedFactor() {
+        return 1.0;
+    }
+
+    public Optional<SpecialSoldierDef.Technique> currentTechniqueDef() {
+        return Optional.ofNullable(technique);
     }
 
     private void tickTechnique(long now) {
@@ -382,7 +416,7 @@ public class HoshinaEntity extends SoldierEntity {
      * Golpe corpo a corpo de tecnica: acerta se a borda do alvo estiver ao alcance da arma (com folga: os combos
      * avancam junto). Kaiju levam no corpo, com o {@code kaiju_damage} do perfil.
      */
-    private boolean strike(LivingEntity target, float multiplier, float knockback, WeaponDef weapon, float slack) {
+    protected boolean strike(LivingEntity target, float multiplier, float knockback, WeaponDef weapon, float slack) {
         if (edgeTo(target) > weapon.reach() + slack) {
             return false;
         }
@@ -393,7 +427,10 @@ public class HoshinaEntity extends SoldierEntity {
         // Combos de 1-2 ticks entre golpes: a invulnerabilidade vanilla (10 ticks) engolia quase todos (como no
         // multi_hit dos kaiju, 0.6-A); a tecnica ja acerta uma vez por golpe do JSON.
         target.invulnerableTime = 0;
-        if (!target.hurt(damageSources().mobAttack(this), damage)) {
+        // [SUPOSICAO] tecnica de Full Release (Juni-hitoe) "ignora parte da defesa": dano que passa pela armadura.
+        DamageSource source = technique != null && technique.requiresFullRelease()
+                ? damageSources().indirectMagic(this, this) : damageSources().mobAttack(this);
+        if (!target.hurt(source, damage)) {
             return false;
         }
         ServerLevel level = (ServerLevel) level();
@@ -567,16 +604,17 @@ public class HoshinaEntity extends SoldierEntity {
     }
 
     /** Recarga encurtada pela escalada (ate cooldown_reduction_at_max na escalada maxima). */
-    private long scaledCooldown(int ticks) {
-        return profile().map(SpecialSoldierDef::escalation).filter(def -> def.maxPoints() > 0)
+    protected long scaledCooldown(int ticks) {
+        long scaled = profile().map(SpecialSoldierDef::escalation).filter(def -> def.maxPoints() > 0)
                 .map(def -> Math.round(ticks * (1.0 - def.cooldownReductionAtMax() * escalation / def.maxPoints())))
                 .orElse((long) ticks);
+        return Math.round(scaled * cooldownFactor());
     }
 
     /** Velocidade do perfil com o bonus do Release atual (o soldado comum so aplica no nascimento). */
     private void applySpeed(int release) {
         profile().ifPresent(def -> getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(def.speed()
-                * (1.0 + PowerMath.speedBonus(release, PowerService.params()))));
+                * (1.0 + PowerMath.speedBonus(release, PowerService.params())) * speedFactor()));
     }
 
     /** Publica a aura do perfil e a % de Release (so na mudanca: sync nativo dos attachments). */
@@ -599,20 +637,27 @@ public class HoshinaEntity extends SoldierEntity {
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+        String prefix = animPrefix() + ".";
+        RawAnimation idle = RawAnimation.begin().thenLoop(prefix + "movement.idle");
+        RawAnimation walk = RawAnimation.begin().thenLoop(prefix + "movement.walk");
+        Map<String, RawAnimation> arms = new HashMap<>();
+        for (String stance : new String[] {"ready", "walk", "aim"}) {
+            arms.put(stance, RawAnimation.begin().thenLoop(prefix + "arms.blade_" + stance));
+        }
         controllers.add(new AnimationController<>(this, "movement", 3, state ->
-                state.setAndContinue(state.isMoving() ? WALK : IDLE)));
+                state.setAndContinue(state.isMoving() ? walk : idle)));
         controllers.add(new AnimationController<>(this, "arms", 4, state -> {
             String stance = isAggressive() ? "aim" : state.isMoving() ? "walk" : "ready";
-            return state.setAndContinue(ARMS.get(stance));
+            return state.setAndContinue(arms.get(stance));
         }));
         AnimationController<HoshinaEntity> action = new AnimationController<>(this, "action", 1,
                 state -> PlayState.STOP);
-        action.triggerableAnim("attack", RawAnimation.begin().thenPlay("hoshina.action.attack"));
+        action.triggerableAnim("attack", RawAnimation.begin().thenPlay(prefix + "action.attack"));
         for (String id : ANIMATED) {
-            action.triggerableAnim(id, RawAnimation.begin().thenPlay("hoshina.action." + id));
+            action.triggerableAnim(id, RawAnimation.begin().thenPlay(prefix + "action." + id));
         }
         controllers.add(action);
         controllers.add(new AnimationController<>(this, "reaction", 0, state -> PlayState.STOP)
-                .triggerableAnim("hurt", RawAnimation.begin().thenPlay("hoshina.reaction.hurt")));
+                .triggerableAnim("hurt", RawAnimation.begin().thenPlay(prefix + "reaction.hurt")));
     }
 }

@@ -6,14 +6,16 @@ animacoes do jogador (gen_player_animations.py). Escreve em assets/kn8/animation
 (gerado antes por rig_soldier_mesh.py hoshina; rodar este depois dele). Mantem as quebras de linha do arquivo.
 Ossos: body, head, arm_left, arm_right, leg_left, leg_right. Braco direito: X negativo = para frente/cima, Y
 negativo = para dentro; o esquerdo e o espelho (Y e Z com sinal trocado).
-Uso: python3 tools/art/gen_hoshina_animations.py
+Uso: python3 tools/art/gen_hoshina_animations.py [especie]   (hoshina ou hoshina_no10; rodar depois do
+     rig_soldier_mesh.py da mesma especie)
 """
 import json
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-PROFILE = ROOT / "src/main/resources/data/kn8/kn8/special_soldier/hoshina.json"
-OUT = ROOT / "src/main/resources/assets/kn8/animations/entity/hoshina.animation.json"
+PROFILES = ROOT / "src/main/resources/data/kn8/kn8/special_soldier"
+ANIMATIONS = ROOT / "src/main/resources/assets/kn8/animations/entity"
 TICK = 1 / 20
 DASH_TICKS = 8
 PARRY_TICKS = 8
@@ -168,10 +170,35 @@ def arms():
     return out
 
 
+def tail_animations(slash_ticks=10, guard_ticks=9):
+    """0.6-F (traje numerado 10): cauda balancando parada, corte da cauda (pico no meio) e guarda (a cauda passa
+    pela frente do corpo e segura). Ossos tail_1..tail_4 do rig_soldier_mesh.py hoshina_no10."""
+    sway = {"tail_1": [0, 5, 0], "tail_2": [3, 0, 0], "tail_3": [0, -4, 0], "tail_4": [4, 0, 0]}
+    idle = {"loop": True, "animation_length": 3.0, "bones": {
+        bone: {"rotation": keys((0, [0, 0, 0]), (1.5, v), (3.0, [0, 0, 0]))} for bone, v in sway.items()}}
+    end, peak = slash_ticks * TICK, slash_ticks * TICK * 0.4
+    slash = {"animation_length": round(end, 3), "bones": {
+        "tail_1": {"rotation": keys((0, [0, 0, 0]), (peak * 0.6, [0, 50, 0]), (peak, [10, -70, 0]),
+                                    (end, [0, 0, 0]))},
+        "tail_2": {"rotation": keys((0, [0, 0, 0]), (peak * 0.6, [-20, 20, 0]), (peak, [15, -30, 0]),
+                                    (end, [0, 0, 0]))},
+        "tail_3": {"rotation": keys((0, [0, 0, 0]), (peak, [20, -20, 0]), (end, [0, 0, 0]))},
+        "tail_4": {"rotation": keys((0, [0, 0, 0]), (peak, [30, 0, 0]), (end, [0, 0, 0]))}}}
+    g_end = guard_ticks * TICK
+    guard = {"animation_length": round(g_end, 3), "bones": {
+        "tail_1": {"rotation": keys((0, [0, 0, 0]), (0.08, [-35, 30, 0]), (g_end * 0.7, [-35, 30, 0]),
+                                    (g_end, [0, 0, 0]))},
+        "tail_2": {"rotation": keys((0, [0, 0, 0]), (0.08, [-20, 15, 0]), (g_end * 0.7, [-20, 15, 0]),
+                                    (g_end, [0, 0, 0]))}}}
+    return {"tail.idle": idle, "tail.slash": slash, "tail.guard": guard}
+
+
 def main():
-    profile = json.loads(PROFILE.read_text(encoding="utf-8"))
+    species = sys.argv[1] if len(sys.argv) > 1 else "hoshina"
+    profile = json.loads((PROFILES / f"{species}.json").read_text(encoding="utf-8"))
     techniques = profile["techniques"]
-    raw = OUT.read_bytes().decode("utf-8")
+    out = ANIMATIONS / f"{species}.animation.json"
+    raw = out.read_bytes().decode("utf-8")
     newline = "\r\n" if "\r\n" in raw else "\n"
     data = json.loads(raw)
     animations = data["animations"]
@@ -184,13 +211,21 @@ def main():
     generated["hoshina.action.kaeshi_uchi"] = counter(profile["counter"])
     generated["hoshina.action.dash"] = dash()
     generated["hoshina.action.parry"] = parry()
+    if "juni_hitoe" in techniques:
+        # 0.6-F: 12 golpes alternando as espadas, o ultimo com as duas (a cauda acompanha pelo controller dela).
+        generated["hoshina.action.juni_hitoe"] = combo(techniques["juni_hitoe"], heavy_last=True)
+    # Os nomes sao gerados com o prefixo do Hoshina e trocados pelo da especie.
+    generated = {species + name[len("hoshina"):]: anim for name, anim in generated.items()}
+    if "numbers10" in profile:
+        for name, anim in tail_animations().items():
+            generated[f"{species}.{name}"] = anim
     for animation in generated.values():
         # Keyframes em ordem de tempo (o passo lateral do Kasumi-uchi entra depois).
         for bone in animation["bones"].values():
             bone["rotation"] = dict(sorted(bone["rotation"].items(), key=lambda item: float(item[0])))
     animations.update(generated)
     text = json.dumps(data, indent=2) + "\n"
-    OUT.write_bytes(text.replace("\n", newline).encode("utf-8"))
+    out.write_bytes(text.replace("\n", newline).encode("utf-8"))
     for name in generated:
         print(f"{name}: {generated[name]['animation_length']} s")
 

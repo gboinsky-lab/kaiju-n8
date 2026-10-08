@@ -14,6 +14,7 @@ import com.kn8.common.numbered.KaijuNo10Entity;
 import com.kn8.common.numbered.KaijuNo9Entity;
 import com.kn8.common.soldier.SoldierEntity;
 import com.kn8.common.soldier.special.HoshinaEntity;
+import com.kn8.common.soldier.special.HoshinaNo10Entity;
 import com.kn8.common.training.TrainingDummyEntity;
 
 import net.minecraft.core.registries.Registries;
@@ -87,6 +88,14 @@ public final class KN8Entities {
                     .eyeHeight(1.6F)
                     .clientTrackingRange(KAIJU_TRACKING_RANGE_CHUNKS)
                     .build("hoshina"));
+    /** 0.6-F: Hoshina com o traje numerado 10 (cauda com a terceira espada; special_soldier/hoshina_no10.json). */
+    public static final DeferredHolder<EntityType<?>, EntityType<HoshinaNo10Entity>> HOSHINA_NO10 =
+            ENTITY_TYPES.register("hoshina_no10", () -> EntityType.Builder.<HoshinaNo10Entity>of(
+                            HoshinaNo10Entity::new, MobCategory.CREATURE)
+                    .sized(0.7F, 1.85F)
+                    .eyeHeight(1.45F)
+                    .clientTrackingRange(KAIJU_TRACKING_RANGE_CHUNKS)
+                    .build("hoshina_no10"));
 
     /** 0.6: projetil de habilidade de kaiju (raio de energia, teia, Finger Gun); so particulas no cliente. */
     public static final DeferredHolder<EntityType<?>, EntityType<KaijuProjectile>> KAIJU_PROJECTILE =
@@ -125,6 +134,9 @@ public final class KN8Entities {
 
     /** 0.6-D: soldado especial pelo nome (defensores de invasao: variante "hoshina"); vazio para os comuns. */
     public static Optional<EntityType<? extends SoldierEntity>> specialSoldier(String name) {
+        if (HoshinaNo10Entity.VARIANT_NO10.equals(name)) {
+            return Optional.of(HOSHINA_NO10.get());
+        }
         return HoshinaEntity.VARIANT.equals(name) ? Optional.of(HOSHINA.get()) : Optional.empty();
     }
 
@@ -159,6 +171,7 @@ public final class KN8Entities {
     public static void registerAttributes(EntityAttributeCreationEvent event) {
         event.put(SOLDIER.get(), SoldierEntity.createAttributes().build());
         event.put(HOSHINA.get(), SoldierEntity.createAttributes().build());
+        event.put(HOSHINA_NO10.get(), SoldierEntity.createAttributes().build());
         event.put(TRAINING_DUMMY.get(), LivingEntity.createLivingAttributes().build());
         KAIJU.forEach(type -> event.put(type.get(), KaijuEntity.baseAttributes().build()));
     }

@@ -42,6 +42,8 @@ public class SoldierRenderer<T extends SoldierEntity> extends GeoEntityRenderer<
     private static final String HAND_BONE = "item_right";
     /** 0.6-D: segunda arma (mao esquerda) do Hoshina; o .geo.json do soldado comum nao tem este osso. */
     private static final String OFFHAND_BONE = "item_left";
+    /** 0.6-F: terceira espada, na ponta da cauda do traje numerado 10 (so o .geo.json do hoshina_no10 tem). */
+    private static final String TAIL_BONE = "item_tail";
     /** Ponto de origem do item no vanilla: 1 px abaixo do centro do punho e 2 px a frente (superficie do braco). */
     private static final float HAND_DOWN = 1.0F / 16.0F;
     private static final float HAND_FORWARD = 2.0F / 16.0F;
@@ -66,6 +68,9 @@ public class SoldierRenderer<T extends SoldierEntity> extends GeoEntityRenderer<
             @Override
             protected ItemStack getStackForBone(GeoBone bone, T animatable) {
                 if (HAND_BONE.equals(bone.getName())) {
+                    return animatable.getMainHandItem();
+                }
+                if (TAIL_BONE.equals(bone.getName())) {
                     return animatable.getMainHandItem();
                 }
                 return OFFHAND_BONE.equals(bone.getName()) ? animatable.getOffhandItem() : null;

@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.resources.ResourceLocation;
@@ -34,7 +35,71 @@ import net.minecraft.util.StringRepresentable;
 public record SpecialSoldierDef(float health, float armor, float speed, float followRange, float knockbackResistance,
         int release, int maxRelease, float kaijuDamage, ResourceLocation aura, ResourceLocation weapon,
         Optional<ResourceLocation> offhand, Map<String, Technique> techniques, Dash dash, Counter counter,
-        Parry parry, Escalation escalation) {
+        Parry parry, Growth growth) {
+
+    /** Escalada de combate (atalho: o campo fica no mesmo nivel do JSON, dentro de {@link Growth}). */
+    public Escalation escalation() {
+        return growth.escalation();
+    }
+
+    public Optional<Numbers10> numbers10() {
+        return growth.numbers10();
+    }
+
+    /**
+     * Campos que crescem com a luta, lidos no mesmo nivel do JSON (o RecordCodecBuilder aceita no maximo 16 campos
+     * por grupo): {@code escalation} e, so com o traje numerado 10 (0.6-F), {@code numbers10}.
+     */
+    public record Growth(Escalation escalation, Optional<Numbers10> numbers10) {
+        public static final MapCodec<Growth> MAP_CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
+                Escalation.CODEC.optionalFieldOf("escalation", Escalation.NONE).forGetter(Growth::escalation),
+                Numbers10.CODEC.optionalFieldOf("numbers10").forGetter(Growth::numbers10)
+        ).apply(i, Growth::new));
+    }
+
+    /**
+     * Traje numerado 10 (0.6-F, especificacao do Miguel secao 3): cauda com a terceira espada, que luta sozinha
+     * ({@code tail}), e o Full Release ao chegar a 100% de sincronizacao ({@code full_release}). A sincronizacao
+     * ({@code numbers10_sync}) e a % de Release, que sobe com a escalada de combate.
+     */
+    public record Numbers10(Tail tail, FullRelease fullRelease) {
+        public static final Codec<Numbers10> CODEC = RecordCodecBuilder.create(i -> i.group(
+                Tail.CODEC.fieldOf("tail").forGetter(Numbers10::tail),
+                FullRelease.CODEC.fieldOf("full_release").forGetter(Numbers10::fullRelease)
+        ).apply(i, Numbers10::new));
+    }
+
+    /**
+     * Cauda independente: a cada {@code cooldown_ticks} corta ({@code multiplier} x dano da espada) um inimigo a ate
+     * {@code reach} blocos (de preferencia quem esta atacando o Hoshina, depois quem esta atras ou do lado), mesmo
+     * enquanto ele luta com outro. Guarda: golpe pesado ou projetil vindo de fora da frente ({@code front_arc_degrees})
+     * cai para {@code guard_factor}, com recarga {@code guard_cooldown_ticks}.
+     */
+    public record Tail(int cooldownTicks, float reach, float multiplier, float guardFactor, int guardCooldownTicks,
+            float frontArcDegrees) {
+        public static final Codec<Tail> CODEC = RecordCodecBuilder.create(i -> i.group(
+                DefCodecs.TICKS.fieldOf("cooldown_ticks").forGetter(Tail::cooldownTicks),
+                Codec.floatRange(0.5F, 16.0F).fieldOf("reach").forGetter(Tail::reach),
+                DefCodecs.MULTIPLIER.fieldOf("multiplier").forGetter(Tail::multiplier),
+                Codec.floatRange(0.0F, 1.0F).fieldOf("guard_factor").forGetter(Tail::guardFactor),
+                DefCodecs.TICKS.optionalFieldOf("guard_cooldown_ticks", 30).forGetter(Tail::guardCooldownTicks),
+                Codec.floatRange(0.0F, 360.0F).optionalFieldOf("front_arc_degrees", 120.0F)
+                        .forGetter(Tail::frontArcDegrees)
+        ).apply(i, Tail::new));
+    }
+
+    /** Full Release (100%): multiplicadores de dano, velocidade, recargas e recarga da cauda; libera as tecnicas com
+     * {@code requires_full_release} (Juni-hitoe). */
+    public record FullRelease(float damageMultiplier, float speedMultiplier, float cooldownMultiplier,
+            float tailCooldownMultiplier) {
+        public static final Codec<FullRelease> CODEC = RecordCodecBuilder.create(i -> i.group(
+                DefCodecs.MULTIPLIER.fieldOf("damage_multiplier").forGetter(FullRelease::damageMultiplier),
+                DefCodecs.MULTIPLIER.fieldOf("speed_multiplier").forGetter(FullRelease::speedMultiplier),
+                DefCodecs.MULTIPLIER.fieldOf("cooldown_multiplier").forGetter(FullRelease::cooldownMultiplier),
+                DefCodecs.MULTIPLIER.fieldOf("tail_cooldown_multiplier")
+                        .forGetter(FullRelease::tailCooldownMultiplier)
+        ).apply(i, FullRelease::new));
+    }
 
     /** Forma da tecnica: cortes a distancia ou sequencia de golpes corpo a corpo. */
     public enum TechniqueType implements StringRepresentable {
@@ -65,7 +130,8 @@ public record SpecialSoldierDef(float health, float armor, float speed, float fo
      */
     public record Technique(TechniqueType type, List<Float> hits, int windupTicks, int hitInterval, int durationTicks,
             int cooldownTicks, float minRange, float maxRange, int priority, SlashSpec slash, float dashIn,
-            boolean sidestepBeforeLast, int exposeCoreTicks, float finalKnockback, int honjuPriority) {
+            boolean sidestepBeforeLast, int exposeCoreTicks, float finalKnockback, int honjuPriority,
+            boolean requiresFullRelease) {
         public static final Codec<Technique> CODEC = RecordCodecBuilder.<Technique>create(i -> i.group(
                 TechniqueType.CODEC.fieldOf("type").forGetter(Technique::type),
                 DefCodecs.MULTIPLIER.listOf().fieldOf("hits").forGetter(Technique::hits),
@@ -82,7 +148,8 @@ public record SpecialSoldierDef(float health, float armor, float speed, float fo
                 DefCodecs.TICKS.optionalFieldOf("expose_core_ticks", 0).forGetter(Technique::exposeCoreTicks),
                 Codec.floatRange(0.0F, 10.0F).optionalFieldOf("final_knockback", 0.0F)
                         .forGetter(Technique::finalKnockback),
-                Codec.intRange(0, 100).optionalFieldOf("honju_priority", 0).forGetter(Technique::honjuPriority)
+                Codec.intRange(0, 100).optionalFieldOf("honju_priority", 0).forGetter(Technique::honjuPriority),
+                Codec.BOOL.optionalFieldOf("requires_full_release", false).forGetter(Technique::requiresFullRelease)
         ).apply(i, Technique::new)).validate(Technique::check);
 
         private static DataResult<Technique> check(Technique technique) {
@@ -191,6 +258,6 @@ public record SpecialSoldierDef(float health, float armor, float speed, float fo
             Dash.CODEC.fieldOf("dash").forGetter(SpecialSoldierDef::dash),
             Counter.CODEC.fieldOf("counter").forGetter(SpecialSoldierDef::counter),
             Parry.CODEC.fieldOf("parry").forGetter(SpecialSoldierDef::parry),
-            Escalation.CODEC.optionalFieldOf("escalation", Escalation.NONE).forGetter(SpecialSoldierDef::escalation)
+            Growth.MAP_CODEC.forGetter(SpecialSoldierDef::growth)
     ).apply(i, SpecialSoldierDef::new));
 }

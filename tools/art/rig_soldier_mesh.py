@@ -56,17 +56,35 @@ SPECIES = {
     # esquerda do modelo (x < -0,28) e ficam atras do tronco (z > 0,09).
     "hoshina": {"stem": "hoshina", "hip_y": 0.93, "neck_y": 1.50, "hand_min_y": 0.86,
                 "arm_inner_x": [(1.25, 0.24), (0.0, 0.25)], "back_items": {"z_min": 0.12, "min_faces": 500}},
+    # 0.6-F: Hoshina com o traje numerado 10: a cauda do No. 10 sai do quadril esquerdo, passa por baixo da mao,
+    # sobe pelas costas e faz um arco por cima da cabeca ate a ponta na frente-direita. Separada pela superficie
+    # (sementes da cauda contra sementes do resto do corpo) e dividida em 4 ossos pelo comprimento da linha.
+    "hoshina_no10": {"stem": "hoshina_no10", "hip_y": 0.70, "neck_y": 1.31, "hand_min_y": 0.60,
+                     "arm_inner_x": [(1.0, 0.205), (0.0, 0.26)], "back_items": None,
+                     "tail": [[-0.3, 0.72, -0.12], [-0.45, 0.63, 0.2], [-0.5, 1.1, 0.38], [-0.35, 1.6, 0.25],
+                              [-0.1, 1.8, 0.0], [0.32, 1.6, -0.42]],
+                     "head_box": [-0.19, 0.23, -0.37, 0.08, 1.64]},
 }
+# Esqueleto do resto do corpo (sementes que disputam a pele com as da cauda): (inicio, fim).
+BODY_SEEDS = [([0, 0.9, 0], [0, 1.25, 0]), ([0, 1.25, 0], [0, 1.7, 0]), ([0, 1.3, 0], [0.33, 1.3, 0]),
+              ([0, 1.3, 0], [-0.33, 1.3, 0]), ([0.36, 1.3, 0], [0.38, 0.66, 0]), ([-0.36, 1.3, 0], [-0.4, 0.66, -0.05]),
+              ([0.12, 0.9, 0], [0.12, 0.05, 0]), ([-0.12, 0.9, 0], [-0.12, 0.05, 0])]
+TAIL = None
+TAIL_BONES = 4
+# Caixa da cabeca (x minimo, x maximo, z minimo, z maximo, topo; m) nos modelos com cauda.
+HEAD_BOX = None
 
 
 def use_species(name):
     """Ativa as medidas da especie (variaveis do modulo usadas pelas funcoes abaixo)."""
-    global NAME, STEM, SOURCE, HIP_Y, NECK_Y, HAND_MIN_Y, ARM_INNER_X, BACK_ITEMS
+    global NAME, STEM, SOURCE, HIP_Y, NECK_Y, HAND_MIN_Y, ARM_INNER_X, BACK_ITEMS, TAIL, HEAD_BOX
     spec = SPECIES[name]
     NAME, STEM = name, spec["stem"]
     SOURCE = ROOT / "tools/art/converted" / STEM
     HIP_Y, NECK_Y, HAND_MIN_Y = spec["hip_y"], spec["neck_y"], spec["hand_min_y"]
     ARM_INNER_X, BACK_ITEMS = spec["arm_inner_x"], spec["back_items"]
+    TAIL = [np.array(point, dtype=float) for point in spec["tail"]] if spec.get("tail") else None
+    HEAD_BOX = spec.get("head_box")
 
 
 # Pedaco isolado com ate tantas faces vai para o osso vizinho (absorb_fragments).
@@ -90,12 +108,24 @@ def split(mesh):
     back = back_items(vertices, faces) if BACK_ITEMS else np.zeros(len(faces), dtype=bool)
     # Bainhas nas costas: nao sao braco nem cabeca (iriam girar junto com eles).
     arm &= ~back
-    head = ~arm & ~back & (c[:, 1] > NECK_Y)
-    body = ~arm & ~head & (c[:, 1] > HIP_Y)
-    leg = ~arm & ~head & ~body
+    tail = tail_faces(vertices, faces) if TAIL else np.zeros(len(faces), dtype=bool)
+    if TAIL:
+        # Acima do pescoco, fora da caixa da cabeca (cubo de poucos triangulos, medido na vista em grade), so pode
+        # ser a cauda: o arco passa por cima da cabeca.
+        x0, x1, z0, z1, top = HEAD_BOX
+        in_head = (c[:, 0] > x0) & (c[:, 0] < x1) & (c[:, 2] > z0) & (c[:, 2] < z1) & (c[:, 1] < top)
+        tail = np.where(c[:, 1] > NECK_Y, ~in_head, tail)
+    arm &= ~tail
+    head = ~arm & ~back & ~tail & (c[:, 1] > NECK_Y)
+    body = ~arm & ~head & ~tail & (c[:, 1] > HIP_Y)
+    leg = ~arm & ~head & ~body & ~tail
     groups = {"head": head, "body": body,
               "arm_left": arm & (c[:, 0] < 0), "arm_right": arm & (c[:, 0] > 0),
               "leg_left": leg & (c[:, 0] <= 0), "leg_right": leg & (c[:, 0] > 0)}
+    if TAIL:
+        part = np.array([min(TAIL_BONES, int(polyline_param(point, TAIL) * TAIL_BONES) + 1) for point in c])
+        for number in range(1, TAIL_BONES + 1):
+            groups[f"tail_{number}"] = tail & (part == number)
     labels = np.empty(len(faces), dtype=object)
     for name, sel in groups.items():
         labels[sel] = name
@@ -103,6 +133,59 @@ def split(mesh):
     vertices, uvs, normals, faces, labels = cap_holes(vertices, uvs, normals, faces, labels,
                                                       dark_uv(vertices, uvs, faces, labels))
     return {name: (vertices, uvs, normals, faces[labels == name]) for name in groups}
+
+
+def tail_faces(vertices, faces):
+    """Faces da cauda: cada vertice vai para a semente mais proxima andando pela pele (Dijkstra na malha soldada);
+    sementes ao longo da linha da cauda (TAIL) contra sementes do esqueleto do corpo (BODY_SEEDS)."""
+    from scipy.sparse import coo_matrix
+    from scipy.sparse.csgraph import dijkstra
+    _, welded = np.unique(np.round(vertices, 5), axis=0, return_inverse=True)
+    welded = welded.reshape(-1)
+    count = welded.max() + 1
+    position = np.zeros((count, 3))
+    position[welded] = vertices
+    wf = welded[faces]
+    edges = np.vstack([wf[:, [0, 1]], wf[:, [1, 2]], wf[:, [2, 0]]])
+    length = np.linalg.norm(position[edges[:, 0]] - position[edges[:, 1]], axis=1) + 1e-6
+    graph = coo_matrix((length, (edges[:, 0], edges[:, 1])), shape=(count, count)).tocsr()
+    seeds, owner = [], []
+    segments = [(TAIL[i], TAIL[i + 1], True) for i in range(len(TAIL) - 1)]
+    segments += [(np.array(a, dtype=float), np.array(b, dtype=float), False) for a, b in BODY_SEEDS]
+    for start, end, is_tail in segments:
+        for t in np.linspace(0, 1, 8):
+            seeds.append(int(np.argmin(np.linalg.norm(position - (start + (end - start) * t), axis=1))))
+            owner.append(is_tail)
+    _, _, sources = dijkstra(graph, directed=False, indices=sorted(set(seeds)), min_only=True,
+                             return_predecessors=True)
+    owner_of = dict(zip(seeds, owner))
+    vertex_tail = np.array([owner_of.get(int(source), False) for source in sources])
+    votes = vertex_tail[wf].sum(axis=1)
+    return votes >= 2
+
+
+def polyline_param(point, line):
+    """Posicao (0 = inicio, 1 = fim) do ponto mais proximo na linha, pelo comprimento."""
+    lengths = [np.linalg.norm(line[i + 1] - line[i]) for i in range(len(line) - 1)]
+    total, walked, best = sum(lengths), 0.0, (np.inf, 0.0)
+    for i, segment in enumerate(lengths):
+        direction = line[i + 1] - line[i]
+        t = np.clip(np.dot(point - line[i], direction) / segment ** 2, 0, 1)
+        distance = np.linalg.norm(point - (line[i] + direction * t))
+        if distance < best[0]:
+            best = (distance, (walked + t * segment) / total)
+        walked += segment
+    return best[1]
+
+
+def polyline_point(line, fraction):
+    lengths = [np.linalg.norm(line[i + 1] - line[i]) for i in range(len(line) - 1)]
+    target = fraction * sum(lengths)
+    for i, segment in enumerate(lengths):
+        if target <= segment:
+            return line[i] + (line[i + 1] - line[i]) * (target / segment)
+        target -= segment
+    return line[-1]
 
 
 def back_items(vertices, faces):
@@ -383,6 +466,13 @@ def main():
     }
     parents = {"root": None, "body": "root", "head": "body", "arm_left": "body", "arm_right": "body",
                "leg_left": "root", "leg_right": "root", "item_right": "arm_right", "item_left": "arm_left"}
+    if TAIL:
+        # 0.6-F: cauda em 4 ossos encadeados (pivo no comeco de cada pedaco) e a terceira espada na ponta.
+        for number in range(1, TAIL_BONES + 1):
+            pivots[f"tail_{number}"] = polyline_point(TAIL, (number - 1) / TAIL_BONES)
+            parents[f"tail_{number}"] = "body" if number == 1 else f"tail_{number - 1}"
+        pivots["item_tail"] = TAIL[-1]
+        parents["item_tail"] = f"tail_{TAIL_BONES}"
     mesh_dir = ASSETS / "meshes" / NAME
     if mesh_dir.exists():
         shutil.rmtree(mesh_dir)

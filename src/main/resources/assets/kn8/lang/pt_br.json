@@ -665,5 +665,8 @@
   "kn8.invasion.level.6": "ameaça numerada",
   "kn8.invasion.no10_assault": "Ataque do Kaiju No. 10",
   "kn8.mission.no10_assault_defense.name": "Ameaça Numerada: No. 10",
-  "kn8.mission.no10_assault_defense.desc": "Preondactyls cobrem o céu e o Kaiju No. 10 vem logo atrás. Dizem que o No. 9 pode aparecer. O Vice-Capitão Hoshina vai com vocês."
+  "kn8.mission.no10_assault_defense.desc": "Preondactyls cobrem o céu e o Kaiju No. 10 vem logo atrás. Dizem que o No. 9 pode aparecer. O Vice-Capitão Hoshina vai com vocês.",
+  "entity.kn8.hoshina_no10": "Vice-Capitão Hoshina (Arma Numerada 10)",
+  "item.kn8.hoshina_no10_spawn_egg": "Ovo do Hoshina com a Arma Numerada 10",
+  "kn8.soldier.variant.hoshina_no10": "Hoshina (Numerada 10)"
 }

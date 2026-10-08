@@ -1,0 +1,14 @@
+{
+  "bones": {
+    "head": "kn8:meshes/hoshina_no10/head.obj",
+    "body": "kn8:meshes/hoshina_no10/body.obj",
+    "arm_left": "kn8:meshes/hoshina_no10/arm_left.obj",
+    "arm_right": "kn8:meshes/hoshina_no10/arm_right.obj",
+    "leg_left": "kn8:meshes/hoshina_no10/leg_left.obj",
+    "leg_right": "kn8:meshes/hoshina_no10/leg_right.obj",
+    "tail_1": "kn8:meshes/hoshina_no10/tail_1.obj",
+    "tail_2": "kn8:meshes/hoshina_no10/tail_2.obj",
+    "tail_3": "kn8:meshes/hoshina_no10/tail_3.obj",
+    "tail_4": "kn8:meshes/hoshina_no10/tail_4.obj"
+  }
+}
