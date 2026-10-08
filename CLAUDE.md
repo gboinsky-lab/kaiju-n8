@@ -290,6 +290,11 @@ remedidas na malha [SUPOSIÇÃO: núcleo no peito]. `build_primigenius.py` não 
 
 ## Pendências e [DECIDIR]
 
+- **Modelos recebidos (Miguel, 2026-10-08), so guardados:** soldado, Mk1, No. 10 pequeno e gigante refeitos
+  (substituem os atuais); novos Kaiju No. 8 (2 m), larva, Kafka, Kikoru (normal e Numbers 4 com asas), Reno
+  (normal e Numbers 6) e Mina (arma a caminho). **Nao implementar ate o Miguel mandar o documento e pedir.**
+  Lista e analise em `docs/MODELOS_RECEBIDOS_2026_10_08.md`.
+
 - **Decidido (Miguel, 2026-10-07):** o No. 9 é o vilão principal e é forte de propósito (fortitude 8,0, ~34 por
   golpe, derruba jogador fraco). Tem **regeneração** (`regeneration` no `numbered/<id>.json`, serve também ao No. 10)
   e foge com 15%. Receita da espada e patente Vice-Capitão são [SUPOSIÇÃO].
