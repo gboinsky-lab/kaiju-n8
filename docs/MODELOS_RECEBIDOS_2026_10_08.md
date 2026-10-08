@@ -56,7 +56,7 @@ textura 4096 (2048 nos No. 10): reduzir para 512-1024 na conversao.
 - **Kikoru + machado gigante** (AX-0112/0113): machado de lamina enorme (a cabeca do machado e quase do tamanho
   do tronco dela). Ataque: duas maos, girando de cima/de tras do ombro. Parada: **machado apoiado no ombro** com uma
   mao, lamina atras da cabeca. Liga com a regra da 0.4 ("o machado e de um soldado especial"): o `kn8:axe` atual
-  pode virar o machado dela. [DECIDIR] usar o `axe` atual ou um modelo novo do machado da Kikoru.
+  e o machado dela (**decidido pelo Miguel, 2026-10-08: "esse machado e dela"**).
 - **Aura da Kikoru:** **amarela/dourada com raios** (relampagos amarelos em volta do corpo e da arma, brilho
   amarelo no contorno). Vira um `aura/kikoru.json` no estilo `lightning` (como a roxa do Hoshina, so que amarela).
 - **Hoshina:** postura **bem baixa e agachada**, pernas abertas, corpo inclinado para a frente, as duas facas
