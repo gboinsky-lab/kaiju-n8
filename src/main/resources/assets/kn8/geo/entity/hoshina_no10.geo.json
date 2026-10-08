@@ -130,15 +130,6 @@
             -0.176
           ],
           "parent": "tail_3"
-        },
-        {
-          "name": "item_tail",
-          "pivot": [
-            -5.12,
-            25.6,
-            -6.72
-          ],
-          "parent": "tail_4"
         }
       ]
     }

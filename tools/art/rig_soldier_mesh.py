@@ -467,12 +467,10 @@ def main():
     parents = {"root": None, "body": "root", "head": "body", "arm_left": "body", "arm_right": "body",
                "leg_left": "root", "leg_right": "root", "item_right": "arm_right", "item_left": "arm_left"}
     if TAIL:
-        # 0.6-F: cauda em 4 ossos encadeados (pivo no comeco de cada pedaco) e a terceira espada na ponta.
+        # 0.6-F: cauda em 4 ossos encadeados (pivo no comeco de cada pedaco). Sem espada na ponta (Miguel).
         for number in range(1, TAIL_BONES + 1):
             pivots[f"tail_{number}"] = polyline_point(TAIL, (number - 1) / TAIL_BONES)
             parents[f"tail_{number}"] = "body" if number == 1 else f"tail_{number - 1}"
-        pivots["item_tail"] = TAIL[-1]
-        parents["item_tail"] = f"tail_{TAIL_BONES}"
     mesh_dir = ASSETS / "meshes" / NAME
     if mesh_dir.exists():
         shutil.rmtree(mesh_dir)

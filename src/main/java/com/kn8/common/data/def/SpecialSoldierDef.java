@@ -58,7 +58,7 @@ public record SpecialSoldierDef(float health, float armor, float speed, float fo
     }
 
     /**
-     * Traje numerado 10 (0.6-F, especificacao do Miguel secao 3): cauda com a terceira espada, que luta sozinha
+     * Traje numerado 10 (0.6-F, especificacao do Miguel secao 3): cauda que luta sozinha
      * ({@code tail}), e o Full Release ao chegar a 100% de sincronizacao ({@code full_release}). A sincronizacao
      * ({@code numbers10_sync}) e a % de Release, que sobe com a escalada de combate.
      */

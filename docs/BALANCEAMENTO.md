@@ -297,7 +297,7 @@ ainda mais forte e só ele chega a 100%): tudo do Hoshina, com vida **520**, Rel
 
 | Parte | Valor |
 |---|---|
-| Cauda (terceira espada) | corta sozinha a cada **30 ticks** (×0,6 em Full Release), alcance **4,5** (borda), golpe ×1,0 da arma; alvo: quem mira o Hoshina > quem está atrás/do lado > o mais perto |
+| Cauda (sem espada: Miguel) | corta sozinha a cada **30 ticks** (×0,6 em Full Release), alcance **4,5** (borda), golpe ×1,0 da arma; alvo: quem mira o Hoshina > quem está atrás/do lado > o mais perto |
 | Guarda da cauda | golpe `heavy` ou projétil vindo de fora dos **120°** da frente: dano ×**0,3**, recarga 30 ticks |
 | Full Release (100%) | dano ×**1,15**, velocidade ×1,15, recargas das técnicas ×0,7 |
 | Jūni-hitoe (só em Full Release) | 11 × 0,45 + último ×3,5 (preparo 10, 1 golpe a cada 2 ticks), ignora armadura [SUPOSIÇÃO], expõe o núcleo 160 ticks, recarga **600**, alcance 0–4, prioridade 20; não é interrompido por esquiva/contra-ataque |

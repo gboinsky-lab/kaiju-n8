@@ -30,8 +30,8 @@ import software.bernie.geckolib.animation.RawAnimation;
  * Hoshina com o traje numerado 10 (0.6-F, especificacao do Miguel secao 3). Tudo o que o Hoshina faz, mais:
  *
  * <ul>
- *   <li><b>cauda independente</b> (TailController da especificacao): a cauda segura a terceira espada (osso
- *   {@code item_tail}) e corta sozinha, mesmo com o Hoshina lutando com outro alvo. Prioridade: quem esta atacando o
+ *   <li><b>cauda independente</b> (TailController da especificacao): a propria cauda corta sozinha (sem terceira
+ *   espada, pedido do Miguel), mesmo com o Hoshina lutando com outro alvo. Prioridade: quem esta atacando o
  *   Hoshina, depois quem esta atras ou do lado, depois o alvo dele;</li>
  *   <li><b>guarda da cauda</b>: golpe pesado ou projetil vindo de fora da frente cai para {@code guard_factor};</li>
  *   <li><b>sincronizacao</b> ({@code numbers10_sync}) = a % de Release, que sobe com a escalada de combate ate 100%

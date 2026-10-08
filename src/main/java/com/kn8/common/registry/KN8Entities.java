@@ -88,7 +88,7 @@ public final class KN8Entities {
                     .eyeHeight(1.6F)
                     .clientTrackingRange(KAIJU_TRACKING_RANGE_CHUNKS)
                     .build("hoshina"));
-    /** 0.6-F: Hoshina com o traje numerado 10 (cauda com a terceira espada; special_soldier/hoshina_no10.json). */
+    /** 0.6-F: Hoshina com o traje numerado 10 (cauda que luta sozinha; special_soldier/hoshina_no10.json). */
     public static final DeferredHolder<EntityType<?>, EntityType<HoshinaNo10Entity>> HOSHINA_NO10 =
             ENTITY_TYPES.register("hoshina_no10", () -> EntityType.Builder.<HoshinaNo10Entity>of(
                             HoshinaNo10Entity::new, MobCategory.CREATURE)

@@ -375,7 +375,7 @@ Visto na nuvem (`docs/img/hoshina_modelo.png`, `hoshina_vs_honju.png`, `hoshina_
 
 | # | Passo | Esperado |
 |---|---|---|
-| 24.1 | Ovo do Hoshina com a Arma Numerada 10 ou `/summon kn8:hoshina_no10` | Hoshina de traje escuro com a cauda enrolada atrás; duas espadas nas mãos e a **terceira espada na ponta da cauda**; a cauda balança parada |
+| 24.1 | Ovo do Hoshina com a Arma Numerada 10 ou `/summon kn8:hoshina_no10` | Hoshina de traje escuro com a cauda enrolada atrás; duas espadas nas mãos e **nenhuma espada na cauda**; a cauda balança parada |
 | 24.2 | `/kn8 kaiju spawn primigenius` atrás dele | A cauda corta sozinha o kaiju das costas (animação da cauda), mesmo com o Hoshina olhando para outro lado |
 | 24.3 | Deixar a luta seguir | A aura sobe com a escalada até **100%** (o Hoshina comum para em 92%): é a sincronização com o traje |
 | 24.4 | Em 100% (Full Release) | Mais rápido, mais dano, recargas menores; contra kaiju perto usa o **Jūni-hitoe** (12 golpes seguidos, o último forte, expõe o núcleo); não é interrompido por esquiva/contra-ataque |
