@@ -9,8 +9,8 @@ import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.kn8.common.anim.Locomotion;
 import com.kn8.KN8Constants;
+import com.kn8.common.anim.Locomotion;
 import com.kn8.common.attribute.PowerService;
 import com.kn8.common.combat.CombatService;
 import com.kn8.common.combat.SlashProjectile;

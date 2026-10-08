@@ -10,8 +10,8 @@ import java.util.OptionalDouble;
 import java.util.Set;
 import java.util.UUID;
 
-import com.kn8.common.anim.Locomotion;
 import com.kn8.KN8Constants;
+import com.kn8.common.anim.Locomotion;
 import com.kn8.common.boss.BossService;
 import com.kn8.common.boss.BossState;
 import com.kn8.common.combat.CombatService;

@@ -31,6 +31,7 @@
     "recover_ticks": 4,
     "body_kick": 1.0
   },
+  "first_person": false,
   "npc": {
     "arm_pose": "rifle"
   }

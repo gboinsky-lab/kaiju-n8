@@ -25,10 +25,13 @@ import net.minecraft.util.StringRepresentable;
  *
  * <p>{@code special} (0.5, opcional): ataque especial da arma (tecla R), com recarga e custo proprios. E das armas
  * especiais: o jogador usa, e os soldados especiais vao usar o mesmo resolvedor ({@code SpecialAttacks}).</p>
+ *
+ * <p>{@code profile} (0.5.0-D, opcional): perfil de animacao e manuseio da familia da arma
+ * ({@code weapon_profile/<id>.json}: maos, postura, saque, guarda, recarga, coice, NPC).</p>
  */
 public record WeaponDef(ResourceLocation item, float baseDamage, float reach, Style style,
         Map<String, Action> actions, List<Float> combo, Map<String, ResourceLocation> sounds,
-        Optional<Special> special) {
+        Optional<Special> special, Optional<ResourceLocation> profile) {
 
     /** Familia da arma (decide animacoes e regras de combate). */
     public enum Style implements StringRepresentable {
@@ -127,6 +130,7 @@ public record WeaponDef(ResourceLocation item, float baseDamage, float reach, St
             DefCodecs.MULTIPLIER.listOf().optionalFieldOf("combo", List.of()).forGetter(WeaponDef::combo),
             Codec.unboundedMap(Codec.STRING, ResourceLocation.CODEC).optionalFieldOf("sounds", Map.of())
                     .forGetter(WeaponDef::sounds),
-            Special.CODEC.optionalFieldOf("special").forGetter(WeaponDef::special)
+            Special.CODEC.optionalFieldOf("special").forGetter(WeaponDef::special),
+            ResourceLocation.CODEC.optionalFieldOf("profile").forGetter(WeaponDef::profile)
     ).apply(i, WeaponDef::new));
 }

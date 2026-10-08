@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -26,6 +27,7 @@ import com.kn8.common.data.def.SoldierDef;
 import com.kn8.common.data.def.SpecialSoldierDef;
 import com.kn8.common.data.def.SuitDef;
 import com.kn8.common.data.def.WeaponDef;
+import com.kn8.common.data.def.WeaponProfileDef;
 import com.kn8.common.data.def.WorkbenchRecipeDef;
 
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -68,7 +70,11 @@ public final class DataValidation {
                 validateKaiju(KN8Data.KAIJU.loaded(), abilities.keySet(), dismantles.keySet(), report), report);
         Map<ResourceLocation, BossDef> bosses = publish(KN8Data.BOSS,
                 validateBosses(KN8Data.BOSS.loaded(), kaiju.keySet(), abilities.keySet(), report), report);
+        Map<ResourceLocation, WeaponProfileDef> profiles = publish(KN8Data.WEAPON_PROFILE,
+                validateWeaponProfiles(KN8Data.WEAPON_PROFILE.loaded(), report), report);
         publish(KN8Data.WEAPON, validateWeapons(KN8Data.WEAPON.loaded(), report), report);
+        KN8Data.WEAPON.loaded().forEach((id, weapon) -> weapon.profile().filter(p -> !profiles.containsKey(p))
+                .ifPresent(p -> report.warning("weapon " + id + ": perfil inexistente " + p)));
         Map<ResourceLocation, AuraDef> auras = publish(KN8Data.AURA, new HashMap<>(KN8Data.AURA.loaded()), report);
         KN8Data.SUIT.loaded().forEach((id, suit) -> suit.aura().filter(aura -> !auras.containsKey(aura))
                 .ifPresent(aura -> report.warning("suit " + id + ": aura inexistente " + aura)));
@@ -189,6 +195,23 @@ public final class DataValidation {
 
     /** 0.1-B: soldado precisa de ao menos um nivel e uma variante; arma inexistente vira aviso (variante sem arma). */
     /** 0.6-E: o id do voador precisa ser um kaiju existente (o perfil de voo completa o kaiju/<id>.json). */
+    /** 0.5.0-D: recarga precisa de ao menos uma etapa; pose de NPC desconhecida so avisa (cai na de lamina). */
+    public static Map<ResourceLocation, WeaponProfileDef> validateWeaponProfiles(
+            Map<ResourceLocation, WeaponProfileDef> input, DataReport report) {
+        Map<ResourceLocation, WeaponProfileDef> valid = new LinkedHashMap<>();
+        input.forEach((id, def) -> {
+            if (def.reload().filter(reload -> reload.stages().isEmpty()).isPresent()) {
+                report.error("weapon_profile " + id + ": reload sem etapas");
+                return;
+            }
+            if (!List.of("rifle", "pistol", "blade", "unarmed").contains(def.npc().armPose())) {
+                report.warning("weapon_profile " + id + ": npc.arm_pose desconhecida " + def.npc().armPose());
+            }
+            valid.put(id, def);
+        });
+        return valid;
+    }
+
     /** 0.5.0-C: minimo acima do maximo nao tem como valer: o perfil sai (a animacao toca normal). */
     public static Map<ResourceLocation, LocomotionDef> validateLocomotion(Map<ResourceLocation, LocomotionDef> input,
             DataReport report) {

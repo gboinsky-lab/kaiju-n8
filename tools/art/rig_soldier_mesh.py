@@ -422,6 +422,21 @@ def shoot(pose):
     }}
 
 
+def reload(pose, length):
+    """0.5.0-D: recarga por etapas (tempos do weapon_profile): abaixa a arma, a mao esquerda vai ao pente na cintura
+    (soltar), volta com o pente (colocar) e puxa o ferrolho (engatilhar)."""
+    right, left = POSES[pose]
+    low = add(right, [18, 0, 0])
+    pouch = [-10, 20, -20]
+    t1, t2, t3 = length * 0.3, length * 0.6, length * 0.82
+    return {"animation_length": round(length, 2), "bones": {
+        "arm_right": {"rotation": kf((0, right), (t1, low), (t3, low), (length, right))},
+        "arm_left": {"rotation": kf((0, left), (t1 * 0.6, pouch), (t1, pouch), (t2, add(left, [10, -10, 0])),
+                                    (t3, add(left, [-15, 15, 0])), (length, left))},
+        "head": {"rotation": kf((0, [0, 0, 0]), (t1, [18, 0, 0]), (t3, [12, 0, 0]), (length, [0, 0, 0]))},
+    }}
+
+
 def animations():
     """Controllers do SoldierEntity: "movement" (pernas e tronco), "arms" (pose da arma), "action" e "reaction".
     Cada controller mexe em ossos/canais diferentes, entao as camadas se somam (andar + mirar)."""
@@ -453,6 +468,9 @@ def animations():
         }},
         p + "action.shoot_rifle": shoot("rifle"),
         p + "action.shoot_pistol": shoot("pistol"),
+        # Tempos do weapon_profile/rifle.json (32 ticks) e pistol.json (22 ticks).
+        p + "action.reload_rifle": reload("rifle", 32 / 20),
+        p + "action.reload_pistol": reload("pistol", 22 / 20),
         p + "reaction.hurt": {"animation_length": 0.3, "bones": {
             "body": {"rotation": kf((0, [0, 0, 0]), (0.1, [-8, 0, 0]), (0.3, [0, 0, 0]))},
         }},

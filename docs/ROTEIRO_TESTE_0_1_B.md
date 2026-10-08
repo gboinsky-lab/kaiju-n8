@@ -421,3 +421,28 @@ Visto na nuvem (`docs/img/hoshina_modelo.png`, `hoshina_vs_honju.png`, `hoshina_
 | 27.5 | Soldados e Hoshina andando/correndo | A animacao de andar acompanha a velocidade (Hoshina correndo anima mais rapido que soldado andando) |
 | 27.6 | Batalha da forma pequena ate virar gigante (60 s ou abaixo de 50%) | A troca de forma continua funcionando com os modelos novos |
 | 27.7 | Servidor dedicado + 2 clientes | Os dois veem a mesma cadencia de passos |
+
+## 28. Balanceamento v1.0 e auditoria de texturas (0.5.0-C2)
+
+| # | Passo | Esperado |
+|---|---|---|
+| 28.1 | `/kn8 kaiju info` perto de cada kaiju | Vida da tabela nova: aranha 65, Primigenius 220, ressurgido 310, Honju 360, revivido 460, Tecedeira 400, Preondactyl 430, No. 9 1.450, No. 10 1.650 / 4.600 |
+| 28.2 | Golpe comum e golpe pesado com Release alto num Honju | Comum tira no máximo 12% da vida dele, pesado/carregado no máximo 15%; o especial (R) passa disso |
+| 28.3 | `/kn8 soldier spawn rifle low` e `... elite` | Recruta/baixo com 20 de vida, elite com 34 |
+| 28.4 | Chefes (Honju do Exame, Primigenius Honju, Honju revivido) | Mesma vida de antes: 160, 480, 844 |
+| 28.5 | Olhar cada kaiju, o soldado e o Hoshina andando, atacando e tomando dano, de perto | Nenhuma parte sem textura, branca, preta, roxa ou com textura de outro modelo (referência: `docs/img/auditoria_texturas_*.jpg`) |
+
+## 29. Perfis de arma: postura, saque, guarda, recarga, coice e NPC (0.5.0-D)
+
+| # | Passo | Esperado |
+|---|---|---|
+| 29.1 | Em terceira pessoa (F5), trocar entre faca, espada, espada do Hoshina e machado | Cada uma com o saque (mão vai ao quadril e traz a arma) e depois a postura própria: faca em guarda curta, espada na diagonal, espadas do Hoshina em pegada invertida com o tronco inclinado, machado com as duas mãos |
+| 29.2 | Trocar de arma e atacar logo em seguida | Durante o saque o golpe não sai (faca 0,2 s, espada 0,4 s, machado 0,7 s) |
+| 29.3 | Segurar a guarda (V) com cada arma | Guarda da família: uma mão na frente, machado atravessado, espadas do Hoshina cruzadas em X |
+| 29.4 | Golpes de lâmina em primeira pessoa | Os braços do modelo aparecem fazendo o golpe e a guarda |
+| 29.5 | Rifle: atirar 30 vezes | HUD "Pente N/30" descendo; vazio, "RECARREGANDO" com barra, três sons (soltar, colocar, engatilhar) e volta a 30/30; durante a recarga não atira |
+| 29.6 | Rifle: atirar uma vez e apertar R | Recarga manual; o rifle continua na tela em primeira pessoa |
+| 29.7 | Atirar com rifle e com pistola em primeira pessoa | A mira sobe um pouco a cada tiro e volta em parte sozinha; a pistola dá mais coice |
+| 29.8 | Soldado com rifle ou pistola lutando contra um kaiju | Depois de 30 (rifle) ou 12 (pistola) tiros para, faz a animação de recarga com os sons e volta a atirar |
+| 29.9 | Soldado que troca para a faca de apoio | Espera o saque antes do primeiro golpe |
+| 29.10 | Servidor dedicado + 2 clientes | Cada um vê a postura, o saque, a guarda e a recarga do outro; a HUD do pente só aparece para o dono |

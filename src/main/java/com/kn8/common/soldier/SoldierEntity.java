@@ -7,15 +7,17 @@ import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.kn8.common.anim.Locomotion;
 import com.kn8.KN8Constants;
+import com.kn8.common.anim.Locomotion;
 import com.kn8.common.attribute.PowerService;
 import com.kn8.common.combat.CombatService;
 import com.kn8.common.combat.MeleeRaycast;
+import com.kn8.common.combat.WeaponHandling;
 import com.kn8.common.combat.WeaponIndex;
 import com.kn8.common.data.KN8Data;
 import com.kn8.common.data.def.SoldierDef;
 import com.kn8.common.data.def.WeaponDef;
+import com.kn8.common.data.def.WeaponProfileDef;
 import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.registry.KN8Items;
 import com.kn8.common.registry.KN8Sounds;
@@ -30,6 +32,7 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.DifficultyInstance;
@@ -126,6 +129,11 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
     /** 0.4: variante ja escolhida (comando, invasao, NBT); senao o finalizeSpawn sorteia. */
     private boolean variantChosen;
     private int swapCooldown;
+    /** 0.5.0-D: tiros no pente da arma de fogo (-1 = cheio) e recarga em andamento (etapas do perfil). */
+    private int rounds = -1;
+    private long reloadStartTick = -1;
+    private WeaponProfileDef.Reload reloading;
+    private int reloadStage = -1;
 
     public SoldierEntity(EntityType<? extends SoldierEntity> type, Level level) {
         super(type, level);
@@ -221,6 +229,71 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
         swapCooldown = SWAP_COOLDOWN_TICKS;
         level().playSound(null, blockPosition(), SoundEvents.ARMOR_EQUIP_GENERIC.value(), SoundSource.NEUTRAL, 0.6F,
                 1.2F);
+        // 0.5.0-D: saque da arma nova (tempo do perfil dela) antes do primeiro golpe; recarga pela metade se perde.
+        reloadStartTick = -1;
+        reloading = null;
+        timeline.cancel();
+        int draw = weaponProfile().map(profile -> profile.draw().ticks()).orElse(0);
+        if (draw > 0) {
+            timeline.tryStart(level().getGameTime(), "draw", draw, ActionTimeline.NO_IMPACT);
+        }
+    }
+
+    /** Perfil da arma na mao (0.5.0-D), dos dois lados. */
+    public Optional<WeaponProfileDef> weaponProfile() {
+        return weapon().flatMap(weapon -> WeaponHandling.profile(weapon, level().isClientSide()));
+    }
+
+    /** Tiros no pente agora (para os GameTests). */
+    public int rounds() {
+        return weaponProfile().flatMap(WeaponProfileDef::reload).map(reload -> rounds < 0 ? reload.magazine() : rounds)
+                .orElse(-1);
+    }
+
+    /**
+     * Pente vazio: comeca a recarga (todas as etapas do perfil, um som em cada) e recusa o tiro. Devolve true se o
+     * tiro pode sair.
+     */
+    private boolean checkMagazine(long now) {
+        Optional<WeaponProfileDef.Reload> reload = weaponProfile().flatMap(WeaponProfileDef::reload);
+        if (reload.isEmpty()) {
+            return true;
+        }
+        if (rounds < 0) {
+            rounds = reload.get().magazine();
+        }
+        if (rounds > 0) {
+            return true;
+        }
+        if (timeline.tryStart(now, "reload", reload.get().totalTicks(), ActionTimeline.NO_IMPACT)) {
+            reloading = reload.get();
+            reloadStartTick = now;
+            reloadStage = -1;
+            triggerAnim("action", POSE_PISTOL.equals(armPose()) ? "reload_pistol" : "reload_rifle");
+            tickReload(now);
+        }
+        return false;
+    }
+
+    private void tickReload(long now) {
+        long elapsed = now - reloadStartTick;
+        int stageStart = 0;
+        for (int index = 0; index < reloading.stages().size(); index++) {
+            WeaponProfileDef.Stage stage = reloading.stages().get(index);
+            if (elapsed >= stageStart && index > reloadStage) {
+                reloadStage = index;
+                stage.sound().ifPresent(id -> level().playSound(null, getX(), getEyeY(), getZ(),
+                        BuiltInRegistries.SOUND_EVENT.getOptional(id)
+                                .orElseGet(() -> SoundEvent.createVariableRangeEvent(id)),
+                        SoundSource.HOSTILE, MELEE_VOLUME, 1.0F));
+            }
+            stageStart += stage.ticks();
+        }
+        if (elapsed >= reloading.totalTicks()) {
+            rounds = reloading.magazine();
+            reloading = null;
+            reloadStartTick = -1;
+        }
     }
 
     public void setPowerLevel(String level) {
@@ -260,6 +333,11 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
      * armas no cliente. Variante desconhecida: lamina se tiver item na mao, senao sem arma.
      */
     public String armPose() {
+        // 0.5.0-D: o perfil da arma diz a pose (npc.arm_pose); sem perfil, pelo item como antes.
+        Optional<String> fromProfile = weaponProfile().map(profile -> profile.npc().armPose());
+        if (fromProfile.isPresent() && ARM_ANIMATIONS.containsKey(fromProfile.get() + "_ready")) {
+            return fromProfile.get();
+        }
         // 0.4: pela arma que esta na mao (o atirador pode estar com a faca de apoio).
         ItemStack held = getMainHandItem();
         if (held.is(KN8Items.RIFLE.get())) {
@@ -362,8 +440,14 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
             currentWeapon = null;
             currentUnarmed = true;
         }
+        if (currentWeapon != null && currentWeapon.style() == WeaponDef.Style.FIREARM && !checkMagazine(now)) {
+            return false;
+        }
         if (!timeline.tryStart(now, "attack", duration, Math.max(0, impact))) {
             return false;
+        }
+        if (currentWeapon != null && currentWeapon.style() == WeaponDef.Style.FIREARM && rounds > 0) {
+            rounds--;
         }
         actionTarget = target;
         if (currentWeapon != null && currentWeapon.style() != WeaponDef.Style.FIREARM) {
@@ -382,6 +466,9 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
         super.tick();
         if (swapCooldown > 0) {
             swapCooldown--;
+        }
+        if (!level().isClientSide() && reloading != null) {
+            tickReload(level().getGameTime());
         }
         if (!level().isClientSide() && timeline.consumeImpact(level().getGameTime())) {
             resolveImpact();
@@ -481,7 +568,9 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
         controllers.add(new AnimationController<>(this, "action", ACTION_TRANSITION_TICKS, state -> PlayState.STOP)
                 .triggerableAnim("attack", RawAnimation.begin().thenPlay("soldier.action.attack"))
                 .triggerableAnim("shoot_rifle", RawAnimation.begin().thenPlay("soldier.action.shoot_rifle"))
-                .triggerableAnim("shoot_pistol", RawAnimation.begin().thenPlay("soldier.action.shoot_pistol")));
+                .triggerableAnim("shoot_pistol", RawAnimation.begin().thenPlay("soldier.action.shoot_pistol"))
+                .triggerableAnim("reload_rifle", RawAnimation.begin().thenPlay("soldier.action.reload_rifle"))
+                .triggerableAnim("reload_pistol", RawAnimation.begin().thenPlay("soldier.action.reload_pistol")));
         controllers.add(new AnimationController<>(this, "reaction", 0, state -> PlayState.STOP)
                 .triggerableAnim("hurt", RawAnimation.begin().thenPlay("soldier.reaction.hurt")));
     }

@@ -280,6 +280,7 @@ public final class KN8Hud {
             lineY += step;
         }
         lineY = drawSpecial(graphics, font, x, lineY, step);
+        lineY = drawAmmo(graphics, font, x, lineY, step);
         Component combo = CombatFeedback.comboLine();
         if (combo != null) {
             graphics.drawString(font, combo, x + 2, lineY, COLOR_LABEL, true);
@@ -316,6 +317,26 @@ public final class KN8Hud {
         graphics.fill(barX, lineY + 2, barX + CHARGE_BAR_WIDTH, lineY + 6, COLOR_SEGMENT_EMPTY);
         graphics.fill(barX, lineY + 2, barX + Math.round(CHARGE_BAR_WIDTH * progress), lineY + 6,
                 ready ? COLOR_SURGE : COLOR_RELEASE_LIGHT);
+        return lineY + step;
+    }
+
+    /** 0.5.0-D: pente da arma de fogo ("Pente 12/30") e barra da recarga por etapas. */
+    private static int drawAmmo(GuiGraphics graphics, Font font, int x, int lineY, int step) {
+        if (CombatFeedback.magazine() <= 0) {
+            return lineY;
+        }
+        float reload = CombatFeedback.reloadProgress();
+        boolean empty = CombatFeedback.rounds() == 0;
+        Component label = reload >= 0.0F ? Component.translatable("kn8.hud.reloading")
+                : Component.translatable("kn8.hud.ammo", CombatFeedback.rounds(), CombatFeedback.magazine());
+        graphics.drawString(font, label, x + 2, lineY, empty || reload >= 0.0F ? blink(COLOR_SURGE) : COLOR_LABEL,
+                true);
+        if (reload >= 0.0F) {
+            int barX = x + 4 + font.width(label) + 4;
+            graphics.fill(barX, lineY + 2, barX + CHARGE_BAR_WIDTH, lineY + 6, COLOR_SEGMENT_EMPTY);
+            graphics.fill(barX, lineY + 2, barX + Math.round(CHARGE_BAR_WIDTH * reload), lineY + 6,
+                    COLOR_RELEASE_LIGHT);
+        }
         return lineY + step;
     }
 

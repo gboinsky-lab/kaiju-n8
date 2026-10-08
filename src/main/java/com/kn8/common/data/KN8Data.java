@@ -19,6 +19,7 @@ import com.kn8.common.data.def.SoldierDef;
 import com.kn8.common.data.def.SpecialSoldierDef;
 import com.kn8.common.data.def.SuitDef;
 import com.kn8.common.data.def.WeaponDef;
+import com.kn8.common.data.def.WeaponProfileDef;
 import com.kn8.common.data.def.WorkbenchRecipeDef;
 
 import net.minecraft.resources.ResourceLocation;
@@ -64,13 +65,18 @@ public final class KN8Data {
     public static final DataRegistry<NumberedDef> NUMBERED =
             new DataRegistry<>("numbered", NumberedDef.CODEC, false);
 
+    /** 0.5.0-D: perfil de animacao e manuseio por familia de arma (o cliente toca postura, saque e coice). */
+    public static final DataRegistry<WeaponProfileDef> WEAPON_PROFILE =
+            new DataRegistry<>("weapon_profile", WeaponProfileDef.CODEC, true);
+
     /** 0.5.0-C: perfil de locomocao (o cliente ajusta a animacao de andar pela passada). */
     public static final DataRegistry<LocomotionDef> LOCOMOTION =
             new DataRegistry<>("locomotion", LocomotionDef.CODEC, true);
 
     /** Ordem = ordem de validacao (cada um so referencia os anteriores). */
     public static final List<DataRegistry<?>> ALL =
-            List.of(RANK, ABILITY, DISMANTLE, KAIJU, BOSS, WEAPON, AURA, SUIT, MISSION, SOLDIER, WORKBENCH, INVASION,
+            List.of(RANK, ABILITY, DISMANTLE, KAIJU, BOSS, WEAPON_PROFILE, WEAPON, AURA, SUIT, MISSION, SOLDIER, WORKBENCH,
+                    INVASION,
                     NUMBERED, SPECIAL_SOLDIER, FLYER, LOCOMOTION);
 
     private KN8Data() {

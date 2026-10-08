@@ -11,6 +11,7 @@ import com.kn8.common.craft.OpenWorkbenchS2C;
 import com.kn8.common.invasion.InvasionStateS2C;
 import com.kn8.common.combat.CombatInputC2S;
 import com.kn8.common.combat.CombatNetwork;
+import com.kn8.common.combat.AmmoS2C;
 import com.kn8.common.combat.CombatStateS2C;
 import com.kn8.common.attribute.PowerSyncS2C;
 import com.kn8.common.attribute.ReleaseInputC2S;
@@ -50,7 +51,8 @@ public final class KN8Network {
     // 10 = 0.3: InvasionStateS2C.level (niveis de invasao). 11 = 0.5: CombatAction.SPECIAL e weapon.special.
     // 12 = 0.6-D: weapon.special.slash (corte a distancia) no registro de armas sincronizado.
     // 13 = 0.5.0-A: ReleaseInputC2S e PowerView novo. 14 = 0.5.0-C: registro sincronizado "locomotion".
-    private static final String PROTOCOL_VERSION = "14";
+    // 15 = 0.5.0-D: AmmoS2C, CombatResult.RELOADING e registro sincronizado "weapon_profile".
+    private static final String PROTOCOL_VERSION = "15";
 
     /** Diagnostico: 20 por segundo, rajada de 40. */
     private static final C2SGuard.Limit DEBUG_LIMIT = new C2SGuard.Limit(20, 40);
@@ -95,6 +97,8 @@ public final class KN8Network {
         toClientHook(registrar, VfxS2C.TYPE, VfxS2C.STREAM_CODEC);
         // M10b: resposta privada do combate (HUD do dono).
         toClientHook(registrar, CombatStateS2C.TYPE, CombatStateS2C.STREAM_CODEC);
+        // 0.5.0-D: pente da arma de fogo (HUD do dono).
+        toClientHook(registrar, AmmoS2C.TYPE, AmmoS2C.STREAM_CODEC);
         // M9: animacao PAL do jogador (tratada por codigo de cliente via KN8ClientHooks).
         toClientHook(registrar, AnimTriggerS2C.TYPE, AnimTriggerS2C.STREAM_CODEC);
     }

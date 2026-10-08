@@ -14,7 +14,9 @@ public enum CombatResult {
     /** 0.5: ataque especial ainda recarregando. */
     DENIED_COOLDOWN,
     /** 0.5: a arma na mao nao tem ataque especial. */
-    DENIED_NO_SPECIAL;
+    DENIED_NO_SPECIAL,
+    /** 0.5.0-D: pente vazio (a recarga comecou) ou recarregando. */
+    RELOADING;
 
     public static CombatResult byIndex(int index) {
         CombatResult[] values = values();

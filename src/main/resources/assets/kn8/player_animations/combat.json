@@ -325,7 +325,7 @@
             },
             "0.05": {
               "vector": [
-                -115,
+                -115.0,
                 -8,
                 0
               ]
@@ -375,7 +375,32 @@
             },
             "0.05": {
               "vector": [
-                -4,
+                -4.0,
+                0,
+                0
+              ]
+            },
+            "0.4": {
+              "vector": [
+                0,
+                0,
+                0
+              ]
+            }
+          }
+        },
+        "torso": {
+          "rotation": {
+            "0": {
+              "vector": [
+                0,
+                0,
+                0
+              ]
+            },
+            "0.05": {
+              "vector": [
+                -3.0,
                 0,
                 0
               ]
@@ -1424,7 +1449,7 @@
             },
             "0.05": {
               "vector": [
-                -115,
+                -130.0,
                 -8,
                 0
               ]
@@ -1474,7 +1499,32 @@
             },
             "0.05": {
               "vector": [
-                -4,
+                -6.4,
+                0,
+                0
+              ]
+            },
+            "0.3": {
+              "vector": [
+                0,
+                0,
+                0
+              ]
+            }
+          }
+        },
+        "torso": {
+          "rotation": {
+            "0": {
+              "vector": [
+                0,
+                0,
+                0
+              ]
+            },
+            "0.05": {
+              "vector": [
+                -4.800000000000001,
                 0,
                 0
               ]
@@ -1504,7 +1554,7 @@
             },
             "0.05": {
               "vector": [
-                -115,
+                -115.0,
                 -8,
                 0
               ]
@@ -1554,7 +1604,32 @@
             },
             "0.05": {
               "vector": [
-                -4,
+                -4.0,
+                0,
+                0
+              ]
+            },
+            "0.4": {
+              "vector": [
+                0,
+                0,
+                0
+              ]
+            }
+          }
+        },
+        "torso": {
+          "rotation": {
+            "0": {
+              "vector": [
+                0,
+                0,
+                0
+              ]
+            },
+            "0.05": {
+              "vector": [
+                -3.0,
                 0,
                 0
               ]
@@ -1732,6 +1807,1500 @@
             "1.4": {
               "vector": [
                 0,
+                0,
+                0
+              ]
+            }
+          }
+        }
+      }
+    },
+    "player.dual_reverse.stance": {
+      "loop": true,
+      "animation_length": 2.0,
+      "bones": {
+        "right_arm": {
+          "rotation": {
+            "0": {
+              "vector": [
+                -38,
+                -22,
+                18
+              ]
+            },
+            "1.0": {
+              "vector": [
+                -40,
+                -22,
+                18
+              ]
+            },
+            "2.0": {
+              "vector": [
+                -38,
+                -22,
+                18
+              ]
+            }
+          }
+        },
+        "left_arm": {
+          "rotation": {
+            "0": {
+              "vector": [
+                -38,
+                22,
+                -18
+              ]
+            },
+            "1.0": {
+              "vector": [
+                -40,
+                22,
+                -18
+              ]
+            },
+            "2.0": {
+              "vector": [
+                -38,
+                22,
+                -18
+              ]
+            }
+          }
+        },
+        "torso": {
+          "rotation": {
+            "0": {
+              "vector": [
+                16,
+                0,
+                0
+              ]
+            },
+            "1.0": {
+              "vector": [
+                16,
+                0,
+                0
+              ]
+            },
+            "2.0": {
+              "vector": [
+                16,
+                0,
+                0
+              ]
+            }
+          }
+        },
+        "right_item": {
+          "rotation": {
+            "0": {
+              "vector": [
+                180,
+                0,
+                0
+              ]
+            },
+            "1.0": {
+              "vector": [
+                180,
+                0,
+                0
+              ]
+            },
+            "2.0": {
+              "vector": [
+                180,
+                0,
+                0
+              ]
+            }
+          }
+        },
+        "left_item": {
+          "rotation": {
+            "0": {
+              "vector": [
+                180,
+                0,
+                0
+              ]
+            },
+            "1.0": {
+              "vector": [
+                180,
+                0,
+                0
+              ]
+            },
+            "2.0": {
+              "vector": [
+                180,
+                0,
+                0
+              ]
+            }
+          }
+        }
+      }
+    },
+    "player.dual_reverse.draw": {
+      "animation_length": 0.5,
+      "bones": {
+        "right_arm": {
+          "rotation": {
+            "0": {
+              "vector": [
+                0,
+                0,
+                0
+              ]
+            },
+            "0.2": {
+              "vector": [
+                25,
+                20,
+                25
+              ]
+            },
+            "0.5": {
+              "vector": [
+                -38,
+                -22,
+                18
+              ]
+            }
+          }
+        },
+        "left_arm": {
+          "rotation": {
+            "0": {
+              "vector": [
+                0,
+                0,
+                0
+              ]
+            },
+            "0.2": {
+              "vector": [
+                25,
+                -20,
+                -25
+              ]
+            },
+            "0.5": {
+              "vector": [
+                -38,
+                22,
+                -18
+              ]
+            }
+          }
+        },
+        "torso": {
+          "rotation": {
+            "0": {
+              "vector": [
+                0,
+                0,
+                0
+              ]
+            },
+            "0.2": {
+              "vector": [
+                0,
+                -10,
+                0
+              ]
+            },
+            "0.5": {
+              "vector": [
+                16,
+                0,
+                0
+              ]
+            }
+          }
+        },
+        "right_item": {
+          "rotation": {
+            "0": {
+              "vector": [
+                0,
+                0,
+                0
+              ]
+            },
+            "0.2": {
+              "vector": [
+                90,
+                0,
+                0
+              ]
+            },
+            "0.5": {
+              "vector": [
+                180,
+                0,
+                0
+              ]
+            }
+          }
+        },
+        "left_item": {
+          "rotation": {
+            "0": {
+              "vector": [
+                0,
+                0,
+                0
+              ]
+            },
+            "0.2": {
+              "vector": [
+                90,
+                0,
+                0
+              ]
+            },
+            "0.5": {
+              "vector": [
+                180,
+                0,
+                0
+              ]
+            }
+          }
+        }
+      }
+    },
+    "player.dual_reverse.guard": {
+      "loop": "hold_on_last_frame",
+      "animation_length": 0.2,
+      "bones": {
+        "right_arm": {
+          "rotation": {
+            "0": {
+              "vector": [
+                0,
+                0,
+                0
+              ]
+            },
+            "0.2": {
+              "vector": [
+                -95,
+                -40,
+                0
+              ]
+            }
+          }
+        },
+        "left_arm": {
+          "rotation": {
+            "0": {
+              "vector": [
+                0,
+                0,
+                0
+              ]
+            },
+            "0.2": {
+              "vector": [
+                -95,
+                40,
+                0
+              ]
+            }
+          }
+        },
+        "torso": {
+          "rotation": {
+            "0": {
+              "vector": [
+                0,
+                0,
+                0
+              ]
+            },
+            "0.2": {
+              "vector": [
+                8,
+                0,
+                0
+              ]
+            }
+          }
+        },
+        "right_item": {
+          "rotation": {
+            "0": {
+              "vector": [
+                0,
+                0,
+                0
+              ]
+            },
+            "0.2": {
+              "vector": [
+                0,
+                0,
+                -35
+              ]
+            }
+          }
+        },
+        "left_item": {
+          "rotation": {
+            "0": {
+              "vector": [
+                0,
+                0,
+                0
+              ]
+            },
+            "0.2": {
+              "vector": [
+                0,
+                0,
+                35
+              ]
+            }
+          }
+        }
+      }
+    },
+    "player.knife.stance": {
+      "loop": true,
+      "animation_length": 2.0,
+      "bones": {
+        "right_arm": {
+          "rotation": {
+            "0": {
+              "vector": [
+                -35,
+                -12,
+                8
+              ]
+            },
+            "1.0": {
+              "vector": [
+                -37,
+                -12,
+                8
+              ]
+            },
+            "2.0": {
+              "vector": [
+                -35,
+                -12,
+                8
+              ]
+            }
+          }
+        },
+        "left_arm": {
+          "rotation": {
+            "0": {
+              "vector": [
+                -25,
+                18,
+                -6
+              ]
+            },
+            "1.0": {
+              "vector": [
+                -27,
+                18,
+                -6
+              ]
+            },
+            "2.0": {
+              "vector": [
+                -25,
+                18,
+                -6
+              ]
+            }
+          }
+        },
+        "torso": {
+          "rotation": {
+            "0": {
+              "vector": [
+                6,
+                8,
+                0
+              ]
+            },
+            "1.0": {
+              "vector": [
+                6,
+                8,
+                0
+              ]
+            },
+            "2.0": {
+              "vector": [
+                6,
+                8,
+                0
+              ]
+            }
+          }
+        }
+      }
+    },
+    "player.knife.draw": {
+      "animation_length": 0.2,
+      "bones": {
+        "right_arm": {
+          "rotation": {
+            "0": {
+              "vector": [
+                0,
+                0,
+                0
+              ]
+            },
+            "0.08": {
+              "vector": [
+                25,
+                20,
+                25
+              ]
+            },
+            "0.2": {
+              "vector": [
+                -35,
+                -12,
+                8
+              ]
+            }
+          }
+        },
+        "left_arm": {
+          "rotation": {
+            "0": {
+              "vector": [
+                0,
+                0,
+                0
+              ]
+            },
+            "0.08": {
+              "vector": [
+                0,
+                0,
+                0
+              ]
+            },
+            "0.2": {
+              "vector": [
+                -25,
+                18,
+                -6
+              ]
+            }
+          }
+        },
+        "torso": {
+          "rotation": {
+            "0": {
+              "vector": [
+                0,
+                0,
+                0
+              ]
+            },
+            "0.08": {
+              "vector": [
+                0,
+                -10,
+                0
+              ]
+            },
+            "0.2": {
+              "vector": [
+                6,
+                8,
+                0
+              ]
+            }
+          }
+        }
+      }
+    },
+    "player.knife.guard": {
+      "loop": "hold_on_last_frame",
+      "animation_length": 0.2,
+      "bones": {
+        "right_arm": {
+          "rotation": {
+            "0": {
+              "vector": [
+                0,
+                0,
+                0
+              ]
+            },
+            "0.2": {
+              "vector": [
+                -85,
+                -25,
+                15
+              ]
+            }
+          }
+        },
+        "left_arm": {
+          "rotation": {
+            "0": {
+              "vector": [
+                0,
+                0,
+                0
+              ]
+            },
+            "0.2": {
+              "vector": [
+                -40,
+                20,
+                0
+              ]
+            }
+          }
+        },
+        "torso": {
+          "rotation": {
+            "0": {
+              "vector": [
+                0,
+                0,
+                0
+              ]
+            },
+            "0.2": {
+              "vector": [
+                8,
+                0,
+                0
+              ]
+            }
+          }
+        }
+      }
+    },
+    "player.pistol.draw": {
+      "animation_length": 0.3,
+      "bones": {
+        "right_arm": {
+          "rotation": {
+            "0": {
+              "vector": [
+                0,
+                0,
+                0
+              ]
+            },
+            "0.12": {
+              "vector": [
+                25,
+                20,
+                25
+              ]
+            },
+            "0.3": {
+              "vector": [
+                -60,
+                -8,
+                0
+              ]
+            }
+          }
+        },
+        "left_arm": {
+          "rotation": {
+            "0": {
+              "vector": [
+                0,
+                0,
+                0
+              ]
+            },
+            "0.12": {
+              "vector": [
+                0,
+                0,
+                0
+              ]
+            },
+            "0.3": {
+              "vector": [
+                -55,
+                25,
+                0
+              ]
+            }
+          }
+        }
+      }
+    },
+    "player.pistol.guard": {
+      "loop": "hold_on_last_frame",
+      "animation_length": 0.2,
+      "bones": {
+        "right_arm": {
+          "rotation": {
+            "0": {
+              "vector": [
+                0,
+                0,
+                0
+              ]
+            },
+            "0.2": {
+              "vector": [
+                -85,
+                -25,
+                15
+              ]
+            }
+          }
+        },
+        "left_arm": {
+          "rotation": {
+            "0": {
+              "vector": [
+                0,
+                0,
+                0
+              ]
+            },
+            "0.2": {
+              "vector": [
+                -40,
+                20,
+                0
+              ]
+            }
+          }
+        },
+        "torso": {
+          "rotation": {
+            "0": {
+              "vector": [
+                0,
+                0,
+                0
+              ]
+            },
+            "0.2": {
+              "vector": [
+                8,
+                0,
+                0
+              ]
+            }
+          }
+        }
+      }
+    },
+    "player.pistol.reload": {
+      "animation_length": 1.1,
+      "bones": {
+        "right_arm": {
+          "rotation": {
+            "0": {
+              "vector": [
+                -70,
+                -15,
+                0
+              ]
+            },
+            "0.15": {
+              "vector": [
+                -62,
+                -14,
+                0
+              ]
+            },
+            "0.8": {
+              "vector": [
+                -62,
+                -14,
+                0
+              ]
+            },
+            "1.1": {
+              "vector": [
+                -70,
+                -15,
+                0
+              ]
+            }
+          }
+        },
+        "left_arm": {
+          "rotation": {
+            "0": {
+              "vector": [
+                -85,
+                25,
+                0
+              ]
+            },
+            "0.18": {
+              "vector": [
+                -55,
+                10,
+                0
+              ]
+            },
+            "0.3": {
+              "vector": [
+                -10,
+                15,
+                -15
+              ]
+            },
+            "0.64": {
+              "vector": [
+                -60,
+                5,
+                0
+              ]
+            },
+            "0.8": {
+              "vector": [
+                -70,
+                0,
+                0
+              ]
+            },
+            "1.01": {
+              "vector": [
+                -80,
+                30,
+                0
+              ]
+            },
+            "1.1": {
+              "vector": [
+                -85,
+                25,
+                0
+              ]
+            }
+          }
+        },
+        "head": {
+          "rotation": {
+            "0": {
+              "vector": [
+                0,
+                0,
+                0
+              ]
+            },
+            "0.3": {
+              "vector": [
+                20,
+                0,
+                0
+              ]
+            },
+            "0.8": {
+              "vector": [
+                20,
+                0,
+                0
+              ]
+            },
+            "1.1": {
+              "vector": [
+                0,
+                0,
+                0
+              ]
+            }
+          }
+        }
+      }
+    },
+    "player.rifle.draw": {
+      "animation_length": 0.6,
+      "bones": {
+        "right_arm": {
+          "rotation": {
+            "0": {
+              "vector": [
+                0,
+                0,
+                0
+              ]
+            },
+            "0.24": {
+              "vector": [
+                25,
+                20,
+                25
+              ]
+            },
+            "0.6": {
+              "vector": [
+                -60,
+                -8,
+                0
+              ]
+            }
+          }
+        },
+        "left_arm": {
+          "rotation": {
+            "0": {
+              "vector": [
+                0,
+                0,
+                0
+              ]
+            },
+            "0.24": {
+              "vector": [
+                0,
+                0,
+                0
+              ]
+            },
+            "0.6": {
+              "vector": [
+                -55,
+                25,
+                0
+              ]
+            }
+          }
+        }
+      }
+    },
+    "player.rifle.guard": {
+      "loop": "hold_on_last_frame",
+      "animation_length": 0.2,
+      "bones": {
+        "right_arm": {
+          "rotation": {
+            "0": {
+              "vector": [
+                0,
+                0,
+                0
+              ]
+            },
+            "0.2": {
+              "vector": [
+                -80,
+                -45,
+                0
+              ]
+            }
+          }
+        },
+        "left_arm": {
+          "rotation": {
+            "0": {
+              "vector": [
+                0,
+                0,
+                0
+              ]
+            },
+            "0.2": {
+              "vector": [
+                -80,
+                45,
+                0
+              ]
+            }
+          }
+        },
+        "torso": {
+          "rotation": {
+            "0": {
+              "vector": [
+                0,
+                0,
+                0
+              ]
+            },
+            "0.2": {
+              "vector": [
+                8,
+                0,
+                0
+              ]
+            }
+          }
+        }
+      }
+    },
+    "player.rifle.reload": {
+      "animation_length": 1.6,
+      "bones": {
+        "right_arm": {
+          "rotation": {
+            "0": {
+              "vector": [
+                -75,
+                -8,
+                0
+              ]
+            },
+            "0.25": {
+              "vector": [
+                -62,
+                -14,
+                0
+              ]
+            },
+            "1.2": {
+              "vector": [
+                -62,
+                -14,
+                0
+              ]
+            },
+            "1.6": {
+              "vector": [
+                -75,
+                -8,
+                0
+              ]
+            }
+          }
+        },
+        "left_arm": {
+          "rotation": {
+            "0": {
+              "vector": [
+                -85,
+                25,
+                0
+              ]
+            },
+            "0.3": {
+              "vector": [
+                -55,
+                10,
+                0
+              ]
+            },
+            "0.5": {
+              "vector": [
+                -10,
+                15,
+                -15
+              ]
+            },
+            "0.96": {
+              "vector": [
+                -60,
+                5,
+                0
+              ]
+            },
+            "1.2": {
+              "vector": [
+                -70,
+                0,
+                0
+              ]
+            },
+            "1.48": {
+              "vector": [
+                -80,
+                30,
+                0
+              ]
+            },
+            "1.6": {
+              "vector": [
+                -85,
+                25,
+                0
+              ]
+            }
+          }
+        },
+        "head": {
+          "rotation": {
+            "0": {
+              "vector": [
+                0,
+                0,
+                0
+              ]
+            },
+            "0.5": {
+              "vector": [
+                20,
+                0,
+                0
+              ]
+            },
+            "1.2": {
+              "vector": [
+                20,
+                0,
+                0
+              ]
+            },
+            "1.6": {
+              "vector": [
+                0,
+                0,
+                0
+              ]
+            }
+          }
+        }
+      }
+    },
+    "player.sword.stance": {
+      "loop": true,
+      "animation_length": 2.0,
+      "bones": {
+        "right_arm": {
+          "rotation": {
+            "0": {
+              "vector": [
+                -42,
+                -18,
+                12
+              ]
+            },
+            "1.0": {
+              "vector": [
+                -44,
+                -18,
+                12
+              ]
+            },
+            "2.0": {
+              "vector": [
+                -42,
+                -18,
+                12
+              ]
+            }
+          }
+        },
+        "left_arm": {
+          "rotation": {
+            "0": {
+              "vector": [
+                -12,
+                10,
+                -4
+              ]
+            },
+            "1.0": {
+              "vector": [
+                -14,
+                10,
+                -4
+              ]
+            },
+            "2.0": {
+              "vector": [
+                -12,
+                10,
+                -4
+              ]
+            }
+          }
+        },
+        "torso": {
+          "rotation": {
+            "0": {
+              "vector": [
+                4,
+                10,
+                0
+              ]
+            },
+            "1.0": {
+              "vector": [
+                4,
+                10,
+                0
+              ]
+            },
+            "2.0": {
+              "vector": [
+                4,
+                10,
+                0
+              ]
+            }
+          }
+        }
+      }
+    },
+    "player.sword.draw": {
+      "animation_length": 0.4,
+      "bones": {
+        "right_arm": {
+          "rotation": {
+            "0": {
+              "vector": [
+                0,
+                0,
+                0
+              ]
+            },
+            "0.16": {
+              "vector": [
+                25,
+                20,
+                25
+              ]
+            },
+            "0.4": {
+              "vector": [
+                -42,
+                -18,
+                12
+              ]
+            }
+          }
+        },
+        "left_arm": {
+          "rotation": {
+            "0": {
+              "vector": [
+                0,
+                0,
+                0
+              ]
+            },
+            "0.16": {
+              "vector": [
+                0,
+                0,
+                0
+              ]
+            },
+            "0.4": {
+              "vector": [
+                -12,
+                10,
+                -4
+              ]
+            }
+          }
+        },
+        "torso": {
+          "rotation": {
+            "0": {
+              "vector": [
+                0,
+                0,
+                0
+              ]
+            },
+            "0.16": {
+              "vector": [
+                0,
+                -10,
+                0
+              ]
+            },
+            "0.4": {
+              "vector": [
+                4,
+                10,
+                0
+              ]
+            }
+          }
+        }
+      }
+    },
+    "player.sword.guard": {
+      "loop": "hold_on_last_frame",
+      "animation_length": 0.2,
+      "bones": {
+        "right_arm": {
+          "rotation": {
+            "0": {
+              "vector": [
+                0,
+                0,
+                0
+              ]
+            },
+            "0.2": {
+              "vector": [
+                -85,
+                -25,
+                15
+              ]
+            }
+          }
+        },
+        "left_arm": {
+          "rotation": {
+            "0": {
+              "vector": [
+                0,
+                0,
+                0
+              ]
+            },
+            "0.2": {
+              "vector": [
+                -40,
+                20,
+                0
+              ]
+            }
+          }
+        },
+        "torso": {
+          "rotation": {
+            "0": {
+              "vector": [
+                0,
+                0,
+                0
+              ]
+            },
+            "0.2": {
+              "vector": [
+                8,
+                0,
+                0
+              ]
+            }
+          }
+        }
+      }
+    },
+    "player.two_handed_axe.stance": {
+      "loop": true,
+      "animation_length": 2.0,
+      "bones": {
+        "right_arm": {
+          "rotation": {
+            "0": {
+              "vector": [
+                -48,
+                -30,
+                0
+              ]
+            },
+            "1.0": {
+              "vector": [
+                -50,
+                -30,
+                0
+              ]
+            },
+            "2.0": {
+              "vector": [
+                -48,
+                -30,
+                0
+              ]
+            }
+          }
+        },
+        "left_arm": {
+          "rotation": {
+            "0": {
+              "vector": [
+                -55,
+                38,
+                0
+              ]
+            },
+            "1.0": {
+              "vector": [
+                -57,
+                38,
+                0
+              ]
+            },
+            "2.0": {
+              "vector": [
+                -55,
+                38,
+                0
+              ]
+            }
+          }
+        },
+        "torso": {
+          "rotation": {
+            "0": {
+              "vector": [
+                6,
+                22,
+                0
+              ]
+            },
+            "1.0": {
+              "vector": [
+                6,
+                22,
+                0
+              ]
+            },
+            "2.0": {
+              "vector": [
+                6,
+                22,
+                0
+              ]
+            }
+          }
+        }
+      }
+    },
+    "player.two_handed_axe.draw": {
+      "animation_length": 0.7,
+      "bones": {
+        "right_arm": {
+          "rotation": {
+            "0": {
+              "vector": [
+                0,
+                0,
+                0
+              ]
+            },
+            "0.28": {
+              "vector": [
+                25,
+                20,
+                25
+              ]
+            },
+            "0.7": {
+              "vector": [
+                -48,
+                -30,
+                0
+              ]
+            }
+          }
+        },
+        "left_arm": {
+          "rotation": {
+            "0": {
+              "vector": [
+                0,
+                0,
+                0
+              ]
+            },
+            "0.28": {
+              "vector": [
+                0,
+                0,
+                0
+              ]
+            },
+            "0.7": {
+              "vector": [
+                -55,
+                38,
+                0
+              ]
+            }
+          }
+        },
+        "torso": {
+          "rotation": {
+            "0": {
+              "vector": [
+                0,
+                0,
+                0
+              ]
+            },
+            "0.28": {
+              "vector": [
+                0,
+                -10,
+                0
+              ]
+            },
+            "0.7": {
+              "vector": [
+                6,
+                22,
+                0
+              ]
+            }
+          }
+        }
+      }
+    },
+    "player.two_handed_axe.guard": {
+      "loop": "hold_on_last_frame",
+      "animation_length": 0.2,
+      "bones": {
+        "right_arm": {
+          "rotation": {
+            "0": {
+              "vector": [
+                0,
+                0,
+                0
+              ]
+            },
+            "0.2": {
+              "vector": [
+                -80,
+                -45,
+                0
+              ]
+            }
+          }
+        },
+        "left_arm": {
+          "rotation": {
+            "0": {
+              "vector": [
+                0,
+                0,
+                0
+              ]
+            },
+            "0.2": {
+              "vector": [
+                -80,
+                45,
+                0
+              ]
+            }
+          }
+        },
+        "torso": {
+          "rotation": {
+            "0": {
+              "vector": [
+                0,
+                0,
+                0
+              ]
+            },
+            "0.2": {
+              "vector": [
+                8,
                 0,
                 0
               ]

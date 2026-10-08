@@ -45,12 +45,15 @@ public final class No9GameTests {
     public static void no9MassRevivesEverything(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         BlockPos center = helper.absolutePos(new BlockPos(4, 1, 4));
-        carcass(level, KN8Entities.PRIMIGENIUS.get().create(level), center.getX() + 8.5, center.getY(),
-                center.getZ() + 0.5);
-        carcass(level, KN8Entities.PRIMIGENIUS.get().create(level), center.getX() - 10.5, center.getY(),
-                center.getZ() + 6.5);
-        carcass(level, KN8Entities.PRIMIGENIUS_HONJU.get().create(level), center.getX() + 0.5, center.getY(),
-                center.getZ() + 14.5);
+        // So as carcacas deste teste contam: os lotes reaproveitam posicoes e uma carcaca deixada por outro teste
+        // (de uma especie que nao revive) na area derrubava o teste de vez em quando.
+        List<CarcassEntity> army = List.of(
+                carcass(level, KN8Entities.PRIMIGENIUS.get().create(level), center.getX() + 8.5, center.getY(),
+                        center.getZ() + 0.5),
+                carcass(level, KN8Entities.PRIMIGENIUS.get().create(level), center.getX() - 10.5, center.getY(),
+                        center.getZ() + 6.5),
+                carcass(level, KN8Entities.PRIMIGENIUS_HONJU.get().create(level), center.getX() + 0.5, center.getY(),
+                        center.getZ() + 14.5));
         KaijuEntity no9 = KaijuSpawner.spawn(level, KN8Constants.id("kaiju_no9"), center.offset(0, 0, -6))
                 .orElseThrow();
         no9.getPersistentData().putBoolean(No9Service.MASS_TAG, true);
@@ -59,7 +62,7 @@ public final class No9GameTests {
         // Espera ate o exercito levantar (gesto de 100 ticks + uma carcaca a cada 4), sem instante fixo: em lote
         // o pensamento do No. 9 (a cada 10 ticks) pode cair alguns ticks depois.
         helper.succeedWhen(() -> {
-            helper.assertTrue(level.getEntitiesOfClass(CarcassEntity.class, area).isEmpty(),
+            helper.assertTrue(army.stream().noneMatch(Entity::isAlive),
                     "Todas as carcacas deveriam ter sido revividas");
             List<KaijuEntity> resurrected = level.getEntitiesOfClass(KaijuEntity.class, area, kaiju -> kaiju
                     .kaijuId().equals(KN8Constants.id("primigenius_resurrected")));

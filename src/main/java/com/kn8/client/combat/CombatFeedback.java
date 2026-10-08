@@ -3,6 +3,7 @@ package com.kn8.client.combat;
 
 import java.util.Locale;
 
+import com.kn8.common.combat.AmmoS2C;
 import com.kn8.common.combat.CombatAction;
 import com.kn8.common.combat.CombatResult;
 import com.kn8.common.combat.CombatStateS2C;
@@ -29,6 +30,11 @@ public final class CombatFeedback {
     /** 0.5: quando (relogio do cliente) o ataque especial fica pronto e a recarga total, vindos do servidor. */
     private static long specialReadyAt;
     private static long specialTotalMillis;
+    /** 0.5.0-D: pente da arma de fogo na mao (magazine 0 = sem pente) e fim da recarga no relogio do cliente. */
+    private static int rounds;
+    private static int magazine;
+    private static long reloadEndsAt;
+    private static long reloadTotalMillis;
 
     private CombatFeedback() {
     }
@@ -36,6 +42,32 @@ public final class CombatFeedback {
     /** Chamado no setup do cliente. */
     public static void install() {
         KN8ClientHooks.register(CombatStateS2C.TYPE, CombatFeedback::onState);
+        KN8ClientHooks.register(AmmoS2C.TYPE, CombatFeedback::onAmmo);
+    }
+
+    private static void onAmmo(AmmoS2C payload) {
+        rounds = payload.rounds();
+        magazine = payload.magazine();
+        reloadTotalMillis = payload.reloadTotal() * MILLIS_PER_TICK;
+        reloadEndsAt = System.currentTimeMillis() + payload.reloadLeft() * MILLIS_PER_TICK;
+    }
+
+    /** Tiros no pente e tamanho dele (0 = a arma na mao nao tem pente). */
+    public static int rounds() {
+        return rounds;
+    }
+
+    public static int magazine() {
+        return magazine;
+    }
+
+    /** Fracao da recarga em andamento (0 a 1), ou -1 se nao esta recarregando. */
+    public static float reloadProgress() {
+        long remaining = reloadEndsAt - System.currentTimeMillis();
+        if (remaining <= 0 || reloadTotalMillis <= 0) {
+            return -1.0F;
+        }
+        return 1.0F - remaining / (float) reloadTotalMillis;
     }
 
     private static void onState(CombatStateS2C payload) {
@@ -45,6 +77,10 @@ public final class CombatFeedback {
             comboStep = payload.comboStep();
             comboLength = payload.comboLength();
             comboAt = now;
+        }
+        if (payload.action() == CombatAction.LIGHT.ordinal()
+                && (result == CombatResult.OK || result == CombatResult.SLOWED_NO_STAMINA)) {
+            WeaponRecoil.onShot();
         }
         if (payload.action() == CombatAction.SPECIAL.ordinal()) {
             // Na acao SPECIAL os campos do combo levam a recarga em ticks (CombatStateS2C).

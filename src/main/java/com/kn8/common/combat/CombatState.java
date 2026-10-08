@@ -1,8 +1,14 @@
 // src/main/java/com/kn8/common/combat/CombatState.java
 package com.kn8.common.combat;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.kn8.common.data.def.WeaponDef;
+import com.kn8.common.data.def.WeaponProfileDef;
 import com.kn8.core.combat.ActionTimeline;
+
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Estado de combate de UM jogador no servidor (attachment {@code kn8:combat}, nunca salvo: some no relog e na
@@ -28,6 +34,16 @@ public final class CombatState {
     long specialReadyTick = NEVER;
     /** 0.5: recarga total do ultimo ataque especial (para a HUD mostrar a fracao). */
     int specialCooldownTicks;
+    /** 0.5.0-D: item da mao principal no ultimo tick (saque ao trocar). */
+    ResourceLocation lastHeldItem;
+    /** 0.5.0-D: tiros no pente por arma (item); sem entrada = pente cheio. */
+    final Map<ResourceLocation, Integer> rounds = new HashMap<>();
+    long reloadStartTick = NEVER;
+    WeaponProfileDef.Reload reloadProfile;
+    ResourceLocation reloadItem;
+    int reloadStage = -1;
+    /** Pente esvaziou: recarrega quando o tiro atual terminar. */
+    boolean pendingReload;
 
     public boolean blocking() {
         return blocking;

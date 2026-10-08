@@ -45,8 +45,8 @@ import net.neoforged.neoforge.network.PacketDistributor;
  *
  * <ul>
  *   <li>Lamina ({@code blade}): leve, pesado, combo; pesado expoe o nucleo do kaiju.</li>
- *   <li>Arma de fogo ({@code firearm}, M10b): tiro instantaneo (raycast) ate o alcance do JSON; sem municao na 0.1
- *   (o GDD nao define municao; o ritmo vem da duracao da acao).</li>
+ *   <li>Arma de fogo ({@code firearm}, M10b): tiro instantaneo (raycast) ate o alcance do JSON; desde a 0.5.0-D com
+ *   pente e recarga por etapas do perfil da arma ({@link WeaponHandling}; reserva infinita).</li>
  *   <li>Parry e critico (M10b): o primeiro golpe depois de um parry, dentro da janela, e critico.</li>
  * </ul>
  */
@@ -151,7 +151,13 @@ public final class CombatService {
             return false;
         }
         if (state.blocking || state.timeline.isActive(now)) {
-            reply(player, request, CombatResult.DENIED_BUSY);
+            reply(player, request, WeaponHandling.RELOAD.equals(state.timeline.actionId())
+                    ? CombatResult.RELOADING : CombatResult.DENIED_BUSY);
+            return false;
+        }
+        boolean firearm = weapon.get().style() == WeaponDef.Style.FIREARM;
+        if (firearm && !WeaponHandling.canFire(player, state, weapon.get(), now)) {
+            reply(player, request, CombatResult.RELOADING);
             return false;
         }
         double cost = LIGHT.equals(actionName) ? ServerConfig.LIGHT_STAMINA_COST.get()
@@ -165,7 +171,9 @@ public final class CombatService {
             reply(player, request, CombatResult.DENIED_BUSY);
             return false;
         }
-        boolean firearm = weapon.get().style() == WeaponDef.Style.FIREARM;
+        if (firearm) {
+            WeaponHandling.spendRound(player, state, weapon.get(), now);
+        }
         float combo = 1.0F;
         if (LIGHT.equals(actionName) && !firearm) {
             state.comboStep = CombatMath.nextComboStep(state.comboStep, state.lastLightEndTick, now,
@@ -199,6 +207,7 @@ public final class CombatService {
     /** Todo tick do servidor: resolve o impacto no tick exato (publico para os GameTests). */
     public static void tick(ServerPlayer player) {
         CombatState state = state(player);
+        WeaponHandling.tick(player, state, now(player));
         if (state.currentWeapon == null || !state.timeline.consumeImpact(now(player))) {
             return;
         }
@@ -231,6 +240,11 @@ public final class CombatService {
             return false;
         }
         Optional<WeaponDef.Special> special = weapon.get().special();
+        if (special.isEmpty() && weapon.get().style() == WeaponDef.Style.FIREARM && !state.blocking
+                && WeaponHandling.manualReload(player, state, weapon.get(), now)) {
+            // 0.5.0-D: na arma de fogo sem especial, a tecla R recarrega.
+            return true;
+        }
         if (special.isEmpty()) {
             replySpecial(player, CombatResult.DENIED_NO_SPECIAL);
             return false;
@@ -385,7 +399,7 @@ public final class CombatService {
         state.blocking = allowed;
         if (allowed) {
             state.blockStartTick = now(player);
-            AnimationBridge.playPlayer(player, AnimationBridge.PLAYER_BLOCK);
+            AnimationBridge.playPlayer(player, WeaponHandling.guardAnimation(heldWeapon(player)));
         } else {
             AnimationBridge.stopPlayer(player);
         }

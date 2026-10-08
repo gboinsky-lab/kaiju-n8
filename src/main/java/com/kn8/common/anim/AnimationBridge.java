@@ -51,6 +51,14 @@ public final class AnimationBridge {
         return KN8Constants.id(KN8Ids.animationName("player", weaponItem.getPath(), action));
     }
 
+    /**
+     * 0.5.0-D: animacao do perfil da familia da arma: {@code kn8:player.<perfil>.<acao>} (draw, guard, reload,
+     * stance), gerada por tools/art/gen_player_animations.py a partir do {@code weapon_profile/<id>.json}.
+     */
+    public static ResourceLocation profileAction(ResourceLocation profile, String action) {
+        return KN8Constants.id(KN8Ids.animationName("player", profile.getPath(), action));
+    }
+
     /** Toca uma animacao PAL no jogador, para ele e para todos que o rastreiam. */
     public static void playPlayer(ServerPlayer player, ResourceLocation animation) {
         PacketDistributor.sendToPlayersTrackingEntityAndSelf(player,

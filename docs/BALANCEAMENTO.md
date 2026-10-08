@@ -143,6 +143,20 @@ Dano = base × (1 + Release% / 25) (`[fortitudeCurve] releaseDamageDivisor`).
 ✅ A patente de armas e trajes fica só nos `unlocks` das patentes (o antigo `required_rank` dos JSONs de arma e
 traje foi removido na 0.3 porque divergia deles).
 
+### Perfis de arma (`weapon_profile/<id>.json`, 0.5.0-D)
+
+| Perfil (armas) | Mãos | Saque | Pente | Recarga (etapas) | Coice da câmera | 1ª pessoa | NPC |
+|---|---|---|---|---|---|---|---|
+| `knife` (faca) | uma | 4 ticks | — | — | — | braços do modelo | lâmina |
+| `sword` (espada) | uma | 8 ticks | — | — | — | braços do modelo | lâmina |
+| `dual_reverse` (espada do Hoshina) | duas armas, pegada invertida | 10 ticks | — | — | — | braços do modelo | lâmina |
+| `two_handed_axe` (machado da Kikoru) | duas mãos | 14 ticks | — | — | — | braços do modelo | lâmina |
+| `rifle` | duas mãos | 12 ticks | **30** | 10 + 14 + 8 = 32 ticks (soltar, colocar, engatilhar) | 1,6° para cima, 0,6° de lado, volta 60% em 4 ticks | vanilla | rifle |
+| `pistol` | uma | 6 ticks | **12** | 6 + 10 + 6 = 22 ticks | 3,0° / 1,0°, 5 ticks; corpo ×1,6 | vanilla | pistola |
+
+Munição de reserva infinita [SUPOSIÇÃO] (o GDD não tem munição): só o pente e o tempo de recarga pesam. A tecla R
+recarrega na arma de fogo (que não tem especial). Todos os números do perfil são [SUPOSIÇÃO].
+
 ### Combate (`[combat]`)
 
 | Número | Valor | | Número | Valor |
@@ -328,6 +342,12 @@ Reações: **esquiva** (dash 1,1, recarga 30, invulnerável 6 ticks, reage 5 tic
 distância com o alvo a mais de 7 blocos), **Kaeshi-uchi** (só contra golpe `heavy`: dash lateral, invulnerável 10
 ticks, contra-ataque ×2,5 8 ticks depois, recarga 120), **parry** (35% dos golpes corpo a corpo comuns de kaiju,
 dano ×0,3, recarga 20, abre 10 ticks para o Kaeshi-uchi).
+
+**Duelos com o balanceamento v1.0 (2026-10-08, servidor dedicado; No. 9 1.450, No. 10 1.650 / 4.600, transformação
+desligada na luta contra o pequeno):** Hoshina × No. 10 pequeno vence 2/3 em 50–55 s (termina com 17–30%; perdeu uma
+deixando o kaiju com 10%) = "luta difícil"; Hoshina × No. 10 gigante perde 2/2; Hoshina × No. 9 vence 3/3 em
+38–42 s com 64–76%; Hoshina + No. 10 × gigante vence 2/2 em 64–67 s com 20–47%; Hoshina + No. 10 × No. 9 vence 2/2 em
+~27 s com 74–82%. Todos batem com a seção 28 do Balanceamento v1.0.
 
 Duelos medidos (2026-10-07, servidor dedicado, Hoshina final: 460 de vida, teto 92%; 0.6-E com o No. 10 real; na
 luta contra a forma pequena a transformação ficou desligada só para o teste):
