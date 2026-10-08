@@ -158,7 +158,7 @@ public final class KN8Hud {
         double textScale = ClientConfig.HUD_SCALE.get();
         graphics.pose().pushPose();
         graphics.pose().scale((float) textScale, (float) textScale, 1.0F);
-        drawAlerts(graphics, minecraft.font, overheat, (int) Math.round(x * BASE_SIZE),
+        drawAlerts(graphics, minecraft.font, overheat, view.fatigued(), (int) Math.round(x * BASE_SIZE),
                 (int) Math.round(y * BASE_SIZE), (int) Math.ceil(PANEL_HEIGHT * BASE_SIZE));
         graphics.pose().popPose();
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
@@ -252,10 +252,16 @@ public final class KN8Hud {
     }
 
     /** OVERHEAT (critico ou pane), combo e avisos de combate, acima do painel (ou abaixo, se estiver no topo). */
-    private static void drawAlerts(GuiGraphics graphics, Font font, boolean overheat, int x, int y, int panelHeight) {
+    private static void drawAlerts(GuiGraphics graphics, Font font, boolean overheat, boolean fatigued, int x, int y,
+            int panelHeight) {
         boolean above = y > LINE * 3;
         int lineY = above ? y - LINE - 1 : y + panelHeight + 2;
         int step = above ? -LINE : LINE;
+        if (fatigued) {
+            // 0.5.0: fadiga depois de passar do limite (sem Release e quase parado).
+            graphics.drawString(font, Component.translatable("kn8.hud.fatigue"), x + 2, lineY, COLOR_ALERT, true);
+            lineY += step;
+        }
         if (overheat) {
             graphics.drawString(font, Component.translatable("kn8.hud.overheat"), x + 2, lineY, blink(COLOR_ALERT),
                     true);

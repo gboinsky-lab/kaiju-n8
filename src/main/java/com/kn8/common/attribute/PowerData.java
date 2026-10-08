@@ -44,6 +44,8 @@ public final class PowerData {
     private double lastX = Double.NaN;
     private double lastZ = Double.NaN;
     private long lastAlarmTick = NEVER;
+    private double strain;
+    private long fatigueUntilTick = NEVER;
     private double stamina = -1;
     private double heat;
     private long lastStaminaSpendTick = NEVER;
@@ -213,6 +215,23 @@ public final class PowerData {
     void setLastPosition(double x, double z) {
         lastX = x;
         lastZ = z;
+    }
+
+    /** Desgaste acumulado acima do limite (vira fadiga ao voltar para dentro dele). */
+    double strain() {
+        return strain;
+    }
+
+    void setStrain(double value) {
+        strain = Math.max(0.0, value);
+    }
+
+    long fatigueUntilTick() {
+        return fatigueUntilTick;
+    }
+
+    void setFatigueUntilTick(long tick) {
+        fatigueUntilTick = tick;
     }
 
     long lastAlarmTick() {

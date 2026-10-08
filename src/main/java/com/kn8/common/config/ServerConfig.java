@@ -121,6 +121,11 @@ public final class ServerConfig {
     public static final ModConfigSpec.DoubleValue KNOCKBACK_PER_RELEASE;
     public static final ModConfigSpec.DoubleValue RELEASE_RAISE_PER_SECOND;
     public static final ModConfigSpec.DoubleValue RELEASE_LOWER_PER_SECOND;
+    public static final ModConfigSpec.IntValue MAX_OVER_LIMIT;
+    public static final ModConfigSpec.DoubleValue OVER_LIMIT_DAMAGE_PER_POINT;
+    public static final ModConfigSpec.DoubleValue FATIGUE_TICKS_PER_STRAIN;
+    public static final ModConfigSpec.IntValue FATIGUE_MIN_TICKS;
+    public static final ModConfigSpec.IntValue FATIGUE_MAX_TICKS;
     public static final ModConfigSpec.DoubleValue STAMINA_BASE;
     public static final ModConfigSpec.DoubleValue STAMINA_PER_RELEASE;
     public static final ModConfigSpec.DoubleValue STAMINA_REGEN_PER_SECOND;
@@ -189,6 +194,7 @@ public final class ServerConfig {
     public static final ModConfigSpec.IntValue DODGE_DURATION_TICKS;
     public static final ModConfigSpec.DoubleValue DODGE_SPEED;
     public static final ModConfigSpec.DoubleValue CORE_EXPOSED_MULTIPLIER;
+    public static final ModConfigSpec.DoubleValue MAX_HIT_FRACTION_OF_KAIJU_HEALTH;
     public static final ModConfigSpec.IntValue CORE_EXPOSED_TICKS;
     public static final ModConfigSpec.IntValue PARRY_WINDOW_TICKS;
     public static final ModConfigSpec.IntValue PARRY_WINDOW_TICKS_HIGH;
@@ -394,10 +400,21 @@ public final class ServerConfig {
         KNOCKBACK_PER_RELEASE = doubleValue("knockbackPerRelease", "Knockback resistance per release point.",
                 0.005, 0.0, 0.02);
         // 0.5.0 (Miguel): o jogador sobe o Release segurando a tecla (so com traje) e desce com Shift + tecla.
-        RELEASE_RAISE_PER_SECOND = doubleValue("raisePerSecond", "Release points gained per second while holding"
-                + " the release key.", 20.0, 1.0, 200.0);
+        RELEASE_RAISE_PER_SECOND = doubleValue("raisePercentPerSecond", "Release points gained per second while holding"
+                + " the release key.", 2.0, 0.1, 200.0);
         RELEASE_LOWER_PER_SECOND = doubleValue("lowerPerSecond", "Release points lost per second while holding"
                 + " sneak + the release key.", 40.0, 1.0, 200.0);
+        // 0.5.0 (Miguel): no maximo 20 pontos acima do limite pessoal (limite 40 -> ate 60%); quanto mais acima,
+        // mais dano; ao voltar para dentro do limite vem a fadiga (quase sem se mexer e sem Release por um tempo).
+        MAX_OVER_LIMIT = intValue("maxOverLimit", "Most release points a player can push above the personal limit.",
+                20, 0, 100);
+        OVER_LIMIT_DAMAGE_PER_POINT = doubleValue("overLimitDamagePerPoint", "Health lost per second for every"
+                + " release point above the personal limit (on top of the heat stage drain).", 0.06, 0.0, 10.0);
+        FATIGUE_TICKS_PER_STRAIN = doubleValue("fatigueTicksPerStrain", "Fatigue ticks per tick spent at the"
+                + " maximum overload (half as much at half of it).", 1.0, 0.0, 100.0);
+        FATIGUE_MIN_TICKS = intValue("fatigueMinTicks", "Shortest fatigue after going over the limit.", 60, 0, 12000);
+        FATIGUE_MAX_TICKS = intValue("fatigueMaxTicks", "Longest fatigue after going over the limit.", 600, 0,
+                12000);
         BUILDER.pop();
 
         section("stamina", "Stamina (GDD section 7).");
@@ -529,6 +546,10 @@ public final class ServerConfig {
         DODGE_SPEED = doubleValue("dodgeSpeed", "Horizontal speed of the dodge burst.", 0.9, 0.0, 5.0);
         CORE_EXPOSED_MULTIPLIER = doubleValue("coreExposedMultiplier", "Extra core damage multiplier after a heavy"
                 + " hit exposes the core.", 1.5, 1.0, 5.0);
+        // 0.5.0 (Miguel): golpe comum nunca mata kaiju de uma vez; so o golpe especial da arma passa disso.
+        MAX_HIT_FRACTION_OF_KAIJU_HEALTH = doubleValue("maxHitFractionOfKaijuHealth", "Most a regular player hit can"
+                + " take from a kaiju, as a fraction of its maximum health (weapon specials ignore it).", 0.15, 0.01,
+                1.0);
         CORE_EXPOSED_TICKS = intValue("coreExposedTicks", "How long the core stays exposed.", 100, 0, 1200);
         PARRY_WINDOW_TICKS = intValue("parryWindowTicks", "A block started at most this many ticks before the hit"
                 + " is a parry.", 3, 0, 20);

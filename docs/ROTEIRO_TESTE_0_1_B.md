@@ -388,10 +388,12 @@ Visto na nuvem (`docs/img/hoshina_modelo.png`, `hoshina_vs_honju.png`, `hoshina_
 |---|---|---|
 | 25.1 | Entrar num mundo novo (ou com um jogador novo) | Mensagem no chat com o limite inicial: comum 5-10% ou "Talento raro!" 15-30%. A HUD mostra `0% / limite%` |
 | 25.2 | Sem traje, segurar **G** | Aviso "O Release so funciona com o traje da Forca de Defesa vestido."; a % fica em 0 |
-| 25.3 | Vestir o traje (Mk1, peitoral) e segurar **G** | A % sobe (~20 por segundo) e a aura aparece junto; soltar deixa a % onde parou |
+| 25.3 | Vestir o traje (Mk1, peitoral) e segurar **G** | A % sobe **2% por segundo** e a aura aparece junto; soltar deixa a % onde parou |
 | 25.4 | Ficar dentro do limite por ~1 minuto | O calor sobe devagar ate "morno" e para ali (cansaco: stamina volta mais devagar), sem dano |
 | 25.5 | Passar do limite (segurar G alem da marca da barra) | A parte acima do limite fica laranja; o calor sobe rapido; em sobrecarga, critico e maximo o corpo perde vida (alarme no maximo). **A % nao cai sozinha** |
-| 25.6 | **Shift + G** | A % desce (~40 por segundo); voltando para dentro do limite o dano para e o traje esfria ate morno |
+| 25.6 | Continuar segurando G | A % para em **limite + 20** (ex.: limite 40 -> 60%); quanto mais acima, mais vida perde |
+| 25.6b | **Shift + G** ate voltar para dentro do limite | "Voce passou do seu limite: fadiga por N s" e "FADIGA" na HUD: quase parado, fraco, Release desligado e G nao sobe ate acabar |
+| 25.6c | Bater num kaiju com o Release alto (golpe comum, carregado, critico) | Nunca tira mais de 15% da vida dele por golpe; so o especial (R) pode matar de uma vez |
 | 25.7 | Tirar o traje com o Release ligado | A % zera e a aura some |
 | 25.8 | Menu (M) > Perfil | Limite (com estrela se o talento for raro), "Acima do limite" e linha "Corpo: FOR / VEL / RES / AGI" |
 | 25.9 | Bater em kaiju ou no boneco, correr, apanhar, esquivar/dash/parry | Sobem forca, velocidade, resistencia e agilidade (`/kn8 power` mostra os niveis) |

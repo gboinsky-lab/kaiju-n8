@@ -139,8 +139,12 @@ traje foi removido na 0.3 porque divergia deles).
 
 | Numero | Valor | Onde |
 |---|---|---|
-| Subir / descer na tecla | 20 por segundo / 40 por segundo | `[power] raisePerSecond`, `lowerPerSecond` |
-| Limite pessoal inicial (talento) | comum 5-10%; **raro** (10% de chance) 15-30% [SUPOSICAO na chance] | `[talent]` |
+| Subir / descer na tecla | **2% por segundo** (Miguel) / 40 por segundo | `[power] raisePercentPerSecond`, `lowerPerSecond` |
+| Acima do limite | no maximo **+20** (limite 40 -> ate 60%) | `[power] maxOverLimit` |
+| Desgaste acima do limite | 0,06 de vida/s por ponto acima (+20 = 1,2/s) mais o calor | `[power] overLimitDamagePerPoint` [SUPOSICAO] |
+| Fadiga ao voltar para o limite | 1 tick por tick no maximo acima (metade na metade); entre 3 s e 30 s; Lentidao IV, Fraqueza II, Cansaco II, sem Release | `[power] fatigueTicksPerStrain`, `fatigueMinTicks`, `fatigueMaxTicks` [SUPOSICAO] |
+| Golpe comum em kaiju | no maximo **15% da vida maxima** por golpe (ja com parte/nucleo); so o golpe especial da arma passa disso | `[combat] maxHitFractionOfKaijuHealth` [SUPOSICAO no 15%] |
+| Limite pessoal inicial (talento) | comum 5-10%; **raro** (10% de chance, Miguel) 15-30% | `[talent]` |
 | Limite maximo | 100% para todos, por treino | `[career] releaseMax` |
 | XP de treino por ponto do limite | 50 + 10 x pontos ja treinados (1% custa 50; 99->100% custa 1.040) | `[training]` |
 | Por ponto de Release ativo | +0,4% velocidade, -0,4% de dano recebido (max. 40%), +0,5 de stamina | `[power]`, `[stamina]` |
@@ -153,8 +157,10 @@ traje foi removido na 0.3 porque divergia deles).
 
 ### Atributos do corpo (0.5.0, `[body]`)
 
-Forca, velocidade, resistencia e agilidade vao de 0 a 100, valem com ou sem traje e sao treinados pelo uso.
-Numeros [SUPOSICAO].
+Forca, velocidade, resistencia e agilidade vao de 0 a 100 e sao treinados pelo uso. Regra do Miguel: o corpo tem a
+forca dele e o **traje impulsiona** (o Release multiplica o bonus do corpo: forca e resistencia multiplicam com o
+dano/reducao do Release, velocidade multiplica a do Release, agilidade x(1 + Release/100), desconto maximo 60%).
+Sem traje vale so o corpo. Numeros [SUPOSICAO].
 
 | Atributo | Treina com | Bonus no nivel 100 |
 |---|---|---|

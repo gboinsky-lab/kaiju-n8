@@ -679,5 +679,10 @@
   "kn8.menu.profile.excess": "Over the limit",
   "kn8.menu.profile.no_suit": "no suit",
   "kn8.menu.profile.body": "Body",
-  "kn8.menu.profile.body_values": "STR %s  SPD %s  RES %s  AGI %s"
+  "kn8.menu.profile.body_values": "STR %s  SPD %s  RES %s  AGI %s",
+  "death.attack.kn8.weapon_special": "%1$s was struck down by %2$s's special attack",
+  "death.attack.kn8.weapon_special.player": "%1$s was struck down by %2$s's special attack",
+  "kn8.release.fatigued": "Your body has not recovered yet: no Release while fatigued.",
+  "kn8.release.fatigue_start": "You went past your limit: fatigued for %s s.",
+  "kn8.hud.fatigue": "FATIGUE"
 }

@@ -13,6 +13,7 @@ import java.util.UUID;
 import com.kn8.KN8Constants;
 import com.kn8.common.boss.BossService;
 import com.kn8.common.boss.BossState;
+import com.kn8.common.combat.CombatService;
 import com.kn8.common.config.ServerConfig;
 import com.kn8.common.data.KN8Data;
 import com.kn8.common.destruction.DestructionService;
@@ -935,7 +936,20 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
             }
             lastExplosionTick = now;
         }
-        return applyDamage(source, amount);
+        return applyDamage(source, capPlayerHit(source, amount));
+    }
+
+    /**
+     * 0.5.0 (Miguel): golpe comum de jogador nunca mata kaiju de uma vez, por mais forte que ele esteja; so o golpe
+     * especial da arma ({@code kn8:weapon_special}) passa do teto. O teto vale sobre o dano ja com o multiplicador da
+     * parte e do nucleo exposto ({@code combat.maxHitFractionOfKaijuHealth} da vida maxima).
+     */
+    private float capPlayerHit(DamageSource source, float amount) {
+        if (!ServerConfig.SPEC.isLoaded() || !(source.getEntity() instanceof Player)
+                || source.is(CombatService.WEAPON_SPECIAL)) {
+            return amount;
+        }
+        return Math.min(amount, getMaxHealth() * ServerConfig.MAX_HIT_FRACTION_OF_KAIJU_HEALTH.get().floatValue());
     }
 
     /**
@@ -957,6 +971,7 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
         if (part.isCore() && isCoreExposed()) {
             scaled *= ServerConfig.CORE_EXPOSED_MULTIPLIER.get().floatValue();
         }
+        scaled = capPlayerHit(source, scaled);
         float coreBefore = coreHealth;
         boolean coreDestroyed = false;
         if (part.isCore() && coreHealth >= 0) {

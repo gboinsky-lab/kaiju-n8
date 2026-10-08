@@ -679,5 +679,10 @@
   "kn8.menu.profile.excess": "Acima do limite",
   "kn8.menu.profile.no_suit": "sem traje",
   "kn8.menu.profile.body": "Corpo",
-  "kn8.menu.profile.body_values": "FOR %s  VEL %s  RES %s  AGI %s"
+  "kn8.menu.profile.body_values": "FOR %s  VEL %s  RES %s  AGI %s",
+  "death.attack.kn8.weapon_special": "%1$s foi derrubado pelo golpe especial de %2$s",
+  "death.attack.kn8.weapon_special.player": "%1$s foi derrubado pelo golpe especial de %2$s",
+  "kn8.release.fatigued": "Seu corpo ainda não se recuperou: sem Release durante a fadiga.",
+  "kn8.release.fatigue_start": "Você passou do seu limite: fadiga por %s s.",
+  "kn8.hud.fatigue": "FADIGA"
 }

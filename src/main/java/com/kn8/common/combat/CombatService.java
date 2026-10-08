@@ -3,6 +3,7 @@ package com.kn8.common.combat;
 
 import java.util.Optional;
 
+import com.kn8.KN8Constants;
 import com.kn8.common.anim.AnimationBridge;
 import com.kn8.common.attribute.PowerService;
 import com.kn8.common.config.ServerConfig;
@@ -16,8 +17,11 @@ import com.kn8.core.combat.CombatMath;
 import com.kn8.core.power.BodyStat;
 import com.kn8.core.power.PowerMath;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -25,6 +29,8 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
@@ -54,7 +60,21 @@ public final class CombatService {
     private static final double TRACER_STEP = 1.5;
     private static final double MUZZLE_DISTANCE = 1.2;
 
+    /**
+     * 0.5.0: tipo de dano do golpe especial de arma (tecla R). E o unico golpe do jogador que pode passar do teto por
+     * golpe em kaiju ({@code combat.maxHitFractionOfKaijuHealth}): golpe comum nunca mata kaiju de uma vez.
+     */
+    public static final ResourceKey<DamageType> WEAPON_SPECIAL =
+            ResourceKey.create(Registries.DAMAGE_TYPE, KN8Constants.id("weapon_special"));
+
     private CombatService() {
+    }
+
+    /** Fonte de dano do golpe especial do jogador (conta como ataque dele). */
+    public static DamageSource specialDamage(Player player) {
+        Holder<DamageType> type = player.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE)
+                .getHolderOrThrow(WEAPON_SPECIAL);
+        return new DamageSource(type, player);
     }
 
     public static CombatState state(ServerPlayer player) {
@@ -189,7 +209,7 @@ public final class CombatService {
             // 0.5.0: a forca do corpo vale tambem no especial (golpe da arma).
             float damage = CombatMath.damage(weapon.baseDamage(), state.currentMultiplier, 1.0F, release)
                     * PowerService.strengthMultiplier(player);
-            SpecialAttacks.resolve(player, weapon.special().get(), damage, player.damageSources().playerAttack(player));
+            SpecialAttacks.resolve(player, weapon.special().get(), damage, specialDamage(player));
             return;
         }
         strike(player, weapon, state.currentMultiplier, heavy);

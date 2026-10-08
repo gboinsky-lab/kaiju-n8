@@ -44,8 +44,10 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
  *   <li>o jogador <b>sobe</b> a % segurando a tecla de Release (e desce com Shift); a aura aparece junto;</li>
  *   <li>o "treinado" virou o <b>limite pessoal</b>: sorteado uma vez (talento comum 5-10%, raro 15-30%) e subido
  *   treinando, ate {@code career.releaseMax};</li>
- *   <li>passar do limite <b>nao baixa a %</b>: aquece o traje e, com o traje sobrecarregado, desgasta o corpo (dano
- *   por segundo so enquanto estiver acima do limite). Dentro do limite o uso so cansa (calor ate WARM).</li>
+ *   <li>passar do limite <b>nao baixa a %</b>: aquece o traje e desgasta o corpo (dano por segundo maior quanto mais
+ *   acima, so enquanto estiver acima). No maximo {@code maxOverLimit} (20) pontos acima do limite. Ao voltar para
+ *   dentro do limite vem a <b>fadiga</b>: quase sem se mexer e sem Release, por um tempo que cresce com o quanto e
+ *   por quanto tempo passou do limite. Dentro do limite o uso so cansa (calor ate WARM).</li>
  * </ul>
  */
 public final class PowerService {
@@ -59,6 +61,10 @@ public final class PowerService {
     private static final ResourceLocation BODY_SPEED_MODIFIER = KN8Constants.id("body_speed");
     /** Intervalo do alarme do traje no calor maximo (so aviso sonoro, nao e balanceamento). */
     private static final int ALARM_INTERVAL_TICKS = 40;
+    /** Teto do desconto de stamina da agilidade com o Release (regra de seguranca, nao numero de jogo). */
+    private static final double MAX_AGILITY_DISCOUNT = 0.6;
+    /** Lentidao IV: quase parado durante a fadiga. */
+    private static final int FATIGUE_SLOWNESS = 3;
     private static final int TICKS_PER_SECOND = 20;
     private static final int CRITICAL_SLOWNESS_TICKS = 40;
     private static final int SLOWNESS_I = 0;
@@ -100,6 +106,17 @@ public final class PowerService {
     /** Limite pessoal: o treinado, limitado pelo teto. */
     public static int limit(ServerPlayer player) {
         return Math.min(data(player).trainedRelease(), cap(player));
+    }
+
+    /** Fadiga depois de passar do limite: sem Release e quase sem se mexer ate acabar. */
+    public static boolean fatigued(ServerPlayer player) {
+        long until = data(player).fatigueUntilTick();
+        return !PowerData.never(until) && now(player) < until;
+    }
+
+    /** Teto da % ativa: o limite pessoal mais {@code power.maxOverLimit}. */
+    public static int maxActive(ServerPlayer player) {
+        return Math.min(100, limit(player) + ServerConfig.MAX_OVER_LIMIT.get());
     }
 
     /** % liberada na tecla (0 sem traje). */
@@ -144,9 +161,14 @@ public final class PowerService {
                 BodyStat.RESISTANCE));
     }
 
-    /** Fator do custo de stamina da esquiva e do dash pela agilidade. */
+    /**
+     * Fator do custo de stamina da esquiva e do dash pela agilidade. 0.5.0 (Miguel): o traje impulsiona o que o corpo
+     * ja tem, entao o Release multiplica o bonus da agilidade (ate 2x a 100%); nunca passa de 60% de desconto.
+     */
     public static double agilityCostFactor(ServerPlayer player) {
-        return Math.max(0.0, 1.0 - bodyParams().agilityStaminaPerLevel() * bodyLevel(player, BodyStat.AGILITY));
+        double base = bodyParams().agilityStaminaPerLevel() * bodyLevel(player, BodyStat.AGILITY);
+        double boosted = base * (1.0 + effectiveRelease(player) / 100.0);
+        return Math.max(1.0 - MAX_AGILITY_DISCOUNT, 1.0 - boosted);
     }
 
     /** Soma XP a um atributo do corpo (fracoes acumulam) e converte em niveis. */
@@ -223,7 +245,7 @@ public final class PowerService {
 
     /** Fixa a % ativa (comando e testes); sem traje fica em 0 no proximo tick. */
     public static void setActive(ServerPlayer player, int value) {
-        data(player).setActive(value);
+        data(player).setActive(Math.min(value, maxActive(player)));
         changed(player);
     }
 
@@ -234,6 +256,11 @@ public final class PowerService {
     public static void releaseInput(ServerPlayer player, int direction) {
         if (direction > 0 && !suitWorn(player)) {
             player.displayClientMessage(Component.translatable("kn8.release.need_suit"), true);
+            data(player).setReleaseInput(0);
+            return;
+        }
+        if (direction > 0 && fatigued(player)) {
+            player.displayClientMessage(Component.translatable("kn8.release.fatigued"), true);
             data(player).setReleaseInput(0);
             return;
         }
@@ -315,10 +342,11 @@ public final class PowerService {
 
         ensureTalent(player, data);
         boolean suit = suitWorn(player);
-        if (suit) {
-            data.setActive(PowerMath.releaseAfterInput(data.active(), data.releaseInput(), params));
+        if (suit && !fatigued(player)) {
+            data.setActive(Math.min(maxActive(player),
+                    PowerMath.releaseAfterInput(data.active(), data.releaseInput(), params)));
         } else {
-            // Sem traje nao ha Release: a % zera e a tecla e ignorada ate vestir de novo.
+            // Sem traje (ou com fadiga) nao ha Release: a % zera e a tecla e ignorada.
             data.setActive(0);
             data.setReleaseInput(0);
         }
@@ -334,6 +362,7 @@ public final class PowerService {
             heatAfter = heatBefore + (heatAfter - heatBefore) * (1.0 - resistance);
         }
         data.setHeat(heatAfter);
+        trackStrain(player, data, now);
 
         sprint(player, data, now);
         trainSpeed(player, data);
@@ -354,9 +383,10 @@ public final class PowerService {
         int effective = effectiveRelease(player);
         if (effective != data.lastAppliedRelease()) {
             applyModifiers(player, effective, params);
+            // O traje impulsiona o corpo: a velocidade treinada multiplica por cima do bonus do Release.
             setModifier(player, Attributes.MOVEMENT_SPEED, BODY_SPEED_MODIFIER,
                     bodyParams().speedPerLevel() * data.bodyLevel(BodyStat.SPEED),
-                    AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+                    AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
             data.setLastAppliedRelease(effective);
             player.setData(KN8Attachments.RELEASE_VISUAL, effective);
         }
@@ -405,7 +435,7 @@ public final class PowerService {
                 params.heatMax(), heatStage(player).ordinal(), (float) Math.max(0, data.energy()), data.control(),
                 data.releaseXp(), xpToNext, inPanic(player), data.winded(), activeRelease(player), suitWorn(player),
                 data.talentRare(), data.bodyLevel(BodyStat.STRENGTH), data.bodyLevel(BodyStat.SPEED),
-                data.bodyLevel(BodyStat.RESISTANCE), data.bodyLevel(BodyStat.AGILITY));
+                data.bodyLevel(BodyStat.RESISTANCE), data.bodyLevel(BodyStat.AGILITY), fatigued(player));
     }
 
     private static void ensureInitialized(ServerPlayer player, PowerData data) {
@@ -456,7 +486,8 @@ public final class PowerService {
         if (now % TICKS_PER_SECOND != 0) {
             return;
         }
-        double drain = switch (stage) {
+        // Quanto mais acima do limite, mais dano (Miguel); o calor alto soma por cima.
+        double drain = excess(player) * ServerConfig.OVER_LIMIT_DAMAGE_PER_POINT.get() + switch (stage) {
             case OVERLOAD -> ServerConfig.OVERLOAD_DRAIN_PER_SECOND.get();
             case CRITICAL -> ServerConfig.CRITICAL_DRAIN_PER_SECOND.get();
             case PANIC -> ServerConfig.MAX_HEAT_DRAIN_PER_SECOND.get();
@@ -469,6 +500,34 @@ public final class PowerService {
             player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, CRITICAL_SLOWNESS_TICKS,
                     stage == HeatStage.PANIC ? SLOWNESS_II : SLOWNESS_I));
         }
+    }
+
+    /**
+     * Desgaste acima do limite: acumula {@code excesso / maxOverLimit} por tick (1 no maximo). Ao voltar para dentro
+     * do limite (descendo, tirando o traje...) vira fadiga proporcional, entre {@code fatigueMinTicks} e
+     * {@code fatigueMaxTicks}: Lentidao IV (quase parado), Fraqueza e Cansaco, e o Release desligado.
+     */
+    private static void trackStrain(ServerPlayer player, PowerData data, long now) {
+        int over = excess(player);
+        int maxOver = ServerConfig.MAX_OVER_LIMIT.get();
+        if (over > 0) {
+            data.setStrain(data.strain() + (maxOver > 0 ? over / (double) maxOver : 1.0));
+            return;
+        }
+        if (data.strain() <= 0) {
+            return;
+        }
+        int ticks = (int) Math.round(data.strain() * ServerConfig.FATIGUE_TICKS_PER_STRAIN.get());
+        ticks = Math.max(ServerConfig.FATIGUE_MIN_TICKS.get(), Math.min(ServerConfig.FATIGUE_MAX_TICKS.get(), ticks));
+        data.setStrain(0);
+        data.setFatigueUntilTick(now + ticks);
+        data.setActive(0);
+        data.setReleaseInput(0);
+        player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, ticks, FATIGUE_SLOWNESS));
+        player.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, ticks, 1));
+        player.addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, ticks, 1));
+        player.displayClientMessage(Component.translatable("kn8.release.fatigue_start",
+                String.format("%.0f", ticks / (double) TICKS_PER_SECOND)), true);
     }
 
     /** Velocidade treina correndo: XP por bloco corrido no chao (0.5.0). */

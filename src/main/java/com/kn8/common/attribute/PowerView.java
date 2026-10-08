@@ -15,10 +15,10 @@ import net.minecraft.network.codec.StreamCodec;
 public record PowerView(int trained, int effective, int cap, int excess, float stamina, float maxStamina, float heat,
         int heatMax, int heatStage, float energy, int control, int releaseXp, int xpToNext, boolean panic,
         boolean winded, int active, boolean suit, boolean talentRare, int strength, int speed, int resistance,
-        int agility) {
+        int agility, boolean fatigued) {
 
     public static final PowerView EMPTY = new PowerView(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, false, false, 0,
-            false, false, 0, 0, 0, 0);
+            false, false, 0, 0, 0, 0, false);
 
     // StreamCodec.composite aceita no maximo 6 campos por vez: grupos aninhados.
     private record Release(int trained, int effective, int cap, int excess, int releaseXp, int xpToNext) {
@@ -46,10 +46,11 @@ public record PowerView(int trained, int effective, int cap, int excess, float s
                 Flags::new);
     }
 
-    private record Body(int strength, int speed, int resistance, int agility) {
+    private record Body(int strength, int speed, int resistance, int agility, boolean fatigued) {
         static final StreamCodec<ByteBuf, Body> CODEC = StreamCodec.composite(
                 ByteBufCodecs.VAR_INT, Body::strength, ByteBufCodecs.VAR_INT, Body::speed,
                 ByteBufCodecs.VAR_INT, Body::resistance, ByteBufCodecs.VAR_INT, Body::agility,
+                ByteBufCodecs.BOOL, Body::fatigued,
                 Body::new);
     }
 
@@ -60,11 +61,12 @@ public record PowerView(int trained, int effective, int cap, int excess, float s
                     view.energy(), view.control()),
             Flags.CODEC, view -> new Flags(view.heatMax(), view.panic(), view.winded(), view.active(), view.suit(),
                     view.talentRare()),
-            Body.CODEC, view -> new Body(view.strength(), view.speed(), view.resistance(), view.agility()),
+            Body.CODEC, view -> new Body(view.strength(), view.speed(), view.resistance(), view.agility(),
+                    view.fatigued()),
             (release, resources, flags, body) -> new PowerView(release.trained(), release.effective(),
                     release.cap(), release.excess(), resources.stamina(), resources.maxStamina(), resources.heat(),
                     flags.heatMax(), resources.heatStage(), resources.energy(), resources.control(),
                     release.releaseXp(), release.xpToNext(), flags.panic(), flags.winded(), flags.active(),
                     flags.suit(), flags.talentRare(), body.strength(), body.speed(), body.resistance(),
-                    body.agility()));
+                    body.agility(), body.fatigued()));
 }
