@@ -50,12 +50,18 @@ ARM_INNER_X = [(1.02, 0.212), (0.0, 0.258)]
 BACK_ITEMS = None
 # 0.6-D: outras especies humanoides com o mesmo rig (soldado especial). use_species troca as medidas acima.
 SPECIES = {
-    "soldier": {"stem": "soldier_1", "hip_y": 0.93, "neck_y": 1.52, "hand_min_y": 0.68,
-                "arm_inner_x": [(1.02, 0.212), (0.0, 0.258)], "back_items": None},
+    # 0.5.0-B: soldado refeito pelo Miguel (capacete, 1,9 m, 11 mil tri): maos ate y 0,78, quadril em 0,90.
+    # O capacete e mais largo que o pescoco: acima de arm_max_y nada e braco.
+    "soldier": {"stem": "soldier_1", "hip_y": 0.90, "neck_y": 1.50, "hand_min_y": 0.74,
+                "arm_inner_x": [(1.0, 0.205), (0.0, 0.258)], "arm_max_y": 1.50, "back_items": None},
     # Hoshina (modelo do Miguel, 1,85 m): bracos a partir de |x| 0,25; as duas bainhas nas costas saem pela lateral
     # esquerda do modelo (x < -0,28) e ficam atras do tronco (z > 0,09).
-    "hoshina": {"stem": "hoshina", "hip_y": 0.93, "neck_y": 1.50, "hand_min_y": 0.86,
-                "arm_inner_x": [(1.25, 0.24), (0.0, 0.25)], "back_items": {"z_min": 0.12, "min_faces": 500}},
+    # 0.5.0-B: Hoshina refeito (bracos mais abertos, maos ate y 0,88, cabeca a partir de 1,47). A malha nova veio
+    # inteira soldada (as bainhas encostam no corpo): as bainhas sao a regiao atras do braco esquerdo (x < -0,2,
+    # z > 0,095; o braco vai ate z ~0,08).
+    "hoshina": {"stem": "hoshina", "hip_y": 0.93, "neck_y": 1.47, "hand_min_y": 0.80,
+                "arm_inner_x": [(1.2, 0.21), (0.0, 0.24)], "arm_max_y": 1.47,
+                "back_items": {"region": {"x_max": -0.2, "z_min": 0.095}}},
     # 0.6-F: Hoshina com o traje numerado 10: a cauda do No. 10 sai do quadril esquerdo, passa por baixo da mao,
     # sobe pelas costas e faz um arco por cima da cabeca ate a ponta na frente-direita. Separada pela superficie
     # (sementes da cauda contra sementes do resto do corpo) e dividida em 4 ossos pelo comprimento da linha.
@@ -73,11 +79,13 @@ TAIL = None
 TAIL_BONES = 4
 # Caixa da cabeca (x minimo, x maximo, z minimo, z maximo, topo; m) nos modelos com cauda.
 HEAD_BOX = None
+# Acima desta altura nada e braco (capacete/cabelo mais largos que o pescoco); None = sem limite.
+ARM_MAX_Y = None
 
 
 def use_species(name):
     """Ativa as medidas da especie (variaveis do modulo usadas pelas funcoes abaixo)."""
-    global NAME, STEM, SOURCE, HIP_Y, NECK_Y, HAND_MIN_Y, ARM_INNER_X, BACK_ITEMS, TAIL, HEAD_BOX
+    global NAME, STEM, SOURCE, HIP_Y, NECK_Y, HAND_MIN_Y, ARM_INNER_X, BACK_ITEMS, TAIL, HEAD_BOX, ARM_MAX_Y
     spec = SPECIES[name]
     NAME, STEM = name, spec["stem"]
     SOURCE = ROOT / "tools/art/converted" / STEM
@@ -85,6 +93,7 @@ def use_species(name):
     ARM_INNER_X, BACK_ITEMS = spec["arm_inner_x"], spec["back_items"]
     TAIL = [np.array(point, dtype=float) for point in spec["tail"]] if spec.get("tail") else None
     HEAD_BOX = spec.get("head_box")
+    ARM_MAX_Y = spec.get("arm_max_y")
 
 
 # Pedaco isolado com ate tantas faces vai para o osso vizinho (absorb_fragments).
@@ -105,6 +114,8 @@ def split(mesh):
     c = vertices[faces].mean(axis=1)
     inner = np.select([c[:, 1] >= y for y, _ in ARM_INNER_X], [x for _, x in ARM_INNER_X])
     arm = (c[:, 1] >= HAND_MIN_Y) & (np.abs(c[:, 0]) > inner)
+    if ARM_MAX_Y is not None:
+        arm &= c[:, 1] < ARM_MAX_Y
     back = back_items(vertices, faces) if BACK_ITEMS else np.zeros(len(faces), dtype=bool)
     # Bainhas nas costas: nao sao braco nem cabeca (iriam girar junto com eles).
     arm &= ~back
@@ -117,7 +128,8 @@ def split(mesh):
         tail = np.where(c[:, 1] > NECK_Y, ~in_head, tail)
     arm &= ~tail
     head = ~arm & ~back & ~tail & (c[:, 1] > NECK_Y)
-    body = ~arm & ~head & ~tail & (c[:, 1] > HIP_Y)
+    # Bainhas ficam no tronco inteiras, mesmo a ponta abaixo do quadril (senao iriam com a perna).
+    body = (~arm & ~head & ~tail & (c[:, 1] > HIP_Y)) | back
     leg = ~arm & ~head & ~body & ~tail
     groups = {"head": head, "body": body,
               "arm_left": arm & (c[:, 0] < 0), "arm_right": arm & (c[:, 0] > 0),
@@ -189,7 +201,12 @@ def polyline_point(line, fraction):
 
 
 def back_items(vertices, faces):
-    """Faces das pecas soltas nas costas (bainhas): componentes conexos grandes, separados do corpo, atras de z_min."""
+    """Faces das pecas nas costas (bainhas): componentes conexos grandes, separados do corpo, atras de z_min; ou,
+    com "region", tudo que esta do lado de fora do tronco (x < x_max) e atras de z_min (malha soldada)."""
+    if "region" in BACK_ITEMS:
+        center = vertices[faces].mean(axis=1)
+        region = BACK_ITEMS["region"]
+        return (center[:, 0] < region["x_max"]) & (center[:, 2] > region["z_min"])
     from scipy.sparse import coo_matrix
     from scipy.sparse.csgraph import connected_components
     _, welded = np.unique(np.round(vertices, 5), axis=0, return_inverse=True)
