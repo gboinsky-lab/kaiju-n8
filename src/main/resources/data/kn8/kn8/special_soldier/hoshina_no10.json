@@ -1,5 +1,5 @@
 {
-  "health": 600,
+  "health": 520,
   "armor": 20,
   "speed": 0.3,
   "follow_range": 48,
@@ -175,7 +175,7 @@
       "front_arc_degrees": 120.0
     },
     "full_release": {
-      "damage_multiplier": 1.25,
+      "damage_multiplier": 1.15,
       "speed_multiplier": 1.15,
       "cooldown_multiplier": 0.7,
       "tail_cooldown_multiplier": 0.6
