@@ -21,7 +21,11 @@ textura 4096 (2048 nos No. 10): reduzir para 512-1024 na conversao.
 | `Numbers_4_Wings` | `kikoru_no4_wings` | 11.074 | 4 asas em X da Numbers 4 (separadas) | vai nas costas da `kikoru_no4` |
 | `leno_clean_boxy` | `reno` | 9.508 | Reno Ichikawa (cabelo branco), forma normal | novo |
 | `leno_numbers_6` | `reno_no6` | 9.821 | Reno com a arma numerada 6 (traje azul) | novo |
-| `mina_ashiro` | `mina` | 9.119 | Mina Ashiro | nova; a arma dela vem na proxima mensagem |
+| `mina_ashiro` | `mina` | 9.119 | Mina Ashiro (rabo de cavalo) | nova |
+| `Mina_Ashiro_Heavy_Can` | `mina_cannon` | 7.518 | canhao pesado da Mina (arma, deitado) | arma nova |
+| `gen_narumi_remesh_10k` | `narumi` | 9.822 | Gen Narumi (cabelo rosa e preto) | novo |
+| `Gen_Narumi_Bayonet` | `narumi_bayonet` | 7.655 | baioneta longa do Narumi (arma, em pe) | arma nova |
+| `hoshina_standard` | `hoshina` | 8.450 | Hoshina com o traje normal refeito (bainhas nas costas) | **substitui** o Hoshina atual (0.6-D) |
 
 ## Observacoes da analise (para o rig)
 
