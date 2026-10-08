@@ -291,6 +291,21 @@ Hoshina metade das vezes (agora 0,8%/s; 2%/s abaixo de 20%).
 **Espada do Hoshina na bancada:** 8 ferro, 6 fibra muscular, 4 fragmentos de núcleo, 1 núcleo intacto; desbloqueia
 na patente **Vice-Capitão** [SUPOSIÇÃO].
 
+**Hoshina com a arma numerada 10** (`special_soldier/hoshina_no10.json`, 0.6-F; Miguel: com o traje do No. 10 fica
+ainda mais forte e só ele chega a 100%): tudo do Hoshina, com vida **520**, Release base **50%**, escalada até +50
+(teto **`max_release` 100%** = sincronização com o traje). Números [SUPOSIÇÃO] calibrados por duelo:
+
+| Parte | Valor |
+|---|---|
+| Cauda (terceira espada) | corta sozinha a cada **30 ticks** (×0,6 em Full Release), alcance **4,5** (borda), golpe ×1,0 da arma; alvo: quem mira o Hoshina > quem está atrás/do lado > o mais perto |
+| Guarda da cauda | golpe `heavy` ou projétil vindo de fora dos **120°** da frente: dano ×**0,3**, recarga 30 ticks |
+| Full Release (100%) | dano ×**1,15**, velocidade ×1,15, recargas das técnicas ×0,7 |
+| Jūni-hitoe (só em Full Release) | 11 × 0,45 + último ×3,5 (preparo 10, 1 golpe a cada 2 ticks), ignora armadura [SUPOSIÇÃO], expõe o núcleo 160 ticks, recarga **600**, alcance 0–4, prioridade 20; não é interrompido por esquiva/contra-ataque |
+
+Duelos medidos (2026-10-08, servidor dedicado): contra o **No. 10 gigante** vence 4/4 em ~1 min terminando com
+22–51% da vida (com 600 de vida e Full Release ×1,25 vencia com 61–69%: fácil demais); contra o **No. 9** vence em
+~25 s com 71–88% da vida (medido com 600 de vida). Em jogo, a cauda tira ~19 por golpe do Primigenius Honju com o Release em 50%.
+
 ### Soldados (`soldier/soldier_1.json`)
 
 Vida 24, armadura 6, alcance de visão 40. Níveis de força (Release): baixo 5, normal 10, alto 20, elite 30.
