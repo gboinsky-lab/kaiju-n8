@@ -150,7 +150,7 @@ traje foi removido na 0.3 porque divergia deles).
 | Por ponto de Release ativo | +0,4% velocidade, -0,4% de dano recebido (max. 40%), +0,5 de stamina | `[power]`, `[stamina]` |
 | Stamina | 100 + 0,5 por ponto; recupera 15/s depois de 1 s | `[stamina]` |
 | Corrida | gasta 5/s; volta a correr com 20 | `[stamina]` [SUPOSICAO] |
-| Uso dentro do limite | aquece 0,67/s no limite inteiro, so ate morno (40): ~1 minuto e cansa (stamina regenera 25% mais devagar), sem dano | `[heat] useHeatPerSecond` |
+| Forca total do traje (Release = limite) | aquece 0,67/s so com a % no proprio limite (40, 60 ou 100, o que o jogador tiver), so ate morno (40): ~1 minuto e cansa (stamina regenera 25% mais devagar), sem dano. Abaixo do limite nao aquece (esfria) | `[heat] useHeatPerSecond` |
 | Acima do limite | +2 de calor/s a cada 10 pontos de excesso | `[heat] excessHeatPer10PerSecond` |
 | Calor (so com a % acima do limite) | sobrecarga 70 (+10% dano, -0,5 vida/s), critico 90 (-1/s, Lentidao I), maximo 100 (-2/s, Lentidao II, alarme). A % **nao cai** | `[heat]` |
 | Esfriar | 10/s fora de combate, 3/s em combate | `[heat]` |

@@ -66,9 +66,9 @@ class PowerMathTest {
 
     @Test
     void useInsideTheLimitOnlyWarmsAboutAMinute() {
-        // No limite: 0,67/s; metade do limite: metade disso.
+        // Forca total (no limite): 0,67/s; abaixo do limite o traje nao aquece, esfria (Miguel).
         assertEquals(10 + 0.67 / 20, PowerMath.heatAfterTick(10, 10, 10, true, GDD), DELTA);
-        assertEquals(10 + 0.335 / 20, PowerMath.heatAfterTick(10, 5, 10, true, GDD), DELTA);
+        assertEquals(9.85, PowerMath.heatAfterTick(10, 5, 10, true, GDD), DELTA);
         // Nunca passa de WARM (40) dentro do limite...
         assertEquals(40, PowerMath.heatAfterTick(39.99, 10, 10, true, GDD), DELTA);
         // ...e o que veio de cima esfria ate WARM.

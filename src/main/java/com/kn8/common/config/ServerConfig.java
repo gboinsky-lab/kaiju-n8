@@ -440,9 +440,9 @@ public final class ServerConfig {
                 1000);
         EXCESS_HEAT_PER_10_PER_SECOND = doubleValue("excessHeatPer10PerSecond",
                 "Heat per second for every 10 release points above the personal limit.", 2.0, 0.0, 100.0);
-        USE_HEAT_PER_SECOND = doubleValue("useHeatPerSecond", "Heat per second while using the whole personal"
-                + " limit; it never goes past warmAt (about one minute of safe use, then fatigue).", 0.67, 0.0,
-                100.0);
+        USE_HEAT_PER_SECOND = doubleValue("useHeatPerSecond", "Heat per second while using the suit at full power"
+                + " (release at the personal limit); it never goes past warmAt. Below the limit the suit does not heat.",
+                0.67, 0.0, 100.0);
         COOL_OUT_OF_COMBAT_PER_SECOND = doubleValue("coolOutOfCombatPerSecond", "Cooling per second out of combat.",
                 10.0, 0.0, 100.0);
         COOL_IN_COMBAT_PER_SECOND = doubleValue("coolInCombatPerSecond", "Cooling per second in combat.", 3.0, 0.0,

@@ -389,7 +389,7 @@ Visto na nuvem (`docs/img/hoshina_modelo.png`, `hoshina_vs_honju.png`, `hoshina_
 | 25.1 | Entrar num mundo novo (ou com um jogador novo) | Mensagem no chat com o limite inicial: comum 5-10% ou "Talento raro!" 15-30%. A HUD mostra `0% / limite%` |
 | 25.2 | Sem traje, segurar **G** | Aviso "O Release so funciona com o traje da Forca de Defesa vestido."; a % fica em 0 |
 | 25.3 | Vestir o traje (Mk1, peitoral) e segurar **G** | A % sobe **2% por segundo** e a aura aparece junto; soltar deixa a % onde parou |
-| 25.4 | Ficar dentro do limite por ~1 minuto | O calor sobe devagar ate "morno" e para ali (cansaco: stamina volta mais devagar), sem dano |
+| 25.4 | Ficar abaixo do limite; depois com a % exatamente no limite por ~1 minuto | Abaixo: o calor nao sobe. No limite (forca total): sobe devagar ate "morno" e para ali (cansaco: stamina volta mais devagar), sem dano |
 | 25.5 | Passar do limite (segurar G alem da marca da barra) | A parte acima do limite fica laranja; o calor sobe rapido; em sobrecarga, critico e maximo o corpo perde vida (alarme no maximo). **A % nao cai sozinha** |
 | 25.6 | Continuar segurando G | A % para em **limite + 20** (ex.: limite 40 -> 60%); quanto mais acima, mais vida perde |
 | 25.6b | **Shift + G** ate voltar para dentro do limite | "Voce passou do seu limite: fadiga por N s" e "FADIGA" na HUD: quase parado, fraco, Release desligado e G nao sobe ate acabar |

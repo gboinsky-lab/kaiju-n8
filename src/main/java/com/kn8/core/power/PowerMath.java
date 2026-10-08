@@ -98,11 +98,11 @@ public final class PowerMath {
     }
 
     /**
-     * Calor depois de um tick (0.5.0, decisao do Miguel). Acima do limite pessoal cada 10 pontos de excesso geram
-     * {@code excessHeatPer10PerSecond}, ate o maximo. Dentro do limite o uso aquece {@code useHeatPerSecond} vezes a
-     * fracao usada do limite, mas so ate o estagio WARM (cansaco sem dano; ~1 minuto no limite); o que passou disso
-     * esfria ate WARM. Com o Release desligado o traje esfria (mais rapido fora de combate). Resultado entre 0 e o
-     * maximo.
+     * Calor depois de um tick (0.5.0, decisao do Miguel). O traje so aquece usando a forca total dele (a % no limite
+     * pessoal) ou passando do limite: acima do limite cada 10 pontos de excesso geram {@code excessHeatPer10PerSecond},
+     * ate o maximo; no limite exato aquece {@code useHeatPerSecond}, mas so ate o estagio WARM (cansaco sem dano; ~1
+     * minuto) e o que passou disso esfria ate WARM. Abaixo do limite (ou desligado) o traje esfria (mais rapido fora
+     * de combate). Resultado entre 0 e o maximo.
      */
     public static double heatAfterTick(double heat, int active, int limit, boolean inCombat, PowerParams params) {
         double cooling = (inCombat ? params.coolInCombatPerSecond() : params.coolOutOfCombatPerSecond())
@@ -111,11 +111,10 @@ public final class PowerMath {
         double next;
         if (over > 0) {
             next = heat + params.excessHeatPer10PerSecond() * (over / 10.0) / PowerParams.TICKS_PER_SECOND;
-        } else if (active > 0) {
-            double used = limit > 0 ? Math.min(1.0, active / (double) limit) : 1.0;
+        } else if (active > 0 && active >= limit) {
             double cap = params.heatWarmAt();
             if (heat < cap) {
-                next = Math.min(cap, heat + params.useHeatPerSecond() * used / PowerParams.TICKS_PER_SECOND);
+                next = Math.min(cap, heat + params.useHeatPerSecond() / PowerParams.TICKS_PER_SECOND);
             } else {
                 next = Math.max(cap, heat - cooling);
             }
