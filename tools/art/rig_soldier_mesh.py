@@ -52,8 +52,10 @@ BACK_ITEMS = None
 SPECIES = {
     # 0.5.0-B: soldado refeito pelo Miguel (capacete, 1,9 m, 11 mil tri): maos ate y 0,78, quadril em 0,90.
     # O capacete e mais largo que o pescoco: acima de arm_max_y nada e braco.
-    "soldier": {"stem": "soldier_1", "hip_y": 0.90, "neck_y": 1.50, "hand_min_y": 0.74,
-                "arm_inner_x": [(1.0, 0.205), (0.0, 0.258)], "arm_max_y": 1.50, "back_items": None},
+    # 0.5.0-B: soldado estilo Minecraft do Miguel (capacete desce ate 1,44 com |x| ate 0,27; ombro sobe ate 1,46 por
+    # fora dele; bolsas do cinto ate |x| 0,20 ficam no tronco).
+    "soldier": {"stem": "soldier_1", "hip_y": 0.90, "neck_y": 1.44, "hand_min_y": 0.80,
+                "arm_inner_x": [(1.44, 0.28), (1.12, 0.168), (0.0, 0.214)], "arm_max_y": 1.50, "back_items": None},
     # Hoshina (modelo do Miguel, 1,85 m): bracos a partir de |x| 0,25; as duas bainhas nas costas saem pela lateral
     # esquerda do modelo (x < -0,28) e ficam atras do tronco (z > 0,09).
     # 0.5.0-B: Hoshina refeito (bracos mais abertos, maos ate y 0,88, cabeca a partir de 1,47). A malha nova veio

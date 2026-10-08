@@ -36,62 +36,62 @@
           "name": "head",
           "pivot": [
             -0.0,
-            24.0,
-            0.019
+            23.04,
+            -0.38
           ],
           "parent": "body"
         },
         {
           "name": "arm_left",
           "pivot": [
-            4.241,
-            23.359,
-            0.274
+            3.718,
+            22.84,
+            0.134
           ],
           "parent": "body"
         },
         {
           "name": "arm_right",
           "pivot": [
-            -4.039,
-            23.364,
-            0.306
+            -3.819,
+            22.845,
+            -0.026
           ],
           "parent": "body"
         },
         {
           "name": "leg_left",
           "pivot": [
-            2.708,
+            1.554,
             14.4,
-            -0.163
+            0.334
           ],
           "parent": "root"
         },
         {
           "name": "leg_right",
           "pivot": [
-            -2.48,
+            -1.719,
             14.4,
-            0.152
+            0.016
           ],
           "parent": "root"
         },
         {
           "name": "item_right",
           "pivot": [
-            -5.286,
-            12.986,
-            -0.263
+            -4.943,
+            14.145,
+            -0.316
           ],
           "parent": "arm_right"
         },
         {
           "name": "item_left",
           "pivot": [
-            5.21,
-            12.986,
-            -0.268
+            4.872,
+            14.126,
+            0.298
           ],
           "parent": "arm_left"
         }

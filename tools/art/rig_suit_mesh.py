@@ -51,9 +51,10 @@ LINER_INFLATE_PX = 0.3
 # Cortes medidos na vista de frente de cada traje (metros do OBJ convertido): borda de dentro dos bracos por altura
 # (altura acima da qual vale, |x|), ponta dos dedos e quadril.
 SUITS = {
-    # 0.5.0-B: Mk1 refeito pelo Miguel (costas com a "espinha"): vao entre braco e tronco medido por altura.
-    "mk1": {"arm_inner_x": [(1.20, 0.19), (1.05, 0.175), (0.95, 0.205), (0.0, 0.215)], "hand_min_y": 0.76,
-            "hip_y": 0.80, "max_stretch": 2.4, "arm_reach": 11 / 16, "liner": True},
+    # 0.5.0-B: Mk1 estilo Minecraft do Miguel (bracos em bloco); vao entre braco e tronco medido por altura (bolsas
+    # do cinto ate |x| 0,22 ficam no tronco).
+    "mk1": {"arm_inner_x": [(1.20, 0.19), (1.05, 0.205), (0.0, 0.232)], "hand_min_y": 0.76,
+            "hip_y": 0.82, "liner": True},
     # Luvas grandes descem ate ~0,64, por fora das coxas (|x| > 0,38).
     "mk1_reinforced": {"arm_inner_x": [(1.22, 0.24), (0.90, 0.30), (0.0, 0.38)], "hand_min_y": 0.62,
                        "hip_y": 0.80, "liner": True},

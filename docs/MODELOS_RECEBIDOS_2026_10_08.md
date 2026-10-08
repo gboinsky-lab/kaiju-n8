@@ -78,3 +78,11 @@ textura 4096 (2048 nos No. 10): reduzir para 512-1024 na conversao.
 A forma preta do No. 9 (v21 secao 33.1) chega na proxima mensagem. A Biblioteca v21 foi atualizada com a secao 33
 (formas do No. 9: preta original, fundida ao No. 10, fundida a formiga, vermelha apos absorver o No. 10, apos
 absorver Isao/No. 2, forma final), em `docs/BIBLIOTECA_KAIJU_N8_v21.md`.
+
+## Quarto envio (2026-10-08, tarde)
+
+| Arquivo | Id | Triangulos | O que e | Situacao |
+|---|---|---|---|---|
+| `kaiju_no9_v1` | `kaiju_no9_black` (sugerido) | 10.408 | No. 9 forma preta (v21 secao 33.1): preto com espinhos vermelhos, sorriso branco, 1,9 m | **nova forma**, nao substitui o No. 9 atual (Miguel); so guardado |
+| `defense_suit_steve` | `mk1` | 7.781 | Mk1 estilo Minecraft (bracos em bloco) | **trocado** (substitui o Mk1 da 0.5.0-B) |
+| `defense_soldier_steve` | `soldier_1` | 9.121 | soldado comum estilo Minecraft (capacete preto) | **trocado** (substitui o soldado da 0.5.0-B) |
