@@ -1,0 +1,37 @@
+{
+  "hands": "two",
+  "stance": false,
+  "draw": {
+    "ticks": 12,
+    "sound": "minecraft:item.armor.equip_iron"
+  },
+  "reload": {
+    "magazine": 30,
+    "stages": [
+      {
+        "name": "eject",
+        "ticks": 10,
+        "sound": "minecraft:item.crossbow.loading_start"
+      },
+      {
+        "name": "insert",
+        "ticks": 14,
+        "sound": "minecraft:item.crossbow.loading_middle"
+      },
+      {
+        "name": "chamber",
+        "ticks": 8,
+        "sound": "minecraft:item.crossbow.loading_end"
+      }
+    ]
+  },
+  "recoil": {
+    "pitch": 1.6,
+    "yaw": 0.6,
+    "recover_ticks": 4,
+    "body_kick": 1.0
+  },
+  "npc": {
+    "arm_pose": "rifle"
+  }
+}

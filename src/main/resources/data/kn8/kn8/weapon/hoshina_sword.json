@@ -3,6 +3,7 @@
   "base_damage": 7,
   "reach": 3.0,
   "style": "blade",
+  "profile": "kn8:dual_reverse",
   "actions": {
     "light": {
       "multiplier": 1.0,

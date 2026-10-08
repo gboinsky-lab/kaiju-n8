@@ -1,0 +1,10 @@
+{
+  "hands": "two",
+  "draw": {
+    "ticks": 14,
+    "sound": "minecraft:item.armor.equip_iron"
+  },
+  "npc": {
+    "arm_pose": "blade"
+  }
+}

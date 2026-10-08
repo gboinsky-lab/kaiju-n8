@@ -3,6 +3,7 @@
   "base_damage": 6,
   "reach": 3.0,
   "style": "blade",
+  "profile": "kn8:knife",
   "actions": {
     "light": {
       "multiplier": 1.0,

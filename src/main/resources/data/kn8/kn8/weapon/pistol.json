@@ -3,6 +3,7 @@
   "base_damage": 3.5,
   "reach": 32.0,
   "style": "firearm",
+  "profile": "kn8:pistol",
   "actions": {
     "light": {
       "multiplier": 1.0,
