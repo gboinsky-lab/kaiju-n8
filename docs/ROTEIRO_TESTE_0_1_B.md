@@ -531,3 +531,12 @@ Visto na nuvem (`docs/img/hoshina_modelo.png`, `hoshina_vs_honju.png`, `hoshina_
 | 36.3 | No. 8 lutando | Guarda de luta, sequência de socos, soco pesado que empurra, investida, golpe no chão (explosão), rugido (deixa lento); regenera abaixo da metade |
 | 36.4 | Matar o kaiju e esperar 15 s | O No. 8 volta a ser o Kafka |
 | 36.5 | Servidor dedicado + 2 clientes | Os dois veem a troca de forma ao mesmo tempo |
+
+## 37. Kikoru Shinomiya, traje normal (0.5.0-D8)
+
+| # | Passo | Esperado |
+|---|---|---|
+| 37.1 | Ovo da Kikoru Shinomiya (aba do mod) | Kikoru de 1,57 m com marias-chiquinhas, machado de duas mãos e aura amarela com raios |
+| 37.2 | Kikoru perto de um Primigenius (dificuldade normal) | Postura baixa com o machado; corte, golpe pesado em giro, onda de choque, investida, golpe no chão e quebra-guarda |
+| 37.3 | `/kn8 invasion start kn8:honju_assault` | A Kikoru aparece entre os defensores |
+| 37.4 | Servidor dedicado + 2 clientes | Os dois veem os mesmos golpes e a aura |

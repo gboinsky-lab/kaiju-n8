@@ -1,10 +1,16 @@
-# Novos personagens e kaiju — atualização 0.7
+# Novos personagens, kaiju e armas
 
-Tudo o que entrou no mod a partir dos modelos guardados do Miguel (pedido de 2026-10-09: "implemente os modelos que
-você tem guardado e comece a implementar os novos soldados e kaijus"). Cada linha foi vista em jogo com servidor
-dedicado + 2 clientes, salvo onde está escrito "só GameTest". Onde nascem e o balanceamento final ficam para depois
-de todos os personagens (Miguel, 2026-10-09); por enquanto todos aparecem por `/summon`, `/kn8 kaiju spawn` (kaiju)
-ou ovo (soldados especiais). Números marcados [SUPOSIÇÃO] estão em `docs/BALANCEAMENTO.md`.
+Tudo o que entrou no mod a partir dos modelos que o Miguel mandou em 2026-10-08 (lista em
+`docs/MODELOS_RECEBIDOS_2026_10_08.md`): a Kikoru normal (0.5.0-D8), os modelos refeitos da 0.5.0 e a atualização
+0.7 inteira (pedido de 2026-10-09: "implemente os modelos que você tem guardado e comece a implementar os novos
+soldados e kaijus"). Cada linha foi vista em jogo com servidor dedicado + 2 clientes, salvo onde está escrito "só
+GameTest". Onde nascem e o balanceamento final ficam para depois de todos os personagens (Miguel, 2026-10-09); por
+enquanto os kaiju aparecem por `/summon` ou `/kn8 kaiju spawn` e os soldados especiais pelo ovo ou `/summon`. Números
+marcados [SUPOSIÇÃO] estão em `docs/BALANCEAMENTO.md`.
+
+**Resumo:** 7 kaiju novos, 10 personagens novos (Kikoru, Reno, Mina, Narumi, Kikoru No. 4, Reno No. 6, Narumi No. 1,
+Kafka e Kaiju No. 8 contam 9 entidades de soldado especial; o No. 8 é a forma kaiju do Kafka), 3 armas novas e 5
+modelos refeitos.
 
 ## Kaiju
 
@@ -26,6 +32,7 @@ perseguindo e lutando contra soldados.
 
 | Etapa | Id (ovo ou `/summon kn8:<id>`) | Personagem | Altura | Vida / armadura / velocidade (v1.2) | Arma | Técnicas | Aura |
 |---|---|---|---|---|---|---|---|
+| 0.5.0-D8 | `kikoru` | Kikoru Shinomiya (traje normal) | 1,57 m | 390 / 18 / 0,34 | machado de duas mãos (`kn8:axe`) | corte de machado, golpe pesado em giro, onda de choque, investida com golpe, golpe no chão, quebra-guarda; esquiva, contra-ataque e aparar (mais raros que os do Hoshina) | amarela com raios |
 | 0.7-C | `reno` | Reno Ichikawa (traje normal) | 1,70 m | 360 / 17 / 0,31 | rifle | tiro de precisão, rajada de 3, munição congelante (lentidão), supressão em leque, coronhada de perto; fica longe atirando | azul-gelo |
 | 0.7-C | `mina` | Mina Ashiro | 1,65 m | 420 / 20 / 0,30 | **canhão pesado** no quadril (`kn8:mina_cannon`) | tiro de precisão, tiro do canhão (explode), canhão carregado, Anti-Giant (preparo longo, prefere Honju/numerados); fica longe | laranja |
 | 0.7-C | `narumi` | Gen Narumi (traje normal) | 1,78 m | 480 / 20 / 0,32 | **baioneta longa** de duas mãos (`kn8:narumi_bayonet`) | estocadas em sequência, investida, varrida que empurra, tiro da baioneta | rosa com raios |
@@ -35,9 +42,14 @@ perseguindo e lutando contra soldados.
 | 0.7-F | `kafka` | Kafka Hibino (humano) | 1,81 m | 24 / 6 / 0,30 | rifle | tiro, sequência de socos; **vira o Kaiju No. 8** abaixo de 50% da vida | da Força de Defesa |
 | 0.7-F | `kaiju_no8` | Kaiju No. 8 | 2,0 m | 1.800 / 19 / 0,40 | punhos (`kn8:kaiju_no8_fist`, invisível) | rajada de socos, soco pesado, investida, golpe no chão (explode), rugido (deixa lento); **regenera** abaixo de 50%; **volta a ser o Kafka** depois de 15 s sem alvo | ciano em chamas |
 
-Todos usam a IA dos soldados especiais (a mesma do Hoshina e da Kikoru): esquiva, contra-ataque, aparar e escalada
+Todos usam a IA dos soldados especiais (a mesma do Hoshina): esquiva, contra-ataque, aparar e escalada
 de Release. As técnicas de tiro, a explosão e a munição congelante só foram confirmadas pelo GameTest; em jogo os
 três foram vistos com arma e aura, e lutando contra um Primigenius.
+
+A Kikoru normal defende nas invasões `honju_assault`, `web_queen`, `no9_resurrection` (nível 3) e `kaiju_horde`
+(nível 4, com o Hoshina); vista de novo em jogo em 2026-10-09 contra um Primigenius (raios amarelos nos golpes, núcleo
+exposto pelo quebra-guarda; `docs/img/kikoru_normal.jpg`). Os personagens da 0.7 ainda não aparecem em invasões. O Miguel pode animá-la no Blockbench
+pelo modelo-base `tools/blockbench/modelos_base/kikoru.bbmodel`.
 
 ## Armas novas
 
@@ -45,6 +57,15 @@ três foram vistos com arma e aura, e lutando contra um Primigenius.
 |---|---|---|---|
 | `kn8:mina_cannon` | Canhão Pesado da Mina | arma de fogo, 12 de dano | na mão do jogador usa o perfil do rifle [SUPOSIÇÃO] |
 | `kn8:narumi_bayonet` | Baioneta do Narumi | arma pesada, 9 de dano, alcance 3,6 | na mão do jogador usa o perfil do machado [SUPOSIÇÃO] |
+| `kn8:kaiju_no8_fist` | Punhos do Kaiju No. 8 | só do No. 8, 30 de dano, alcance 3 | item invisível; não vai para o jogador |
+
+## Modelos refeitos (substituíram os antigos)
+
+| Etapa | O quê | Onde ver |
+|---|---|---|
+| 0.5.0-B | Soldado comum e traje Mk1 (corpo inteiro, estilo Minecraft) e Mk1 Reforçado | `docs/img/mk1_e_soldado_estilo_minecraft.png` |
+| 0.5.0-B / D4 | Hoshina (sem o rosto duplicado, sem bainhas, pegada no meio do cabo, técnicas pelo anime) | `docs/img/hoshina_modelo.png` |
+| 0.5.0-C | Kaiju No. 10 pequeno e gigante (cauda enrolada em 4 pedaços, cabeça centralizada) | `docs/img/no10_refeito_pequeno_gigante.png` |
 
 ## Pendências [DECIDIR]
 
@@ -64,10 +85,10 @@ três foram vistos com arma e aura, e lutando contra um Primigenius.
   `aura/`.
 - Modelos (malha presa aos ossos): `assets/kn8/meshes/<id>/`, `geo/entity/<id>.geo.json`,
   `animations/entity/<id>.animation.json`, `textures/entity/<id>.png`; armas em `models/item/` e `textures/item/`.
-- Java: `KN8Entities`, `KN8Items`, `KN8Client`, `soldier/special/RenoEntity|MinaEntity|NarumiEntity|KikoruNo4Entity|RenoNo6Entity|NarumiNo1Entity|KafkaEntity|KaijuNo8Entity`
+- Java: `KN8Entities`, `KN8Items`, `KN8Client`, `soldier/special/KikoruEntity|RenoEntity|MinaEntity|NarumiEntity|KikoruNo4Entity|RenoNo6Entity|NarumiNo1Entity|KafkaEntity|KaijuNo8Entity`
   (troca de forma e regeneração no `HoshinaEntity.tickForm`),
   `combat/SlashProjectile` (bala, explosão, lentidão), `data/def/SlashSpec`.
 - Ferramentas: `tools/art/rig_primigenius_mesh.py`, `rig_trichonephila_mesh.py`, `rig_preondactyl_mesh.py`,
   `rig_soldier_mesh.py`, `gen_ability_animations.py`, `build_primigenius_honju.py`, `gen_special_animations.py`.
-- Imagens em jogo: `docs/img/kaiju_0_7_a_modelos.jpg`, `kaiju_0_7_b_modelos.jpg`, `especiais_0_7_c.jpg`, `numeradas_0_7_d.jpg`, `kafka_no8_0_7_f.jpg`.
-- Roteiros de teste: `docs/ROTEIRO_TESTE_0_1_B.md` §32 a §36.
+- Imagens em jogo: `docs/img/kikoru_normal.jpg`, `kaiju_0_7_a_modelos.jpg`, `kaiju_0_7_b_modelos.jpg`, `especiais_0_7_c.jpg`, `numeradas_0_7_d.jpg`, `kafka_no8_0_7_f.jpg`.
+- Roteiros de teste: `docs/ROTEIRO_TESTE_0_1_B.md` §32 a §37 (§37 = Kikoru normal).
