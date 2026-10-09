@@ -38,10 +38,10 @@ STANCES = {
     # Canhao pesado da Mina na altura do quadril (referencia do Miguel): bracos baixos, uma mao no punho e a outra na
     # alca de cima; o item gira para o cano ficar na horizontal.
     "cannon": {
-        "ready": ([-18, 0, 0], [-40, 30, 0], [GUN_AIM_X + 18, 0, 0]),
-        "walk": ([-18, 0, 0], [-40, 30, 0], [GUN_AIM_X + 18, 0, 0]),
-        "run": ([-10, 0, 0], [-30, 25, 0], [GUN_AIM_X + 10, 0, 0]),
-        "aim": ([-25, 0, 0], [-48, 32, 0], [GUN_AIM_X + 25, 0, 0]),
+        "ready": ([-18, 0, 0], [-40, 30, 0], [-(GUN_AIM_X + 18), 0, 0]),
+        "walk": ([-18, 0, 0], [-40, 30, 0], [-(GUN_AIM_X + 18), 0, 0]),
+        "run": ([-10, 0, 0], [-30, 25, 0], [-(GUN_AIM_X + 10), 0, 0]),
+        "aim": ([-25, 0, 0], [-48, 32, 0], [-(GUN_AIM_X + 25), 0, 0]),
     },
     # Baioneta do Narumi (lamina como a espada): duas maos na diagonal, lamina para cima e para a frente.
     "spear": {
