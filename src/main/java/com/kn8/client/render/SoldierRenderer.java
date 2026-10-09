@@ -1,6 +1,6 @@
 package com.kn8.client.render;
 
-import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Map;
 
 import org.joml.Quaternionf;
@@ -157,12 +157,16 @@ public class SoldierRenderer<T extends SoldierEntity> extends GeoEntityRenderer<
         /** Soma o olhar a rotacao animada da cabeca. */
         private final boolean addLook;
         /**
-         * Por osso: rotacao escrita no ultimo quadro e o olhar somado nela. Os ossos sao do modelo (um por especie,
-         * todas as entidades usam os mesmos) e a GeckoLib nao volta a rotacao de um osso que nenhuma animacao
-         * mexeu: sem descontar o olhar do quadro anterior, ele se acumulava e a cabeca girava sem parar (0.7-C/D/F:
-         * Reno, Mina, Narumi, Kafka, No. 8 e a Kikoru parada/andando nao animam a cabeca na postura).
+         * Por osso: rotacao escrita no ultimo quadro e o olhar somado nela. Os ossos sao do modelo assado (um por
+         * arquivo de modelo, todas as entidades e todos os renderers que usam o modelo escrevem nos mesmos) e a
+         * GeckoLib nao volta a rotacao de um osso que nenhuma animacao mexeu: sem descontar o olhar do quadro
+         * anterior, ele se acumulava e a cabeca girava sem parar (0.7-C/D/F: Reno, Mina, Narumi, Kafka, No. 8 e a
+         * Kikoru parada/andando nao animam a cabeca na postura). Chave = o proprio osso e o mapa e de todos os
+         * renderers: o Narumi e o Narumi Numbers 1 usam o mesmo modelo e, com um mapa por renderer, um apagava a
+         * conta do outro. Por identidade: o GeoBone compara pelo conteudo e ossos "head" de modelos diferentes
+         * seriam a mesma chave. So o cliente (thread de render) mexe nele.
          */
-        private final Map<String, float[]> lastLook = new HashMap<>();
+        private static final Map<GeoBone, float[]> LAST_LOOK = new IdentityHashMap<>();
 
         SoldierModel(String species) {
             // 0.5.0-D5: nos soldados especiais, sem o "turnsHead" da GeckoLib, que troca a rotacao animada da cabeca
@@ -203,7 +207,7 @@ public class SoldierRenderer<T extends SoldierEntity> extends GeoEntityRenderer<
          * deixou), tira antes o olhar ja somado, para nao acumular.
          */
         private void addLook(GeoBone bone, float pitch, float yaw) {
-            float[] last = lastLook.computeIfAbsent(bone.getName(), name -> new float[] {Float.NaN, Float.NaN, 0, 0});
+            float[] last = LAST_LOOK.computeIfAbsent(bone, key -> new float[] {Float.NaN, Float.NaN, 0, 0});
             float baseX = bone.getRotX();
             float baseY = bone.getRotY();
             if (baseX == last[0] && baseY == last[1]) {

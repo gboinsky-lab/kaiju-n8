@@ -274,6 +274,9 @@ mandam; se algo precisar mudar, marque **[DECIDIR]** e pergunte.
   a cabeca; a GeckoLib nao volta a rotacao de osso nao animado e o olhar se acumulava a cada quadro → `addLook`
   desconta o olhar do quadro anterior quando nenhuma animacao escreveu no osso (cabeca e bracos da mira). Conferido
   em jogo antes/depois com 2 clientes (sem a correcao a cabeca do Kafka e da Kikoru ficava virada para tras).
+  Narumi (as duas formas) continuou: o Narumi Numbers 1 usa o modelo do Narumi, os dois renderers escrevem nos
+  mesmos ossos (o modelo assado e um por arquivo) e cada um guardava a propria conta → conta guardada por osso
+  (`IdentityHashMap`, o `GeoBone` compara pelo conteudo), unica para todos os renderers.
 - **0.7-E (formas do No. 9):** a pele endurecida nao reduzia nada → no NeoForge o `actuallyHurt` ignora o valor
   recebido (usa o conteiner de dano) → reducao no `getDamageAfterArmorAbsorb`. Absorcao nunca comecava → limite de
   vida 1,0 com a presa de vida cheia (`vida < maxima`) → 1,0 = qualquer vida. GameTests de absorcao: o No. 9 de um
