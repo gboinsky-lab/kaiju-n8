@@ -23,8 +23,6 @@ COUNTER_EXTRA_TICKS = 8
 
 # Poses dos bracos (direito; o esquerdo e o espelho).
 REST = [-30, -10, 0]
-HIGH = [-150, 30, 35]
-LOW = [-40, -40, -45]
 GUARD = [-60, -25, 0]
 
 
@@ -44,88 +42,209 @@ def anim(length_ticks, bones):
     return {"animation_length": round(length_ticks * TICK, 3), "bones": bones}
 
 
+# 0.5.0-D3: tecnicas pelas formas do estilo Hoshina (anime/manga e KAIJU NO. 8 THE GAME): forma 1 Kuuchi (corte
+# unico tao rapido que parece invisivel, solta pressao de ar), 2 Kosa-uchi (corte cruzado em X), 3 Kaeshi-uchi (correndo,
+# corte cruzado girando), 4 Ran-uchi (diagonal alta, horizontal baixa, subida vertical e varredura girando, em cadeia),
+# 5 Kasumi-uchi (parece um X duplo, mas o terceiro corte vem baixo pelo lado), 6 Yae-uchi (oito golpes em estrela) e 7
+# Juni-hitoe (doze camadas, com a cauda). Laminas sempre invertidas: o corte e o antebraco varrendo (lamina ao longo
+# dele). Todas partem da postura baixa (movement.idle) e voltam a ela, sem "pulo" entre controllers.
+OPEN = [-75, 10, 80]
+ACROSS = [-95, -70, -5]
+COCKED = [-115, -60, -15]
+HIGH_OUT = [-160, 0, 45]
+LOW_IN = [-35, -45, -30]
+LOW_OUT = [-20, 0, 65]
+LOW_ACROSS = [-50, -75, -10]
+DOWN = [-5, 0, 15]
+UP = [-170, -10, 10]
+CROSS_CHEST = [-90, -55, -10]
+READY = [-35, 0, 65]
+STANCE = {"root": [0, -4, 0], "body": [28, 0, 0], "head": [-25, 0, 0], "leg_right": [-40, 0, 25],
+          "leg_left": [35, 0, -22]}
+LUNGE = {"root": [0, -5, 0], "leg_right": [-60, 0, 12], "leg_left": [45, 0, -10]}
+
+
+class Track:
+    """Keyframes por osso em ticks; comeca e termina na postura baixa."""
+
+    def __init__(self, end):
+        self.end = end
+        self.bones = {}
+        for bone, value in STANCE.items():
+            self.set(bone, 0, value)
+        self.set("arm_right", 0, READY)
+        self.set("arm_left", 0, mirror(READY))
+
+    def set(self, bone, tick, value, channel=None):
+        channel = channel or ("position" if bone == "root" else "rotation")
+        self.bones.setdefault(bone, {}).setdefault(channel, []).append((tick, value))
+
+    def arms(self, tick, right=None, left=None):
+        if right is not None:
+            self.set("arm_right", tick, right)
+        if left is not None:
+            self.set("arm_left", tick, mirror(left))
+
+    def spin(self, start, hit, degrees=360):
+        """Giro do corpo inteiro no osso root (yaw), sem desenrolar: depois do giro volta a 0 no mesmo instante."""
+        self.set("root", start, [0, 0, 0], "rotation")
+        self.set("root", hit, [0, degrees, 0], "rotation")
+        self.set("root", hit + 0.02, [0, 0, 0], "rotation")
+
+    def build(self):
+        for bone, value in STANCE.items():
+            self.set(bone, self.end, value)
+        self.set("arm_right", self.end, READY)
+        self.set("arm_left", self.end, mirror(READY))
+        bones = {}
+        for bone, channels in self.bones.items():
+            bones[bone] = {channel: keys(*((tick * TICK, v) for tick, v in frames))
+                           for channel, frames in channels.items()}
+        return anim(self.end, bones)
+
+
+def lunge(track, tick):
+    for bone, value in LUNGE.items():
+        track.set(bone, tick, value)
+
+
+def settle(track, tick):
+    for bone, value in STANCE.items():
+        track.set(bone, tick, value)
+
+
 def slash_single(t):
-    """Kuuchi: lamina direita ao ombro esquerdo e corte diagonal no tick do corte."""
+    """Forma 1, Kuuchi: lamina direita armada no ombro esquerdo e varredura para fora num instante, com avanco."""
     end, hit = t["duration_ticks"], t["windup_ticks"]
-    wind = hit * 0.6
-    return anim(end, {
-        "arm_right": {"rotation": keys((0, REST), (wind * TICK, HIGH), (hit * TICK, LOW), (end * TICK, REST))},
-        "arm_left": {"rotation": keys((0, mirror(REST)), (hit * TICK, mirror([-50, 10, 10])),
-                                      (end * TICK, mirror(REST)))},
-        "body": {"rotation": keys((0, [0, 0, 0]), (wind * TICK, [0, 30, 0]), (hit * TICK, [6, -25, 0]),
-                                  (end * TICK, [0, 0, 0]))},
-    })
+    track = Track(end)
+    track.arms(hit * 0.6, right=COCKED, left=LOW_OUT)
+    track.set("body", hit * 0.6, [22, 35, 0])
+    track.arms(hit, right=OPEN, left=[-25, 10, 75])
+    track.set("body", hit, [30, -30, 0])
+    lunge(track, hit)
+    settle(track, hit + (end - hit) * 0.7)
+    return track.build()
 
 
 def slash_cross(t):
-    """Kosa-uchi: cruza as duas espadas acima da cabeca e abre em X no tick do corte."""
+    """Forma 2, Kosa-uchi: as duas laminas abertas para cima e fechando em X a frente do peito no tick do corte."""
     end, hit = t["duration_ticks"], t["windup_ticks"]
-    wind = hit * 0.6
-    cross = [-150, -35, -20]
-    return anim(end, {
-        "arm_right": {"rotation": keys((0, REST), (wind * TICK, cross), (hit * TICK, LOW), (end * TICK, REST))},
-        "arm_left": {"rotation": keys((0, mirror(REST)), (wind * TICK, mirror(cross)), (hit * TICK, mirror(LOW)),
-                                      (end * TICK, mirror(REST)))},
-        "body": {"rotation": keys((0, [0, 0, 0]), (wind * TICK, [-8, 0, 0]), (hit * TICK, [10, 0, 0]),
-                                  (end * TICK, [0, 0, 0]))},
-    })
+    track = Track(end)
+    wide = [-130, 0, 75]
+    track.arms(hit * 0.6, right=wide, left=wide)
+    track.set("body", hit * 0.6, [10, 0, 0])
+    track.arms(hit, right=CROSS_CHEST, left=CROSS_CHEST)
+    track.set("body", hit, [34, 0, 0])
+    lunge(track, hit)
+    track.arms(hit + 3, right=[-80, -65, -15], left=[-80, -65, -15])
+    settle(track, hit + (end - hit) * 0.7)
+    return track.build()
 
 
-def combo(t, heavy_last=False):
-    """Golpes alternando os bracos, um por tick de dano; o ultimo pode ser com os dois (finalizacao forte)."""
+# Forma 4 (Ran-uchi): cadeia de quatro cortes; cada um = (braco, preparo, corte, inclinacao do corpo).
+WILD = [("right", HIGH_OUT, LOW_IN, [34, -20, 0]), ("left", LOW_OUT, LOW_ACROSS, [36, 20, 0]),
+        ("right", DOWN, UP, [12, -10, 0]), ("both", ACROSS, OPEN, [30, 0, 0])]
+# Forma 6 (Yae-uchi): oito cortes em estrela, alternando as laminas e a direcao.
+STAR = [("right", COCKED, OPEN), ("left", COCKED, OPEN), ("right", HIGH_OUT, LOW_IN), ("left", HIGH_OUT, LOW_IN),
+        ("right", LOW_OUT, LOW_ACROSS), ("left", LOW_OUT, LOW_ACROSS), ("right", DOWN, UP), ("left", DOWN, UP)]
+
+
+def strike(track, side, pre_tick, hit, pre, cut):
+    if side in ("right", "both"):
+        track.arms(pre_tick, right=pre)
+        track.arms(hit, right=cut)
+    if side in ("left", "both"):
+        track.arms(pre_tick, left=pre)
+        track.arms(hit, left=cut)
+
+
+def finisher(track, pre_tick, hit):
+    """Ultimo golpe forte: as duas laminas sobem e descem cruzando, corpo mergulha."""
+    track.arms(pre_tick, right=[-170, 0, 30], left=[-170, 0, 30])
+    track.set("body", pre_tick, [0, 0, 0])
+    track.arms(hit, right=LOW_IN, left=LOW_IN)
+    track.set("body", hit, [42, 0, 0])
+    lunge(track, hit)
+
+
+def combo(t, pattern="wild", heavy_last=False):
+    """Golpes da tecnica, um por tick de dano; o padrao do anime decide a pose de cada um."""
     end, first, step, count = t["duration_ticks"], t["windup_ticks"], t.get("hit_interval", 2), len(t["hits"])
-    right, left = [(0, REST)], [(0, mirror(REST))]
-    body = [(0, [0, 0, 0])]
+    track = Track(end)
+    lunge(track, first)
     for i in range(count):
         hit = first + i * step
-        pre = max(hit - max(step, 2) * 0.5, 0)
-        last = i == count - 1
-        if last and heavy_last:
-            right += [(pre, [-170, 0, 15]), (hit, [-20, -20, -10])]
-            left += [(pre, mirror([-170, 0, 15])), (hit, mirror([-20, -20, -10]))]
-            body += [(pre, [-12, 0, 0]), (hit, [22, 0, 0])]
-        elif i % 2 == 0:
-            right += [(pre, HIGH), (hit, LOW)]
-            body += [(hit, [8, -20, 0])]
+        pre = max(hit - max(step, 1) * 0.5, 0.5)
+        if heavy_last and i == count - 1:
+            finisher(track, pre, hit)
+            continue
+        if pattern == "wild":
+            side, pre_pose, cut, body = WILD[i % len(WILD)]
+            strike(track, side, pre, hit, pre_pose, cut)
+            track.set("body", hit, body)
+            if side == "both":
+                track.spin(pre, hit)
         else:
-            left += [(pre, mirror(HIGH)), (hit, mirror(LOW))]
-            body += [(hit, [8, 20, 0])]
-    right.append((end, REST))
-    left.append((end, mirror(REST)))
-    body.append((end, [0, 0, 0]))
-    as_time = lambda frames: keys(*((tick * TICK, v) for tick, v in frames))
-    return anim(end, {"arm_right": {"rotation": as_time(right)}, "arm_left": {"rotation": as_time(left)},
-                      "body": {"rotation": as_time(body)},
-                      "leg_right": {"rotation": keys((0, [0, 0, 0]), (first * TICK, [-25, 0, 0]),
-                                                     (end * TICK, [0, 0, 0]))},
-                      "leg_left": {"rotation": keys((0, [0, 0, 0]), (first * TICK, [15, 0, 0]),
-                                                    (end * TICK, [0, 0, 0]))}})
+            side, pre_pose, cut = STAR[i % len(STAR)]
+            strike(track, side, pre, hit, pre_pose, cut)
+            track.set("body", hit, [30 + (i % 2) * 6, 25 if side == "left" else -25, 0])
+    settle(track, first + (count - 1) * step + (end - first - (count - 1) * step) * 0.7)
+    return track.build()
+
+
+def basic_attack(end=12, hit=5):
+    """Golpe comum (sem tecnica): varredura invertida da direita e a esquerda acompanhando, impacto no tick 5 (o
+    soldado aplica o dano pelo light da espada do Hoshina, impact_tick 4, com folga de saque)."""
+    track = Track(end)
+    track.arms(hit * 0.5, right=COCKED, left=LOW_OUT)
+    track.set("body", hit * 0.5, [26, 25, 0])
+    track.arms(hit, right=OPEN, left=COCKED)
+    track.set("body", hit, [32, -20, 0])
+    lunge(track, hit)
+    track.arms(hit + 3, left=OPEN)
+    settle(track, hit + (end - hit) * 0.7)
+    return track.build()
 
 
 def kasumi(t):
-    """Kasumi-uchi: dois cortes leves, passo lateral (corpo inclina) e o terceiro forte com as duas espadas."""
-    data = combo(t, heavy_last=True)
-    hits = [t["windup_ticks"] + i * t.get("hit_interval", 2) for i in range(len(t["hits"]))]
-    side = (hits[-2] + hits[-1]) / 2
-    data["bones"]["body"]["rotation"].update(keys((side * TICK, [0, 0, 18])))
-    return data
+    """Forma 5, Kasumi-uchi: dois cortes em X (direita e esquerda), passo para o lado e o terceiro baixo pelo lado."""
+    end, first, step = t["duration_ticks"], t["windup_ticks"], t.get("hit_interval", 2)
+    hits = [first + i * step for i in range(len(t["hits"]))]
+    track = Track(end)
+    strike(track, "right", hits[0] - 2, hits[0], HIGH_OUT, LOW_IN)
+    track.set("body", hits[0], [32, -20, 0])
+    strike(track, "left", hits[1] - 2, hits[1], HIGH_OUT, LOW_IN)
+    track.set("body", hits[1], [32, 20, 0])
+    side = (hits[1] + hits[2]) / 2
+    track.set("root", side, [5, -6, 0])
+    track.set("body", side, [20, 0, 22])
+    track.arms(side, right=LOW_OUT, left=LOW_OUT)
+    track.set("root", hits[2], [5, -9, 0])
+    track.set("body", hits[2], [45, -40, 10])
+    track.set("leg_right", hits[2], [-75, 0, 35])
+    track.set("leg_left", hits[2], [50, 0, -30])
+    track.arms(hits[2], right=LOW_ACROSS, left=[-30, 10, 80])
+    settle(track, hits[2] + (end - hits[2]) * 0.7)
+    return track.build()
 
 
 def counter(c):
-    """Kaeshi-uchi: abaixa e gira no dash lateral; o contra-ataque sai no strike_delay_ticks."""
-    strike = c["strike_delay_ticks"]
-    end = strike + COUNTER_EXTRA_TICKS
-    low = strike * 0.4
-    return anim(end, {
-        "body": {"rotation": keys((0, [0, 0, 0]), (low * TICK, [20, -120, 0]), ((strike - 1) * TICK, [10, -330, 0]),
-                                  (strike * TICK, [12, -360, 0]), (end * TICK, [0, -360, 0]))},
-        "arm_right": {"rotation": keys((0, REST), (low * TICK, [20, 0, 30]), ((strike - 2) * TICK, HIGH),
-                                       (strike * TICK, LOW), (end * TICK, REST))},
-        "arm_left": {"rotation": keys((0, mirror(REST)), (low * TICK, mirror([20, 0, 30])),
-                                      (strike * TICK, mirror(LOW)), (end * TICK, mirror(REST)))},
-        "leg_right": {"rotation": keys((0, [0, 0, 0]), (low * TICK, [-45, 0, 0]), (end * TICK, [0, 0, 0]))},
-        "leg_left": {"rotation": keys((0, [0, 0, 0]), (low * TICK, [30, 0, 0]), (end * TICK, [0, 0, 0]))},
-    })
+    """Forma 3, Kaeshi-uchi: abaixa no dash lateral, cruza as laminas e solta o corte cruzado girando."""
+    strike_tick = c["strike_delay_ticks"]
+    end = strike_tick + COUNTER_EXTRA_TICKS
+    low = strike_tick * 0.4
+    track = Track(end)
+    track.set("root", low, [0, -8, 0])
+    track.set("body", low, [40, 0, 0])
+    track.set("leg_right", low, [-70, 0, 30])
+    track.set("leg_left", low, [55, 0, -25])
+    track.arms(low, right=CROSS_CHEST, left=CROSS_CHEST)
+    track.arms(strike_tick, right=OPEN, left=OPEN)
+    track.set("body", strike_tick, [30, 0, 0])
+    track.spin(low, strike_tick, -360)
+    lunge(track, strike_tick)
+    settle(track, strike_tick + COUNTER_EXTRA_TICKS * 0.7)
+    return track.build()
 
 
 def dash():
@@ -232,17 +351,18 @@ def main():
     animations = data["animations"]
     generated = arms()
     generated.update(movement())
+    generated["hoshina.action.attack"] = basic_attack()
     generated["hoshina.action.kuuchi"] = slash_single(techniques["kuuchi"])
     generated["hoshina.action.kosa_uchi"] = slash_cross(techniques["kosa_uchi"])
-    generated["hoshina.action.ran_uchi"] = combo(techniques["ran_uchi"])
+    generated["hoshina.action.ran_uchi"] = combo(techniques["ran_uchi"], "wild")
     generated["hoshina.action.kasumi_uchi"] = kasumi(techniques["kasumi_uchi"])
-    generated["hoshina.action.yae_uchi"] = combo(techniques["yae_uchi"], heavy_last=True)
+    generated["hoshina.action.yae_uchi"] = combo(techniques["yae_uchi"], "star", heavy_last=True)
     generated["hoshina.action.kaeshi_uchi"] = counter(profile["counter"])
     generated["hoshina.action.dash"] = dash()
     generated["hoshina.action.parry"] = parry()
     if "juni_hitoe" in techniques:
         # 0.6-F: 12 golpes alternando as espadas, o ultimo com as duas (a cauda acompanha pelo controller dela).
-        generated["hoshina.action.juni_hitoe"] = combo(techniques["juni_hitoe"], heavy_last=True)
+        generated["hoshina.action.juni_hitoe"] = combo(techniques["juni_hitoe"], "star", heavy_last=True)
     # Os nomes sao gerados com o prefixo do Hoshina e trocados pelo da especie.
     generated = {species + name[len("hoshina"):]: anim for name, anim in generated.items()}
     if "numbers10" in profile:

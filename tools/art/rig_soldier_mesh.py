@@ -58,12 +58,11 @@ SPECIES = {
                 "arm_inner_x": [(1.44, 0.28), (1.12, 0.168), (0.0, 0.214)], "arm_max_y": 1.50, "back_items": None},
     # Hoshina (modelo do Miguel, 1,85 m): bracos a partir de |x| 0,25; as duas bainhas nas costas saem pela lateral
     # esquerda do modelo (x < -0,28) e ficam atras do tronco (z > 0,09).
-    # 0.5.0-B: Hoshina refeito (bracos mais abertos, maos ate y 0,88, cabeca a partir de 1,47). A malha nova veio
-    # inteira soldada (as bainhas encostam no corpo): as bainhas sao a regiao atras do braco esquerdo (x < -0,2,
-    # z > 0,095; o braco vai ate z ~0,08).
-    "hoshina": {"stem": "hoshina", "hip_y": 0.93, "neck_y": 1.47, "hand_min_y": 0.80,
+    # 0.5.0-D4: Hoshina refeito de novo pelo Miguel (o anterior tinha um rosto copiado na nuca). Sem bainhas nas
+    # costas (back_items None); o cinto fica entre 0,80 e 0,95, entao o quadril desce para 0,80 (cinto no tronco).
+    "hoshina": {"stem": "hoshina", "hip_y": 0.80, "neck_y": 1.47, "hand_min_y": 0.80,
                 "arm_inner_x": [(1.2, 0.21), (0.0, 0.24)], "arm_max_y": 1.47,
-                "back_items": {"region": {"x_max": -0.2, "z_min": 0.095}}},
+                "back_items": None},
     # 0.6-F: Hoshina com o traje numerado 10: a cauda do No. 10 sai do quadril esquerdo, passa por baixo da mao,
     # sobe pelas costas e faz um arco por cima da cabeca ate a ponta na frente-direita. Separada pela superficie
     # (sementes da cauda contra sementes do resto do corpo) e dividida em 4 ossos pelo comprimento da linha.

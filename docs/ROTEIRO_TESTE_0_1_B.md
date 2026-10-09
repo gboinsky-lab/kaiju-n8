@@ -461,3 +461,15 @@ Visto na nuvem (`docs/img/hoshina_modelo.png`, `hoshina_vs_honju.png`, `hoshina_
 | 30.8 | Outra espada do Hoshina na mão secundária (F troca), apertar R e atacar | Kūuchi sai; as duas espadas aparecem e golpeiam no combo |
 | 30.9 | `/summon kn8:hoshina` perto de um kaiju | Hoshina agachado parado, andando e correndo com as duas lâminas invertidas |
 | 30.10 | Servidor dedicado + 2 clientes | Cada um vê a postura, o andar e o correr do outro |
+
+## 31. Hoshina refeito e tecnicas pelo anime (0.5.0-D4)
+
+| # | Passo | Esperado |
+|---|---|---|
+| 31.1 | `/summon kn8:hoshina ~ ~ ~ {NoAI:1b}` e olhar a nuca de perto | Modelo novo, sem rosto na parte de trás da cabeça |
+| 31.2 | Olhar as mãos do Hoshina e as suas (F5) com a espada dele | A mão segura o meio do cabo (sobra um pouco do pomo do outro lado), não a ponta |
+| 31.3 | Perto do Hoshina parado: `/kn8 anim soldier action <kuuchi, kosa_uchi, kaeshi_uchi, ran_uchi, kasumi_uchi, yae_uchi>` | 1: um corte só, rápido, com avanço; 2: as duas lâminas fecham em X na frente do peito; 3: abaixa e gira com as lâminas cruzadas; 4: diagonal alta, horizontal baixa, subida e varredura girando, em sequência; 5: X com as duas e o terceiro corte baixo pelo lado; 6: oito cortes alternando; todas saem e voltam agachado |
+| 31.4 | Hoshina lutando contra um kaiju | As técnicas aparecem na luta com a postura baixa |
+| 31.5 | Jogador com uma espada do Hoshina em cada mão: combo e R | Golpes diferentes alternando as lâminas; o Kūuchi é um corte rápido para fora com avanço |
+| 31.6 | Jogador com o machado: R | Salta com o machado erguido e crava no chão (Axe Slam da Kikoru) |
+| 31.7 | Servidor dedicado + 2 clientes | Os dois veem as mesmas animações |

@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import com.kn8.common.anim.AnimationBridge;
 import com.kn8.common.kaiju.KaijuEntity;
+import com.kn8.common.soldier.SoldierEntity;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
@@ -25,7 +26,9 @@ import net.minecraft.world.phys.AABB;
  * <ul>
  *   <li>{@code /kn8 anim play <jogadores> <animacao>}: toca uma animacao PAL (ex.: kn8:player.action.heavy);</li>
  *   <li>{@code /kn8 anim stop <jogadores>}: para a camada de combate (ex.: soltar o bloqueio);</li>
- *   <li>{@code /kn8 anim kaiju <controller> <nome>}: dispara uma animacao no kaiju mais proximo.</li>
+ *   <li>{@code /kn8 anim kaiju <controller> <nome>}: dispara uma animacao no kaiju mais proximo;</li>
+ *   <li>{@code /kn8 anim soldier <controller> <nome>}: idem no soldado (ou Hoshina) mais proximo (0.5.0-D3, conferir
+ *   as tecnicas com o soldado parado; nome = animacao registrada no controller, ex.: action kuuchi).</li>
  * </ul>
  */
 final class AnimCommands {
@@ -49,7 +52,25 @@ final class AnimCommands {
                         .then(Commands.argument("name", StringArgumentType.string())
                                 .executes(ctx -> kaiju(ctx.getSource(),
                                         StringArgumentType.getString(ctx, "controller"),
+                                        StringArgumentType.getString(ctx, "name"))))))
+                .then(Commands.literal("soldier").then(Commands.argument("controller", StringArgumentType.word())
+                        .then(Commands.argument("name", StringArgumentType.string())
+                                .executes(ctx -> soldier(ctx.getSource(),
+                                        StringArgumentType.getString(ctx, "controller"),
                                         StringArgumentType.getString(ctx, "name"))))));
+    }
+
+    private static int soldier(CommandSourceStack source, String controller, String name) {
+        AABB area = AABB.ofSize(source.getPosition(), KAIJU_RADIUS * 2, KAIJU_RADIUS * 2, KAIJU_RADIUS * 2);
+        Optional<SoldierEntity> nearest = source.getLevel().getEntitiesOfClass(SoldierEntity.class, area).stream()
+                .min(Comparator.comparingDouble(soldier -> soldier.distanceToSqr(source.getPosition())));
+        if (nearest.isEmpty()) {
+            source.sendFailure(Component.translatable("kn8.command.anim.no_soldier"));
+            return 0;
+        }
+        nearest.get().triggerAnim(controller, name);
+        source.sendSuccess(() -> Component.translatable("kn8.command.anim.soldier", controller, name), false);
+        return 1;
     }
 
     private static int play(CommandSourceStack source, Collection<ServerPlayer> targets, ResourceLocation animation) {

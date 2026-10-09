@@ -147,6 +147,8 @@
   "kn8.command.anim.played": "Animation %s sent to %s player(s)",
   "kn8.command.anim.stopped": "Combat animation stopped for %s player(s)",
   "kn8.command.anim.kaiju": "Kaiju animation %s / %s triggered",
+  "kn8.command.anim.soldier": "Soldier animation %s / %s triggered",
+  "kn8.command.anim.no_soldier": "No soldier within 32 blocks",
   "kn8.client.anim.none": "No animation received yet",
   "kn8.client.anim.entry": "%s: %s | delay %s ticks, skipped %s",
   "kn8.client.anim.missing": "%s: %s NOT FOUND (delay %s, skipped %s)",

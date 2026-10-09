@@ -147,6 +147,8 @@
   "kn8.command.anim.played": "Animação %s enviada a %s jogador(es)",
   "kn8.command.anim.stopped": "Animação de combate parada em %s jogador(es)",
   "kn8.command.anim.kaiju": "Animação do kaiju %s / %s disparada",
+  "kn8.command.anim.soldier": "Animação do soldado %s / %s disparada",
+  "kn8.command.anim.no_soldier": "Nenhum soldado a 32 blocos",
   "kn8.client.anim.none": "Nenhuma animação recebida ainda",
   "kn8.client.anim.entry": "%s: %s | atraso %s ticks, adiantou %s",
   "kn8.client.anim.missing": "%s: %s NÃO ENCONTRADA (atraso %s, adiantou %s)",

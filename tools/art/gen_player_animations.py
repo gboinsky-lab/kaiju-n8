@@ -241,6 +241,23 @@ COMBOS = {
 }
 
 
+# 0.5.0-D3: especial (tecla R) de cada familia, saindo da postura dela (pesquisa do anime/manga):
+# - Hoshina, forma 1 Kuuchi: lamina direita armada a frente do peito (lado esquerdo) e varredura invertida para
+#   fora num instante, com avanco da perna direita (o corte "invisivel" que solta pressao de ar);
+# - Kikoru, Axe Slam: salta com o machado erguido e crava no chao no tick do impacto.
+SPECIALS = {
+    "dual_reverse": {
+        "wind": {"right_arm": [-95, -55, 0], "left_arm": [-30, 0, -70], "torso": [28, -35, 0]},
+        "hit": {"right_arm": [-75, 10, 80], "left_arm": [-25, 0, -85], "torso": [30, 30, 0],
+                "right_leg": [-60, 0, 12], "left_leg": [45, 0, -10], "body_pos": [0, -6, 0]}},
+    "two_handed_axe": {
+        "wind": {"right_arm": [-175, 0, 12], "left_arm": [-175, 0, -12], "right_item": [0, 0, 0],
+                 "torso": [-15, 0, 0], "right_leg": [-35, 0, 6], "left_leg": [-20, 0, -6], "body_pos": [0, 7, 0]},
+        "hit": {"right_arm": [-35, 0, 5], "left_arm": [-35, 0, -5], "right_item": [0, 0, 0], "torso": [32, 0, 0],
+                "right_leg": [-35, 0, 10], "left_leg": [25, 0, -10], "body_pos": [0, -3, 0]}},
+}
+
+
 def strike(action, start, wind, hit):
     """Golpe que sai da postura (start), vai ao preparo, acerta no tick de impacto do JSON e volta a postura."""
     end, impact = action["duration_ticks"] * TICK, action["impact_tick"] * TICK
@@ -416,7 +433,11 @@ def weapon_animations():
         if "heavy" in actions:
             result[f"player.{item}.heavy"] = heavy(actions["heavy"])
         special = weapon.get("special")
-        if special and special["type"] == "ground_slam":
+        family = weapon.get("profile", "").split(":", 1)[-1]
+        if special and family in SPECIALS and family in STANCES:
+            move = SPECIALS[family]
+            result[f"player.{item}.special"] = strike(special, STANCES[family]["idle"], move["wind"], move["hit"])
+        elif special and special["type"] == "ground_slam":
             result[f"player.{item}.special"] = special_slam(special)
         elif special and special["type"] == "slash_wave":
             result[f"player.{item}.special"] = special_slash(special)
