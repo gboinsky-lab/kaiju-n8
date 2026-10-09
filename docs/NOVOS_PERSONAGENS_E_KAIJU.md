@@ -8,7 +8,7 @@ GameTest". Onde nascem e o balanceamento final ficam para depois de todos os per
 enquanto os kaiju aparecem por `/summon` ou `/kn8 kaiju spawn` e os soldados especiais pelo ovo ou `/summon`. Números
 marcados [SUPOSIÇÃO] estão em `docs/BALANCEAMENTO.md`.
 
-**Resumo:** 7 kaiju novos; 9 soldados especiais novos (Kikoru, Reno, Mina, Narumi, Kikoru No. 4, Reno No. 6, Narumi
+**Resumo:** 10 kaiju novos (3 deles formas do No. 9); 9 soldados especiais novos (Kikoru, Reno, Mina, Narumi, Kikoru No. 4, Reno No. 6, Narumi
 No. 1, Kafka e Kaiju No. 8, que é a forma kaiju do Kafka); 3 armas novas; 5 modelos refeitos.
 
 ## Kaiju
@@ -21,11 +21,16 @@ No. 1, Kafka e Kaiju No. 8, que é a forma kaiju do Kafka); 3 armas novas; 5 mod
 | 0.7-A | `camponotus_reborn` | Camponotus revivida | Yoju | mesma forma, azul | 290 / 11,5 / 11 / 0,34 | os mesmos, ácido mais forte; **fúria** abaixo de 30% | cabeça |
 | 0.7-B | `phaneroplasmodium` | Phaneroplasmodium | Yoju | cogumelo de 8 patas, 5 m; 4,4 × 5 | 240 / 10,5 / 9 / 0,27 | mordida, estocada, varredura e várias patas, **nuvem de esporos** (deixa lento) | chapéu |
 | 0.7-B | `myxogasterocarp` | Myxogasterocarp | Honju | chapéus empilhados, raízes como patas, 9 m; 7 × 9 | 420 / 15 / 13 / 0,20 | mordida, estocada, varredura e várias raízes, **bomba de esporos** (explode) | caule |
+| 0.7-E | `kaiju_no9_black` | Kaiju No. 9 (forma preta) | numerado | 1,9 m; 0,8 × 1,9 | 1.700 / 36 / 18 / 0,36 | garra, investida, Finger Gun, **braço-lâmina**, **tentáculo** (deixa lento), **espinhos do corpo**; pele que endurece; o No. 9 vira ela abaixo de 40% | peito |
+| 0.7-E | `kaiju_no9_fusion` | Kaiju No. 9 fundido ao No. 10 | numerado | 5 m com cauda; 2 × 5 | 3.200 / 46 / 19 / 0,36 | golpes do No. 10, Finger Gun, **rajada de cauda**, **raio híbrido** (explode); nasce quando o No. 9 **absorve** um No. 10 | peito |
+| 0.7-E | `kaiju_no9_camponotus` | Kaiju No. 9 fundido à formiga | numerado | 6 m; 4 × 3,9 | 2.400 / 38 / 17 / 0,42 | mordida, patas, Finger Gun, **salto longo**, **mordidas em sequência**, ácido; nasce quando o No. 9 **absorve** uma formiga | peito do torso |
 | 0.7-B | `kaiju_larva` | Larva misteriosa | numerado (origem do No. 8) | 0,5 m, dois pares de asas | 20 / 2 / 0 / 0,30 (voo 0,45) | mordida, mergulho; **voa** em círculo a 3 blocos do alvo | — |
 
 Ataques em negrito são novos; os outros reaproveitam habilidades que já existiam. Os ataques à distância dos kaiju
 (espinhos, sopro, ácido, esporos) só foram confirmados pelo GameTest; em jogo os kaiju foram vistos andando,
-perseguindo e lutando contra soldados.
+perseguindo e lutando contra soldados. As formas do No. 9 foram vistas em jogo com os modelos, as trocas de forma
+(preta, absorção do No. 10 e da formiga) e lutando contra soldados; a pele endurecida, o tentáculo e o raio híbrido
+foram confirmados pelo GameTest.
 
 ## Soldados especiais
 
@@ -76,7 +81,8 @@ pelo modelo-base `tools/blockbench/modelos_base/kikoru.bbmodel`.
 
 ## Próximas etapas
 
-- **0.7-E**: No. 9 forma preta, No. 9 fundido à formiga e No. 9 + No. 10.
+- Formas do No. 9 da Biblioteca que ainda não têm modelo: vermelha (após absorver o No. 10, evento especial), após
+  absorver o Isao/No. 2 e a forma final.
 
 ## Onde ficam os arquivos
 
@@ -85,9 +91,10 @@ pelo modelo-base `tools/blockbench/modelos_base/kikoru.bbmodel`.
 - Modelos (malha presa aos ossos): `assets/kn8/meshes/<id>/`, `geo/entity/<id>.geo.json`,
   `animations/entity/<id>.animation.json`, `textures/entity/<id>.png`; armas em `models/item/` e `textures/item/`.
 - Java: `KN8Entities`, `KN8Items`, `KN8Client`, `soldier/special/KikoruEntity|RenoEntity|MinaEntity|NarumiEntity|KikoruNo4Entity|RenoNo6Entity|NarumiNo1Entity|KafkaEntity|KaijuNo8Entity`
-  (troca de forma e regeneração no `HoshinaEntity.tickForm`),
+  (troca de forma e regeneração no `HoshinaEntity.tickForm`), `numbered/KaijuNo9Entity|No9Service` (formas do No. 9:
+  mudança, absorção e pele endurecida; dados em `data/kn8/kn8/numbered/`),
   `combat/SlashProjectile` (bala, explosão, lentidão), `data/def/SlashSpec`.
-- Ferramentas: `tools/art/rig_primigenius_mesh.py`, `rig_trichonephila_mesh.py`, `rig_preondactyl_mesh.py`,
+- Ferramentas: `tools/art/rig_kaiju_no9_mesh.py`, `rig_primigenius_mesh.py`, `rig_trichonephila_mesh.py`, `rig_preondactyl_mesh.py`,
   `rig_soldier_mesh.py`, `gen_ability_animations.py`, `build_primigenius_honju.py`, `gen_special_animations.py`.
-- Imagens em jogo: `docs/img/kikoru_normal.jpg`, `kaiju_0_7_a_modelos.jpg`, `kaiju_0_7_b_modelos.jpg`, `especiais_0_7_c.jpg`, `numeradas_0_7_d.jpg`, `kafka_no8_0_7_f.jpg`.
-- Roteiros de teste: `docs/ROTEIRO_TESTE_0_1_B.md` §32 a §37 (§37 = Kikoru normal).
+- Imagens em jogo: `docs/img/kikoru_normal.jpg`, `kaiju_0_7_a_modelos.jpg`, `kaiju_0_7_b_modelos.jpg`, `especiais_0_7_c.jpg`, `numeradas_0_7_d.jpg`, `kafka_no8_0_7_f.jpg`, `no9_formas_0_7_e.jpg`.
+- Roteiros de teste: `docs/ROTEIRO_TESTE_0_1_B.md` §32 a §38 (§37 = Kikoru normal, §38 = formas do No. 9).

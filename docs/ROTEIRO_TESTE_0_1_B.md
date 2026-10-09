@@ -540,3 +540,15 @@ Visto na nuvem (`docs/img/hoshina_modelo.png`, `hoshina_vs_honju.png`, `hoshina_
 | 37.2 | Kikoru perto de um Primigenius (dificuldade normal) | Postura baixa com o machado; corte, golpe pesado em giro, onda de choque, investida, golpe no chão e quebra-guarda |
 | 37.3 | `/kn8 invasion start kn8:honju_assault` | A Kikoru aparece entre os defensores |
 | 37.4 | Servidor dedicado + 2 clientes | Os dois veem os mesmos golpes e a aura |
+
+## 38. Formas do Kaiju No. 9 (0.7-E)
+
+| # | Passo | Esperado |
+|---|---|---|
+| 38.1 | `/summon kn8:kaiju_no9_black`, `kaiju_no9_fusion` e `kaiju_no9_camponotus` | Forma preta (1,9 m, preta com espinhos vermelhos e sorriso branco), fusão (5 m, vermelha e branca com cauda) e formiga (6 m, torso do No. 9 sobre a formiga) |
+| 38.2 | `/summon kn8:kaiju_no9` e baixar a vida para menos de 40% (`/data modify entity @e[type=kn8:kaiju_no9,limit=1] Health set value 500f`) | Explosão de fumaça, aviso "está mutando": surge a forma preta com a vida cheia |
+| 38.3 | No. 9 com menos de 75% da vida e um `kaiju_no10_small` a até 24 blocos | Aviso "está absorvendo", tentáculo vermelho puxando o No. 10 por 3 s; o No. 10 some e surge a fusão |
+| 38.4 | No. 9 com menos de 60% da vida e uma `camponotus` por perto | Mesma absorção (2,5 s); surge a forma formiga |
+| 38.5 | Forma preta contra soldados | Braço-lâmina, tentáculo (deixa lento), espinhos do corpo; às vezes a pele endurece (faíscas e som de bigorna) e o dano cai pela metade |
+| 38.6 | Fusão e forma formiga contra soldados | Fusão: rajada de cauda e raio híbrido que explode; formiga: salto longo, mordidas em sequência e ácido |
+| 38.7 | Servidor dedicado + 2 clientes | Os dois veem as trocas de forma, os tentáculos e os ataques iguais |

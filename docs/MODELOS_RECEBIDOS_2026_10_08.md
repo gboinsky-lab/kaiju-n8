@@ -72,7 +72,7 @@ textura 4096 (2048 nos No. 10): reduzir para 512-1024 na conversao.
 |---|---|---|---|
 | `camponotus_red_remesh` | `camponotus` | 15.435 | kaiju formiga (preta com vermelho e laranja, antenas amarelas, 6 patas); **no jogo desde a 0.7-A** |
 | `camponotus_reborn` | `camponotus_reborn` | 15.435 | a formiga revivida (azul), mesma forma; **no jogo desde a 0.7-A** |
-| `camponotus_no9_remesh` | `kaiju_no9_camponotus` | 15.577 | No. 9 fundido a formiga (torso do No. 9 saindo do corpo da formiga): forma original do mod, v21 secao 33.3 |
+| `camponotus_no9_remesh` | `kaiju_no9_camponotus` | 15.577 | No. 9 fundido a formiga (torso do No. 9 saindo do corpo da formiga): forma original do mod, v21 secao 33.3; **no jogo desde a 0.7-E** |
 | `diclonius_remesh_15k` | `diclonius` | 15.577 | Diclonius (branco com espinhos vermelhos e azuis nas costas, cauda longa e reta); **no jogo desde a 0.7-A** |
 
 A forma preta do No. 9 (v21 secao 33.1) chega na proxima mensagem. A Biblioteca v21 foi atualizada com a secao 33
@@ -83,6 +83,6 @@ absorver Isao/No. 2, forma final), em `docs/BIBLIOTECA_KAIJU_N8_v21.md`.
 
 | Arquivo | Id | Triangulos | O que e | Situacao |
 |---|---|---|---|---|
-| `kaiju_no9_v1` | `kaiju_no9_black` (sugerido) | 10.408 | No. 9 forma preta (v21 secao 33.1): preto com espinhos vermelhos, sorriso branco, 1,9 m | **nova forma**, nao substitui o No. 9 atual (Miguel); so guardado |
+| `kaiju_no9_v1` | `kaiju_no9_black` (sugerido) | 10.408 | No. 9 forma preta (v21 secao 33.1): preto com espinhos vermelhos, sorriso branco, 1,9 m | **nova forma**, nao substitui o No. 9 atual (Miguel); **no jogo desde a 0.7-E** (`kaiju_no9_black`) |
 | `defense_suit_steve` | `mk1` | 7.781 | Mk1 estilo Minecraft (bracos em bloco) | **trocado** (substitui o Mk1 da 0.5.0-B) |
 | `defense_soldier_steve` | `soldier_1` | 9.121 | soldado comum estilo Minecraft (capacete preto) | **trocado** (substitui o soldado da 0.5.0-B) |

@@ -110,6 +110,20 @@ chefes ficou igual (o Honju subiu para 360 e o revivido para 460, então os mult
 | Regeneração (0.6-D, Miguel) | abaixo de 50% da vida: 2,5% da vida máxima por segundo; abaixo de 20%: 5%/s; para por 10 ticks depois de cada golpe recebido (`regeneration`) |
 | Ressurreição em massa: gesto / intervalo | 100 ticks (5 s) / 4 ticks entre um kaiju e o próximo |
 | Revive | Primigenius → ressurgido · Honju → chefe **Honju revivido** · aranha → aranha [SUPOSIÇÃO: falta modelo de aranha ressurgida] |
+| Forma preta (0.7-E) | abaixo de **40%** da vida vira a forma preta com a vida cheia (`transform`) [SUPOSIÇÃO] |
+| Absorver o No. 10 (0.7-E) | com a própria vida abaixo de **75%**, puxa um No. 10 pequeno (vivo com qualquer vida, ou a carcaça) a até 24 blocos por 60 ticks e vira a **fusão** (`absorb`) [SUPOSIÇÃO] |
+| Absorver a formiga (0.7-E) | abaixo de **60%**, puxa uma Camponotus (ou a revivida, viva ou carcaça) a até 20 blocos por 50 ticks e vira a **forma formiga** [SUPOSIÇÃO] |
+
+### Formas do No. 9 (0.7-E, `kaiju/` + `numbered/kaiju_no9_<forma>.json`; todos os números [SUPOSIÇÃO])
+
+| Forma | Vida | Dano | Armadura | Velocidade | Regeneração (abaixo de 50% / 20%) | Pele endurecida (chance, redução, duração, espera) | Foge com | Ataques novos (multiplicador, recarga em ticks) |
+|---|---|---|---|---|---|---|---|---|
+| Preta (`kaiju_no9_black`, 1,9 m) | 1.700 | 36 | 18 | 0,36 | 3% / 6% por s | 25%, −50%, 40, 200 | 15% (250 de mérito) | braço-lâmina 1,4 (50), tentáculo 0,8 + lentidão II 2,5 s (90, 4–20 blocos), espinhos do corpo 1,2 em 3,5 blocos (120, abaixo de 70%); garra, investida e Finger Gun; ainda absorve o No. 10 e a formiga |
+| Fundida ao No. 10 (`kaiju_no9_fusion`, 5 m) | 3.200 | 46 | 19 | 0,36 | 3% / 6% por s | 20%, −40%, 40, 240 | 10% (500) | rajada de cauda 6 × 0,7 (140), raio híbrido 1,8 que explode em 3 blocos (200, 6–32 blocos); golpes do No. 10 e Finger Gun; comanda kaiju a 64 blocos; revive até 4 |
+| Fundida à formiga (`kaiju_no9_camponotus`, 6 m) | 2.400 | 38 | 17 | **0,42** | 2,5% / 5% por s | 15%, −40%, 30, 240 | 15% (400) | salto 1,5 de 5 a 16 blocos (100), mordidas 5 × 0,6 (110), ácido 0,8 + lentidão II (120); mordida, patas e Finger Gun; ainda absorve o No. 10 |
+
+Fúria abaixo de 30% nas três (dano ×1,15–1,25, velocidade ×1,1–1,2, recargas ×0,6–0,7). Núcleo: peito na preta e na
+fusão; no peito do torso do No. 9 em cima da formiga.
 
 ---
 
