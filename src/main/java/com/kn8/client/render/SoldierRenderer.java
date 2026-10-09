@@ -95,6 +95,12 @@ public class SoldierRenderer<T extends SoldierEntity> extends GeoEntityRenderer<
                 }
                 poseStack.pushPose();
                 poseStack.translate(bone.getPivotX() / PIXEL, bone.getPivotY() / PIXEL, bone.getPivotZ() / PIXEL);
+                // 0.5.0-D5: a rotacao animada do osso do item sai daqui e entra depois do Rx(-90), no mesmo lugar em
+                // que a PAL gira o item do jogador: os mesmos numeros de animacao seguram a arma igual nos dois (o
+                // giro fica em volta do punho, nao do pivo do osso).
+                poseStack.mulPose(Axis.XP.rotation(-bone.getRotX()));
+                poseStack.mulPose(Axis.YP.rotation(-bone.getRotY()));
+                poseStack.mulPose(Axis.ZP.rotation(-bone.getRotZ()));
                 renderStackForBone(poseStack, bone, stack, animatable, bufferSource, partialTick, packedLight,
                         packedOverlay);
                 // Igual a camada original: o item fechou o lote da entidade; reabre para os proximos ossos.
@@ -118,6 +124,11 @@ public class SoldierRenderer<T extends SoldierEntity> extends GeoEntityRenderer<
                 }
                 poseStack.translate(0.0F, -HAND_DOWN, -HAND_FORWARD);
                 poseStack.mulPose(Axis.XP.rotationDegrees(-90.0F));
+                // Ordem e sinais da PAL (ItemInHandLayerMixin): Z por -Y, Y por -Z, X por -X da animacao. A GeckoLib
+                // guarda X e Y do keyframe invertidos (rotX = -x, rotY = -y), dai os sinais abaixo.
+                poseStack.mulPose(Axis.ZP.rotation(bone.getRotY()));
+                poseStack.mulPose(Axis.YP.rotation(-bone.getRotZ()));
+                poseStack.mulPose(Axis.XP.rotation(bone.getRotX()));
                 BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(stack, animatable.level(),
                         animatable, animatable.getId());
                 float displayScale = model.getTransforms().getTransform(ItemDisplayContext.THIRD_PERSON_RIGHT_HAND)
@@ -140,8 +151,15 @@ public class SoldierRenderer<T extends SoldierEntity> extends GeoEntityRenderer<
 
         private static final String[] AIMING_ARMS = {"arm_right", "arm_left"};
 
+        /** Soma o olhar a rotacao animada da cabeca (as animacoes desta especie sempre animam a cabeca). */
+        private final boolean addLook;
+
         SoldierModel(String species) {
-            super(KN8Constants.id(species), true);
+            // 0.5.0-D5: nos soldados especiais, sem o "turnsHead" da GeckoLib, que troca a rotacao animada da cabeca
+            // pelo olhar (com o tronco inclinado a cabeca do Hoshina ficava olhando para o chao); o olhar e somado.
+            // O soldado comum nao anima a cabeca e continua com o da GeckoLib.
+            super(KN8Constants.id(species), "soldier".equals(species));
+            this.addLook = !"soldier".equals(species);
         }
 
         @Override
@@ -149,15 +167,20 @@ public class SoldierRenderer<T extends SoldierEntity> extends GeoEntityRenderer<
                 AnimationState<T> animationState) {
             super.setCustomAnimations(animatable, instanceId, animationState);
             // Pausado a animacao nao roda de novo: somar aqui acumularia a cada quadro.
-            if (!animatable.isAggressive() || !animatable.isFirearmPose() || Minecraft.getInstance().isPaused()) {
-                return;
-            }
             EntityModelData data = animationState.getData(DataTickets.ENTITY_MODEL_DATA);
-            if (data == null) {
+            if (data == null || Minecraft.getInstance().isPaused()) {
                 return;
             }
             float pitch = data.headPitch() * Mth.DEG_TO_RAD;
             float yaw = data.netHeadYaw() * Mth.DEG_TO_RAD;
+            GeoBone head = addLook ? getAnimationProcessor().getBone("head") : null;
+            if (head != null) {
+                head.setRotX(head.getRotX() + pitch);
+                head.setRotY(head.getRotY() + yaw);
+            }
+            if (!animatable.isAggressive() || !animatable.isFirearmPose()) {
+                return;
+            }
             for (String name : AIMING_ARMS) {
                 GeoBone arm = getAnimationProcessor().getBone(name);
                 if (arm != null) {

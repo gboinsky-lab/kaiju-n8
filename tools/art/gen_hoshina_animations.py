@@ -13,6 +13,9 @@ import json
 import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).parent))
+from gen_player_animations import STANCES, stance, stance_move, to_gecko  # noqa: E402
+
 ROOT = Path(__file__).resolve().parents[2]
 PROFILES = ROOT / "src/main/resources/data/kn8/kn8/special_soldier"
 ANIMATIONS = ROOT / "src/main/resources/assets/kn8/animations/entity"
@@ -58,10 +61,13 @@ LOW_ACROSS = [-50, -75, -10]
 DOWN = [-5, 0, 15]
 UP = [-170, -10, 10]
 CROSS_CHEST = [-90, -55, -10]
-READY = [65, 0, 20]
-READY_LEFT = [30, 0, 15]
-STANCE = {"root": [0, -4, 0], "body": [28, 0, 0], "head": [-25, 0, 0], "leg_right": [-40, 0, 25],
-          "leg_left": [35, 0, -22]}
+# 0.5.0-D5: postura de partida/chegada das tecnicas = a parada do jogador com as laminas (mesma tabela, convertida).
+DUAL = STANCES["dual_reverse"]
+_IDLE = to_gecko(DUAL["idle"])
+READY = _IDLE[("arm_right", "rotation")]
+READY_LEFT = mirror(_IDLE[("arm_left", "rotation")])
+STANCE = {bone: v for (bone, channel), v in _IDLE.items()
+          if bone in ("root", "body", "head", "leg_right", "leg_left")}
 LUNGE = {"root": [0, -5, 0], "leg_right": [-60, 0, 12], "leg_left": [45, 0, -10]}
 
 
@@ -272,55 +278,33 @@ def parry():
 
 
 REVERSED = [180, 0, 0]
-# Com o braco para tras a lamina invertida apontaria para cima: girada para sair para tras do corpo.
-BEHIND = [100, 0, 0]
+
+
+def split(anim):
+    """Separa uma animacao da tabela em "movement" (corpo, cabeca, pernas, raiz) e "arms" (bracos e laminas): sao
+    controllers diferentes na entidade (o de bracos troca para a guarda com alvo)."""
+    def part(keep):
+        bones = {bone: ch for bone, ch in anim["bones"].items() if keep(bone)}
+        return dict(anim, bones=bones)
+    return (part(lambda b: not b.startswith(("arm", "item"))), part(lambda b: b.startswith(("arm", "item"))))
 
 
 def arms():
-    """As duas laminas sempre invertidas (pegada reversa, lamina ao longo do antebraco). 0.5.0-D4 (referencias do
-    Miguel): parado e em guarda os dois bracos ficam para tras do corpo, o direito mais alto e o esquerdo mais
-    baixo, laminas saindo para tras; correndo: bracos esticados para tras e abertos para baixo, o direito um pouco
-    mais alto, lamina para cima a partir do punho; andando: quase reto, bracos abertos para baixo."""
-    poses = {"ready": ([65, 0, 20], [30, 0, 15]), "walk": ([10, 0, 40], [10, 0, 40]),
-             "run": ([50, 0, 40], [45, 0, 40]), "aim": ([60, 0, 25], [25, 0, 20])}
-    lengths = {"ready": (2.0, 2), "walk": (0.7, 6), "run": (0.45, 8), "aim": (2.0, 2)}
-    def loop(length, right, left, breath, item):
-        def bone(pose, flip):
-            moved = [pose[0] - breath, pose[1], pose[2]]
-            convert = mirror if flip else (lambda v: v)
-            return {"rotation": keys((0, convert(pose)), (length / 2, convert(moved)), (length, convert(pose)))}
-        items = {"item_right": {"rotation": keys((0, item))}, "item_left": {"rotation": keys((0, item))}}
-        return {"loop": True, "animation_length": length, "bones": dict(items, **{
-            "arm_right": bone(right, False), "arm_left": bone(left, True)})}
-
-    return {f"hoshina.arms.blade_{name}": loop(lengths[name][0], right, left, lengths[name][1],
-                                               REVERSED if name in ("walk", "run") else BEHIND)
-            for name, (right, left) in poses.items()}
+    """Bracos e laminas parado, andando, correndo e em guarda (com alvo: a postura parada)."""
+    out = {}
+    for name, (anim, length_key) in {"ready": ("idle", None), "walk": ("move", None), "run": ("run", None),
+                                     "aim": ("idle", None)}.items():
+        pose = DUAL[anim]
+        built = stance(pose, to_gecko, vector=False) if anim == "idle" else stance_move(pose, to_gecko, vector=False)
+        out[f"hoshina.arms.blade_{name}"] = split(built)[1]
+    return out
 
 
 def movement():
-    """0.5.0-D2: corpo inteiro. Parado: bem baixo (root desce para os pes ficarem no chao com as pernas abertas),
-    perna direita a frente e aberta, esquerda atras, tronco inclinado e cabeca olhando para a frente. Andando:
-    quase reto (referencia 1); correndo: bem baixo e inclinado, passadas longas (referencias 3 e 5)."""
-    idle = {"loop": True, "animation_length": 2.0, "bones": {
-        "root": {"position": keys((0, [0, -4, 0]), (1.0, [0, -4.3, 0]), (2.0, [0, -4, 0]))},
-        "leg_right": {"rotation": keys((0, [-40, 0, 25]))},
-        "leg_left": {"rotation": keys((0, [35, 0, -22]))},
-        "body": {"rotation": keys((0, [28, 0, 0]), (1.0, [30, 0, 0]), (2.0, [28, 0, 0]))},
-        "head": {"rotation": keys((0, [-25, 0, 0]))}}}
-
-    def gait(length, swing, lean, low):
-        half, quarter = length / 2, length / 4
-        return {"loop": True, "animation_length": length, "bones": {
-            "root": {"position": keys((0, [0, -low, 0]), (quarter, [0, -low + 0.7, 0]), (half, [0, -low, 0]),
-                                      (half + quarter, [0, -low + 0.7, 0]), (length, [0, -low, 0]))},
-            "leg_right": {"rotation": keys((0, [-swing, 0, 8]), (half, [swing, 0, 8]), (length, [-swing, 0, 8]))},
-            "leg_left": {"rotation": keys((0, [swing, 0, -8]), (half, [-swing, 0, -8]), (length, [swing, 0, -8]))},
-            "body": {"rotation": keys((0, [lean, 0, 0]), (length, [lean, 0, 0]))},
-            "head": {"rotation": keys((0, [-lean + 5, 0, 0]), (length, [-lean + 5, 0, 0]))}}}
-
-    return {"hoshina.movement.idle": idle, "hoshina.movement.walk": gait(0.7, 30, 10, 1),
-            "hoshina.movement.run": gait(0.45, 50, 38, 6)}
+    """Corpo inteiro (0.5.0-D5): as mesmas posturas do jogador com as laminas (gen_player_animations.STANCES)."""
+    return {f"hoshina.movement.{name}": split(stance(DUAL[k], to_gecko, vector=False) if k == "idle"
+                                               else stance_move(DUAL[k], to_gecko, vector=False))[0]
+            for name, k in (("idle", "idle"), ("walk", "move"), ("run", "run"))}
 
 
 def tail_animations(slash_ticks=10, guard_ticks=9):

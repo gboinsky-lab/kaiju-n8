@@ -139,59 +139,133 @@ def block():
 WEAPONS = ROOT / "src/main/resources/data/kn8/kn8/weapon"
 PROFILES = ROOT / "src/main/resources/data/kn8/kn8/weapon_profile"
 
-# 0.5.0-D2 (Miguel: animacao de corpo inteiro, nao so os bracos; referencias do Miguel de 2026-10-08): postura de
-# cada familia parada ("idle"), andando ("move") e correndo ("run"), com pernas, corpo (body_pos desce o corpo
-# inteiro em pixels para os pes ficarem no chao com as pernas abertas), tronco, cabeca, bracos e itens (a PAL tem
-# right_item/left_item). Eixos conferidos em jogo: X negativo = braco/perna para a frente; Z positivo = braco/perna
-# direitos para fora (esquerdos: Z negativo); torso X positivo = inclina para a frente.
+# Poses de cada familia (0.5.0-D5, referencias do Miguel conferidas em jogo de frente, de lado e de costas). Uma
+# tabela so para o jogador (PAL) e para os soldados especiais (GeckoLib): to_pal/to_gecko convertem. Chaves neutras:
+#   torso       inclinacao do corpo inteiro acima do quadril [x para a frente, y giro, 0];
+#   body_pos    desce/sobe o corpo inteiro (px);
+#   head        cabeca em relacao ao tronco (com o tronco inclinado, x negativo olha para a frente);
+#   right_leg / left_leg   pernas em relacao ao chao (o conversor desconta a inclinacao na PAL);
+#   right_arm / left_arm   bracos em relacao ao tronco; X negativo = para a frente, Z positivo = direito para fora;
+#   right_item / left_item rotacao da arma em volta do punho (ordem e sinais da PAL; o SoldierRenderer faz igual);
+#   right_item_pos / left_item_pos  desliza a arma na mao (px, espaco do braco: +X esquerda do corpo, +Z para tras).
+# Laminas do Hoshina: pegada invertida com a lamina colada no antebraco, por fora (item [-120, 0, 0] e 4 px atras):
+# de frente some atras do braco, de costas e um traco (fotos do Miguel). Machado: atravessado na frente com a cabeca
+# baixa do lado direito, a mao direita perto da cabeca e o cabo passando pela esquerda (fotos "Battle Axe"); correndo
+# so a mao direita, o machado arrastando atras.
+ALONG_FOREARM = [-120, 0, 0]
+BEHIND_FOREARM = [0, 0, 4]
 STANCES = {
     # Faca: base atletica, pernas um pouco abertas, guarda curta.
     "knife": {
-        "idle": {"body_pos": [0, -1.5, 0], "right_leg": [-12, 0, 8], "left_leg": [10, 0, -8], "torso": [10, 8, 0],
+        "idle": {"body_pos": [0, -1.5, 0], "right_leg": [-12, 0, 8], "left_leg": [10, 0, -8], "torso": [8, 8, 0],
                  "right_arm": [-35, -12, 8], "left_arm": [-25, 18, -6]},
-        "move": {"swing": 28, "period": 0.7, "body_pos": [0, -1, 0], "torso": [12, 8, 0],
+        "move": {"swing": 28, "period": 0.7, "body_pos": [0, -1, 0], "torso": [10, 8, 0],
                  "right_arm": [-35, -12, 8], "left_arm": [-25, 18, -6]},
-        "run": {"swing": 45, "period": 0.5, "body_pos": [0, -1, 0], "torso": [22, 0, 0],
+        "run": {"swing": 45, "period": 0.5, "body_pos": [0, -1, 0], "torso": [20, 0, 0],
                 "right_arm": [30, 0, 20], "left_arm": [-30, 0, -20]},
     },
-    # Espada de uma mao (referencia: andando com a lamina baixa, apontando para o chao na diagonal).
+    # Espada de uma mao (referencia: braco caido a frente, lamina apontando para o chao na diagonal).
     "sword": {
         "idle": {"body_pos": [0, -1.5, 0], "right_leg": [-14, 0, 6], "left_leg": [12, 0, -6], "torso": [6, 10, 0],
                  "right_arm": [-18, 0, 22], "right_item": [55, 0, 0], "left_arm": [-10, 6, -6]},
         "move": {"swing": 26, "period": 0.75, "body_pos": [0, -1, 0], "torso": [6, 8, 0],
                  "right_arm": [-18, 0, 22], "right_item": [55, 0, 0], "left_arm": [-10, 6, -6]},
-        "run": {"swing": 45, "period": 0.5, "body_pos": [0, -1, 0], "torso": [24, 0, 0],
+        "run": {"swing": 45, "period": 0.5, "body_pos": [0, -1, 0], "torso": [22, 0, 0],
                 "right_arm": [40, 0, 18], "right_item": [70, 0, 0], "left_arm": [-35, 0, -15]},
     },
-    # Hoshina (referencias: figura agachada e as tres de corrida): bem baixo, perna direita a frente e aberta,
-    # esquerda atras; tronco inclinado; bracos para tras do corpo, o direito mais alto e o esquerdo mais baixo
-    # (0.5.0-D4, Miguel), com as duas laminas invertidas no antebraco.
+    # Hoshina. Parado: agachado, perna direita a frente, tronco inclinado, bracos para tras (direito mais alto).
+    # Andando: quase reto, bracos abertos para os lados e para baixo. Correndo: bem inclinado e baixo, bracos
+    # abertos para tras como "asas" (direito um pouco mais alto).
     "dual_reverse": {
-        "idle": {"body_pos": [0, -5, 0], "right_leg": [-40, 0, 28], "left_leg": [35, 0, -22], "torso": [28, 0, 0],
-                 "head": [-25, 0, 0], "right_arm": [65, 0, 20], "left_arm": [30, 0, -15],
-                 "right_item": [100, 0, 0], "left_item": [100, 0, 0]},
-        # Andando (referencia 1 do Miguel): corpo quase reto, bracos abertos para os lados e para baixo.
-        "move": {"swing": 30, "period": 0.7, "body_pos": [0, -1, 0], "torso": [10, 0, 0], "head": [-8, 0, 0],
-                 "right_arm": [10, 0, 40], "left_arm": [10, 0, -40], "right_item": [180, 0, 0],
-                 "left_item": [180, 0, 0]},
-        # Correndo (referencias do Miguel, comparadas de costas, de lado e de frente no jogo): tronco bem inclinado,
-        # bracos esticados para tras e abertos para baixo (de costas fazem um "V" invertido), o direito um pouco
-        # mais alto; a lamina invertida sai do punho apontando para cima.
-        "run": {"swing": 50, "period": 0.45, "body_pos": [0, -6, 0], "torso": [38, 0, 0], "head": [-32, 0, 0],
-                "right_arm": [50, 0, 40], "left_arm": [45, 0, -40], "right_item": [180, 0, 0],
-                "left_item": [180, 0, 0]},
+        "idle": {"body_pos": [0, -4, 0], "right_leg": [-35, 0, 20], "left_leg": [30, 0, -18], "torso": [25, 0, 0],
+                 "head": [-22, 0, 0], "right_arm": [60, 0, 20], "left_arm": [30, 0, -15],
+                 "right_item": ALONG_FOREARM, "left_item": ALONG_FOREARM,
+                 "right_item_pos": BEHIND_FOREARM, "left_item_pos": BEHIND_FOREARM},
+        "move": {"swing": 30, "period": 0.7, "body_pos": [0, -1, 0], "torso": [8, 0, 0], "head": [-6, 0, 0],
+                 "right_arm": [-5, 0, 35], "left_arm": [-5, 0, -35], "right_item": ALONG_FOREARM,
+                 "left_item": ALONG_FOREARM, "right_item_pos": BEHIND_FOREARM, "left_item_pos": BEHIND_FOREARM},
+        "run": {"swing": 50, "period": 0.45, "body_pos": [0, -5, 0], "torso": [40, 0, 0], "head": [-34, 0, 0],
+                "right_arm": [50, 0, 45], "left_arm": [40, 0, -40], "right_item": ALONG_FOREARM,
+                "left_item": ALONG_FOREARM, "right_item_pos": BEHIND_FOREARM, "left_item_pos": BEHIND_FOREARM},
     },
-    # Kikoru (referencia "Battle Axe"): machado na horizontal na frente do corpo, as duas maos no cabo, lamina para
-    # o lado esquerdo; pernas firmes e abertas. Correndo: machado atravessado, lamina para tras.
+    # Kikoru (fotos "Battle Axe"): machado atravessado na frente, as duas maos no cabo; andando igual; correndo com a
+    # mao direita so, machado arrastando atras e o braco esquerdo livre.
     "two_handed_axe": {
         "idle": {"body_pos": [0, -0.8, 0], "right_leg": [-6, 0, 10], "left_leg": [6, 0, -10], "torso": [4, 0, 0],
-                 "right_arm": [-45, -30, 0], "left_arm": [-50, 35, 0], "right_item": [0, 90, 0]},
+                 "right_arm": [-35, -25, 0], "left_arm": [-40, 30, 0], "right_item": [-25, 90, 0],
+                 "right_item_pos": [14, 0, 0]},
         "move": {"swing": 22, "period": 0.85, "body_pos": [0, -0.5, 0], "torso": [6, 0, 0],
-                 "right_arm": [-45, -30, 0], "left_arm": [-50, 35, 0], "right_item": [0, 90, 0]},
-        "run": {"swing": 40, "period": 0.55, "torso": [20, -15, 0], "right_arm": [-30, -35, 0],
-                "left_arm": [-40, 40, 0], "right_item": [0, 90, 0]},
+                 "right_arm": [-35, -25, 0], "left_arm": [-40, 30, 0], "right_item": [-25, 90, 0],
+                 "right_item_pos": [14, 0, 0]},
+        "run": {"swing": 40, "period": 0.55, "torso": [22, 0, 0], "head": [-18, 0, 0], "right_arm": [20, 0, 12],
+                "right_item": [115, 0, 0], "free_arm": ["left_arm", [-5, 0, -8], 40]},
     },
 }
+
+LEGS = ("right_leg", "left_leg")
+ZERO = [0, 0, 0]
+GECKO_NAMES = {"torso": "body", "head": "head", "right_arm": "arm_right", "left_arm": "arm_left",
+               "right_leg": "leg_right", "left_leg": "leg_left", "right_item": "item_right", "left_item": "item_left"}
+
+
+def to_pal(pose):
+    """Pose neutra -> {(osso, canal): vetor} da PAL. A inclinacao vai no osso "body" (gira o jogador inteiro em volta
+    do quadril; o "torso" da PAL so gira o cubo do tronco) e as pernas descontam a inclinacao para ficar no chao."""
+    lean = pose.get("torso", ZERO)
+    out = {}
+    for key, v in pose.items():
+        if key == "torso":
+            out[("body", "rotation")] = v
+        elif key == "body_pos":
+            out[("body", "position")] = v
+        elif key.endswith("_pos"):
+            out[(key[:-4], "position")] = v
+        elif key in LEGS:
+            out[(key, "rotation")] = [v[0] - lean[0], v[1] - lean[1], v[2]]
+        else:
+            out[(key, "rotation")] = v
+    if "torso" in pose:
+        for leg in LEGS:
+            out.setdefault((leg, "rotation"), [-lean[0], -lean[1], 0])
+    return out
+
+
+def to_gecko(pose):
+    """Pose neutra -> {(osso, canal): vetor} do soldado especial (GeckoLib: bracos e cabeca filhos do "body", pernas
+    filhas da raiz; mesmos angulos, conferido em jogo lado a lado)."""
+    out = {}
+    for key, v in pose.items():
+        if key == "body_pos":
+            out[("root", "position")] = v
+        elif key.endswith("_pos"):
+            out[(GECKO_NAMES[key[:-4]], "position")] = v
+        else:
+            out[(GECKO_NAMES[key], "rotation")] = v
+    return out
+
+
+def merged(*poses):
+    out = {}
+    for pose in poses:
+        out.update(pose)
+    return out
+
+
+def animate(frames, length, convert=to_pal, loop=None, vector=True):
+    """Frames [(segundos, pose neutra)] -> animacao. Osso que falta num frame fica na posicao de repouso (0)."""
+    converted = [(t, convert(pose)) for t, pose in frames]
+    channels = sorted({key for _, c in converted for key in c})
+    bones = {}
+    for bone, channel in channels:
+        series = [(t, c.get((bone, channel), ZERO)) for t, c in converted]
+        out = {}
+        for t, v in series:
+            out[f"{round(t, 3)}"] = {"vector": list(v)} if vector else list(v)
+        bones.setdefault(bone, {})[channel] = out
+    anim = {"animation_length": round(length, 3), "bones": bones}
+    if loop is not None:
+        anim = {"loop": loop, **anim}
+    return anim
 
 
 # Combos (golpe leve, um por passo do combo; tempos do light do JSON da arma) e golpe pesado de cada familia.
@@ -262,23 +336,18 @@ SPECIALS = {
 }
 
 
-def strike(action, start, wind, hit):
-    """Golpe que sai da postura (start), vai ao preparo, acerta no tick de impacto do JSON e volta a postura."""
+def strike_frames(action, start, wind, hit):
     end, impact = action["duration_ticks"] * TICK, action["impact_tick"] * TICK
     t_wind, t_follow = impact * 0.6, impact + (end - impact) * 0.35
-    bones = {}
-    names = set(start) | set(wind) | set(hit)
-    for bone in sorted(names):
-        if bone == "body_pos":
-            continue
-        rest = start.get(bone, [0, 0, 0])
-        w, h = wind.get(bone, rest), hit.get(bone, wind.get(bone, rest))
-        bones[bone] = {"rotation": keys((0, rest), (t_wind, w), (impact, h), (t_follow, h), (end, rest))}
-    if "body_pos" in names:
-        rest = start.get("body_pos", [0, 0, 0])
-        w, h = wind.get("body_pos", rest), hit.get("body_pos", wind.get("body_pos", rest))
-        bones["body"] = {"position": keys((0, rest), (t_wind, w), (impact, h), (t_follow, h), (end, rest))}
-    return {"animation_length": round(end, 3), "bones": bones}
+    wound = merged(start, wind)
+    struck = merged(wound, hit)
+    return [(0, start), (t_wind, wound), (impact, struck), (t_follow, struck), (end, start)], end
+
+
+def strike(action, start, wind, hit, convert=to_pal, vector=True):
+    """Golpe que sai da postura (start), vai ao preparo, acerta no tick de impacto do JSON e volta a postura."""
+    frames, end = strike_frames(action, start, wind, hit)
+    return animate(frames, end, convert, vector=vector)
 
 
 def heavy_strike(action, start, family):
@@ -288,51 +357,59 @@ def heavy_strike(action, start, family):
     return strike(action, start, wind, last["hit"])
 
 
-def stance(pose):
-    """Postura parada em laco com uma respiracao de 2 graus (segura a pose; os golpes passam por cima)."""
-    rotations = {bone: v for bone, v in pose.items() if bone != "body_pos"}
-    breath = {bone: [v[0] - 2, v[1], v[2]] if bone.endswith("arm") else v for bone, v in rotations.items()}
-    bones = {bone: {"rotation": keys((0, v), (1.0, breath[bone]), (2.0, v))} for bone, v in rotations.items()}
-    if "body_pos" in pose:
-        bones["body"] = {"position": keys((0, pose["body_pos"]), (2.0, pose["body_pos"]))}
-    return {"loop": True, "animation_length": 2.0, "bones": bones}
+def stance_frames(pose):
+    """Postura parada em laco com uma respiracao de 2 graus nos bracos (os golpes passam por cima)."""
+    breath = {bone: [v[0] - 2, v[1], v[2]] if bone.endswith("arm") else v for bone, v in pose.items()}
+    return [(0, pose), (1.0, breath), (2.0, pose)], 2.0
 
 
-def stance_move(pose):
-    """Postura andando/correndo: pernas balancam (opostas) em volta de 0 com a amplitude do perfil, corpo sobe e
-    desce um pouco a cada passo, tronco/bracos/itens ficam na postura da familia."""
+def stance(pose, convert=to_pal, vector=True):
+    frames, length = stance_frames(pose)
+    return animate(frames, length, convert, loop=True, vector=vector)
+
+
+def stance_move_frames(pose):
+    """Andando/correndo: pernas balancam (opostas) com a amplitude do perfil, corpo sobe e desce a cada passo, o
+    resto fica na postura da familia; "free_arm" balanca um braco livre (machado correndo com uma mao so)."""
     period, swing = pose["period"], pose["swing"]
-    half, quarter = period / 2, period / 4
-    base = pose.get("body_pos", [0, 0, 0])
-    up = [base[0], base[1] + 0.6, base[2]]
-    bones = {
-        "right_leg": {"rotation": keys((0, [-swing, 0, 3]), (half, [swing, 0, 3]), (period, [-swing, 0, 3]))},
-        "left_leg": {"rotation": keys((0, [swing, 0, -3]), (half, [-swing, 0, -3]), (period, [swing, 0, -3]))},
-        "body": {"position": keys((0, base), (quarter, up), (half, base), (half + quarter, up), (period, base))},
-    }
-    for bone, v in pose.items():
-        if bone in ("period", "swing", "body_pos"):
-            continue
-        bones[bone] = {"rotation": keys((0, v), (period, v))}
-    return {"loop": True, "animation_length": round(period, 3), "bones": bones}
+    base = pose.get("body_pos", ZERO)
+    fixed = {k: v for k, v in pose.items() if k not in ("period", "swing", "body_pos", "free_arm")}
+    free = pose.get("free_arm")
+    frames = []
+    for step in range(5):
+        t = period * step / 4
+        phase = (1, 0, -1, 0, 1)[step]
+        frame = dict(fixed)
+        frame["right_leg"] = [-swing * phase, 0, 3]
+        frame["left_leg"] = [swing * phase, 0, -3]
+        frame["body_pos"] = base if step % 2 == 0 else [base[0], base[1] + 0.6, base[2]]
+        if free:
+            arm, rest, amplitude = free
+            frame[arm] = [rest[0] - amplitude * phase, rest[1], rest[2]]
+        frames.append((t, frame))
+    # Pernas no meio do passo (fases 0): ficam retas.
+    return frames, period
+
+
+def stance_move(pose, convert=to_pal, vector=True):
+    frames, length = stance_move_frames(pose)
+    return animate(frames, length, convert, loop=True, vector=vector)
 
 
 def draw(pose, ticks, hands):
     """Saque: a mao vai a bainha/coldre (quadril ou costas) e traz a arma ate a postura no tempo do perfil."""
     end = max(ticks, 2) * TICK
     reach = end * 0.4
-    target = {bone: v for bone, v in (pose or {"right_arm": [-60, -8, 0], "left_arm": [-55, 25, 0]}).items()
-              if bone.endswith(("arm", "item")) or bone == "torso"}
-    bones = {"right_arm": {"rotation": keys((0, [0, 0, 0]), (reach, [25, 20, 25]), (end, target["right_arm"]))}}
+    target = pose or {"right_arm": [-60, -8, 0], "left_arm": [-55, 25, 0]}
+    middle = {"right_arm": [25, 20, 25]}
     if hands != "one" or "left_arm" in target:
-        left_from = [25, -20, -25] if hands == "dual" else [0, 0, 0]
-        bones["left_arm"] = {"rotation": keys((0, [0, 0, 0]), (reach, left_from), (end, target["left_arm"]))}
-    if "torso" in target:
-        bones["torso"] = {"rotation": keys((0, [0, 0, 0]), (reach, [0, -10, 0]), (end, target["torso"]))}
+        middle["left_arm"] = [25, -20, -25] if hands == "dual" else ZERO
     for item in ("right_item", "left_item"):
         if item in target:
-            bones[item] = {"rotation": keys((0, [0, 0, 0]), (reach, [90, 0, 0]), (end, target[item]))}
-    return {"animation_length": round(end, 3), "bones": bones}
+            middle[item] = [90, 0, 0]
+    if "torso" in target:
+        middle["torso"] = [0, -10, 0]
+    return animate([(0, {}), (reach, middle), (end, target)], end)
 
 
 def guard(hands):
@@ -340,18 +417,14 @@ def guard(hands):
     duas laminas cruzadas em X."""
     up = BLOCK_RAISE_TICKS * TICK
     if hands == "dual":
-        right, left, items = [-95, -40, 0], [-95, 40, 0], True
+        pose = {"right_arm": [-95, -40, 0], "left_arm": [-95, 40, 0], "right_item": [0, 0, -35],
+                "left_item": [0, 0, 35]}
     elif hands == "two":
-        right, left, items = [-80, -45, 0], [-80, 45, 0], False
+        pose = {"right_arm": [-80, -45, 0], "left_arm": [-80, 45, 0]}
     else:
-        right, left, items = [-85, -25, 15], [-40, 20, 0], False
-    bones = {"right_arm": {"rotation": keys((0, [0, 0, 0]), (up, right))},
-             "left_arm": {"rotation": keys((0, [0, 0, 0]), (up, left))},
-             "torso": {"rotation": keys((0, [0, 0, 0]), (up, [8, 0, 0]))}}
-    if items:
-        bones["right_item"] = {"rotation": keys((0, [0, 0, 0]), (up, [0, 0, -35]))}
-        bones["left_item"] = {"rotation": keys((0, [0, 0, 0]), (up, [0, 0, 35]))}
-    return {"loop": "hold_on_last_frame", "animation_length": round(up, 3), "bones": bones}
+        pose = {"right_arm": [-85, -25, 15], "left_arm": [-40, 20, 0]}
+    pose["torso"] = [8, 0, 0]
+    return animate([(0, {}), (up, pose)], up, loop="hold_on_last_frame")
 
 
 def reload(stages, hands):
