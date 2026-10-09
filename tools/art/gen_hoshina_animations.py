@@ -279,10 +279,10 @@ BEHIND = [100, 0, 0]
 def arms():
     """As duas laminas sempre invertidas (pegada reversa, lamina ao longo do antebraco). 0.5.0-D4 (referencias do
     Miguel): parado e em guarda os dois bracos ficam para tras do corpo, o direito mais alto e o esquerdo mais
-    baixo, laminas saindo para tras; correndo: bracos abertos para os lados ("asas"), o direito quase no ombro e o
-    esquerdo mais baixo; andando: corpo quase reto e bracos abertos para os lados e para baixo."""
+    baixo, laminas saindo para tras; correndo: bracos esticados para tras e abertos para baixo, o direito um pouco
+    mais alto, lamina para cima a partir do punho; andando: quase reto, bracos abertos para baixo."""
     poses = {"ready": ([65, 0, 20], [30, 0, 15]), "walk": ([10, 0, 40], [10, 0, 40]),
-             "run": ([35, 0, 75], [20, 0, 40]), "aim": ([60, 0, 25], [25, 0, 20])}
+             "run": ([50, 0, 40], [45, 0, 40]), "aim": ([60, 0, 25], [25, 0, 20])}
     lengths = {"ready": (2.0, 2), "walk": (0.7, 6), "run": (0.45, 8), "aim": (2.0, 2)}
     def loop(length, right, left, breath, item):
         def bone(pose, flip):
@@ -320,7 +320,7 @@ def movement():
             "head": {"rotation": keys((0, [-lean + 5, 0, 0]), (length, [-lean + 5, 0, 0]))}}}
 
     return {"hoshina.movement.idle": idle, "hoshina.movement.walk": gait(0.7, 30, 10, 1),
-            "hoshina.movement.run": gait(0.45, 50, 42, 7)}
+            "hoshina.movement.run": gait(0.45, 50, 38, 6)}
 
 
 def tail_animations(slash_ticks=10, guard_ticks=9):

@@ -174,12 +174,12 @@ STANCES = {
         "move": {"swing": 30, "period": 0.7, "body_pos": [0, -1, 0], "torso": [10, 0, 0], "head": [-8, 0, 0],
                  "right_arm": [10, 0, 40], "left_arm": [10, 0, -40], "right_item": [180, 0, 0],
                  "left_item": [180, 0, 0]},
-        # Correndo (referencias do Miguel): agachamento fundo e tronco inclinado, bracos abertos para os lados e
-        # um pouco para tras ("asas"), o direito mais alto (quase no ombro) com a lamina para cima e o esquerdo
-        # mais baixo com a lamina para baixo (rotacoes escolhidas vendo de costas no jogo).
-        "run": {"swing": 50, "period": 0.45, "body_pos": [0, -7, 0], "torso": [42, 0, 0], "head": [-36, 0, 0],
-                "right_arm": [35, 0, 75], "left_arm": [20, 0, -40], "right_item": [0, 0, 70],
-                "left_item": [180, 0, -70]},
+        # Correndo (referencias do Miguel, comparadas de costas, de lado e de frente no jogo): tronco bem inclinado,
+        # bracos esticados para tras e abertos para baixo (de costas fazem um "V" invertido), o direito um pouco
+        # mais alto; a lamina invertida sai do punho apontando para cima.
+        "run": {"swing": 50, "period": 0.45, "body_pos": [0, -6, 0], "torso": [38, 0, 0], "head": [-32, 0, 0],
+                "right_arm": [50, 0, 40], "left_arm": [45, 0, -40], "right_item": [180, 0, 0],
+                "left_item": [180, 0, 0]},
     },
     # Kikoru (referencia "Battle Axe"): machado na horizontal na frente do corpo, as duas maos no cabo, lamina para
     # o lado esquerdo; pernas firmes e abertas. Correndo: machado atravessado, lamina para tras.

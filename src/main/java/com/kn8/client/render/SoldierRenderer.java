@@ -49,7 +49,9 @@ public class SoldierRenderer<T extends SoldierEntity> extends GeoEntityRenderer<
     /**
      * 0.2: o display de 3a pessoa das armas cresceu para o JOGADOR (held_scale por arma em
      * tools/art/meshy_assets.json, punho parado na mao). O soldado continua no tamanho de antes: divide pela escala
-     * do display do item e multiplica por esta, a escala de 3a pessoa de antes (0,85 em todas as armas).
+     * do display do item e multiplica por esta, a escala de 3a pessoa de antes (0,85 em todas as armas). 0.5.0-D4:
+     * arma com display menor que isso (espada do Hoshina, encurtada pelas referencias do Miguel) fica do mesmo tamanho
+     * que na mao do jogador.
      */
     private static final float SOLDIER_ITEM_SCALE = 0.85F;
 
@@ -121,7 +123,7 @@ public class SoldierRenderer<T extends SoldierEntity> extends GeoEntityRenderer<
                 float displayScale = model.getTransforms().getTransform(ItemDisplayContext.THIRD_PERSON_RIGHT_HAND)
                         .scale.x();
                 if (displayScale > 1.0E-4F) {
-                    float scale = SOLDIER_ITEM_SCALE / displayScale;
+                    float scale = Math.min(SOLDIER_ITEM_SCALE, displayScale) / displayScale;
                     poseStack.scale(scale, scale, scale);
                 }
                 super.renderStackForBone(poseStack, bone, stack, animatable, bufferSource, partialTick,
