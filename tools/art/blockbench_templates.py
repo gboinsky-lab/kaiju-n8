@@ -329,8 +329,8 @@ def player_template(name, weapons, prefixes, extra):
 Y180 = r3(ph.Ry(math.pi))
 
 
-def hoshina_bones():
-    geo = json.loads((ASSETS / "geo/entity/hoshina.geo.json").read_text(encoding="utf-8"))
+def hoshina_bones(species="hoshina"):
+    geo = json.loads((ASSETS / f"geo/entity/{species}.geo.json").read_text(encoding="utf-8"))
     return {b["name"]: b for b in geo["minecraft:geometry"][0]["bones"]}
 
 
@@ -405,11 +405,11 @@ HOSHINA_GRIP_SHIFT = np.array([0.0, 1.5, 1.5])
 HOSHINA_GRIP_ALONG = 3.0
 
 
-def hoshina_grip_points():
+def hoshina_grip_points(species="hoshina"):
     """0.5.0-D7 (Miguel: "pega na lamina"): para cada espada do Hoshina, o punho (fim da malha do braco, ultimos 3 px)
     e o centro do cabo, no espaco do Blockbench em relacao ao pivo do osso da espada."""
-    bones = hoshina_bones()
-    index = json.loads((ASSETS / "meshes/hoshina.json").read_text(encoding="utf-8"))["bones"]
+    bones = hoshina_bones(species)
+    index = json.loads((ASSETS / f"meshes/{species}.json").read_text(encoding="utf-8"))["bones"]
     out = {}
     for side in ("right", "left"):
         item_bone, arm_bone = f"item_{side}", f"arm_{side}"
@@ -655,7 +655,9 @@ def imported_hoshina(species="hoshina"):
         groups, anims = read_bbmodel(path)
         if "item_right" not in groups:
             continue
-        frames = frames or hoshina_frames(hoshina_bones())
+        # 0.5.0-D7: o traje numerado 10 tem outro rig (ombros e maos em outro lugar): a rotacao da espada e o ponto
+        # da pegada usam o rig da propria especie.
+        frames = frames or hoshina_frames(hoshina_bones(species))
         stance = {(bone, channel): keys[0][1] for bone, channels in anims.get("hoshina.parado", {}).get(
             "bones", {}).items() if bone.startswith("item") for channel, keys in channels.items()}
         for name, anim in anims.items():
@@ -673,9 +675,7 @@ def imported_hoshina(species="hoshina"):
                 movement, arms = split_hoshina(anim)
                 out[HOSHINA_COMBINED[name][0]] = bb_to_gecko(movement, frames)
                 arms = bb_to_gecko(arms, frames)
-                if species == "hoshina":
-                    # Pontos medidos no rig do Hoshina normal (o do traje numerado 10 tem outro rig).
-                    grip_gecko(arms, frames, hoshina_grip_points())
+                grip_gecko(arms, frames, hoshina_grip_points(species))
                 out[HOSHINA_COMBINED[name][1]] = arms
             else:
                 out[name] = bb_to_gecko(anim, frames)

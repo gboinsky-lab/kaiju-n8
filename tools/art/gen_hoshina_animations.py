@@ -367,6 +367,17 @@ def main():
     # 0.5.0-D5: o que o Miguel animou no Blockbench (tools/blockbench/animacoes/*.bbmodel) vale por cima.
     from blockbench_templates import imported_hoshina
     generated.update(imported_hoshina(species))
+    # 0.5.0-D7 (Miguel: "em alguns ataques a espada sai da mao"): em combate o controller "arms" usa blade_aim, que nao
+    # vem do Blockbench; a pegada (cabo no punho) vale para todas as posturas de espada.
+    from blockbench_templates import grip_gecko, hoshina_bones, hoshina_frames, hoshina_grip_points
+    frames, points = hoshina_frames(hoshina_bones(species)), hoshina_grip_points(species)
+    # Em combate (blade_aim) o Hoshina fica na postura parada do Miguel: a pose antiga de mira fazia os bracos pularem
+    # ao entrar em combate e no fim de cada tecnica.
+    if f"{species}.arms.blade_ready" in generated:
+        generated[f"{species}.arms.blade_aim"] = json.loads(json.dumps(generated[f"{species}.arms.blade_ready"]))
+    for name, anim in generated.items():
+        if name.startswith(f"{species}.arms.blade_"):
+            grip_gecko(anim, frames, points)
     animations.update(generated)
     text = json.dumps(data, indent=2) + "\n"
     out.write_bytes(text.replace("\n", newline).encode("utf-8"))

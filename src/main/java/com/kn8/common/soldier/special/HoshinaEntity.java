@@ -651,6 +651,9 @@ public class HoshinaEntity extends SoldierEntity {
         return Math.hypot(getX() - xo, getZ() - zo) > RUN_BLOCKS_PER_TICK;
     }
 
+    /** Ticks de transicao do controller "action" (tecnicas). */
+    private static final int ACTION_TRANSITION_TICKS = 3;
+
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         String prefix = animPrefix() + ".";
@@ -669,7 +672,8 @@ public class HoshinaEntity extends SoldierEntity {
                     : state.isMoving() ? (running() ? "run" : "walk") : "ready";
             return state.setAndContinue(arms.get(stance));
         }));
-        AnimationController<HoshinaEntity> action = new AnimationController<>(this, "action", 1,
+        // 0.5.0-D7 (Miguel: "paradas muito bruscas"): o golpe entra misturando com a postura em vez de cortar seco.
+        AnimationController<HoshinaEntity> action = new AnimationController<>(this, "action", ACTION_TRANSITION_TICKS,
                 state -> PlayState.STOP);
         action.triggerableAnim("attack", RawAnimation.begin().thenPlay(prefix + "action.attack"));
         for (String id : ANIMATED) {

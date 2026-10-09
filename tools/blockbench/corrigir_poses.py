@@ -161,6 +161,112 @@ def stance_items(model, log):
             log.append(f"{anim['name']} {bone}: rotacao da postura parada no t=0 ({[round(x, 2) for x in rot]})")
 
 
+def new_key(channel, time, v):
+    key = {"channel": channel, "data_points": [{}], "uuid": str(uuid.uuid4()), "time": round(time, 4), "color": -1,
+           "interpolation": "linear", "bezier_linked": True, "bezier_left_time": [-0.1, -0.1, -0.1],
+           "bezier_left_value": [0, 0, 0], "bezier_right_time": [0.1, 0.1, 0.1], "bezier_right_value": [0, 0, 0]}
+    set_value(key, v)
+    return key
+
+
+def animators_by_bone(anim):
+    return {a.get("name"): a for a in anim.get("animators", {}).values()}
+
+
+def hold_loop(model, anim_name, t, log, breath=2.0):
+    """0.5.0-D7 (Miguel: "paradas muito bruscas"): postura parada = a pose do tempo t no laco inteiro, em todos os
+    canais (keyframes antigos ganham o valor da pose; nada e apagado). Respiracao: bracos e tronco descem `breath`
+    graus no meio do laco e o laco fecha no mesmo valor."""
+    anim = next(a for a in model["animations"] if a["name"] == anim_name)
+    length = anim["length"]
+    for bone, animator in animators_by_bone(anim).items():
+        for channel in ("rotation", "position", "scale"):
+            keys = channel_keys(anim, bone, channel)
+            if not keys:
+                continue
+            pose = sample(keys, t)
+            times = {round(k["time"], 4) for k in keys}
+            for extra in (0.0, length / 2, length):
+                if round(extra, 4) not in times:
+                    animator["keyframes"].append(new_key(channel, extra, pose))
+            for key in channel_keys(anim, bone, channel):
+                v = list(pose)
+                mid = abs(key["time"] - length / 2) < 1e-3
+                if mid and channel == "rotation" and bone.startswith("arm"):
+                    v[0] -= breath
+                if mid and channel == "rotation" and bone == "body":
+                    v[0] += breath / 2
+                if value(key) != v:
+                    set_value(key, v)
+    log.append(f"{anim_name}: pose de {t} no laco inteiro (respiracao {breath} graus)")
+
+
+def smooth_loop(model, anim_name, harmonics, log, samples_per_loop=24):
+    """Cada canal vira um ciclo continuo (serie de Fourier com ate `harmonics` voltas por laco): somem os picos de
+    0,05 s e a emenda do laco fecha. Os keyframes existentes recebem o valor da curva e entram keyframes a cada
+    1/samples_per_loop do laco para a interpolacao linear seguir a curva."""
+    import numpy as np
+    anim = next(a for a in model["animations"] if a["name"] == anim_name)
+    length = anim["length"]
+    grid = np.linspace(0, length, 240, endpoint=False)
+    for bone, animator in animators_by_bone(anim).items():
+        for channel in ("rotation", "position", "scale"):
+            keys = channel_keys(anim, bone, channel)
+            if len(keys) < 2:
+                continue
+            data = np.array([sample(keys, t) for t in grid])
+            spectrum = np.fft.rfft(data, axis=0)
+            spectrum[harmonics + 1:] = 0
+            def curve(t):
+                phase = 2 * np.pi * t / length
+                out = spectrum[0].real / len(grid)
+                for h in range(1, harmonics + 1):
+                    c = spectrum[h] * 2 / len(grid)
+                    out = out + c.real * np.cos(h * phase) - c.imag * np.sin(h * phase)
+                return [round(float(x), 4) for x in out]
+            times = {round(k["time"], 4) for k in keys}
+            for i in range(samples_per_loop + 1):
+                t = round(length * i / samples_per_loop, 4)
+                if t not in times:
+                    animator["keyframes"].append(new_key(channel, t, curve(t)))
+            for key in channel_keys(anim, bone, channel):
+                set_value(key, curve(key["time"]))
+    log.append(f"{anim_name}: canais suavizados como ciclo (ate {harmonics} harmonicos)")
+
+
+def fix_channel(model, anim_name, bone, channel, t, log):
+    """Todos os keyframes do canal recebem o valor do tempo t (ex.: espada que girava 80 graus a cada passo)."""
+    anim = next(a for a in model["animations"] if a["name"] == anim_name)
+    keys = channel_keys(anim, bone, channel)
+    pose = sample(keys, t)
+    for key in keys:
+        set_value(key, pose)
+    log.append(f"{anim_name} {bone} {channel}: fixo no valor de t={t}")
+
+
+def actions_from_stance(model, stance_name, log):
+    """Tecnicas comecam e terminam na postura parada: o primeiro e o ultimo keyframe de cada canal que a postura tem
+    recebem o valor dela (o golpe nao pula da postura para a pose antiga)."""
+    stance = next(a for a in model["animations"] if a["name"] == stance_name)
+    for anim in model["animations"]:
+        if ".action." not in anim["name"]:
+            continue
+        for bone, animator in animators_by_bone(anim).items():
+            if bone.startswith("item"):
+                continue
+            for channel in ("rotation", "position"):
+                keys = channel_keys(anim, bone, channel)
+                pose_keys = channel_keys(stance, bone, channel)
+                if not keys or not pose_keys:
+                    continue
+                pose = sample(pose_keys, 0)
+                for key in (keys[0], keys[-1]):
+                    if abs(key["time"]) < 1e-3 or abs(key["time"] - anim["length"]) < 1e-3:
+                        if value(key) != pose:
+                            set_value(key, pose)
+        log.append(f"{anim['name']}: comeca e termina na postura de {stance_name}")
+
+
 def set_length(model, anim_name, length, log):
     anim = next(a for a in model["animations"] if a["name"] == anim_name)
     log.append(f"{anim_name}: duracao {anim['length']} -> {length}")
@@ -172,6 +278,7 @@ def main():
     src, dst = args[0], args[1]
     base_path = None
     poses, holds, lengths, items = [], [], [], False
+    holds_loop, smooths, stance_actions, fixes = [], [], None, []
     i = 2
     while i < len(args):
         if args[i] == "--pose":
@@ -180,6 +287,14 @@ def main():
             holds.append(args[i + 1]); i += 2
         elif args[i] == "--base":
             base_path = args[i + 1]; i += 2
+        elif args[i] == "--segurar":
+            holds_loop.append(args[i + 1]); i += 2
+        elif args[i] == "--fixar":
+            fixes.append(args[i + 1]); i += 2
+        elif args[i] == "--suavizar":
+            smooths.append(args[i + 1]); i += 2
+        elif args[i] == "--acoes-da-postura":
+            stance_actions = args[i + 1]; i += 2
         elif args[i] == "--length":
             lengths.append(args[i + 1]); i += 2
         elif args[i] == "--stance-items":
@@ -200,6 +315,18 @@ def main():
     for spec in lengths:
         anim, length = spec.split("=")
         set_length(model, anim, float(length), log)
+    for spec in holds_loop:
+        anim, t = spec.split("@")
+        hold_loop(model, anim, float(t), log)
+    for spec in smooths:
+        anim, harmonics = spec.split("@")
+        smooth_loop(model, anim, int(harmonics), log)
+    for spec in fixes:
+        what, t = spec.split("@")
+        anim, bone, channel = what.split(":")
+        fix_channel(model, anim, bone, channel, float(t), log)
+    if stance_actions:
+        actions_from_stance(model, stance_actions, log)
     if items:
         stance_items(model, log)
     json.dump(model, open(dst, "w", encoding="utf-8"), separators=(",", ":"))
