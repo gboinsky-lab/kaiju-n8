@@ -268,6 +268,12 @@ mandam; se algo precisar mudar, marque **[DECIDIR]** e pergunte.
   abdomen e um pedaco solto da malha e a pata de tras (sem caminho ate o centro) levava o abdomen inteiro →
   `all_axis_centers` no `split_paths` (caminho ate o ponto do eixo mais perto). Teste em jogo: o mundo de teste estava
   em dificuldade Facil e kaiju nao miravam alvo parado nem o jogador → `difficulty normal` nos scripts.
+- **Cabecas girando (Miguel, 2026-10-09: Kafka, No. 8, Narumi e Numbers 1, Kikoru e Numbers 4, Mina, Reno e Numbers
+  6):** o `SoldierRenderer` soma o olhar a rotacao animada da cabeca dos soldados especiais, contando que a postura
+  sempre anima a cabeca (vale para o Hoshina). As posturas dos personagens novos (e a Kikoru parada/andando) nao animam
+  a cabeca; a GeckoLib nao volta a rotacao de osso nao animado e o olhar se acumulava a cada quadro → `addLook`
+  desconta o olhar do quadro anterior quando nenhuma animacao escreveu no osso (cabeca e bracos da mira). Conferido
+  em jogo antes/depois com 2 clientes (sem a correcao a cabeca do Kafka e da Kikoru ficava virada para tras).
 - **0.7-E (formas do No. 9):** a pele endurecida nao reduzia nada → no NeoForge o `actuallyHurt` ignora o valor
   recebido (usa o conteiner de dano) → reducao no `getDamageAfterArmorAbsorb`. Absorcao nunca comecava → limite de
   vida 1,0 com a presa de vida cheia (`vida < maxima`) → 1,0 = qualquer vida. GameTests de absorcao: o No. 9 de um

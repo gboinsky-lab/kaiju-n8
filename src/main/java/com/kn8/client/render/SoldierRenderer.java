@@ -1,5 +1,8 @@
 package com.kn8.client.render;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.joml.Quaternionf;
 
 import com.kn8.KN8Constants;
@@ -151,8 +154,15 @@ public class SoldierRenderer<T extends SoldierEntity> extends GeoEntityRenderer<
 
         private static final String[] AIMING_ARMS = {"arm_right", "arm_left"};
 
-        /** Soma o olhar a rotacao animada da cabeca (as animacoes desta especie sempre animam a cabeca). */
+        /** Soma o olhar a rotacao animada da cabeca. */
         private final boolean addLook;
+        /**
+         * Por osso: rotacao escrita no ultimo quadro e o olhar somado nela. Os ossos sao do modelo (um por especie,
+         * todas as entidades usam os mesmos) e a GeckoLib nao volta a rotacao de um osso que nenhuma animacao
+         * mexeu: sem descontar o olhar do quadro anterior, ele se acumulava e a cabeca girava sem parar (0.7-C/D/F:
+         * Reno, Mina, Narumi, Kafka, No. 8 e a Kikoru parada/andando nao animam a cabeca na postura).
+         */
+        private final Map<String, float[]> lastLook = new HashMap<>();
 
         SoldierModel(String species) {
             // 0.5.0-D5: nos soldados especiais, sem o "turnsHead" da GeckoLib, que troca a rotacao animada da cabeca
@@ -175,8 +185,7 @@ public class SoldierRenderer<T extends SoldierEntity> extends GeoEntityRenderer<
             float yaw = data.netHeadYaw() * Mth.DEG_TO_RAD;
             GeoBone head = addLook ? getAnimationProcessor().getBone("head") : null;
             if (head != null) {
-                head.setRotX(head.getRotX() + pitch);
-                head.setRotY(head.getRotY() + yaw);
+                addLook(head, pitch, yaw);
             }
             if (!animatable.isAggressive() || !animatable.isFirearmPose()) {
                 return;
@@ -184,10 +193,29 @@ public class SoldierRenderer<T extends SoldierEntity> extends GeoEntityRenderer<
             for (String name : AIMING_ARMS) {
                 GeoBone arm = getAnimationProcessor().getBone(name);
                 if (arm != null) {
-                    arm.setRotX(arm.getRotX() + pitch);
-                    arm.setRotY(arm.getRotY() + yaw);
+                    addLook(arm, pitch, yaw);
                 }
             }
+        }
+
+        /**
+         * Soma o olhar ao osso. Se nenhuma animacao escreveu nele desde o ultimo quadro (a rotacao e a que este metodo
+         * deixou), tira antes o olhar ja somado, para nao acumular.
+         */
+        private void addLook(GeoBone bone, float pitch, float yaw) {
+            float[] last = lastLook.computeIfAbsent(bone.getName(), name -> new float[] {Float.NaN, Float.NaN, 0, 0});
+            float baseX = bone.getRotX();
+            float baseY = bone.getRotY();
+            if (baseX == last[0] && baseY == last[1]) {
+                baseX -= last[2];
+                baseY -= last[3];
+            }
+            bone.setRotX(baseX + pitch);
+            bone.setRotY(baseY + yaw);
+            last[0] = bone.getRotX();
+            last[1] = bone.getRotY();
+            last[2] = pitch;
+            last[3] = yaw;
         }
     }
 }
