@@ -1,0 +1,10 @@
+{
+  "bones": {
+    "head": "kn8:meshes/mina/head.obj",
+    "body": "kn8:meshes/mina/body.obj",
+    "arm_left": "kn8:meshes/mina/arm_left.obj",
+    "arm_right": "kn8:meshes/mina/arm_right.obj",
+    "leg_left": "kn8:meshes/mina/leg_left.obj",
+    "leg_right": "kn8:meshes/mina/leg_right.obj"
+  }
+}

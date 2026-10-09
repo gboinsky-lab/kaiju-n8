@@ -104,6 +104,34 @@
       "orientation": "diagonal",
       "item_length": 1.35,
       "thickness": 1.0
+    },
+    "mina_cannon": {
+      "_comment": "0.7-C: canhao pesado da Mina (modelo do Miguel), deitado em X com o cano para -X; punho embaixo, a ~63% da boca do cano",
+      "source": "mina_cannon.glb",
+      "length_axis": "x",
+      "tip": "-",
+      "up_axis": "y",
+      "length_m": 1.6,
+      "grip_from_tip": 0.63,
+      "grip_from_bottom": 0.3,
+      "texture": 512,
+      "orientation": "horizontal",
+      "item_length": 2.2,
+      "thickness": 1.0
+    },
+    "narumi_bayonet": {
+      "_comment": "0.7-C: baioneta longa do Narumi (modelo do Miguel), em pe em Y com a lamina para +Y; mao no punho de tras (~75% da ponta)",
+      "source": "narumi_bayonet.glb",
+      "length_axis": "y",
+      "tip": "+",
+      "up_axis": "x",
+      "length_m": 2.2,
+      "grip_from_tip": 0.75,
+      "grip_from_bottom": 0.5,
+      "texture": 512,
+      "orientation": "diagonal",
+      "item_length": 2.6,
+      "thickness": 1.0
     }
   },
   "entities": {
@@ -250,6 +278,24 @@
       "length_m": 0.6,
       "texture": 512,
       "max_triangles": 6000
+    },
+    "reno": {
+      "source": "reno.glb",
+      "height_m": 1.7,
+      "texture": 1024,
+      "max_triangles": 10000
+    },
+    "mina": {
+      "source": "mina.glb",
+      "height_m": 1.65,
+      "texture": 1024,
+      "max_triangles": 10000
+    },
+    "narumi": {
+      "source": "narumi.glb",
+      "height_m": 1.78,
+      "texture": 1024,
+      "max_triangles": 10000
     }
   },
   "_comment_weapons": "hand_grip (armas de fogo): ponto do cabo no OBJ convertido (unidades do item) que vai para o centro do punho; first_person_scale: escala em 1a pessoa. orientation: 'diagonal' (lamina, como espada vanilla) ou 'horizontal' (arma de fogo, cano para a frente). item_length: comprimento no item, em unidades (1 = um bloco; a mao do jogador tem ~0,25). thickness: multiplica a espessura (eixos 'up' e lateral) em volta da empunhadura. blade_fraction + blade_thickness: engrossa so a lamina (da ponta ate essa fracao do comprimento), sem mexer no cabo.",

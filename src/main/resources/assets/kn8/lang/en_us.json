@@ -725,5 +725,16 @@
   "entity.kn8.kaiju_larva": "Mysterious Larva",
   "kn8.bestiary.kaiju_larva.desc": "A small winged larva that flies and bites. A creature like this one entered Kafka Hibino's body.",
   "kn8.ability.phaneroplasmodium_spore_shot": "Spore Cloud",
-  "kn8.ability.myxogasterocarp_spore_bomb": "Spore Bomb"
+  "kn8.ability.myxogasterocarp_spore_bomb": "Spore Bomb",
+  "entity.kn8.reno": "Reno Ichikawa",
+  "item.kn8.reno_spawn_egg": "Reno Ichikawa Spawn Egg",
+  "kn8.soldier.variant.reno": "Reno Ichikawa",
+  "entity.kn8.mina": "Mina Ashiro",
+  "item.kn8.mina_spawn_egg": "Mina Ashiro Spawn Egg",
+  "kn8.soldier.variant.mina": "Mina Ashiro",
+  "entity.kn8.narumi": "Gen Narumi",
+  "item.kn8.narumi_spawn_egg": "Gen Narumi Spawn Egg",
+  "kn8.soldier.variant.narumi": "Gen Narumi",
+  "item.kn8.mina_cannon": "Mina's Heavy Cannon",
+  "item.kn8.narumi_bayonet": "Narumi's Bayonet"
 }

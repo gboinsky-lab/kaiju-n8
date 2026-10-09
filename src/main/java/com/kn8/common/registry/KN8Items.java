@@ -42,6 +42,11 @@ public final class KN8Items {
     /** 0.6-D: espada do Hoshina (uma; ele usa o par). Arma especial: especial = corte a distancia (Kuuchi). */
     public static final DeferredItem<WeaponItem> HOSHINA_SWORD =
             ITEMS.register("hoshina_sword", () -> new WeaponItem(new Item.Properties()));
+    /** 0.7-C: canhao pesado da Mina e baioneta longa do Narumi (armas dos soldados especiais; modelos do Miguel). */
+    public static final DeferredItem<WeaponItem> MINA_CANNON =
+            ITEMS.register("mina_cannon", () -> new WeaponItem(new Item.Properties()));
+    public static final DeferredItem<WeaponItem> NARUMI_BAYONET =
+            ITEMS.register("narumi_bayonet", () -> new WeaponItem(new Item.Properties()));
 
     /**
      * 0.5.0-D2 (Miguel: sem municao infinita): pentes (guardam os tiros, carregados com a municao) e municao de
@@ -71,6 +76,13 @@ public final class KN8Items {
                     new Item.Properties()));
     public static final DeferredItem<DeferredSpawnEggItem> KIKORU_SPAWN_EGG = ITEMS.register("kikoru_spawn_egg",
             () -> new DeferredSpawnEggItem(KN8Entities.KIKORU, 0x1A1A1A, 0xF2C94C, new Item.Properties()));
+    /** 0.7-C: Reno, Mina e Narumi (soldados especiais). */
+    public static final DeferredItem<DeferredSpawnEggItem> RENO_SPAWN_EGG = ITEMS.register("reno_spawn_egg",
+            () -> new DeferredSpawnEggItem(KN8Entities.RENO, 0x1A1A1A, 0x8FD8FF, new Item.Properties()));
+    public static final DeferredItem<DeferredSpawnEggItem> MINA_SPAWN_EGG = ITEMS.register("mina_spawn_egg",
+            () -> new DeferredSpawnEggItem(KN8Entities.MINA, 0x1A1A1A, 0xFF9A3C, new Item.Properties()));
+    public static final DeferredItem<DeferredSpawnEggItem> NARUMI_SPAWN_EGG = ITEMS.register("narumi_spawn_egg",
+            () -> new DeferredSpawnEggItem(KN8Entities.NARUMI, 0x1A1A1A, 0xFF6FB5, new Item.Properties()));
 
     /** 0.2 (Etapa 2): boneco de treino. */
     public static final DeferredItem<TrainingDummyItem> TRAINING_DUMMY = ITEMS.register("training_dummy",
@@ -102,6 +114,8 @@ public final class KN8Items {
                         output.accept(SWORD.get());
                         output.accept(AXE.get());
                         output.accept(HOSHINA_SWORD.get());
+                        output.accept(MINA_CANNON.get());
+                        output.accept(NARUMI_BAYONET.get());
                         output.accept(full(RIFLE_MAGAZINE.get(), parameters));
                         output.accept(full(PISTOL_MAGAZINE.get(), parameters));
                         output.accept(RIFLE_AMMO.get());
@@ -114,6 +128,9 @@ public final class KN8Items {
                         output.accept(HOSHINA_SPAWN_EGG.get());
                         output.accept(HOSHINA_NO10_SPAWN_EGG.get());
                         output.accept(KIKORU_SPAWN_EGG.get());
+                        output.accept(RENO_SPAWN_EGG.get());
+                        output.accept(MINA_SPAWN_EGG.get());
+                        output.accept(NARUMI_SPAWN_EGG.get());
                         output.accept(TRAINING_DUMMY.get());
                         output.accept(DEFENSE_WORKBENCH.get());
                         output.accept(TRAINING_SUIT.get());

@@ -17,8 +17,12 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -46,6 +50,11 @@ public class SlashProjectile extends Projectile {
             SynchedEntityData.defineId(SlashProjectile.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Float> WIDTH =
             SynchedEntityData.defineId(SlashProjectile.class, EntityDataSerializers.FLOAT);
+    /** 0.7-C: rastro reto de bala no lugar do arco (tiros do Reno, da Mina e da baioneta do Narumi). */
+    private static final EntityDataAccessor<Boolean> BULLET =
+            SynchedEntityData.defineId(SlashProjectile.class, EntityDataSerializers.BOOLEAN);
+    /** Pontos do rastro de bala por tick (atras da ponta, ao longo do voo). */
+    private static final int BULLET_POINTS = 4;
     /** Pontos do arco desenhados por tick e abertura do arco (graus para cada lado). */
     private static final int ARC_POINTS = 9;
     private static final float ARC_DEGREES = 70.0F;
@@ -57,6 +66,9 @@ public class SlashProjectile extends Projectile {
     private float kaijuFactor = 1.0F;
     private double range;
     private double travelled;
+    private float explosionRadius;
+    private int slowTicks;
+    private int slowLevel = 1;
 
     public SlashProjectile(EntityType<? extends SlashProjectile> type, Level level) {
         super(type, level);
@@ -83,6 +95,10 @@ public class SlashProjectile extends Projectile {
             slash.entityData.set(COLOR, spec.color());
             slash.entityData.set(ROLL, index % 2 == 0 ? spec.rollDegrees() : -spec.rollDegrees());
             slash.entityData.set(WIDTH, spec.width());
+            slash.entityData.set(BULLET, spec.bullet());
+            slash.explosionRadius = spec.explosionRadius();
+            slash.slowTicks = spec.slowTicks();
+            slash.slowLevel = spec.slowLevel();
             slash.setPos(owner.getEyePosition().subtract(0, 0.3, 0).add(heading.scale(FORWARD_SPAWN)));
             slash.setDeltaMovement(heading.scale(spec.speed()));
             slash.setYRot(yaw + offset);
@@ -97,6 +113,7 @@ public class SlashProjectile extends Projectile {
         builder.define(COLOR, 0xB070FF);
         builder.define(ROLL, 0.0F);
         builder.define(WIDTH, 1.2F);
+        builder.define(BULLET, false);
     }
 
     @Override
@@ -115,8 +132,16 @@ public class SlashProjectile extends Projectile {
         if (block.getType() != HitResult.Type.MISS) {
             to = block.getLocation();
         }
-        strikeAlong(from, to);
+        Vec3 hit = strikeAlong(from, to);
+        if (hit != null && explosionRadius > 0.0F) {
+            explode(hit);
+            return;
+        }
         if (block.getType() != HitResult.Type.MISS) {
+            if (explosionRadius > 0.0F) {
+                explode(to);
+                return;
+            }
             ((ServerLevel) level()).sendParticles(ParticleTypes.CRIT, to.x, to.y, to.z, 8, 0.2, 0.2, 0.2, 0.2);
             discard();
             return;
@@ -124,16 +149,60 @@ public class SlashProjectile extends Projectile {
         setPos(to);
         travelled += motion.length();
         if (travelled > range) {
+            if (explosionRadius > 0.0F) {
+                explode(to);
+                return;
+            }
             discard();
         }
     }
 
-    /** Fere quem a faixa do corte (largura {@code width}) cruzou neste tick, uma vez por alvo. */
-    private void strikeAlong(Vec3 from, Vec3 to) {
+    /**
+     * 0.7-C: explosao do tiro do canhao. Fere uma vez quem estiver no raio (menos aliados e quem o tiro ja acertou),
+     * com o mesmo dano e fator contra kaiju; nao quebra blocos (o dano a construcoes fica com os kaiju).
+     */
+    private void explode(Vec3 at) {
+        ServerLevel server = (ServerLevel) level();
+        server.sendParticles(ParticleTypes.EXPLOSION_EMITTER, at.x, at.y, at.z, 1, 0, 0, 0, 0);
+        server.sendParticles(ParticleTypes.LARGE_SMOKE, at.x, at.y, at.z, 12, explosionRadius * 0.3,
+                explosionRadius * 0.3, explosionRadius * 0.3, 0.02);
+        server.playSound(null, at.x, at.y, at.z, SoundEvents.GENERIC_EXPLODE, SoundSource.HOSTILE, 1.5F, 1.1F);
+        if (getOwner() instanceof LivingEntity source) {
+            DamageSource damageSource = damageSources().explosion(this, source);
+            AABB area = new AABB(at, at).inflate(explosionRadius);
+            for (LivingEntity target : server.getEntitiesOfClass(LivingEntity.class, area,
+                    living -> living != source && living.isAlive() && !SpecialAttacks.isAlly(source, living)
+                            && !struck.contains(living.getUUID()))) {
+                if (target.getBoundingBox().distanceToSqr(at) > explosionRadius * explosionRadius) {
+                    continue;
+                }
+                struck.add(target.getUUID());
+                target.invulnerableTime = 0;
+                if (target.hurt(damageSource, target instanceof KaijuEntity ? damage * kaijuFactor : damage)) {
+                    slow(target);
+                }
+            }
+        }
+        discard();
+    }
+
+    /** 0.7-C: municao congelante (Lentidao do JSON) em quem o tiro acertou. */
+    private void slow(LivingEntity target) {
+        if (slowTicks > 0) {
+            target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, slowTicks, slowLevel - 1));
+        }
+    }
+
+    /**
+     * Fere quem a faixa do corte (largura {@code width}) cruzou neste tick, uma vez por alvo. Devolve o centro do
+     * primeiro alvo atingido (onde o tiro explosivo explode) ou {@code null}.
+     */
+    private Vec3 strikeAlong(Vec3 from, Vec3 to) {
         Entity owner = getOwner();
         if (!(owner instanceof LivingEntity source)) {
-            return;
+            return null;
         }
+        Vec3 first = null;
         double width = entityData.get(WIDTH);
         AABB swept = new AABB(from, to).inflate(width);
         DamageSource damageSource = damageSources().mobProjectile(this, source);
@@ -146,16 +215,25 @@ public class SlashProjectile extends Projectile {
             // Os dois cortes do Kosa-uchi chegam quase juntos: a invulnerabilidade vanilla engoliria o segundo.
             target.invulnerableTime = 0;
             if (target.hurt(damageSource, amount)) {
+                slow(target);
                 Vec3 center = target.getBoundingBox().getCenter();
-                ((ServerLevel) level()).sendParticles(ParticleTypes.SWEEP_ATTACK, center.x, center.y, center.z, 1,
-                        0, 0, 0, 0);
+                ((ServerLevel) level()).sendParticles(entityData.get(BULLET) ? ParticleTypes.CRIT
+                        : ParticleTypes.SWEEP_ATTACK, center.x, center.y, center.z, 1, 0, 0, 0, 0);
+                if (first == null) {
+                    first = center;
+                }
             }
         }
+        return first;
     }
 
-    /** Arco do corte, perpendicular ao voo e inclinado por {@code roll} (cliente). */
+    /** Arco do corte, perpendicular ao voo e inclinado por {@code roll} (cliente); bala: rastro reto. */
     private void drawArc(Vec3 motion) {
         if (motion.lengthSqr() < 1.0E-6) {
+            return;
+        }
+        if (entityData.get(BULLET)) {
+            drawBullet(motion);
             return;
         }
         Vec3 forward = motion.normalize();
@@ -177,6 +255,21 @@ public class SlashProjectile extends Projectile {
         }
         if (tickCount % 2 == 0) {
             level().addParticle(ParticleTypes.SWEEP_ATTACK, getX(), getY(), getZ(), 0, 0, 0);
+        }
+    }
+
+    /** 0.7-C: rastro de bala (pontos na cor do tiro ao longo do ultimo trecho do voo e um pouco de fumaca). */
+    private void drawBullet(Vec3 motion) {
+        int color = entityData.get(COLOR);
+        float scale = Math.max(0.6F, Math.min(2.5F, entityData.get(WIDTH) * 2.0F));
+        DustParticleOptions dust = new DustParticleOptions(new Vector3f(((color >> 16) & 0xFF) / 255.0F,
+                ((color >> 8) & 0xFF) / 255.0F, (color & 0xFF) / 255.0F), scale);
+        for (int i = 0; i < BULLET_POINTS; i++) {
+            Vec3 at = position().subtract(motion.scale(i / (double) BULLET_POINTS));
+            level().addParticle(dust, at.x, at.y, at.z, 0, 0, 0);
+        }
+        if (tickCount % 2 == 0) {
+            level().addParticle(ParticleTypes.SMOKE, getX(), getY(), getZ(), 0, 0, 0);
         }
     }
 

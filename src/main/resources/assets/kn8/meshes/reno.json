@@ -1,0 +1,10 @@
+{
+  "bones": {
+    "head": "kn8:meshes/reno/head.obj",
+    "body": "kn8:meshes/reno/body.obj",
+    "arm_left": "kn8:meshes/reno/arm_left.obj",
+    "arm_right": "kn8:meshes/reno/arm_right.obj",
+    "leg_left": "kn8:meshes/reno/leg_left.obj",
+    "leg_right": "kn8:meshes/reno/leg_right.obj"
+  }
+}

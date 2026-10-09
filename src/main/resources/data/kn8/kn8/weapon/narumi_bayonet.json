@@ -1,0 +1,29 @@
+{
+  "item": "kn8:narumi_bayonet",
+  "base_damage": 9,
+  "reach": 3.6,
+  "style": "heavy",
+  "profile": "kn8:two_handed_axe",
+  "actions": {
+    "light": {
+      "multiplier": 1.0,
+      "duration_ticks": 12,
+      "impact_tick": 5
+    },
+    "heavy": {
+      "multiplier": 2.0,
+      "duration_ticks": 24,
+      "impact_tick": 11
+    }
+  },
+  "combo": [
+    1.0,
+    1.1,
+    1.25
+  ],
+  "sounds": {
+    "swing": "kn8:weapon.sword_swing",
+    "heavy": "kn8:weapon.sword_heavy",
+    "hit": "kn8:weapon.sword_hit"
+  }
+}

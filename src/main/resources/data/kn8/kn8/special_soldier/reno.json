@@ -1,0 +1,139 @@
+{
+  "health": 360,
+  "armor": 17,
+  "speed": 0.31,
+  "follow_range": 48,
+  "knockback_resistance": 0.5,
+  "release": 30,
+  "max_release": 70,
+  "kaiju_damage": 0.5,
+  "aura": "kn8:reno_frost",
+  "weapon": "kn8:rifle",
+  "techniques": {
+    "precision_shot": {
+      "type": "slash",
+      "hits": [
+        2.2
+      ],
+      "windup_ticks": 12,
+      "duration_ticks": 20,
+      "cooldown_ticks": 60,
+      "min_range": 6.0,
+      "max_range": 36.0,
+      "priority": 2,
+      "slash": {
+        "count": 1,
+        "speed": 3.5,
+        "range": 40.0,
+        "width": 0.35,
+        "color": 13625599,
+        "bullet": true
+      }
+    },
+    "burst_fire": {
+      "type": "slash",
+      "hits": [
+        0.9
+      ],
+      "windup_ticks": 6,
+      "duration_ticks": 14,
+      "cooldown_ticks": 50,
+      "min_range": 3.0,
+      "max_range": 28.0,
+      "priority": 1,
+      "slash": {
+        "count": 3,
+        "speed": 3.5,
+        "range": 40.0,
+        "width": 0.35,
+        "color": 13625599,
+        "bullet": true,
+        "spread_degrees": 3.0
+      }
+    },
+    "freeze_round": {
+      "type": "slash",
+      "hits": [
+        1.2
+      ],
+      "windup_ticks": 10,
+      "duration_ticks": 18,
+      "cooldown_ticks": 140,
+      "min_range": 4.0,
+      "max_range": 30.0,
+      "priority": 3,
+      "slash": {
+        "count": 1,
+        "speed": 3.5,
+        "range": 40.0,
+        "width": 0.5,
+        "color": 9427199,
+        "bullet": true,
+        "slow_ticks": 80,
+        "slow_level": 3
+      }
+    },
+    "suppression": {
+      "type": "slash",
+      "hits": [
+        0.6
+      ],
+      "windup_ticks": 8,
+      "duration_ticks": 18,
+      "cooldown_ticks": 160,
+      "min_range": 4.0,
+      "max_range": 26.0,
+      "priority": 2,
+      "slash": {
+        "count": 5,
+        "speed": 3.5,
+        "range": 40.0,
+        "width": 0.35,
+        "color": 13625599,
+        "bullet": true,
+        "spread_degrees": 12.0,
+        "slow_ticks": 40,
+        "slow_level": 1
+      }
+    },
+    "butt_strike": {
+      "type": "combo",
+      "hits": [
+        0.8
+      ],
+      "windup_ticks": 4,
+      "duration_ticks": 12,
+      "cooldown_ticks": 40,
+      "max_range": 2.5,
+      "priority": 4,
+      "final_knockback": 1.0
+    }
+  },
+  "dash": {
+    "cooldown_ticks": 100,
+    "speed": 1.0,
+    "invulnerable_ticks": 6,
+    "react_ticks": 5,
+    "gap_close_distance": 40.0
+  },
+  "counter": {
+    "multiplier": 2.2,
+    "cooldown_ticks": 200,
+    "dash_speed": 0.9,
+    "invulnerable_ticks": 10,
+    "strike_delay_ticks": 8,
+    "react_ticks": 6
+  },
+  "parry": {
+    "chance": 0.15,
+    "damage_factor": 0.4,
+    "cooldown_ticks": 25,
+    "counter_window_ticks": 10
+  },
+  "escalation": {
+    "points_per_second": 2.0,
+    "max_points": 45,
+    "decay_per_second": 2.0,
+    "cooldown_reduction_at_max": 0.35
+  }
+}

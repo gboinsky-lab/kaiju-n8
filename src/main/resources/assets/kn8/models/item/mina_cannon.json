@@ -1,0 +1,131 @@
+{
+  "loader": "neoforge:obj",
+  "model": "kn8:models/item/mina_cannon.obj",
+  "flip_v": true,
+  "automatic_culling": false,
+  "textures": {
+    "texture": "kn8:item/mina_cannon",
+    "particle": "kn8:item/mina_cannon"
+  },
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [
+        0,
+        -90,
+        55
+      ],
+      "translation": [
+        -0.0,
+        5.065,
+        0.312
+      ],
+      "scale": [
+        1.105,
+        1.105,
+        1.105
+      ]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [
+        0,
+        90,
+        -55
+      ],
+      "translation": [
+        -0.0,
+        5.065,
+        0.312
+      ],
+      "scale": [
+        1.105,
+        1.105,
+        1.105
+      ]
+    },
+    "firstperson_righthand": {
+      "rotation": [
+        0,
+        -90,
+        25
+      ],
+      "translation": [
+        1.13,
+        3.742,
+        1.327
+      ],
+      "scale": [
+        0.816,
+        0.816,
+        0.816
+      ]
+    },
+    "firstperson_lefthand": {
+      "rotation": [
+        0,
+        90,
+        -25
+      ],
+      "translation": [
+        1.13,
+        3.742,
+        1.327
+      ],
+      "scale": [
+        0.816,
+        0.816,
+        0.816
+      ]
+    },
+    "ground": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        2,
+        0
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ]
+    },
+    "gui": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        -0.645,
+        0.582,
+        0
+      ],
+      "scale": [
+        0.409,
+        0.409,
+        0.409
+      ]
+    },
+    "fixed": {
+      "rotation": [
+        0,
+        180,
+        0
+      ],
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    }
+  }
+}

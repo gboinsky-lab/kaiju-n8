@@ -1,0 +1,17 @@
+{
+  "item": "kn8:mina_cannon",
+  "base_damage": 12,
+  "reach": 48.0,
+  "style": "firearm",
+  "profile": "kn8:rifle",
+  "actions": {
+    "light": {
+      "multiplier": 1.0,
+      "duration_ticks": 24,
+      "impact_tick": 2
+    }
+  },
+  "sounds": {
+    "shot": "kn8:weapon.rifle_shot"
+  }
+}

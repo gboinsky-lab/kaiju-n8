@@ -70,6 +70,18 @@ SPECIES = {
                "arm_inner_x": [(0.932, 0.152), (0.0, 0.201)], "arm_max_y": 1.192,
                "back_items": None,
                "leg_pivot_center": True},
+    # 0.7-C: Reno (1,70 m), Mina (1,65 m) e Narumi (1,78 m), modelos estilo Minecraft do Miguel. Cortes medidos pelo
+    # vao entre braco e tronco faixa a faixa (meshy_convert, frente -Z): acima do ombro nada e braco; o rabo de cavalo
+    # da Mina cai atras da cabeca ate ~1,0 m e fica no tronco.
+    "reno": {"stem": "reno", "hip_y": 0.74, "neck_y": 1.27, "hand_min_y": 0.63,
+             "arm_inner_x": [(1.0, 0.175), (0.0, 0.205)], "arm_max_y": 1.27, "back_items": None,
+             "leg_pivot_center": True},
+    "mina": {"stem": "mina", "hip_y": 0.71, "neck_y": 1.22, "hand_min_y": 0.63,
+             "arm_inner_x": [(0.88, 0.16), (0.0, 0.195)], "arm_max_y": 1.22, "back_items": None,
+             "leg_pivot_center": True},
+    "narumi": {"stem": "narumi", "hip_y": 0.78, "neck_y": 1.32, "hand_min_y": 0.68,
+               "arm_inner_x": [(0.93, 0.165), (0.0, 0.205)], "arm_max_y": 1.32, "back_items": None,
+               "leg_pivot_center": True},
     # 0.6-F: Hoshina com o traje numerado 10: a cauda do No. 10 sai do quadril esquerdo, passa por baixo da mao,
     # sobe pelas costas e faz um arco por cima da cabeca ate a ponta na frente-direita. Separada pela superficie
     # (sementes da cauda contra sementes do resto do corpo) e dividida em 4 ossos pelo comprimento da linha.

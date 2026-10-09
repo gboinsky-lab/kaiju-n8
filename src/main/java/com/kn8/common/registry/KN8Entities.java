@@ -16,6 +16,9 @@ import com.kn8.common.soldier.SoldierEntity;
 import com.kn8.common.soldier.special.HoshinaEntity;
 import com.kn8.common.soldier.special.HoshinaNo10Entity;
 import com.kn8.common.soldier.special.KikoruEntity;
+import com.kn8.common.soldier.special.MinaEntity;
+import com.kn8.common.soldier.special.NarumiEntity;
+import com.kn8.common.soldier.special.RenoEntity;
 import com.kn8.common.training.TrainingDummyEntity;
 
 import net.minecraft.core.registries.Registries;
@@ -122,6 +125,27 @@ public final class KN8Entities {
                     .eyeHeight(1.38F)
                     .clientTrackingRange(KAIJU_TRACKING_RANGE_CHUNKS)
                     .build("kikoru"));
+    /** 0.7-C: Reno Ichikawa, traje normal (rifle; special_soldier/reno.json). 1,70 m [SUPOSICAO]. */
+    public static final DeferredHolder<EntityType<?>, EntityType<RenoEntity>> RENO = ENTITY_TYPES.register(
+            "reno", () -> EntityType.Builder.<RenoEntity>of(RenoEntity::new, MobCategory.CREATURE)
+                    .sized(0.6F, 1.7F)
+                    .eyeHeight(1.5F)
+                    .clientTrackingRange(KAIJU_TRACKING_RANGE_CHUNKS)
+                    .build("reno"));
+    /** 0.7-C: Mina Ashiro com o canhao pesado (special_soldier/mina.json). 1,65 m [SUPOSICAO]. */
+    public static final DeferredHolder<EntityType<?>, EntityType<MinaEntity>> MINA = ENTITY_TYPES.register(
+            "mina", () -> EntityType.Builder.<MinaEntity>of(MinaEntity::new, MobCategory.CREATURE)
+                    .sized(0.6F, 1.65F)
+                    .eyeHeight(1.45F)
+                    .clientTrackingRange(KAIJU_TRACKING_RANGE_CHUNKS)
+                    .build("mina"));
+    /** 0.7-C: Gen Narumi com a baioneta (special_soldier/narumi.json). 1,78 m [SUPOSICAO]. */
+    public static final DeferredHolder<EntityType<?>, EntityType<NarumiEntity>> NARUMI = ENTITY_TYPES.register(
+            "narumi", () -> EntityType.Builder.<NarumiEntity>of(NarumiEntity::new, MobCategory.CREATURE)
+                    .sized(0.6F, 1.78F)
+                    .eyeHeight(1.57F)
+                    .clientTrackingRange(KAIJU_TRACKING_RANGE_CHUNKS)
+                    .build("narumi"));
 
     /** 0.6: projetil de habilidade de kaiju (raio de energia, teia, Finger Gun); so particulas no cliente. */
     public static final DeferredHolder<EntityType<?>, EntityType<KaijuProjectile>> KAIJU_PROJECTILE =
@@ -167,6 +191,15 @@ public final class KN8Entities {
         if (KikoruEntity.VARIANT_KIKORU.equals(name)) {
             return Optional.of(KIKORU.get());
         }
+        if (RenoEntity.VARIANT_RENO.equals(name)) {
+            return Optional.of(RENO.get());
+        }
+        if (MinaEntity.VARIANT_MINA.equals(name)) {
+            return Optional.of(MINA.get());
+        }
+        if (NarumiEntity.VARIANT_NARUMI.equals(name)) {
+            return Optional.of(NARUMI.get());
+        }
         return HoshinaEntity.VARIANT.equals(name) ? Optional.of(HOSHINA.get()) : Optional.empty();
     }
 
@@ -203,6 +236,9 @@ public final class KN8Entities {
         event.put(HOSHINA.get(), SoldierEntity.createAttributes().build());
         event.put(HOSHINA_NO10.get(), SoldierEntity.createAttributes().build());
         event.put(KIKORU.get(), SoldierEntity.createAttributes().build());
+        event.put(RENO.get(), SoldierEntity.createAttributes().build());
+        event.put(MINA.get(), SoldierEntity.createAttributes().build());
+        event.put(NARUMI.get(), SoldierEntity.createAttributes().build());
         event.put(TRAINING_DUMMY.get(), LivingEntity.createLivingAttributes().build());
         KAIJU.forEach(type -> event.put(type.get(), KaijuEntity.baseAttributes().build()));
     }
