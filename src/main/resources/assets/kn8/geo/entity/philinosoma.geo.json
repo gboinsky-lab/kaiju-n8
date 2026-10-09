@@ -1,0 +1,164 @@
+{
+  "format_version": "1.12.0",
+  "minecraft:geometry": [
+    {
+      "description": {
+        "identifier": "geometry.philinosoma",
+        "texture_width": 16,
+        "texture_height": 16,
+        "visible_bounds_width": 15.1,
+        "visible_bounds_height": 15.1,
+        "visible_bounds_offset": [
+          0,
+          4.5,
+          0
+        ]
+      },
+      "bones": [
+        {
+          "name": "root",
+          "pivot": [
+            -0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "name": "body",
+          "pivot": [
+            -6.4,
+            51.2,
+            20.0
+          ],
+          "parent": "root"
+        },
+        {
+          "name": "head",
+          "pivot": [
+            -9.6,
+            105.6,
+            -28.0
+          ],
+          "parent": "body"
+        },
+        {
+          "name": "jaw",
+          "pivot": [
+            -14.4,
+            108.8,
+            -40.8
+          ],
+          "parent": "head"
+        },
+        {
+          "name": "fin_left",
+          "pivot": [
+            -6.4,
+            123.2,
+            -45.6
+          ],
+          "parent": "head"
+        },
+        {
+          "name": "fin_right",
+          "pivot": [
+            -22.4,
+            123.2,
+            -45.6
+          ],
+          "parent": "head"
+        },
+        {
+          "name": "arm_left",
+          "pivot": [
+            19.2,
+            88.0,
+            -12.0
+          ],
+          "parent": "body"
+        },
+        {
+          "name": "arm_right",
+          "pivot": [
+            -38.4,
+            88.0,
+            -12.0
+          ],
+          "parent": "body"
+        },
+        {
+          "name": "forearm_left",
+          "pivot": [
+            24.0,
+            72.0,
+            -21.6
+          ],
+          "parent": "arm_left"
+        },
+        {
+          "name": "forearm_right",
+          "pivot": [
+            -38.4,
+            72.0,
+            -21.6
+          ],
+          "parent": "arm_right"
+        },
+        {
+          "name": "leg_left",
+          "pivot": [
+            12.8,
+            51.2,
+            20.0
+          ],
+          "parent": "body"
+        },
+        {
+          "name": "leg_right",
+          "pivot": [
+            -25.6,
+            51.2,
+            20.0
+          ],
+          "parent": "body"
+        },
+        {
+          "name": "tail_1",
+          "pivot": [
+            -9.6,
+            48.0,
+            44.0
+          ],
+          "parent": "body"
+        },
+        {
+          "name": "tail_2",
+          "pivot": [
+            -13.057,
+            35.038,
+            74.246
+          ],
+          "parent": "tail_1"
+        },
+        {
+          "name": "tail_3",
+          "pivot": [
+            -16.553,
+            22.894,
+            104.755
+          ],
+          "parent": "tail_2"
+        },
+        {
+          "name": "tail_4",
+          "pivot": [
+            -20.276,
+            15.447,
+            136.777
+          ],
+          "parent": "tail_3"
+        }
+      ]
+    }
+  ]
+}

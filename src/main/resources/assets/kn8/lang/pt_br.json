@@ -705,5 +705,17 @@
   "death.attack.kn8.weapon_special.player": "%1$s foi derrubado pelo golpe especial de %2$s",
   "kn8.release.fatigued": "Seu corpo ainda não se recuperou: sem Release durante a fadiga.",
   "kn8.release.fatigue_start": "Você passou do seu limite: fadiga por %s s.",
-  "kn8.hud.fatigue": "FADIGA"
+  "kn8.hud.fatigue": "FADIGA",
+  "entity.kn8.philinosoma": "Philinosoma",
+  "kn8.bestiary.philinosoma.desc": "Honju lagarto de 9 m, vermelho com espinhos azuis. Avança de cabeça baixa, varre com a cauda longa e dispara espinhos pela boca.",
+  "entity.kn8.diclonius": "Diclonius",
+  "kn8.bestiary.diclonius.desc": "Honju de 9 m que anda em pé, com placas vermelhas e azuis nas costas. Lento e muito blindado; carrega um sopro de energia azul que explode no impacto.",
+  "entity.kn8.camponotus": "Camponotus",
+  "kn8.bestiary.camponotus.desc": "Formiga Yoju de 6 m de comprimento. Morde com as mandíbulas, golpeia com as patas, salta e borrifa ácido que deixa o alvo lento.",
+  "entity.kn8.camponotus_reborn": "Camponotus revivida",
+  "kn8.bestiary.camponotus_reborn.desc": "A Camponotus trazida de volta pelo No. 9: azul, mais resistente, com ácido mais forte e fúria quando está quase morta.",
+  "kn8.ability.philinosoma_spine_shot": "Disparo de espinhos",
+  "kn8.ability.diclonius_atomic_breath": "Sopro de energia",
+  "kn8.ability.camponotus_acid_spray": "Jato de ácido",
+  "kn8.ability.camponotus_reborn_acid_spray": "Jato de ácido revivido"
 }

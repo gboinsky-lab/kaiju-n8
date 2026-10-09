@@ -474,3 +474,16 @@ Visto na nuvem (`docs/img/hoshina_modelo.png`, `hoshina_vs_honju.png`, `hoshina_
 | 31.5 | Jogador com uma espada do Hoshina em cada mão: combo e R | Golpes diferentes alternando as lâminas; o Kūuchi é um corte rápido para fora com avanço |
 | 31.6 | Jogador com o machado: R | Salta com o machado erguido e crava no chão (Axe Slam da Kikoru) |
 | 31.7 | Servidor dedicado + 2 clientes | Os dois veem as mesmas animações |
+
+## 32. Kaiju novos: Philinosoma, Diclonius e Camponotus (0.7-A)
+
+| # | Passo | Esperado |
+|---|---|---|
+| 32.1 | `/summon kn8:philinosoma ~ ~ ~ {NoAI:1b}` e dar a volta | Lagarto vermelho de 9 m com espinhos azuis e cauda longa; pés no centro da hitbox (F3+B), cabeça e tronco dentro dela, a cauda sai para trás |
+| 32.2 | O mesmo com `kn8:diclonius` | Kaiju branco em pé, placas vermelhas e azuis nas costas, cauda em S |
+| 32.3 | O mesmo com `kn8:camponotus` e `kn8:camponotus_reborn` | Formiga preta e vermelha de cabeça laranja e antenas amarelas; a revivida é azul, mesma forma |
+| 32.4 | Cada um contra 3 soldados (`/summon kn8:soldier`) em dificuldade normal | Anda com a passada certa, persegue, ataca; os golpes mexem os ossos certos (braço, mandíbula, cauda, patas) |
+| 32.5 | Ficar a ~18 blocos do Diclonius / ~14 do Philinosoma / ~10 da formiga | Diclonius: aviso na boca e sopro azul que explode; Philinosoma: espinhos azuis; formiga: abdômen dobra por baixo e o ácido verde (azul na revivida) deixa lento |
+| 32.6 | Bater na cabeça da formiga e no peito dos Honju | Dano maior (núcleo) |
+| 32.7 | Menu (M) > Bestiário depois de abater | Os 4 aparecem com nome e descrição em pt_br e en_us |
+| 32.8 | Servidor dedicado + 2 clientes | Os dois veem o mesmo modelo, animação e ataque |

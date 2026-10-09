@@ -1,0 +1,17 @@
+{
+  "bones": {
+    "body": "kn8:meshes/philinosoma/body.obj",
+    "head": "kn8:meshes/philinosoma/head.obj",
+    "jaw": "kn8:meshes/philinosoma/jaw.obj",
+    "arm_left": "kn8:meshes/philinosoma/arm_left.obj",
+    "arm_right": "kn8:meshes/philinosoma/arm_right.obj",
+    "forearm_left": "kn8:meshes/philinosoma/forearm_left.obj",
+    "forearm_right": "kn8:meshes/philinosoma/forearm_right.obj",
+    "leg_left": "kn8:meshes/philinosoma/leg_left.obj",
+    "leg_right": "kn8:meshes/philinosoma/leg_right.obj",
+    "tail_1": "kn8:meshes/philinosoma/tail_1.obj",
+    "tail_2": "kn8:meshes/philinosoma/tail_2.obj",
+    "tail_3": "kn8:meshes/philinosoma/tail_3.obj",
+    "tail_4": "kn8:meshes/philinosoma/tail_4.obj"
+  }
+}

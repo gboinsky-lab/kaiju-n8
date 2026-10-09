@@ -62,7 +62,26 @@ SPECIES = {
                                                "leg_left_2": [-2.3, 0.0, 1.5], "leg_left_3": [-3.4, 0.0, 3.5],
                                                "leg_right_0": [2.1, 0.0, -4.0], "leg_right_1": [2.5, 1.9, -1.8],
                                                "leg_right_2": [3.4, 0.4, 1.4], "leg_right_3": [1.6, 0.4, 3.0]}}},
+    # 0.7-A: Camponotus (formiga Yoju do Miguel, 6 m de comprimento; a revivida e o mesmo corpo azul). 6 patas:
+    # leg_<lado>_0..2 (frente -> tras); leg_<lado>_3 fica sem malha (as animacoes da aranha continuam valendo). A
+    # pata de tras esquerda veio dobrada por baixo do abdomen (ponta em x ~0, z 2,4). Sem queliceras separadas: as
+    # mandibulas ficam na cabeca.
+    "camponotus": {"center_z": -0.5, "core_half_width": 0.45, "abdomen_start_z": 0.4, "abdomen_half_width": 0.6,
+                   "abdomen_min_y": 1.0, "head_z": -1.1, "fang_z": -99.0, "fang_max_y": 0.0,
+                   "leg_far_radius": 1.0, "leg_max_y": 1.5, "bounds": [7, 4],
+                   "paths": {"all_axis_centers": True,
+                             "regions": {"head": [[-0.6, 1.0, -2.7], [0.6, 2.9, -1.15]],
+                                         "body": [[-0.4, 1.1, -1.0], [0.4, 2.3, 0.3]],
+                                         "abdomen": [[-0.55, 0.9, 0.6], [0.55, 2.6, 3.0]]},
+                             "axis": {"head": [[0.0, 2.0, -1.9], [0.0, 1.9, -1.3]],
+                                      "body": [[0.0, 1.7, -0.8], [0.0, 1.7, -0.2], [0.0, 1.7, 0.3]],
+                                      "abdomen": [[0.0, 1.7, 1.0], [0.0, 1.7, 1.9], [0.0, 1.5, 2.7]]},
+                             "tips": {"leg_left_0": [-1.03, 0.01, -2.2], "leg_left_1": [-1.5, 0.04, -0.49],
+                                      "leg_left_2": [0.14, 0.0, 2.39],
+                                      "leg_right_0": [0.54, 0.2, -2.35], "leg_right_1": [1.54, 0.28, -1.17],
+                                      "leg_right_2": [1.43, 0.02, 0.92]}}},
 }
+SPECIES["camponotus_reborn"] = SPECIES["camponotus"]
 NAME = "trichonephila"
 SOURCE = ROOT / "tools/art/converted/trichonephila"
 CENTER_Z = CORE_HALF_WIDTH = ABDOMEN_START_Z = ABDOMEN_HALF_WIDTH = ABDOMEN_MIN_Y = 0.0
@@ -206,7 +225,14 @@ def split_paths(vertices, faces, cfg):
         seeds.extend(int(i) for i in inside)
         owners.extend([bone] * len(inside))
     center = nearest(cfg["axis"]["body"][len(cfg["axis"]["body"]) // 2])
-    distance, predecessors = dijkstra(graph, directed=False, indices=center, return_predecessors=True)
+    if cfg.get("all_axis_centers"):
+        # 0.7-A (formiga): o abdomen e um pedaco solto da malha; o caminho de cada pe vai ate o ponto do eixo mais
+        # perto (de qualquer parte do corpo), senao a pata de tras levava o abdomen inteiro.
+        centers = sorted({nearest(point) for points in cfg["axis"].values() for point in points})
+        distance, predecessors, _ = dijkstra(graph, directed=False, indices=centers, min_only=True,
+                                             return_predecessors=True)
+    else:
+        distance, predecessors = dijkstra(graph, directed=False, indices=center, return_predecessors=True)
 
     def inside_body(p):
         half = CORE_HALF_WIDTH if p[2] < ABDOMEN_START_Z else ABDOMEN_HALF_WIDTH

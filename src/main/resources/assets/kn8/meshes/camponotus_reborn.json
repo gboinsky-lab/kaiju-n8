@@ -1,0 +1,13 @@
+{
+  "bones": {
+    "body": "kn8:meshes/camponotus_reborn/body.obj",
+    "head": "kn8:meshes/camponotus_reborn/head.obj",
+    "abdomen": "kn8:meshes/camponotus_reborn/abdomen.obj",
+    "leg_left_0": "kn8:meshes/camponotus_reborn/leg_left_0.obj",
+    "leg_left_1": "kn8:meshes/camponotus_reborn/leg_left_1.obj",
+    "leg_left_2": "kn8:meshes/camponotus_reborn/leg_left_2.obj",
+    "leg_right_0": "kn8:meshes/camponotus_reborn/leg_right_0.obj",
+    "leg_right_1": "kn8:meshes/camponotus_reborn/leg_right_1.obj",
+    "leg_right_2": "kn8:meshes/camponotus_reborn/leg_right_2.obj"
+  }
+}

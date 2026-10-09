@@ -705,5 +705,17 @@
   "death.attack.kn8.weapon_special.player": "%1$s was struck down by %2$s's special attack",
   "kn8.release.fatigued": "Your body has not recovered yet: no Release while fatigued.",
   "kn8.release.fatigue_start": "You went past your limit: fatigued for %s s.",
-  "kn8.hud.fatigue": "FATIGUE"
+  "kn8.hud.fatigue": "FATIGUE",
+  "entity.kn8.philinosoma": "Philinosoma",
+  "kn8.bestiary.philinosoma.desc": "A 9 m lizard Honju, red with blue spines. It charges head down, sweeps with its long tail and shoots spines from its mouth.",
+  "entity.kn8.diclonius": "Diclonius",
+  "kn8.bestiary.diclonius.desc": "A 9 m Honju that walks upright, with red and blue plates along its back. Slow and heavily armored; it charges a blue energy breath that explodes on impact.",
+  "entity.kn8.camponotus": "Camponotus",
+  "kn8.bestiary.camponotus.desc": "A 6 m long ant Yoju. It bites with its mandibles, strikes with its legs, leaps and sprays acid that slows its target.",
+  "entity.kn8.camponotus_reborn": "Reborn Camponotus",
+  "kn8.bestiary.camponotus_reborn.desc": "The Camponotus brought back by No. 9: blue, tougher, with stronger acid and a rage when it is almost dead.",
+  "kn8.ability.philinosoma_spine_shot": "Spine Shot",
+  "kn8.ability.diclonius_atomic_breath": "Energy Breath",
+  "kn8.ability.camponotus_acid_spray": "Acid Spray",
+  "kn8.ability.camponotus_reborn_acid_spray": "Reborn Acid Spray"
 }

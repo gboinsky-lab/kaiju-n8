@@ -1,0 +1,17 @@
+{
+  "bones": {
+    "body": "kn8:meshes/diclonius/body.obj",
+    "head": "kn8:meshes/diclonius/head.obj",
+    "jaw": "kn8:meshes/diclonius/jaw.obj",
+    "arm_left": "kn8:meshes/diclonius/arm_left.obj",
+    "arm_right": "kn8:meshes/diclonius/arm_right.obj",
+    "forearm_left": "kn8:meshes/diclonius/forearm_left.obj",
+    "forearm_right": "kn8:meshes/diclonius/forearm_right.obj",
+    "leg_left": "kn8:meshes/diclonius/leg_left.obj",
+    "leg_right": "kn8:meshes/diclonius/leg_right.obj",
+    "tail_1": "kn8:meshes/diclonius/tail_1.obj",
+    "tail_2": "kn8:meshes/diclonius/tail_2.obj",
+    "tail_3": "kn8:meshes/diclonius/tail_3.obj",
+    "tail_4": "kn8:meshes/diclonius/tail_4.obj"
+  }
+}

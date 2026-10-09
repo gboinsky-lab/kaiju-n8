@@ -99,6 +99,7 @@ mandam; se algo precisar mudar, marque **[DECIDIR]** e pergunte.
 | Kikoru (0.5.0-D8, Miguel 2026-10-09) | Modelo do Miguel (`Kikoru_Base_Suit`, **1,57 m**, Miguel; hitbox 0,6 x 1,57) por `rig_soldier_mesh.py kikoru` (marias-chiquinhas acima de `arm_max_y` 1,215 ficam na cabeca; `leg_pivot_center`). `KikoruEntity extends HoshinaEntity` (mesma IA; `animatedTechniques`/`armsFamily` "axe"/`counterAnimation` "counter" viraram metodos), perfil `special_soldier/kikoru.json` (machado `kn8:axe` de duas maos, aura `kikoru_lightning` amarela com raios, tecnicas da Biblioteca v22 secao 8: `axe_slash`, `heavy_swing`, `shockwave`, `dash_strike`, `ground_smash`, `guard_break`), variante `"kikoru"`, ovo; Balanceamento v1.0 (vida 390, armadura 18, velocidade 0,34; v1.2: esquiva/contra-ataque/aparar mais raros e
 `kaiju_damage` 0,52 -> No. 9 5/10 e No. 10 pequeno 3/10, ver `docs/BALANCEAMENTO.md`); **defensora nas invasoes**
 `honju_assault`, `web_queen`, `no9_resurrection` (nivel 3) e `kaiju_horde` (nivel 4, com o Hoshina). Animacoes: `tools/art/gen_kikoru_animations.py` (posturas e golpes saem das poses do machado do jogador, `STANCES/COMBOS/HEAVIES/SPECIALS['two_handed_axe']`, por `to_gecko`; machado preso pelo mesmo ponto do cabo do jogador, 43% do comprimento, `grip_gecko` com a rotacao amostrada a cada quarto de tick; membros por `slerp_track`). Blockbench: `special_template`/`imported_special` no `blockbench_templates.py` (tabela `SPECIALS`), modelo-base em `tools/blockbench/modelos_base/kikoru.bbmodel`; o arquivo do Miguel vai em `animacoes/kikoru.bbmodel`. Numeros e duelos em `docs/BALANCEAMENTO.md`. Numbers 4 (asas, voo) fica para a proxima etapa |
+| Kaiju novos da 0.7-A (Miguel, 2026-10-09: "implemente os modelos que voce tem guardado") | Philinosoma e Diclonius usam os ossos e as animacoes do Primigenius Honju (`build_primigenius_honju.py` agora so regrava animacoes de especie com malha, como o `build_primigenius.py`); formigas usam os ossos e as animacoes da aranha. Habilidades novas: `philinosoma_spine_shot`, `diclonius_atomic_breath`, `camponotus_acid_spray`, `camponotus_reborn_acid_spray` (tipo `kn8:projectile`, sem Java novo). Numeros todos [SUPOSICAO] pela tabela de tiers da v1.2 (`docs/BALANCEAMENTO.md`). Sem spawn natural; por ora so `/summon` e `/kn8 kaiju spawn` ([DECIDIR] invasoes/missoes; desmonte reaproveita Honju/aranha). Kaiju nao tem ovo (so soldados) |
 | Ataque especial de arma (0.5) | `special` no `weapon/<id>.json` (tipo, dano, área, custo, recarga, VFX, som), tecla **R**; resolvedor `SpecialAttacks` serve jogador e (depois) soldado especial. Machado = Golpe Sísmico (`ground_slam`) |
 | Aura de poder (0.5, Miguel) | `aura/<id>.json` (cor, secundária, estilo `sparks`/`lightning`/`flame`, `min_release`, tamanho); id público `kn8:aura` (sync nativo) + `kn8:release_visual`; cada cliente desenha (`AuraRenderer`, sem pacote por tick). Jogador: aura do comando > do traje (`suit.aura`) > `defense_force`. Com vida baixa a % sobe sozinha (`[power] desperationHealth`/`desperationMaxPoints`). [DECIDIR] jogador escolher a cor |
 | Habilidades de kaiju (0.6-A) | `behavior` no `ability/*.json` (min/max_range, prioridade, health_below, setor, golpes, projétil, lentidão); tipos novos `kn8:sweep`, `kn8:projectile` (`KaijuProjectile`), `kn8:leap`, `kn8:multi_hit` em `KaijuAbilities`; escolha = maior prioridade entre as prontas e ao alcance (empate sorteado); `particles` = aviso no início do preparo; `rage` no `kaiju/*.json`. Animações por `tools/art/gen_ability_animations.py` (rodar depois dos scripts de rig) |
@@ -172,6 +173,7 @@ mandam; se algo precisar mudar, marque **[DECIDIR]** e pergunte.
 | **0.5.0-D6 Machado e espadas pelos videos** (posturas, golpes, saque, transicao suave entre posturas, morte sem postura) | ✅ build, GameTests 90/90; tudo visto em jogo com servidor dedicado + 2 clientes (`docs/img/animacoes_armas_video_x_jogo.png`); aguardando o Miguel |
 | **0.6-C Trajes 3D** (Mk1 e Mk1 Reforçado do Miguel no jogador: tronco, braços e pernas presos ao modelo, braço em 1ª pessoa) | ✅ build e GameTests; vistos em jogo de frente, de costas, andando e em 1ª pessoa (`docs/img/trajes_3d_*`); aguardando o Miguel. Soldados continuam com o próprio modelo (já vestem o uniforme) |
 | **0.5.0-D8 Kikoru** (modelo do Miguel com rig, soldado especial com machado, 6 tecnicas, aura amarela, modelo-base do Blockbench) | ✅ build, GameTests 92/92; tecnicas vistas em jogo com 2 clientes; duelos medidos; aguardando o Miguel animar no Blockbench |
+| **0.7-A Kaiju novos do Miguel** (Philinosoma e Diclonius Honju, Camponotus e Camponotus revivida Yoju: rig, entidades, partes/nucleo, espinhos, sopro de energia, jato de acido) | ✅ build, GameTests 99/99; os 4 vistos em jogo com servidor dedicado + 2 clientes (`docs/img/kaiju_0_7_a_modelos.jpg`), andando e atacando soldados; ataques a distancia so pelo GameTest; aguardando o Miguel (roteiro §32) |
 | M11b carcaças e desmonte · M12 transformação · M13 NPCs | pendentes (patentes/crafting do M14 entraram na 0.2) |
 | M15 missões · M16 chefe Honju · M17 Tachikawa · M18 endurecimento/performance | pendentes |
 
@@ -251,6 +253,11 @@ mandam; se algo precisar mudar, marque **[DECIDIR]** e pergunte.
 - **0.6-F (rig do Hoshina com cauda):** a cauda enrolada passa por cima da cabeca e era rotulada como cabeca/tronco
   pelos cortes de altura → cauda por polilinha (`tail` + Dijkstra contra sementes do corpo) e caixa explicita da
   cabeca (`head_box`); cabeca virava tronco (`neck_y` alto: 1,31) e maos viravam perna (`hand_min_y` 0,60).
+- **0.7-A (rig dos kaiju novos):** `recenter_feet` pegava a ponta da cauda no chao como "pe" e o Philinosoma/Diclonius
+  ficavam com o corpo ~4 m a frente da hitbox → `feet_max_z` (segunda passada so com o que esta a frente). Na formiga o
+  abdomen e um pedaco solto da malha e a pata de tras (sem caminho ate o centro) levava o abdomen inteiro →
+  `all_axis_centers` no `split_paths` (caminho ate o ponto do eixo mais perto). Teste em jogo: o mundo de teste estava
+  em dificuldade Facil e kaiju nao miravam alvo parado nem o jogador → `difficulty normal` nos scripts.
 - **0.6-E:** o `build_primigenius.py` regrava as animacoes dos Primigenius sem os golpes da 0.6-A: rodar o
   `gen_ability_animations.py` depois (e conferir CRLF). GameTest do No. 10: a forma gigante quebra blocos ao surgir
   e a fila de destruicao continuava depois do teste, quebrando o lote da ressurreicao em massa → teste com
@@ -344,6 +351,9 @@ mandam; se algo precisar mudar, marque **[DECIDIR]** e pergunte.
 | `primigenius_resurrected` | Yoju ressurgido | malha do Meshy (verde, 10 mil tri), 6 de altura | ⏳ 2026-10-06, visto em jogo |
 | `primigenius_honju` | Honju | malha do Meshy (marrom, chifres, 12 mil tri), 9 de altura | ⏳ 2026-10-06, visto em jogo |
 | `primigenius_revived` | Honju ressurgido | malha do Meshy (roxo, chifres, 12 mil tri), hitbox 5,73 × 9,0 | ⏳ 2026-10-06, visto em jogo |
+| `philinosoma` | Honju | malha do Meshy do Miguel (lagarto vermelho, espinhos azuis, 12 mil tri, 9 m), ossos do Primigenius por esqueleto (`rig_primigenius_mesh.py philinosoma`), hitbox 6 × 9 | 0.7-A |
+| `diclonius` | Honju | malha do Meshy do Miguel (branco em pé, placas vermelhas/azuis, cauda em S com `tail_bend`, 12 mil tri, 9 m), hitbox 5 × 9 | 0.7-A |
+| `camponotus`, `camponotus_reborn` | Yoju | malha do Meshy do Miguel (formiga de 6 patas, 6 m; revivida azul, mesma forma, 11 mil tri), ossos da aranha por caminhos (`rig_trichonephila_mesh.py camponotus`, `leg_*_3` sem malha), hitbox 4 × 2,9 | 0.7-A |
 | `trichonephila_honju` | Honju | malha do Meshy do Miguel (Tecedeira Abissal: roxa e amarela, rosto humanoide, 11.436 tri, 8 m), rig por caminhos na superfície (`rig_trichonephila_mesh.py trichonephila_honju`: pontas das patas e joelho medidos), hitbox 6 × 4 | 0.6-B |
 
 Regra de design do Miguel: Honju e Yoju são **criaturas diferentes** (modelo e textura próprios). Desde
@@ -369,9 +379,13 @@ remedidas na malha [SUPOSIÇÃO: núcleo no peito]. `build_primigenius.py` não 
 
 - **Feito (Miguel, 2026-10-08):** calor so na forca total do traje (% = limite) ou acima dele. Novos modelos (forma preta do No. 9 [nova forma, nao substitui o atual], formiga, formiga revivida, No. 9 +
   formiga, Diclonius, fusao No. 9 + No. 10) so guardados: `docs/MODELOS_RECEBIDOS_2026_10_08.md`.
+- **0.7 (Miguel, 2026-10-09: "implemente os modelos que voce tem guardado e comece a implementar os novos soldados e
+  kaijus"):** em etapas, uma por vez: **0.7-A** Philinosoma, Diclonius, Camponotus e revivida (feita); 0.7-B
+  Phaneroplasmodium, Myxogasterocarp e larva; 0.7-C Reno, Mina (canhao) e Narumi (baioneta); 0.7-D Kikoru No. 4,
+  Reno No. 6, Narumi Numbers 1; 0.7-E No. 9 preto e No. 9 + formiga; 0.7-F Kafka e Kaiju No. 8.
 - **Modelos recebidos (Miguel, 2026-10-08), so guardados:** soldado, Mk1, No. 10 pequeno e gigante refeitos
   (substituem os atuais; **soldado, Hoshina e Mk1 ja trocados na 0.5.0-B**); novos Kaiju No. 8 (2 m), larva, Kafka, Kikoru (normal e Numbers 4 com asas), Reno
-  (normal e Numbers 6), Mina (com o canhao), Gen Narumi (com a baioneta) e o Hoshina normal refeito (substitui). **Nao implementar ate o Miguel mandar o documento e pedir.**
+  (normal e Numbers 6), Mina (com o canhao), Gen Narumi (com a baioneta) e o Hoshina normal refeito (substitui). **Nao implementar ate o Miguel mandar o documento e pedir** (liberado em 2026-10-09: etapas 0.7, abaixo).
   Lista e analise em `docs/MODELOS_RECEBIDOS_2026_10_08.md`.
 
 - **Decidido (Miguel, 2026-10-07):** o No. 9 é o vilão principal e é forte de propósito (fortitude 8,0, ~34 por

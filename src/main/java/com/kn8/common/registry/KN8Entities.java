@@ -51,6 +51,16 @@ public final class KN8Entities {
     /** 0.6-B: Trichonephila Honju (Tecedeira Abissal, modelo do Miguel, 8 m): chefe que invoca Trichonephila. */
     public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> TRICHONEPHILA_HONJU =
             kaiju("trichonephila_honju", 6.0F, 4.0F);
+    /** 0.7-A: Philinosoma (Honju lagarto do Miguel, 9 m, cauda longa) e Diclonius (Honju em pe, 9 m). */
+    public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> PHILINOSOMA =
+            kaiju("philinosoma", 6.0F, 9.0F);
+    public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> DICLONIUS =
+            kaiju("diclonius", 5.0F, 9.0F);
+    /** 0.7-A: Camponotus (formiga Yoju do Miguel, 6 m de comprimento) e a forma revivida (azul, mesmo corpo). */
+    public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> CAMPONOTUS =
+            kaiju("camponotus", 4.0F, 2.9F);
+    public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> CAMPONOTUS_REBORN =
+            kaiju("camponotus_reborn", 4.0F, 2.9F);
 
     /** 0.2 (Etapa 8): Kaiju No. 9, o primeiro numerado (humanoide de 2 m; revive carcacas). */
     public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> KAIJU_NO9 = ENTITY_TYPES.register(
@@ -135,7 +145,7 @@ public final class KN8Entities {
     public static final List<DeferredHolder<EntityType<?>, EntityType<KaijuEntity>>> KAIJU =
             List.of(TRICHONEPHILA, PRIMIGENIUS, PRIMIGENIUS_RESURRECTED, PRIMIGENIUS_HONJU, PRIMIGENIUS_REVIVED,
                     TRICHONEPHILA_HONJU, KAIJU_NO9, KAIJU_NO10_SMALL, KAIJU_NO10_GIANT,
-                    PREONDACTYL);
+                    PREONDACTYL, PHILINOSOMA, DICLONIUS, CAMPONOTUS, CAMPONOTUS_REBORN);
 
     private KN8Entities() {
     }

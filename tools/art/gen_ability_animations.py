@@ -229,6 +229,16 @@ SPECIES = {
                          "action.tail_smash": (tail_smash, "no10g_tail_smash"),
                          "action.finger_cannon": (finger_gun, "no10g_finger_cannon"),
                          "action.multi_strike": (multi_strike, "no10g_multi_appendage")},
+    # 0.7-A: Honju novos (ossos do Primigenius; slam/charge/bite/roar vem do build_primigenius_honju.py) e a formiga
+    # (ossos da aranha). Espinhos do Philinosoma saem da boca como o raio; o acido da formiga sai do abdomen
+    # dobrado por baixo do corpo, como a teia.
+    "philinosoma": {**HONJU, "action.spine_shot": (energy_blast, "philinosoma_spine_shot")},
+    "diclonius": {**HONJU, "action.energy_blast": (energy_blast, "diclonius_atomic_breath")},
+    "camponotus": {"action.leg_swipe": (leg_swipe, "leg_swipe"), "action.leg_stab": (leg_stab, "leg_stab"),
+                   "action.acid_spray": (web_shot, "camponotus_acid_spray"), "action.leap": (leap, "leap")},
+    "camponotus_reborn": {"action.leg_swipe": (leg_swipe, "leg_swipe"), "action.leg_stab": (leg_stab, "leg_stab"),
+                          "action.acid_spray": (web_shot, "camponotus_reborn_acid_spray"),
+                          "action.leap": (leap, "leap")},
 }
 
 

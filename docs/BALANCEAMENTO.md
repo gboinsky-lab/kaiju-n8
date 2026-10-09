@@ -29,6 +29,10 @@ Multiplicadores globais: `[balance] kaijuHealthMultiplier` / `kaijuDamageMultipl
 | Kaiju No. 10, forma pequena (0.6-E) | 8,3 | 1.650 (1.576) | 39,5 (38,6) | 17 (16,6) | 0,35 (0,34) | soco pesado, esmagamento, varredura e perfuração de cauda, Finger Cannon, vários membros, investida | 4 m (hitbox 2 × 4); regenera; vira a forma gigante depois de 60 s de batalha ou abaixo de 50% da vida; fúria abaixo de 25% (dano ×1,2, velocidade ×1,15, recargas ×0,6); comanda kaiju a até 48 blocos |
 | Kaiju No. 10, forma gigante (0.6-E) | 9,0 | **4.600** (4.500) | 54,5 (53,7) | 18 | 0,27 (0,26) | versões gigantes (esmagamento de raio 11, varredura de cauda 12, pancada de cauda, Finger Cannon de 64 blocos) | 24 m (hitbox 10 × 24); nasce com a vida cheia e quebra blocos num raio de 8; regenera; fúria abaixo de 25% (dano ×1,25, velocidade ×1,1, recargas ×0,55) |
 | Preondactyl (0.6-E, voador) | 6,3 | 430 (394) | 15,5 (15,1) | 13 (12,6) | 0,31 (0,30) (voo 0,55) | raio de energia, mergulho, mordida, garra, golpe de cauda | voa a 9 blocos acima do alvo, em círculo de raio 12; mergulha a cada 8 s; frente ×0,35, costas ×1,3; autodestruição abaixo de 15% (3 s de aviso, raio 6, ×3 de dano); obedece ao No. 10 [SUPOSIÇÃO] |
+| Philinosoma (0.7-A, Honju lagarto) | 6,1 | 380 | 14,2 | 12 | 0,27 | soco pesado, mordida, rabada, investida, disparo de espinhos | [SUPOSIÇÃO] tier T4 (entre o Honju 360 e o Preondactyl 430); hitbox 6 × 9; cauda como parte ×0,7 |
+| Diclonius (0.7-A, Honju em pé) | 6,4 | 430 | 15,5 | 14 | 0,23 | soco pesado, mordida, rabada, slam, sopro de energia | [SUPOSIÇÃO] tier T4+: lento e o mais blindado dos Honju; hitbox 5 × 9 |
+| Camponotus (0.7-A, formiga Yoju) | 4,8 | 200 | 9,5 | 10 | 0,33 | mordida, estocada, varredura de patas, jato de ácido, salto | [SUPOSIÇÃO] tier T3 (pouco abaixo do Primigenius 220, mais rápida); hitbox 4 × 2,9; núcleo na cabeça |
+| Camponotus revivida (0.7-A) | 5,5 | 290 | 11,5 | 11 | 0,34 | os da formiga com ácido mais forte; fúria (dano ×1,2, velocidade ×1,15, recargas ×0,7) | [SUPOSIÇÃO] tier T3+ (abaixo do ressurgido 310) |
 | Kaiju No. 9 | 8,0 | 1.450 (1.280) | 34,5 (33,6) | 16 | 0,34 (0,32) | garra, investida, Finger Gun | 0.6-D (Miguel: vilão principal, forte de propósito; o Hoshina vence, mas não com facilidade); a garra (×1,3) tira ~44 por golpe; regenera |
 
 ### Habilidades (`ability/<id>.json`)
@@ -58,6 +62,10 @@ Multiplicadores globais: `[balance] kaijuHealthMultiplier` / `kaijuDamageMultipl
 | Raio de energia do Preondactyl (0.6-E) | 2,2 | 32 (aviso na boca) | 4 | 220 | sim | de 6 a 44 blocos, explosão de raio 2,5 |
 | Mergulho do Preondactyl | 1,4 | 4 | 2 | 100 | sim | raio 2,5 |
 | Golpe de cauda do Preondactyl | 1,1 | 10 | 2 | 60 | não | setor de 200° atrás |
+| Disparo de espinhos do Philinosoma (0.7-A) | 1,2 | 16 | 2 | 160 | não | de 5 a 24 blocos, projétil azul 1,6 bloco/tick [SUPOSIÇÃO] |
+| Sopro de energia do Diclonius (0.7-A) | 2,4 | 32 (aviso na boca) | 4 | 260 | sim | de 6 a 34 blocos, explosão de raio 3,5 [SUPOSIÇÃO] |
+| Jato de ácido da Camponotus (0.7-A) | 0,6 | 10 | 2 | 120 | não | de 4 a 14 blocos, Lentidão II por 3 s [SUPOSIÇÃO] |
+| Jato de ácido da revivida (0.7-A) | 0,75 | 10 | 2 | 110 | não | de 4 a 14 blocos, Lentidão III por 3,5 s [SUPOSIÇÃO] |
 | Explosão de teia (0.6-B, Trichonephila Honju) | 0,8 | 20 | 4 | 200 | não | de 6 a 24 blocos; área de raio 3, lentidão III por 5 s |
 
 \* Pesada atravessa o bloqueio comum; só parry ou esquiva evitam (`[combat] heavyIgnoresBlock`) [SUPOSIÇÃO].
@@ -113,6 +121,8 @@ Passadas [SUPOSICAO] ~1,2 x altura do quadril (mais curta que a real: passo pesa
 | `primigenius_honju`, `primigenius_revived` | 4,5 | 4 | 9 m |
 | `trichonephila` | 2,5 | 0 | 8 patas |
 | `trichonephila_honju` | 3,5 | 3 | 8 m |
+| `philinosoma`, `diclonius` | 4,5 | 4 | 9 m (0.7-A) |
+| `camponotus`, `camponotus_reborn` | 2,8 | 0 | 6 patas, 6 m de comprimento (0.7-A) |
 | `kaiju_no9` | 1,4 | 0 | 2 m |
 | `kaiju_no10_small` | 2,6 | 0 | 4 m |
 | `kaiju_no10_giant` | 12,0 | 16 | 24 m; minimo 0,3 (passos lentos e pesados) |

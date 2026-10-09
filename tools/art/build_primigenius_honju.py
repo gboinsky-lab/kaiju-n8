@@ -9,6 +9,8 @@ Medidas: 3,5 x 5,5 blocos (hitbox do JSON do revivido atualizada junto). Guia de
 textura 256x256 (mini-chefe). Animacoes: genericas + slam, charge, bite (tempos do JSON) e roar (invocar o bando, M16).
 Uso: python3 tools/art/build_primigenius_honju.py
 """
+import json
+
 import kaiju_art as art
 from kaiju_art import Cube, Model, kf
 
@@ -36,6 +38,8 @@ PALETTES = {
     },
 }
 # Etapa C (escala aprovada): Yoju com 6 blocos de altura / Honju com 9.
+# 0.7-A: Honju novos do Miguel (malha do Meshy, ossos do Primigenius): so as animacoes saem daqui.
+PALETTES["philinosoma"] = PALETTES["diclonius"] = PALETTES["primigenius_honju"]
 MODEL_SCALE = 9.0 / 5.5
 BASE = "primigenius_honju"
 
@@ -193,6 +197,12 @@ if __name__ == "__main__":
     for species, palette in PALETTES.items():
         anims = art.rename_animations(base_anims, BASE, species)
         art.validate(model, anims, species, REQUIRED, max_bones=35)
+        if (art.ASSETS / f"meshes/{species}.json").exists():
+            # Especie com malha do Meshy (rig_primigenius_mesh.py): so as animacoes; geo e textura sao da malha.
+            (art.ASSETS / f"animations/entity/{species}.animation.json").write_text(
+                json.dumps(anims, indent=2) + "\n", encoding="utf-8")
+            print(f"{species}: malha do Meshy, so animacoes regeradas")
+            continue
         art.write(species, model.geo(species, regions), anims, model.texture(palette, regions))
         print(f"{species}: {len(model.bones)} ossos, {sum(len(b[3]) for b in model.bones)} cubos, "
               f"{len(regions)} regioes")

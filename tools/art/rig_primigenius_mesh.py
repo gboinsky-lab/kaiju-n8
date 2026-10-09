@@ -181,6 +181,34 @@ SPECIES = {
             "tail_tip": [-0.4, 6.2, 6.4],
         },
     },
+    # 0.7-A (modelos do Miguel, 2026-10-08): Philinosoma (Honju lagarto, 9 m, cauda longa para tras e para a direita)
+    # e Diclonius (Honju em pe estilo Godzilla, 9 m, placas nas costas, cauda em S que sobe na ponta). Mesmos ossos
+    # do Primigenius (geo inicial copiado do No. 10 pequeno); juntas medidas nas vistas com o esqueleto por cima.
+    "philinosoma": {
+        "recenter_feet": True, "jaw_y": 6.8, "jaw_z": -2.55, "feet_max_z": -1.0,
+        "skeleton": {
+            "pelvis": [0.4, 3.2, 1.25], "chest": [0.6, 5.0, -0.35], "back": [0.6, 7.0, 0.45],
+            "neck": [0.6, 6.6, -1.75], "head": [0.9, 7.2, -3.15],
+            "shoulder_left": [-1.2, 5.5, -0.75], "elbow_left": [-1.5, 4.5, -1.35], "hand_left": [-1.5, 3.9, -2.75],
+            "shoulder_right": [2.4, 5.5, -0.75], "elbow_right": [2.4, 4.5, -1.35], "hand_right": [2.0, 3.9, -2.75],
+            "hip_left": [-0.8, 3.2, 1.25], "knee_left": [-1.6, 1.8, 0.45], "foot_left": [-2.8, 0.15, -0.05],
+            "hip_right": [1.6, 3.2, 1.25], "knee_right": [2.4, 1.8, 0.45], "foot_right": [2.5, 0.15, -0.05],
+            "tail_base": [0.6, 3.0, 2.75], "tail_mid": [1.0, 1.5, 6.25], "tail_tip": [1.5, 0.5, 10.55],
+        },
+    },
+    "diclonius": {
+        "recenter_feet": True, "jaw_y": 7.4, "jaw_z": -2.3, "feet_max_z": -1.0,
+        "skeleton": {
+            "pelvis": [0.0, 3.0, 1.4], "chest": [0.0, 5.0, -0.6], "back": [0.0, 7.0, 1.4],
+            "neck": [0.0, 7.0, -1.6], "head": [0.0, 7.8, -2.2],
+            "shoulder_left": [-1.5, 5.8, -0.9], "elbow_left": [-1.9, 4.9, -1.2], "hand_left": [-1.6, 4.4, -2.0],
+            "shoulder_right": [1.5, 5.8, -0.9], "elbow_right": [1.9, 4.9, -1.2], "hand_right": [1.6, 4.4, -2.0],
+            "hip_left": [-1.2, 3.0, 1.2], "knee_left": [-1.8, 1.6, 0.6], "foot_left": [-2.2, 0.15, 0.0],
+            "hip_right": [1.2, 3.0, 1.2], "knee_right": [1.8, 1.6, 0.6], "foot_right": [2.2, 0.15, 0.0],
+            "tail_base": [0.0, 3.0, 2.9], "tail_mid": [-0.5, 1.3, 6.9], "tail_bend": [0.6, 4.0, 9.6],
+            "tail_tip": [3.4, 6.0, 11.2],
+        },
+    },
 }
 
 
@@ -404,6 +432,10 @@ def prepare(vertices, normals, cfg):
         normals = normals @ turn.T
     if cfg.get("recenter_feet"):
         vertices = vertices - feet_center(vertices)
+        if "feet_max_z" in cfg:
+            # Cauda que encosta no chao (0.7-A): os pontos baixos da cauda entravam como "pe" e o corpo ficava a
+            # frente da hitbox; segunda passada so com o que esta a frente de feet_max_z.
+            vertices = vertices - feet_center(vertices[vertices[:, 2] < cfg["feet_max_z"]])
     return vertices, normals
 
 
