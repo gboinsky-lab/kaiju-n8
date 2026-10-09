@@ -29,8 +29,11 @@ perseguindo e lutando contra soldados.
 | 0.7-C | `reno` | Reno Ichikawa (traje normal) | 1,70 m | 360 / 17 / 0,31 | rifle | tiro de precisão, rajada de 3, munição congelante (lentidão), supressão em leque, coronhada de perto; fica longe atirando | azul-gelo |
 | 0.7-C | `mina` | Mina Ashiro | 1,65 m | 420 / 20 / 0,30 | **canhão pesado** no quadril (`kn8:mina_cannon`) | tiro de precisão, tiro do canhão (explode), canhão carregado, Anti-Giant (preparo longo, prefere Honju/numerados); fica longe | laranja |
 | 0.7-C | `narumi` | Gen Narumi (traje normal) | 1,78 m | 480 / 20 / 0,32 | **baioneta longa** de duas mãos (`kn8:narumi_bayonet`) | estocadas em sequência, investida, varrida que empurra, tiro da baioneta | rosa com raios |
+| 0.7-D | `kikoru_no4` | Kikoru Shinomiya (Numbers 4) | 1,57 m, 4 asas em X nas costas | 580 / 20 / 0,44 | machado | **voa**: paira acima do alvo e mergulha nos golpes (machado veloz, mergulho, ataque vertical que expõe o núcleo, combo aéreo, dash aéreo); pousa sem alvo | azul e amarela |
+| 0.7-D | `reno_no6` | Reno Ichikawa (Numbers 6) | 1,70 m, traje azul | 650 / 20 / 0,36 | rifle | criocinese: lança de gelo, explosão congelante, campo de gelo em volta, congelamento múltiplo, canhões auxiliares | azul-gelo |
+| 0.7-D | `narumi_no1` | Gen Narumi (Numbers 1) | modelo do Narumi | 650 / 20 / 0,36 | baioneta | previsão: apara (35%) e contra-ataca mais, golpe no ponto fraco que expõe o núcleo, contra-golpe previsto | rosa e branca |
 
-Os três usam a IA dos soldados especiais (a mesma do Hoshina e da Kikoru): esquiva, contra-ataque, aparar e escalada
+Todos usam a IA dos soldados especiais (a mesma do Hoshina e da Kikoru): esquiva, contra-ataque, aparar e escalada
 de Release. As técnicas de tiro, a explosão e a munição congelante só foram confirmadas pelo GameTest; em jogo os
 três foram vistos com arma e aura, e lutando contra um Primigenius.
 
@@ -51,7 +54,6 @@ três foram vistos com arma e aura, e lutando contra um Primigenius.
 
 ## Próximas etapas
 
-- **0.7-D**: Kikoru Numbers 4 (asas, voo), Reno Numbers 6 (gelo), Narumi Numbers 1.
 - **0.7-E**: No. 9 forma preta e No. 9 fundido à formiga.
 - **0.7-F**: Kafka e Kaiju No. 8 (transformação).
 
@@ -61,9 +63,9 @@ três foram vistos com arma e aura, e lutando contra um Primigenius.
   `aura/`.
 - Modelos (malha presa aos ossos): `assets/kn8/meshes/<id>/`, `geo/entity/<id>.geo.json`,
   `animations/entity/<id>.animation.json`, `textures/entity/<id>.png`; armas em `models/item/` e `textures/item/`.
-- Java: `KN8Entities`, `KN8Items`, `KN8Client`, `soldier/special/RenoEntity|MinaEntity|NarumiEntity`,
+- Java: `KN8Entities`, `KN8Items`, `KN8Client`, `soldier/special/RenoEntity|MinaEntity|NarumiEntity|KikoruNo4Entity|RenoNo6Entity|NarumiNo1Entity`,
   `combat/SlashProjectile` (bala, explosão, lentidão), `data/def/SlashSpec`.
 - Ferramentas: `tools/art/rig_primigenius_mesh.py`, `rig_trichonephila_mesh.py`, `rig_preondactyl_mesh.py`,
   `rig_soldier_mesh.py`, `gen_ability_animations.py`, `build_primigenius_honju.py`, `gen_special_animations.py`.
-- Imagens em jogo: `docs/img/kaiju_0_7_a_modelos.jpg`, `kaiju_0_7_b_modelos.jpg`, `especiais_0_7_c.jpg`.
-- Roteiros de teste: `docs/ROTEIRO_TESTE_0_1_B.md` §32, §33 e §34.
+- Imagens em jogo: `docs/img/kaiju_0_7_a_modelos.jpg`, `kaiju_0_7_b_modelos.jpg`, `especiais_0_7_c.jpg`, `numeradas_0_7_d.jpg`.
+- Roteiros de teste: `docs/ROTEIRO_TESTE_0_1_B.md` §32 a §35.
