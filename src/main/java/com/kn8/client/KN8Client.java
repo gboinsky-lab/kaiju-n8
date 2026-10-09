@@ -83,6 +83,7 @@ public final class KN8Client {
         event.registerEntityRenderer(KN8Entities.HOSHINA.get(), context -> new SoldierRenderer<>(context, "hoshina"));
         event.registerEntityRenderer(KN8Entities.HOSHINA_NO10.get(),
                 context -> new SoldierRenderer<>(context, "hoshina_no10"));
+        event.registerEntityRenderer(KN8Entities.KIKORU.get(), context -> new SoldierRenderer<>(context, "kikoru"));
         event.registerEntityRenderer(KN8Entities.TRAINING_DUMMY.get(), ArmorStandRenderer::new);
     }
 

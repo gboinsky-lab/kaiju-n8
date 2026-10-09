@@ -337,6 +337,15 @@ sobe mais rápido. A fuga do No. 9 só dá mérito a quem causou dano nele.
 
 ### Soldados especiais (`special_soldier/<id>.json`, 0.6-D)
 
+**Kikoru** (0.5.0-D8, `special_soldier/kikoru.json`, todos [SUPOSIÇÃO]; regra usada: mais forte que soldado comum e
+que um Honju, mais fraca que o Hoshina): vida 400, armadura 18, velocidade 0,29, Release 30% + escalada até +45
+(teto 75%), `kaiju_damage` 0,6, machado `kn8:axe`. Técnicas: Axe Slash (2 golpes 0,8/0,95, recarga 30), Heavy Swing
+(1,8, 80), Shockwave (onda 1,2 a 4–12 blocos, 100), Dash Strike (1,4 com avanço, 3–9 blocos, 60), Ground Smash (5
+ondas curtas em leque, 160), Guard Break (1,5, expõe o núcleo 80 ticks, 160). Duelos (2 de cada, servidor dedicado):
+vence o Honju marrom em 12 s (com 354–371 de vida), o No. 9 em 38–40 s (com 40–48%) e o No. 10 pequeno em 25–29 s
+(com 9–36%); o Hoshina vence o No. 9 em 30 s com 58–73%. Com `kaiju_damage` 1,0 e teto 85% ela batia o No. 9 em
+22 s (mais forte que o Hoshina): reduzido.
+
 **Hoshina** (regra do Miguel: no poder total vence o No. 10 pequeno, fortitude 8,3, mas perde para a forma gigante,
 fortitude 9; vence o No. 9 atual, mas não com facilidade; com o traje numerado 10, na 0.6-F, fica ainda mais forte):
 vida **460**, armadura 20, velocidade 0,30 × (1 + 0,004 × Release), resistência a empurrão 0,6, `kaiju_damage` 1,0,

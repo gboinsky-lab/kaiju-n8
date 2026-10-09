@@ -107,6 +107,18 @@ Estes três casos apareceram no seu `hoshina.bbmodel` (2026-10-09). Antes e depo
 
 O Claude corrige os dois primeiros casos sem apagar nada com `python3 tools/blockbench/corrigir_poses.py`.
 
+## Kikoru (0.5.0-D8)
+
+Arquivo: `tools/blockbench/modelos_base/kikoru.bbmodel` (Kikoru com o machado na mao direita). Animacoes:
+`kikoru.parado`, `kikoru.andando`, `kikoru.correndo` e as tecnicas `kikoru.action.axe_slash`, `heavy_swing`,
+`shockwave`, `dash_strike`, `ground_smash`, `guard_break`, `counter` (contra-ataque), `dash` (esquiva) e `parry`
+(aparar). Ossos: os mesmos do Hoshina (`root`, `body`, `head`, `arm_right`, `arm_left`, `leg_right`, `leg_left`,
+`item_right` = o machado). Nas tecnicas o machado gira junto (o osso `item_right` tem keyframes): para mudar o angulo
+do machado, gire esse osso; a posicao dele o jogo recalcula para o cabo ficar na mao.
+
+Ao salvar, mande o arquivo: o Claude coloca em `tools/blockbench/animacoes/kikoru.bbmodel` e roda
+`python3 tools/art/gen_kikoru_animations.py` (o que voce animou vale por cima do gerador).
+
 ## Ordem sugerida
 
 1. `jogador_espadas_duplas`: parado, andando e correndo (`stance`, `stance_move`, `stance_run`).

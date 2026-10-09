@@ -63,6 +63,12 @@ SPECIES = {
     "hoshina": {"stem": "hoshina", "hip_y": 0.80, "neck_y": 1.47, "hand_min_y": 0.80,
                 "arm_inner_x": [(1.2, 0.21), (0.0, 0.24)], "arm_max_y": 1.47,
                 "back_items": None},
+    # 0.5.0-D8: Kikoru (modelo do Miguel, 1,6 m [SUPOSICAO]): cabelo com marias-chiquinhas largas (|x| ate 0,38)
+    # acima do ombro (1,22): acima de arm_max_y nada e braco; cinto e bolsas (ate |x| 0,17) entre 0,75 e 0,85 ficam
+    # no tronco; maos ate 0,70; o coldre da coxa direita fica na perna.
+    "kikoru": {"stem": "kikoru", "hip_y": 0.76, "neck_y": 1.21, "hand_min_y": 0.70,
+               "arm_inner_x": [(0.95, 0.155), (0.0, 0.205)], "arm_max_y": 1.215, "back_items": None,
+               "leg_pivot_center": True},
     # 0.6-F: Hoshina com o traje numerado 10: a cauda do No. 10 sai do quadril esquerdo, passa por baixo da mao,
     # sobe pelas costas e faz um arco por cima da cabeca ate a ponta na frente-direita. Separada pela superficie
     # (sementes da cauda contra sementes do resto do corpo) e dividida em 4 ossos pelo comprimento da linha.
@@ -82,11 +88,14 @@ TAIL_BONES = 4
 HEAD_BOX = None
 # Acima desta altura nada e braco (capacete/cabelo mais largos que o pescoco); None = sem limite.
 ARM_MAX_Y = None
+# Pivo da perna no meio da largura dela (Kikoru: o topo das pernas e torto e deixava os pivos assimetricos).
+LEG_PIVOT_CENTER = False
 
 
 def use_species(name):
     """Ativa as medidas da especie (variaveis do modulo usadas pelas funcoes abaixo)."""
     global NAME, STEM, SOURCE, HIP_Y, NECK_Y, HAND_MIN_Y, ARM_INNER_X, BACK_ITEMS, TAIL, HEAD_BOX, ARM_MAX_Y
+    global LEG_PIVOT_CENTER
     spec = SPECIES[name]
     NAME, STEM = name, spec["stem"]
     SOURCE = ROOT / "tools/art/converted" / STEM
@@ -95,6 +104,7 @@ def use_species(name):
     TAIL = [np.array(point, dtype=float) for point in spec["tail"]] if spec.get("tail") else None
     HEAD_BOX = spec.get("head_box")
     ARM_MAX_Y = spec.get("arm_max_y")
+    LEG_PIVOT_CENTER = spec.get("leg_pivot_center", False)
 
 
 # Pedaco isolado com ate tantas faces vai para o osso vizinho (absorb_fragments).
@@ -500,6 +510,11 @@ def main():
         # 0.6-D: mao esquerda (segunda arma do soldado especial; o soldado comum usa a faca de apoio nela).
         "item_left": hand_point(meshes["arm_left"]),
     }
+    if LEG_PIVOT_CENTER:
+        for leg in ("leg_left", "leg_right"):
+            v, _, _, f = meshes[leg]
+            used = v[np.unique(f)]
+            pivots[leg][0] = (used[:, 0].min() + used[:, 0].max()) / 2
     parents = {"root": None, "body": "root", "head": "body", "arm_left": "body", "arm_right": "body",
                "leg_left": "root", "leg_right": "root", "item_right": "arm_right", "item_left": "arm_left"}
     if TAIL:

@@ -485,6 +485,71 @@ def hoshina_template():
             "textures": textures, "groups": groups, "meshes": meshes, "animations": animations}
 
 
+# 0.5.0-D8: soldados especiais alem do Hoshina (mesmo esquema: posturas = movement + arms, tecnicas em action).
+SPECIALS = {"kikoru": {"weapons": {"item_right": "axe"}, "arms": "axe"}}
+
+
+def special_combined(species):
+    arms = SPECIALS[species]["arms"]
+    return {f"{species}.parado": (f"{species}.movement.idle", f"{species}.arms.{arms}_ready"),
+            f"{species}.andando": (f"{species}.movement.walk", f"{species}.arms.{arms}_walk"),
+            f"{species}.correndo": (f"{species}.movement.run", f"{species}.arms.{arms}_run")}
+
+
+def special_markers(species, anim_name):
+    """Instante do dano (s) de cada golpe das tecnicas do JSON do soldado especial."""
+    profile = json.loads((PROFILES_DIR / f"{species}.json").read_text(encoding="utf-8"))
+    technique = profile["techniques"].get(anim_name.rsplit(".", 1)[1])
+    if technique:
+        step = technique.get("hit_interval", 2)
+        count = len(technique["hits"]) if technique["type"] == "combo" else 1
+        return [(technique["windup_ticks"] + i * step) / 20 for i in range(count)]
+    if anim_name.endswith(".counter"):
+        return [profile["counter"]["strike_delay_ticks"] / 20]
+    return []
+
+
+def special_template(species):
+    """Modelo-base de um soldado especial (malha do jogo nos ossos, arma na mao, posturas e tecnicas atuais)."""
+    tex_size = 1024
+    bones = hoshina_bones(species)
+    groups = [{"name": n, "origin": [b["pivot"][0], b["pivot"][1], -b["pivot"][2]], "parent": b.get("parent")}
+              for n, b in bones.items()]
+    index = json.loads((ASSETS / f"meshes/{species}.json").read_text(encoding="utf-8"))["bones"]
+    meshes = []
+    for bone, location in index.items():
+        v, uv, _, f = read_obj(ASSETS / location.split(":")[1])
+        tuv = uv[f].copy()
+        tuv[..., 1] = 1 - tuv[..., 1]
+        meshes.append(mesh_entry(bone, bone, species, to_bb_from_internal(v)[f], tuv, tex_size))
+    weapons = SPECIALS[species]["weapons"]
+    for item_bone, item in weapons.items():
+        meshes.append(hoshina_weapon(bones, item_bone, item, tex_size))
+    textures = [{"name": species, "png": file_url(ASSETS / f"textures/entity/{species}.png")}]
+    textures += [{"name": item, "png": file_url(ASSETS / f"textures/item/{item}.png")}
+                 for item in sorted(set(weapons.values()))]
+    frames = hoshina_frames(bones)
+    data = json.loads((ASSETS / f"animations/entity/{species}.animation.json").read_text(
+        encoding="utf-8"))["animations"]
+    animations = []
+    for name, parts in special_combined(species).items():
+        merged = {}
+        for part in parts:
+            merged.update(data[part]["bones"])
+        length = max(data[part]["animation_length"] for part in parts)
+        animations.append(gecko_to_bb(name, merged, frames, length, "loop"))
+    skip = ("attack", "rifle", "pistol")
+    for name, anim in data.items():
+        if name.startswith(f"{species}.action.") and not any(s in name for s in skip):
+            animations.append(gecko_to_bb(name, anim["bones"], frames, anim["animation_length"], loop_of(anim)))
+    for anim in animations:
+        anim["markers"] = special_markers(species, anim["name"])
+    groups = [{"name": g["name"], "origin": [round(float(c), 4) for c in g["origin"]], "parent": g["parent"]}
+              for g in groups]
+    return {"format": "free", "name": species, "texture_width": tex_size, "texture_height": tex_size,
+            "textures": textures, "groups": groups, "meshes": meshes, "animations": animations}
+
+
 TEMPLATES = {
     "jogador_espadas_duplas": lambda: player_template(
         "jogador_espadas_duplas", {"right": "hoshina_sword", "left": "hoshina_sword"},
@@ -493,6 +558,7 @@ TEMPLATES = {
         "jogador_machado", {"right": "axe", "left": None},
         ("player.two_handed_axe.",), ("player.axe.special",)),
     "hoshina": hoshina_template,
+    "kikoru": lambda: special_template("kikoru"),
 }
 
 
@@ -676,6 +742,29 @@ def split_hoshina(anim):
     def part(keep):
         return dict(anim, bones={b: c for b, c in anim["bones"].items() if keep(b)})
     return part(lambda b: not b.startswith(("arm", "item"))), part(lambda b: b.startswith(("arm", "item")))
+
+
+def imported_special(species):
+    """Animacoes de um soldado especial (0.5.0-D8: Kikoru) vindas do .bbmodel dele em tools/blockbench/animacoes:
+    as de corpo inteiro (parado, andando, correndo) viram movement + arms; as tecnicas vao como estao."""
+    out = {}
+    combined = special_combined(species)
+    frames = None
+    for path in sorted(IMPORTED.glob("*.bbmodel")):
+        groups, anims = read_bbmodel(path)
+        if not any(name.startswith(f"{species}.") for name in anims):
+            continue
+        frames = frames or hoshina_frames(hoshina_bones(species))
+        for name, anim in anims.items():
+            if not name.startswith(f"{species}."):
+                continue
+            if name in combined:
+                movement, arms = split_hoshina(anim)
+                out[combined[name][0]] = bb_to_gecko(movement, frames)
+                out[combined[name][1]] = bb_to_gecko(arms, frames)
+            else:
+                out[name] = bb_to_gecko(anim, frames)
+    return out
 
 
 def imported_player():

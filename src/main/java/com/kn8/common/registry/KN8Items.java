@@ -69,6 +69,8 @@ public final class KN8Items {
     public static final DeferredItem<DeferredSpawnEggItem> HOSHINA_NO10_SPAWN_EGG = ITEMS.register(
             "hoshina_no10_spawn_egg", () -> new DeferredSpawnEggItem(KN8Entities.HOSHINA_NO10, 0x8E1B24, 0x9B59D0,
                     new Item.Properties()));
+    public static final DeferredItem<DeferredSpawnEggItem> KIKORU_SPAWN_EGG = ITEMS.register("kikoru_spawn_egg",
+            () -> new DeferredSpawnEggItem(KN8Entities.KIKORU, 0x1A1A1A, 0xF2C94C, new Item.Properties()));
 
     /** 0.2 (Etapa 2): boneco de treino. */
     public static final DeferredItem<TrainingDummyItem> TRAINING_DUMMY = ITEMS.register("training_dummy",
@@ -111,6 +113,7 @@ public final class KN8Items {
                         output.accept(SOLDIER_SPAWN_EGG.get());
                         output.accept(HOSHINA_SPAWN_EGG.get());
                         output.accept(HOSHINA_NO10_SPAWN_EGG.get());
+                        output.accept(KIKORU_SPAWN_EGG.get());
                         output.accept(TRAINING_DUMMY.get());
                         output.accept(DEFENSE_WORKBENCH.get());
                         output.accept(TRAINING_SUIT.get());

@@ -153,6 +153,21 @@ public class HoshinaEntity extends SoldierEntity {
         return VARIANT;
     }
 
+    /** Tecnicas e reacoes com animacao propria ({@code <prefixo>.action.<id>}); as outras tocam o golpe basico. */
+    protected List<String> animatedTechniques() {
+        return ANIMATED;
+    }
+
+    /** Familia das posturas dos bracos ({@code <prefixo>.arms.<familia>_ready/walk/run/aim}). */
+    protected String armsFamily() {
+        return "blade";
+    }
+
+    /** Animacao do contra-ataque (Kaeshi-uchi no Hoshina). */
+    protected String counterAnimation() {
+        return "kaeshi_uchi";
+    }
+
     /** Nao usa o soldier_1.json (variantes e niveis de soldado comum). */
     @Override
     public Optional<SoldierDef> def() {
@@ -327,7 +342,7 @@ public class HoshinaEntity extends SoldierEntity {
         if (technique.dashIn() > 0) {
             dash(target.position().subtract(position()), technique.dashIn());
         }
-        triggerAnim("action", ANIMATED.contains(id) ? id : "attack");
+        triggerAnim("action", animatedTechniques().contains(id) ? id : "attack");
         level().playSound(null, getX(), getEyeY(), getZ(), KN8Sounds.SWORD_SWING.get(), SoundSource.NEUTRAL,
                 SWING_VOLUME, 1.2F);
         return true;
@@ -557,7 +572,7 @@ public class HoshinaEntity extends SoldierEntity {
         counterStrikeAt = now + def.strikeDelayTicks();
         counterTarget = enemy;
         counters++;
-        triggerAnim("action", "kaeshi_uchi");
+        triggerAnim("action", counterAnimation());
         level().playSound(null, getX(), getY(), getZ(), KN8Sounds.DASH.get(), SoundSource.NEUTRAL, 0.8F, 1.0F);
     }
 
@@ -694,7 +709,7 @@ public class HoshinaEntity extends SoldierEntity {
         RawAnimation run = RawAnimation.begin().thenLoop(prefix + "movement.run");
         Map<String, RawAnimation> arms = new HashMap<>();
         for (String stance : new String[] {"ready", "walk", "run", "aim"}) {
-            arms.put(stance, RawAnimation.begin().thenLoop(prefix + "arms.blade_" + stance));
+            arms.put(stance, RawAnimation.begin().thenLoop(prefix + "arms." + armsFamily() + "_" + stance));
         }
         controllers.add(Locomotion.drive(new AnimationController<>(this, "movement", 3, state ->
                 state.setAndContinue(!state.isMoving() ? idle : running() ? run : walk)), Locomotion::typeId));
@@ -709,7 +724,7 @@ public class HoshinaEntity extends SoldierEntity {
         // 0.5.0-D7: as tecnicas aceleram com o Release, junto com os golpes no servidor.
         action.setAnimationSpeedHandler(hoshina -> (double) hoshina.getEntityData().get(ACTION_SPEED));
         action.triggerableAnim("attack", RawAnimation.begin().thenPlay(prefix + "action.attack"));
-        for (String id : ANIMATED) {
+        for (String id : animatedTechniques()) {
             action.triggerableAnim(id, RawAnimation.begin().thenPlay(prefix + "action." + id));
         }
         controllers.add(action);
