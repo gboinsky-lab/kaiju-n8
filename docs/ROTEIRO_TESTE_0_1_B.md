@@ -499,3 +499,15 @@ Visto na nuvem (`docs/img/hoshina_modelo.png`, `hoshina_vs_honju.png`, `hoshina_
 | 33.5 | Bater no chapéu do Phaneroplasmodium e no caule do Myxogasterocarp | Dano maior (núcleo) |
 | 33.6 | Menu (M) > Bestiário depois de abater | Os 3 aparecem com nome e descrição em pt_br e en_us |
 | 33.7 | Servidor dedicado + 2 clientes | Os dois veem o mesmo modelo, animação e ataque |
+
+## 34. Reno, Mina e Narumi (0.7-C)
+
+| # | Passo | Esperado |
+|---|---|---|
+| 34.1 | Ovos do Reno, da Mina e do Narumi (aba do mod) | Os três nascem com o modelo do Miguel; Reno com o rifle, Mina com o canhão no quadril, Narumi com a baioneta nas duas mãos |
+| 34.2 | Cada um perto de um Primigenius (dificuldade normal) | Reno e Mina ficam longe atirando; Narumi avança e estoca |
+| 34.3 | Mina contra um Honju | Tiro do canhão e canhão carregado explodem no alvo (sem quebrar blocos); Anti-Giant com preparo longo e agachada |
+| 34.4 | Reno | Rajada, munição congelante (o kaiju fica lento, partículas azuis), coronhada se o kaiju chega perto |
+| 34.5 | Narumi | Estocadas em sequência, investida, varrida que empurra e tiro rosa da baioneta |
+| 34.6 | Pegar o canhão e a baioneta na aba do mod | Aparecem na mão do jogador (perfis provisórios: rifle e machado) |
+| 34.7 | Servidor dedicado + 2 clientes | Os dois veem as mesmas posturas, golpes, tiros e auras |

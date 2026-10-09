@@ -19,12 +19,12 @@ textura 4096 (2048 nos No. 10): reduzir para 512-1024 na conversao.
 | `Kikoru_Base_Suit` | `kikoru` | 10.016 | Kikoru Shinomiya, forma normal | soldado especial novo |
 | `Kikoru_Numbers_4` | `kikoru_no4` | 13.347 | Kikoru com a arma numerada 4 (casaco longo) | soldado especial novo |
 | `Numbers_4_Wings` | `kikoru_no4_wings` | 11.074 | 4 asas em X da Numbers 4 (separadas) | vai nas costas da `kikoru_no4` |
-| `leno_clean_boxy` | `reno` | 9.508 | Reno Ichikawa (cabelo branco), forma normal | novo |
+| `leno_clean_boxy` | `reno` | 9.508 | Reno Ichikawa (cabelo branco), forma normal | novo; **no jogo desde a 0.7-C** |
 | `leno_numbers_6` | `reno_no6` | 9.821 | Reno com a arma numerada 6 (traje azul) | novo |
-| `mina_ashiro` | `mina` | 9.119 | Mina Ashiro (rabo de cavalo) | nova |
-| `Mina_Ashiro_Heavy_Can` | `mina_cannon` | 7.518 | canhao pesado da Mina (arma, deitado) | arma nova |
-| `gen_narumi_remesh_10k` | `narumi` | 9.822 | Gen Narumi (cabelo rosa e preto) | novo |
-| `Gen_Narumi_Bayonet` | `narumi_bayonet` | 7.655 | baioneta longa do Narumi (arma, em pe) | arma nova |
+| `mina_ashiro` | `mina` | 9.119 | Mina Ashiro (rabo de cavalo) | nova; **no jogo desde a 0.7-C** |
+| `Mina_Ashiro_Heavy_Can` | `mina_cannon` | 7.518 | canhao pesado da Mina (arma, deitado) | arma nova; **no jogo desde a 0.7-C** |
+| `gen_narumi_remesh_10k` | `narumi` | 9.822 | Gen Narumi (cabelo rosa e preto) | novo; **no jogo desde a 0.7-C** |
+| `Gen_Narumi_Bayonet` | `narumi_bayonet` | 7.655 | baioneta longa do Narumi (arma, em pe) | arma nova; **no jogo desde a 0.7-C** |
 | `phanero_plasmodium` | `phaneroplasmodium` | 13.514 | kaiju cogumelo **Yoju** (chapeu branco e vermelho, boca com dentes, 8 patas) | kaiju novo; **no jogo desde a 0.7-B** |
 | `myxogasterocarp` | `myxogasterocarp` | 15.450 | kaiju cogumelo **Honju** (varios chapeus escuros com vermelho, raizes como patas) | kaiju novo; **no jogo desde a 0.7-B** |
 | `philinosoma_honju` | `philinosoma` | 15.564 | lagarto gigante (vermelho, barriga clara, espinhos azuis, cauda reta) | kaiju novo; **no jogo desde a 0.7-A** |

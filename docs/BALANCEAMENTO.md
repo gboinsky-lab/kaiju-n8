@@ -355,6 +355,19 @@ sobe mais rápido. A fuga do No. 9 só dá mérito a quem causou dano nele.
 
 ### Soldados especiais (`special_soldier/<id>.json`, 0.6-D)
 
+**Reno, Mina e Narumi** (0.7-C): vida, armadura e velocidade da seção 12 do Balanceamento v1.2; o resto
+[SUPOSIÇÃO], sem duelos medidos ainda (o Miguel deixou o balanceamento para depois de todos os personagens).
+
+| Personagem | Vida | Armadura | Velocidade | Release (teto) | `kaiju_damage` | Arma | Técnicas (multiplicador sobre a arma, recarga em ticks) |
+|---|---|---|---|---|---|---|---|
+| Reno (T5, suporte/rifle) | 360 | 17 | 0,31 | 30% (70%) | 0,5 | rifle (5) | tiro de precisão 2,2 (60), rajada 3 × 0,9 (50), munição congelante 1,2 + Lentidão III 4 s (140), supressão 5 × 0,6 + Lentidão I (160), coronhada 0,8 (40) |
+| Mina (T6, anti-Daikaiju) | 420 | 20 | 0,30 | 40% (90%) | 0,65 | canhão (12) | tiro de precisão 1,4 (40), tiro do canhão 1,0 com explosão de raio 2,5 (50), canhão carregado 2,2 raio 3,5 (140), Anti-Giant 4,0 raio 4,5 (400, preparo de 2,5 s, prioridade contra Honju/numerados) |
+| Narumi (T6, comandante) | 480 | 20 | 0,32 | 40% (85%) | 0,62 | baioneta (9) | estocadas 0,9/1,0/1,3 (40), investida 1,8 (70), tiro da baioneta 1,3 (60), varrida 1,5 com empurrão (90) |
+
+Armas novas: `weapon/mina_cannon.json` (arma de fogo, 12 de dano, perfil do rifle) e `weapon/narumi_bayonet.json`
+(pesada, 9 de dano, alcance 3,6, perfil do machado) [SUPOSIÇÃO; as animações próprias para o jogador ficam para
+depois]. Reno e Mina fecham distância só acima de 40 blocos (`gap_close_distance`): lutam de longe.
+
 **Kikoru** (0.5.0-D8, `special_soldier/kikoru.json`; Balanceamento v1.0 seção 12: Kikoru normal T5, 390 de vida,
 armadura 18, velocidade 0,34; 1,57 m, Miguel 2026-10-09; o resto [SUPOSIÇÃO], regra usada: mais forte que soldado
 comum e que um Honju, mais fraca que o Hoshina, T5+): Release 30% + escalada até +45 (teto 75%), `kaiju_damage` 0,6,
