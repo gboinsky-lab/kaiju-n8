@@ -345,8 +345,22 @@ machado `kn8:axe`. Defensora nas invasões `honju_assault`, `web_queen`, `no9_re
 (1,8, 80), Shockwave (onda 1,2 a 4–12 blocos, 100), Dash Strike (1,4 com avanço, 3–9 blocos, 60), Ground Smash (5
 ondas curtas em leque, 160), Guard Break (1,5, expõe o núcleo 80 ticks, 160). Duelos com os números v1.0 (2 de
 cada, servidor dedicado): vence o Honju marrom em 11–12 s (com 354–361 de vida), o No. 9 em 38–42 s (com 45–49%) e o
-No. 10 pequeno em 28–34 s (com 10–51%); o Hoshina vence o No. 9 em 30 s com 58–73%. [DECIDIR] se a Kikoru (T5) deve
-perder para o No. 9 (T7); hoje vence devagar. Com `kaiju_damage` 1,0 e teto 85% ela batia o No. 9 em
+No. 10 pequeno em 28–34 s (com 10–51%); o Hoshina vence o No. 9 em 30 s com 58–73%.
+
+**Calibragem pelo v1.2 (seção 36.8, 10 duelos por confronto, servidor dedicado):**
+
+| Rodada | Kikoru × No. 9 (meta 25%) | Kikoru × No. 10 pequeno (meta 35%) |
+|---|---|---|
+| Defesas copiadas do Hoshina, `kaiju_damage` 0,6 | 10/10 (vida final 17–67%) | 10/10 (4–44%) |
+| Esquiva 100 ticks, contra-ataque 200, aparar 15% | 8/10 (3–16%) | 5/10 |
+| + `kaiju_damage` 0,52 (atual) | **5/10** (vence com 1–9%; perde com o No. 9 a 17–29%) | **3/10** |
+
+Causa achada antes de mexer nos números (regra 36.7.4): em 2 duelos o No. 9 usou 63 habilidades (43 garras, 14
+Finger Gun, 6 investidas) e só 20 acertaram; a Kikoru esquivou 36 vezes (a esquiva herdada do Hoshina saía a cada
+2 s). Vida 390 e velocidade 0,34 mantidas. Contra o No. 9 ainda fica 25 pontos acima da meta porque **a fuga do No. 9
+a 15% conta como vitória** (ela nunca precisa matá-lo); baixar mais o dano jogaria o No. 10 pequeno abaixo da meta.
+[DECIDIR] se fuga conta como vitória na matriz. Mesma bateria: Hoshina × No. 9 10/10 (30–37 s, 48–81%; meta 70%) e
+Hoshina + No. 10 × No. 9 10/10 (23–27 s, 71–83%; meta 90%), sem mudança (valores "não alterar sem teste"). Com `kaiju_damage` 1,0 e teto 85% ela batia o No. 9 em
 22 s (mais forte que o Hoshina): reduzido.
 
 **Hoshina** (regra do Miguel: no poder total vence o No. 10 pequeno, fortitude 8,3, mas perde para a forma gigante,
