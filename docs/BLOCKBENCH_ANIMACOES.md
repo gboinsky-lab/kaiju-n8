@@ -75,6 +75,27 @@ preparação, depois a volta.
 - deixe **Linear** como interpolação (clique com o botão direito no quadro-chave → Interpolation). As outras ainda
   não foram testadas no jogo.
 
+## Cuidados para as espadas não saírem da mão
+
+Estes três casos apareceram no seu `hoshina.bbmodel` (2026-10-09). Antes e depois:
+`img/hoshina_espadas_antes_depois.png`.
+
+1. **Pose nova em todos os keyframes do laço.**
+   - Parado, andando e correndo repetem sem parar.
+   - Se a pose nova fica só em 0,65 e os keyframes 1 e 2 continuam com a pose antiga, o Hoshina vai e volta entre
+     as duas, e as espadas giram junto.
+   - Ao mudar a pose, mude também os keyframes 0, 1 e 2. O começo e o fim do laço têm que ser iguais.
+2. **Cuidado com números como -328.**
+   - Arrastando o anel de giro, o Blockbench pode gravar -328 em vez de 32. É a mesma pose naquele instante, mas no
+     meio do caminho o braço dá uma volta inteira, e a espada atravessa o corpo.
+   - Se um número de rotação passar de 180 ou de -180, confira.
+3. **Espada nas técnicas.**
+   - Nas técnicas (`hoshina.action.*`), o jogo deixa a espada na rotação e na posição da postura.
+   - O modelo-base já vem com isso no tempo 0. Não precisa compensar a posição.
+   - Para a espada fazer algo diferente numa técnica, mude a rotação dela ali.
+
+O Claude corrige os dois primeiros casos sem apagar nada com `python3 tools/blockbench/corrigir_poses.py`.
+
 ## Ordem sugerida
 
 1. `jogador_espadas_duplas`: parado, andando e correndo (`stance`, `stance_move`, `stance_run`).

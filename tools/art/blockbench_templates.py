@@ -41,6 +41,8 @@ ASSETS = ROOT / "src/main/resources/assets/kn8"
 COMBAT = ASSETS / "player_animations/combat.json"
 HOSHINA_ANIMS = ASSETS / "animations/entity/hoshina.animation.json"
 PX = 16.0
+TICK = 1 / 20
+SAMPLE = TICK / 4  # 4 amostras por tick: giros rapidos (180 graus em 2 ticks) ficam iguais ao Blockbench
 
 
 # ------------------------------------------------------------------------------------------------ matrizes
@@ -209,10 +211,47 @@ def loop_of(anim):
     return "loop" if loop is True else "hold" if loop == "hold_on_last_frame" else "once"
 
 
-def convert_channels(bones, rotation, position):
+def bb_matrix(v):
+    return rzyx(*v)
+
+
+def bb_item_track(keys, frame, tolerance=1.0):
+    """Rotacao da arma do jogo para o Blockbench (0.5.0-D7). Cada keyframe converte exato, mas o Blockbench interpola os
+    numeros dele e, entre dois keyframes, mostrava outra orientacao (ate 33 graus no golpe pesado do machado). Onde a
+    diferenca passa de `tolerance` graus, o trecho ganha keyframes a cada quarto de tick (so ali)."""
+    def bb(k):
+        return item_to_bb(k, frame)
+    out = []
+    for (t0, a), (t1, b) in zip(keys, keys[1:]):
+        steps = max(1, round((t1 - t0) / SAMPLE))
+        game = [(t0 + (t1 - t0) * i / steps, [x + (y - x) * i / steps for x, y in zip(a, b)])
+                for i in range(steps + 1)]
+        ends = [bb(a), bb(b)]
+        if out:
+            ends[0] = out[-1][1]
+        ends[1] = nearest_euler(ends[1], ends[0], bb_matrix)
+        worst = 0.0
+        for i, (_, g) in enumerate(game):
+            f = i / steps
+            mixed = rzyx(*[x + (y - x) * f for x, y in zip(*ends)])
+            worst = max(worst, math.degrees(math.acos(max(-1.0, min(1.0, (np.trace(mixed.T @ rzyx(*bb(g))) - 1) / 2)))))
+        samples = game if worst > tolerance else [game[0], game[-1]]
+        for t, g in samples:
+            v = bb(g)
+            v = nearest_euler(v, out[-1][1], bb_matrix) if out else v
+            if not out or round(t, 4) != out[-1][0]:
+                out.append((round(t, 4), v))
+    return out or [(round(t, 4), bb(v)) for t, v in keys]
+
+
+def convert_channels(bones, rotation, position, item_frame=None):
     out = {}
     for bone, channels in bones.items():
         for channel, frames in channels.items():
+            frame = item_frame(bone) if item_frame else None
+            if channel == "rotation" and frame is not None:
+                out.setdefault(bone, {})[channel] = [[t] + v for t, v in bb_item_track(frames_of(frames), frame)]
+                continue
             conv = rotation(bone) if channel == "rotation" else position
             out.setdefault(bone, {})[channel] = [[t] + conv(v) for t, v in frames_of(frames)]
     return out
@@ -258,7 +297,8 @@ def pal_to_bb(anim_name, anim):
     def rotation(bone):
         return (lambda v: item_to_bb(v, PLAYER_FRAME)) if bone.endswith("_item") else limb_to_bb
     return {"name": anim_name, "length": anim["animation_length"], "loop": loop_of(anim),
-            "bones": convert_channels(anim["bones"], rotation, pos_to_bb)}
+            "bones": convert_channels(anim["bones"], rotation, pos_to_bb,
+                                      lambda bone: PLAYER_FRAME if bone.endswith("_item") else None)}
 
 
 def player_template(name, weapons, prefixes, extra):
@@ -339,7 +379,8 @@ def gecko_to_bb(anim_name, bones_json, frames, length, loop):
     def rotation(bone):
         return (lambda v: item_to_bb(v, frames[bone])) if bone.startswith("item_") else limb_to_bb
     return {"name": anim_name, "length": length, "loop": loop,
-            "bones": convert_channels(bones_json, rotation, pos_to_bb)}
+            "bones": convert_channels(bones_json, rotation, pos_to_bb,
+                                      lambda bone: frames[bone] if bone.startswith("item_") else None)}
 
 
 def hoshina_template():
@@ -369,7 +410,14 @@ def hoshina_template():
         animations.append(gecko_to_bb(name, merged, frames, length, "loop"))
     for name, anim in data.items():
         if name.startswith("hoshina.action.") and "rifle" not in name and "pistol" not in name:
-            animations.append(gecko_to_bb(name, anim["bones"], frames, anim["animation_length"], loop_of(anim)))
+            # 0.5.0-D7: no jogo o controller "arms" continua rodando nas tecnicas e as espadas ficam na rotacao e na
+            # posicao da postura; sem isso o Blockbench mostrava a espada na rotacao zero (fora da mao). O importador
+            # nao leva para o jogo canais de espada iguais aos da postura.
+            stance = {bone: {ch: {"0": next(iter(keys.values()))} for ch, keys in channels.items()}
+                      for bone, channels in data["hoshina.arms.blade_ready"]["bones"].items()
+                      if bone.startswith("item_")}
+            bones_json = dict(stance, **anim["bones"])
+            animations.append(gecko_to_bb(name, bones_json, frames, anim["animation_length"], loop_of(anim)))
     for anim in animations:
         anim["markers"] = hoshina_markers(anim["name"])
     groups = [{"name": g["name"], "origin": [round(float(c), 4) for c in g["origin"]], "parent": g["parent"]}
@@ -422,6 +470,63 @@ def game_loop(loop):
     return True if loop == "loop" else "hold_on_last_frame" if loop == "hold" else None
 
 
+
+
+def game_item_matrix(k):
+    """Orientacao da arma para os numeros k do jogo (a mesma ordem da PAL e do SoldierRenderer)."""
+    return pal_item(k)
+
+
+def nearest_euler(v, prev, matrix=None):
+    """Entre os numeros equivalentes a v (a outra solucao de Euler, o caso de gimbal e +-360 por eixo), os mais perto
+    de prev: a interpolacao linear do jogo vai pelo caminho curto em vez de dar a volta. Cada candidato so vale se der
+    a mesma orientacao de v (conferido pela matriz)."""
+    matrix = matrix or game_item_matrix
+    target = matrix(v)
+    x, y, z = v
+    # A outra solucao de Euler (eixo do meio z nos numeros do jogo, y no Blockbench) e, no gimbal, x fixo no anterior
+    # com o outro eixo compensando. So vale o candidato que der a mesma orientacao.
+    candidates = [[x, y, z], [x + 180, y + 180, 180 - z], [x + 180, 180 - y, z + 180]]
+    for sign in (1, -1):
+        candidates.append([prev[0], y + sign * (prev[0] - x), z])
+        candidates.append([prev[0], y, z + sign * (prev[0] - x)])
+    best = None
+    for option in candidates:
+        if np.abs(matrix(option) - target).max() > 1e-4:
+            continue
+        cand = []
+        for a, p in zip(option, prev):
+            while a - p > 180:
+                a -= 360
+            while a - p < -180:
+                a += 360
+            cand.append(round(a, 3))
+        dist = sum(abs(a - p) for a, p in zip(cand, prev))
+        if best is None or dist < best[0]:
+            best = (dist, cand)
+    return best[1]
+
+
+def item_track(keys, frame):
+    """Rotacao da espada do Blockbench para o jogo (0.5.0-D7). A conversao entre os dois espacos nao e linear: um
+    keyframe so converte certo no proprio instante e, entre dois keyframes, o jogo (que interpola os numeros dele)
+    passava por outras orientacoes (ate 180 graus de diferenca: a espada atravessava o corpo). Por isso a curva do
+    Blockbench e amostrada 4 vezes por tick, cada amostra e convertida e escolhida a solucao mais perto da anterior."""
+    out = []
+    for (t0, a), (t1, b) in zip(keys, keys[1:] + [keys[-1]]):
+        steps = max(1, round((t1 - t0) / SAMPLE)) if t1 > t0 and a != b else 1
+        for i in range(steps if t1 > t0 else 1):
+            f = i / steps
+            t = round(t0 + (t1 - t0) * f, 4)
+            v = item_from_bb([x + (y - x) * f for x, y in zip(a, b)], frame)
+            out.append((t, nearest_euler(v, out[-1][1]) if out else v))
+    last_t, last = keys[-1]
+    if out[-1][0] != round(last_t, 4):
+        v = item_from_bb(last, frame)
+        out.append((round(last_t, 4), nearest_euler(v, out[-1][1])))
+    return out
+
+
 def bb_to_pal(anim):
     bones = {}
     for bone, channels in anim["bones"].items():
@@ -429,7 +534,9 @@ def bb_to_pal(anim):
             if channel == "position":
                 conv = pos_to_bb  # a conversao e a propria inversa
             elif bone.endswith("_item"):
-                conv = lambda v: item_from_bb(v, PLAYER_FRAME)  # noqa: E731
+                bones.setdefault(bone, {})[channel] = {f"{t}": {"vector": v}
+                                                       for t, v in item_track(frames, PLAYER_FRAME)}
+                continue
             else:
                 conv = limb_to_bb
             bones.setdefault(bone, {})[channel] = {f"{t}": {"vector": conv(v)} for t, v in frames}
@@ -445,7 +552,8 @@ def bb_to_gecko(anim, frames):
             if channel == "position":
                 conv = pos_to_bb
             elif bone.startswith("item_"):
-                conv = lambda v, b=bone: item_from_bb(v, frames[b])  # noqa: E731
+                bones.setdefault(bone, {})[channel] = {f"{t}": v for t, v in item_track(keys, frames[bone])}
+                continue
             else:
                 conv = limb_to_bb
             bones.setdefault(bone, {})[channel] = {f"{t}": conv(v) for t, v in keys}
@@ -484,9 +592,19 @@ def imported_hoshina(species="hoshina"):
         if "item_right" not in groups:
             continue
         frames = frames or hoshina_frames(hoshina_bones())
+        stance = {(bone, channel): keys[0][1] for bone, channels in anims.get("hoshina.parado", {}).get(
+            "bones", {}).items() if bone.startswith("item") for channel, keys in channels.items()}
         for name, anim in anims.items():
             if not name.startswith("hoshina."):
                 continue
+            if name not in HOSHINA_COMBINED:
+                # Tecnica: canal de espada parado no valor da postura so mostra no Blockbench o que o jogo ja faz (o
+                # controller "arms" continua rodando); nao vai para o jogo, senao andando/correndo a espada pularia
+                # para a pose de parado no comeco da tecnica.
+                anim = dict(anim, bones={bone: {ch: keys for ch, keys in channels.items()
+                                                if not (bone.startswith("item") and keys
+                                                        and all(v == stance.get((bone, ch)) for _, v in keys))}
+                                         for bone, channels in anim["bones"].items()})
             if name in HOSHINA_COMBINED:
                 movement, arms = split_hoshina(anim)
                 out[HOSHINA_COMBINED[name][0]] = bb_to_gecko(movement, frames)
