@@ -105,7 +105,7 @@
     }
   },
   "dash": {
-    "cooldown_ticks": 40,
+    "cooldown_ticks": 100,
     "speed": 1.0,
     "invulnerable_ticks": 6,
     "react_ticks": 5,
@@ -113,14 +113,14 @@
   },
   "counter": {
     "multiplier": 2.2,
-    "cooldown_ticks": 140,
+    "cooldown_ticks": 200,
     "dash_speed": 0.9,
     "invulnerable_ticks": 10,
     "strike_delay_ticks": 8,
     "react_ticks": 6
   },
   "parry": {
-    "chance": 0.25,
+    "chance": 0.15,
     "damage_factor": 0.4,
     "cooldown_ticks": 25,
     "counter_window_ticks": 10
