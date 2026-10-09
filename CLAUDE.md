@@ -204,6 +204,19 @@ mandam; se algo precisar mudar, marque **[DECIDIR]** e pergunte.
   postura (o controller `arms` continua no jogo) e o importador nao leva esses canais. Arquivo do Miguel corrigido
   por `tools/blockbench/corrigir_poses.py` (nenhum keyframe apagado; original em
   `tools/blockbench/animacoes/originais/`). Nao ha Epic Fight no projeto.
+- **0.5.0-D7 (Miguel: "animacoes muito bugadas" e "a espada sai um pouco da mao nos ataques"):** (1) as tecnicas do
+  Hoshina vinham do .bbmodel com a posicao velha das espadas (mao 4-5 px fora do cabo) → tecnica sem canal de
+  espada (a espada fica com a pegada do controller "arms"); (2) so o primeiro/ultimo keyframe ia para a postura real
+  (cabeca de -57 a -22 e de volta no fim, tronco e raiz da tabela antiga) → tecnicas montadas sobre a postura real
+  do Miguel (`REAL`/`on_real_stance` no `gen_hoshina_animations.py`; tecnicas do .bbmodel so as de
+  `ACTIONS_FROM_BLOCKBENCH`); (3) Yae-uchi/Ran-uchi com corte a cada 1-2 ticks giravam o braco 125-165 graus em meio
+  tick → cada braco espera `ARM_GAP` 3 ticks (o dano continua no tick do JSON), giro do root em >= 6 ticks;
+  (4) Euler em linha reta entre poses distantes (perna de -88 para 169) → `slerp_track` (caminho curto a cada quarto
+  de tick, numeros equivalentes mais perto, volta aos numeros originais na pose parada final) nos membros de golpes
+  do jogador e tecnicas do Hoshina; (5) no giro de 360 do combo as pernas descontavam o giro inteiro e rodopiavam ao
+  contrario → `leg_yaw` (desconta ate 60 graus, depois cai ate 0 em 180) e o giro termina antes do fim, voltando a
+  0 (terminar em 360 fazia a transicao desenrolar a volta); (6) saque e guarda cortavam seco → a camada de combate
+  sempre entra com fade da pose de baixo. Medido: tecnicas sem salto no inicio/fim, pico 2.400 graus/s so no corte.
 - **0.5.0-D (perfis de arma):** em primeira pessoa com `THIRD_PERSON_MODEL` a arma de fogo some na recarga e no tiro (a
   mira do modelo de terceira pessoa fica ~40 graus abaixo do centro da tela) → `first_person: false` no rifle e na
   pistola (vista do vanilla). `profile()` ja existia no `HoshinaEntity` (perfil do soldado especial) → o do

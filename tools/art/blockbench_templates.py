@@ -567,6 +567,51 @@ def nearest_euler(v, prev, matrix=None):
     return best[1]
 
 
+def limb_matrix(v):
+    """Orientacao de um membro (jogador na PAL ou osso da GeckoLib) a partir dos numeros do jogo."""
+    return rzyx(*limb_to_bb(v))
+
+
+def _angle(a, b):
+    return math.degrees(math.acos(max(-1.0, min(1.0, (np.trace(a.T @ b) - 1) / 2))))
+
+
+def slerp_track(keys, matrix=limb_matrix, tolerance=4.0):
+    """0.5.0-D7 (Miguel: "animacoes muito bugadas"): o jogo interpola os angulos de Euler em linha reta e, entre duas
+    poses muito diferentes (ou com numeros equivalentes longe um do outro, como 169 e -115), o membro passava por
+    orientacoes que nao estao em nenhuma das duas: a perna ou o braco davam um rodopio. Cada keyframe vira os numeros
+    equivalentes mais perto do anterior e, onde a reta ainda se afasta do caminho curto (slerp) mais que a
+    tolerancia, entram amostras do caminho curto a cada quarto de tick."""
+    from scipy.spatial.transform import Rotation, Slerp
+    out = [(keys[0][0], list(keys[0][1]))]
+    for t1, b in keys[1:]:
+        t0, a = out[-1]
+        b = nearest_euler(b, a, matrix)
+        ma, mb = matrix(a), matrix(b)
+        steps = max(1, round((t1 - t0) / SAMPLE)) if t1 > t0 else 1
+        curve = Slerp([0, 1], Rotation.from_matrix([ma, mb]))
+        straight = all(_angle(matrix([x + (y - x) * f for x, y in zip(a, b)]), curve(f).as_matrix()) <= tolerance
+                       for f in (0.25, 0.5, 0.75))
+        if not straight:
+            for i in range(1, steps):
+                f = i / steps
+                v = limb_to_bb(euler_zyx(curve(f).as_matrix()))
+                out.append((round(t0 + (t1 - t0) * f, 4), nearest_euler(v, out[-1][1], matrix)))
+        out.append((t1, nearest_euler(b, out[-1][1], matrix)))
+    # Passando perto do gimbal, a mesma pose final pode sair com outros numeros. A transicao para a postura mistura os
+    # numeros (PAL e GeckoLib): o fim volta aos numeros originais no comeco da pose parada final, num instante.
+    final = list(keys[-1][1])
+    if np.abs(np.array(out[-1][1]) - final).max() > 1e-3:
+        target = matrix(final)
+        j = len(out) - 1
+        while j > 0 and np.abs(matrix(out[j - 1][1]) - target).max() < 1e-4:
+            j -= 1
+        hold = out[j][0]
+        out = out[:j + 1] + [(round(hold + 0.0002, 4), final)] + [(t, final) for t, _ in out[j + 1:]
+                                                                   if t > hold + 0.0002]
+    return out
+
+
 def item_track(keys, frame):
     """Rotacao da espada do Blockbench para o jogo (0.5.0-D7). A conversao entre os dois espacos nao e linear: um
     keyframe so converte certo no proprio instante e, entre dois keyframes, o jogo (que interpola os numeros dele)

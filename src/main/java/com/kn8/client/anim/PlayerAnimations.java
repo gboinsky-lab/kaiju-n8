@@ -140,6 +140,11 @@ public final class PlayerAnimations {
             startTick = 0.0F;
         } else {
             found = controller.triggerAnimation(payload.animation(), startTick);
+            if (found && fade > 0) {
+                // Sem golpe tocando, a camada de combate entra misturando com a postura de baixo (saque e guarda nao
+                // comecam na pose da postura e cortavam seco).
+                controller.addModifierLast(AbstractFadeModifier.standardFadeIn(fade, EasingType.EASE_IN_OUT_SINE));
+            }
         }
         Animation playing = found ? controller.getCurrentAnimationInstance() : null;
         if (fade > 0 && playing != null && playing.loopType() != Animation.LoopType.HOLD_ON_LAST_FRAME

@@ -8,6 +8,7 @@ Formato igual ao do PT6 (aprovado). Ossos da PAL: head, torso, right_arm, left_a
 Uso: python3 tools/art/gen_player_animations.py
 """
 import functools
+import math
 import json
 from pathlib import Path
 
@@ -232,6 +233,17 @@ STANCES = {
 }
 
 LEGS = ("right_leg", "left_leg")
+# Graus de giro do tronco que as pernas descontam (pes plantados); acima disso giram com o corpo.
+LEG_YAW_LIMIT = 60
+
+
+def leg_yaw(yaw):
+    """Quanto do giro as pernas descontam: tudo ate LEG_YAW_LIMIT, depois cai ate 0 em 180 (continuo e periodico: a
+    volta inteira, 360, desconta 0 como a postura)."""
+    w = (yaw + 180) % 360 - 180
+    if abs(w) <= LEG_YAW_LIMIT:
+        return w
+    return math.copysign(LEG_YAW_LIMIT * (180 - abs(w)) / (180 - LEG_YAW_LIMIT), w)
 ZERO = [0, 0, 0]
 GECKO_NAMES = {"torso": "body", "head": "head", "right_arm": "arm_right", "left_arm": "arm_left",
                "right_leg": "leg_right", "left_leg": "leg_left", "right_item": "item_right", "left_item": "item_left"}
@@ -242,6 +254,9 @@ def unlean(lean, leg_rotation=ZERO, leg_position=None):
     posicao da perna tambem gira), nao subtraindo angulos: com as pernas abertas e giradas do Hoshina a subtracao deixava
     um pe 3-4 px dentro do chao e o outro no ar."""
     from blockbench_templates import euler_zyx, limb_to_bb, pos_to_bb, rzyx
+    # Giro do corpo (yaw) acima de LEG_YAW_LIMIT leva as pernas junto: no giro de 360 do combo as pernas descontavam
+    # o giro inteiro e rodopiavam ao contrario do corpo (Miguel: "animacoes muito bugadas").
+    lean = [lean[0], leg_yaw(lean[1]), lean[2]]
     back = rzyx(*limb_to_bb(lean)).T
     rotation = limb_to_bb(euler_zyx(back @ rzyx(*limb_to_bb(leg_rotation))))
     if leg_position is None:
@@ -420,7 +435,12 @@ def strike_frames(action, start, wind, hit, spin=None):
         lean = start.get("torso", ZERO)
         turned = struck["torso"][1]
         follow = merged(struck, {"torso": [struck["torso"][0], turned + (spin - turned) * 0.6, 0]})
-        back = merged(start, {"torso": [lean[0], lean[1] + spin, lean[2]]})
+        # 0.5.0-D7: a volta inteira termina antes do fim e o tronco volta ao mesmo numero da postura (360 = 0, sem
+        # salto visivel). Terminar em 360 fazia a transicao para a postura (que mistura os numeros) desenrolar o giro.
+        done = impact + (end - impact) * 0.6
+        turned_back = merged(start, {"torso": [lean[0], lean[1] + spin, lean[2]]})
+        return [(0, start), (t_wind, wound), (impact, struck), (t_follow, follow), (done, turned_back),
+                (done + 0.001, start), (end, start)], end
     return [(0, start), (t_wind, wound), (impact, struck), (t_follow, follow), (end, back)], end
 
 
@@ -739,6 +759,24 @@ def grip_axe(anim, point, bone="right_item"):
     return anim
 
 
+SMOOTHED_LIMBS = ("right_arm", "left_arm", "right_leg", "left_leg", "head")
+
+
+def smooth_limbs(animations):
+    """0.5.0-D7: golpes, saques e especiais (sem laco) com os membros pelo caminho curto entre as poses
+    (blockbench_templates.slerp_track). O tronco ("body") fica de fora: o giro de 360 e de proposito."""
+    from blockbench_templates import slerp_track
+    for anim in animations.values():
+        if anim.get("loop"):
+            continue
+        for bone in SMOOTHED_LIMBS:
+            channel = anim["bones"].get(bone, {}).get("rotation")
+            if not channel or len(channel) < 2:
+                continue
+            keys = sorted((float(t), v["vector"] if isinstance(v, dict) else v) for t, v in channel.items())
+            anim["bones"][bone]["rotation"] = {f"{t}": {"vector": v} for t, v in slerp_track(keys)}
+
+
 def main():
     dual = hoshina_dual_stances()
     if "stance" in dual:
@@ -761,6 +799,7 @@ def main():
     # 0.5.0-D5: o que o Miguel animou no Blockbench (tools/blockbench/animacoes/*.bbmodel) vale por cima.
     from blockbench_templates import imported_player
     data["animations"].update(imported_player())
+    smooth_limbs(data["animations"])
     point = axe_hand_point()
     swords = sword_hand_points()
     for name, anim in data["animations"].items():
