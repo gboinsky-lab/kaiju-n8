@@ -7,7 +7,10 @@ Divisao pelo esqueleto (mesmo metodo dos Primigenius: sementes nos segmentos e D
 ossos de humanoide: body, head, arm_*/forearm_*, leg_*. Juntas medidas nas vistas (skelview) do modelo.
 Saida: meshes/kaiju_no9.json + meshes/kaiju_no9/<osso>.obj, textures/entity/kaiju_no9.png,
 geo/entity/kaiju_no9.geo.json (so ossos) e animations/entity/kaiju_no9.animation.json.
-Uso: python3 tools/art/rig_kaiju_no9_mesh.py
+Uso: python3 tools/art/rig_kaiju_no9_mesh.py [especie]
+
+0.7-E: tambem a forma preta do No. 9 (kaiju_no9_black, modelo do Miguel de 1,9 m): mesmos ossos e animacoes, juntas
+proprias em SPECIES. Os ataques novos das formas saem do gen_ability_animations.py (rodar depois).
 """
 import json
 import shutil
@@ -26,17 +29,31 @@ from rig_trichonephila_mesh import read_obj, write_obj  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
 ASSETS = ROOT / "src/main/resources/assets/kn8"
-NAME = "kaiju_no9"
+NAME = sys.argv[1] if len(sys.argv) > 1 else "kaiju_no9"
 SOURCE = ROOT / "tools/art/converted" / NAME
 TEXTURE_SIZE = 1024
 
-SKELETON = {
-    "pelvis": [0, 1.0, 0], "chest": [0, 1.4, 0], "neck": [0, 1.7, 0], "head": [0, 1.88, 0],
-    "shoulder_left": [-0.3, 1.58, 0], "elbow_left": [-0.5, 1.15, 0], "hand_left": [-0.7, 0.8, 0],
-    "shoulder_right": [0.3, 1.58, 0], "elbow_right": [0.5, 1.15, 0], "hand_right": [0.7, 0.8, 0],
-    "hip_left": [-0.12, 0.95, 0], "knee_left": [-0.15, 0.5, 0], "foot_left": [-0.17, 0.05, 0],
-    "hip_right": [0.12, 0.95, 0], "knee_right": [0.15, 0.5, 0], "foot_right": [0.17, 0.05, 0],
+SPECIES = {
+    "kaiju_no9": {
+        "pelvis": [0, 1.0, 0], "chest": [0, 1.4, 0], "neck": [0, 1.7, 0], "head": [0, 1.88, 0],
+        "shoulder_left": [-0.3, 1.58, 0], "elbow_left": [-0.5, 1.15, 0], "hand_left": [-0.7, 0.8, 0],
+        "shoulder_right": [0.3, 1.58, 0], "elbow_right": [0.5, 1.15, 0], "hand_right": [0.7, 0.8, 0],
+        "hip_left": [-0.12, 0.95, 0], "knee_left": [-0.15, 0.5, 0], "foot_left": [-0.17, 0.05, 0],
+        "hip_right": [0.12, 0.95, 0], "knee_right": [0.15, 0.5, 0], "foot_right": [0.17, 0.05, 0],
+    },
+    # 0.7-E: forma preta (bracos mais junto do corpo e mais baixos; cabeca chata com o sorriso a 1,75 m). Medida
+    # por fatias de altura da malha convertida.
+    "kaiju_no9_black": {
+        "pelvis": [0, 0.95, 0], "chest": [0, 1.35, 0], "neck": [0, 1.66, 0], "head": [0, 1.82, 0],
+        "shoulder_left": [-0.33, 1.5, 0], "elbow_left": [-0.43, 1.1, 0], "hand_left": [-0.48, 0.72, 0],
+        "shoulder_right": [0.33, 1.5, 0], "elbow_right": [0.43, 1.1, 0], "hand_right": [0.48, 0.72, 0],
+        "hip_left": [-0.13, 0.9, 0], "knee_left": [-0.18, 0.5, 0], "foot_left": [-0.25, 0.06, -0.08],
+        "hip_right": [0.13, 0.9, 0], "knee_right": [0.18, 0.5, 0], "foot_right": [0.25, 0.06, -0.08],
+    },
 }
+SKELETON = SPECIES[NAME]
+# Abaixo desta altura nada e cabeca (na forma preta o caminho pela pele levava os espinhos do peito para a cabeca).
+HEAD_MIN_Y = {"kaiju_no9_black": 1.62}.get(NAME)
 SEEDS = [
     ("body", "pelvis", "chest", 0.0, 1.0), ("body", "chest", "neck", 0.0, 0.7),
     ("body", "chest", "shoulder_left", 0.0, 0.6), ("body", "chest", "shoulder_right", 0.0, 0.6),
@@ -78,11 +95,15 @@ def split(vertices, faces):
     owner_of = {seed: owner for seed, owner in zip(seeds, owners)}
     vertex_label = np.array([owner_of.get(int(src), "body") for src in sources], dtype=object)
     a, b, c = (vertex_label[wf[:, i]] for i in range(3))
-    return np.where(b == c, b, a)
+    labels = np.where(b == c, b, a)
+    if HEAD_MIN_Y is not None:
+        low = vertices[faces].mean(axis=1)[:, 1] < HEAD_MIN_Y
+        labels[(labels == "head") & low] = "body"
+    return labels
 
 
 def animations():
-    p = "kaiju_no9."
+    p = NAME + "."
     anims = {
         p + "movement.idle": {"loop": True, "animation_length": 3.0, "bones": {
             "body": {"rotation": kf((0, [0, 0, 0]), (1.5, [2, 0, 0]), (3.0, [0, 0, 0]))},

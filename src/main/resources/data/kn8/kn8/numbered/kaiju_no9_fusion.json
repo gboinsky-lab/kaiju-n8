@@ -1,0 +1,30 @@
+{
+  "revive": {
+    "kn8:primigenius": "kn8:primigenius_resurrected",
+    "kn8:primigenius_honju": "kn8:primigenius_revived",
+    "kn8:trichonephila": "kn8:trichonephila"
+  },
+  "revive_radius": 28,
+  "revive_cast_ticks": 50,
+  "revive_cooldown_ticks": 240,
+  "max_revived_alive": 4,
+  "command_radius": 64,
+  "flee_health": 0.1,
+  "flee_merit": 500,
+  "revive_boss": {
+    "kn8:primigenius_honju": "kn8:revived_honju"
+  },
+  "regeneration": {
+    "below": 0.5,
+    "per_second": 0.03,
+    "fast_below": 0.2,
+    "fast_per_second": 0.06,
+    "delay_after_hit_ticks": 10
+  },
+  "hardening": {
+    "chance": 0.2,
+    "reduction": 0.4,
+    "duration_ticks": 40,
+    "cooldown_ticks": 240
+  }
+}

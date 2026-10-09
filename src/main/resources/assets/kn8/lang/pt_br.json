@@ -752,5 +752,13 @@
   "entity.kn8.kaiju_no8": "Kaiju No. 8",
   "item.kn8.kaiju_no8_spawn_egg": "Ovo do Kaiju No. 8",
   "kn8.soldier.variant.kaiju_no8": "Kaiju No. 8",
-  "item.kn8.kaiju_no8_fist": "Punhos do Kaiju No. 8"
+  "item.kn8.kaiju_no8_fist": "Punhos do Kaiju No. 8",
+  "entity.kn8.kaiju_no9_black": "Kaiju No. 9 (Forma Preta)",
+  "entity.kn8.kaiju_no9_fusion": "Kaiju No. 9 (Fundido ao No. 10)",
+  "entity.kn8.kaiju_no9_camponotus": "Kaiju No. 9 (Fundido à Formiga)",
+  "kn8.no9.black_form": "O Kaiju No. 9 está mutando... o corpo dele ficou preto!",
+  "kn8.no9.absorbing": "O Kaiju No. 9 está absorvendo outro kaiju!",
+  "kn8.no9.absorbed": "O Kaiju No. 9 absorveu um kaiju e mudou de forma!",
+  "kn8.no9.fusion_form": "O Kaiju No. 9 absorveu o Kaiju No. 10 e se fundiu a ele!",
+  "kn8.no9.ant_form": "O Kaiju No. 9 se fundiu a um kaiju formiga!"
 }

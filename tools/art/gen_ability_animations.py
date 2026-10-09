@@ -216,6 +216,120 @@ def finger_gun(name):
     }}
 
 
+# --- formas do No. 9 (0.7-E) ------------------------------------------------------------------------------------
+def multi_hits(name):
+    """Tempos dos golpes de uma habilidade multi_hit (behavior.hits/hit_interval) e o fim da animacao."""
+    data = json.loads((ABILITIES / f"{name}.json").read_text(encoding="utf-8"))
+    behavior = data.get("behavior", {})
+    hits, step = behavior.get("hits", 1), behavior.get("hit_interval", 4) * TICK
+    first, _ = ability(name)
+    return [round(first + i * step, 3) for i in range(hits)], step, round(first + hits * step + 0.25, 3)
+
+
+def absorb(length):
+    """Absorcao (humanoide): bracos abertos para a frente, corpo curvado, como se puxasse a presa com tentaculos."""
+    hold = length - 0.4
+    return {"animation_length": length, "bones": {
+        "body": rot((0, ZERO), (0.4, [-14, 0, 0]), (hold, [-18, 0, 0]), (length, ZERO)),
+        "head": rot((0, ZERO), (0.4, [18, 0, 0]), (hold, [10, 0, 0]), (length, ZERO)),
+        "arm_left": rot((0, ZERO), (0.4, [-80, 30, -25]), (length / 2, [-95, 20, -20]), (hold, [-80, 30, -25]),
+                        (length, ZERO)),
+        "arm_right": rot((0, ZERO), (0.4, [-80, -30, 25]), (length / 2, [-95, -20, 20]), (hold, [-80, -30, 25]),
+                         (length, ZERO)),
+        "forearm_left": rot((0, ZERO), (0.4, [-20, 0, 0]), (hold, [-30, 0, 0]), (length, ZERO)),
+        "forearm_right": rot((0, ZERO), (0.4, [-20, 0, 0]), (hold, [-30, 0, 0]), (length, ZERO)),
+    }}
+
+
+def ant_absorb(length):
+    """Absorcao da forma formiga: o torso do No. 9 se ergue, o corpo empina e as presas abrem."""
+    hold = length - 0.4
+    return {"animation_length": length, "bones": {
+        "body": rot((0, ZERO), (0.4, [-14, 0, 0]), (hold, [-16, 0, 0]), (length, ZERO)),
+        "head": rot((0, ZERO), (0.4, [-20, 0, 0]), (hold, [-10, 0, 0]), (length, ZERO)),
+        "fang_left": rot((0, ZERO), (0.4, [0, -30, 0]), (hold, [0, -25, 0]), (length, ZERO)),
+        "fang_right": rot((0, ZERO), (0.4, [0, 30, 0]), (hold, [0, 25, 0]), (length, ZERO)),
+    }}
+
+
+def blade_arm(name):
+    """Braco que vira lamina: ergue o braco direito atras do ombro e corta na horizontal a frente."""
+    hit, end = ability(name)
+    load = hit * 0.65
+    return {"animation_length": end, "bones": {
+        "arm_right": rot((0, ZERO), (load, [-100, 40, 60]), (hit, [-80, -60, 0]), (end, ZERO)),
+        "forearm_right": rot((0, ZERO), (load, [-30, 0, 0]), (hit, [0, 0, 0]), (end, ZERO)),
+        "body": rot((0, ZERO), (load, [0, 30, 0]), (hit, [6, -35, 0]), (end, ZERO)),
+        "arm_left": rot((0, ZERO), (load, [-20, 0, -20]), (end, ZERO)),
+    }}
+
+
+def tendril(name):
+    """Tentaculo: os dois bracos apontam e o corpo se lanca para a frente no disparo."""
+    hit, end = ability(name)
+    aim = hit * 0.7
+    return {"animation_length": end, "bones": {
+        "arm_right": rot((0, ZERO), (aim, [-75, 0, 10]), (hit, [-95, 0, 0]), (end, ZERO)),
+        "arm_left": rot((0, ZERO), (aim, [-75, 0, -10]), (hit, [-95, 0, 0]), (end, ZERO)),
+        "body": rot((0, ZERO), (aim, [-10, 0, 0]), (hit, [12, 0, 0]), (end, ZERO)),
+    }}
+
+
+def spike_burst(name):
+    """Espinhos do corpo: encolhe-se (escala menor, bracos fechados) e explode abrindo tudo no impacto."""
+    hit, end = ability(name)
+    load = hit * 0.8
+    return {"animation_length": end, "bones": {
+        "body": {"rotation": keys((0, ZERO), (load, [25, 0, 0]), (hit, [-12, 0, 0]), (end, ZERO)),
+                 "scale": keys((0, [1, 1, 1]), (load, [0.9, 0.92, 0.9]), (hit, [1.12, 1.06, 1.12]),
+                               (end, [1, 1, 1]))},
+        "arm_left": rot((0, ZERO), (load, [-30, 0, 30]), (hit, [0, 0, -80]), (end, ZERO)),
+        "arm_right": rot((0, ZERO), (load, [-30, 0, -30]), (hit, [0, 0, 80]), (end, ZERO)),
+        "head": rot((0, ZERO), (load, [25, 0, 0]), (hit, [-25, 0, 0]), (end, ZERO)),
+    }}
+
+
+def tail_barrage(name):
+    """Rajada de cauda (fusao): a cauda passa pelo ombro e perfura varias vezes, uma por golpe do JSON."""
+    times, step, end = multi_hits(name)
+    tail = {f"tail_{i}": [(0, ZERO)] for i in range(1, 5)}
+    for t in times:
+        for i, (up, down) in enumerate([(-45, -60), (-35, -50), (-30, -15), (-20, 15)], start=1):
+            tail[f"tail_{i}"] += [(t - step * 0.5, [up, 0, 0]), (t, [down, 0, 0])]
+    bones = {name_: rot(*(frames + [(end, ZERO)])) for name_, frames in tail.items()}
+    bones["body"] = rot((0, ZERO), (times[0], [10, 0, 0]), (end - 0.1, [10, 0, 0]), (end, ZERO))
+    return {"animation_length": end, "bones": bones}
+
+
+def mandible_rush(name):
+    """Rajada de mordidas (formiga): a cabeca investe e as presas fecham a cada golpe."""
+    times, step, end = multi_hits(name)
+    head, left, right = [(0, ZERO)], [(0, ZERO)], [(0, ZERO)]
+    for t in times:
+        head += [(t - step * 0.5, [-12, 0, 0]), (t, [10, 0, 0])]
+        left += [(t - step * 0.5, [0, -30, 0]), (t, [0, 10, 0])]
+        right += [(t - step * 0.5, [0, 30, 0]), (t, [0, -10, 0])]
+    return {"animation_length": end, "bones": {
+        "head": rot(*(head + [(end, ZERO)])), "fang_left": rot(*(left + [(end, ZERO)])),
+        "fang_right": rot(*(right + [(end, ZERO)])),
+        "body": rot((0, ZERO), (times[0], [6, 0, 0]), (end - 0.1, [6, 0, 0]), (end, ZERO)),
+    }}
+
+
+def ant_finger_gun(name):
+    """Finger Gun da forma formiga: o corpo empina e aponta (o torso do No. 9 vai junto com o corpo)."""
+    hit, end = ability(name)
+    return {"animation_length": end, "bones": {
+        "body": rot((0, ZERO), (hit * 0.7, [-12, 0, 0]), (hit, [-6, 0, 0]), (end, ZERO)),
+        "head": rot((0, ZERO), (hit * 0.7, [-10, 0, 0]), (end, ZERO)),
+    }}
+
+
+def fixed(make, length):
+    """Animacao sem habilidade (gesto de absorver/reviver), com a duracao do numbered/<id>.json."""
+    return lambda _name: make(length)
+
+
 PRIMIGENIUS = {"action.strike": (strike, "hooved_strike"), "action.tail_swipe": (tail_swipe, "tail_swipe")}
 HONJU = {"action.punch": (punch, "heavy_punch"), "action.tail_swipe": (tail_swipe, "tail_swipe")}
 SPECIES = {
@@ -230,7 +344,28 @@ SPECIES = {
     "trichonephila_honju": {"action.leg_swipe": (leg_swipe, "leg_swipe"), "action.leg_stab": (leg_stab, "leg_stab"),
                             "action.multi_leg": (multi_leg, "multi_leg"), "action.web_shot": (web_shot, "web_burst"),
                             "action.leap": (leap, "leap")},
-    "kaiju_no9": {"action.finger_gun": (finger_gun, "finger_gun")},
+    # 0.7-E: formas do No. 9. O gesto de absorver dura o cast_ticks do numbered/<id>.json (60 = 3 s; formiga 50).
+    "kaiju_no9": {"action.finger_gun": (finger_gun, "finger_gun"), "action.absorb": (fixed(absorb, 3.0), None)},
+    "kaiju_no9_black": {"action.finger_gun": (finger_gun, "finger_gun"),
+                        "action.blade_arm": (blade_arm, "no9_black_blade_arm"),
+                        "action.tendril": (tendril, "no9_black_tendril"),
+                        "action.spike_burst": (spike_burst, "no9_black_spike_burst"),
+                        "action.absorb": (fixed(absorb, 3.0), None)},
+    "kaiju_no9_fusion": {"action.punch": (punch, "no10_heavy_punch"),
+                         "action.tail_swipe": (tail_swipe, "no10_tail_sweep"),
+                         "action.tail_stab": (tail_stab, "no10_tail_stab"),
+                         "action.finger_gun": (finger_gun, "finger_gun"),
+                         "action.multi_strike": (multi_strike, "no10_multi_appendage"),
+                         "action.tail_barrage": (tail_barrage, "no9_fusion_tail_barrage"),
+                         "action.hybrid_beam": (energy_blast, "no9_fusion_hybrid_beam"),
+                         "action.revive": (fixed(absorb, 2.5), None), "action.absorb": (fixed(absorb, 3.0), None)},
+    "kaiju_no9_camponotus": {"action.leg_swipe": (leg_swipe, "leg_swipe"), "action.leg_stab": (leg_stab, "leg_stab"),
+                             "action.acid_spray": (web_shot, "no9_ant_acid_spray"),
+                             "action.leap": (leap, "no9_ant_pounce"),
+                             "action.mandible_rush": (mandible_rush, "no9_ant_mandible_rush"),
+                             "action.finger_gun": (ant_finger_gun, "finger_gun"),
+                             "action.revive": (fixed(ant_absorb, 2.5), None),
+                             "action.absorb": (fixed(ant_absorb, 2.5), None)},
     # 0.6-E: Kaiju No. 10 (ossos do Primigenius); "action.slam" e "action.charge" vem do build_primigenius.py.
     "kaiju_no10_small": {"action.punch": (punch, "no10_heavy_punch"),
                          "action.tail_swipe": (tail_swipe, "no10_tail_sweep"),

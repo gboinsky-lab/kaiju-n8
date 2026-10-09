@@ -1,0 +1,101 @@
+{
+  "format_version": "1.12.0",
+  "minecraft:geometry": [
+    {
+      "description": {
+        "identifier": "geometry.kaiju_no9_black",
+        "texture_width": 16,
+        "texture_height": 16,
+        "visible_bounds_width": 3,
+        "visible_bounds_height": 3,
+        "visible_bounds_offset": [
+          0,
+          1,
+          0
+        ]
+      },
+      "bones": [
+        {
+          "name": "root",
+          "pivot": [
+            -0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "name": "body",
+          "pivot": [
+            -0.0,
+            15.2,
+            0.0
+          ],
+          "parent": "root"
+        },
+        {
+          "name": "head",
+          "pivot": [
+            -0.0,
+            26.56,
+            0.0
+          ],
+          "parent": "body"
+        },
+        {
+          "name": "arm_left",
+          "pivot": [
+            5.28,
+            24.0,
+            0.0
+          ],
+          "parent": "body"
+        },
+        {
+          "name": "forearm_left",
+          "pivot": [
+            6.88,
+            17.6,
+            0.0
+          ],
+          "parent": "arm_left"
+        },
+        {
+          "name": "arm_right",
+          "pivot": [
+            -5.28,
+            24.0,
+            0.0
+          ],
+          "parent": "body"
+        },
+        {
+          "name": "forearm_right",
+          "pivot": [
+            -6.88,
+            17.6,
+            0.0
+          ],
+          "parent": "arm_right"
+        },
+        {
+          "name": "leg_left",
+          "pivot": [
+            2.08,
+            14.4,
+            0.0
+          ],
+          "parent": "root"
+        },
+        {
+          "name": "leg_right",
+          "pivot": [
+            -2.08,
+            14.4,
+            0.0
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  ]
+}

@@ -121,7 +121,10 @@ public final class No9GameTests {
         });
     }
 
-    /** 0.6-D (Miguel): abaixo de 50% da vida o No. 9 regenera (regeneration do numbered/kaiju_no9.json). */
+    /**
+     * 0.6-D (Miguel): abaixo de 50% da vida o No. 9 regenera (regeneration do numbered/kaiju_no9.json). 45%: abaixo
+     * de 40% ele vira a forma preta (0.7-E).
+     */
     @GameTest(template = TEMPLATE, batch = "kn8_no9_regen", timeoutTicks = 120)
     public static void no9RegeneratesBelowHalfHealth(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
@@ -130,12 +133,12 @@ public final class No9GameTests {
         no9.setNoAi(true);
         float[] before = new float[1];
         helper.runAfterDelay(5, () -> {
-            no9.setHealth(no9.getMaxHealth() * 0.4F);
+            no9.setHealth(no9.getMaxHealth() * 0.45F);
             before[0] = no9.getHealth();
         });
         helper.runAfterDelay(45, () -> {
             helper.assertTrue(no9.getHealth() > before[0] + no9.getMaxHealth() * 0.02F,
-                    "Com 40% da vida o No. 9 deveria regenerar: " + before[0] + " -> " + no9.getHealth());
+                    "Com 45% da vida o No. 9 deveria regenerar: " + before[0] + " -> " + no9.getHealth());
             no9.discard();
             helper.succeed();
         });

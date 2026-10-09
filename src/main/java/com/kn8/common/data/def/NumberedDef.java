@@ -1,5 +1,6 @@
 package com.kn8.common.data.def;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -19,16 +20,18 @@ import net.minecraft.resources.ResourceLocation;
 public record NumberedDef(Map<ResourceLocation, ResourceLocation> revive, float reviveRadius, int reviveCastTicks,
         int reviveCooldownTicks, int maxRevivedAlive, float commandRadius, float fleeHealth, int fleeMerit,
         Map<ResourceLocation, ResourceLocation> reviveBoss, float massReviveRadius, int massReviveCastTicks,
-        int massReviveIntervalTicks, Regeneration regeneration, Optional<Transform> transform) {
+        int massReviveIntervalTicks, Regeneration regeneration, Optional<Transform> transform, List<Absorb> absorb,
+        Optional<Hardening> hardening) {
 
     /**
      * Mudanca de forma (0.6-E, No. 10 pequeno -> gigante; Miguel: "depois de um tempo na batalha"): depois de
      * {@code after_combat_ticks} com alvo, ou com a vida abaixo de {@code health_below} (o que vier antes), vira a
      * especie {@code into} com {@code health_fraction} da vida maxima nova. {@code destruction_radius}: blocos que a
-     * forma nova quebra ao surgir (forca da categoria Daikaiju).
+     * forma nova quebra ao surgir (forca da categoria Daikaiju). 0.7-E: {@code message} e a chave do aviso no chat
+     * (No. 9 -> forma preta).
      */
     public record Transform(ResourceLocation into, int afterCombatTicks, float healthBelow, float healthFraction,
-            float destructionRadius) {
+            float destructionRadius, String message) {
         public static final Codec<Transform> CODEC = RecordCodecBuilder.create(i -> i.group(
                 ResourceLocation.CODEC.fieldOf("into").forGetter(Transform::into),
                 DefCodecs.TICKS.fieldOf("after_combat_ticks").forGetter(Transform::afterCombatTicks),
@@ -36,8 +39,46 @@ public record NumberedDef(Map<ResourceLocation, ResourceLocation> revive, float 
                 Codec.floatRange(0.05F, 1.0F).optionalFieldOf("health_fraction", 1.0F)
                         .forGetter(Transform::healthFraction),
                 Codec.floatRange(0.0F, 32.0F).optionalFieldOf("destruction_radius", 0.0F)
-                        .forGetter(Transform::destructionRadius)
+                        .forGetter(Transform::destructionRadius),
+                Codec.STRING.optionalFieldOf("message", "kn8.no10.giant_form").forGetter(Transform::message)
         ).apply(i, Transform::new));
+    }
+
+    /**
+     * Absorcao (0.7-E, Biblioteca v22 secao 33.2/33.3, formas originais do mod): com a propria vida abaixo de
+     * {@code self_health_below}, o No. 9 procura a ate {@code seek_radius} blocos um kaiju da especie
+     * {@code species} (vivo com a vida abaixo de {@code target_health_below}, ou a carcaca dele se {@code carcass}),
+     * puxa-o com tentaculos durante {@code cast_ticks} e vira a especie {@code into} com a vida cheia. Se o alvo
+     * morrer, sumir ou sair de {@code seek_radius} antes do fim, a absorcao e cancelada. 1,0 nos dois limites de vida
+     * quer dizer "com qualquer vida".
+     */
+    public record Absorb(List<ResourceLocation> species, ResourceLocation into, float seekRadius, int castTicks,
+            float targetHealthBelow, float selfHealthBelow, boolean carcass, String message) {
+        public static final Codec<Absorb> CODEC = RecordCodecBuilder.create(i -> i.group(
+                ResourceLocation.CODEC.listOf().fieldOf("species").forGetter(Absorb::species),
+                ResourceLocation.CODEC.fieldOf("into").forGetter(Absorb::into),
+                Codec.floatRange(1.0F, 128.0F).optionalFieldOf("seek_radius", 24.0F).forGetter(Absorb::seekRadius),
+                DefCodecs.TICKS.optionalFieldOf("cast_ticks", 60).forGetter(Absorb::castTicks),
+                Codec.floatRange(0.0F, 1.0F).optionalFieldOf("target_health_below", 1.0F)
+                        .forGetter(Absorb::targetHealthBelow),
+                Codec.floatRange(0.0F, 1.0F).optionalFieldOf("self_health_below", 1.0F)
+                        .forGetter(Absorb::selfHealthBelow),
+                Codec.BOOL.optionalFieldOf("carcass", true).forGetter(Absorb::carcass),
+                Codec.STRING.optionalFieldOf("message", "kn8.no9.absorbed").forGetter(Absorb::message)
+        ).apply(i, Absorb::new));
+    }
+
+    /**
+     * Endurecimento (0.7-E, secao 33.1 "defesa/endurecimento"): ao levar golpe, com {@code chance}, a pele endurece
+     * por {@code duration_ticks} e o dano cai {@code reduction} (fracao); depois espera {@code cooldown_ticks}.
+     */
+    public record Hardening(float chance, float reduction, int durationTicks, int cooldownTicks) {
+        public static final Codec<Hardening> CODEC = RecordCodecBuilder.create(i -> i.group(
+                Codec.floatRange(0.0F, 1.0F).fieldOf("chance").forGetter(Hardening::chance),
+                Codec.floatRange(0.0F, 0.95F).fieldOf("reduction").forGetter(Hardening::reduction),
+                DefCodecs.TICKS.fieldOf("duration_ticks").forGetter(Hardening::durationTicks),
+                DefCodecs.TICKS.fieldOf("cooldown_ticks").forGetter(Hardening::cooldownTicks)
+        ).apply(i, Hardening::new));
     }
 
     /**
@@ -86,6 +127,8 @@ public record NumberedDef(Map<ResourceLocation, ResourceLocation> revive, float 
                     .forGetter(NumberedDef::massReviveIntervalTicks),
             Regeneration.CODEC.optionalFieldOf("regeneration", Regeneration.NONE)
                     .forGetter(NumberedDef::regeneration),
-            Transform.CODEC.optionalFieldOf("transform").forGetter(NumberedDef::transform)
+            Transform.CODEC.optionalFieldOf("transform").forGetter(NumberedDef::transform),
+            Absorb.CODEC.listOf().optionalFieldOf("absorb", List.of()).forGetter(NumberedDef::absorb),
+            Hardening.CODEC.optionalFieldOf("hardening").forGetter(NumberedDef::hardening)
     ).apply(i, NumberedDef::new));
 }

@@ -4,19 +4,16 @@
     "kn8:primigenius_honju": "kn8:primigenius_revived",
     "kn8:trichonephila": "kn8:trichonephila"
   },
-  "revive_radius": 24,
-  "revive_cast_ticks": 60,
-  "revive_cooldown_ticks": 300,
+  "revive_radius": 28,
+  "revive_cast_ticks": 50,
+  "revive_cooldown_ticks": 240,
   "max_revived_alive": 3,
-  "command_radius": 32,
+  "command_radius": 40,
   "flee_health": 0.15,
-  "flee_merit": 250,
+  "flee_merit": 400,
   "revive_boss": {
     "kn8:primigenius_honju": "kn8:revived_honju"
   },
-  "mass_revive_radius": 72,
-  "mass_revive_cast_ticks": 100,
-  "mass_revive_interval_ticks": 4,
   "regeneration": {
     "below": 0.5,
     "per_second": 0.025,
@@ -24,13 +21,11 @@
     "fast_per_second": 0.05,
     "delay_after_hit_ticks": 10
   },
-  "transform": {
-    "into": "kn8:kaiju_no9_black",
-    "after_combat_ticks": 72000,
-    "health_below": 0.4,
-    "health_fraction": 1.0,
-    "destruction_radius": 0.0,
-    "message": "kn8.no9.black_form"
+  "hardening": {
+    "chance": 0.15,
+    "reduction": 0.4,
+    "duration_ticks": 30,
+    "cooldown_ticks": 240
   },
   "absorb": [
     {
@@ -44,19 +39,6 @@
       "self_health_below": 0.75,
       "carcass": true,
       "message": "kn8.no9.fusion_form"
-    },
-    {
-      "species": [
-        "kn8:camponotus",
-        "kn8:camponotus_reborn"
-      ],
-      "into": "kn8:kaiju_no9_camponotus",
-      "seek_radius": 20,
-      "cast_ticks": 50,
-      "target_health_below": 1.0,
-      "self_health_below": 0.6,
-      "carcass": true,
-      "message": "kn8.no9.ant_form"
     }
   ]
 }

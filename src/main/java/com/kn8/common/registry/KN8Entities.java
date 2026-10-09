@@ -81,6 +81,17 @@ public final class KN8Entities {
                     .sized(0.8F, 2.0F)
                     .clientTrackingRange(KAIJU_TRACKING_RANGE_CHUNKS)
                     .build("kaiju_no9"));
+    /**
+     * 0.7-E: formas do No. 9 (Biblioteca v22 secao 33; modelos do Miguel). Mesma classe do No. 9 (reviver, comandar,
+     * fugir, regenerar, absorver), numeros e transicoes no numbered/<id>.json: forma preta (1,9 m), fundida ao No. 10
+     * (5 m, cauda) e fundida a formiga (formiga de 6 m com o torso do No. 9).
+     */
+    public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> KAIJU_NO9_BLACK = no9Form(
+            "kaiju_no9_black", 0.8F, 1.9F);
+    public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> KAIJU_NO9_FUSION = no9Form(
+            "kaiju_no9_fusion", 2.0F, 5.0F);
+    public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> KAIJU_NO9_CAMPONOTUS = no9Form(
+            "kaiju_no9_camponotus", 4.0F, 3.9F);
     /** 0.6-E: Kaiju No. 10, forma pequena (4 m) e gigante (24 m); comportamento extra no No10Service. */
     public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> KAIJU_NO10_SMALL = numbered(
             "kaiju_no10_small", 2.0F, 4.0F);
@@ -218,7 +229,7 @@ public final class KN8Entities {
             List.of(TRICHONEPHILA, PRIMIGENIUS, PRIMIGENIUS_RESURRECTED, PRIMIGENIUS_HONJU, PRIMIGENIUS_REVIVED,
                     TRICHONEPHILA_HONJU, KAIJU_NO9, KAIJU_NO10_SMALL, KAIJU_NO10_GIANT,
                     PREONDACTYL, PHILINOSOMA, DICLONIUS, CAMPONOTUS, CAMPONOTUS_REBORN, PHANEROPLASMODIUM,
-                    MYXOGASTEROCARP, KAIJU_LARVA);
+                    MYXOGASTEROCARP, KAIJU_LARVA, KAIJU_NO9_BLACK, KAIJU_NO9_FUSION, KAIJU_NO9_CAMPONOTUS);
 
     private KN8Entities() {
     }
@@ -261,6 +272,15 @@ public final class KN8Entities {
     private static DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> flyer(String name, float width,
             float height) {
         return ENTITY_TYPES.register(name, () -> EntityType.Builder.<KaijuEntity>of(PreondactylEntity::new,
+                        MobCategory.MONSTER)
+                .sized(width, height)
+                .clientTrackingRange(KAIJU_TRACKING_RANGE_CHUNKS)
+                .build(name));
+    }
+
+    private static DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> no9Form(String name, float width,
+            float height) {
+        return ENTITY_TYPES.register(name, () -> EntityType.Builder.<KaijuEntity>of(KaijuNo9Entity::new,
                         MobCategory.MONSTER)
                 .sized(width, height)
                 .clientTrackingRange(KAIJU_TRACKING_RANGE_CHUNKS)

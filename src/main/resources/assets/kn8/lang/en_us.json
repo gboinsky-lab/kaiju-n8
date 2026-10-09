@@ -752,5 +752,13 @@
   "entity.kn8.kaiju_no8": "Kaiju No. 8",
   "item.kn8.kaiju_no8_spawn_egg": "Kaiju No. 8 Spawn Egg",
   "kn8.soldier.variant.kaiju_no8": "Kaiju No. 8",
-  "item.kn8.kaiju_no8_fist": "Kaiju No. 8 Fists"
+  "item.kn8.kaiju_no8_fist": "Kaiju No. 8 Fists",
+  "entity.kn8.kaiju_no9_black": "Kaiju No. 9 (Black Form)",
+  "entity.kn8.kaiju_no9_fusion": "Kaiju No. 9 (No. 10 Fusion)",
+  "entity.kn8.kaiju_no9_camponotus": "Kaiju No. 9 (Ant Fusion)",
+  "kn8.no9.black_form": "Kaiju No. 9 is mutating... its body turns black!",
+  "kn8.no9.absorbing": "Kaiju No. 9 is absorbing another kaiju!",
+  "kn8.no9.absorbed": "Kaiju No. 9 absorbed a kaiju and changed its form!",
+  "kn8.no9.fusion_form": "Kaiju No. 9 absorbed Kaiju No. 10 and fused with it!",
+  "kn8.no9.ant_form": "Kaiju No. 9 merged with an ant kaiju!"
 }

@@ -82,6 +82,23 @@ SPECIES = {
                                       "leg_right_2": [1.43, 0.02, 0.92]}}},
 }
 SPECIES["camponotus_reborn"] = SPECIES["camponotus"]
+# 0.7-E: No. 9 fundido a formiga (modelo do Miguel, 6 m): torso do No. 9 em pe sobre o torax da formiga, no osso
+# do corpo (sobe ate 3,9 m). Oito pontas de pata no chao (as duas de tras ficam sob o abdomen), medidas na malha.
+SPECIES["kaiju_no9_camponotus"] = {
+    "center_z": -0.5, "core_half_width": 0.6, "abdomen_start_z": 0.2, "abdomen_half_width": 0.9,
+    "abdomen_min_y": 0.8, "head_z": -1.4, "fang_z": -99.0, "fang_max_y": 0.0, "leg_far_radius": 1.0,
+    "leg_max_y": 1.6, "bounds": [7, 5],
+    "paths": {"all_axis_centers": True,
+              "regions": {"head": [[-0.75, 0.8, -2.8], [0.75, 2.3, -1.4]],
+                          "body": [[-0.7, 1.0, -1.4], [0.7, 4.0, 0.1]],
+                          "abdomen": [[-1.0, 1.1, 0.2], [1.0, 2.7, 3.0]]},
+              "axis": {"head": [[0.0, 1.7, -2.2], [0.0, 1.8, -1.6]],
+                       "body": [[0.0, 1.6, -1.2], [0.0, 1.7, -0.6], [0.0, 2.6, -0.9], [0.0, 3.4, -0.9]],
+                       "abdomen": [[0.0, 1.7, 0.6], [0.0, 1.7, 1.6], [0.0, 1.5, 2.6]]},
+              "tips": {"leg_left_0": [-1.57, 0.05, -2.05], "leg_left_1": [-1.66, 0.03, -0.69],
+                       "leg_left_2": [-1.77, 0.03, 1.79], "leg_left_3": [-0.08, 0.12, 2.24],
+                       "leg_right_0": [0.45, 0.08, -2.36], "leg_right_1": [1.74, 0.0, -0.96],
+                       "leg_right_2": [1.79, 0.06, 1.19], "leg_right_3": [0.84, 0.17, 1.98]}}}
 # 0.7-B: kaiju cogumelo do Miguel. Sem abdomen (o osso fica sem malha, pivo no corpo): chapeu com a boca = head,
 # caule = body, patas/raizes = leg_<lado>_<n> (frente -> tras). abdomen_start_z alto: o corpo inteiro usa
 # core_half_width. Phaneroplasmodium (Yoju, 5 m): 6 pontas de pata no chao (as outras duas ficam no ar e vao para a

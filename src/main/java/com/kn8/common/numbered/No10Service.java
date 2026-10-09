@@ -70,15 +70,15 @@ public final class No10Service {
      * Forma gigante: a especie {@code into} surge no lugar (mesma direcao e alvo, vida pela fracao do JSON), quebra
      * o que estiver em volta e a pequena some. Na invasao, a nova toma o lugar da antiga (nao conta como abate).
      */
-    public static Optional<KaijuEntity> transform(ServerLevel level, KaijuNo10Entity no10,
+    public static Optional<KaijuEntity> transform(ServerLevel level, KaijuEntity no10,
             NumberedDef.Transform transform) {
+        // 0.7-E: serve tambem as formas do No. 9 (preta, fundidas); a forma nova nasce ja "transformada".
+        markTransformed(no10);
         Optional<KaijuEntity> spawned = KaijuSpawner.spawn(level, transform.into(), no10.blockPosition());
         if (spawned.isEmpty()) {
-            KN8Constants.LOGGER.warn("[kn8] No. 10: especie da forma nova inexistente {}", transform.into());
-            no10.transformed = true;
+            KN8Constants.LOGGER.warn("[kn8] Numerado: especie da forma nova inexistente {}", transform.into());
             return spawned;
         }
-        no10.transformed = true;
         KaijuEntity giant = spawned.get();
         giant.setYRot(no10.getYRot());
         giant.setYBodyRot(no10.yBodyRot);
@@ -86,9 +86,7 @@ public final class No10Service {
         if (no10.getTarget() != null) {
             giant.setTarget(no10.getTarget());
         }
-        if (giant instanceof KaijuNo10Entity next) {
-            next.transformed = true;
-        }
+        markTransformed(giant);
         Vec3 at = no10.position();
         level.sendParticles(ParticleTypes.EXPLOSION_EMITTER, at.x, at.y + 2.0, at.z, 3, 2.0, 2.0, 2.0, 0.0);
         level.sendParticles(ParticleTypes.LARGE_SMOKE, at.x, at.y + 4.0, at.z, 80, 4.0, 6.0, 4.0, 0.05);
@@ -100,7 +98,7 @@ public final class No10Service {
             DestructionService.request(level, at, new AbilityDef.Destruction(transform.destructionRadius(),
                     DESTRUCTION_POWER, false, 0.0F), giant);
         }
-        Component message = Component.translatable("kn8.no10.giant_form").withStyle(ChatFormatting.DARK_RED,
+        Component message = Component.translatable(transform.message()).withStyle(ChatFormatting.DARK_RED,
                 ChatFormatting.BOLD);
         for (ServerPlayer player : level.getEntitiesOfClass(ServerPlayer.class,
                 no10.getBoundingBox().inflate(ANNOUNCE_RADIUS))) {
@@ -112,5 +110,13 @@ public final class No10Service {
         }
         no10.discard();
         return spawned;
+    }
+
+    private static void markTransformed(KaijuEntity kaiju) {
+        if (kaiju instanceof KaijuNo10Entity no10) {
+            no10.transformed = true;
+        } else if (kaiju instanceof KaijuNo9Entity no9) {
+            no9.transformed = true;
+        }
     }
 }

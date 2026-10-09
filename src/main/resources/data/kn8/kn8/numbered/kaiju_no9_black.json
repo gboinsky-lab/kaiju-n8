@@ -8,7 +8,7 @@
   "revive_cast_ticks": 60,
   "revive_cooldown_ticks": 300,
   "max_revived_alive": 3,
-  "command_radius": 32,
+  "command_radius": 40,
   "flee_health": 0.15,
   "flee_merit": 250,
   "revive_boss": {
@@ -19,18 +19,10 @@
   "mass_revive_interval_ticks": 4,
   "regeneration": {
     "below": 0.5,
-    "per_second": 0.025,
+    "per_second": 0.03,
     "fast_below": 0.2,
-    "fast_per_second": 0.05,
+    "fast_per_second": 0.06,
     "delay_after_hit_ticks": 10
-  },
-  "transform": {
-    "into": "kn8:kaiju_no9_black",
-    "after_combat_ticks": 72000,
-    "health_below": 0.4,
-    "health_fraction": 1.0,
-    "destruction_radius": 0.0,
-    "message": "kn8.no9.black_form"
   },
   "absorb": [
     {
@@ -58,5 +50,11 @@
       "carcass": true,
       "message": "kn8.no9.ant_form"
     }
-  ]
+  ],
+  "hardening": {
+    "chance": 0.25,
+    "reduction": 0.5,
+    "duration_ticks": 40,
+    "cooldown_ticks": 200
+  }
 }

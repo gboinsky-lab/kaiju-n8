@@ -1,0 +1,90 @@
+{
+  "class": "numbered",
+  "fortitude": 8.4,
+  "size": "miniature",
+  "dimensions": {
+    "width": 0.8,
+    "height": 1.9
+  },
+  "overrides": {
+    "health": 1700.0,
+    "damage": 36.0,
+    "armor": 18.0
+  },
+  "speed": 0.36,
+  "intelligence": 5,
+  "parts": [
+    {
+      "name": "head",
+      "offset": [
+        0.0,
+        1.52,
+        0.0
+      ],
+      "width": 0.55,
+      "height": 0.45,
+      "multiplier": 1.3
+    },
+    {
+      "name": "torso",
+      "offset": [
+        0.0,
+        0.9,
+        0.0
+      ],
+      "width": 0.7,
+      "height": 0.7,
+      "multiplier": 1.0
+    },
+    {
+      "name": "core",
+      "offset": [
+        0.0,
+        1.19,
+        0.15
+      ],
+      "width": 0.25,
+      "height": 0.25,
+      "multiplier": 3.0,
+      "core": true
+    },
+    {
+      "name": "legs",
+      "offset": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "width": 0.6,
+      "height": 0.95,
+      "multiplier": 0.8
+    }
+  ],
+  "core": {
+    "health_fraction": 0.25
+  },
+  "abilities": [
+    "kn8:claw",
+    "kn8:charge",
+    "kn8:finger_gun",
+    "kn8:no9_black_blade_arm",
+    "kn8:no9_black_tendril",
+    "kn8:no9_black_spike_burst"
+  ],
+  "weaknesses": [],
+  "spawn": {
+    "natural": false
+  },
+  "rarity": "event",
+  "tags": [
+    "humanoid",
+    "numbered",
+    "intelligent"
+  ],
+  "rage": {
+    "health_below": 0.3,
+    "damage_multiplier": 1.15,
+    "speed_multiplier": 1.1,
+    "cooldown_multiplier": 0.7
+  }
+}

@@ -9,6 +9,7 @@ import java.util.UUID;
 import com.kn8.common.kaiju.KaijuEntity;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -35,6 +36,15 @@ public class KaijuNo9Entity extends KaijuEntity {
     long nextMassAt;
     /** 0.3: jogadores que causaram dano nele (so eles ganham o merito da fuga). */
     final Set<UUID> attackers = new HashSet<>();
+    /** 0.7-E (formas do No. 9): ja mudou de forma (nao muda de novo) e a absorcao em andamento. */
+    boolean transformed;
+    UUID absorbing;
+    int absorbRule;
+    long absorbEndsAt;
+    long nextAbsorbAt;
+    /** 0.7-E: pele endurecida ate este tick; proximo endurecimento so depois de {@code hardenReadyAt}. */
+    long hardenedUntil;
+    long hardenReadyAt;
 
     public KaijuNo9Entity(EntityType<? extends KaijuEntity> type, Level level) {
         super(type, level);
@@ -48,10 +58,35 @@ public class KaijuNo9Entity extends KaijuEntity {
         }
     }
 
-    /** Nao ataca no meio do gesto de reviver. */
+    /** Nao ataca no meio do gesto de reviver nem da absorcao. */
     @Override
     public boolean startAbility(ResourceLocation id, LivingEntity target) {
-        return reviving == null && super.startAbility(id, target);
+        return reviving == null && absorbing == null && super.startAbility(id, target);
+    }
+
+    /**
+     * 0.7-E: endurecimento da pele (numbered/<id>.json {@code hardening}) reduz o dano depois da armadura. Fica aqui e
+     * nao no {@code actuallyHurt}: no NeoForge ele ignora o valor recebido e usa o conteiner de dano, que guarda o
+     * resultado deste metodo como reducao da armadura.
+     */
+    @Override
+    protected float getDamageAfterArmorAbsorb(DamageSource source, float amount) {
+        float afterArmor = super.getDamageAfterArmorAbsorb(source, amount);
+        return level().isClientSide() ? afterArmor : No9Service.harden(this, afterArmor);
+    }
+
+    public boolean isAbsorbing() {
+        return absorbing != null;
+    }
+
+    public boolean isHardened() {
+        return level().getGameTime() < hardenedUntil;
+    }
+
+    /** Endurece a pele agora por {@code ticks} (comandos e GameTests; em luta e pela chance do JSON). */
+    public void hardenFor(int ticks) {
+        hardenedUntil = level().getGameTime() + ticks;
+        hardenReadyAt = hardenedUntil;
     }
 
     public void recordAttacker(Player player) {
@@ -67,6 +102,7 @@ public class KaijuNo9Entity extends KaijuEntity {
         super.registerControllers(controllers);
         // Controle proprio para o gesto de reviver (o "action" do kaiju so conhece as habilidades do JSON).
         controllers.add(new AnimationController<>(this, "special", 0, state -> PlayState.STOP)
-                .triggerableAnim("revive", RawAnimation.begin().thenPlay(kaijuId().getPath() + ".action.revive")));
+                .triggerableAnim("revive", RawAnimation.begin().thenPlay(kaijuId().getPath() + ".action.revive"))
+                .triggerableAnim("absorb", RawAnimation.begin().thenPlay(kaijuId().getPath() + ".action.absorb")));
     }
 }

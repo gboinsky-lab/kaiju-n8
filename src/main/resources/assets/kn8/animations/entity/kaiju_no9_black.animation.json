@@ -1,7 +1,7 @@
 {
   "format_version": "1.8.0",
   "animations": {
-    "kaiju_no9.movement.idle": {
+    "kaiju_no9_black.movement.idle": {
       "loop": true,
       "animation_length": 3.0,
       "bones": {
@@ -88,7 +88,7 @@
         }
       }
     },
-    "kaiju_no9.movement.walk": {
+    "kaiju_no9_black.movement.walk": {
       "loop": true,
       "animation_length": 0.8,
       "bones": {
@@ -211,7 +211,7 @@
         }
       }
     },
-    "kaiju_no9.action.claw": {
+    "kaiju_no9_black.action.claw": {
       "animation_length": 0.7,
       "bones": {
         "body": {
@@ -307,7 +307,7 @@
         }
       }
     },
-    "kaiju_no9.action.charge": {
+    "kaiju_no9_black.action.charge": {
       "animation_length": 1.9,
       "bones": {
         "body": {
@@ -462,7 +462,7 @@
         }
       }
     },
-    "kaiju_no9.action.revive": {
+    "kaiju_no9_black.action.revive": {
       "animation_length": 3.0,
       "bones": {
         "body": {
@@ -573,7 +573,7 @@
         }
       }
     },
-    "kaiju_no9.reaction.hurt": {
+    "kaiju_no9_black.reaction.hurt": {
       "animation_length": 0.3,
       "bones": {
         "body": {
@@ -616,7 +616,7 @@
         }
       }
     },
-    "kaiju_no9.overlay.breathe": {
+    "kaiju_no9_black.overlay.breathe": {
       "loop": true,
       "animation_length": 2.5,
       "bones": {
@@ -641,7 +641,7 @@
         }
       }
     },
-    "kaiju_no9.action.attack": {
+    "kaiju_no9_black.action.attack": {
       "animation_length": 0.7,
       "bones": {
         "body": {
@@ -737,7 +737,7 @@
         }
       }
     },
-    "kaiju_no9.action.finger_gun": {
+    "kaiju_no9_black.action.finger_gun": {
       "animation_length": 0.75,
       "bones": {
         "arm_right": {
@@ -809,7 +809,303 @@
         }
       }
     },
-    "kaiju_no9.action.absorb": {
+    "kaiju_no9_black.action.blade_arm": {
+      "animation_length": 0.8,
+      "bones": {
+        "arm_right": {
+          "rotation": {
+            "0": [
+              0,
+              0,
+              0
+            ],
+            "0.293": [
+              -100,
+              40,
+              60
+            ],
+            "0.45": [
+              -80,
+              -60,
+              0
+            ],
+            "0.8": [
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        "forearm_right": {
+          "rotation": {
+            "0": [
+              0,
+              0,
+              0
+            ],
+            "0.293": [
+              -30,
+              0,
+              0
+            ],
+            "0.45": [
+              0,
+              0,
+              0
+            ],
+            "0.8": [
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        "body": {
+          "rotation": {
+            "0": [
+              0,
+              0,
+              0
+            ],
+            "0.293": [
+              0,
+              30,
+              0
+            ],
+            "0.45": [
+              6,
+              -35,
+              0
+            ],
+            "0.8": [
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        "arm_left": {
+          "rotation": {
+            "0": [
+              0,
+              0,
+              0
+            ],
+            "0.293": [
+              -20,
+              0,
+              -20
+            ],
+            "0.8": [
+              0,
+              0,
+              0
+            ]
+          }
+        }
+      }
+    },
+    "kaiju_no9_black.action.tendril": {
+      "animation_length": 0.85,
+      "bones": {
+        "arm_right": {
+          "rotation": {
+            "0": [
+              0,
+              0,
+              0
+            ],
+            "0.35": [
+              -75,
+              0,
+              10
+            ],
+            "0.5": [
+              -95,
+              0,
+              0
+            ],
+            "0.85": [
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        "arm_left": {
+          "rotation": {
+            "0": [
+              0,
+              0,
+              0
+            ],
+            "0.35": [
+              -75,
+              0,
+              -10
+            ],
+            "0.5": [
+              -95,
+              0,
+              0
+            ],
+            "0.85": [
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        "body": {
+          "rotation": {
+            "0": [
+              0,
+              0,
+              0
+            ],
+            "0.35": [
+              -10,
+              0,
+              0
+            ],
+            "0.5": [
+              12,
+              0,
+              0
+            ],
+            "0.85": [
+              0,
+              0,
+              0
+            ]
+          }
+        }
+      }
+    },
+    "kaiju_no9_black.action.spike_burst": {
+      "animation_length": 1.1,
+      "bones": {
+        "body": {
+          "rotation": {
+            "0": [
+              0,
+              0,
+              0
+            ],
+            "0.56": [
+              25,
+              0,
+              0
+            ],
+            "0.7": [
+              -12,
+              0,
+              0
+            ],
+            "1.1": [
+              0,
+              0,
+              0
+            ]
+          },
+          "scale": {
+            "0": [
+              1,
+              1,
+              1
+            ],
+            "0.56": [
+              0.9,
+              0.92,
+              0.9
+            ],
+            "0.7": [
+              1.12,
+              1.06,
+              1.12
+            ],
+            "1.1": [
+              1,
+              1,
+              1
+            ]
+          }
+        },
+        "arm_left": {
+          "rotation": {
+            "0": [
+              0,
+              0,
+              0
+            ],
+            "0.56": [
+              -30,
+              0,
+              30
+            ],
+            "0.7": [
+              0,
+              0,
+              -80
+            ],
+            "1.1": [
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        "arm_right": {
+          "rotation": {
+            "0": [
+              0,
+              0,
+              0
+            ],
+            "0.56": [
+              -30,
+              0,
+              -30
+            ],
+            "0.7": [
+              0,
+              0,
+              80
+            ],
+            "1.1": [
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        "head": {
+          "rotation": {
+            "0": [
+              0,
+              0,
+              0
+            ],
+            "0.56": [
+              25,
+              0,
+              0
+            ],
+            "0.7": [
+              -25,
+              0,
+              0
+            ],
+            "1.1": [
+              0,
+              0,
+              0
+            ]
+          }
+        }
+      }
+    },
+    "kaiju_no9_black.action.absorb": {
       "animation_length": 3.0,
       "bones": {
         "body": {

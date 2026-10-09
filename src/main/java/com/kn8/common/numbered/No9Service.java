@@ -56,6 +56,12 @@ public final class No9Service {
     private static final double ANNOUNCE_RADIUS = 64.0;
     private static final double FLEE_REWARD_RADIUS = 48.0;
     /** Verde-acido das costuras dos revividos (a "assinatura" do No. 9). */
+    private static final int ABSORB_RETRY_TICKS = 100;
+    private static final double ABSORB_PULL_SPEED = 0.35;
+    private static final DustParticleOptions TENDRIL = new DustParticleOptions(new Vector3f(0.55F, 0.02F, 0.05F),
+            1.3F);
+    private static final DustParticleOptions HARDEN = new DustParticleOptions(new Vector3f(0.12F, 0.12F, 0.14F),
+            1.6F);
     private static final DustParticleOptions ACID = new DustParticleOptions(new Vector3f(0.45F, 1.0F, 0.2F), 1.4F);
 
     private No9Service() {
@@ -77,6 +83,9 @@ public final class No9Service {
         }
         long now = level.getGameTime();
         regenerate(level, no9, def.regeneration());
+        if (tickForms(level, no9, def, now)) {
+            return;
+        }
         if (no9.getPersistentData().getBoolean(MASS_TAG)) {
             // 0.3: onda de ressurreicao em massa; o gesto normal (uma carcaca por vez) fica desligado.
             tickMass(level, no9, def, now);
@@ -100,6 +109,143 @@ public final class No9Service {
         if (now >= no9.nextReviveAt && no9.revived.size() < def.maxRevivedAlive() && !no9.isUsingAbility()) {
             nearestCarcass(level, no9, def).ifPresent(carcass -> startRevive(level, no9, def, carcass, now));
         }
+    }
+
+    // --- formas (0.7-E) --------------------------------------------------------------------------------------------
+
+    /**
+     * Mudanca de forma e absorcao (Biblioteca v22 secao 33). Fica de fora durante a ressurreicao em massa e o gesto
+     * de reviver. Devolve true quando o No. 9 esta ocupado (absorvendo) ou deixou de existir (mudou de forma).
+     */
+    static boolean tickForms(ServerLevel level, KaijuNo9Entity no9, NumberedDef def, long now) {
+        if (no9.absorbing != null) {
+            tickAbsorb(level, no9, def, now);
+            return true;
+        }
+        if (no9.transformed || no9.reviving != null || no9.getPersistentData().getBoolean(MASS_TAG)
+                || no9.isUsingAbility()) {
+            return false;
+        }
+        Optional<NumberedDef.Transform> transform = def.transform();
+        if (transform.isPresent() && no9.getHealth() < no9.getMaxHealth() * transform.get().healthBelow()) {
+            No10Service.transform(level, no9, transform.get());
+            return true;
+        }
+        if (no9.tickCount % THINK_INTERVAL != 0 || now < no9.nextAbsorbAt) {
+            return false;
+        }
+        for (int i = 0; i < def.absorb().size(); i++) {
+            NumberedDef.Absorb rule = def.absorb().get(i);
+            if (rule.selfHealthBelow() < 1.0F && no9.getHealth() >= no9.getMaxHealth() * rule.selfHealthBelow()) {
+                continue;
+            }
+            Optional<Entity> prey = absorbCandidate(level, no9, rule);
+            if (prey.isPresent()) {
+                startAbsorb(level, no9, rule, i, prey.get(), now);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    static Optional<Entity> absorbCandidate(ServerLevel level, KaijuNo9Entity no9, NumberedDef.Absorb rule) {
+        AABB area = no9.getBoundingBox().inflate(rule.seekRadius());
+        List<Entity> found = new ArrayList<>(level.getEntitiesOfClass(KaijuEntity.class, area,
+                kaiju -> kaiju != no9 && kaiju.isAlive() && rule.species().contains(kaiju.kaijuId())
+                        && (rule.targetHealthBelow() >= 1.0F
+                        || kaiju.getHealth() < kaiju.getMaxHealth() * rule.targetHealthBelow())));
+        if (rule.carcass()) {
+            found.addAll(level.getEntitiesOfClass(CarcassEntity.class, area,
+                    carcass -> carcass.isAlive() && rule.species().contains(carcass.species())));
+        }
+        return found.stream().min(Comparator.comparingDouble(no9::distanceToSqr));
+    }
+
+    private static void startAbsorb(ServerLevel level, KaijuNo9Entity no9, NumberedDef.Absorb rule, int index,
+            Entity prey, long now) {
+        no9.absorbing = prey.getUUID();
+        no9.absorbRule = index;
+        no9.absorbEndsAt = now + rule.castTicks();
+        no9.getNavigation().stop();
+        no9.triggerAnim("special", "absorb");
+        level.playSound(null, no9.blockPosition(), KN8Sounds.KAIJU_AMBIENT.get(), SoundSource.HOSTILE, 3.0F, 0.6F);
+        announce(level, no9, Component.translatable("kn8.no9.absorbing").withStyle(ChatFormatting.DARK_RED,
+                ChatFormatting.ITALIC));
+    }
+
+    /**
+     * Tentaculos ligam o No. 9 a presa e a puxam para perto (kaiju vivo perde o alvo e para); no fim a presa some e
+     * o No. 9 vira a forma nova. Presa morta (sem ser carcaca), sumida ou longe demais cancela.
+     */
+    private static void tickAbsorb(ServerLevel level, KaijuNo9Entity no9, NumberedDef def, long now) {
+        NumberedDef.Absorb rule = no9.absorbRule < def.absorb().size() ? def.absorb().get(no9.absorbRule) : null;
+        Entity prey = level.getEntity(no9.absorbing);
+        if (rule == null || prey == null || !prey.isAlive()
+                || prey.distanceTo(no9) > rule.seekRadius() + no9.getBbWidth() + prey.getBbWidth()) {
+            no9.absorbing = null;
+            no9.nextAbsorbAt = now + ABSORB_RETRY_TICKS;
+            return;
+        }
+        no9.getNavigation().stop();
+        no9.getLookControl().setLookAt(prey);
+        Vec3 from = no9.position().add(0, no9.getBbHeight() * 0.6, 0);
+        Vec3 to = prey.position().add(0, prey.getBbHeight() * 0.5, 0);
+        Vec3 pull = from.subtract(to);
+        if (prey instanceof KaijuNo10Entity no10) {
+            // Sendo absorvido, o No. 10 nao vira a forma gigante.
+            no10.transformed = true;
+        }
+        if (prey instanceof KaijuEntity kaiju) {
+            kaiju.setTarget(null);
+            kaiju.getNavigation().stop();
+            double gap = pull.horizontalDistance() - (no9.getBbWidth() + prey.getBbWidth()) * 0.5;
+            if (gap > 0.5) {
+                Vec3 step = new Vec3(pull.x, 0, pull.z).normalize().scale(Math.min(ABSORB_PULL_SPEED, gap));
+                kaiju.setDeltaMovement(step.x, kaiju.getDeltaMovement().y, step.z);
+                kaiju.hurtMarked = true;
+            }
+        }
+        if (no9.tickCount % 2 == 0) {
+            int steps = Math.max(4, (int) (pull.length() * 3));
+            for (int i = 0; i <= steps; i++) {
+                Vec3 point = to.add(pull.scale(i / (double) steps));
+                level.sendParticles(TENDRIL, point.x, point.y, point.z, 1, 0.08, 0.08, 0.08, 0.0);
+            }
+        }
+        if (now < no9.absorbEndsAt) {
+            return;
+        }
+        no9.absorbing = null;
+        InvasionService.release(level, prey.getUUID());
+        level.sendParticles(ParticleTypes.SQUID_INK, to.x, to.y, to.z, 60, prey.getBbWidth() * 0.4,
+                prey.getBbHeight() * 0.4, prey.getBbWidth() * 0.4, 0.05);
+        prey.discard();
+        // Sem destruicao de blocos: a forma nova nasce de dentro do No. 9 (a explosao da troca e so visual).
+        No10Service.transform(level, no9, new NumberedDef.Transform(rule.into(), 0, 0.0F, 1.0F, 0.0F,
+                rule.message()));
+    }
+
+    /** Dano depois da armadura: reduzido com a pele endurecida; cada golpe pode endurecer (chance do JSON). */
+    static float harden(KaijuNo9Entity no9, float amount) {
+        Optional<NumberedDef.Hardening> found = def(no9).flatMap(NumberedDef::hardening);
+        if (found.isEmpty() || !(no9.level() instanceof ServerLevel level)) {
+            return amount;
+        }
+        NumberedDef.Hardening hardening = found.get();
+        long now = level.getGameTime();
+        if (now < no9.hardenedUntil) {
+            level.sendParticles(ParticleTypes.CRIT, no9.getX(), no9.getY() + no9.getBbHeight() * 0.6, no9.getZ(), 6,
+                    no9.getBbWidth() * 0.4, no9.getBbHeight() * 0.3, no9.getBbWidth() * 0.4, 0.1);
+            return amount * (1.0F - hardening.reduction());
+        }
+        if (now >= no9.hardenReadyAt && no9.getRandom().nextFloat() < hardening.chance()) {
+            no9.hardenedUntil = now + hardening.durationTicks();
+            no9.hardenReadyAt = no9.hardenedUntil + hardening.cooldownTicks();
+            level.sendParticles(HARDEN, no9.getX(), no9.getY() + no9.getBbHeight() * 0.5, no9.getZ(), 40,
+                    no9.getBbWidth() * 0.5, no9.getBbHeight() * 0.4, no9.getBbWidth() * 0.5, 0.0);
+            level.playSound(null, no9.blockPosition(), SoundEvents.ANVIL_LAND, SoundSource.HOSTILE, 1.0F, 0.5F);
+        }
+        return amount;
     }
 
     // --- regeneracao (0.6-D) -------------------------------------------------------------------------------------

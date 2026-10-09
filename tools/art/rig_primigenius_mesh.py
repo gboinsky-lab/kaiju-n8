@@ -138,6 +138,21 @@ SPECIES = {
             "tail_tip": [-1.4, 2.3, 1.75],
         },
     },
+    # 0.7-E: No. 9 fundido ao No. 10 (modelo do Miguel, 5 m [SUPOSICAO]): ossos e animacoes do No. 10 pequeno.
+    # A cauda desce para tras/esquerda ate o chao e sobe na ponta; feet_max_z tira a cauda do centro dos pes.
+    "kaiju_no9_fusion": {
+        "recenter_feet": True, "feet_max_z": 0.0, "jaw_y": 4.25, "jaw_z": -0.45, "head_cylinder": [4.05, 0.6],
+        "skeleton": {
+            "pelvis": [0.15, 2.1, 0.1], "chest": [0.15, 2.9, 0.1], "back": [0.15, 3.3, 0.45],
+            "neck": [0.12, 3.95, -0.05], "head": [0.11, 4.6, -0.35],
+            "shoulder_left": [-0.75, 3.6, 0.2], "elbow_left": [-1.2, 2.6, 0.1], "hand_left": [-1.24, 1.7, -0.2],
+            "shoulder_right": [1.1, 3.6, 0.2], "elbow_right": [1.4, 2.6, 0.1], "hand_right": [1.34, 1.65, -0.15],
+            "hip_left": [-0.35, 1.9, 0.1], "knee_left": [-0.55, 1.0, 0.0], "foot_left": [-0.8, 0.15, -0.2],
+            "hip_right": [0.65, 1.9, 0.1], "knee_right": [0.85, 1.0, 0.0], "foot_right": [1.0, 0.15, -0.2],
+            "tail_base": [0.0, 1.6, 0.7], "tail_mid": [-0.9, 0.6, 1.7], "tail_bend": [-2.0, 0.9, 2.7],
+            "tail_tip": [-1.7, 3.2, 2.8],
+        },
+    },
     # 0.5.0-C: forma gigante refeita pelo Miguel (24 m; chifre longo para a frente, 8 m, fica na cabeca; cauda
     # enrolada para tras e para a esquerda: desce ate ~2 m, abre ate 13 m do eixo e sobe ate 16 m).
     "kaiju_no10_giant": {
