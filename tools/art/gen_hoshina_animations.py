@@ -278,10 +278,11 @@ BEHIND = [100, 0, 0]
 
 def arms():
     """As duas laminas sempre invertidas (pegada reversa, lamina ao longo do antebraco). 0.5.0-D4 (referencias do
-    Miguel): parado, em guarda e correndo os dois bracos ficam para tras do corpo, o direito mais alto e o esquerdo
-    mais baixo, laminas saindo para tras; andando: corpo quase reto e bracos abertos para os lados e para baixo."""
+    Miguel): parado e em guarda os dois bracos ficam para tras do corpo, o direito mais alto e o esquerdo mais
+    baixo, laminas saindo para tras; correndo: bracos abertos para os lados ("asas"), o direito quase no ombro e o
+    esquerdo mais baixo; andando: corpo quase reto e bracos abertos para os lados e para baixo."""
     poses = {"ready": ([65, 0, 20], [30, 0, 15]), "walk": ([10, 0, 40], [10, 0, 40]),
-             "run": ([75, 0, 25], [35, 0, 20]), "aim": ([60, 0, 25], [25, 0, 20])}
+             "run": ([35, 0, 75], [20, 0, 40]), "aim": ([60, 0, 25], [25, 0, 20])}
     lengths = {"ready": (2.0, 2), "walk": (0.7, 6), "run": (0.45, 8), "aim": (2.0, 2)}
     def loop(length, right, left, breath, item):
         def bone(pose, flip):
@@ -293,7 +294,7 @@ def arms():
             "arm_right": bone(right, False), "arm_left": bone(left, True)})}
 
     return {f"hoshina.arms.blade_{name}": loop(lengths[name][0], right, left, lengths[name][1],
-                                               REVERSED if name == "walk" else BEHIND)
+                                               REVERSED if name in ("walk", "run") else BEHIND)
             for name, (right, left) in poses.items()}
 
 
@@ -319,7 +320,7 @@ def movement():
             "head": {"rotation": keys((0, [-lean + 5, 0, 0]), (length, [-lean + 5, 0, 0]))}}}
 
     return {"hoshina.movement.idle": idle, "hoshina.movement.walk": gait(0.7, 30, 10, 1),
-            "hoshina.movement.run": gait(0.45, 50, 42, 6)}
+            "hoshina.movement.run": gait(0.45, 50, 42, 7)}
 
 
 def tail_animations(slash_ticks=10, guard_ticks=9):
