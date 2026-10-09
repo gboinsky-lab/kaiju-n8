@@ -591,6 +591,49 @@ def weapon_animations():
     return result
 
 
+# 0.5.0-D7 (Miguel, especial de 0 a 0,25): o machado fica preso a mao pelo mesmo ponto do cabo em todos os golpes.
+# A posicao do item e um deslocamento no espaco do braco; com a rotacao fixa no AXE_GRIP ([14, 0, 0]) ele so
+# seguia o cabo na pegada parada e, girando, o machado saia da mao. Agora a posicao vem da rotacao: o ponto do cabo
+# que a pegada parada poe na mao continua na mao (no especial do Miguel esse ponto ficou o mesmo, ~12 px no cabo).
+AXE_GRIPPED = ("player.two_handed_axe.light_", "player.two_handed_axe.heavy", "player.two_handed_axe.draw",
+               "player.axe.")
+
+
+def axe_hand_point():
+    """Ponto do cabo (px, espaco do machado no Blockbench) que a pegada parada poe na mao."""
+    import numpy as np
+    from blockbench_templates import PLAYER_FRAME, item_to_bb, pos_to_bb, rzyx
+    idle = STANCES["two_handed_axe"]["idle"]
+    rotation = rzyx(*item_to_bb(idle["right_item"], PLAYER_FRAME))
+    return -rotation.T @ np.array(pos_to_bb(idle["right_item_pos"]))
+
+
+def grip_axe(anim, point):
+    """Refaz a posicao do machado a cada quarto de tick pela rotacao da animacao (a PAL interpola os numeros do jogo
+    em linha reta; a posicao segue a mesma curva)."""
+    from blockbench_templates import PLAYER_FRAME, SAMPLE, item_to_bb, pos_to_bb, rzyx
+    channel = anim["bones"].get("right_item", {}).get("rotation")
+    if not channel:
+        return anim
+    keys = sorted((float(t), v["vector"] if isinstance(v, dict) else v) for t, v in channel.items())
+    times = {round(t, 4) for t, _ in keys} | {0.0, round(anim["animation_length"], 4)}
+    for (t0, _), (t1, _) in zip(keys, keys[1:]):
+        steps = max(1, round((t1 - t0) / SAMPLE))
+        times |= {round(t0 + (t1 - t0) * i / steps, 4) for i in range(steps)}
+    out = {}
+    for t in sorted(times):
+        k = keys[0][1] if t <= keys[0][0] else keys[-1][1]
+        for (t0, a), (t1, b) in zip(keys, keys[1:]):
+            if t0 <= t <= t1:
+                f = (t - t0) / (t1 - t0) if t1 > t0 else 0
+                k = [x + (y - x) * f for x, y in zip(a, b)]
+                break
+        pos = pos_to_bb(list(-rzyx(*item_to_bb(k, PLAYER_FRAME)) @ point))
+        out[f"{t}"] = {"vector": [round(float(x), 3) for x in pos]}
+    anim["bones"]["right_item"]["position"] = out
+    return anim
+
+
 def main():
     weapon = json.loads(WEAPON.read_text(encoding="utf-8"))
     actions = weapon["actions"]
@@ -609,6 +652,10 @@ def main():
     # 0.5.0-D5: o que o Miguel animou no Blockbench (tools/blockbench/animacoes/*.bbmodel) vale por cima.
     from blockbench_templates import imported_player
     data["animations"].update(imported_player())
+    point = axe_hand_point()
+    for name, anim in data["animations"].items():
+        if name.startswith(AXE_GRIPPED):
+            grip_axe(anim, point)
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
     for name, anim in data["animations"].items():
