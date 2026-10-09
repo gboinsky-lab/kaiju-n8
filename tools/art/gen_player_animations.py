@@ -164,14 +164,15 @@ STANCES = {
                 "right_arm": [40, 0, 18], "right_item": [70, 0, 0], "left_arm": [-35, 0, -15]},
     },
     # Hoshina (referencias: figura agachada e as tres de corrida): bem baixo, perna direita a frente e aberta,
-    # esquerda atras; tronco inclinado; bracos abertos para os lados com as duas laminas invertidas no antebraco.
+    # esquerda atras; tronco inclinado; bracos para tras do corpo, o direito mais alto e o esquerdo mais baixo
+    # (0.5.0-D4, Miguel), com as duas laminas invertidas no antebraco.
     "dual_reverse": {
         "idle": {"body_pos": [0, -5, 0], "right_leg": [-40, 0, 28], "left_leg": [35, 0, -22], "torso": [28, 0, 0],
-                 "head": [-25, 0, 0], "right_arm": [-35, 0, 65], "left_arm": [-35, 0, -65],
-                 "right_item": [180, 0, 0], "left_item": [180, 0, 0]},
+                 "head": [-25, 0, 0], "right_arm": [65, 0, 20], "left_arm": [30, 0, -15],
+                 "right_item": [100, 0, 0], "left_item": [100, 0, 0]},
         "move": {"swing": 30, "period": 0.7, "body_pos": [0, -3, 0], "torso": [24, 0, 0], "head": [-20, 0, 0],
-                 "right_arm": [-20, 0, 55], "left_arm": [-20, 0, -55], "right_item": [180, 0, 0],
-                 "left_item": [180, 0, 0]},
+                 "right_arm": [55, 0, 20], "left_arm": [25, 0, -15], "right_item": [100, 0, 0],
+                 "left_item": [100, 0, 0]},
         # Correndo baixo, bracos abertos para tras (laminas ao longo do antebraco), como nas referencias.
         "run": {"swing": 45, "period": 0.45, "body_pos": [0, -3, 0], "torso": [38, 0, 0], "head": [-32, 0, 0],
                 "right_arm": [35, 0, 50], "left_arm": [35, 0, -50], "right_item": [180, 0, 0],

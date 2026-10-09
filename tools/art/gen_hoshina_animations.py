@@ -58,7 +58,8 @@ LOW_ACROSS = [-50, -75, -10]
 DOWN = [-5, 0, 15]
 UP = [-170, -10, 10]
 CROSS_CHEST = [-90, -55, -10]
-READY = [-35, 0, 65]
+READY = [65, 0, 20]
+READY_LEFT = [30, 0, 15]
 STANCE = {"root": [0, -4, 0], "body": [28, 0, 0], "head": [-25, 0, 0], "leg_right": [-40, 0, 25],
           "leg_left": [35, 0, -22]}
 LUNGE = {"root": [0, -5, 0], "leg_right": [-60, 0, 12], "leg_left": [45, 0, -10]}
@@ -73,7 +74,7 @@ class Track:
         for bone, value in STANCE.items():
             self.set(bone, 0, value)
         self.set("arm_right", 0, READY)
-        self.set("arm_left", 0, mirror(READY))
+        self.set("arm_left", 0, mirror(READY_LEFT))
 
     def set(self, bone, tick, value, channel=None):
         channel = channel or ("position" if bone == "root" else "rotation")
@@ -95,7 +96,7 @@ class Track:
         for bone, value in STANCE.items():
             self.set(bone, self.end, value)
         self.set("arm_right", self.end, READY)
-        self.set("arm_left", self.end, mirror(READY))
+        self.set("arm_left", self.end, mirror(READY_LEFT))
         bones = {}
         for bone, channels in self.bones.items():
             bones[bone] = {channel: keys(*((tick * TICK, v) for tick, v in frames))
@@ -271,25 +272,29 @@ def parry():
 
 
 REVERSED = [180, 0, 0]
+# Com o braco para tras a lamina invertida apontaria para cima: girada para sair para tras do corpo.
+BEHIND = [100, 0, 0]
 
 
 def arms():
-    """0.5.0-D2 (referencias do Miguel): as duas laminas sempre invertidas (pegada reversa, lamina ao longo do
-    antebraco). Pronto: bracos abertos para os lados; andando: abertos e mais baixos; correndo: abertos para tras;
-    com alvo: guarda baixa a frente."""
-    ready_r, walk_r, run_r, aim_r = [-35, 0, 65], [-20, 0, 55], [35, 0, 50], [-55, -25, 35]
-    items = {"item_right": {"rotation": keys((0, REVERSED))}, "item_left": {"rotation": keys((0, REVERSED))}}
-
-    def loop(length, right, breath):
+    """As duas laminas sempre invertidas (pegada reversa, lamina ao longo do antebraco). 0.5.0-D4 (referencia do
+    Miguel, figura agachada): parado, andando e em guarda os dois bracos ficam para tras do corpo, o direito mais
+    alto e o esquerdo mais baixo; correndo: abertos para tras."""
+    poses = {"ready": ([65, 0, 20], [30, 0, 15]), "walk": ([55, 0, 20], [25, 0, 15]),
+             "run": ([35, 0, 50], [35, 0, 50]), "aim": ([60, 0, 25], [25, 0, 20])}
+    lengths = {"ready": (2.0, 2), "walk": (0.7, 6), "run": (0.45, 8), "aim": (2.0, 2)}
+    def loop(length, right, left, breath, item):
+        def bone(pose, flip):
+            moved = [pose[0] - breath, pose[1], pose[2]]
+            convert = mirror if flip else (lambda v: v)
+            return {"rotation": keys((0, convert(pose)), (length / 2, convert(moved)), (length, convert(pose)))}
+        items = {"item_right": {"rotation": keys((0, item))}, "item_left": {"rotation": keys((0, item))}}
         return {"loop": True, "animation_length": length, "bones": dict(items, **{
-            "arm_right": {"rotation": keys((0, right), (length / 2, [right[0] - breath, right[1], right[2]]),
-                                           (length, right))},
-            "arm_left": {"rotation": keys((0, mirror(right)), (length / 2, mirror([right[0] - breath, right[1],
-                                                                                    right[2]])),
-                                          (length, mirror(right)))}})}
+            "arm_right": bone(right, False), "arm_left": bone(left, True)})}
 
-    return {"hoshina.arms.blade_ready": loop(2.0, ready_r, 2), "hoshina.arms.blade_walk": loop(0.7, walk_r, 6),
-            "hoshina.arms.blade_run": loop(0.45, run_r, 8), "hoshina.arms.blade_aim": loop(2.0, aim_r, 2)}
+    return {f"hoshina.arms.blade_{name}": loop(lengths[name][0], right, left, lengths[name][1],
+                                               REVERSED if name == "run" else BEHIND)
+            for name, (right, left) in poses.items()}
 
 
 def movement():
