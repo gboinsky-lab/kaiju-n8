@@ -155,6 +155,7 @@
   "kn8.configuration.surfaceOnly": "Spawn só na superfície",
   "kn8.configuration.requireDarkness": "Exigir escuridão para nascer",
   "kn8.configuration.animationMaxCatchUpTicks": "Compensação máxima de animação (ticks)",
+  "kn8.configuration.stanceFadeTicks": "Transição entre posturas de arma (ticks)",
   "item.kn8.combat_knife": "Faca de Combate",
   "item.kn8.rifle": "Rifle da Força de Defesa",
   "item.kn8.rifle_magazine": "Pente de Rifle",

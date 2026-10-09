@@ -155,6 +155,7 @@
   "kn8.configuration.surfaceOnly": "Surface spawns only",
   "kn8.configuration.requireDarkness": "Require darkness to spawn",
   "kn8.configuration.animationMaxCatchUpTicks": "Max animation catch-up (ticks)",
+  "kn8.configuration.stanceFadeTicks": "Weapon stance blend (ticks)",
   "item.kn8.combat_knife": "Combat Knife",
   "item.kn8.rifle": "Defense Force Rifle",
   "item.kn8.rifle_magazine": "Rifle Magazine",

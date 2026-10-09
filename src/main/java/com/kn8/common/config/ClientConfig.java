@@ -39,6 +39,7 @@ public final class ClientConfig {
     public static final ModConfigSpec.EnumValue<ParticleLevel> PARTICLE_LEVEL;
     public static final ModConfigSpec.DoubleValue CAMERA_SHAKE;
     public static final ModConfigSpec.IntValue ANIMATION_MAX_CATCH_UP_TICKS;
+    public static final ModConfigSpec.IntValue STANCE_FADE_TICKS;
     public static final ModConfigSpec.EnumValue<TransformRenderMethod> TRANSFORM_METHOD;
     public static final ModConfigSpec.BooleanValue DEBUG_SHOW_PARTS;
 
@@ -61,6 +62,10 @@ public final class ClientConfig {
                         + " to this many ticks, to stay in sync with the server (M9).")
                 .translation(PREFIX + "animationMaxCatchUpTicks")
                 .defineInRange("animationMaxCatchUpTicks", 6, 0, 20);
+        STANCE_FADE_TICKS = BUILDER.comment("Ticks to blend between weapon stances (idle, walk, run, weapon swap)"
+                        + " (0.5.0-D6).")
+                .translation(PREFIX + "stanceFadeTicks")
+                .defineInRange("stanceFadeTicks", 5, 0, 20);
         BUILDER.pop();
 
         BUILDER.comment("Rendering.").translation(PREFIX + "render").push("render");

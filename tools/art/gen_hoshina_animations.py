@@ -14,7 +14,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
-from gen_player_animations import STANCES, stance, stance_move, to_gecko  # noqa: E402
+from gen_player_animations import HOSHINA_NPC_DUAL, stance, stance_move, to_gecko  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
 PROFILES = ROOT / "src/main/resources/data/kn8/kn8/special_soldier"
@@ -62,7 +62,7 @@ DOWN = [-5, 0, 15]
 UP = [-170, -10, 10]
 CROSS_CHEST = [-90, -55, -10]
 # 0.5.0-D5: postura de partida/chegada das tecnicas = a parada do jogador com as laminas (mesma tabela, convertida).
-DUAL = STANCES["dual_reverse"]
+DUAL = HOSHINA_NPC_DUAL
 _IDLE = to_gecko(DUAL["idle"])
 READY = _IDLE[("arm_right", "rotation")]
 READY_LEFT = mirror(_IDLE[("arm_left", "rotation")])
@@ -301,7 +301,7 @@ def arms():
 
 
 def movement():
-    """Corpo inteiro (0.5.0-D5): as mesmas posturas do jogador com as laminas (gen_player_animations.STANCES)."""
+    """Corpo inteiro (0.5.0-D5): as posturas do NPC com as laminas (gen_player_animations.HOSHINA_NPC_DUAL)."""
     return {f"hoshina.movement.{name}": split(stance(DUAL[k], to_gecko, vector=False) if k == "idle"
                                                else stance_move(DUAL[k], to_gecko, vector=False))[0]
             for name, k in (("idle", "idle"), ("walk", "move"), ("run", "run"))}

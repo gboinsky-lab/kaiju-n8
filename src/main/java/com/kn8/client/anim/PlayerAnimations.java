@@ -22,8 +22,10 @@ import com.zigythebird.playeranim.animation.PlayerAnimationController;
 import com.zigythebird.playeranim.api.PlayerAnimationAccess;
 import com.zigythebird.playeranim.api.PlayerAnimationFactory;
 import com.zigythebird.playeranimcore.animation.layered.IAnimation;
+import com.zigythebird.playeranimcore.animation.layered.modifier.AbstractFadeModifier;
 import com.zigythebird.playeranimcore.api.firstPerson.FirstPersonConfiguration;
 import com.zigythebird.playeranimcore.api.firstPerson.FirstPersonMode;
+import com.zigythebird.playeranimcore.easing.EasingType;
 import com.zigythebird.playeranimcore.enums.PlayState;
 
 import net.minecraft.client.Minecraft;
@@ -145,7 +147,9 @@ public final class PlayerAnimations {
             String variant = player.isSprinting() ? "stance_run"
                     : Math.hypot(player.getX() - player.xo, player.getZ() - player.zo) > MOVING_PER_TICK
                     ? "stance_move" : "stance";
-            ResourceLocation wanted = weapon.flatMap(def -> WeaponHandling.profile(def, true)
+            // 0.5.0-D6: morto, morrendo ou espectador fica sem postura (a corrida nao passa por cima da morte).
+            boolean posing = !player.isDeadOrDying() && !player.isSpectator();
+            ResourceLocation wanted = !posing ? null : weapon.flatMap(def -> WeaponHandling.profile(def, true)
                             .filter(WeaponProfileDef::stance).flatMap(profile -> def.profile()))
                     .map(id -> AnimationBridge.profileAction(id, variant)).orElse(null);
             ResourceLocation current = STANCES.get(player.getId());
@@ -156,8 +160,10 @@ public final class PlayerAnimations {
             if (!(layer instanceof PlayerAnimationController controller)) {
                 continue;
             }
-            // Animacao que nao existe tambem fica guardada: nao tenta de novo a cada tick.
-            if (wanted == null || !controller.triggerAnimation(wanted)) {
+            // Animacao que nao existe tambem fica guardada: nao tenta de novo a cada tick. 0.5.0-D6: parado, andando,
+            // correndo e a troca de arma passam da pose atual para a nova em alguns ticks (sem corte seco).
+            if (wanted == null || !controller.replaceAnimationWithFade(AbstractFadeModifier.standardFadeIn(
+                    ClientConfig.STANCE_FADE_TICKS.get(), EasingType.EASE_IN_OUT_SINE), wanted, true)) {
                 controller.stop();
             }
             if (wanted == null) {
