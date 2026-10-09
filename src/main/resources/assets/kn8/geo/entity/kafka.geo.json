@@ -1,0 +1,101 @@
+{
+  "format_version": "1.12.0",
+  "minecraft:geometry": [
+    {
+      "description": {
+        "identifier": "geometry.kafka",
+        "texture_width": 16,
+        "texture_height": 16,
+        "visible_bounds_width": 3,
+        "visible_bounds_height": 3,
+        "visible_bounds_offset": [
+          0,
+          1,
+          0
+        ]
+      },
+      "bones": [
+        {
+          "name": "root",
+          "pivot": [
+            -0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "name": "body",
+          "pivot": [
+            -0.0,
+            12.8,
+            0.0
+          ],
+          "parent": "root"
+        },
+        {
+          "name": "head",
+          "pivot": [
+            -0.0,
+            22.88,
+            0.259
+          ],
+          "parent": "body"
+        },
+        {
+          "name": "arm_left",
+          "pivot": [
+            3.909,
+            22.099,
+            0.237
+          ],
+          "parent": "body"
+        },
+        {
+          "name": "arm_right",
+          "pivot": [
+            -3.975,
+            22.098,
+            0.105
+          ],
+          "parent": "body"
+        },
+        {
+          "name": "leg_left",
+          "pivot": [
+            2.002,
+            12.8,
+            0.855
+          ],
+          "parent": "root"
+        },
+        {
+          "name": "leg_right",
+          "pivot": [
+            -1.905,
+            12.8,
+            0.706
+          ],
+          "parent": "root"
+        },
+        {
+          "name": "item_right",
+          "pivot": [
+            -5.418,
+            14.052,
+            0.106
+          ],
+          "parent": "arm_right"
+        },
+        {
+          "name": "item_left",
+          "pivot": [
+            5.26,
+            13.933,
+            0.751
+          ],
+          "parent": "arm_left"
+        }
+      ]
+    }
+  ]
+}

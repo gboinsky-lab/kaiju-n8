@@ -94,6 +94,14 @@ SPECIES = {
     "reno_no6": {"stem": "reno_no6", "hip_y": 0.74, "neck_y": 1.27, "hand_min_y": 0.63,
                  "arm_inner_x": [(1.0, 0.175), (0.0, 0.205)], "arm_max_y": 1.27, "back_items": None,
                  "leg_pivot_center": True},
+    # 0.7-F: Kafka Hibino (forma humana, 1,81 m, traje da Forca de Defesa) e Kaiju No. 8 (2 m, musculoso, cranio
+    # branco). Bracos abertos em A: vao entre braco e tronco medido faixa a faixa (meshy_convert, frente -Z).
+    "kafka": {"stem": "kafka", "hip_y": 0.80, "neck_y": 1.43, "hand_min_y": 0.74,
+              "arm_inner_x": [(1.0, 0.17), (0.0, 0.205)], "arm_max_y": 1.43, "back_items": None,
+              "leg_pivot_center": True},
+    "kaiju_no8": {"stem": "kaiju_no8", "hip_y": 0.82, "neck_y": 1.47, "hand_min_y": 0.68,
+                  "arm_inner_x": [(1.12, 0.22), (0.95, 0.24), (0.0, 0.275)], "arm_max_y": 1.47, "back_items": None,
+                  "leg_pivot_center": True},
     # 0.6-F: Hoshina com o traje numerado 10: a cauda do No. 10 sai do quadril esquerdo, passa por baixo da mao,
     # sobe pelas costas e faz um arco por cima da cabeca ate a ponta na frente-direita. Separada pela superficie
     # (sementes da cauda contra sementes do resto do corpo) e dividida em 4 ossos pelo comprimento da linha.

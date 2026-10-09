@@ -1,0 +1,29 @@
+{
+  "item": "kn8:kaiju_no8_fist",
+  "base_damage": 30,
+  "reach": 3.0,
+  "style": "heavy",
+  "profile": "kn8:knife",
+  "actions": {
+    "light": {
+      "multiplier": 1.0,
+      "duration_ticks": 12,
+      "impact_tick": 5
+    },
+    "heavy": {
+      "multiplier": 1.8,
+      "duration_ticks": 22,
+      "impact_tick": 10
+    }
+  },
+  "combo": [
+    1.0,
+    1.1,
+    1.3
+  ],
+  "sounds": {
+    "swing": "kn8:weapon.axe_swing",
+    "heavy": "kn8:weapon.axe_heavy",
+    "hit": "kn8:weapon.axe_hit"
+  }
+}

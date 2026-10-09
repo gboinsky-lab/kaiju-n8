@@ -55,7 +55,16 @@ STANCES = {
         "aim": ([-50, -20, 0], [-70, 45, 0], None),
     },
 }
-FAMILY = {"reno": "rifle", "mina": "cannon", "narumi": "spear", "reno_no6": "rifle"}
+# 0.7-F: Kaiju No. 8 em guarda de luta (punhos na frente do rosto); socos saem das estocadas (thrusts: quadril, tronco
+# e os dois bracos, nunca so o braco), golpe no chao e rugido com animacao propria.
+STANCES["fists"] = {
+    "ready": ([-75, -25, 0], [-70, 30, 0], None),
+    "walk": ([-70, -25, 0], [-65, 30, 0], None),
+    "run": ([20, -10, 0], [20, 10, 0], None),
+    "aim": ([-85, -30, 0], [-80, 35, 0], None),
+}
+FAMILY = {"reno": "rifle", "mina": "cannon", "narumi": "spear", "reno_no6": "rifle", "kafka": "rifle",
+          "kaiju_no8": "fists"}
 # Perfis que usam o modelo (e o arquivo de animacoes) de outra especie.
 SHARED = {"narumi": ["narumi_no1"]}
 # 0.7-D: tecnicas da Kikoru Numbers 4 -> animacao da Kikoru com os mesmos tempos (special_soldier/kikoru_no4.json).
@@ -170,6 +179,41 @@ def sweep(stances, hit_tick, duration_ticks):
     }}
 
 
+def ground_smash(stances, hit_tick, duration_ticks):
+    """Golpe no chao do No. 8: sobe os dois punhos acima da cabeca e desce com o corpo todo, agachando."""
+    ready_right, ready_left, _ = stances["aim"]
+    t, end = hit_tick * TICK, duration_ticks * TICK
+    return {"animation_length": round(end, 3), "bones": {
+        "arm_right": {"rotation": kf((0, ready_right), (t * 0.65, [-170, 10, 10]), (t, [-40, 0, 0]),
+                                     (end - 0.15, [-40, 0, 0]), (end, ready_right))},
+        "arm_left": {"rotation": kf((0, ready_left), (t * 0.65, [-170, -10, -10]), (t, [-40, 0, 0]),
+                                    (end - 0.15, [-40, 0, 0]), (end, ready_left))},
+        "body": {"rotation": kf((0, [0, 0, 0]), (t * 0.65, [-15, 0, 0]), (t, [30, 0, 0]), (end - 0.15, [20, 0, 0]),
+                                (end, [0, 0, 0])),
+                 "position": kf((0, [0, 0, 0]), (t * 0.65, [0, 1.5, 0]), (t, [0, -5, -2]), (end - 0.15, [0, -4, -1]),
+                                (end, [0, 0, 0]))},
+        "leg_left": {"rotation": kf((0, [0, 0, 0]), (t, [30, 0, -10]), (end - 0.15, [25, 0, -10]), (end, [0, 0, 0]))},
+        "leg_right": {"rotation": kf((0, [0, 0, 0]), (t, [-35, 0, 10]), (end - 0.15, [-30, 0, 10]),
+                                     (end, [0, 0, 0]))},
+    }}
+
+
+def roar(stances, hit_tick, duration_ticks):
+    """Rugido: peito para a frente, bracos abertos para tras e a cabeca erguida."""
+    ready_right, ready_left, _ = stances["aim"]
+    t, end = hit_tick * TICK, duration_ticks * TICK
+    return {"animation_length": round(end, 3), "bones": {
+        "arm_right": {"rotation": kf((0, ready_right), (t * 0.7, [-20, 0, 40]), (t, [10, 0, 70]),
+                                     (end - 0.2, [10, 0, 70]), (end, ready_right))},
+        "arm_left": {"rotation": kf((0, ready_left), (t * 0.7, [-20, 0, -40]), (t, [10, 0, -70]),
+                                    (end - 0.2, [10, 0, -70]), (end, ready_left))},
+        "body": {"rotation": kf((0, [0, 0, 0]), (t * 0.7, [10, 0, 0]), (t, [-18, 0, 0]), (end - 0.2, [-15, 0, 0]),
+                                (end, [0, 0, 0]))},
+        "head": {"rotation": kf((0, [0, 0, 0]), (t * 0.7, [15, 0, 0]), (t, [-30, 0, 0]), (end - 0.2, [-25, 0, 0]),
+                                (end, [0, 0, 0]))},
+    }}
+
+
 def butt_strike(stances, hit_tick, duration_ticks):
     """Coronhada do Reno: puxa o rifle para tras e bate com a coronha para a frente."""
     aim_right, aim_left, _ = stances["aim"]
@@ -217,6 +261,8 @@ def hit_ticks(technique):
 def technique_animation(name, technique, family, stances):
     ticks = hit_ticks(technique)
     duration = technique["duration_ticks"]
+    if technique["type"] == "slash" and family == "fists":
+        return (roar if name == "roar" else ground_smash)(stances, ticks[0], duration)
     if technique["type"] == "slash":
         slash = technique.get("slash", {})
         big = slash.get("explosion_radius", 0) >= 3.0
@@ -289,7 +335,7 @@ def kikoru_no4():
 
 
 def main():
-    for species in sys.argv[1:] or ["reno", "mina", "narumi", "reno_no6", "kikoru_no4"]:
+    for species in sys.argv[1:] or ["reno", "mina", "narumi", "reno_no6", "kikoru_no4", "kafka", "kaiju_no8"]:
         path = ASSETS / f"{species}.animation.json"
         raw = path.read_bytes().decode("utf-8")
         newline = "\r\n" if "\r\n" in raw else "\n"

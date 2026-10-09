@@ -47,6 +47,9 @@ public final class KN8Items {
             ITEMS.register("mina_cannon", () -> new WeaponItem(new Item.Properties()));
     public static final DeferredItem<WeaponItem> NARUMI_BAYONET =
             ITEMS.register("narumi_bayonet", () -> new WeaponItem(new Item.Properties()));
+    /** 0.7-F: punhos do Kaiju No. 8 (item invisivel na mao: o dano dos golpes sai do weapon/kaiju_no8_fist.json). */
+    public static final DeferredItem<WeaponItem> KAIJU_NO8_FIST =
+            ITEMS.register("kaiju_no8_fist", () -> new WeaponItem(new Item.Properties()));
 
     /**
      * 0.5.0-D2 (Miguel: sem municao infinita): pentes (guardam os tiros, carregados com a municao) e municao de
@@ -89,6 +92,12 @@ public final class KN8Items {
                     new Item.Properties()));
     public static final DeferredItem<DeferredSpawnEggItem> RENO_NO6_SPAWN_EGG = ITEMS.register(
             "reno_no6_spawn_egg", () -> new DeferredSpawnEggItem(KN8Entities.RENO_NO6, 0x1B3550, 0xA8E6FF,
+                    new Item.Properties()));
+    /** 0.7-F: Kafka (forma humana) e Kaiju No. 8. */
+    public static final DeferredItem<DeferredSpawnEggItem> KAFKA_SPAWN_EGG = ITEMS.register("kafka_spawn_egg",
+            () -> new DeferredSpawnEggItem(KN8Entities.KAFKA, 0x1A1A1A, 0xE8E8E8, new Item.Properties()));
+    public static final DeferredItem<DeferredSpawnEggItem> KAIJU_NO8_SPAWN_EGG = ITEMS.register(
+            "kaiju_no8_spawn_egg", () -> new DeferredSpawnEggItem(KN8Entities.KAIJU_NO8, 0x1C1C1C, 0x3FF2E0,
                     new Item.Properties()));
     public static final DeferredItem<DeferredSpawnEggItem> NARUMI_NO1_SPAWN_EGG = ITEMS.register(
             "narumi_no1_spawn_egg", () -> new DeferredSpawnEggItem(KN8Entities.NARUMI_NO1, 0x1A1A1A, 0xFFFFFF,
@@ -144,6 +153,8 @@ public final class KN8Items {
                         output.accept(KIKORU_NO4_SPAWN_EGG.get());
                         output.accept(RENO_NO6_SPAWN_EGG.get());
                         output.accept(NARUMI_NO1_SPAWN_EGG.get());
+                        output.accept(KAFKA_SPAWN_EGG.get());
+                        output.accept(KAIJU_NO8_SPAWN_EGG.get());
                         output.accept(TRAINING_DUMMY.get());
                         output.accept(DEFENSE_WORKBENCH.get());
                         output.accept(TRAINING_SUIT.get());

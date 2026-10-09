@@ -92,6 +92,9 @@ public final class KN8Client {
         event.registerEntityRenderer(KN8Entities.RENO_NO6.get(), context -> new SoldierRenderer<>(context, "reno_no6"));
         // Sem modelo proprio da Numbers 1: o do Narumi (mesmas animacoes, prefixo "narumi").
         event.registerEntityRenderer(KN8Entities.NARUMI_NO1.get(), context -> new SoldierRenderer<>(context, "narumi"));
+        event.registerEntityRenderer(KN8Entities.KAFKA.get(), context -> new SoldierRenderer<>(context, "kafka"));
+        event.registerEntityRenderer(KN8Entities.KAIJU_NO8.get(),
+                context -> new SoldierRenderer<>(context, "kaiju_no8"));
         event.registerEntityRenderer(KN8Entities.TRAINING_DUMMY.get(), ArmorStandRenderer::new);
     }
 

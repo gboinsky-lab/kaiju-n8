@@ -41,9 +41,11 @@ import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -375,6 +377,52 @@ public class HoshinaEntity extends SoldierEntity {
         if (isAlive()) {
             tickExtra(now);
         }
+        if (isAlive()) {
+            tickForm(now);
+        }
+    }
+
+    /** Ticks seguidos sem alvo (volta da forma Kaiju No. 8 para o Kafka). */
+    private int idleTicks;
+
+    /**
+     * 0.7-F: regeneracao e troca de forma do perfil ({@code regeneration}/{@code transform}), no servidor. A troca
+     * cria a outra entidade no mesmo lugar (vida cheia, mesmo alvo), com fumaca, explosao sem dano e rugido, e some.
+     */
+    private void tickForm(long now) {
+        Optional<SpecialSoldierDef> def = profile();
+        if (def.isEmpty()) {
+            return;
+        }
+        def.get().regeneration().filter(regen -> now % 20 == 0 && getHealth() < getMaxHealth() * regen.healthBelow())
+                .ifPresent(regen -> heal(getMaxHealth() * regen.perSecond()));
+        idleTicks = getTarget() == null ? idleTicks + 1 : 0;
+        def.get().transform().ifPresent(transform -> {
+            boolean hurt = transform.healthBelow() > 0.0F && getHealth() < getMaxHealth() * transform.healthBelow();
+            boolean calm = transform.revertAfterIdleTicks() > 0 && idleTicks >= transform.revertAfterIdleTicks();
+            if (hurt || calm) {
+                transformInto(transform.into());
+            }
+        });
+    }
+
+    private void transformInto(ResourceLocation id) {
+        if (!(level() instanceof ServerLevel server)) {
+            return;
+        }
+        Entity other = BuiltInRegistries.ENTITY_TYPE.get(id).create(server);
+        if (other == null) {
+            return;
+        }
+        other.moveTo(getX(), getY(), getZ(), getYRot(), getXRot());
+        if (other instanceof Mob mob && getTarget() != null) {
+            mob.setTarget(getTarget());
+        }
+        server.addFreshEntity(other);
+        server.sendParticles(ParticleTypes.EXPLOSION_EMITTER, getX(), getY() + 1.0, getZ(), 1, 0, 0, 0, 0);
+        server.sendParticles(ParticleTypes.LARGE_SMOKE, getX(), getY() + 1.0, getZ(), 30, 0.6, 1.0, 0.6, 0.05);
+        server.playSound(null, getX(), getY(), getZ(), SoundEvents.RAVAGER_ROAR, SoundSource.NEUTRAL, 1.5F, 0.8F);
+        discard();
     }
 
     /** 0.6-F: comportamento extra por tick no servidor (a cauda do traje numerado 10). */

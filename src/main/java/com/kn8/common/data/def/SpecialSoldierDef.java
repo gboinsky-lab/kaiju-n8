@@ -50,16 +50,50 @@ public record SpecialSoldierDef(float health, float armor, float speed, float fo
         return growth.flight();
     }
 
+    public Optional<Transform> transform() {
+        return growth.transform();
+    }
+
+    public Optional<Regeneration> regeneration() {
+        return growth.regeneration();
+    }
+
     /**
      * Campos que crescem com a luta, lidos no mesmo nivel do JSON (o RecordCodecBuilder aceita no maximo 16 campos
      * por grupo): {@code escalation} e, so com o traje numerado 10 (0.6-F), {@code numbers10}.
      */
-    public record Growth(Escalation escalation, Optional<Numbers10> numbers10, Optional<Flight> flight) {
+    public record Growth(Escalation escalation, Optional<Numbers10> numbers10, Optional<Flight> flight,
+            Optional<Transform> transform, Optional<Regeneration> regeneration) {
         public static final MapCodec<Growth> MAP_CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
                 Escalation.CODEC.optionalFieldOf("escalation", Escalation.NONE).forGetter(Growth::escalation),
                 Numbers10.CODEC.optionalFieldOf("numbers10").forGetter(Growth::numbers10),
-                Flight.CODEC.optionalFieldOf("flight").forGetter(Growth::flight)
+                Flight.CODEC.optionalFieldOf("flight").forGetter(Growth::flight),
+                Transform.CODEC.optionalFieldOf("transform").forGetter(Growth::transform),
+                Regeneration.CODEC.optionalFieldOf("regeneration").forGetter(Growth::regeneration)
         ).apply(i, Growth::new));
+    }
+
+    /**
+     * 0.7-F (Kafka e Kaiju No. 8): troca de forma no lugar. Vira a entidade {@code into} quando a vida cai abaixo de
+     * {@code health_below} (fracao; 0 = nunca) ou depois de {@code revert_after_idle_ticks} sem alvo (0 = nunca). A
+     * forma nova nasce com a vida cheia dela e herda o alvo.
+     */
+    public record Transform(ResourceLocation into, float healthBelow, int revertAfterIdleTicks) {
+        public static final Codec<Transform> CODEC = RecordCodecBuilder.create(i -> i.group(
+                ResourceLocation.CODEC.fieldOf("into").forGetter(Transform::into),
+                Codec.floatRange(0.0F, 1.0F).optionalFieldOf("health_below", 0.0F).forGetter(Transform::healthBelow),
+                Codec.intRange(0, 72000).optionalFieldOf("revert_after_idle_ticks", 0)
+                        .forGetter(Transform::revertAfterIdleTicks)
+        ).apply(i, Transform::new));
+    }
+
+    /** 0.7-F (Kaiju No. 8): regenera {@code per_second} da vida maxima por segundo abaixo de {@code health_below}. */
+    public record Regeneration(float perSecond, float healthBelow) {
+        public static final Codec<Regeneration> CODEC = RecordCodecBuilder.create(i -> i.group(
+                Codec.floatRange(0.0F, 1.0F).fieldOf("per_second").forGetter(Regeneration::perSecond),
+                Codec.floatRange(0.0F, 1.0F).optionalFieldOf("health_below", 1.0F)
+                        .forGetter(Regeneration::healthBelow)
+        ).apply(i, Regeneration::new));
     }
 
     /**

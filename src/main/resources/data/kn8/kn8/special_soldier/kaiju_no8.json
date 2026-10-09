@@ -1,0 +1,134 @@
+{
+  "health": 1800,
+  "armor": 19,
+  "speed": 0.4,
+  "follow_range": 64,
+  "knockback_resistance": 1.0,
+  "release": 100,
+  "max_release": 100,
+  "kaiju_damage": 1.0,
+  "aura": "kn8:kaiju_no8",
+  "weapon": "kn8:kaiju_no8_fist",
+  "techniques": {
+    "rush_combo": {
+      "type": "combo",
+      "hits": [
+        0.9,
+        1.0,
+        1.1,
+        1.4
+      ],
+      "windup_ticks": 4,
+      "duration_ticks": 24,
+      "cooldown_ticks": 30,
+      "max_range": 3.0,
+      "priority": 1,
+      "hit_interval": 4
+    },
+    "heavy_punch": {
+      "type": "combo",
+      "hits": [
+        1.8
+      ],
+      "windup_ticks": 8,
+      "duration_ticks": 20,
+      "cooldown_ticks": 60,
+      "max_range": 3.2,
+      "priority": 2,
+      "honju_priority": 2,
+      "final_knockback": 2.0
+    },
+    "dash_strike": {
+      "type": "combo",
+      "hits": [
+        1.5
+      ],
+      "windup_ticks": 5,
+      "duration_ticks": 16,
+      "cooldown_ticks": 70,
+      "max_range": 12.0,
+      "priority": 3,
+      "min_range": 3.0,
+      "dash_in": 1.8
+    },
+    "ground_smash": {
+      "type": "slash",
+      "hits": [
+        1.6
+      ],
+      "windup_ticks": 12,
+      "duration_ticks": 26,
+      "cooldown_ticks": 120,
+      "min_range": 0.0,
+      "max_range": 6.0,
+      "priority": 3,
+      "slash": {
+        "count": 1,
+        "speed": 1.2,
+        "range": 4.0,
+        "width": 1.6,
+        "color": 4190944,
+        "bullet": true,
+        "explosion_radius": 4.0
+      },
+      "honju_priority": 2
+    },
+    "roar": {
+      "type": "slash",
+      "hits": [
+        0.6
+      ],
+      "windup_ticks": 14,
+      "duration_ticks": 30,
+      "cooldown_ticks": 240,
+      "min_range": 0.0,
+      "max_range": 8.0,
+      "priority": 4,
+      "slash": {
+        "count": 8,
+        "spread_degrees": 90.0,
+        "speed": 1.0,
+        "range": 8.0,
+        "width": 1.4,
+        "color": 15269887,
+        "slow_ticks": 60,
+        "slow_level": 2
+      }
+    }
+  },
+  "dash": {
+    "cooldown_ticks": 100,
+    "speed": 1.0,
+    "invulnerable_ticks": 6,
+    "react_ticks": 5,
+    "gap_close_distance": 8.0
+  },
+  "counter": {
+    "multiplier": 2.2,
+    "cooldown_ticks": 200,
+    "dash_speed": 0.9,
+    "invulnerable_ticks": 10,
+    "strike_delay_ticks": 8,
+    "react_ticks": 6
+  },
+  "parry": {
+    "chance": 0.2,
+    "damage_factor": 0.4,
+    "cooldown_ticks": 25,
+    "counter_window_ticks": 10
+  },
+  "escalation": {
+    "points_per_second": 2.0,
+    "max_points": 45,
+    "decay_per_second": 2.0,
+    "cooldown_reduction_at_max": 0.35
+  },
+  "transform": {
+    "into": "kn8:kafka",
+    "revert_after_idle_ticks": 300
+  },
+  "regeneration": {
+    "per_second": 0.03,
+    "health_below": 0.5
+  }
+}

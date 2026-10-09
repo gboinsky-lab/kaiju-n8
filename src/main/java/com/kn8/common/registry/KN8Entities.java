@@ -16,6 +16,8 @@ import com.kn8.common.soldier.SoldierEntity;
 import com.kn8.common.soldier.special.HoshinaEntity;
 import com.kn8.common.soldier.special.HoshinaNo10Entity;
 import com.kn8.common.soldier.special.KikoruEntity;
+import com.kn8.common.soldier.special.KafkaEntity;
+import com.kn8.common.soldier.special.KaijuNo8Entity;
 import com.kn8.common.soldier.special.KikoruNo4Entity;
 import com.kn8.common.soldier.special.MinaEntity;
 import com.kn8.common.soldier.special.NarumiEntity;
@@ -170,6 +172,20 @@ public final class KN8Entities {
                     .eyeHeight(1.57F)
                     .clientTrackingRange(KAIJU_TRACKING_RANGE_CHUNKS)
                     .build("narumi_no1"));
+    /** 0.7-F: Kafka Hibino, forma humana (vira o Kaiju No. 8 perdendo; special_soldier/kafka.json). */
+    public static final DeferredHolder<EntityType<?>, EntityType<KafkaEntity>> KAFKA = ENTITY_TYPES.register(
+            "kafka", () -> EntityType.Builder.<KafkaEntity>of(KafkaEntity::new, MobCategory.CREATURE)
+                    .sized(0.6F, 1.81F)
+                    .eyeHeight(1.6F)
+                    .clientTrackingRange(KAIJU_TRACKING_RANGE_CHUNKS)
+                    .build("kafka"));
+    /** 0.7-F: Kaiju No. 8 (Kafka transformado, aliado; special_soldier/kaiju_no8.json). */
+    public static final DeferredHolder<EntityType<?>, EntityType<KaijuNo8Entity>> KAIJU_NO8 = ENTITY_TYPES.register(
+            "kaiju_no8", () -> EntityType.Builder.<KaijuNo8Entity>of(KaijuNo8Entity::new, MobCategory.CREATURE)
+                    .sized(0.8F, 2.0F)
+                    .eyeHeight(1.75F)
+                    .clientTrackingRange(KAIJU_TRACKING_RANGE_CHUNKS)
+                    .build("kaiju_no8"));
 
     /** 0.6: projetil de habilidade de kaiju (raio de energia, teia, Finger Gun); so particulas no cliente. */
     public static final DeferredHolder<EntityType<?>, EntityType<KaijuProjectile>> KAIJU_PROJECTILE =
@@ -233,6 +249,12 @@ public final class KN8Entities {
         if (NarumiNo1Entity.VARIANT_NO1.equals(name)) {
             return Optional.of(NARUMI_NO1.get());
         }
+        if (KafkaEntity.VARIANT_KAFKA.equals(name)) {
+            return Optional.of(KAFKA.get());
+        }
+        if (KaijuNo8Entity.VARIANT_NO8.equals(name)) {
+            return Optional.of(KAIJU_NO8.get());
+        }
         return HoshinaEntity.VARIANT.equals(name) ? Optional.of(HOSHINA.get()) : Optional.empty();
     }
 
@@ -275,6 +297,8 @@ public final class KN8Entities {
         event.put(KIKORU_NO4.get(), SoldierEntity.createAttributes().build());
         event.put(RENO_NO6.get(), SoldierEntity.createAttributes().build());
         event.put(NARUMI_NO1.get(), SoldierEntity.createAttributes().build());
+        event.put(KAFKA.get(), SoldierEntity.createAttributes().build());
+        event.put(KAIJU_NO8.get(), SoldierEntity.createAttributes().build());
         event.put(TRAINING_DUMMY.get(), LivingEntity.createLivingAttributes().build());
         KAIJU.forEach(type -> event.put(type.get(), KaijuEntity.baseAttributes().build()));
     }

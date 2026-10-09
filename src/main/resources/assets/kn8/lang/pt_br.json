@@ -745,5 +745,12 @@
   "kn8.soldier.variant.reno_no6": "Reno Ichikawa (Numbers 6)",
   "entity.kn8.narumi_no1": "Gen Narumi (Numbers 1)",
   "item.kn8.narumi_no1_spawn_egg": "Ovo do Gen Narumi (Numbers 1)",
-  "kn8.soldier.variant.narumi_no1": "Gen Narumi (Numbers 1)"
+  "kn8.soldier.variant.narumi_no1": "Gen Narumi (Numbers 1)",
+  "entity.kn8.kafka": "Kafka Hibino",
+  "item.kn8.kafka_spawn_egg": "Ovo do Kafka Hibino",
+  "kn8.soldier.variant.kafka": "Kafka Hibino",
+  "entity.kn8.kaiju_no8": "Kaiju No. 8",
+  "item.kn8.kaiju_no8_spawn_egg": "Ovo do Kaiju No. 8",
+  "kn8.soldier.variant.kaiju_no8": "Kaiju No. 8",
+  "item.kn8.kaiju_no8_fist": "Punhos do Kaiju No. 8"
 }
