@@ -1,0 +1,69 @@
+# Novos personagens e kaiju — atualização 0.7
+
+Tudo o que entrou no mod a partir dos modelos guardados do Miguel (pedido de 2026-10-09: "implemente os modelos que
+você tem guardado e comece a implementar os novos soldados e kaijus"). Cada linha foi vista em jogo com servidor
+dedicado + 2 clientes, salvo onde está escrito "só GameTest". Onde nascem e o balanceamento final ficam para depois
+de todos os personagens (Miguel, 2026-10-09); por enquanto todos aparecem por `/summon`, `/kn8 kaiju spawn` (kaiju)
+ou ovo (soldados especiais). Números marcados [SUPOSIÇÃO] estão em `docs/BALANCEAMENTO.md`.
+
+## Kaiju
+
+| Etapa | Id (`/summon kn8:<id>`) | Nome | Categoria | Tamanho / hitbox | Vida / dano / armadura / velocidade | Ataques | Núcleo |
+|---|---|---|---|---|---|---|---|
+| 0.7-A | `philinosoma` | Philinosoma | Honju | lagarto de 9 m, cauda longa; 6 × 9 | 380 / 14,2 / 12 / 0,27 | soco pesado, mordida, rabada, investida, **disparo de espinhos** (5–24 blocos) | peito |
+| 0.7-A | `diclonius` | Diclonius | Honju | em pé, 9 m, placas nas costas; 5 × 9 | 430 / 15,5 / 14 / 0,23 | soco pesado, mordida, rabada, pancada no chão, **sopro de energia** (6–34 blocos, explode) | peito |
+| 0.7-A | `camponotus` | Camponotus | Yoju | formiga de 6 patas, 6 m; 4 × 2,9 | 200 / 9,5 / 10 / 0,33 | mordida, estocada, varredura de patas, salto, **jato de ácido** (deixa lento) | cabeça |
+| 0.7-A | `camponotus_reborn` | Camponotus revivida | Yoju | mesma forma, azul | 290 / 11,5 / 11 / 0,34 | os mesmos, ácido mais forte; **fúria** abaixo de 30% | cabeça |
+| 0.7-B | `phaneroplasmodium` | Phaneroplasmodium | Yoju | cogumelo de 8 patas, 5 m; 4,4 × 5 | 240 / 10,5 / 9 / 0,27 | mordida, estocada, varredura e várias patas, **nuvem de esporos** (deixa lento) | chapéu |
+| 0.7-B | `myxogasterocarp` | Myxogasterocarp | Honju | chapéus empilhados, raízes como patas, 9 m; 7 × 9 | 420 / 15 / 13 / 0,20 | mordida, estocada, varredura e várias raízes, **bomba de esporos** (explode) | caule |
+| 0.7-B | `kaiju_larva` | Larva misteriosa | numerado (origem do No. 8) | 0,5 m, dois pares de asas | 20 / 2 / 0 / 0,30 (voo 0,45) | mordida, mergulho; **voa** em círculo a 3 blocos do alvo | — |
+
+Ataques em negrito são novos; os outros reaproveitam habilidades que já existiam. Os ataques à distância dos kaiju
+(espinhos, sopro, ácido, esporos) só foram confirmados pelo GameTest; em jogo os kaiju foram vistos andando,
+perseguindo e lutando contra soldados.
+
+## Soldados especiais
+
+| Etapa | Id (ovo ou `/summon kn8:<id>`) | Personagem | Altura | Vida / armadura / velocidade (v1.2) | Arma | Técnicas | Aura |
+|---|---|---|---|---|---|---|---|
+| 0.7-C | `reno` | Reno Ichikawa (traje normal) | 1,70 m | 360 / 17 / 0,31 | rifle | tiro de precisão, rajada de 3, munição congelante (lentidão), supressão em leque, coronhada de perto; fica longe atirando | azul-gelo |
+| 0.7-C | `mina` | Mina Ashiro | 1,65 m | 420 / 20 / 0,30 | **canhão pesado** no quadril (`kn8:mina_cannon`) | tiro de precisão, tiro do canhão (explode), canhão carregado, Anti-Giant (preparo longo, prefere Honju/numerados); fica longe | laranja |
+| 0.7-C | `narumi` | Gen Narumi (traje normal) | 1,78 m | 480 / 20 / 0,32 | **baioneta longa** de duas mãos (`kn8:narumi_bayonet`) | estocadas em sequência, investida, varrida que empurra, tiro da baioneta | rosa com raios |
+
+Os três usam a IA dos soldados especiais (a mesma do Hoshina e da Kikoru): esquiva, contra-ataque, aparar e escalada
+de Release. As técnicas de tiro, a explosão e a munição congelante só foram confirmadas pelo GameTest; em jogo os
+três foram vistos com arma e aura, e lutando contra um Primigenius.
+
+## Armas novas
+
+| Id | Nome | Uso | Observação |
+|---|---|---|---|
+| `kn8:mina_cannon` | Canhão Pesado da Mina | arma de fogo, 12 de dano | na mão do jogador usa o perfil do rifle [SUPOSIÇÃO] |
+| `kn8:narumi_bayonet` | Baioneta do Narumi | arma pesada, 9 de dano, alcance 3,6 | na mão do jogador usa o perfil do machado [SUPOSIÇÃO] |
+
+## Pendências [DECIDIR]
+
+- Onde cada um aparece (invasões, missões, defensores) e o balanceamento final: depois de todos os personagens.
+- Desmonte: os kaiju novos reaproveitam o da aranha/Tecedeira (Yoju/Honju de patas) e o do Primigenius Honju.
+- A larva entrar no corpo do Kafka: na 0.7-F (transformação).
+- Animações próprias do canhão e da baioneta para o jogador.
+- A pata de trás esquerda da formiga veio dobrada por baixo do abdômen no modelo e mexe pouco ao andar.
+
+## Próximas etapas
+
+- **0.7-D**: Kikoru Numbers 4 (asas, voo), Reno Numbers 6 (gelo), Narumi Numbers 1.
+- **0.7-E**: No. 9 forma preta e No. 9 fundido à formiga.
+- **0.7-F**: Kafka e Kaiju No. 8 (transformação).
+
+## Onde ficam os arquivos
+
+- Dados: `data/kn8/kn8/kaiju/`, `ability/`, `flyer/kaiju_larva.json`, `locomotion/`, `special_soldier/`, `weapon/`,
+  `aura/`.
+- Modelos (malha presa aos ossos): `assets/kn8/meshes/<id>/`, `geo/entity/<id>.geo.json`,
+  `animations/entity/<id>.animation.json`, `textures/entity/<id>.png`; armas em `models/item/` e `textures/item/`.
+- Java: `KN8Entities`, `KN8Items`, `KN8Client`, `soldier/special/RenoEntity|MinaEntity|NarumiEntity`,
+  `combat/SlashProjectile` (bala, explosão, lentidão), `data/def/SlashSpec`.
+- Ferramentas: `tools/art/rig_primigenius_mesh.py`, `rig_trichonephila_mesh.py`, `rig_preondactyl_mesh.py`,
+  `rig_soldier_mesh.py`, `gen_ability_animations.py`, `build_primigenius_honju.py`, `gen_special_animations.py`.
+- Imagens em jogo: `docs/img/kaiju_0_7_a_modelos.jpg`, `kaiju_0_7_b_modelos.jpg`, `especiais_0_7_c.jpg`.
+- Roteiros de teste: `docs/ROTEIRO_TESTE_0_1_B.md` §32, §33 e §34.
