@@ -511,3 +511,13 @@ Visto na nuvem (`docs/img/hoshina_modelo.png`, `hoshina_vs_honju.png`, `hoshina_
 | 34.5 | Narumi | Estocadas em sequência, investida, varrida que empurra e tiro rosa da baioneta |
 | 34.6 | Pegar o canhão e a baioneta na aba do mod | Aparecem na mão do jogador (perfis provisórios: rifle e machado) |
 | 34.7 | Servidor dedicado + 2 clientes | Os dois veem as mesmas posturas, golpes, tiros e auras |
+
+## 35. Formas com as armas numeradas (0.7-D)
+
+| # | Passo | Esperado |
+|---|---|---|
+| 35.1 | Ovo da Kikoru (Numbers 4) e olhar de costas | Casaco longo, 4 asas azuis em X nas costas, recolhidas no chão |
+| 35.2 | Kikoru (Numbers 4) perto de um kaiju (dificuldade normal) | Decola, paira acima do kaiju com as asas batendo e as pernas recolhidas; desce em mergulho a cada técnica e sobe de novo; sem alvo, pousa |
+| 35.3 | Ovo do Reno (Numbers 6) perto de um Honju | Traje azul; lança de gelo, explosão congelante (o kaiju fica lento), campo de gelo quando o kaiju chega perto |
+| 35.4 | Ovo do Gen Narumi (Numbers 1) contra um kaiju | Mesmo modelo do Narumi, aura rosa e branca; apara e contra-ataca mais vezes, golpe que expõe o núcleo |
+| 35.5 | Servidor dedicado + 2 clientes | Os dois veem o voo, as asas e os golpes iguais |

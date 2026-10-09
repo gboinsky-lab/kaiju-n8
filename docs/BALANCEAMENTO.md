@@ -364,6 +364,15 @@ sobe mais rápido. A fuga do No. 9 só dá mérito a quem causou dano nele.
 | Mina (T6, anti-Daikaiju) | 420 | 20 | 0,30 | 40% (90%) | 0,65 | canhão (12) | tiro de precisão 1,4 (40), tiro do canhão 1,0 com explosão de raio 2,5 (50), canhão carregado 2,2 raio 3,5 (140), Anti-Giant 4,0 raio 4,5 (400, preparo de 2,5 s, prioridade contra Honju/numerados) |
 | Narumi (T6, comandante) | 480 | 20 | 0,32 | 40% (85%) | 0,62 | baioneta (9) | estocadas 0,9/1,0/1,3 (40), investida 1,8 (70), tiro da baioneta 1,3 (60), varrida 1,5 com empurrão (90) |
 
+**Formas com as armas numeradas (0.7-D)**, mesma regra (v1.2 seção 12 para vida/armadura/velocidade, o resto
+[SUPOSIÇÃO]):
+
+| Personagem | Vida | Armadura | Velocidade | Release (teto) | `kaiju_damage` | Arma | Técnicas / extra |
+|---|---|---|---|---|---|---|---|
+| Kikoru + No. 4 (T7, aérea) | 580 | 20 | 0,44 | 40% (90%) | 0,7 | machado | voo (`flight`: 0,45 bloco/tick, paira 2,5 acima do alvo, desce nas técnicas); machado veloz 0,9/1,0 (22), mergulho 1,8 com avanço (50), ataque vertical 2,4 expõe o núcleo 60 ticks (90), combo aéreo 0,8/0,9 (40), dash aéreo 1,2 (70) |
+| Reno + No. 6 (T7, criocinese) | 650 | 20 | 0,36 | 50% (100%) | 0,8 | rifle | lança de gelo 2,6 + Lentidão II (50), explosão congelante 2,0 raio 3,5 + Lentidão IV 5 s (120), campo de gelo 8 × 0,8 em volta + Lentidão III (160), congelamento múltiplo 5 × 1,0 (140), canhões auxiliares 2 × 1,2 com explosão 1,5 (60) |
+| Narumi + No. 1 (T7, previsão) | 650 | 20 | 0,36 | 50% (100%) | 0,85 | baioneta | as do Narumi + golpe no ponto fraco 2,0 expõe o núcleo 100 ticks (100) e contra-golpe previsto 1,6 com avanço (60); aparar 35% (era 15%) com janela de 16 ticks, contra-ataque com recarga 120 e reação 10 ticks, esquiva com reação 8 |
+
 Armas novas: `weapon/mina_cannon.json` (arma de fogo, 12 de dano, perfil do rifle) e `weapon/narumi_bayonet.json`
 (pesada, 9 de dano, alcance 3,6, perfil do machado) [SUPOSIÇÃO; as animações próprias para o jogador ficam para
 depois]. Reno e Mina fecham distância só acima de 40 blocos (`gap_close_distance`): lutam de longe.
