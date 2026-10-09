@@ -383,6 +383,54 @@ def gecko_to_bb(anim_name, bones_json, frames, length, loop):
                                       lambda bone: frames[bone] if bone.startswith("item_") else None)}
 
 
+def hilt_center(vertices, pivot):
+    """Centro do cabo da espada (parte com aneis, antes da guarda: a fatia mais larga perto do pivo) na malha."""
+    center = vertices.mean(0)
+    axes = np.linalg.svd(vertices - center)[2]
+    along = (vertices - pivot) @ axes[0]
+    if along.max() < -along.min():
+        along = -along
+    edges = np.linspace(along.min(), along.max(), 40)
+    widths = [np.ptp((vertices[(along >= a) & (along < b)] - pivot) @ axes[1])
+              if ((along >= a) & (along < b)).sum() > 2 else 0 for a, b in zip(edges, edges[1:])]
+    guard = edges[int(np.argmax(widths[:25]))]
+    return vertices[along < guard].mean(0)
+
+
+def hoshina_grip_points():
+    """0.5.0-D7 (Miguel: "pega na lamina"): para cada espada do Hoshina, o punho (fim da malha do braco, ultimos 3 px)
+    e o centro do cabo, no espaco do Blockbench em relacao ao pivo do osso da espada."""
+    bones = hoshina_bones()
+    index = json.loads((ASSETS / "meshes/hoshina.json").read_text(encoding="utf-8"))["bones"]
+    out = {}
+    for side in ("right", "left"):
+        item_bone, arm_bone = f"item_{side}", f"arm_{side}"
+        pivot = np.array([bones[item_bone]["pivot"][0], bones[item_bone]["pivot"][1], -bones[item_bone]["pivot"][2]])
+        shoulder = np.array([bones[arm_bone]["pivot"][0], bones[arm_bone]["pivot"][1], -bones[arm_bone]["pivot"][2]])
+        arm = to_bb_from_internal(read_obj(ASSETS / index[arm_bone].split(":")[1])[0])
+        direction = (pivot - shoulder) / np.linalg.norm(pivot - shoulder)
+        along = (arm - shoulder) @ direction
+        fist = arm[along > along.max() - 3].mean(0)
+        sword = np.array(hoshina_weapon(bones, item_bone, "hoshina_sword", 1024)["vertices"], float)
+        out[item_bone] = (fist - pivot, hilt_center(sword, pivot) - pivot)
+    return out
+
+
+def grip_gecko(anim, frames, points):
+    """Posicao da espada do Hoshina refeita pela rotacao (cada keyframe de rotacao, ja amostrado a cada quarto de
+    tick): o centro do cabo fica no punho. Posicoes postas a mao compensavam a geometria e deixavam a mao na lamina."""
+    for bone, (fist, hilt) in points.items():
+        channels = anim["bones"].get(bone)
+        if not channels or "rotation" not in channels:
+            continue
+        positions = {}
+        for t, k in channels["rotation"].items():
+            rotation = rzyx(*item_to_bb(k, frames[bone]))
+            positions[t] = [round(float(x), 3) for x in pos_to_bb(list(fist - rotation @ hilt))]
+        channels["position"] = positions
+    return anim
+
+
 def hoshina_template():
     tex_size = 1024
     bones = hoshina_bones()
@@ -613,7 +661,11 @@ def imported_hoshina(species="hoshina"):
             if name in HOSHINA_COMBINED:
                 movement, arms = split_hoshina(anim)
                 out[HOSHINA_COMBINED[name][0]] = bb_to_gecko(movement, frames)
-                out[HOSHINA_COMBINED[name][1]] = bb_to_gecko(arms, frames)
+                arms = bb_to_gecko(arms, frames)
+                if species == "hoshina":
+                    # Pontos medidos no rig do Hoshina normal (o do traje numerado 10 tem outro rig).
+                    grip_gecko(arms, frames, hoshina_grip_points())
+                out[HOSHINA_COMBINED[name][1]] = arms
             else:
                 out[name] = bb_to_gecko(anim, frames)
     return {species + name[len("hoshina"):]: anim for name, anim in out.items()}
