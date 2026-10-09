@@ -364,6 +364,9 @@ def main():
             for channel in ("rotation", "position"):
                 if channel in bone:
                     bone[channel] = dict(sorted(bone[channel].items(), key=lambda item: float(item[0])))
+    # 0.5.0-D5: o que o Miguel animou no Blockbench (tools/blockbench/animacoes/*.bbmodel) vale por cima.
+    from blockbench_templates import imported_hoshina
+    generated.update(imported_hoshina(species))
     animations.update(generated)
     text = json.dumps(data, indent=2) + "\n"
     out.write_bytes(text.replace("\n", newline).encode("utf-8"))

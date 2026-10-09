@@ -536,6 +536,9 @@ def main():
     # Animacoes genericas (comandos de teste /kn8 anim) + as de cada arma (usadas no combate).
     data["animations"].update(weapon_animations())
     data["animations"].update(profile_animations())
+    # 0.5.0-D5: o que o Miguel animou no Blockbench (tools/blockbench/animacoes/*.bbmodel) vale por cima.
+    from blockbench_templates import imported_player
+    data["animations"].update(imported_player())
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
     for name, anim in data["animations"].items():

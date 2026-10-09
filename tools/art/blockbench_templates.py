@@ -1,0 +1,519 @@
+#!/usr/bin/env python3
+"""Modelos-base do Blockbench para animar (0.5.0-D5, Miguel: animar no Blockbench) e volta para o jogo.
+
+Gera, para o Blockbench (formato Generic Model, .bbmodel), com as animacoes atuais ja dentro:
+  - jogador_espadas_duplas: boneco do jogador com uma espada do Hoshina em cada mao (animacoes player.dual_reverse.*
+    e o especial da espada);
+  - jogador_machado: boneco do jogador com o machado da Kikoru (player.two_handed_axe.* e o especial);
+  - hoshina: o Hoshina NPC (malha do Meshy, ossos do jogo, as duas espadas; parado/andando/correndo e as tecnicas).
+E le de volta o .bbmodel salvo pelo Miguel (`importar`), gravando as animacoes no jogo.
+
+Convencoes (medidas no Blockbench 5.2 e no jogo, 2026-10-09):
+  - Blockbench: Y para cima, o boneco olha para +Z, braco direito em -X; rotacao do grupo = Rz(z) Ry(y) Rx(x).
+  - Jogo (PAL do jogador e GeckoLib do Hoshina usam os mesmos numeros): o Blockbench mostra igual com
+    (x, -y, -z) na rotacao e (x, y, -z) na posicao.
+  - Arma na mao: o jogo gira a arma em volta do punho DEPOIS de deita-la (Rx(-90) Ry(180) do vanilla e, na PAL,
+    Z por -Y, Y por -Z, X por -X). No Blockbench o osso right_item/left_item gira a arma do jeito comum; a conversao
+    entre os dois e uma conta de matriz (item_to_bb / item_from_bb).
+Os .json gerados vao para o tools/blockbench/build.js, que monta o projeto dentro do proprio Blockbench (web) e
+grava o .bbmodel (assim o arquivo sai no formato exato da versao atual).
+Uso:
+  python3 tools/art/blockbench_templates.py gerar <pasta> [modelo...]
+  python3 tools/art/blockbench_templates.py importar <arquivo.bbmodel>   (so lista; para valer, o .bbmodel vai em
+      tools/blockbench/animacoes/ e os geradores gen_player_animations.py / gen_hoshina_animations.py o aplicam)
+"""
+import base64
+import io
+import json
+import math
+import sys
+from pathlib import Path
+
+import numpy as np
+from PIL import Image, ImageDraw
+
+sys.path.insert(0, str(Path(__file__).parent))
+import preview_held_items as ph  # noqa: E402
+from rig_trichonephila_mesh import read_obj  # noqa: E402
+
+ROOT = Path(__file__).resolve().parents[2]
+ASSETS = ROOT / "src/main/resources/assets/kn8"
+COMBAT = ASSETS / "player_animations/combat.json"
+HOSHINA_ANIMS = ASSETS / "animations/entity/hoshina.animation.json"
+PX = 16.0
+
+
+# ------------------------------------------------------------------------------------------------ matrizes
+def r3(m):
+    return np.asarray(m)[:3, :3]
+
+
+def euler_zyx(m):
+    """Angulos (graus) com m = Rz(z) Ry(y) Rx(x)."""
+    y = math.asin(max(-1.0, min(1.0, -m[2, 0])))
+    x = math.atan2(m[2, 1], m[2, 2])
+    z = math.atan2(m[1, 0], m[0, 0])
+    return [round(math.degrees(a), 3) for a in (x, y, z)]
+
+
+def rzyx(x, y, z):
+    return r3(ph.Rz(math.radians(z)) @ ph.Ry(math.radians(y)) @ ph.Rx(math.radians(x)))
+
+
+def limb_to_bb(v):
+    return [v[0], -v[1], -v[2]]
+
+
+def pos_to_bb(v):
+    return [v[0], v[1], -v[2]]
+
+
+# Do espaco da ModelPart do vanilla (Y para baixo, frente -Z) para o do Blockbench.
+W = r3(ph.Rx(math.pi))
+# Cadeia do vanilla do braco ate a arma (ItemInHandLayer), antes do giro da PAL.
+B_PLAYER = r3(ph.Rx(-math.pi / 2) @ ph.Ry(math.pi))
+
+
+def pal_item(k):
+    """Giro da arma da PAL para os numeros k da animacao: ZP(-y), YP(-z), XP(-x)."""
+    return r3(ph.Rz(math.radians(-k[1])) @ ph.Ry(math.radians(-k[2])) @ ph.Rx(math.radians(-k[0])))
+
+
+def item_to_bb(k, frame):
+    """Numeros da animacao do jogo -> rotacao do osso da arma no Blockbench. frame = matriz do espaco "deitado" da
+    arma para o espaco do braco no Blockbench."""
+    return euler_zyx(frame @ pal_item(k) @ frame.T)
+
+
+def item_from_bb(b, frame):
+    p = frame.T @ rzyx(*b) @ frame
+    a = euler_zyx(p)  # p = Rz(a2) Ry(a1) Rx(a0) = Rz(-ky) Ry(-kz) Rx(-kx)
+    return [round(-a[0], 3), round(-a[2], 3), round(-a[1], 3)]
+
+
+# ------------------------------------------------------------------------------------------------ texturas
+def data_url(image):
+    buf = io.BytesIO()
+    image.save(buf, "PNG")
+    return "data:image/png;base64," + base64.b64encode(buf.getvalue()).decode()
+
+
+def file_url(path):
+    return data_url(Image.open(path).convert("RGBA"))
+
+
+def player_skin():
+    """Pele 64x64 simples (traje preto e branco, rosto) no layout do jogador, so para ver o boneco."""
+    img = Image.new("RGBA", (64, 64), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+
+    def box(u, v, w, h, dd, front, side=None, top=None):
+        side = side or front
+        top = top or front
+        d.rectangle([u + dd, v, u + dd + 2 * w - 1, v + dd - 1], fill=top)
+        d.rectangle([u, v + dd, u + dd - 1, v + dd + h - 1], fill=side)
+        d.rectangle([u + dd, v + dd, u + dd + w - 1, v + dd + h - 1], fill=front)
+        d.rectangle([u + dd + w, v + dd, u + 2 * dd + w - 1, v + dd + h - 1], fill=side)
+        d.rectangle([u + 2 * dd + w, v + dd, u + 2 * dd + 2 * w - 1, v + dd + h - 1], fill=front)
+
+    skin, hair, black, white, grey = (225, 180, 140), (60, 30, 80), (25, 25, 30), (235, 235, 235), (90, 90, 100)
+    box(0, 0, 8, 8, 8, skin, hair, hair)
+    d.rectangle([24, 8, 31, 15], fill=hair)  # nuca
+    d.rectangle([8, 8, 15, 10], fill=hair)  # franja
+    d.rectangle([9, 12, 10, 12], fill=(250, 210, 40))
+    d.rectangle([13, 12, 14, 12], fill=(250, 210, 40))
+    box(16, 16, 8, 12, 4, black, grey, white)
+    d.rectangle([23, 20, 24, 31], fill=white)  # ziper
+    box(40, 16, 4, 12, 4, white, white, white)
+    d.rectangle([40, 28, 55, 31], fill=black)  # luva
+    box(32, 48, 4, 12, 4, white, white, white)
+    d.rectangle([32, 60, 47, 63], fill=black)
+    box(0, 16, 4, 12, 4, black, grey)
+    d.rectangle([0, 28, 15, 31], fill=white)  # bota
+    box(16, 48, 4, 12, 4, black, grey)
+    d.rectangle([16, 60, 31, 63], fill=white)
+    return img
+
+
+# ------------------------------------------------------------------------------------------------ malhas
+def mesh_entry(name, parent, texture, points, uv, tex_size):
+    """points: (N, 3, 3) em px do Blockbench; uv: (N, 3, 2) em [0, 1] com v para baixo."""
+    flat = np.asarray(points).reshape(-1, 3)
+    faces = []
+    for i in range(len(points)):
+        a, b, c = 3 * i, 3 * i + 1, 3 * i + 2
+        faces.append([a, b, c] + [round(float(x) * tex_size, 3) for x in np.asarray(uv[i]).reshape(-1)])
+    return {"name": name, "parent": parent, "texture": texture, "vertices": np.round(flat, 3).tolist(),
+            "faces": faces}
+
+
+# ------------------------------------------------------------------------------------------------ jogador
+PLAYER_GROUPS = [
+    # nome, pivo (px, Blockbench), pai. "body" e o osso da PAL que gira o jogador inteiro em volta do quadril.
+    ("body", [0, 12, 0], None),
+    ("torso", [0, 24, 0], "body"),
+    ("head", [0, 24, 0], "body"),
+    ("right_arm", [-5, 22, 0], "body"),
+    ("left_arm", [5, 22, 0], "body"),
+    ("right_leg", [-1.9, 12, 0], "body"),
+    ("left_leg", [1.9, 12, 0], "body"),
+]
+PLAYER_CUBES = [
+    ("torso", [-4, 12, -2], [4, 24, 2], [16, 16]),
+    ("head", [-4, 24, -4], [4, 32, 4], [0, 0]),
+    ("right_arm", [-8, 12, -2], [-4, 24, 2], [40, 16]),
+    ("left_arm", [4, 12, -2], [8, 24, 2], [32, 48]),
+    ("right_leg", [-3.9, 0, -2], [0.1, 12, 2], [0, 16]),
+    ("left_leg", [-0.1, 0, -2], [3.9, 12, 2], [16, 48]),
+]
+
+
+def skin_faces(lo, hi, uv):
+    """UV de cada face pelo layout da pele, com o rosto para +Z (o boneco olha para o sul, como o jogo nesta
+    conversao) e o lado direito do personagem em -X."""
+    w, h, d = (hi[0] - lo[0], hi[1] - lo[1], hi[2] - lo[2])
+    u, v = uv
+    regions = {"up": (u + d, v, w, d), "down": (u + d + w, v, w, d), "west": (u, v + d, d, h),
+               "south": (u + d, v + d, w, h), "east": (u + d + w, v + d, d, h), "north": (u + 2 * d + w, v + d, w, h)}
+    return {face: [x, y, x + ww, y + hh] for face, (x, y, ww, hh) in regions.items()}
+
+
+def player_hand(side):
+    """Pivo do osso da arma: o ponto em volta do qual o jogo (PAL) gira a arma, no Blockbench (px)."""
+    arm = np.array([-5.0, 22.0, 0.0]) if side == "right" else np.array([5.0, 22.0, 0.0])
+    sign = 1 if side == "right" else -1
+    offset = B_PLAYER @ np.array([sign / 16, 2 / 16, -10 / 16])
+    return arm + PX * (W @ offset)
+
+
+def player_weapon(item_name, side, tex_size):
+    tris, uv, _, disp = ph.item(item_name)
+    context = "thirdperson_righthand" if side == "right" else "thirdperson_lefthand"
+    pivot = player_hand(side)
+    m = ph.Rx(-math.pi / 2) @ ph.Ry(math.pi) @ ph.display(disp, context, left=side == "left")
+    q = ph.apply(m, tris.reshape(-1, 3)) @ W.T
+    points = pivot + PX * q
+    return mesh_entry(f"{item_name}_{side}", f"{side}_item", item_name, points.reshape(-1, 3, 3), uv, tex_size)
+
+
+def frames_of(channel):
+    out = []
+    for t, v in channel.items():
+        vec = v["vector"] if isinstance(v, dict) else v
+        out.append((float(t), [float(x) for x in vec]))
+    return sorted(out)
+
+
+def loop_of(anim):
+    loop = anim.get("loop")
+    return "loop" if loop is True else "hold" if loop == "hold_on_last_frame" else "once"
+
+
+def convert_channels(bones, rotation, position):
+    out = {}
+    for bone, channels in bones.items():
+        for channel, frames in channels.items():
+            conv = rotation(bone) if channel == "rotation" else position
+            out.setdefault(bone, {})[channel] = [[t] + conv(v) for t, v in frames_of(frames)]
+    return out
+
+
+PLAYER_FRAME = W @ B_PLAYER
+
+
+WEAPONS = ROOT / "src/main/resources/data/kn8/kn8/weapon"
+PROFILES_DIR = ROOT / "src/main/resources/data/kn8/kn8/special_soldier"
+
+
+def weapon_json(item):
+    return json.loads((WEAPONS / f"{item}.json").read_text(encoding="utf-8"))
+
+
+def player_markers(anim_name, item):
+    """Instante do dano (s) de cada golpe do jogador: o servidor aplica o golpe nesse tick, a animacao tem que
+    acertar ali (regra 6)."""
+    weapon = weapon_json(item)
+    action = anim_name.rsplit(".", 1)[1]
+    if action.startswith("light"):
+        return [weapon["actions"]["light"]["impact_tick"] / 20]
+    if action == "heavy":
+        return [weapon["actions"]["heavy"]["impact_tick"] / 20]
+    if action == "special" and "special" in weapon:
+        return [weapon["special"]["impact_tick"] / 20]
+    return []
+
+
+def hoshina_markers(anim_name):
+    profile = json.loads((PROFILES_DIR / "hoshina.json").read_text(encoding="utf-8"))
+    technique = profile["techniques"].get(anim_name.rsplit(".", 1)[1])
+    if technique:
+        step = technique.get("hit_interval", 2)
+        return [(technique["windup_ticks"] + i * step) / 20 for i in range(len(technique["hits"]))]
+    if anim_name.endswith("kaeshi_uchi"):
+        return [profile["counter"]["strike_delay_ticks"] / 20]
+    return []
+
+
+def pal_to_bb(anim_name, anim):
+    def rotation(bone):
+        return (lambda v: item_to_bb(v, PLAYER_FRAME)) if bone.endswith("_item") else limb_to_bb
+    return {"name": anim_name, "length": anim["animation_length"], "loop": loop_of(anim),
+            "bones": convert_channels(anim["bones"], rotation, pos_to_bb)}
+
+
+def player_template(name, weapons, prefixes, extra):
+    """weapons: {"right": item, "left": item ou None}; prefixes/extra: animacoes do combat.json a incluir."""
+    tex_size = 64
+    groups = [{"name": n, "origin": o, "parent": p} for n, o, p in PLAYER_GROUPS]
+    cubes = [{"name": n + "_cubo", "parent": n, "from": f, "to": t, "faces": skin_faces(f, t, uv), "texture": "pele"}
+             for n, f, t, uv in PLAYER_CUBES]
+    textures = [{"name": "pele", "png": data_url(player_skin())}]
+    meshes = []
+    for side, item in weapons.items():
+        pivot = player_hand(side)
+        groups.append({"name": f"{side}_item", "origin": [round(float(c), 4) for c in pivot],
+                       "parent": f"{side}_arm"})
+        if item:
+            meshes.append(player_weapon(item, side, tex_size))
+            if not any(t["name"] == item for t in textures):
+                textures.append({"name": item, "png": file_url(ASSETS / f"textures/item/{item}.png")})
+    data = json.loads(COMBAT.read_text(encoding="utf-8"))["animations"]
+    animations = [pal_to_bb(n, a) for n, a in data.items() if n.startswith(prefixes) or n in extra]
+    for anim in animations:
+        anim["markers"] = player_markers(anim["name"], weapons["right"])
+    return {"format": "free", "name": name, "texture_width": tex_size, "texture_height": tex_size,
+            "textures": textures, "groups": groups, "cubes": cubes, "meshes": meshes, "animations": animations}
+
+
+# ------------------------------------------------------------------------------------------------ Hoshina
+Y180 = r3(ph.Ry(math.pi))
+
+
+def hoshina_bones():
+    geo = json.loads((ASSETS / "geo/entity/hoshina.geo.json").read_text(encoding="utf-8"))
+    return {b["name"]: b for b in geo["minecraft:geometry"][0]["bones"]}
+
+
+def gecko_internal(pivot):
+    """Pivo do .geo.json -> espaco em que a GeckoLib desenha (o X e invertido ao carregar), em blocos."""
+    return np.array([-pivot[0], pivot[1], pivot[2]]) / PX
+
+
+def to_bb_from_internal(points):
+    """Espaco interno da GeckoLib (blocos) -> Blockbench (px): giro de 180 graus em Y."""
+    return PX * (np.asarray(points) @ Y180.T)
+
+
+def hoshina_hand(bones, item_bone):
+    """Mesma cadeia do SoldierRenderer: alinha ao braco (ombro -> mao) e desce 1 px / avanca 2 px."""
+    arm = gecko_internal(bones[bones[item_bone]["parent"]]["pivot"])
+    hand = gecko_internal(bones[item_bone]["pivot"])
+    rto = r3(ph.rotation_to((0, -1, 0), hand - arm))
+    center = hand + rto @ np.array([0, -1 / 16, -2 / 16])
+    return rto, center
+
+
+def hoshina_weapon(bones, item_bone, item_name, tex_size):
+    tris, uv, _, disp = ph.item(item_name)
+    rto, center = hoshina_hand(bones, item_bone)
+    scale = disp["thirdperson_righthand"]["scale"][0]
+    s = min(0.85, scale) / scale
+    m = ph.Rx(-math.pi / 2) @ ph.S(s, s, s) @ ph.display(disp, "thirdperson_righthand")
+    q = center + ph.apply(m, tris.reshape(-1, 3)) @ rto.T
+    return mesh_entry(f"{item_name}_{item_bone}", item_bone, item_name,
+                      to_bb_from_internal(q).reshape(-1, 3, 3), uv, tex_size)
+
+
+def hoshina_frames(bones):
+    return {item_bone: Y180 @ hoshina_hand(bones, item_bone)[0] @ r3(ph.Rx(-math.pi / 2))
+            for item_bone in ("item_right", "item_left")}
+
+
+# Animacoes de corpo inteiro do Hoshina: no jogo sao dois controllers (corpo + bracos); no Blockbench uma so.
+HOSHINA_COMBINED = {"hoshina.parado": ("hoshina.movement.idle", "hoshina.arms.blade_ready"),
+                    "hoshina.andando": ("hoshina.movement.walk", "hoshina.arms.blade_walk"),
+                    "hoshina.correndo": ("hoshina.movement.run", "hoshina.arms.blade_run")}
+
+
+def gecko_to_bb(anim_name, bones_json, frames, length, loop):
+    def rotation(bone):
+        return (lambda v: item_to_bb(v, frames[bone])) if bone.startswith("item_") else limb_to_bb
+    return {"name": anim_name, "length": length, "loop": loop,
+            "bones": convert_channels(bones_json, rotation, pos_to_bb)}
+
+
+def hoshina_template():
+    tex_size = 1024
+    bones = hoshina_bones()
+    groups = [{"name": n, "origin": [b["pivot"][0], b["pivot"][1], -b["pivot"][2]], "parent": b.get("parent")}
+              for n, b in bones.items()]
+    index = json.loads((ASSETS / "meshes/hoshina.json").read_text(encoding="utf-8"))["bones"]
+    meshes = []
+    for bone, location in index.items():
+        v, uv, _, f = read_obj(ASSETS / location.split(":")[1])
+        tuv = uv[f].copy()
+        tuv[..., 1] = 1 - tuv[..., 1]
+        meshes.append(mesh_entry(bone, bone, "hoshina", to_bb_from_internal(v)[f], tuv, tex_size))
+    for item_bone in ("item_right", "item_left"):
+        meshes.append(hoshina_weapon(bones, item_bone, "hoshina_sword", tex_size))
+    textures = [{"name": "hoshina", "png": file_url(ASSETS / "textures/entity/hoshina.png")},
+                {"name": "hoshina_sword", "png": file_url(ASSETS / "textures/item/hoshina_sword.png")}]
+    frames = hoshina_frames(bones)
+    data = json.loads(HOSHINA_ANIMS.read_text(encoding="utf-8"))["animations"]
+    animations = []
+    for name, parts in HOSHINA_COMBINED.items():
+        merged = {}
+        for part in parts:
+            merged.update(data[part]["bones"])
+        length = max(data[part]["animation_length"] for part in parts)
+        animations.append(gecko_to_bb(name, merged, frames, length, "loop"))
+    for name, anim in data.items():
+        if name.startswith("hoshina.action.") and "rifle" not in name and "pistol" not in name:
+            animations.append(gecko_to_bb(name, anim["bones"], frames, anim["animation_length"], loop_of(anim)))
+    for anim in animations:
+        anim["markers"] = hoshina_markers(anim["name"])
+    groups = [{"name": g["name"], "origin": [round(float(c), 4) for c in g["origin"]], "parent": g["parent"]}
+              for g in groups]
+    return {"format": "free", "name": "hoshina", "texture_width": tex_size, "texture_height": tex_size,
+            "textures": textures, "groups": groups, "meshes": meshes, "animations": animations}
+
+
+TEMPLATES = {
+    "jogador_espadas_duplas": lambda: player_template(
+        "jogador_espadas_duplas", {"right": "hoshina_sword", "left": "hoshina_sword"},
+        ("player.dual_reverse.",), ("player.hoshina_sword.special",)),
+    "jogador_machado": lambda: player_template(
+        "jogador_machado", {"right": "axe", "left": None},
+        ("player.two_handed_axe.",), ("player.axe.special",)),
+    "hoshina": hoshina_template,
+}
+
+
+# ------------------------------------------------------------------------------------------------ importar
+IMPORTED = ROOT / "tools/blockbench/animacoes"
+
+
+def read_bbmodel(path):
+    """Animacoes de um .bbmodel: {nome: {"length", "loop", "bones": {osso: {canal: [(t, [x, y, z])]}}}}."""
+    data = json.loads(Path(path).read_text(encoding="utf-8"))
+    groups = {g["name"] for g in data.get("groups", [])}
+    out = {}
+    for anim in data.get("animations", []):
+        bones = {}
+        for animator in anim.get("animators", {}).values():
+            if animator.get("type", "bone") != "bone":
+                continue
+            for key in animator.get("keyframes", []):
+                if key["channel"] not in ("rotation", "position"):
+                    continue
+                point = key["data_points"][0]
+                vec = [float(point.get(axis, 0) or 0) for axis in "xyz"]
+                bones.setdefault(animator["name"], {}).setdefault(key["channel"], []).append(
+                    (round(float(key["time"]), 4), vec))
+        for channels in bones.values():
+            for channel in channels:
+                channels[channel].sort()
+        out[anim["name"]] = {"length": float(anim.get("length") or 0), "loop": anim.get("loop", "once"),
+                             "bones": bones}
+    return groups, out
+
+
+def game_loop(loop):
+    return True if loop == "loop" else "hold_on_last_frame" if loop == "hold" else None
+
+
+def bb_to_pal(anim):
+    bones = {}
+    for bone, channels in anim["bones"].items():
+        for channel, frames in channels.items():
+            if channel == "position":
+                conv = pos_to_bb  # a conversao e a propria inversa
+            elif bone.endswith("_item"):
+                conv = lambda v: item_from_bb(v, PLAYER_FRAME)  # noqa: E731
+            else:
+                conv = limb_to_bb
+            bones.setdefault(bone, {})[channel] = {f"{t}": {"vector": conv(v)} for t, v in frames}
+    out = {"animation_length": anim["length"], "bones": bones}
+    loop = game_loop(anim["loop"])
+    return {"loop": loop, **out} if loop is not None else out
+
+
+def bb_to_gecko(anim, frames):
+    bones = {}
+    for bone, channels in anim["bones"].items():
+        for channel, keys in channels.items():
+            if channel == "position":
+                conv = pos_to_bb
+            elif bone.startswith("item_"):
+                conv = lambda v, b=bone: item_from_bb(v, frames[b])  # noqa: E731
+            else:
+                conv = limb_to_bb
+            bones.setdefault(bone, {})[channel] = {f"{t}": conv(v) for t, v in keys}
+    out = {"animation_length": anim["length"], "bones": bones}
+    loop = game_loop(anim["loop"])
+    return {"loop": loop, **out} if loop is not None else out
+
+
+def split_hoshina(anim):
+    """Corpo inteiro do Blockbench -> movement (corpo/pernas/cabeca/raiz) + arms (bracos e espadas)."""
+    def part(keep):
+        return dict(anim, bones={b: c for b, c in anim["bones"].items() if keep(b)})
+    return part(lambda b: not b.startswith(("arm", "item"))), part(lambda b: b.startswith(("arm", "item")))
+
+
+def imported_player():
+    """Animacoes do jogador vindas dos .bbmodel em tools/blockbench/animacoes (usado pelo gen_player_animations)."""
+    out = {}
+    for path in sorted(IMPORTED.glob("*.bbmodel")):
+        groups, anims = read_bbmodel(path)
+        if "right_item" not in groups:
+            continue
+        for name, anim in anims.items():
+            if name.startswith("player."):
+                out[name] = bb_to_pal(anim)
+    return out
+
+
+def imported_hoshina(species="hoshina"):
+    """Animacoes do Hoshina vindas dos .bbmodel (usado pelo gen_hoshina_animations; nomes hoshina.* trocados pelo
+    prefixo da especie)."""
+    out = {}
+    frames = None
+    for path in sorted(IMPORTED.glob("*.bbmodel")):
+        groups, anims = read_bbmodel(path)
+        if "item_right" not in groups:
+            continue
+        frames = frames or hoshina_frames(hoshina_bones())
+        for name, anim in anims.items():
+            if not name.startswith("hoshina."):
+                continue
+            if name in HOSHINA_COMBINED:
+                movement, arms = split_hoshina(anim)
+                out[HOSHINA_COMBINED[name][0]] = bb_to_gecko(movement, frames)
+                out[HOSHINA_COMBINED[name][1]] = bb_to_gecko(arms, frames)
+            else:
+                out[name] = bb_to_gecko(anim, frames)
+    return {species + name[len("hoshina"):]: anim for name, anim in out.items()}
+
+
+def main():
+    if len(sys.argv) < 3:
+        print(__doc__)
+        return
+    if sys.argv[1] == "gerar":
+        out = Path(sys.argv[2])
+        out.mkdir(parents=True, exist_ok=True)
+        for name in sys.argv[3:] or list(TEMPLATES):
+            spec = TEMPLATES[name]()
+            spec["out"] = f"{name}.bbmodel"
+            (out / f"{name}.json").write_text(json.dumps(spec), encoding="utf-8")
+            print(name, len(spec["animations"]), "animacoes")
+    elif sys.argv[1] == "importar":
+        groups, anims = read_bbmodel(sys.argv[2])
+        print("ossos:", sorted(groups))
+        for name, anim in anims.items():
+            print(f"{name}: {anim['length']} s, {anim['loop']}, ossos {sorted(anim['bones'])}")
+
+
+if __name__ == "__main__":
+    main()
