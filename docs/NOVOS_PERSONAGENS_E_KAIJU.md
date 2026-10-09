@@ -8,9 +8,8 @@ GameTest". Onde nascem e o balanceamento final ficam para depois de todos os per
 enquanto os kaiju aparecem por `/summon` ou `/kn8 kaiju spawn` e os soldados especiais pelo ovo ou `/summon`. Números
 marcados [SUPOSIÇÃO] estão em `docs/BALANCEAMENTO.md`.
 
-**Resumo:** 7 kaiju novos, 10 personagens novos (Kikoru, Reno, Mina, Narumi, Kikoru No. 4, Reno No. 6, Narumi No. 1,
-Kafka e Kaiju No. 8 contam 9 entidades de soldado especial; o No. 8 é a forma kaiju do Kafka), 3 armas novas e 5
-modelos refeitos.
+**Resumo:** 7 kaiju novos; 9 soldados especiais novos (Kikoru, Reno, Mina, Narumi, Kikoru No. 4, Reno No. 6, Narumi
+No. 1, Kafka e Kaiju No. 8, que é a forma kaiju do Kafka); 3 armas novas; 5 modelos refeitos.
 
 ## Kaiju
 
@@ -48,7 +47,7 @@ três foram vistos com arma e aura, e lutando contra um Primigenius.
 
 A Kikoru normal defende nas invasões `honju_assault`, `web_queen`, `no9_resurrection` (nível 3) e `kaiju_horde`
 (nível 4, com o Hoshina); vista de novo em jogo em 2026-10-09 contra um Primigenius (raios amarelos nos golpes, núcleo
-exposto pelo quebra-guarda; `docs/img/kikoru_normal.jpg`). Os personagens da 0.7 ainda não aparecem em invasões. O Miguel pode animá-la no Blockbench
+exposto; `docs/img/kikoru_normal.jpg`). Os personagens da 0.7 ainda não aparecem em invasões. O Miguel pode animá-la no Blockbench
 pelo modelo-base `tools/blockbench/modelos_base/kikoru.bbmodel`.
 
 ## Armas novas
