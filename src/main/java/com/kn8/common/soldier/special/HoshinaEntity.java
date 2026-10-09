@@ -25,10 +25,14 @@ import com.kn8.common.registry.KN8Attachments;
 import com.kn8.common.registry.KN8Sounds;
 import com.kn8.common.soldier.SoldierEntity;
 import com.kn8.common.vfx.VfxService;
+import com.kn8.core.combat.CombatMath;
 import com.kn8.core.power.PowerMath;
 
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -75,6 +79,13 @@ import software.bernie.geckolib.animation.RawAnimation;
  */
 public class HoshinaEntity extends SoldierEntity {
 
+    /**
+     * 0.5.0-D7 (Miguel): velocidade das tecnicas pelo Release (o servidor decide; o controller "action" de cada
+     * cliente toca nessa velocidade).
+     */
+    private static final EntityDataAccessor<Float> ACTION_SPEED =
+            SynchedEntityData.defineId(HoshinaEntity.class, EntityDataSerializers.FLOAT);
+
     /** 0.5.0-D2: acima disso o Hoshina corre (postura de corrida baixa); abaixo, anda agachado. */
     private static final double RUN_BLOCKS_PER_TICK = 0.12;
 
@@ -110,6 +121,8 @@ public class HoshinaEntity extends SoldierEntity {
     private boolean profileChecked;
     /** Pontos de Release ganhos na luta (escalada de combate); nao salvo: recomeca a cada luta. */
     private float escalation;
+    /** Velocidade da tecnica em andamento (fixada no inicio dela). */
+    private float techniqueSpeed = 1.0F;
     /** Contadores para os GameTests (quantas vezes cada reacao saiu). */
     private int dodges;
     private int counters;
@@ -306,7 +319,9 @@ public class HoshinaEntity extends SoldierEntity {
         techniqueStart = now;
         techniqueTarget = target;
         nextHit = 0;
-        readyAt.put(id, now + technique.durationTicks() + scaledCooldown(technique.cooldownTicks()));
+        techniqueSpeed = actionSpeed();
+        readyAt.put(id, now + CombatMath.faster(technique.durationTicks(), techniqueSpeed)
+                + scaledCooldown(technique.cooldownTicks()));
         getNavigation().stop();
         lookAt(target, 360.0F, 90.0F);
         if (technique.dashIn() > 0) {
@@ -372,7 +387,8 @@ public class HoshinaEntity extends SoldierEntity {
 
     private void tickTechnique(long now) {
         LivingEntity target = techniqueTarget;
-        int elapsed = (int) (now - techniqueStart);
+        // 0.5.0-D7: com mais Release os golpes da tecnica saem antes (tempo da tecnica = tempo real x velocidade).
+        int elapsed = (int) ((now - techniqueStart) * techniqueSpeed);
         if (target != null && target.isAlive()) {
             getLookControl().setLookAt(target, 60.0F, 60.0F);
             int count = technique.type() == SpecialSoldierDef.TechniqueType.SLASH ? 1 : technique.hits().size();
@@ -641,7 +657,22 @@ public class HoshinaEntity extends SoldierEntity {
             setData(KN8Attachments.RELEASE_VISUAL, release);
             // Mais poder, mais rapido: a velocidade acompanha o Release (escalada e desespero).
             applySpeed(release);
+            entityData.set(ACTION_SPEED, actionSpeed());
         }
+    }
+
+    /** 0.5.0-D7: fator de velocidade das tecnicas pelo Release atual ({@code [combat] attackSpeedAtFullRelease}). */
+    public float actionSpeed() {
+        if (!ServerConfig.SPEC.isLoaded()) {
+            return 1.0F;
+        }
+        return (float) CombatMath.releaseSpeed(release(), ServerConfig.ATTACK_SPEED_AT_FULL_RELEASE.get());
+    }
+
+    @Override
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(ACTION_SPEED, 1.0F);
     }
 
     // --- GeckoLib ----------------------------------------------------------------------------------------------
@@ -675,6 +706,8 @@ public class HoshinaEntity extends SoldierEntity {
         // 0.5.0-D7 (Miguel: "paradas muito bruscas"): o golpe entra misturando com a postura em vez de cortar seco.
         AnimationController<HoshinaEntity> action = new AnimationController<>(this, "action", ACTION_TRANSITION_TICKS,
                 state -> PlayState.STOP);
+        // 0.5.0-D7: as tecnicas aceleram com o Release, junto com os golpes no servidor.
+        action.setAnimationSpeedHandler(hoshina -> (double) hoshina.getEntityData().get(ACTION_SPEED));
         action.triggerableAnim("attack", RawAnimation.begin().thenPlay(prefix + "action.attack"));
         for (String id : ANIMATED) {
             action.triggerableAnim(id, RawAnimation.begin().thenPlay(prefix + "action." + id));

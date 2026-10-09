@@ -61,14 +61,19 @@ public final class AnimationBridge {
 
     /** Toca uma animacao PAL no jogador, para ele e para todos que o rastreiam. */
     public static void playPlayer(ServerPlayer player, ResourceLocation animation) {
+        playPlayer(player, animation, 1.0F);
+    }
+
+    /** 0.5.0-D7: idem, na velocidade da acao no servidor (duracao do JSON / duracao real). */
+    public static void playPlayer(ServerPlayer player, ResourceLocation animation, float speed) {
         PacketDistributor.sendToPlayersTrackingEntityAndSelf(player,
-                new AnimTriggerS2C(player.getId(), animation, player.level().getGameTime(), false));
+                new AnimTriggerS2C(player.getId(), animation, player.level().getGameTime(), false, speed));
     }
 
     /** Para a animacao da camada de combate (ex.: soltar o bloqueio). */
     public static void stopPlayer(ServerPlayer player) {
         PacketDistributor.sendToPlayersTrackingEntityAndSelf(player,
-                new AnimTriggerS2C(player.getId(), PLAYER_BLOCK, player.level().getGameTime(), true));
+                new AnimTriggerS2C(player.getId(), PLAYER_BLOCK, player.level().getGameTime(), true, 1.0F));
     }
 
     /** Dispara uma animacao GeckoLib num kaiju (controller + nome registrados na especie). */

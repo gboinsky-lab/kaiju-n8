@@ -41,6 +41,19 @@ public final class CombatMath {
         return combo.get(Math.floorMod(step, combo.size()));
     }
 
+    /**
+     * 0.5.0-D7 (Miguel): golpes mais rapidos conforme o Release. Fator de velocidade = 1 + {@code atFull} * R / 100
+     * (R entre 0 e 100); com {@code atFull} 0,5 o golpe a 100% fica 1,5 vez mais rapido.
+     */
+    public static double releaseSpeed(double release, double atFull) {
+        return 1.0 + Math.max(0.0, atFull) * Math.max(0.0, Math.min(100.0, release)) / 100.0;
+    }
+
+    /** Ticks de uma acao acelerada pelo fator (arredonda; 0 e negativo ficam como estao, o resto nunca abaixo de 1). */
+    public static int faster(int ticks, double speed) {
+        return ticks <= 0 ? ticks : Math.max(1, (int) Math.round(ticks / Math.max(1.0, speed)));
+    }
+
     /** Duracao ou tick de impacto com a lentidao de "sem stamina" (arredonda para cima). */
     public static int slowed(int ticks, boolean hasStamina, double slowdown) {
         return hasStamina ? ticks : (int) Math.ceil(ticks * slowdown);

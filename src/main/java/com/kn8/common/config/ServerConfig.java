@@ -186,6 +186,7 @@ public final class ServerConfig {
     public static final ModConfigSpec.DoubleValue HEAVY_STAMINA_COST;
     public static final ModConfigSpec.DoubleValue DODGE_STAMINA_COST;
     public static final ModConfigSpec.DoubleValue NO_STAMINA_SLOWDOWN;
+    public static final ModConfigSpec.DoubleValue ATTACK_SPEED_AT_FULL_RELEASE;
     public static final ModConfigSpec.IntValue COMBO_WINDOW_TICKS;
     public static final ModConfigSpec.DoubleValue BLOCK_DAMAGE_REDUCTION;
     public static final ModConfigSpec.DoubleValue BLOCK_STAMINA_PER_DAMAGE;
@@ -532,6 +533,9 @@ public final class ServerConfig {
                 0.0, 100.0);
         NO_STAMINA_SLOWDOWN = doubleValue("noStaminaSlowdown", "Attacks without enough stamina are this many times"
                 + " slower.", 1.3, 1.0, 3.0);
+        ATTACK_SPEED_AT_FULL_RELEASE = doubleValue("attackSpeedAtFullRelease", "Attacks get faster with the Release:"
+                + " speed = 1 + this * Release / 100 (0.5 = 1.5x at 100%). Players and special soldiers.", 0.5, 0.0,
+                2.0);
         COMBO_WINDOW_TICKS = intValue("comboWindowTicks", "Ticks after a light attack ends in which the next one"
                 + " continues the combo.", 10, 0, 100);
         BLOCK_DAMAGE_REDUCTION = doubleValue("blockDamageReduction", "Fraction of frontal damage stopped by"

@@ -81,6 +81,19 @@ class CombatMathTest {
     }
 
     @Test
+    void releaseMakesAttacksFaster() {
+        assertEquals(1.0, CombatMath.releaseSpeed(0, 0.5), DELTA);
+        assertEquals(1.2, CombatMath.releaseSpeed(40, 0.5), DELTA);
+        assertEquals(1.5, CombatMath.releaseSpeed(100, 0.5), DELTA);
+        assertEquals(1.5, CombatMath.releaseSpeed(150, 0.5), DELTA);
+        assertEquals(12, CombatMath.faster(12, 1.0));
+        assertEquals(10, CombatMath.faster(12, 1.2));
+        assertEquals(8, CombatMath.faster(12, 1.5));
+        assertEquals(1, CombatMath.faster(1, 1.5));
+        assertEquals(0, CombatMath.faster(0, 1.5));
+    }
+
+    @Test
     void frontCheck() {
         assertTrue(CombatMath.inFront(0, 1, 0.2, 0.9));
         assertFalse(CombatMath.inFront(0, 1, 0, -1));

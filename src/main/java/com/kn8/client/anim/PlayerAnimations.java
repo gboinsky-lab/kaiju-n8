@@ -21,11 +21,14 @@ import com.mojang.brigadier.context.CommandContext;
 import com.zigythebird.playeranim.animation.PlayerAnimationController;
 import com.zigythebird.playeranim.api.PlayerAnimationAccess;
 import com.zigythebird.playeranim.api.PlayerAnimationFactory;
+import com.zigythebird.playeranimcore.animation.Animation;
 import com.zigythebird.playeranimcore.animation.layered.IAnimation;
 import com.zigythebird.playeranimcore.animation.layered.modifier.AbstractFadeModifier;
+import com.zigythebird.playeranimcore.animation.layered.modifier.SpeedModifier;
 import com.zigythebird.playeranimcore.api.firstPerson.FirstPersonConfiguration;
 import com.zigythebird.playeranimcore.api.firstPerson.FirstPersonMode;
 import com.zigythebird.playeranimcore.easing.EasingType;
+import com.zigythebird.playeranimcore.enums.FadeType;
 import com.zigythebird.playeranimcore.enums.PlayState;
 
 import net.minecraft.client.Minecraft;
@@ -88,6 +91,9 @@ public final class PlayerAnimations {
                 controller.setFirstPersonModeHandler(anim -> firstPerson(player)
                         ? FirstPersonMode.THIRD_PERSON_MODEL : FirstPersonMode.NONE);
                 controller.setFirstPersonConfiguration(FIRST_PERSON);
+                // 0.5.0-D7: primeiro modificador da camada = velocidade do golpe (os de transicao vem depois dele e
+                // contam o tempo da animacao, ja acelerado).
+                controller.addModifierLast(new SpeedModifier(1.0F));
                 return controller;
             });
             PlayerAnimationFactory.ANIMATION_DATA_FACTORY.registerFactory(STANCE_LAYER_ID, STANCE_PRIORITY,
@@ -118,7 +124,28 @@ public final class PlayerAnimations {
         long clientTick = minecraft.level.getGameTime();
         int catchUp = AnimTiming.catchUpTicks(payload.serverTick(), clientTick,
                 ClientConfig.ANIMATION_MAX_CATCH_UP_TICKS.get());
-        boolean found = controller.triggerAnimation(payload.animation(), catchUp);
+        // 0.5.0-D7 (Miguel: golpes continuos e mais rapidos com o Release): a animacao toca na velocidade da acao no
+        // servidor; um golpe que comeca com o anterior ainda na volta parte da pose atual (sem corte seco), e o fim
+        // de cada golpe se mistura com a postura de baixo.
+        float speed = Float.isFinite(payload.speed()) && payload.speed() > 0.0F ? payload.speed() : 1.0F;
+        controller.getModifiers().stream().filter(SpeedModifier.class::isInstance).map(SpeedModifier.class::cast)
+                .findFirst().ifPresent(modifier -> modifier.speed = speed);
+        controller.removeModifierIf(EndFade.class::isInstance);
+        int fade = ClientConfig.ATTACK_FADE_TICKS.get();
+        float startTick = catchUp * speed;
+        boolean found;
+        if (fade > 0 && controller.isActive()) {
+            found = controller.replaceAnimationWithFade(AbstractFadeModifier.standardFadeIn(fade,
+                    EasingType.EASE_IN_OUT_SINE), payload.animation(), true);
+            startTick = 0.0F;
+        } else {
+            found = controller.triggerAnimation(payload.animation(), startTick);
+        }
+        Animation playing = found ? controller.getCurrentAnimationInstance() : null;
+        if (fade > 0 && playing != null && playing.loopType() != Animation.LoopType.HOLD_ON_LAST_FRAME
+                && playing.loopType() != Animation.LoopType.LOOP && playing.length() - startTick > fade) {
+            controller.addModifierLast(new EndFade(fade, playing.length() - startTick));
+        }
         remember(new Received(player.getGameProfile().getName(), payload.animation(),
                 AnimTiming.delayTicks(payload.serverTick(), clientTick), catchUp, found));
     }
@@ -171,6 +198,35 @@ public final class PlayerAnimations {
             } else {
                 STANCES.put(player.getId(), wanted);
             }
+        }
+    }
+
+    /**
+     * 0.5.0-D7: os ultimos {@code length} ticks do golpe passam para a postura de baixo (a PAL so tem a saida pelo
+     * comprimento da animacao a partir do inicio; aqui o fim desconta o adiantamento da sincronia).
+     */
+    private static final class EndFade extends AbstractFadeModifier {
+        private final float end;
+
+        EndFade(int length, float end) {
+            super(length);
+            this.end = end;
+        }
+
+        @Override
+        protected float getAlpha(String bone, float progress) {
+            // Mesma curva do EASE_IN_OUT_SINE (o EasingType precisa da Mocha, fora do classpath: PAL sem transitivas).
+            return (float) (0.5 - 0.5 * Math.cos(Math.PI * progress));
+        }
+
+        @Override
+        protected FadeType getFadeType() {
+            return FadeType.FADE_OUT;
+        }
+
+        @Override
+        protected float getEndTime(String bone) {
+            return end;
         }
     }
 

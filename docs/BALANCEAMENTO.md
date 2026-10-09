@@ -179,6 +179,12 @@ em cada mão; com uma só, "Técnica de par: segure uma espada em cada mão". O 
 | Dash: stamina / velocidade | 25 / 1,6 | | Crítico depois do parry | ×1,5 por 40 ticks |
 | Ataque carregado: stamina / máx. | 20 / ×2,0 em 30 ticks | | Bloqueio segura | 70% do dano |
 | Núcleo exposto (golpe pesado) | ×1,5 por 100 ticks | | Combo: janela | 10 ticks |
+| Golpes mais rápidos com o Release (0.5.0-D7, Miguel) [SUPOSIÇÃO] | ×(1 + 0,5 × R/100): 40% → ×1,2, 100% → ×1,5 | | Vale para | jogador (leve, pesado, especial) e técnicas do Hoshina |
+
+`[combat] attackSpeedAtFullRelease` (0,5): duração e tick de impacto do golpe são divididos pelo fator; a animação toca
+na mesma velocidade (`AnimTriggerS2C.speed` no jogador, `ACTION_SPEED` sincronizado no Hoshina). Duelos do Hoshina
+remedidos depois disso (2 de cada): perde para o No. 10 gigante (93–104 s, gigante com 23–24% da vida), vence o No. 9
+(30–32 s, com 58–73% da vida) e o No. 10 pequeno (26–28 s, com 41–48%).
 
 ### Release, stamina e calor
 

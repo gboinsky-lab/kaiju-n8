@@ -166,8 +166,11 @@ public final class CombatService {
                 : ServerConfig.HEAVY_STAMINA_COST.get();
         boolean hasStamina = PowerService.tryConsumeStamina(player, cost);
         double slowdown = ServerConfig.NO_STAMINA_SLOWDOWN.get();
-        int duration = CombatMath.slowed(action.durationTicks(), hasStamina, slowdown);
-        int impact = Math.min(duration - 1, CombatMath.slowed(action.impactTick(), hasStamina, slowdown));
+        // 0.5.0-D7 (Miguel): com mais Release o golpe fica mais rapido (duracao e impacto); a animacao acompanha.
+        double speed = releaseSpeed(player);
+        int duration = CombatMath.faster(CombatMath.slowed(action.durationTicks(), hasStamina, slowdown), speed);
+        int impact = Math.min(duration - 1,
+                CombatMath.faster(CombatMath.slowed(action.impactTick(), hasStamina, slowdown), speed));
         if (!state.timeline.tryStart(now, actionName, duration, impact)) {
             reply(player, request, CombatResult.DENIED_BUSY);
             return false;
@@ -196,7 +199,8 @@ public final class CombatService {
         AnimationBridge.playPlayer(player, firearm || weapon.get().profile().isEmpty()
                 ? AnimationBridge.weaponAction(weapon.get().item(), firearm ? "shoot" : actionName)
                 : AnimationBridge.profileAction(weapon.get().profile().get(), LIGHT.equals(actionName)
-                        ? "light_" + (Math.max(0, state.comboStep) + 1) : HEAVY));
+                        ? "light_" + (Math.max(0, state.comboStep) + 1) : HEAVY),
+                (float) action.durationTicks() / duration);
         if (!firearm) {
             // Etapa 1 (0.2): o "vush" sai no inicio do golpe; o impacto tem som proprio no tick do JSON.
             player.level().playSound(null, player.getX(), player.getEyeY(), player.getZ(),
@@ -271,7 +275,10 @@ public final class CombatService {
             replySpecial(player, CombatResult.DENIED_NO_STAMINA);
             return false;
         }
-        if (!state.timeline.tryStart(now, "special", def.durationTicks(), def.impactTick())) {
+        double speed = releaseSpeed(player);
+        int duration = CombatMath.faster(def.durationTicks(), speed);
+        if (!state.timeline.tryStart(now, "special", duration,
+                Math.min(duration - 1, CombatMath.faster(def.impactTick(), speed)))) {
             replySpecial(player, CombatResult.DENIED_BUSY);
             return false;
         }
@@ -285,12 +292,19 @@ public final class CombatService {
         state.currentMultiplier = def.multiplier();
         state.specialCooldownTicks = def.cooldownTicks();
         state.specialReadyTick = now + def.cooldownTicks();
-        AnimationBridge.playPlayer(player, AnimationBridge.weaponAction(weapon.get().item(), "special"));
+        AnimationBridge.playPlayer(player, AnimationBridge.weaponAction(weapon.get().item(), "special"),
+                (float) def.durationTicks() / duration);
         player.level().playSound(null, player.getX(), player.getEyeY(), player.getZ(),
                 weaponSound(weapon.get(), "heavy", KN8Sounds.BLADE_HEAVY.get()), SoundSource.PLAYERS,
                 SWING_SOUND_VOLUME, 0.8F);
         replySpecial(player, CombatResult.OK);
         return true;
+    }
+
+    /** 0.5.0-D7: fator de velocidade dos golpes pelo Release efetivo do jogador ({@code [combat]}). */
+    public static double releaseSpeed(ServerPlayer player) {
+        return CombatMath.releaseSpeed(PowerService.effectiveRelease(player),
+                ServerConfig.ATTACK_SPEED_AT_FULL_RELEASE.get());
     }
 
     /** Balanceamento v1.0: o golpe que esta acertando agora e pesado (ou carregado)? Decide o teto por golpe. */

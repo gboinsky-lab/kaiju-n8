@@ -40,6 +40,7 @@ public final class ClientConfig {
     public static final ModConfigSpec.DoubleValue CAMERA_SHAKE;
     public static final ModConfigSpec.IntValue ANIMATION_MAX_CATCH_UP_TICKS;
     public static final ModConfigSpec.IntValue STANCE_FADE_TICKS;
+    public static final ModConfigSpec.IntValue ATTACK_FADE_TICKS;
     public static final ModConfigSpec.EnumValue<TransformRenderMethod> TRANSFORM_METHOD;
     public static final ModConfigSpec.BooleanValue DEBUG_SHOW_PARTS;
 
@@ -66,6 +67,10 @@ public final class ClientConfig {
                         + " (0.5.0-D6).")
                 .translation(PREFIX + "stanceFadeTicks")
                 .defineInRange("stanceFadeTicks", 5, 0, 20);
+        ATTACK_FADE_TICKS = BUILDER.comment("Ticks to blend one attack into the next (combo) and the end of an attack"
+                        + " into the weapon stance (0.5.0-D7).")
+                .translation(PREFIX + "attackFadeTicks")
+                .defineInRange("attackFadeTicks", 3, 0, 10);
         BUILDER.pop();
 
         BUILDER.comment("Rendering.").translation(PREFIX + "render").push("render");
