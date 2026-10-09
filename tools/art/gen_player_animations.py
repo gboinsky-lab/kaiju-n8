@@ -237,6 +237,18 @@ GECKO_NAMES = {"torso": "body", "head": "head", "right_arm": "arm_right", "left_
                "right_leg": "leg_right", "left_leg": "leg_left", "right_item": "item_right", "left_item": "item_left"}
 
 
+def unlean(lean, leg_rotation=ZERO, leg_position=None):
+    """Perna em relacao ao chao -> perna filha do "body" inclinado da PAL. 0.5.0-D7: por matriz (R_lean^-1 R_perna; a
+    posicao da perna tambem gira), nao subtraindo angulos: com as pernas abertas e giradas do Hoshina a subtracao deixava
+    um pe 3-4 px dentro do chao e o outro no ar."""
+    from blockbench_templates import euler_zyx, limb_to_bb, pos_to_bb, rzyx
+    back = rzyx(*limb_to_bb(lean)).T
+    rotation = limb_to_bb(euler_zyx(back @ rzyx(*limb_to_bb(leg_rotation))))
+    if leg_position is None:
+        return rotation, None
+    return rotation, [round(float(x), 4) for x in pos_to_bb(list(back @ pos_to_bb(leg_position)))]
+
+
 def to_pal(pose):
     """Pose neutra -> {(osso, canal): vetor} da PAL. A inclinacao vai no osso "body" (gira o jogador inteiro em volta
     do quadril; o "torso" da PAL so gira o cubo do tronco) e as pernas descontam a inclinacao para ficar no chao."""
@@ -247,17 +259,19 @@ def to_pal(pose):
             out[("body", "rotation")] = v
         elif key == "body_pos":
             out[("body", "position")] = v
+        elif key.endswith("_pos") and key[:-4] in LEGS:
+            out[(key[:-4], "position")] = unlean(lean, ZERO, v)[1]
         elif key.endswith("_pos"):
             out[(key[:-4], "position")] = v
         elif key.endswith("_scale"):
             out[(key[:-6], "scale")] = v
         elif key in LEGS:
-            out[(key, "rotation")] = [v[0] - lean[0], v[1] - lean[1], v[2]]
+            out[(key, "rotation")] = [round(float(x), 4) for x in unlean(lean, v)[0]]
         else:
             out[(key, "rotation")] = v
     if "torso" in pose:
         for leg in LEGS:
-            out.setdefault((leg, "rotation"), [-lean[0], -lean[1], 0])
+            out.setdefault((leg, "rotation"), [round(float(x), 4) for x in unlean(lean)[0]])
     return out
 
 
@@ -671,11 +685,39 @@ def axe_hand_point():
     return -rotation.T @ np.array(pos_to_bb(idle["right_item_pos"]))
 
 
-def grip_axe(anim, point):
-    """Refaz a posicao do machado a cada quarto de tick pela rotacao da animacao (a PAL interpola os numeros do jogo
+def sword_hand_points():
+    """0.5.0-D7: centro do cabo da espada do Hoshina (parte com aneis, antes da guarda) em relacao ao pivo da mao, no
+    espaco da espada no Blockbench, para cada mao. Medido na malha do item como o jogo a desenha."""
+    import numpy as np
+    from blockbench_templates import player_hand, player_weapon
+    out = {}
+    for side in ("right", "left"):
+        vertices = np.array(player_weapon("hoshina_sword", side, 64)["vertices"], float)
+        pivot = player_hand(side)
+        center = vertices.mean(0)
+        axis = np.linalg.svd(vertices - center)[2][0]
+        along = (vertices - pivot) @ axis
+        if along.max() < -along.min():
+            axis, along = -axis, -along
+        across = np.linalg.svd(vertices - center)[2][1]
+        edges = np.linspace(along.min(), along.max(), 40)
+        widths = [np.ptp((vertices[(along >= a) & (along < b)] - pivot) @ across)
+                  if ((along >= a) & (along < b)).sum() > 2 else 0 for a, b in zip(edges, edges[1:])]
+        guard = edges[int(np.argmax(widths[:25]))]
+        out[f"{side}_item"] = vertices[along < guard].mean(0) - pivot
+    return out
+
+
+# Espadas do Hoshina no jogador: o cabo fica na mao em todas as animacoes (como no machado). As posicoes de espada do
+# Hoshina NPC compensam a geometria do modelo dele e nao valem para o jogador.
+SWORD_GRIPPED = ("player.dual_reverse.", "player.hoshina_sword.")
+
+
+def grip_axe(anim, point, bone="right_item"):
+    """Refaz a posicao do item a cada quarto de tick pela rotacao da animacao (a PAL interpola os numeros do jogo
     em linha reta; a posicao segue a mesma curva)."""
     from blockbench_templates import PLAYER_FRAME, SAMPLE, item_to_bb, pos_to_bb, rzyx
-    channel = anim["bones"].get("right_item", {}).get("rotation")
+    channel = anim["bones"].get(bone, {}).get("rotation")
     if not channel:
         return anim
     keys = sorted((float(t), v["vector"] if isinstance(v, dict) else v) for t, v in channel.items())
@@ -693,7 +735,7 @@ def grip_axe(anim, point):
                 break
         pos = pos_to_bb(list(-rzyx(*item_to_bb(k, PLAYER_FRAME)) @ point))
         out[f"{t}"] = {"vector": [round(float(x), 3) for x in pos]}
-    anim["bones"]["right_item"]["position"] = out
+    anim["bones"][bone]["position"] = out
     return anim
 
 
@@ -720,9 +762,13 @@ def main():
     from blockbench_templates import imported_player
     data["animations"].update(imported_player())
     point = axe_hand_point()
+    swords = sword_hand_points()
     for name, anim in data["animations"].items():
         if name.startswith(AXE_GRIPPED):
             grip_axe(anim, point)
+        if name.startswith(SWORD_GRIPPED):
+            for bone, hilt in swords.items():
+                grip_axe(anim, hilt, bone)
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
     for name, anim in data["animations"].items():
