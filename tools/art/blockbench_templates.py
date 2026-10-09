@@ -400,6 +400,9 @@ def hilt_center(vertices, pivot):
 # Miguel (2026-10-09): espada "um pouco mais pra cima e pra frente dos bracos". Deslocamento da pegada no espaco do
 # braco em repouso (px, Blockbench: +Y para cima, +Z para a frente do Hoshina).
 HOSHINA_GRIP_SHIFT = np.array([0.0, 1.5, 1.5])
+# E "mais uma aumentada para cima para que ele pegue mais no cabo": a espada sobe ao longo dela mesma (px, para o lado
+# da ponta), entao a mao fica mais perto do pomo e longe da guarda.
+HOSHINA_GRIP_ALONG = 1.5
 
 
 def hoshina_grip_points():
@@ -417,7 +420,10 @@ def hoshina_grip_points():
         along = (arm - shoulder) @ direction
         fist = arm[along > along.max() - 3].mean(0)
         sword = np.array(hoshina_weapon(bones, item_bone, "hoshina_sword", 1024)["vertices"], float)
-        out[item_bone] = (fist - pivot + HOSHINA_GRIP_SHIFT, hilt_center(sword, pivot) - pivot)
+        hilt = hilt_center(sword, pivot)
+        tip = sword[np.argmax(np.linalg.norm(sword - hilt, axis=1))]
+        toward_tip = (tip - hilt) / np.linalg.norm(tip - hilt)
+        out[item_bone] = (fist - pivot + HOSHINA_GRIP_SHIFT, hilt - HOSHINA_GRIP_ALONG * toward_tip - pivot)
     return out
 
 
