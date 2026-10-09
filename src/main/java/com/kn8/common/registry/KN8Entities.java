@@ -97,11 +97,11 @@ public final class KN8Entities {
                     .eyeHeight(1.45F)
                     .clientTrackingRange(KAIJU_TRACKING_RANGE_CHUNKS)
                     .build("hoshina_no10"));
-    /** 0.5.0-D8: Kikoru Shinomiya, traje normal (machado; special_soldier/kikoru.json). 1,6 m [SUPOSICAO]. */
+    /** 0.5.0-D8: Kikoru Shinomiya, traje normal (machado; special_soldier/kikoru.json). 1,57 m (Miguel). */
     public static final DeferredHolder<EntityType<?>, EntityType<KikoruEntity>> KIKORU = ENTITY_TYPES.register(
             "kikoru", () -> EntityType.Builder.<KikoruEntity>of(KikoruEntity::new, MobCategory.CREATURE)
-                    .sized(0.6F, 1.6F)
-                    .eyeHeight(1.4F)
+                    .sized(0.6F, 1.57F)
+                    .eyeHeight(1.38F)
                     .clientTrackingRange(KAIJU_TRACKING_RANGE_CHUNKS)
                     .build("kikoru"));
 

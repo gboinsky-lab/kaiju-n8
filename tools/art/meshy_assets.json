@@ -205,7 +205,7 @@
     },
     "kikoru": {
       "source": "kikoru.glb",
-      "height_m": 1.6,
+      "height_m": 1.57,
       "texture": 1024,
       "max_triangles": 10000
     }

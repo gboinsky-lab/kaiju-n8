@@ -63,11 +63,12 @@ SPECIES = {
     "hoshina": {"stem": "hoshina", "hip_y": 0.80, "neck_y": 1.47, "hand_min_y": 0.80,
                 "arm_inner_x": [(1.2, 0.21), (0.0, 0.24)], "arm_max_y": 1.47,
                 "back_items": None},
-    # 0.5.0-D8: Kikoru (modelo do Miguel, 1,6 m [SUPOSICAO]): cabelo com marias-chiquinhas largas (|x| ate 0,38)
-    # acima do ombro (1,22): acima de arm_max_y nada e braco; cinto e bolsas (ate |x| 0,17) entre 0,75 e 0,85 ficam
-    # no tronco; maos ate 0,70; o coldre da coxa direita fica na perna.
-    "kikoru": {"stem": "kikoru", "hip_y": 0.76, "neck_y": 1.21, "hand_min_y": 0.70,
-               "arm_inner_x": [(0.95, 0.155), (0.0, 0.205)], "arm_max_y": 1.215, "back_items": None,
+    # 0.5.0-D8: Kikoru (modelo do Miguel, 1,57 m: Miguel 2026-10-09): cabelo com marias-chiquinhas largas (|x| ate
+    # 0,37) acima do ombro (1,20): acima de arm_max_y nada e braco; cinto e bolsas (ate |x| 0,17) entre 0,74 e 0,83
+    # ficam no tronco; maos ate 0,69; o coldre da coxa direita fica na perna. Cortes medidos a 1,6 m x 1,57/1,6.
+    "kikoru": {"stem": "kikoru", "hip_y": 0.746, "neck_y": 1.187, "hand_min_y": 0.687,
+               "arm_inner_x": [(0.932, 0.152), (0.0, 0.201)], "arm_max_y": 1.192,
+               "back_items": None,
                "leg_pivot_center": True},
     # 0.6-F: Hoshina com o traje numerado 10: a cauda do No. 10 sai do quadril esquerdo, passa por baixo da mao,
     # sobe pelas costas e faz um arco por cima da cabeca ate a ponta na frente-direita. Separada pela superficie

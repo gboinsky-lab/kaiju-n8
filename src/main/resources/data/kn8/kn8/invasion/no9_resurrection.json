@@ -37,6 +37,10 @@
       "variant": "sword",
       "level": "high",
       "count": 1
+    },
+    {
+      "variant": "kikoru",
+      "count": 1
     }
   ],
   "rewards": {
