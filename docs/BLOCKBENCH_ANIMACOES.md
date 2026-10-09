@@ -94,6 +94,13 @@ Estes três casos apareceram no seu `hoshina.bbmodel` (2026-10-09). Antes e depo
    - O modelo-base já vem com isso no tempo 0. Não precisa compensar a posição.
    - Para a espada fazer algo diferente numa técnica, mude a rotação dela ali.
 
+4. **Continue sempre do último arquivo que o Claude mandou de volta (o corrigido).**
+   - Se você abrir o arquivo antigo de novo, as correções somem e os mesmos problemas voltam.
+   - Foi o que aconteceu com o `345.bbmodel`.
+5. **Duração do laço.**
+   - O andando tem 0,7 s: as pernas fecham o passo em 0,7.
+   - Se a duração passar disso, sobra um tempo com as pernas paradas.
+
 O Claude corrige os dois primeiros casos sem apagar nada com `python3 tools/blockbench/corrigir_poses.py`.
 
 ## Ordem sugerida

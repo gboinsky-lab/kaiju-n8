@@ -86,11 +86,15 @@ def hold_pose(model, base, anim_name, t, log, only=None):
     anchors = {round(x, 4) for x in (0, length / 2, length)}
     for animator in anim.get("animators", {}).values():
         bone = animator["name"]
-        for channel in ("rotation", "position"):
+        for channel in ("rotation", "position", "scale"):
             if only is not None and (bone, channel) not in only:
                 continue
             keys = channel_keys(anim, bone, channel)
             old = {round(k["time"], 4): value(k) for k in channel_keys(base_anim, bone, channel)}
+            # Canal que o modelo-base nao tinha: o "valor antigo" e o repouso (0; escala 1).
+            rest = [1.0, 1.0, 1.0] if channel == "scale" else [0.0, 0.0, 0.0]
+            if not old:
+                old = {round(k["time"], 4): rest for k in keys if value(k) == rest}
             if all(old.get(round(k["time"], 4)) == value(k) for k in keys):
                 continue  # canal sem edicao do Miguel
             target = sample(keys, t)
@@ -143,11 +147,17 @@ def stance_items(model, log):
             log.append(f"{anim['name']} {bone}: rotacao da postura parada no t=0 ({[round(x, 2) for x in rot]})")
 
 
+def set_length(model, anim_name, length, log):
+    anim = next(a for a in model["animations"] if a["name"] == anim_name)
+    log.append(f"{anim_name}: duracao {anim['length']} -> {length}")
+    anim["length"] = length
+
+
 def main():
     args = sys.argv[1:]
     src, dst = args[0], args[1]
     base_path = None
-    poses, holds, items = [], [], False
+    poses, holds, lengths, items = [], [], [], False
     i = 2
     while i < len(args):
         if args[i] == "--pose":
@@ -156,6 +166,8 @@ def main():
             holds.append(args[i + 1]); i += 2
         elif args[i] == "--base":
             base_path = args[i + 1]; i += 2
+        elif args[i] == "--length":
+            lengths.append(args[i + 1]); i += 2
         elif args[i] == "--stance-items":
             items = True; i += 1
         else:
@@ -171,6 +183,9 @@ def main():
         what, t = spec.split("@")
         anim, bone, channel = what.split(":")
         hold_pose(model, base, anim, float(t), log, only={(bone, channel)})
+    for spec in lengths:
+        anim, length = spec.split("=")
+        set_length(model, anim, float(length), log)
     if items:
         stance_items(model, log)
     json.dump(model, open(dst, "w", encoding="utf-8"), separators=(",", ":"))

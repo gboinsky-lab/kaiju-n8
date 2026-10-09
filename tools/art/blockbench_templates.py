@@ -452,10 +452,11 @@ def read_bbmodel(path):
             if animator.get("type", "bone") != "bone":
                 continue
             for key in animator.get("keyframes", []):
-                if key["channel"] not in ("rotation", "position"):
+                if key["channel"] not in ("rotation", "position", "scale"):
                     continue
                 point = key["data_points"][0]
-                vec = [float(point.get(axis, 0) or 0) for axis in "xyz"]
+                rest = 1.0 if key["channel"] == "scale" else 0.0
+                vec = [float(point.get(axis, rest) if point.get(axis, "") != "" else rest) for axis in "xyz"]
                 bones.setdefault(animator["name"], {}).setdefault(key["channel"], []).append(
                     (round(float(key["time"]), 4), vec))
         for channels in bones.values():
@@ -533,6 +534,8 @@ def bb_to_pal(anim):
         for channel, frames in channels.items():
             if channel == "position":
                 conv = pos_to_bb  # a conversao e a propria inversa
+            elif channel == "scale":
+                conv = list  # escala igual nos dois (0.5.0-D7: pernas encolhidas do Hoshina parado)
             elif bone.endswith("_item"):
                 bones.setdefault(bone, {})[channel] = {f"{t}": {"vector": v}
                                                        for t, v in item_track(frames, PLAYER_FRAME)}
@@ -551,6 +554,8 @@ def bb_to_gecko(anim, frames):
         for channel, keys in channels.items():
             if channel == "position":
                 conv = pos_to_bb
+            elif channel == "scale":
+                conv = list
             elif bone.startswith("item_"):
                 bones.setdefault(bone, {})[channel] = {f"{t}": v for t, v in item_track(keys, frames[bone])}
                 continue
