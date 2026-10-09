@@ -1,0 +1,16 @@
+{
+  "bones": {
+    "body": "kn8:meshes/kaiju_larva/body.obj",
+    "neck": "kn8:meshes/kaiju_larva/neck.obj",
+    "head": "kn8:meshes/kaiju_larva/head.obj",
+    "wing_left": "kn8:meshes/kaiju_larva/wing_left.obj",
+    "wing_left_tip": "kn8:meshes/kaiju_larva/wing_left_tip.obj",
+    "wing_right": "kn8:meshes/kaiju_larva/wing_right.obj",
+    "wing_right_tip": "kn8:meshes/kaiju_larva/wing_right_tip.obj",
+    "leg_left": "kn8:meshes/kaiju_larva/leg_left.obj",
+    "leg_right": "kn8:meshes/kaiju_larva/leg_right.obj",
+    "tail_1": "kn8:meshes/kaiju_larva/tail_1.obj",
+    "tail_2": "kn8:meshes/kaiju_larva/tail_2.obj",
+    "tail_3": "kn8:meshes/kaiju_larva/tail_3.obj"
+  }
+}

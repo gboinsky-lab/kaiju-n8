@@ -717,5 +717,13 @@
   "kn8.ability.philinosoma_spine_shot": "Disparo de espinhos",
   "kn8.ability.diclonius_atomic_breath": "Sopro de energia",
   "kn8.ability.camponotus_acid_spray": "Jato de ácido",
-  "kn8.ability.camponotus_reborn_acid_spray": "Jato de ácido revivido"
+  "kn8.ability.camponotus_reborn_acid_spray": "Jato de ácido revivido",
+  "entity.kn8.phaneroplasmodium": "Phaneroplasmodium",
+  "kn8.bestiary.phaneroplasmodium.desc": "Yoju cogumelo de 5 m que anda sobre oito patas. A boca cheia de dentes fica sob o chapéu; solta nuvens de esporos que deixam o alvo lento.",
+  "entity.kn8.myxogasterocarp": "Myxogasterocarp",
+  "kn8.bestiary.myxogasterocarp.desc": "Honju cogumelo de 9 m, com vários chapéus empilhados e raízes no lugar das patas. Lento e resistente; lança bombas de esporos que explodem.",
+  "entity.kn8.kaiju_larva": "Larva misteriosa",
+  "kn8.bestiary.kaiju_larva.desc": "Uma larva pequena com asas, que voa e morde. Foi uma criatura assim que entrou no corpo de Kafka Hibino.",
+  "kn8.ability.phaneroplasmodium_spore_shot": "Nuvem de esporos",
+  "kn8.ability.myxogasterocarp_spore_bomb": "Bomba de esporos"
 }

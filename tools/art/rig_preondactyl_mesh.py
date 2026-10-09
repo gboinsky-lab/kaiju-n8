@@ -9,7 +9,8 @@ Divisao pela superficie a partir de um esqueleto medido nas vistas com grade (co
 rig_primigenius_mesh.py): sementes ao longo de cada segmento e cada vertice vai para a semente mais proxima andando
 pela pele (Dijkstra na malha soldada). Asa em duas partes (ombro -> pulso -> ponta) para dobrar no bater de asas.
 O modelo vem centrado pela caixa (que inclui a cauda e as asas): aqui o centro da hitbox vai para o quadril.
-Uso: python3 tools/art/rig_preondactyl_mesh.py   (requer numpy, scipy e pillow)
+0.7-B: tabela SPECIES (a larva do Kaiju No. 8 usa o mesmo esqueleto de voador, com asas e cauda).
+Uso: python3 tools/art/rig_preondactyl_mesh.py [especie]   (padrao preondactyl; requer numpy, scipy e pillow)
 """
 import json
 import shutil
@@ -20,7 +21,7 @@ import numpy as np
 from PIL import Image
 
 sys.path.insert(0, str(Path(__file__).parent))
-from kaiju_art import kf  # noqa: E402
+from kaiju_art import kf, scale_animations  # noqa: E402
 from pad_texture import DILATE_STEPS, dilate, uv_mask  # noqa: E402
 from rig_primigenius_mesh import geo_pivot, weld  # noqa: E402
 from rig_soldier_mesh import cap_holes  # noqa: E402
@@ -30,6 +31,9 @@ ROOT = Path(__file__).resolve().parents[2]
 ASSETS = ROOT / "src/main/resources/assets/kn8"
 NAME = "preondactyl"
 TEXTURE_SIZE = 1024
+# Deslocamentos ("position") das animacoes multiplicados por este fator (a larva tem 0,5 m, o Preondactyl 5 m).
+ANIMATION_SCALE = 1.0
+EXTRA_SEEDS = []
 
 # Juntas em metros, nas coordenadas do OBJ convertido (frente = -Z, X negativo = "left").
 SKELETON = {
@@ -46,6 +50,37 @@ SKELETON = {
 # do pescoco, ate a cabeca ficar alinhada com o centro do corpo olhando para a frente (-Z).
 NECK_BASE = [0.05, 3.0, -1.0]
 HEAD_YAW_DEG = 22.0
+# 0.7-B: larva que infecta o Kafka (modelo do Miguel, 0,5 m): em pe, asas nas costas, cauda enrolada para tras e
+# para baixo. Juntas medidas nas vistas com grade (frente -Z); os dois pares de patinhas: o de baixo vira as pernas,
+# o de cima fica no tronco.
+SPECIES = {
+    "preondactyl": {"skeleton": SKELETON, "neck_base": NECK_BASE, "head_yaw_deg": HEAD_YAW_DEG,
+                    "texture": 1024, "animation_scale": 1.0},
+    "kaiju_larva": {"skeleton": {
+        "pelvis": [-0.02, 0.25, 0.03], "chest": [-0.01, 0.37, 0.0], "neck": [0.0, 0.4, -0.08],
+        "head": [0.0, 0.4, -0.2],
+        "shoulder_left": [-0.04, 0.38, 0.01], "wrist_left": [-0.12, 0.4, 0.06], "tip_left": [-0.2, 0.43, 0.1],
+        "shoulder_right": [0.04, 0.38, 0.01], "wrist_right": [0.12, 0.4, 0.06], "tip_right": [0.2, 0.43, 0.1],
+        "hip_left": [-0.03, 0.22, 0.03], "knee_left": [-0.08, 0.2, 0.0], "foot_left": [-0.1, 0.17, -0.02],
+        "hip_right": [0.02, 0.22, 0.03], "knee_right": [0.08, 0.2, 0.0], "foot_right": [0.1, 0.17, -0.02],
+        "tail_base": [-0.03, 0.17, 0.04], "tail_mid": [-0.04, 0.04, 0.12], "tail_tip": [-0.04, 0.05, 0.3],
+        "low_tip_left": [-0.13, 0.28, 0.14], "low_tip_right": [0.13, 0.28, 0.14],
+    }, "extra_seeds": [  # segundo par de asas (mais baixo): vai junto com a asa do mesmo lado
+        ("wing_left", "shoulder_left", "low_tip_left", 0.2, 1.0),
+        ("wing_right", "shoulder_right", "low_tip_right", 0.2, 1.0)],
+        "neck_base": [0.0, 0.39, -0.04], "head_yaw_deg": 0.0, "texture": 512, "animation_scale": 0.1},
+}
+
+
+def use_species(name):
+    """Ativa o esqueleto e as medidas da especie (variaveis do modulo usadas pelas funcoes abaixo)."""
+    global NAME, SKELETON, NECK_BASE, HEAD_YAW_DEG, TEXTURE_SIZE, ANIMATION_SCALE, EXTRA_SEEDS
+    spec = SPECIES[name]
+    EXTRA_SEEDS = spec.get("extra_seeds", [])
+    NAME, SKELETON, NECK_BASE, HEAD_YAW_DEG = name, spec["skeleton"], spec["neck_base"], spec["head_yaw_deg"]
+    TEXTURE_SIZE, ANIMATION_SCALE = spec["texture"], spec["animation_scale"]
+
+
 SEEDS = [
     ("body", "pelvis", "chest", 0.0, 1.0), ("body", "chest", "neck", 0.0, 0.5),
     ("body", "chest", "shoulder_left", 0.0, 0.6), ("body", "chest", "shoulder_right", 0.0, 0.6),
@@ -80,7 +115,7 @@ def label_faces(vertices, faces, skeleton):
     length = np.linalg.norm(position[edges[:, 0]] - position[edges[:, 1]], axis=1) + 1e-6
     graph = coo_matrix((length, (edges[:, 0], edges[:, 1])), shape=(count, count)).tocsr()
     seeds, owners = [], []
-    for bone, start, end, t0, t1 in SEEDS:
+    for bone, start, end, t0, t1 in SEEDS + EXTRA_SEEDS:
         for t in np.linspace(t0, t1, 6):
             point = skeleton[start] + (skeleton[end] - skeleton[start]) * t
             seeds.append(int(np.argmin(np.linalg.norm(position - point, axis=1))))
@@ -228,6 +263,7 @@ def animations():
 
 
 def main():
+    use_species(sys.argv[1] if len(sys.argv) > 1 else "preondactyl")
     source = ROOT / "tools/art/converted" / NAME
     vertices, uvs, normals, faces = read_obj(source / f"{NAME}.obj")
     skeleton = {k: np.array(v, dtype=float) for k, v in SKELETON.items()}
@@ -273,7 +309,10 @@ def main():
                         "visible_bounds_offset": [0, round(float(high[1]) / 2, 1), 0]},
         "bones": bones}]}
     (ASSETS / f"geo/entity/{NAME}.geo.json").write_text(json.dumps(geo, indent=2) + "\n", encoding="utf-8")
-    (ASSETS / f"animations/entity/{NAME}.animation.json").write_text(json.dumps(animations(), indent=2) + "\n",
+    anims = animations()
+    if ANIMATION_SCALE != 1.0:
+        anims = scale_animations(anims, ANIMATION_SCALE)
+    (ASSETS / f"animations/entity/{NAME}.animation.json").write_text(json.dumps(anims, indent=2) + "\n",
                                                                      encoding="utf-8")
     print("caixa:", np.round(low, 2).tolist(), np.round(high, 2).tolist())
 

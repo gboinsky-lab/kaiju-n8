@@ -82,6 +82,32 @@ SPECIES = {
                                       "leg_right_2": [1.43, 0.02, 0.92]}}},
 }
 SPECIES["camponotus_reborn"] = SPECIES["camponotus"]
+# 0.7-B: kaiju cogumelo do Miguel. Sem abdomen (o osso fica sem malha, pivo no corpo): chapeu com a boca = head,
+# caule = body, patas/raizes = leg_<lado>_<n> (frente -> tras). abdomen_start_z alto: o corpo inteiro usa
+# core_half_width. Phaneroplasmodium (Yoju, 5 m): 6 pontas de pata no chao (as outras duas ficam no ar e vao para a
+# pata mais perto). Myxogasterocarp (Honju, 9 m): chapeus empilhados, raizes como patas (6 pontas no chao).
+SPECIES["phaneroplasmodium"] = {
+    "center_z": 0.0, "core_half_width": 1.1, "abdomen_start_z": 99.0, "abdomen_half_width": 1.1,
+    "abdomen_min_y": 2.2, "head_z": -0.8, "fang_z": -99.0, "fang_max_y": 0.0, "leg_far_radius": 1.8,
+    "leg_max_y": 2.5, "bounds": [7, 6],
+    "paths": {"regions": {"head": [[-2.3, 3.7, -2.2], [2.3, 5.1, 2.2]],
+                          "body": [[-0.9, 1.7, -0.9], [0.9, 3.4, 0.9]]},
+              "axis": {"head": [[0.0, 4.3, 0.0], [0.0, 3.8, -0.9]],
+                       "body": [[0.0, 2.2, 0.0], [0.0, 2.8, 0.0], [0.0, 3.3, 0.0]]},
+              "tips": {"leg_left_0": [-1.43, 0.06, -1.61], "leg_left_1": [-2.16, 0.05, -0.48],
+                       "leg_left_2": [-1.66, 0.01, 1.29], "leg_right_0": [1.65, 0.04, -1.76],
+                       "leg_right_1": [2.14, 0.01, 0.48], "leg_right_2": [1.5, 0.01, 1.87]}}}
+SPECIES["myxogasterocarp"] = {
+    "center_z": 0.0, "core_half_width": 1.7, "abdomen_start_z": 99.0, "abdomen_half_width": 1.7,
+    "abdomen_min_y": 4.0, "head_z": -1.5, "fang_z": -99.0, "fang_max_y": 0.0, "leg_far_radius": 2.8,
+    "leg_max_y": 3.0, "bounds": [11, 10],
+    "paths": {"regions": {"head": [[-3.5, 6.7, -3.5], [3.5, 9.1, 3.5]],
+                          "body": [[-3.6, 3.3, -3.6], [3.6, 6.2, 3.6]]},
+              "axis": {"head": [[0.0, 7.6, 0.0], [0.0, 7.0, -1.5]],
+                       "body": [[0.0, 3.5, 0.0], [0.0, 4.6, 0.0], [0.0, 5.6, 0.0]]},
+              "tips": {"leg_left_0": [-0.79, 0.04, -4.45], "leg_left_1": [-3.38, 0.03, -0.74],
+                       "leg_right_0": [1.79, 0.05, -3.51], "leg_right_1": [3.29, 0.04, -0.11],
+                       "leg_right_2": [3.22, 0.06, 3.01], "leg_right_3": [1.9, 0.06, 2.8]}}}
 NAME = "trichonephila"
 SOURCE = ROOT / "tools/art/converted/trichonephila"
 CENTER_Z = CORE_HALF_WIDTH = ABDOMEN_START_Z = ABDOMEN_HALF_WIDTH = ABDOMEN_MIN_Y = 0.0
@@ -313,7 +339,9 @@ def main():
     pivots = {"root": np.zeros(3), "body": np.array([0.0, center("body")[1], CENTER_Z]),
               "head": np.array([0.0, center("head")[1], HEAD_Z]),
               "fang_left": top_back("fang_left"), "fang_right": top_back("fang_right"),
-              "abdomen": np.array([0.0, center("abdomen")[1], ABDOMEN_START_Z])}
+              # Especie sem abdomen (cogumelos da 0.7-B): o osso existe para as animacoes, pivo no corpo.
+              "abdomen": (np.array([0.0, center("abdomen")[1], ABDOMEN_START_Z]) if np.any(labels == "abdomen")
+                          else np.array([0.0, center("body")[1], CENTER_Z]))}
     for side in ("left", "right"):
         for number in range(4):
             name = f"leg_{side}_{number}"

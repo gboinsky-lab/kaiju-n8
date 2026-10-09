@@ -20,7 +20,8 @@ import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
 /**
- * GameTests da 0.7-A: os kaiju novos do Miguel (Philinosoma, Diclonius, Camponotus e a revivida) carregam com a
+ * GameTests da 0.7-A/B: os kaiju novos do Miguel (Philinosoma, Diclonius, Camponotus e a revivida; cogumelos
+ * Phaneroplasmodium e Myxogasterocarp; larva voadora) carregam com a
  * categoria, a hitbox, a vida e as partes do JSON (nucleo marcado), todas as habilidades deles existem e os ataques
  * a distancia novos (sopro, espinhos, acido) acertam o alvo.
  */
@@ -49,6 +50,40 @@ public final class NewKaijuGameTests {
     @GameTest(template = "empty_9x7x9")
     public static void camponotusRebornLoadsFromData(GameTestHelper helper) {
         check(helper, KN8Entities.CAMPONOTUS_REBORN.get(), KaijuClass.YOJU, 4.0F, 290.0F, 3);
+    }
+
+    @GameTest(template = "empty_9x7x9")
+    public static void phaneroplasmodiumLoadsFromData(GameTestHelper helper) {
+        check(helper, KN8Entities.PHANEROPLASMODIUM.get(), KaijuClass.YOJU, 4.4F, 240.0F, 3);
+    }
+
+    @GameTest(template = "empty_9x7x9")
+    public static void myxogasterocarpLoadsFromData(GameTestHelper helper) {
+        check(helper, KN8Entities.MYXOGASTEROCARP.get(), KaijuClass.HONJU, 7.0F, 420.0F, 4);
+    }
+
+    /** A larva nao tem partes (e pequena demais): so categoria, hitbox, vida e habilidades. */
+    @GameTest(template = "empty_9x7x9")
+    public static void larvaLoadsFromData(GameTestHelper helper) {
+        check(helper, KN8Entities.KAIJU_LARVA.get(), KaijuClass.NUMBERED, 0.5F, 20.0F, 0);
+    }
+
+    @GameTest(template = "empty_9x7x33", timeoutTicks = 160)
+    public static void myxogasterocarpSporeBombHitsAtRange(GameTestHelper helper) {
+        rangedHits(helper, KN8Entities.MYXOGASTEROCARP.get(), "myxogasterocarp_spore_bomb", 16);
+    }
+
+    @GameTest(template = "empty_9x7x33", timeoutTicks = 160)
+    public static void phaneroplasmodiumSporesSlowTheTarget(GameTestHelper helper) {
+        KaijuEntity mushroom = facingSouth(helper, KN8Entities.PHANEROPLASMODIUM.get());
+        IronGolem golem = helper.spawn(EntityType.IRON_GOLEM, new BlockPos(4, 1, 12));
+        golem.setNoAi(true);
+        helper.runAfterDelay(2, () -> {
+            helper.assertTrue(mushroom.startAbility(KN8Constants.id("phaneroplasmodium_spore_shot"), golem),
+                    "A nuvem de esporos deveria comecar");
+            helper.succeedWhen(() -> helper.assertTrue(golem.hasEffect(MobEffects.MOVEMENT_SLOWDOWN),
+                    "Os esporos deveriam deixar o alvo lento"));
+        });
     }
 
     @GameTest(template = "empty_9x7x33", timeoutTicks = 160)
@@ -112,7 +147,7 @@ public final class NewKaijuGameTests {
             for (KaijuPart part : kaiju.kaijuParts()) {
                 core |= part.isCore();
             }
-            helper.assertTrue(kaiju.kaijuParts().length == parts && core, "Deveria ter " + parts
+            helper.assertTrue(kaiju.kaijuParts().length == parts && (core || parts == 0), "Deveria ter " + parts
                     + " partes com nucleo, veio " + kaiju.kaijuParts().length);
             for (ResourceLocation ability : def.abilities()) {
                 helper.assertTrue(KN8Data.ABILITY.get(ability, false).isPresent(), "Habilidade sem JSON: " + ability);

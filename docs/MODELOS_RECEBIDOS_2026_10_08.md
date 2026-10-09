@@ -14,7 +14,7 @@ textura 4096 (2048 nos No. 10): reduzir para 512-1024 na conversao.
 | `Kaiju_No_10_Retexture` | `kaiju_no10_small` | 16.330 | No. 10 forma pequena refeita | **substitui** a forma pequena (**trocado na 0.5.0-C**) |
 | `Red_Minecraft_Kaiju_1` | `kaiju_no10_giant` | 17.633 | No. 10 forma gigante refeita | **substitui** a forma gigante (**trocado na 0.5.0-C**) |
 | `Kaiju_No_8_Remesh_14k` | `kaiju_no8` | 14.247 | Kaiju No. 8 (Kafka transformado) | novo; **2 m** de altura |
-| `Kaiju_Larva_Remesh_6k` | `kaiju_larva` | 6.005 | larva que infecta o Kafka (asas, patinhas, cauda) | nova; **pequena** |
+| `Kaiju_Larva_Remesh_6k` | `kaiju_larva` | 6.005 | larva que infecta o Kafka (asas, patinhas, cauda) | nova; **pequena**; **no jogo desde a 0.7-B** (voadora) |
 | `Kafka_Hibino_Remesh` | `kafka` | 10.030 | Kafka Hibino, forma humana | novo; vira o Kaiju No. 8 quando esta perdendo |
 | `Kikoru_Base_Suit` | `kikoru` | 10.016 | Kikoru Shinomiya, forma normal | soldado especial novo |
 | `Kikoru_Numbers_4` | `kikoru_no4` | 13.347 | Kikoru com a arma numerada 4 (casaco longo) | soldado especial novo |
@@ -25,8 +25,8 @@ textura 4096 (2048 nos No. 10): reduzir para 512-1024 na conversao.
 | `Mina_Ashiro_Heavy_Can` | `mina_cannon` | 7.518 | canhao pesado da Mina (arma, deitado) | arma nova |
 | `gen_narumi_remesh_10k` | `narumi` | 9.822 | Gen Narumi (cabelo rosa e preto) | novo |
 | `Gen_Narumi_Bayonet` | `narumi_bayonet` | 7.655 | baioneta longa do Narumi (arma, em pe) | arma nova |
-| `phanero_plasmodium` | `phaneroplasmodium` | 13.514 | kaiju cogumelo **Yoju** (chapeu branco e vermelho, boca com dentes, 8 patas) | kaiju novo |
-| `myxogasterocarp` | `myxogasterocarp` | 15.450 | kaiju cogumelo **Honju** (varios chapeus escuros com vermelho, raizes como patas) | kaiju novo |
+| `phanero_plasmodium` | `phaneroplasmodium` | 13.514 | kaiju cogumelo **Yoju** (chapeu branco e vermelho, boca com dentes, 8 patas) | kaiju novo; **no jogo desde a 0.7-B** |
+| `myxogasterocarp` | `myxogasterocarp` | 15.450 | kaiju cogumelo **Honju** (varios chapeus escuros com vermelho, raizes como patas) | kaiju novo; **no jogo desde a 0.7-B** |
 | `philinosoma_honju` | `philinosoma` | 15.564 | lagarto gigante (vermelho, barriga clara, espinhos azuis, cauda reta) | kaiju novo; **no jogo desde a 0.7-A** |
 | `hoshina_standard` | `hoshina` | 8.450 | Hoshina com o traje normal refeito (bainhas nas costas) | **substitui** o Hoshina atual (0.6-D) |
 

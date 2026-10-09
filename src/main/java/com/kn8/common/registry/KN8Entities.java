@@ -61,6 +61,11 @@ public final class KN8Entities {
             kaiju("camponotus", 4.0F, 2.9F);
     public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> CAMPONOTUS_REBORN =
             kaiju("camponotus_reborn", 4.0F, 2.9F);
+    /** 0.7-B: kaiju cogumelo do Miguel: Phaneroplasmodium (Yoju, 5 m, 8 patas) e Myxogasterocarp (Honju, 9 m). */
+    public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> PHANEROPLASMODIUM =
+            kaiju("phaneroplasmodium", 4.4F, 5.0F);
+    public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> MYXOGASTEROCARP =
+            kaiju("myxogasterocarp", 7.0F, 9.0F);
 
     /** 0.2 (Etapa 8): Kaiju No. 9, o primeiro numerado (humanoide de 2 m; revive carcacas). */
     public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> KAIJU_NO9 = ENTITY_TYPES.register(
@@ -76,6 +81,9 @@ public final class KN8Entities {
     /** 0.6-E: Preondactyl, kaiju voador (flyer/preondactyl.json). */
     public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> PREONDACTYL = flyer(
             "preondactyl", 4.0F, 4.0F);
+    /** 0.7-B: larva que infecta o Kafka (0,5 m, asas): voa como o Preondactyl (flyer/kaiju_larva.json). */
+    public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> KAIJU_LARVA = flyer(
+            "kaiju_larva", 0.5F, 0.5F);
 
     /** 0.1-B (M11b): carcaca de kaiju morto (tamanho real vem da especie, sincronizada). */
     public static final DeferredHolder<EntityType<?>, EntityType<CarcassEntity>> CARCASS = ENTITY_TYPES.register(
@@ -145,7 +153,8 @@ public final class KN8Entities {
     public static final List<DeferredHolder<EntityType<?>, EntityType<KaijuEntity>>> KAIJU =
             List.of(TRICHONEPHILA, PRIMIGENIUS, PRIMIGENIUS_RESURRECTED, PRIMIGENIUS_HONJU, PRIMIGENIUS_REVIVED,
                     TRICHONEPHILA_HONJU, KAIJU_NO9, KAIJU_NO10_SMALL, KAIJU_NO10_GIANT,
-                    PREONDACTYL, PHILINOSOMA, DICLONIUS, CAMPONOTUS, CAMPONOTUS_REBORN);
+                    PREONDACTYL, PHILINOSOMA, DICLONIUS, CAMPONOTUS, CAMPONOTUS_REBORN, PHANEROPLASMODIUM,
+                    MYXOGASTEROCARP, KAIJU_LARVA);
 
     private KN8Entities() {
     }

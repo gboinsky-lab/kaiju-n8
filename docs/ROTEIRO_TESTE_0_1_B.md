@@ -487,3 +487,15 @@ Visto na nuvem (`docs/img/hoshina_modelo.png`, `hoshina_vs_honju.png`, `hoshina_
 | 32.6 | Bater na cabeça da formiga e no peito dos Honju | Dano maior (núcleo) |
 | 32.7 | Menu (M) > Bestiário depois de abater | Os 4 aparecem com nome e descrição em pt_br e en_us |
 | 32.8 | Servidor dedicado + 2 clientes | Os dois veem o mesmo modelo, animação e ataque |
+
+## 33. Cogumelos e larva (0.7-B)
+
+| # | Passo | Esperado |
+|---|---|---|
+| 33.1 | `/summon kn8:phaneroplasmodium ~ ~ ~ {NoAI:1b}` e dar a volta | Cogumelo branco e vermelho de 5 m sobre oito patas, boca com dentes sob o chapéu |
+| 33.2 | O mesmo com `kn8:myxogasterocarp` | Cogumelo escuro de 9 m com chapéus vermelhos empilhados e raízes como patas |
+| 33.3 | `/summon kn8:kaiju_larva` perto de você (sobrevivência, dificuldade normal) | Larva pequena com asas: levanta voo, circula em volta e mergulha para morder |
+| 33.4 | Cogumelos contra 3 soldados | Andam com as patas/raízes, atacam com as patas; o chapéu recua e solta esporos (Phaneroplasmodium deixa lento; Myxogasterocarp explode) |
+| 33.5 | Bater no chapéu do Phaneroplasmodium e no caule do Myxogasterocarp | Dano maior (núcleo) |
+| 33.6 | Menu (M) > Bestiário depois de abater | Os 3 aparecem com nome e descrição em pt_br e en_us |
+| 33.7 | Servidor dedicado + 2 clientes | Os dois veem o mesmo modelo, animação e ataque |

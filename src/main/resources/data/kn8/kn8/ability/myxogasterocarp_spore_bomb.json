@@ -1,0 +1,34 @@
+{
+  "type": "kn8:projectile",
+  "damage_multiplier": 2.0,
+  "windup_ticks": 28,
+  "active_ticks": 4,
+  "cooldown_ticks": 220,
+  "animation": "action.spore_bomb",
+  "telegraph": "mouth_glow",
+  "particles": "kn8:energy_charge",
+  "heavy": true,
+  "vfx": [
+    {
+      "effect": "kn8:energy_burst",
+      "intensity": 1.3
+    },
+    {
+      "effect": "kn8:shockwave",
+      "intensity": 0.7
+    }
+  ],
+  "camera_shake": 0.3,
+  "sound": "kn8:kaiju.roar",
+  "behavior": {
+    "priority": 5,
+    "min_range": 6,
+    "max_range": 28,
+    "projectile_speed": 1.1,
+    "projectile_range": 34,
+    "explosion_radius": 3.5,
+    "color": "#B0182A",
+    "slow_ticks": 60,
+    "slow_level": 1
+  }
+}

@@ -1,0 +1,88 @@
+{
+  "class": "honju",
+  "fortitude": 6.3,
+  "size": "large",
+  "dimensions": {
+    "width": 7.0,
+    "height": 9.0
+  },
+  "overrides": {
+    "health": 420.0,
+    "damage": 15.0,
+    "armor": 13.0
+  },
+  "speed": 0.2,
+  "intelligence": 3,
+  "core": {
+    "health_fraction": 0.25,
+    "exposed_on": [
+      "heavy_hit"
+    ]
+  },
+  "parts": [
+    {
+      "name": "cap",
+      "offset": [
+        0.0,
+        6.6,
+        0.0
+      ],
+      "width": 6.6,
+      "height": 2.4,
+      "multiplier": 1.1
+    },
+    {
+      "name": "stem",
+      "offset": [
+        0.0,
+        2.8,
+        0.0
+      ],
+      "width": 3.6,
+      "height": 3.8,
+      "multiplier": 1.0
+    },
+    {
+      "name": "core",
+      "offset": [
+        0.0,
+        3.6,
+        1.6
+      ],
+      "width": 1.2,
+      "height": 1.2,
+      "multiplier": 3.0,
+      "core": true
+    },
+    {
+      "name": "roots",
+      "offset": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "width": 7.0,
+      "height": 2.8,
+      "multiplier": 0.7
+    }
+  ],
+  "abilities": [
+    "kn8:bite",
+    "kn8:leg_stab",
+    "kn8:leg_swipe",
+    "kn8:multi_leg",
+    "kn8:myxogasterocarp_spore_bomb"
+  ],
+  "weaknesses": [],
+  "dismantle": "kn8:trichonephila_honju",
+  "spawn": {
+    "events": [
+      "kn8:exam"
+    ],
+    "natural": false
+  },
+  "rarity": "rare",
+  "tags": [
+    "fungus"
+  ]
+}

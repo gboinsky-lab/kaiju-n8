@@ -1,0 +1,70 @@
+{
+  "class": "yoju",
+  "fortitude": 5.2,
+  "size": "medium",
+  "dimensions": {
+    "width": 4.4,
+    "height": 5.0
+  },
+  "overrides": {
+    "health": 240.0,
+    "damage": 10.5,
+    "armor": 9.0
+  },
+  "speed": 0.27,
+  "intelligence": 2,
+  "core": {
+    "health_fraction": 0.25
+  },
+  "parts": [
+    {
+      "name": "cap",
+      "offset": [
+        0.0,
+        3.6,
+        0.0
+      ],
+      "width": 4.4,
+      "height": 1.4,
+      "multiplier": 1.2,
+      "core": true
+    },
+    {
+      "name": "stem",
+      "offset": [
+        0.0,
+        1.5,
+        0.0
+      ],
+      "width": 2.0,
+      "height": 2.1,
+      "multiplier": 1.0
+    },
+    {
+      "name": "legs",
+      "offset": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "width": 4.4,
+      "height": 1.6,
+      "multiplier": 0.7
+    }
+  ],
+  "abilities": [
+    "kn8:bite",
+    "kn8:leg_stab",
+    "kn8:leg_swipe",
+    "kn8:multi_leg",
+    "kn8:phaneroplasmodium_spore_shot"
+  ],
+  "dismantle": "kn8:trichonephila",
+  "spawn": {
+    "natural": false
+  },
+  "rarity": "uncommon",
+  "tags": [
+    "fungus"
+  ]
+}

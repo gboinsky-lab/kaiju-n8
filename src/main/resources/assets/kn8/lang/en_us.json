@@ -717,5 +717,13 @@
   "kn8.ability.philinosoma_spine_shot": "Spine Shot",
   "kn8.ability.diclonius_atomic_breath": "Energy Breath",
   "kn8.ability.camponotus_acid_spray": "Acid Spray",
-  "kn8.ability.camponotus_reborn_acid_spray": "Reborn Acid Spray"
+  "kn8.ability.camponotus_reborn_acid_spray": "Reborn Acid Spray",
+  "entity.kn8.phaneroplasmodium": "Phaneroplasmodium",
+  "kn8.bestiary.phaneroplasmodium.desc": "A 5 m mushroom Yoju that walks on eight legs. Its toothed mouth hides under the cap; it puffs spore clouds that slow its target.",
+  "entity.kn8.myxogasterocarp": "Myxogasterocarp",
+  "kn8.bestiary.myxogasterocarp.desc": "A 9 m mushroom Honju with stacked caps and roots for legs. Slow and tough; it hurls exploding spore bombs.",
+  "entity.kn8.kaiju_larva": "Mysterious Larva",
+  "kn8.bestiary.kaiju_larva.desc": "A small winged larva that flies and bites. A creature like this one entered Kafka Hibino's body.",
+  "kn8.ability.phaneroplasmodium_spore_shot": "Spore Cloud",
+  "kn8.ability.myxogasterocarp_spore_bomb": "Spore Bomb"
 }

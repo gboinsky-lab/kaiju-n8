@@ -33,6 +33,9 @@ Multiplicadores globais: `[balance] kaijuHealthMultiplier` / `kaijuDamageMultipl
 | Diclonius (0.7-A, Honju em pé) | 6,4 | 430 | 15,5 | 14 | 0,23 | soco pesado, mordida, rabada, slam, sopro de energia | [SUPOSIÇÃO] tier T4+: lento e o mais blindado dos Honju; hitbox 5 × 9 |
 | Camponotus (0.7-A, formiga Yoju) | 4,8 | 200 | 9,5 | 10 | 0,33 | mordida, estocada, varredura de patas, jato de ácido, salto | [SUPOSIÇÃO] tier T3 (pouco abaixo do Primigenius 220, mais rápida); hitbox 4 × 2,9; núcleo na cabeça |
 | Camponotus revivida (0.7-A) | 5,5 | 290 | 11,5 | 11 | 0,34 | os da formiga com ácido mais forte; fúria (dano ×1,2, velocidade ×1,15, recargas ×0,7) | [SUPOSIÇÃO] tier T3+ (abaixo do ressurgido 310) |
+| Phaneroplasmodium (0.7-B, cogumelo Yoju) | 5,2 | 240 | 10,5 | 9 | 0,27 | mordida, estocada, varredura de patas, várias patas, nuvem de esporos | [SUPOSIÇÃO] tier T3; hitbox 4,4 × 5; núcleo no chapéu |
+| Myxogasterocarp (0.7-B, cogumelo Honju) | 6,3 | 420 | 15,0 | 13 | 0,20 | mordida, estocada, varredura de raízes, várias raízes, bomba de esporos | [SUPOSIÇÃO] tier T4; o mais lento; hitbox 7 × 9; núcleo no caule |
+| Larva misteriosa (0.7-B, voadora) | 1,5 | 20 | 2,0 | 0 | 0,30 (voo 0,45) | mordida, mergulho | [SUPOSIÇÃO]; 0,5 m (hitbox 0,5 × 0,5), sem partes; voa a 3 blocos do alvo em círculo de raio 4 (`flyer/kaiju_larva.json`), sem autodestruição; categoria `numbered` (origem do No. 8) |
 | Kaiju No. 9 | 8,0 | 1.450 (1.280) | 34,5 (33,6) | 16 | 0,34 (0,32) | garra, investida, Finger Gun | 0.6-D (Miguel: vilão principal, forte de propósito; o Hoshina vence, mas não com facilidade); a garra (×1,3) tira ~44 por golpe; regenera |
 
 ### Habilidades (`ability/<id>.json`)
@@ -66,6 +69,8 @@ Multiplicadores globais: `[balance] kaijuHealthMultiplier` / `kaijuDamageMultipl
 | Sopro de energia do Diclonius (0.7-A) | 2,4 | 32 (aviso na boca) | 4 | 260 | sim | de 6 a 34 blocos, explosão de raio 3,5 [SUPOSIÇÃO] |
 | Jato de ácido da Camponotus (0.7-A) | 0,6 | 10 | 2 | 120 | não | de 4 a 14 blocos, Lentidão II por 3 s [SUPOSIÇÃO] |
 | Jato de ácido da revivida (0.7-A) | 0,75 | 10 | 2 | 110 | não | de 4 a 14 blocos, Lentidão III por 3,5 s [SUPOSIÇÃO] |
+| Nuvem de esporos do Phaneroplasmodium (0.7-B) | 0,7 | 14 | 2 | 130 | não | de 4 a 16 blocos, Lentidão II por 3 s [SUPOSIÇÃO] |
+| Bomba de esporos do Myxogasterocarp (0.7-B) | 2,0 | 28 (aviso) | 4 | 220 | sim | de 6 a 28 blocos, explosão de raio 3,5, Lentidão II por 3 s [SUPOSIÇÃO] |
 | Explosão de teia (0.6-B, Trichonephila Honju) | 0,8 | 20 | 4 | 200 | não | de 6 a 24 blocos; área de raio 3, lentidão III por 5 s |
 
 \* Pesada atravessa o bloqueio comum; só parry ou esquiva evitam (`[combat] heavyIgnoresBlock`) [SUPOSIÇÃO].
@@ -123,6 +128,9 @@ Passadas [SUPOSICAO] ~1,2 x altura do quadril (mais curta que a real: passo pesa
 | `trichonephila_honju` | 3,5 | 3 | 8 m |
 | `philinosoma`, `diclonius` | 4,5 | 4 | 9 m (0.7-A) |
 | `camponotus`, `camponotus_reborn` | 2,8 | 0 | 6 patas, 6 m de comprimento (0.7-A) |
+| `phaneroplasmodium` | 2,2 | 0 | 8 patas, 5 m (0.7-B) |
+| `myxogasterocarp` | 3,6 | 4 | raízes, 9 m (0.7-B) |
+| `kaiju_larva` | 0,4 | 0 | 0,5 m; no ar usa a animação de voo (0.7-B) |
 | `kaiju_no9` | 1,4 | 0 | 2 m |
 | `kaiju_no10_small` | 2,6 | 0 | 4 m |
 | `kaiju_no10_giant` | 12,0 | 16 | 24 m; minimo 0,3 (passos lentos e pesados) |

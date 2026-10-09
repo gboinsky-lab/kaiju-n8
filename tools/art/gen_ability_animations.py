@@ -192,6 +192,19 @@ def leap(name):
     return {"animation_length": end, "bones": bones}
 
 
+def spore_puff(name):
+    """0.7-B (cogumelos): o chapeu (head) recua e se fecha, o caule se encolhe e o chapeu solta os esporos para a
+    frente no impacto."""
+    hit, end = ability(name)
+    load = hit * 0.7
+    return {"animation_length": end, "bones": {
+        "head": {"rotation": keys((0, ZERO), (load, [-18, 0, 0]), (hit, [14, 0, 0]), (end, ZERO)),
+                 "scale": keys((0, [1, 1, 1]), (load, [0.92, 1.08, 0.92]), (hit, [1.08, 0.94, 1.08]),
+                               (end, [1, 1, 1]))},
+        "body": rot((0, ZERO), (load, [-6, 0, 0]), (hit, [8, 0, 0]), (end, ZERO)),
+    }}
+
+
 # --- Kaiju No. 9 -----------------------------------------------------------------------------------------------
 def finger_gun(name):
     hit, end = ability(name)
@@ -239,6 +252,13 @@ SPECIES = {
     "camponotus_reborn": {"action.leg_swipe": (leg_swipe, "leg_swipe"), "action.leg_stab": (leg_stab, "leg_stab"),
                           "action.acid_spray": (web_shot, "camponotus_reborn_acid_spray"),
                           "action.leap": (leap, "leap")},
+    # 0.7-B: cogumelos (ossos da aranha, sem abdomen).
+    "phaneroplasmodium": {"action.leg_swipe": (leg_swipe, "leg_swipe"), "action.leg_stab": (leg_stab, "leg_stab"),
+                          "action.multi_leg": (multi_leg, "multi_leg"),
+                          "action.spore_shot": (spore_puff, "phaneroplasmodium_spore_shot")},
+    "myxogasterocarp": {"action.leg_swipe": (leg_swipe, "leg_swipe"), "action.leg_stab": (leg_stab, "leg_stab"),
+                        "action.multi_leg": (multi_leg, "multi_leg"),
+                        "action.spore_bomb": (spore_puff, "myxogasterocarp_spore_bomb")},
 }
 
 

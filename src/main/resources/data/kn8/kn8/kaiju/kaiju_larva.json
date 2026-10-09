@@ -1,0 +1,29 @@
+{
+  "class": "numbered",
+  "fortitude": 1.5,
+  "size": "miniature",
+  "dimensions": {
+    "width": 0.5,
+    "height": 0.5
+  },
+  "overrides": {
+    "health": 20.0,
+    "damage": 2.0,
+    "armor": 0.0
+  },
+  "speed": 0.3,
+  "intelligence": 1,
+  "abilities": [
+    "kn8:bite",
+    "kn8:preondactyl_dive_strike"
+  ],
+  "weaknesses": [],
+  "spawn": {
+    "natural": false
+  },
+  "rarity": "rare",
+  "tags": [
+    "flying",
+    "larva"
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "fly_speed": 0.45,
+  "cruise_height": 3.0,
+  "circle_radius": 4.0,
+  "dive_speed": 1.5,
+  "dive_cooldown_ticks": 100,
+  "land_after_idle_ticks": 300
+}
