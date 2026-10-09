@@ -97,7 +97,11 @@ Estes três casos apareceram no seu `hoshina.bbmodel` (2026-10-09). Antes e depo
 4. **Continue sempre do último arquivo que o Claude mandou de volta (o corrigido).**
    - Se você abrir o arquivo antigo de novo, as correções somem e os mesmos problemas voltam.
    - Foi o que aconteceu com o `345.bbmodel`.
-5. **Duração do laço.**
+5. **Mandar só o que mudou.**
+   - Se o arquivo veio de um modelo-base antigo, o Claude leva para o jogo só as animações que você mexeu.
+   - As outras ficam como estão no jogo, para não voltar golpes antigos.
+   - Diga sempre quais animações e tempos você mudou (por exemplo, "0,5 do stance").
+6. **Duração do laço.**
    - O andando tem 0,7 s: as pernas fecham o passo em 0,7.
    - Se a duração passar disso, sobra um tempo com as pernas paradas.
 

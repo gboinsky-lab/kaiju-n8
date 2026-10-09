@@ -214,15 +214,19 @@ STANCES = {
     # Kikoru (fotos "Battle Axe"): machado atravessado na frente, as duas maos no cabo; andando igual; correndo com a
     # mao direita so, machado arrastando atras e o braco esquerdo livre.
     "two_handed_axe": {
+        # 0.5.0-D7: bracos e pegada do machado do Miguel (jogador_machado2.bbmodel, tempo 0,5 de stance,
+        # stance_move e stance_run), convertidos do Blockbench; pernas e tronco continuam os da 0.5.0-D6.
         "idle": {"body_pos": [0, -0.8, 0], "right_leg": [-6, 0, 10], "left_leg": [6, 0, -10], "torso": [4, 0, 0],
-                 "right_arm": [-20, -15, 0], "left_arm": [-28, 35, 0], "right_item": AXE_LOW,
-                 "right_item_pos": AXE_GRIP},
+                 "right_arm": [-67.42, -15.0, 20.17], "left_arm": [-54.49, 15.58, -15.05],
+                 "right_item": [-15.95, 105.31, 1.84], "right_item_pos": [11.0, -4.0, -2.0]},
         "move": {"swing": 22, "period": 0.85, "body_pos": [0, -0.5, 0], "torso": [6, 0, 0],
-                 "right_arm": [-15, 0, 8], "right_item": [25, 0, 0], "free_arm": ["left_arm", [0, 0, -6], 22]},
+                 "right_arm": [16.5, 12.0, 37.97], "left_arm": [-18.23, 5.18, -26.18],
+                 "right_item": [-6.32, 14.39, 6.71], "right_item_pos": [0, 0, 0]},
         "draw_via": {"torso": [2, 15, 0], "right_arm": [-35, -25, 0], "left_arm": [-40, 30, 0],
                      "right_item": AXE_ACROSS, "right_item_pos": AXE_GRIP},
-        "run": {"swing": 40, "period": 0.55, "torso": [22, 0, 0], "head": [-18, 0, 0], "right_arm": [20, 0, 12],
-                "right_item": [115, 0, 0], "free_arm": ["left_arm", [-5, 0, -8], 40]},
+        "run": {"swing": 40, "period": 0.55, "torso": [22, 0, 0], "head": [-18, 0, 0],
+                "right_arm": [-64.62, -5.37, 6.49], "right_arm_pos": [0, -1.0, 0], "left_arm": [-30.77, -0.49, 0.99],
+                "right_item": [0.23, 75.14, -11.22], "right_item_pos": [15.0, -1.0, 4.0]},
     },
 }
 
@@ -338,10 +342,12 @@ COMBOS = {
     # Kikoru (video 2): varrida baixa da direita para a esquerda com a cabeca do machado rente ao chao e varrida
     # atravessada na altura do peito (o machado termina do lado esquerdo).
     "two_handed_axe": [
+        # A varrida baixa tem a rotacao propria (cabeca rente ao chao), nao a da pegada parada (0.5.0-D7).
         {"wind": {"right_arm": [-25, 35, 25], "left_arm": [-30, 60, 0], "torso": [12, 50, 0],
-                  "body_pos": [0, -1.5, 0]},
+                  "body_pos": [0, -1.5, 0], "right_item": AXE_LOW, "right_item_pos": AXE_GRIP},
          "hit": {"right_arm": [-45, -55, 0], "left_arm": [-40, -25, 0], "torso": [18, -50, 0],
-                 "right_leg": [-25, 0, 12], "body_pos": [0, -2.5, 0]}},
+                 "right_leg": [-25, 0, 12], "body_pos": [0, -2.5, 0], "right_item": AXE_LOW,
+                 "right_item_pos": AXE_GRIP}},
         {"wind": {"right_arm": [-80, 50, 0], "left_arm": [-80, 70, 0], "torso": [0, 55, 0],
                   "right_item": AXE_ACROSS, "right_item_pos": AXE_GRIP},
          "hit": {"right_arm": [-85, -50, 0], "left_arm": [-80, -30, 0], "torso": [8, -55, 0],
