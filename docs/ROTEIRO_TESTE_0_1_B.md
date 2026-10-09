@@ -467,7 +467,7 @@ Visto na nuvem (`docs/img/hoshina_modelo.png`, `hoshina_vs_honju.png`, `hoshina_
 | # | Passo | Esperado |
 |---|---|---|
 | 31.1 | `/summon kn8:hoshina ~ ~ ~ {NoAI:1b}` e olhar a nuca de perto | Modelo novo, sem rosto na parte de trás da cabeça |
-| 31.1b | Hoshina parado e jogador parado com as duas espadas, vistos de lado | Braços para trás do corpo, o direito mais alto e o esquerdo mais baixo, lâminas saindo para trás |
+| 31.1b | Hoshina e jogador com as duas espadas, parados, andando e correndo, vistos de lado e de costas | Parado e correndo (bem baixo e inclinado): braços para trás do corpo, o direito mais alto e o esquerdo mais baixo, lâminas saindo para trás; andando: quase reto, braços abertos para os lados e para baixo |
 | 31.2 | Olhar as mãos do Hoshina e as suas (F5) com a espada dele | A mão segura o meio do cabo (sobra um pouco do pomo do outro lado), não a ponta |
 | 31.3 | Perto do Hoshina parado: `/kn8 anim soldier action <kuuchi, kosa_uchi, kaeshi_uchi, ran_uchi, kasumi_uchi, yae_uchi>` | 1: um corte só, rápido, com avanço; 2: as duas lâminas fecham em X na frente do peito; 3: abaixa e gira com as lâminas cruzadas; 4: diagonal alta, horizontal baixa, subida e varredura girando, em sequência; 5: X com as duas e o terceiro corte baixo pelo lado; 6: oito cortes alternando; todas saem e voltam agachado |
 | 31.4 | Hoshina lutando contra um kaiju | As técnicas aparecem na luta com a postura baixa |

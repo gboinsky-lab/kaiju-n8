@@ -277,11 +277,11 @@ BEHIND = [100, 0, 0]
 
 
 def arms():
-    """As duas laminas sempre invertidas (pegada reversa, lamina ao longo do antebraco). 0.5.0-D4 (referencia do
-    Miguel, figura agachada): parado, andando e em guarda os dois bracos ficam para tras do corpo, o direito mais
-    alto e o esquerdo mais baixo; correndo: abertos para tras."""
-    poses = {"ready": ([65, 0, 20], [30, 0, 15]), "walk": ([55, 0, 20], [25, 0, 15]),
-             "run": ([35, 0, 50], [35, 0, 50]), "aim": ([60, 0, 25], [25, 0, 20])}
+    """As duas laminas sempre invertidas (pegada reversa, lamina ao longo do antebraco). 0.5.0-D4 (referencias do
+    Miguel): parado, em guarda e correndo os dois bracos ficam para tras do corpo, o direito mais alto e o esquerdo
+    mais baixo, laminas saindo para tras; andando: corpo quase reto e bracos abertos para os lados e para baixo."""
+    poses = {"ready": ([65, 0, 20], [30, 0, 15]), "walk": ([10, 0, 40], [10, 0, 40]),
+             "run": ([75, 0, 25], [35, 0, 20]), "aim": ([60, 0, 25], [25, 0, 20])}
     lengths = {"ready": (2.0, 2), "walk": (0.7, 6), "run": (0.45, 8), "aim": (2.0, 2)}
     def loop(length, right, left, breath, item):
         def bone(pose, flip):
@@ -293,14 +293,14 @@ def arms():
             "arm_right": bone(right, False), "arm_left": bone(left, True)})}
 
     return {f"hoshina.arms.blade_{name}": loop(lengths[name][0], right, left, lengths[name][1],
-                                               REVERSED if name == "run" else BEHIND)
+                                               REVERSED if name == "walk" else BEHIND)
             for name, (right, left) in poses.items()}
 
 
 def movement():
     """0.5.0-D2: corpo inteiro. Parado: bem baixo (root desce para os pes ficarem no chao com as pernas abertas),
     perna direita a frente e aberta, esquerda atras, tronco inclinado e cabeca olhando para a frente. Andando:
-    agachado; correndo: mais inclinado, passadas longas (referencias de corrida do Miguel)."""
+    quase reto (referencia 1); correndo: bem baixo e inclinado, passadas longas (referencias 3 e 5)."""
     idle = {"loop": True, "animation_length": 2.0, "bones": {
         "root": {"position": keys((0, [0, -4, 0]), (1.0, [0, -4.3, 0]), (2.0, [0, -4, 0]))},
         "leg_right": {"rotation": keys((0, [-40, 0, 25]))},
@@ -318,8 +318,8 @@ def movement():
             "body": {"rotation": keys((0, [lean, 0, 0]), (length, [lean, 0, 0]))},
             "head": {"rotation": keys((0, [-lean + 5, 0, 0]), (length, [-lean + 5, 0, 0]))}}}
 
-    return {"hoshina.movement.idle": idle, "hoshina.movement.walk": gait(0.7, 30, 22, 3),
-            "hoshina.movement.run": gait(0.45, 45, 36, 3)}
+    return {"hoshina.movement.idle": idle, "hoshina.movement.walk": gait(0.7, 30, 10, 1),
+            "hoshina.movement.run": gait(0.45, 50, 42, 6)}
 
 
 def tail_animations(slash_ticks=10, guard_ticks=9):
