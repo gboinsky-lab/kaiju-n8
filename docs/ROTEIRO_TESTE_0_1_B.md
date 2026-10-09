@@ -521,3 +521,13 @@ Visto na nuvem (`docs/img/hoshina_modelo.png`, `hoshina_vs_honju.png`, `hoshina_
 | 35.3 | Ovo do Reno (Numbers 6) perto de um Honju | Traje azul; lança de gelo, explosão congelante (o kaiju fica lento), campo de gelo quando o kaiju chega perto |
 | 35.4 | Ovo do Gen Narumi (Numbers 1) contra um kaiju | Mesmo modelo do Narumi, aura rosa e branca; apara e contra-ataca mais vezes, golpe que expõe o núcleo |
 | 35.5 | Servidor dedicado + 2 clientes | Os dois veem o voo, as asas e os golpes iguais |
+
+## 36. Kafka e Kaiju No. 8 (0.7-F)
+
+| # | Passo | Esperado |
+|---|---|---|
+| 36.1 | Ovo do Kafka perto de um Primigenius (dificuldade normal) | Kafka de traje da Força de Defesa atira com o rifle e apanha (24 de vida) |
+| 36.2 | Quando a vida dele cai abaixo da metade | Explosão de fumaça e rugido: no lugar surge o Kaiju No. 8 com a vida cheia e o mesmo alvo |
+| 36.3 | No. 8 lutando | Guarda de luta, sequência de socos, soco pesado que empurra, investida, golpe no chão (explosão), rugido (deixa lento); regenera abaixo da metade |
+| 36.4 | Matar o kaiju e esperar 15 s | O No. 8 volta a ser o Kafka |
+| 36.5 | Servidor dedicado + 2 clientes | Os dois veem a troca de forma ao mesmo tempo |

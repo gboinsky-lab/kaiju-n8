@@ -32,6 +32,8 @@ perseguindo e lutando contra soldados.
 | 0.7-D | `kikoru_no4` | Kikoru Shinomiya (Numbers 4) | 1,57 m, 4 asas em X nas costas | 580 / 20 / 0,44 | machado | **voa**: paira acima do alvo e mergulha nos golpes (machado veloz, mergulho, ataque vertical que expõe o núcleo, combo aéreo, dash aéreo); pousa sem alvo | azul e amarela |
 | 0.7-D | `reno_no6` | Reno Ichikawa (Numbers 6) | 1,70 m, traje azul | 650 / 20 / 0,36 | rifle | criocinese: lança de gelo, explosão congelante, campo de gelo em volta, congelamento múltiplo, canhões auxiliares | azul-gelo |
 | 0.7-D | `narumi_no1` | Gen Narumi (Numbers 1) | modelo do Narumi | 650 / 20 / 0,36 | baioneta | previsão: apara (35%) e contra-ataca mais, golpe no ponto fraco que expõe o núcleo, contra-golpe previsto | rosa e branca |
+| 0.7-F | `kafka` | Kafka Hibino (humano) | 1,81 m | 24 / 6 / 0,30 | rifle | tiro, sequência de socos; **vira o Kaiju No. 8** abaixo de 50% da vida | da Força de Defesa |
+| 0.7-F | `kaiju_no8` | Kaiju No. 8 | 2,0 m | 1.800 / 19 / 0,40 | punhos (`kn8:kaiju_no8_fist`, invisível) | rajada de socos, soco pesado, investida, golpe no chão (explode), rugido (deixa lento); **regenera** abaixo de 50%; **volta a ser o Kafka** depois de 15 s sem alvo | ciano em chamas |
 
 Todos usam a IA dos soldados especiais (a mesma do Hoshina e da Kikoru): esquiva, contra-ataque, aparar e escalada
 de Release. As técnicas de tiro, a explosão e a munição congelante só foram confirmadas pelo GameTest; em jogo os
@@ -48,14 +50,13 @@ três foram vistos com arma e aura, e lutando contra um Primigenius.
 
 - Onde cada um aparece (invasões, missões, defensores) e o balanceamento final: depois de todos os personagens.
 - Desmonte: os kaiju novos reaproveitam o da aranha/Tecedeira (Yoju/Honju de patas) e o do Primigenius Honju.
-- A larva entrar no corpo do Kafka: na 0.7-F (transformação).
+- A larva entrar no corpo do Kafka e a transformação do jogador (M12): [DECIDIR].
 - Animações próprias do canhão e da baioneta para o jogador.
 - A pata de trás esquerda da formiga veio dobrada por baixo do abdômen no modelo e mexe pouco ao andar.
 
 ## Próximas etapas
 
-- **0.7-E**: No. 9 forma preta e No. 9 fundido à formiga.
-- **0.7-F**: Kafka e Kaiju No. 8 (transformação).
+- **0.7-E**: No. 9 forma preta, No. 9 fundido à formiga e No. 9 + No. 10.
 
 ## Onde ficam os arquivos
 
@@ -63,9 +64,10 @@ três foram vistos com arma e aura, e lutando contra um Primigenius.
   `aura/`.
 - Modelos (malha presa aos ossos): `assets/kn8/meshes/<id>/`, `geo/entity/<id>.geo.json`,
   `animations/entity/<id>.animation.json`, `textures/entity/<id>.png`; armas em `models/item/` e `textures/item/`.
-- Java: `KN8Entities`, `KN8Items`, `KN8Client`, `soldier/special/RenoEntity|MinaEntity|NarumiEntity|KikoruNo4Entity|RenoNo6Entity|NarumiNo1Entity`,
+- Java: `KN8Entities`, `KN8Items`, `KN8Client`, `soldier/special/RenoEntity|MinaEntity|NarumiEntity|KikoruNo4Entity|RenoNo6Entity|NarumiNo1Entity|KafkaEntity|KaijuNo8Entity`
+  (troca de forma e regeneração no `HoshinaEntity.tickForm`),
   `combat/SlashProjectile` (bala, explosão, lentidão), `data/def/SlashSpec`.
 - Ferramentas: `tools/art/rig_primigenius_mesh.py`, `rig_trichonephila_mesh.py`, `rig_preondactyl_mesh.py`,
   `rig_soldier_mesh.py`, `gen_ability_animations.py`, `build_primigenius_honju.py`, `gen_special_animations.py`.
-- Imagens em jogo: `docs/img/kaiju_0_7_a_modelos.jpg`, `kaiju_0_7_b_modelos.jpg`, `especiais_0_7_c.jpg`, `numeradas_0_7_d.jpg`.
-- Roteiros de teste: `docs/ROTEIRO_TESTE_0_1_B.md` §32 a §35.
+- Imagens em jogo: `docs/img/kaiju_0_7_a_modelos.jpg`, `kaiju_0_7_b_modelos.jpg`, `especiais_0_7_c.jpg`, `numeradas_0_7_d.jpg`, `kafka_no8_0_7_f.jpg`.
+- Roteiros de teste: `docs/ROTEIRO_TESTE_0_1_B.md` §32 a §36.

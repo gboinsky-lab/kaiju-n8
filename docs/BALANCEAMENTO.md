@@ -373,6 +373,13 @@ sobe mais rápido. A fuga do No. 9 só dá mérito a quem causou dano nele.
 | Reno + No. 6 (T7, criocinese) | 650 | 20 | 0,36 | 50% (100%) | 0,8 | rifle | lança de gelo 2,6 + Lentidão II (50), explosão congelante 2,0 raio 3,5 + Lentidão IV 5 s (120), campo de gelo 8 × 0,8 em volta + Lentidão III (160), congelamento múltiplo 5 × 1,0 (140), canhões auxiliares 2 × 1,2 com explosão 1,5 (60) |
 | Narumi + No. 1 (T7, previsão) | 650 | 20 | 0,36 | 50% (100%) | 0,85 | baioneta | as do Narumi + golpe no ponto fraco 2,0 expõe o núcleo 100 ticks (100) e contra-golpe previsto 1,6 com avanço (60); aparar 35% (era 15%) com janela de 16 ticks, contra-ataque com recarga 120 e reação 10 ticks, esquiva com reação 8 |
 
+**Kafka e Kaiju No. 8 (0.7-F)** (v1.2 seção 11; o resto [SUPOSIÇÃO]):
+
+| Forma | Vida | Armadura | Velocidade | Arma | Técnicas / extra |
+|---|---|---|---|---|---|
+| Kafka humano (T2) | 24 | 6 | 0,30 | rifle (5), `kaiju_damage` 0,3 | sequência de socos 0,5/0,6 (40); **vira o No. 8 abaixo de 50% da vida** (`transform.health_below` 0,5) |
+| Kaiju No. 8 (T8) | 1.800 | 19 | 0,40 | punhos (`kn8:kaiju_no8_fist`, 30 de dano, alcance 3), `kaiju_damage` 1,0, Release 100% | sequência de 4 socos 0,9/1,0/1,1/1,4 (30), soco pesado 1,8 com empurrão (60), investida 1,5 (3–12 blocos, 70), golpe no chão 1,6 com explosão de raio 4 (120), rugido 8 × 0,6 + Lentidão II (240); **regenera 3%/s abaixo de 50%**; **volta a ser o Kafka depois de 15 s sem alvo** (`revert_after_idle_ticks` 300). O v1.2 fala em "dano base equivalente 55": o soco pesado dá 54 |
+
 Armas novas: `weapon/mina_cannon.json` (arma de fogo, 12 de dano, perfil do rifle) e `weapon/narumi_bayonet.json`
 (pesada, 9 de dano, alcance 3,6, perfil do machado) [SUPOSIÇÃO; as animações próprias para o jogador ficam para
 depois]. Reno e Mina fecham distância só acima de 40 blocos (`gap_close_distance`): lutam de longe.

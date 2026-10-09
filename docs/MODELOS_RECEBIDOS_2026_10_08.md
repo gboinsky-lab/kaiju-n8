@@ -13,9 +13,9 @@ textura 4096 (2048 nos No. 10): reduzir para 512-1024 na conversao.
 | `Defense_Suit_Spine` | `mk1` | 11.882 | traje sem cabeca | **substitui** o Mk1 (traje 3D da 0.6-C) |
 | `Kaiju_No_10_Retexture` | `kaiju_no10_small` | 16.330 | No. 10 forma pequena refeita | **substitui** a forma pequena (**trocado na 0.5.0-C**) |
 | `Red_Minecraft_Kaiju_1` | `kaiju_no10_giant` | 17.633 | No. 10 forma gigante refeita | **substitui** a forma gigante (**trocado na 0.5.0-C**) |
-| `Kaiju_No_8_Remesh_14k` | `kaiju_no8` | 14.247 | Kaiju No. 8 (Kafka transformado) | novo; **2 m** de altura |
+| `Kaiju_No_8_Remesh_14k` | `kaiju_no8` | 14.247 | Kaiju No. 8 (Kafka transformado) | novo; **2 m** de altura; **no jogo desde a 0.7-F** |
 | `Kaiju_Larva_Remesh_6k` | `kaiju_larva` | 6.005 | larva que infecta o Kafka (asas, patinhas, cauda) | nova; **pequena**; **no jogo desde a 0.7-B** (voadora) |
-| `Kafka_Hibino_Remesh` | `kafka` | 10.030 | Kafka Hibino, forma humana | novo; vira o Kaiju No. 8 quando esta perdendo |
+| `Kafka_Hibino_Remesh` | `kafka` | 10.030 | Kafka Hibino, forma humana | novo; vira o Kaiju No. 8 quando esta perdendo; **no jogo desde a 0.7-F** |
 | `Kikoru_Base_Suit` | `kikoru` | 10.016 | Kikoru Shinomiya, forma normal | soldado especial novo |
 | `Kikoru_Numbers_4` | `kikoru_no4` | 13.347 | Kikoru com a arma numerada 4 (casaco longo) | soldado especial novo; **no jogo desde a 0.7-D** |
 | `Numbers_4_Wings` | `kikoru_no4_wings` | 11.074 | 4 asas em X da Numbers 4 (separadas) | vai nas costas da `kikoru_no4`; **no jogo desde a 0.7-D** (ossos `wing_left`/`wing_right`) |
