@@ -75,6 +75,9 @@ import software.bernie.geckolib.animation.RawAnimation;
  */
 public class HoshinaEntity extends SoldierEntity {
 
+    /** 0.5.0-D2: acima disso o Hoshina corre (postura de corrida baixa); abaixo, anda agachado. */
+    private static final double RUN_BLOCKS_PER_TICK = 0.12;
+
     public static final ResourceLocation PROFILE = KN8Constants.id("hoshina");
     public static final String VARIANT = "hoshina";
     /** Tecnicas com animacao propria (hoshina.action.<id>); outras do JSON tocam o golpe basico. */
@@ -643,19 +646,27 @@ public class HoshinaEntity extends SoldierEntity {
 
     // --- GeckoLib ----------------------------------------------------------------------------------------------
 
+    /** Andando rapido (blocos por tick no ultimo tick): troca para a corrida baixa (cliente e servidor). */
+    private boolean running() {
+        return Math.hypot(getX() - xo, getZ() - zo) > RUN_BLOCKS_PER_TICK;
+    }
+
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         String prefix = animPrefix() + ".";
         RawAnimation idle = RawAnimation.begin().thenLoop(prefix + "movement.idle");
         RawAnimation walk = RawAnimation.begin().thenLoop(prefix + "movement.walk");
+        // 0.5.0-D2 (referencias do Miguel): postura baixa parado, andando agachado e correndo com os bracos para tras.
+        RawAnimation run = RawAnimation.begin().thenLoop(prefix + "movement.run");
         Map<String, RawAnimation> arms = new HashMap<>();
-        for (String stance : new String[] {"ready", "walk", "aim"}) {
+        for (String stance : new String[] {"ready", "walk", "run", "aim"}) {
             arms.put(stance, RawAnimation.begin().thenLoop(prefix + "arms.blade_" + stance));
         }
         controllers.add(Locomotion.drive(new AnimationController<>(this, "movement", 3, state ->
-                state.setAndContinue(state.isMoving() ? walk : idle)), Locomotion::typeId));
+                state.setAndContinue(!state.isMoving() ? idle : running() ? run : walk)), Locomotion::typeId));
         controllers.add(new AnimationController<>(this, "arms", 4, state -> {
-            String stance = isAggressive() ? "aim" : state.isMoving() ? "walk" : "ready";
+            String stance = isAggressive() && !running() ? "aim"
+                    : state.isMoving() ? (running() ? "run" : "walk") : "ready";
             return state.setAndContinue(arms.get(stance));
         }));
         AnimationController<HoshinaEntity> action = new AnimationController<>(this, "action", 1,

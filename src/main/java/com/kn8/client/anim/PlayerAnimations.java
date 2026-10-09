@@ -60,6 +60,8 @@ public final class PlayerAnimations {
      */
     public static final ResourceLocation STANCE_LAYER_ID = KN8Constants.id("stance");
     private static final int STANCE_PRIORITY = 1500;
+    /** Blocos por tick acima dos quais o jogador esta andando (troca para a postura em movimento). */
+    private static final double MOVING_PER_TICK = 0.02;
     /** Primeira pessoa: bracos e itens do modelo de terceira pessoa durante os golpes (perfil com first_person). */
     private static final FirstPersonConfiguration FIRST_PERSON = new FirstPersonConfiguration(true, true, true, true);
     private static final int HISTORY_SIZE = 10;
@@ -139,9 +141,13 @@ public final class PlayerAnimations {
         STANCES.keySet().removeIf(id -> minecraft.level.getEntity(id) == null);
         for (AbstractClientPlayer player : minecraft.level.players()) {
             Optional<WeaponDef> weapon = CombatService.heldWeapon(player);
+            // 0.5.0-D2: parado, andando ou correndo (cada familia tem as tres posturas de corpo inteiro).
+            String variant = player.isSprinting() ? "stance_run"
+                    : Math.hypot(player.getX() - player.xo, player.getZ() - player.zo) > MOVING_PER_TICK
+                    ? "stance_move" : "stance";
             ResourceLocation wanted = weapon.flatMap(def -> WeaponHandling.profile(def, true)
                             .filter(WeaponProfileDef::stance).flatMap(profile -> def.profile()))
-                    .map(id -> AnimationBridge.profileAction(id, "stance")).orElse(null);
+                    .map(id -> AnimationBridge.profileAction(id, variant)).orElse(null);
             ResourceLocation current = STANCES.get(player.getId());
             if (wanted == null ? current == null : wanted.equals(current)) {
                 continue;

@@ -163,6 +163,7 @@
   "kn8.magazine.hint": "Right click: load with ammo from your inventory",
   "kn8.magazine.no_ammo": "No ammo to load this magazine",
   "kn8.hud.combat.denied_no_magazine": "No loaded magazine",
+  "kn8.hud.combat.denied_needs_dual": "Paired technique: hold one sword in each hand",
   "kn8.hud.ammo_reserve": "Mag %s/%s  +%s",
   "itemGroup.kn8": "Kaiju No. 8: Defense Force",
   "key.categories.kn8": "Kaiju No. 8",

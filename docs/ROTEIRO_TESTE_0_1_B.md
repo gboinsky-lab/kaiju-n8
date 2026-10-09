@@ -446,3 +446,18 @@ Visto na nuvem (`docs/img/hoshina_modelo.png`, `hoshina_vs_honju.png`, `hoshina_
 | 29.8 | Soldado com rifle ou pistola lutando contra um kaiju | Depois de 30 (rifle) ou 12 (pistola) tiros para, faz a animação de recarga com os sons e volta a atirar |
 | 29.9 | Soldado que troca para a faca de apoio | Espera o saque antes do primeiro golpe |
 | 29.10 | Servidor dedicado + 2 clientes | Cada um vê a postura, o saque, a guarda e a recarga do outro; a HUD do pente só aparece para o dono |
+
+## 30. Municao, posturas de corpo inteiro e espadas de par (0.5.0-D2/D3)
+
+| # | Passo | Esperado |
+|---|---|---|
+| 30.1 | Sobrevivência: rifle sem nenhum pente na mochila, atirar até esvaziar | "Sem pente carregado"; não recarrega do nada |
+| 30.2 | Fabricar pente e munição de rifle na bancada (patente Oficial), botão direito no pente | Pente enche (barra amarela e "30/30" na dica) gastando a munição |
+| 30.3 | Atirar até esvaziar com o pente carregado na mochila | Recarga troca os pentes: o carregado sai da mochila, o vazio volta; HUD "Pente N/30 +M" |
+| 30.4 | Soldado de rifle lutando muito tempo | Gasta os 3 pentes de reserva e troca para a faca |
+| 30.5 | F5, cada arma parada, andando (W) e correndo (W + Ctrl), de frente e de costas | Corpo inteiro: pernas e tronco mudam; espadas do Hoshina agachado e inclinado, lâminas invertidas; machado na horizontal à frente |
+| 30.6 | Combo (clique repetido) com cada arma | Cada golpe do combo com animação própria (faca 3, espada 3, espadas do Hoshina 4, machado 2) e o pesado diferente |
+| 30.7 | Espada do Hoshina só na mão direita, apertar R | Kūuchi negado: "Técnica de par: segure uma espada em cada mão" |
+| 30.8 | Outra espada do Hoshina na mão secundária (F troca), apertar R e atacar | Kūuchi sai; as duas espadas aparecem e golpeiam no combo |
+| 30.9 | `/summon kn8:hoshina` perto de um kaiju | Hoshina agachado parado, andando e correndo com as duas lâminas invertidas |
+| 30.10 | Servidor dedicado + 2 clientes | Cada um vê a postura, o andar e o correr do outro |

@@ -191,9 +191,12 @@ public final class CombatService {
             // GDD secao 7: carga completa = critico (o primeiro acerto deste golpe).
             state.criticalUntilTick = now + duration + 1;
         }
-        // Animacao da propria arma (pico no tick de impacto do JSON dela); armas de fogo usam "shoot".
-        AnimationBridge.playPlayer(player, AnimationBridge.weaponAction(weapon.get().item(),
-                firearm ? "shoot" : actionName));
+        // Animacao da propria arma (pico no tick de impacto do JSON dela); armas de fogo usam "shoot". 0.5.0-D2:
+        // com perfil, cada passo do combo tem o seu golpe (player.<perfil>.light_<n>) e o pesado e o da familia.
+        AnimationBridge.playPlayer(player, firearm || weapon.get().profile().isEmpty()
+                ? AnimationBridge.weaponAction(weapon.get().item(), firearm ? "shoot" : actionName)
+                : AnimationBridge.profileAction(weapon.get().profile().get(), LIGHT.equals(actionName)
+                        ? "light_" + (Math.max(0, state.comboStep) + 1) : HEAVY));
         if (!firearm) {
             // Etapa 1 (0.2): o "vush" sai no inicio do golpe; o impacto tem som proprio no tick do JSON.
             player.level().playSound(null, player.getX(), player.getEyeY(), player.getZ(),
@@ -248,6 +251,11 @@ public final class CombatService {
         }
         if (special.isEmpty()) {
             replySpecial(player, CombatResult.DENIED_NO_SPECIAL);
+            return false;
+        }
+        if (!WeaponHandling.dualReady(player, weapon.get(), false)) {
+            // 0.5.0-D3 (Miguel): tecnica de arma de par so com uma arma em cada mao (como o Hoshina NPC).
+            replySpecial(player, CombatResult.DENIED_NEEDS_DUAL);
             return false;
         }
         if (state.blocking || state.timeline.isActive(now)) {

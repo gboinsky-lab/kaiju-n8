@@ -154,8 +154,21 @@ traje foi removido na 0.3 porque divergia deles).
 | `rifle` | duas mãos | 12 ticks | **30** | 10 + 14 + 8 = 32 ticks (soltar, colocar, engatilhar) | 1,6° para cima, 0,6° de lado, volta 60% em 4 ticks | vanilla | rifle |
 | `pistol` | uma | 6 ticks | **12** | 6 + 10 + 6 = 22 ticks | 3,0° / 1,0°, 5 ticks; corpo ×1,6 | vanilla | pistola |
 
-Munição de reserva infinita [SUPOSIÇÃO] (o GDD não tem munição): só o pente e o tempo de recarga pesam. A tecla R
-recarrega na arma de fogo (que não tem especial). Todos os números do perfil são [SUPOSIÇÃO].
+**Munição como item (0.5.0-D2, Miguel: nada infinito).** A recarga troca o pente da arma por um pente carregado da
+mochila (`kn8:rifle_magazine` 30, `kn8:pistol_magazine` 12; o vazio volta para a mochila). Pente vazio se carrega
+com o botão direito, gastando `kn8:rifle_ammo`/`kn8:pistol_ammo`. Sem pente carregado: "Sem pente carregado". O
+soldado leva 3 pentes de reserva (`npc.spare_magazines`) e, sem munição, troca para a arma de apoio. Criativo não
+gasta. A tecla R recarrega na arma de fogo (que não tem especial). Números do perfil e receitas [SUPOSIÇÃO].
+
+| Receita (bancada, patente Oficial) | Materiais | Sai |
+|---|---|---|
+| Pente de rifle | 3 ferro + 1 redstone | 1 (vazio) |
+| Pente de pistola | 2 ferro + 1 redstone | 1 (vazio) |
+| Munição de rifle | 2 ferro + 1 pólvora | 24 |
+| Munição de pistola | 2 ferro + 1 pólvora | 16 |
+
+**Espada do Hoshina é de par (0.5.0-D3, Miguel):** o especial (Kūuchi, tecla R) só sai com uma espada do Hoshina
+em cada mão; com uma só, "Técnica de par: segure uma espada em cada mão". O Hoshina NPC já luta com as duas.
 
 ### Combate (`[combat]`)
 

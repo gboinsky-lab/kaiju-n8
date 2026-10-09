@@ -52,7 +52,7 @@ public final class KN8Network {
     // 12 = 0.6-D: weapon.special.slash (corte a distancia) no registro de armas sincronizado.
     // 13 = 0.5.0-A: ReleaseInputC2S e PowerView novo. 14 = 0.5.0-C: registro sincronizado "locomotion".
     // 15 = 0.5.0-D: AmmoS2C, CombatResult.RELOADING e registro sincronizado "weapon_profile".
-    private static final String PROTOCOL_VERSION = "15";
+    private static final String PROTOCOL_VERSION = "16";
 
     /** Diagnostico: 20 por segundo, rajada de 40. */
     private static final C2SGuard.Limit DEBUG_LIMIT = new C2SGuard.Limit(20, 40);

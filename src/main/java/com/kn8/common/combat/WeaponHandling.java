@@ -45,6 +45,18 @@ public final class WeaponHandling {
         return weapon.profile().flatMap(id -> KN8Data.WEAPON_PROFILE.get(id, clientSide));
     }
 
+    /**
+     * Arma de par ({@code hands: dual}) so vale as tecnicas com uma arma de par na outra mao (0.5.0-D3, Miguel: o
+     * jogador luta como o Hoshina NPC, uma espada em cada mao). Arma de uma ou duas maos sempre passa.
+     */
+    public static boolean dualReady(Player player, WeaponDef weapon, boolean clientSide) {
+        if (profile(weapon, clientSide).map(WeaponProfileDef::hands).orElse(null) != WeaponProfileDef.Hands.DUAL) {
+            return true;
+        }
+        return WeaponIndex.find(player.getOffhandItem(), clientSide).flatMap(off -> profile(off, clientSide))
+                .map(off -> off.hands() == WeaponProfileDef.Hands.DUAL).orElse(false);
+    }
+
     /** Todo tick do jogador: saque quando a arma na mao muda e etapas da recarga em andamento. */
     static void tick(ServerPlayer player, CombatState state, long now) {
         ResourceLocation held = BuiltInRegistries.ITEM.getKey(player.getMainHandItem().getItem());

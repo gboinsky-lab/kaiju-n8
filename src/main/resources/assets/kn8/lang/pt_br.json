@@ -163,6 +163,7 @@
   "kn8.magazine.hint": "Botão direito: carregar com munição da mochila",
   "kn8.magazine.no_ammo": "Sem munição para carregar este pente",
   "kn8.hud.combat.denied_no_magazine": "Sem pente carregado",
+  "kn8.hud.combat.denied_needs_dual": "Técnica de par: segure uma espada em cada mão",
   "kn8.hud.ammo_reserve": "Pente %s/%s  +%s",
   "itemGroup.kn8": "Kaiju No. 8: Força de Defesa",
   "key.categories.kn8": "Kaiju No. 8",

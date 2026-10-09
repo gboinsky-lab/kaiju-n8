@@ -139,33 +139,169 @@ def block():
 WEAPONS = ROOT / "src/main/resources/data/kn8/kn8/weapon"
 PROFILES = ROOT / "src/main/resources/data/kn8/kn8/weapon_profile"
 
-# 0.5.0-D: postura de cada familia (bracos, tronco e item; PAL tem right_item/left_item). Pernas ficam com o vanilla
-# (andar continua normal). Graus no padrao do PT6: X negativo = braco para a frente.
+# 0.5.0-D2 (Miguel: animacao de corpo inteiro, nao so os bracos; referencias do Miguel de 2026-10-08): postura de
+# cada familia parada ("idle"), andando ("move") e correndo ("run"), com pernas, corpo (body_pos desce o corpo
+# inteiro em pixels para os pes ficarem no chao com as pernas abertas), tronco, cabeca, bracos e itens (a PAL tem
+# right_item/left_item). Eixos conferidos em jogo: X negativo = braco/perna para a frente; Z positivo = braco/perna
+# direitos para fora (esquerdos: Z negativo); torso X positivo = inclina para a frente.
 STANCES = {
-    # Faca: guarda baixa e curta, mao esquerda protegendo.
-    "knife": {"right_arm": [-35, -12, 8], "left_arm": [-25, 18, -6], "torso": [6, 8, 0]},
-    # Espada de uma mao: lamina na frente do corpo, um pouco erguida.
-    "sword": {"right_arm": [-42, -18, 12], "left_arm": [-12, 10, -4], "torso": [4, 10, 0]},
-    # Hoshina (Miguel): postura baixa e agachada, as duas laminas invertidas (pegada reversa, lamina para tras).
-    "dual_reverse": {"right_arm": [-38, -22, 18], "left_arm": [-38, 22, -18], "torso": [16, 0, 0],
-                     "right_item": [180, 0, 0], "left_item": [180, 0, 0]},
-    # Machado pesado: duas maos no cabo, de lado, pronto para o giro.
-    "two_handed_axe": {"right_arm": [-48, -30, 0], "left_arm": [-55, 38, 0], "torso": [6, 22, 0]},
+    # Faca: base atletica, pernas um pouco abertas, guarda curta.
+    "knife": {
+        "idle": {"body_pos": [0, -1.5, 0], "right_leg": [-12, 0, 8], "left_leg": [10, 0, -8], "torso": [10, 8, 0],
+                 "right_arm": [-35, -12, 8], "left_arm": [-25, 18, -6]},
+        "move": {"swing": 28, "period": 0.7, "body_pos": [0, -1, 0], "torso": [12, 8, 0],
+                 "right_arm": [-35, -12, 8], "left_arm": [-25, 18, -6]},
+        "run": {"swing": 45, "period": 0.5, "body_pos": [0, -1, 0], "torso": [22, 0, 0],
+                "right_arm": [30, 0, 20], "left_arm": [-30, 0, -20]},
+    },
+    # Espada de uma mao (referencia: andando com a lamina baixa, apontando para o chao na diagonal).
+    "sword": {
+        "idle": {"body_pos": [0, -1.5, 0], "right_leg": [-14, 0, 6], "left_leg": [12, 0, -6], "torso": [6, 10, 0],
+                 "right_arm": [-18, 0, 22], "right_item": [55, 0, 0], "left_arm": [-10, 6, -6]},
+        "move": {"swing": 26, "period": 0.75, "body_pos": [0, -1, 0], "torso": [6, 8, 0],
+                 "right_arm": [-18, 0, 22], "right_item": [55, 0, 0], "left_arm": [-10, 6, -6]},
+        "run": {"swing": 45, "period": 0.5, "body_pos": [0, -1, 0], "torso": [24, 0, 0],
+                "right_arm": [40, 0, 18], "right_item": [70, 0, 0], "left_arm": [-35, 0, -15]},
+    },
+    # Hoshina (referencias: figura agachada e as tres de corrida): bem baixo, perna direita a frente e aberta,
+    # esquerda atras; tronco inclinado; bracos abertos para os lados com as duas laminas invertidas no antebraco.
+    "dual_reverse": {
+        "idle": {"body_pos": [0, -5, 0], "right_leg": [-40, 0, 28], "left_leg": [35, 0, -22], "torso": [28, 0, 0],
+                 "head": [-25, 0, 0], "right_arm": [-35, 0, 65], "left_arm": [-35, 0, -65],
+                 "right_item": [180, 0, 0], "left_item": [180, 0, 0]},
+        "move": {"swing": 30, "period": 0.7, "body_pos": [0, -3, 0], "torso": [24, 0, 0], "head": [-20, 0, 0],
+                 "right_arm": [-20, 0, 55], "left_arm": [-20, 0, -55], "right_item": [180, 0, 0],
+                 "left_item": [180, 0, 0]},
+        # Correndo baixo, bracos abertos para tras (laminas ao longo do antebraco), como nas referencias.
+        "run": {"swing": 45, "period": 0.45, "body_pos": [0, -3, 0], "torso": [38, 0, 0], "head": [-32, 0, 0],
+                "right_arm": [35, 0, 50], "left_arm": [35, 0, -50], "right_item": [180, 0, 0],
+                "left_item": [180, 0, 0]},
+    },
+    # Kikoru (referencia "Battle Axe"): machado na horizontal na frente do corpo, as duas maos no cabo, lamina para
+    # o lado esquerdo; pernas firmes e abertas. Correndo: machado atravessado, lamina para tras.
+    "two_handed_axe": {
+        "idle": {"body_pos": [0, -0.8, 0], "right_leg": [-6, 0, 10], "left_leg": [6, 0, -10], "torso": [4, 0, 0],
+                 "right_arm": [-45, -30, 0], "left_arm": [-50, 35, 0], "right_item": [0, 90, 0]},
+        "move": {"swing": 22, "period": 0.85, "body_pos": [0, -0.5, 0], "torso": [6, 0, 0],
+                 "right_arm": [-45, -30, 0], "left_arm": [-50, 35, 0], "right_item": [0, 90, 0]},
+        "run": {"swing": 40, "period": 0.55, "torso": [20, -15, 0], "right_arm": [-30, -35, 0],
+                "left_arm": [-40, 40, 0], "right_item": [0, 90, 0]},
+    },
 }
 
 
+# Combos (golpe leve, um por passo do combo; tempos do light do JSON da arma) e golpe pesado de cada familia.
+# Cada golpe: pose de preparo (wind) e pose do impacto (hit); comeca e termina na postura parada.
+COMBOS = {
+    "knife": [
+        # 1: estocada curta para a frente com passo.
+        {"wind": {"right_arm": [-60, -10, 10], "torso": [5, 25, 0]},
+         "hit": {"right_arm": [-95, -5, 0], "torso": [15, -10, 0], "right_leg": [-30, 0, 6]}},
+        # 2: corte horizontal da direita para a esquerda.
+        {"wind": {"right_arm": [-80, 30, 40], "torso": [5, 35, 0]},
+         "hit": {"right_arm": [-80, -60, -10], "torso": [8, -30, 0]}},
+        # 3: corte de revés subindo, com giro do tronco.
+        {"wind": {"right_arm": [-40, -50, -20], "torso": [5, -35, 0]},
+         "hit": {"right_arm": [-130, 40, 30], "torso": [-5, 30, 0], "left_leg": [20, 0, -10]}},
+    ],
+    "sword": [
+        # 1: diagonal de cima/direita para baixo/esquerda.
+        {"wind": {"right_arm": [-160, 20, 30], "torso": [-5, 25, 0]},
+         "hit": {"right_arm": [-40, -40, -20], "right_item": [20, 0, 0], "torso": [15, -20, 0],
+                 "right_leg": [-25, 0, 6]}},
+        # 2: horizontal de volta (esquerda para direita).
+        {"wind": {"right_arm": [-80, -60, -10], "torso": [5, -30, 0]},
+         "hit": {"right_arm": [-85, 50, 30], "torso": [8, 35, 0]}},
+        # 3: estocada com avanco.
+        {"wind": {"right_arm": [-50, 0, 10], "torso": [0, 20, 0], "right_leg": [10, 0, 6]},
+         "hit": {"right_arm": [-95, 0, 0], "right_item": [-10, 0, 0], "torso": [20, -5, 0],
+                 "right_leg": [-45, 0, 6], "left_leg": [30, 0, -6], "body_pos": [0, -2, 0]}},
+    ],
+    # Hoshina: cortes rapidos alternando as laminas invertidas, um giro duplo e o X das duas laminas.
+    "dual_reverse": [
+        {"wind": {"right_arm": [-50, 30, 70], "torso": [25, 30, 0]},
+         "hit": {"right_arm": [-80, -50, 10], "torso": [25, -25, 0]}},
+        {"wind": {"left_arm": [-50, -30, -70], "torso": [25, -30, 0]},
+         "hit": {"left_arm": [-80, 50, -10], "torso": [25, 25, 0]}},
+        {"wind": {"right_arm": [-30, 0, 80], "left_arm": [-30, 0, -80], "torso": [30, 60, 0]},
+         "hit": {"right_arm": [-60, 0, 85], "left_arm": [-60, 0, -85], "torso": [30, -200, 0]}},
+        {"wind": {"right_arm": [-150, -30, 20], "left_arm": [-150, 30, -20], "torso": [10, 0, 0]},
+         "hit": {"right_arm": [-40, 40, -20], "left_arm": [-40, -40, 20], "torso": [35, 0, 0],
+                 "body_pos": [0, -6, 0]}},
+    ],
+    # Kikoru: varrida horizontal com o corpo todo e golpe de cima para baixo.
+    "two_handed_axe": [
+        {"wind": {"right_arm": [-70, 40, 0], "left_arm": [-70, 60, 0], "torso": [5, 45, 0]},
+         "hit": {"right_arm": [-80, -50, 0], "left_arm": [-80, -30, 0], "torso": [10, -45, 0],
+                 "right_leg": [-20, 0, 12]}},
+        {"wind": {"right_arm": [-170, -10, 0], "left_arm": [-170, 10, 0], "torso": [-15, 0, 0]},
+         "hit": {"right_arm": [-40, -15, 0], "left_arm": [-40, 15, 0], "torso": [30, 0, 0],
+                 "body_pos": [0, -3, 0], "right_leg": [-30, 0, 10], "left_leg": [20, 0, -10]}},
+    ],
+}
+
+
+def strike(action, start, wind, hit):
+    """Golpe que sai da postura (start), vai ao preparo, acerta no tick de impacto do JSON e volta a postura."""
+    end, impact = action["duration_ticks"] * TICK, action["impact_tick"] * TICK
+    t_wind, t_follow = impact * 0.6, impact + (end - impact) * 0.35
+    bones = {}
+    names = set(start) | set(wind) | set(hit)
+    for bone in sorted(names):
+        if bone == "body_pos":
+            continue
+        rest = start.get(bone, [0, 0, 0])
+        w, h = wind.get(bone, rest), hit.get(bone, wind.get(bone, rest))
+        bones[bone] = {"rotation": keys((0, rest), (t_wind, w), (impact, h), (t_follow, h), (end, rest))}
+    if "body_pos" in names:
+        rest = start.get("body_pos", [0, 0, 0])
+        w, h = wind.get("body_pos", rest), hit.get("body_pos", wind.get("body_pos", rest))
+        bones["body"] = {"position": keys((0, rest), (t_wind, w), (impact, h), (t_follow, h), (end, rest))}
+    return {"animation_length": round(end, 3), "bones": bones}
+
+
+def heavy_strike(action, start, family):
+    """Pesado de cada familia: o mesmo movimento do ultimo golpe do combo, mais lento e mais amplo."""
+    last = COMBOS[family][-1]
+    wind = {bone: [v[0] * 1.15, v[1], v[2]] if bone.endswith("arm") else v for bone, v in last["wind"].items()}
+    return strike(action, start, wind, last["hit"])
+
+
 def stance(pose):
-    """Postura em laco com uma respiracao de 2 graus (segura a pose; os golpes passam por cima)."""
-    breath = {bone: [v[0] - 2, v[1], v[2]] if bone.endswith("arm") else v for bone, v in pose.items()}
-    return {"loop": True, "animation_length": 2.0, "bones": {
-        bone: {"rotation": keys((0, v), (1.0, breath[bone]), (2.0, v))} for bone, v in pose.items()}}
+    """Postura parada em laco com uma respiracao de 2 graus (segura a pose; os golpes passam por cima)."""
+    rotations = {bone: v for bone, v in pose.items() if bone != "body_pos"}
+    breath = {bone: [v[0] - 2, v[1], v[2]] if bone.endswith("arm") else v for bone, v in rotations.items()}
+    bones = {bone: {"rotation": keys((0, v), (1.0, breath[bone]), (2.0, v))} for bone, v in rotations.items()}
+    if "body_pos" in pose:
+        bones["body"] = {"position": keys((0, pose["body_pos"]), (2.0, pose["body_pos"]))}
+    return {"loop": True, "animation_length": 2.0, "bones": bones}
+
+
+def stance_move(pose):
+    """Postura andando/correndo: pernas balancam (opostas) em volta de 0 com a amplitude do perfil, corpo sobe e
+    desce um pouco a cada passo, tronco/bracos/itens ficam na postura da familia."""
+    period, swing = pose["period"], pose["swing"]
+    half, quarter = period / 2, period / 4
+    base = pose.get("body_pos", [0, 0, 0])
+    up = [base[0], base[1] + 0.6, base[2]]
+    bones = {
+        "right_leg": {"rotation": keys((0, [-swing, 0, 3]), (half, [swing, 0, 3]), (period, [-swing, 0, 3]))},
+        "left_leg": {"rotation": keys((0, [swing, 0, -3]), (half, [-swing, 0, -3]), (period, [swing, 0, -3]))},
+        "body": {"position": keys((0, base), (quarter, up), (half, base), (half + quarter, up), (period, base))},
+    }
+    for bone, v in pose.items():
+        if bone in ("period", "swing", "body_pos"):
+            continue
+        bones[bone] = {"rotation": keys((0, v), (period, v))}
+    return {"loop": True, "animation_length": round(period, 3), "bones": bones}
 
 
 def draw(pose, ticks, hands):
     """Saque: a mao vai a bainha/coldre (quadril ou costas) e traz a arma ate a postura no tempo do perfil."""
     end = max(ticks, 2) * TICK
     reach = end * 0.4
-    target = pose or {"right_arm": [-60, -8, 0], "left_arm": [-55, 25, 0]}
+    target = {bone: v for bone, v in (pose or {"right_arm": [-60, -8, 0], "left_arm": [-55, 25, 0]}).items()
+              if bone.endswith(("arm", "item")) or bone == "torso"}
     bones = {"right_arm": {"rotation": keys((0, [0, 0, 0]), (reach, [25, 20, 25]), (end, target["right_arm"]))}}
     if hands != "one" or "left_arm" in target:
         left_from = [25, -20, -25] if hands == "dual" else [0, 0, 0]
@@ -225,14 +361,34 @@ def profile_animations():
         profile = json.loads(path.read_text(encoding="utf-8"))
         name = path.stem
         hands = profile.get("hands", "one")
-        pose = STANCES.get(name) if profile.get("stance", True) else None
-        if pose:
-            result[f"player.{name}.stance"] = stance(pose)
+        poses = STANCES.get(name) if profile.get("stance", True) else None
+        if poses:
+            result[f"player.{name}.stance"] = stance(poses["idle"])
+            result[f"player.{name}.stance_move"] = stance_move(poses["move"])
+            result[f"player.{name}.stance_run"] = stance_move(poses["run"])
+        weapon = weapon_of(name)
+        if poses and weapon and name in COMBOS:
+            start = poses["idle"]
+            light, heavy = weapon["actions"].get("light"), weapon["actions"].get("heavy")
+            for step, move in enumerate(COMBOS[name]):
+                result[f"player.{name}.light_{step + 1}"] = strike(light, start, move["wind"], move["hit"])
+            if heavy:
+                result[f"player.{name}.heavy"] = heavy_strike(heavy, start, name)
+        pose = poses["idle"] if poses else None
         result[f"player.{name}.draw"] = draw(pose, profile.get("draw", {}).get("ticks", 0), hands)
         result[f"player.{name}.guard"] = guard(hands)
         if "reload" in profile:
             result[f"player.{name}.reload"] = reload(profile["reload"]["stages"], hands)
     return result
+
+
+def weapon_of(profile_name):
+    """JSON da arma que usa este perfil (os tempos dos golpes vem dela)."""
+    for path in sorted(WEAPONS.glob("*.json")):
+        weapon = json.loads(path.read_text(encoding="utf-8"))
+        if weapon.get("profile") == f"kn8:{profile_name}":
+            return weapon
+    return None
 
 
 def body_kick(weapon):

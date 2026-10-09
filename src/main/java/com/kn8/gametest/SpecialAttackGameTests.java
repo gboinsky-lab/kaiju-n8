@@ -29,7 +29,8 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
 /**
  * GameTests da 0.5: o ataque especial do machado (Golpe Sismico, {@code special} do axe.json) acerta todos na area a
- * frente de uma vez (kaiju e mob comum), atordoa o Yoju, poupa o soldado aliado, gasta stamina e entra em recarga.
+ * frente de uma vez (kaiju e mob comum), atordoa o Yoju, poupa o soldado aliado, gasta stamina e entra em recarga; a
+ * espada do Hoshina so faz o especial com uma espada em cada mao (0.5.0-D3).
  */
 @GameTestHolder(KN8Constants.MOD_ID)
 @PrefixGameTestTemplate(false)
@@ -101,6 +102,24 @@ public final class SpecialAttackGameTests {
         helper.runAfterDelay(SETTLE_TICKS, () -> {
             PowerService.setStamina(player, 100);
             helper.assertTrue(!CombatService.special(player), "A faca nao tem ataque especial");
+            helper.succeed();
+        });
+    }
+
+    /** 0.5.0-D3 (Miguel): a espada do Hoshina e de par, o Kuuchi so sai com uma espada em cada mao. */
+    @GameTest(template = TEMPLATE)
+    public static void pairedSwordSpecialNeedsBothHands(GameTestHelper helper) {
+        FakePlayer player = player(helper, "dual");
+        player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(KN8Items.HOSHINA_SWORD.get()));
+        player.setItemInHand(InteractionHand.OFF_HAND, ItemStack.EMPTY);
+        helper.onEachTick(() -> CombatService.tick(player));
+        helper.runAfterDelay(SETTLE_TICKS, () -> {
+            PowerService.setStamina(player, 100);
+            helper.assertTrue(!CombatService.special(player), "Com uma espada so o Kuuchi deveria ser negado");
+            helper.assertTrue(CombatService.specialCooldown(player) == 0, "Negado nao entra em recarga");
+            player.setItemInHand(InteractionHand.OFF_HAND, new ItemStack(KN8Items.HOSHINA_SWORD.get()));
+            helper.assertTrue(CombatService.special(player), "Com uma espada em cada mao o Kuuchi deveria sair");
+            player.setItemInHand(InteractionHand.OFF_HAND, ItemStack.EMPTY);
             helper.succeed();
         });
     }

@@ -151,23 +151,51 @@ def parry():
     })
 
 
+REVERSED = [180, 0, 0]
+
+
 def arms():
-    """Duas espadas: pronto (laminas baixas a frente), andando (balanco) e em guarda com alvo."""
-    ready_r, aim_r = [-25, -12, 8], [-55, -30, 0]
-    out = {}
-    out["hoshina.arms.blade_ready"] = {"loop": True, "animation_length": 2.0, "bones": {
-        "arm_right": {"rotation": keys((0, ready_r), (1, [-27, -12, 8]), (2, ready_r))},
-        "arm_left": {"rotation": keys((0, mirror(ready_r)), (1, mirror([-27, -12, 8])), (2, mirror(ready_r)))}}}
-    out["hoshina.arms.blade_walk"] = {"loop": True, "animation_length": 1.0, "bones": {
-        "arm_right": {"rotation": keys((0, [-15, -12, 8]), (0.5, [-40, -12, 8]), (1, [-15, -12, 8]))},
-        "arm_left": {"rotation": keys((0, mirror([-40, -12, 8])), (0.5, mirror([-15, -12, 8])),
-                                      (1, mirror([-40, -12, 8])))}}}
-    out["hoshina.arms.blade_aim"] = {"loop": True, "animation_length": 2.0, "bones": {
-        "arm_right": {"rotation": keys((0, aim_r), (1, [-57, -30, 0]), (2, aim_r))},
-        "arm_left": {"rotation": keys((0, mirror([-45, -35, 0])), (1, mirror([-47, -35, 0])),
-                                      (2, mirror([-45, -35, 0])))},
-        "body": {"rotation": keys((0, [4, 10, 0]), (2, [4, 10, 0]))}}}
-    return out
+    """0.5.0-D2 (referencias do Miguel): as duas laminas sempre invertidas (pegada reversa, lamina ao longo do
+    antebraco). Pronto: bracos abertos para os lados; andando: abertos e mais baixos; correndo: abertos para tras;
+    com alvo: guarda baixa a frente."""
+    ready_r, walk_r, run_r, aim_r = [-35, 0, 65], [-20, 0, 55], [35, 0, 50], [-55, -25, 35]
+    items = {"item_right": {"rotation": keys((0, REVERSED))}, "item_left": {"rotation": keys((0, REVERSED))}}
+
+    def loop(length, right, breath):
+        return {"loop": True, "animation_length": length, "bones": dict(items, **{
+            "arm_right": {"rotation": keys((0, right), (length / 2, [right[0] - breath, right[1], right[2]]),
+                                           (length, right))},
+            "arm_left": {"rotation": keys((0, mirror(right)), (length / 2, mirror([right[0] - breath, right[1],
+                                                                                    right[2]])),
+                                          (length, mirror(right)))}})}
+
+    return {"hoshina.arms.blade_ready": loop(2.0, ready_r, 2), "hoshina.arms.blade_walk": loop(0.7, walk_r, 6),
+            "hoshina.arms.blade_run": loop(0.45, run_r, 8), "hoshina.arms.blade_aim": loop(2.0, aim_r, 2)}
+
+
+def movement():
+    """0.5.0-D2: corpo inteiro. Parado: bem baixo (root desce para os pes ficarem no chao com as pernas abertas),
+    perna direita a frente e aberta, esquerda atras, tronco inclinado e cabeca olhando para a frente. Andando:
+    agachado; correndo: mais inclinado, passadas longas (referencias de corrida do Miguel)."""
+    idle = {"loop": True, "animation_length": 2.0, "bones": {
+        "root": {"position": keys((0, [0, -4, 0]), (1.0, [0, -4.3, 0]), (2.0, [0, -4, 0]))},
+        "leg_right": {"rotation": keys((0, [-40, 0, 25]))},
+        "leg_left": {"rotation": keys((0, [35, 0, -22]))},
+        "body": {"rotation": keys((0, [28, 0, 0]), (1.0, [30, 0, 0]), (2.0, [28, 0, 0]))},
+        "head": {"rotation": keys((0, [-25, 0, 0]))}}}
+
+    def gait(length, swing, lean, low):
+        half, quarter = length / 2, length / 4
+        return {"loop": True, "animation_length": length, "bones": {
+            "root": {"position": keys((0, [0, -low, 0]), (quarter, [0, -low + 0.7, 0]), (half, [0, -low, 0]),
+                                      (half + quarter, [0, -low + 0.7, 0]), (length, [0, -low, 0]))},
+            "leg_right": {"rotation": keys((0, [-swing, 0, 8]), (half, [swing, 0, 8]), (length, [-swing, 0, 8]))},
+            "leg_left": {"rotation": keys((0, [swing, 0, -8]), (half, [-swing, 0, -8]), (length, [swing, 0, -8]))},
+            "body": {"rotation": keys((0, [lean, 0, 0]), (length, [lean, 0, 0]))},
+            "head": {"rotation": keys((0, [-lean + 5, 0, 0]), (length, [-lean + 5, 0, 0]))}}}
+
+    return {"hoshina.movement.idle": idle, "hoshina.movement.walk": gait(0.7, 30, 22, 3),
+            "hoshina.movement.run": gait(0.45, 45, 36, 3)}
 
 
 def tail_animations(slash_ticks=10, guard_ticks=9):
@@ -203,6 +231,7 @@ def main():
     data = json.loads(raw)
     animations = data["animations"]
     generated = arms()
+    generated.update(movement())
     generated["hoshina.action.kuuchi"] = slash_single(techniques["kuuchi"])
     generated["hoshina.action.kosa_uchi"] = slash_cross(techniques["kosa_uchi"])
     generated["hoshina.action.ran_uchi"] = combo(techniques["ran_uchi"])
@@ -222,7 +251,9 @@ def main():
     for animation in generated.values():
         # Keyframes em ordem de tempo (o passo lateral do Kasumi-uchi entra depois).
         for bone in animation["bones"].values():
-            bone["rotation"] = dict(sorted(bone["rotation"].items(), key=lambda item: float(item[0])))
+            for channel in ("rotation", "position"):
+                if channel in bone:
+                    bone[channel] = dict(sorted(bone[channel].items(), key=lambda item: float(item[0])))
     animations.update(generated)
     text = json.dumps(data, indent=2) + "\n"
     out.write_bytes(text.replace("\n", newline).encode("utf-8"))
