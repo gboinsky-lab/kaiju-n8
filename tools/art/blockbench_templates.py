@@ -400,9 +400,9 @@ def hilt_center(vertices, pivot):
 # Miguel (2026-10-09): espada "um pouco mais pra cima e pra frente dos bracos". Deslocamento da pegada no espaco do
 # braco em repouso (px, Blockbench: +Y para cima, +Z para a frente do Hoshina).
 HOSHINA_GRIP_SHIFT = np.array([0.0, 1.5, 1.5])
-# E "mais uma aumentada para cima para que ele pegue mais no cabo": a espada sobe ao longo dela mesma (px, para o lado
+# E "mais uma aumentada para cima para que ele pegue mais no cabo" (e "mais ainda"): a espada sobe ao longo dela (px, para o lado
 # da ponta), entao a mao fica mais perto do pomo e longe da guarda.
-HOSHINA_GRIP_ALONG = 1.5
+HOSHINA_GRIP_ALONG = 3.0
 
 
 def hoshina_grip_points():
