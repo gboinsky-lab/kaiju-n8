@@ -7,6 +7,7 @@ na proxima geracao. Esquiva e bloqueio ainda nao tem JSON (chegam com o CombatPr
 Formato igual ao do PT6 (aprovado). Ossos da PAL: head, torso, right_arm, left_arm, right_leg, left_leg.
 Uso: python3 tools/art/gen_player_animations.py
 """
+import functools
 import json
 from pathlib import Path
 
@@ -248,6 +249,8 @@ def to_pal(pose):
             out[("body", "position")] = v
         elif key.endswith("_pos"):
             out[(key[:-4], "position")] = v
+        elif key.endswith("_scale"):
+            out[(key[:-6], "scale")] = v
         elif key in LEGS:
             out[(key, "rotation")] = [v[0] - lean[0], v[1] - lean[1], v[2]]
         else:
@@ -516,9 +519,66 @@ def reload(stages, hands):
     }}
 
 
+# 0.5.0-D7 (Miguel, "implemente isso para o player tambem"): as posturas das duas espadas do jogador sao as do Hoshina
+# que o Miguel animou no Blockbench (tools/blockbench/animacoes/hoshina.bbmodel). NPC e jogador usam os mesmos
+# numeros de pose (STANCES + to_pal/to_gecko): so muda o nome dos ossos, a raiz do NPC vira o "body" da PAL e as
+# pernas descontam a inclinacao (to_pal). O deslocamento do tronco do NPC ("body" position) move o jogador inteiro e
+# as pernas descontam.
+HOSHINA_STANCES = {"stance": ("hoshina.movement.idle", "hoshina.arms.blade_ready"),
+                   "stance_move": ("hoshina.movement.walk", "hoshina.arms.blade_walk"),
+                   "stance_run": ("hoshina.movement.run", "hoshina.arms.blade_run")}
+NPC_TO_NEUTRAL = {"body": "torso", "head": "head", "arm_right": "right_arm", "arm_left": "left_arm",
+                  "leg_right": "right_leg", "leg_left": "left_leg", "item_right": "right_item",
+                  "item_left": "left_item"}
+
+
+@functools.lru_cache(maxsize=1)
+def hoshina_dual_stances():
+    """{postura: (frames neutros, duracao)} vindos das animacoes do Hoshina do Miguel; vazio sem o .bbmodel."""
+    from blockbench_templates import imported_hoshina
+    anims = imported_hoshina()
+    out = {}
+    for name, (movement, arms) in HOSHINA_STANCES.items():
+        if movement not in anims or arms not in anims:
+            continue
+        bones = dict(anims[movement]["bones"], **anims[arms]["bones"])
+        length = anims[movement]["animation_length"]
+        tracks = {(bone, channel): sorted((float(t), list(v)) for t, v in keys.items())
+                  for bone, channels in bones.items() for channel, keys in channels.items()}
+        times = sorted({round(t, 4) for track in tracks.values() for t, _ in track} | {0.0, round(length, 4)})
+
+        def at(bone, channel, t):
+            track = tracks.get((bone, channel))
+            if not track:
+                return [1.0, 1.0, 1.0] if channel == "scale" else [0.0, 0.0, 0.0]
+            if t <= track[0][0]:
+                return track[0][1]
+            for (t0, a), (t1, b) in zip(track, track[1:]):
+                if t0 <= t <= t1:
+                    f = (t - t0) / (t1 - t0) if t1 > t0 else 0
+                    return [x + (y - x) * f for x, y in zip(a, b)]
+            return track[-1][1]
+
+        frames = []
+        for t in times:
+            torso_shift = at("body", "position", t)
+            pose = {"body_pos": [r + s for r, s in zip(at("root", "position", t), torso_shift)]}
+            for npc, neutral in NPC_TO_NEUTRAL.items():
+                pose[neutral] = at(npc, "rotation", t)
+                if npc.startswith("item"):
+                    pose[neutral + "_pos"] = at(npc, "position", t)
+                if npc.startswith("leg"):
+                    pose[neutral + "_pos"] = [p - s for p, s in zip(at(npc, "position", t), torso_shift)]
+                    pose[neutral + "_scale"] = at(npc, "scale", t)
+            frames.append((t, pose))
+        out[name] = (frames, length)
+    return out
+
+
 def profile_animations():
     """0.5.0-D: player.<perfil>.stance/draw/guard/reload de cada weapon_profile/<id>.json."""
     result = {}
+    dual = hoshina_dual_stances()
     for path in sorted(PROFILES.glob("*.json")):
         profile = json.loads(path.read_text(encoding="utf-8"))
         name = path.stem
@@ -528,6 +588,9 @@ def profile_animations():
             result[f"player.{name}.stance"] = stance(poses["idle"])
             result[f"player.{name}.stance_move"] = stance_move(poses["move"])
             result[f"player.{name}.stance_run"] = stance_move(poses["run"])
+        if name == "dual_reverse":
+            for variant, (frames, length) in dual.items():
+                result[f"player.{name}.{variant}"] = animate(frames, length, loop=True)
         weapon = weapon_of(name)
         if poses and weapon and name in COMBOS:
             start = poses["idle"]
@@ -635,6 +698,10 @@ def grip_axe(anim, point):
 
 
 def main():
+    dual = hoshina_dual_stances()
+    if "stance" in dual:
+        # Golpes, saque e especial (Kuuchi) das duas espadas saem e voltam a pose de partida do parado do Hoshina.
+        STANCES["dual_reverse"]["idle"] = dict(dual["stance"][0][0][1])
     weapon = json.loads(WEAPON.read_text(encoding="utf-8"))
     actions = weapon["actions"]
     data = {"format_version": "1.8.0", "animations": {

@@ -59,6 +59,20 @@ def unwrap(model, base, log):
             keys = sorted((k for k in animator.get("keyframes", []) if k["channel"] == "rotation"),
                           key=lambda k: k["time"])
             old = {round(k["time"], 4): value(k) for k in channel_keys(base_anim, animator["name"], "rotation")}
+            # O primeiro keyframe nao tem anterior: confere contra o seguinte (367 no t=0 e 47 no seguinte = volta
+            # de 320 graus no comeco do golpe; arquivo do Miguel de 2026-10-09).
+            if len(keys) > 1 and old.get(round(keys[0]["time"], 4)) != value(keys[0]):
+                first, nxt = value(keys[0]), value(keys[1])
+                fixed = list(first)
+                for i in range(3):
+                    while fixed[i] - nxt[i] > 180:
+                        fixed[i] -= 360
+                    while fixed[i] - nxt[i] < -180:
+                        fixed[i] += 360
+                if fixed != first:
+                    set_value(keys[0], fixed)
+                    log.append(f"{anim['name']} {animator['name']} rotacao t={keys[0]['time']}: {first} -> {fixed}"
+                               " (mesma pose, sem a volta inteira)")
             for prev, key in zip(keys, keys[1:]):
                 if old.get(round(key["time"], 4)) == value(key):
                     continue

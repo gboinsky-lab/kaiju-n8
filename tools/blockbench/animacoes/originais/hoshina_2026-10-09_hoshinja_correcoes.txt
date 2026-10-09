@@ -1,0 +1,1 @@
+hoshina.action.attack arm_right rotacao t=0: [367.4652, 26.8355, -20.3658] -> [7.465199999999982, 26.8355, -20.3658] (mesma pose, sem a volta inteira)
