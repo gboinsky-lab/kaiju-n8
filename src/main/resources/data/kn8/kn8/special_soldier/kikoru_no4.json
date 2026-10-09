@@ -1,0 +1,111 @@
+{
+  "health": 580,
+  "armor": 20,
+  "speed": 0.44,
+  "follow_range": 48,
+  "knockback_resistance": 0.5,
+  "release": 40,
+  "max_release": 90,
+  "kaiju_damage": 0.7,
+  "aura": "kn8:kikoru_no4_wind",
+  "weapon": "kn8:axe",
+  "techniques": {
+    "high_speed_axe": {
+      "type": "combo",
+      "hits": [
+        0.9,
+        1.0
+      ],
+      "windup_ticks": 6,
+      "duration_ticks": 22,
+      "cooldown_ticks": 22,
+      "max_range": 3.5,
+      "priority": 1,
+      "hit_interval": 8
+    },
+    "dive_strike": {
+      "type": "combo",
+      "hits": [
+        1.8
+      ],
+      "windup_ticks": 5,
+      "duration_ticks": 16,
+      "cooldown_ticks": 50,
+      "max_range": 10.0,
+      "priority": 3,
+      "min_range": 2.0,
+      "dash_in": 1.6
+    },
+    "vertical_assault": {
+      "type": "combo",
+      "hits": [
+        2.4
+      ],
+      "windup_ticks": 10,
+      "duration_ticks": 24,
+      "cooldown_ticks": 90,
+      "max_range": 4.0,
+      "priority": 2,
+      "honju_priority": 3,
+      "final_knockback": 1.2,
+      "expose_core_ticks": 60
+    },
+    "air_combo": {
+      "type": "combo",
+      "hits": [
+        0.8,
+        0.9
+      ],
+      "windup_ticks": 6,
+      "duration_ticks": 22,
+      "cooldown_ticks": 40,
+      "max_range": 3.5,
+      "priority": 2,
+      "hit_interval": 8
+    },
+    "aerial_dash": {
+      "type": "combo",
+      "hits": [
+        1.2
+      ],
+      "windup_ticks": 5,
+      "duration_ticks": 16,
+      "cooldown_ticks": 70,
+      "max_range": 12.0,
+      "priority": 2,
+      "min_range": 4.0,
+      "dash_in": 1.4
+    }
+  },
+  "dash": {
+    "cooldown_ticks": 70,
+    "speed": 1.0,
+    "invulnerable_ticks": 6,
+    "react_ticks": 5,
+    "gap_close_distance": 8.0
+  },
+  "counter": {
+    "multiplier": 2.2,
+    "cooldown_ticks": 200,
+    "dash_speed": 0.9,
+    "invulnerable_ticks": 10,
+    "strike_delay_ticks": 8,
+    "react_ticks": 6
+  },
+  "parry": {
+    "chance": 0.15,
+    "damage_factor": 0.4,
+    "cooldown_ticks": 25,
+    "counter_window_ticks": 10
+  },
+  "escalation": {
+    "points_per_second": 2.0,
+    "max_points": 45,
+    "decay_per_second": 2.0,
+    "cooldown_reduction_at_max": 0.35
+  },
+  "flight": {
+    "fly_speed": 0.45,
+    "hover_height": 2.5
+  }
+}

@@ -1,0 +1,101 @@
+{
+  "format_version": "1.12.0",
+  "minecraft:geometry": [
+    {
+      "description": {
+        "identifier": "geometry.reno_no6",
+        "texture_width": 16,
+        "texture_height": 16,
+        "visible_bounds_width": 3,
+        "visible_bounds_height": 3,
+        "visible_bounds_offset": [
+          0,
+          1,
+          0
+        ]
+      },
+      "bones": [
+        {
+          "name": "root",
+          "pivot": [
+            -0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "name": "body",
+          "pivot": [
+            -0.0,
+            11.84,
+            0.0
+          ],
+          "parent": "root"
+        },
+        {
+          "name": "head",
+          "pivot": [
+            -0.0,
+            20.32,
+            0.445
+          ],
+          "parent": "body"
+        },
+        {
+          "name": "arm_left",
+          "pivot": [
+            3.501,
+            19.959,
+            0.472
+          ],
+          "parent": "body"
+        },
+        {
+          "name": "arm_right",
+          "pivot": [
+            -3.416,
+            19.965,
+            0.467
+          ],
+          "parent": "body"
+        },
+        {
+          "name": "leg_left",
+          "pivot": [
+            1.872,
+            11.84,
+            -0.036
+          ],
+          "parent": "root"
+        },
+        {
+          "name": "leg_right",
+          "pivot": [
+            -1.848,
+            11.84,
+            0.011
+          ],
+          "parent": "root"
+        },
+        {
+          "name": "item_right",
+          "pivot": [
+            -4.726,
+            11.668,
+            0.454
+          ],
+          "parent": "arm_right"
+        },
+        {
+          "name": "item_left",
+          "pivot": [
+            4.806,
+            11.682,
+            0.459
+          ],
+          "parent": "arm_left"
+        }
+      ]
+    }
+  ]
+}

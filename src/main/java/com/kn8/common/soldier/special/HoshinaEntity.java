@@ -697,22 +697,33 @@ public class HoshinaEntity extends SoldierEntity {
         return Math.hypot(getX() - xo, getZ() - zo) > RUN_BLOCKS_PER_TICK;
     }
 
+    /**
+     * 0.7-D: nome da animacao de movimento ({@code <prefixo>.movement.<nome>}) para o estado atual; a Kikoru com a arma
+     * numerada 4 troca por "fly" quando esta no ar.
+     */
+    protected String movementName(boolean moving) {
+        return !moving ? "idle" : running() ? "run" : "walk";
+    }
+
+    /** 0.7-D: controllers a mais da especie (as asas da Numbers 4). */
+    protected void registerExtraControllers(AnimatableManager.ControllerRegistrar controllers) {
+    }
+
     /** Ticks de transicao do controller "action" (tecnicas). */
     private static final int ACTION_TRANSITION_TICKS = 3;
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         String prefix = animPrefix() + ".";
-        RawAnimation idle = RawAnimation.begin().thenLoop(prefix + "movement.idle");
-        RawAnimation walk = RawAnimation.begin().thenLoop(prefix + "movement.walk");
         // 0.5.0-D2 (referencias do Miguel): postura baixa parado, andando agachado e correndo com os bracos para tras.
-        RawAnimation run = RawAnimation.begin().thenLoop(prefix + "movement.run");
+        Map<String, RawAnimation> movement = new HashMap<>();
         Map<String, RawAnimation> arms = new HashMap<>();
         for (String stance : new String[] {"ready", "walk", "run", "aim"}) {
             arms.put(stance, RawAnimation.begin().thenLoop(prefix + "arms." + armsFamily() + "_" + stance));
         }
         controllers.add(Locomotion.drive(new AnimationController<>(this, "movement", 3, state ->
-                state.setAndContinue(!state.isMoving() ? idle : running() ? run : walk)), Locomotion::typeId));
+                state.setAndContinue(movement.computeIfAbsent(movementName(state.isMoving()),
+                        name -> RawAnimation.begin().thenLoop(prefix + "movement." + name)))), Locomotion::typeId));
         controllers.add(new AnimationController<>(this, "arms", 4, state -> {
             String stance = isAggressive() && !running() ? "aim"
                     : state.isMoving() ? (running() ? "run" : "walk") : "ready";
@@ -730,5 +741,6 @@ public class HoshinaEntity extends SoldierEntity {
         controllers.add(action);
         controllers.add(new AnimationController<>(this, "reaction", 0, state -> PlayState.STOP)
                 .triggerableAnim("hurt", RawAnimation.begin().thenPlay(prefix + "reaction.hurt")));
+        registerExtraControllers(controllers);
     }
 }

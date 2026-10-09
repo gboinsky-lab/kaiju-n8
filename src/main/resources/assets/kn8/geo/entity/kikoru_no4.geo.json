@@ -1,0 +1,119 @@
+{
+  "format_version": "1.12.0",
+  "minecraft:geometry": [
+    {
+      "description": {
+        "identifier": "geometry.kikoru_no4",
+        "texture_width": 16,
+        "texture_height": 16,
+        "visible_bounds_width": 3,
+        "visible_bounds_height": 3,
+        "visible_bounds_offset": [
+          0,
+          1,
+          0
+        ]
+      },
+      "bones": [
+        {
+          "name": "root",
+          "pivot": [
+            -0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "name": "body",
+          "pivot": [
+            -0.0,
+            11.936,
+            0.0
+          ],
+          "parent": "root"
+        },
+        {
+          "name": "head",
+          "pivot": [
+            -0.0,
+            18.992,
+            -0.487
+          ],
+          "parent": "body"
+        },
+        {
+          "name": "arm_left",
+          "pivot": [
+            3.181,
+            18.644,
+            -0.019
+          ],
+          "parent": "body"
+        },
+        {
+          "name": "arm_right",
+          "pivot": [
+            -2.994,
+            18.458,
+            0.293
+          ],
+          "parent": "body"
+        },
+        {
+          "name": "leg_left",
+          "pivot": [
+            2.589,
+            11.936,
+            -1.122
+          ],
+          "parent": "root"
+        },
+        {
+          "name": "leg_right",
+          "pivot": [
+            -2.744,
+            11.936,
+            -1.22
+          ],
+          "parent": "root"
+        },
+        {
+          "name": "item_right",
+          "pivot": [
+            -4.56,
+            11.586,
+            -0.187
+          ],
+          "parent": "arm_right"
+        },
+        {
+          "name": "item_left",
+          "pivot": [
+            4.41,
+            11.179,
+            -0.293
+          ],
+          "parent": "arm_left"
+        },
+        {
+          "name": "wing_left",
+          "pivot": [
+            -0.0,
+            17.28,
+            3.2
+          ],
+          "parent": "body"
+        },
+        {
+          "name": "wing_right",
+          "pivot": [
+            -0.0,
+            17.28,
+            3.2
+          ],
+          "parent": "body"
+        }
+      ]
+    }
+  ]
+}

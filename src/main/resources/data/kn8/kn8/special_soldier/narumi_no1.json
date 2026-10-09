@@ -1,0 +1,126 @@
+{
+  "health": 650,
+  "armor": 20,
+  "speed": 0.36,
+  "follow_range": 48,
+  "knockback_resistance": 0.5,
+  "release": 50,
+  "max_release": 100,
+  "kaiju_damage": 0.85,
+  "aura": "kn8:narumi_no1_sight",
+  "weapon": "kn8:narumi_bayonet",
+  "techniques": {
+    "thrust_combo": {
+      "type": "combo",
+      "hits": [
+        0.9,
+        1.0,
+        1.3
+      ],
+      "windup_ticks": 5,
+      "duration_ticks": 22,
+      "cooldown_ticks": 40,
+      "max_range": 3.6,
+      "priority": 1,
+      "hit_interval": 5
+    },
+    "lunge": {
+      "type": "combo",
+      "hits": [
+        1.8
+      ],
+      "windup_ticks": 6,
+      "duration_ticks": 18,
+      "cooldown_ticks": 70,
+      "max_range": 9.0,
+      "priority": 3,
+      "min_range": 3.0,
+      "dash_in": 1.4
+    },
+    "bayonet_shot": {
+      "type": "slash",
+      "hits": [
+        1.3
+      ],
+      "windup_ticks": 8,
+      "duration_ticks": 16,
+      "cooldown_ticks": 60,
+      "min_range": 4.0,
+      "max_range": 30.0,
+      "priority": 2,
+      "slash": {
+        "count": 1,
+        "speed": 3.5,
+        "range": 40.0,
+        "width": 0.35,
+        "color": 16740277,
+        "bullet": true
+      }
+    },
+    "sweeping_slash": {
+      "type": "combo",
+      "hits": [
+        1.5
+      ],
+      "windup_ticks": 8,
+      "duration_ticks": 20,
+      "cooldown_ticks": 90,
+      "max_range": 4.0,
+      "priority": 2,
+      "final_knockback": 1.2,
+      "honju_priority": 2
+    },
+    "weak_point_thrust": {
+      "type": "combo",
+      "hits": [
+        2.0
+      ],
+      "windup_ticks": 6,
+      "duration_ticks": 18,
+      "cooldown_ticks": 100,
+      "max_range": 4.0,
+      "priority": 3,
+      "honju_priority": 3,
+      "expose_core_ticks": 100
+    },
+    "predicted_counter": {
+      "type": "combo",
+      "hits": [
+        1.6
+      ],
+      "windup_ticks": 3,
+      "duration_ticks": 14,
+      "cooldown_ticks": 60,
+      "max_range": 6.0,
+      "priority": 2,
+      "dash_in": 1.2
+    }
+  },
+  "dash": {
+    "cooldown_ticks": 70,
+    "speed": 1.0,
+    "invulnerable_ticks": 6,
+    "react_ticks": 8,
+    "gap_close_distance": 8.0
+  },
+  "counter": {
+    "multiplier": 2.2,
+    "cooldown_ticks": 120,
+    "dash_speed": 0.9,
+    "invulnerable_ticks": 10,
+    "strike_delay_ticks": 8,
+    "react_ticks": 10
+  },
+  "parry": {
+    "chance": 0.35,
+    "damage_factor": 0.4,
+    "cooldown_ticks": 25,
+    "counter_window_ticks": 16
+  },
+  "escalation": {
+    "points_per_second": 2.0,
+    "max_points": 45,
+    "decay_per_second": 2.0,
+    "cooldown_reduction_at_max": 0.35
+  }
+}

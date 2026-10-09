@@ -736,5 +736,14 @@
   "item.kn8.narumi_spawn_egg": "Gen Narumi Spawn Egg",
   "kn8.soldier.variant.narumi": "Gen Narumi",
   "item.kn8.mina_cannon": "Mina's Heavy Cannon",
-  "item.kn8.narumi_bayonet": "Narumi's Bayonet"
+  "item.kn8.narumi_bayonet": "Narumi's Bayonet",
+  "entity.kn8.kikoru_no4": "Kikoru Shinomiya (Numbers 4)",
+  "item.kn8.kikoru_no4_spawn_egg": "Kikoru (Numbers 4) Spawn Egg",
+  "kn8.soldier.variant.kikoru_no4": "Kikoru Shinomiya (Numbers 4)",
+  "entity.kn8.reno_no6": "Reno Ichikawa (Numbers 6)",
+  "item.kn8.reno_no6_spawn_egg": "Reno (Numbers 6) Spawn Egg",
+  "kn8.soldier.variant.reno_no6": "Reno Ichikawa (Numbers 6)",
+  "entity.kn8.narumi_no1": "Gen Narumi (Numbers 1)",
+  "item.kn8.narumi_no1_spawn_egg": "Gen Narumi (Numbers 1) Spawn Egg",
+  "kn8.soldier.variant.narumi_no1": "Gen Narumi (Numbers 1)"
 }

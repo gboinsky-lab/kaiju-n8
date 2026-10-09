@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""Animacoes dos soldados especiais da 0.7-C: Reno (rifle), Mina (canhao no quadril) e Narumi (baioneta longa).
+"""Animacoes dos soldados especiais da 0.7-C: Reno (rifle), Mina (canhao no quadril) e Narumi (baioneta longa); 0.7-D:
+Reno com a arma numerada 6 (mesma familia do rifle), Narumi Numbers 1 (usa o modelo e as animacoes do Narumi: as
+tecnicas dele entram no arquivo do Narumi) e Kikoru Numbers 4 (as animacoes da Kikoru com o prefixo novo, as tecnicas
+novas sobre as da Kikoru de mesmo tempo, voo e asas: ver kikoru_no4()).
 
 Rodar DEPOIS de rig_soldier_mesh.py <especie> (ele grava movement.idle/walk, action.attack, shoot/reload_rifle e as
 posturas de braco do soldado comum); este script acrescenta por cima:
@@ -9,7 +12,8 @@ posturas de braco do soldado comum); este script acrescenta por cima:
   - action.dash, action.parry e action.counter (reacoes do HoshinaEntity).
 Canhao: os bracos ficam baixos (quadril) e o osso item_right gira para o cano apontar para a frente (a arma de fogo
 fica alinhada ao braco, como no soldado; Rx(braco) + Rx(item) = mira).
-Uso: python3 tools/art/gen_special_animations.py [especie...]   (padrao: reno mina narumi)
+Uso: python3 tools/art/gen_special_animations.py [especie...]   (padrao: todas; kikoru_no4 depois de
+gen_kikoru_animations.py)
 """
 import json
 import sys
@@ -51,7 +55,12 @@ STANCES = {
         "aim": ([-50, -20, 0], [-70, 45, 0], None),
     },
 }
-FAMILY = {"reno": "rifle", "mina": "cannon", "narumi": "spear"}
+FAMILY = {"reno": "rifle", "mina": "cannon", "narumi": "spear", "reno_no6": "rifle"}
+# Perfis que usam o modelo (e o arquivo de animacoes) de outra especie.
+SHARED = {"narumi": ["narumi_no1"]}
+# 0.7-D: tecnicas da Kikoru Numbers 4 -> animacao da Kikoru com os mesmos tempos (special_soldier/kikoru_no4.json).
+KIKORU_NO4_FROM = {"high_speed_axe": "axe_slash", "dive_strike": "dash_strike", "vertical_assault": "heavy_swing",
+                   "air_combo": "axe_slash", "aerial_dash": "dash_strike"}
 DASH_TICKS = 8
 PARRY_TICKS = 8
 
@@ -230,6 +239,9 @@ def build(species):
     family = FAMILY[species]
     stances = STANCES[family]
     profile = json.loads((PROFILES / f"{species}.json").read_text(encoding="utf-8"))
+    for other in SHARED.get(species, []):
+        extra = json.loads((PROFILES / f"{other}.json").read_text(encoding="utf-8"))["techniques"]
+        profile["techniques"].update({name: t for name, t in extra.items() if name not in profile["techniques"]})
     p = f"{species}."
     out = {p + "movement.run": run(species)}
     for stance, (length, sway) in {"ready": (3.0, 2), "walk": (WALK_LENGTH / 2, 3), "run": (RUN_LENGTH / 2, 3),
@@ -249,13 +261,40 @@ def build(species):
     return out
 
 
+def kikoru_no4():
+    """Kikoru Numbers 4: todas as animacoes da Kikoru com o prefixo novo (mesmos ossos; o machado ja vem preso ao
+    punho), as tecnicas novas copiadas das da Kikoru de mesmo tempo, o voo (pernas recolhidas, corpo inclinado) e as
+    asas (batendo no ar, recolhidas no chao)."""
+    kikoru = json.loads((ASSETS / "kikoru.animation.json").read_bytes().decode("utf-8"))["animations"]
+    out = {name.replace("kikoru.", "kikoru_no4.", 1): anim for name, anim in kikoru.items()}
+    for name, source in KIKORU_NO4_FROM.items():
+        out[f"kikoru_no4.action.{name}"] = json.loads(json.dumps(kikoru[f"kikoru.action.{source}"]))
+    length = 0.8
+    out["kikoru_no4.movement.fly"] = {"loop": True, "animation_length": length, "bones": {
+        "body": {"rotation": kf((0, [18, 0, 0]), (length, [18, 0, 0])),
+                 "position": kf((0, [0, 0, 0]), (length / 2, [0, 1.0, 0]), (length, [0, 0, 0]))},
+        "leg_left": {"rotation": kf((0, [25, 0, -4]), (length / 2, [32, 0, -4]), (length, [25, 0, -4]))},
+        "leg_right": {"rotation": kf((0, [12, 0, 4]), (length / 2, [18, 0, 4]), (length, [12, 0, 4]))},
+    }}
+    flap = 0.45
+    out["kikoru_no4.wings.flap"] = {"loop": True, "animation_length": flap, "bones": {
+        "wing_left": {"rotation": kf((0, [0, -22, 0]), (flap / 2, [0, 18, 0]), (flap, [0, -22, 0]))},
+        "wing_right": {"rotation": kf((0, [0, 22, 0]), (flap / 2, [0, -18, 0]), (flap, [0, 22, 0]))},
+    }}
+    out["kikoru_no4.wings.fold"] = {"loop": True, "animation_length": 3.0, "bones": {
+        "wing_left": {"rotation": kf((0, [0, 35, 0]), (1.5, [0, 32, 0]), (3.0, [0, 35, 0]))},
+        "wing_right": {"rotation": kf((0, [0, -35, 0]), (1.5, [0, -32, 0]), (3.0, [0, -35, 0]))},
+    }}
+    return out
+
+
 def main():
-    for species in sys.argv[1:] or ["reno", "mina", "narumi"]:
+    for species in sys.argv[1:] or ["reno", "mina", "narumi", "reno_no6", "kikoru_no4"]:
         path = ASSETS / f"{species}.animation.json"
         raw = path.read_bytes().decode("utf-8")
         newline = "\r\n" if "\r\n" in raw else "\n"
         data = json.loads(raw)
-        generated = build(species)
+        generated = kikoru_no4() if species == "kikoru_no4" else build(species)
         data["animations"].update(generated)
         path.write_bytes((json.dumps(data, indent=2) + "\n").replace("\n", newline).encode("utf-8"))
         print(species, ", ".join(sorted(name.split(".", 1)[1] for name in generated)))

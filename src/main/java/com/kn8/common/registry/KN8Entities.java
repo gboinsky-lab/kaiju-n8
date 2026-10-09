@@ -16,9 +16,12 @@ import com.kn8.common.soldier.SoldierEntity;
 import com.kn8.common.soldier.special.HoshinaEntity;
 import com.kn8.common.soldier.special.HoshinaNo10Entity;
 import com.kn8.common.soldier.special.KikoruEntity;
+import com.kn8.common.soldier.special.KikoruNo4Entity;
 import com.kn8.common.soldier.special.MinaEntity;
 import com.kn8.common.soldier.special.NarumiEntity;
+import com.kn8.common.soldier.special.NarumiNo1Entity;
 import com.kn8.common.soldier.special.RenoEntity;
+import com.kn8.common.soldier.special.RenoNo6Entity;
 import com.kn8.common.training.TrainingDummyEntity;
 
 import net.minecraft.core.registries.Registries;
@@ -146,6 +149,27 @@ public final class KN8Entities {
                     .eyeHeight(1.57F)
                     .clientTrackingRange(KAIJU_TRACKING_RANGE_CHUNKS)
                     .build("narumi"));
+    /** 0.7-D: Kikoru com a arma numerada 4 (asas, voo; special_soldier/kikoru_no4.json). */
+    public static final DeferredHolder<EntityType<?>, EntityType<KikoruNo4Entity>> KIKORU_NO4 = ENTITY_TYPES.register(
+            "kikoru_no4", () -> EntityType.Builder.<KikoruNo4Entity>of(KikoruNo4Entity::new, MobCategory.CREATURE)
+                    .sized(0.6F, 1.57F)
+                    .eyeHeight(1.38F)
+                    .clientTrackingRange(KAIJU_TRACKING_RANGE_CHUNKS)
+                    .build("kikoru_no4"));
+    /** 0.7-D: Reno com a arma numerada 6 (criocinese; special_soldier/reno_no6.json). */
+    public static final DeferredHolder<EntityType<?>, EntityType<RenoNo6Entity>> RENO_NO6 = ENTITY_TYPES.register(
+            "reno_no6", () -> EntityType.Builder.<RenoNo6Entity>of(RenoNo6Entity::new, MobCategory.CREATURE)
+                    .sized(0.6F, 1.7F)
+                    .eyeHeight(1.5F)
+                    .clientTrackingRange(KAIJU_TRACKING_RANGE_CHUNKS)
+                    .build("reno_no6"));
+    /** 0.7-D: Gen Narumi com a arma numerada 1 (modelo do Narumi; special_soldier/narumi_no1.json). */
+    public static final DeferredHolder<EntityType<?>, EntityType<NarumiNo1Entity>> NARUMI_NO1 = ENTITY_TYPES.register(
+            "narumi_no1", () -> EntityType.Builder.<NarumiNo1Entity>of(NarumiNo1Entity::new, MobCategory.CREATURE)
+                    .sized(0.6F, 1.78F)
+                    .eyeHeight(1.57F)
+                    .clientTrackingRange(KAIJU_TRACKING_RANGE_CHUNKS)
+                    .build("narumi_no1"));
 
     /** 0.6: projetil de habilidade de kaiju (raio de energia, teia, Finger Gun); so particulas no cliente. */
     public static final DeferredHolder<EntityType<?>, EntityType<KaijuProjectile>> KAIJU_PROJECTILE =
@@ -200,6 +224,15 @@ public final class KN8Entities {
         if (NarumiEntity.VARIANT_NARUMI.equals(name)) {
             return Optional.of(NARUMI.get());
         }
+        if (KikoruNo4Entity.VARIANT_NO4.equals(name)) {
+            return Optional.of(KIKORU_NO4.get());
+        }
+        if (RenoNo6Entity.VARIANT_NO6.equals(name)) {
+            return Optional.of(RENO_NO6.get());
+        }
+        if (NarumiNo1Entity.VARIANT_NO1.equals(name)) {
+            return Optional.of(NARUMI_NO1.get());
+        }
         return HoshinaEntity.VARIANT.equals(name) ? Optional.of(HOSHINA.get()) : Optional.empty();
     }
 
@@ -239,6 +272,9 @@ public final class KN8Entities {
         event.put(RENO.get(), SoldierEntity.createAttributes().build());
         event.put(MINA.get(), SoldierEntity.createAttributes().build());
         event.put(NARUMI.get(), SoldierEntity.createAttributes().build());
+        event.put(KIKORU_NO4.get(), SoldierEntity.createAttributes().build());
+        event.put(RENO_NO6.get(), SoldierEntity.createAttributes().build());
+        event.put(NARUMI_NO1.get(), SoldierEntity.createAttributes().build());
         event.put(TRAINING_DUMMY.get(), LivingEntity.createLivingAttributes().build());
         KAIJU.forEach(type -> event.put(type.get(), KaijuEntity.baseAttributes().build()));
     }

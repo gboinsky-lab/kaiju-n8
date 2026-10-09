@@ -82,6 +82,18 @@ SPECIES = {
     "narumi": {"stem": "narumi", "hip_y": 0.78, "neck_y": 1.32, "hand_min_y": 0.68,
                "arm_inner_x": [(0.93, 0.165), (0.0, 0.205)], "arm_max_y": 1.32, "back_items": None,
                "leg_pivot_center": True},
+    # 0.7-D: Kikoru com a arma numerada 4 (1,57 m, casaco longo ate o chao: cortado pelas pernas no meio, fica um pouco
+    # mais duro). As 4 asas em X vieram num GLB separado: viram os ossos wing_left/wing_right presos nas costas
+    # (attachments), achatadas em Z (as asas da frente nao atravessam os bracos) e com a textura num atlas lado a lado.
+    "kikoru_no4": {"stem": "kikoru_no4", "hip_y": 0.746, "neck_y": 1.187, "hand_min_y": 0.66,
+                   "arm_inner_x": [(0.932, 0.152), (0.0, 0.201)], "arm_max_y": 1.192, "back_items": None,
+                   "leg_pivot_center": True,
+                   "attachments": [{"stem": "kikoru_no4_wings", "anchor": [0.0, 1.08, 0.2], "z_scale": 0.45,
+                                    "bones": ["wing_left", "wing_right"], "parent": "body"}]},
+    # 0.7-D: Reno com a arma numerada 6 (traje azul, 1,70 m): mesmas medidas do Reno normal.
+    "reno_no6": {"stem": "reno_no6", "hip_y": 0.74, "neck_y": 1.27, "hand_min_y": 0.63,
+                 "arm_inner_x": [(1.0, 0.175), (0.0, 0.205)], "arm_max_y": 1.27, "back_items": None,
+                 "leg_pivot_center": True},
     # 0.6-F: Hoshina com o traje numerado 10: a cauda do No. 10 sai do quadril esquerdo, passa por baixo da mao,
     # sobe pelas costas e faz um arco por cima da cabeca ate a ponta na frente-direita. Separada pela superficie
     # (sementes da cauda contra sementes do resto do corpo) e dividida em 4 ossos pelo comprimento da linha.
@@ -108,8 +120,9 @@ LEG_PIVOT_CENTER = False
 def use_species(name):
     """Ativa as medidas da especie (variaveis do modulo usadas pelas funcoes abaixo)."""
     global NAME, STEM, SOURCE, HIP_Y, NECK_Y, HAND_MIN_Y, ARM_INNER_X, BACK_ITEMS, TAIL, HEAD_BOX, ARM_MAX_Y
-    global LEG_PIVOT_CENTER
+    global LEG_PIVOT_CENTER, ATTACHMENTS
     spec = SPECIES[name]
+    ATTACHMENTS = spec.get("attachments", [])
     NAME, STEM = name, spec["stem"]
     SOURCE = ROOT / "tools/art/converted" / STEM
     HIP_Y, NECK_Y, HAND_MIN_Y = spec["hip_y"], spec["neck_y"], spec["hand_min_y"]
@@ -124,6 +137,35 @@ def use_species(name):
 FRAGMENT_FACES = 40
 # Brilho maximo do "preto do macacao" usado para tampar buracos (cap_holes).
 DARK_LEVEL = 30
+
+
+ATTACHMENTS = []
+
+
+def load_attachments():
+    """0.7-D: pecas de outro GLB presas ao corpo (asas da Numbers 4). Cada uma e centrada no "anchor" (costas), achatada
+    em Z por "z_scale" e dividida pelo lado (X negativo = primeiro osso, "left"). Devolve {osso: malha} e os pivos."""
+    meshes, pivots, parents = {}, {}, {}
+    for spec in ATTACHMENTS:
+        source = ROOT / "tools/art/converted" / spec["stem"]
+        vertices, uvs, normals, faces = read_obj(source / f"{spec['stem']}.obj")
+        center = (vertices.min(axis=0) + vertices.max(axis=0)) / 2
+        vertices = (vertices - center) * np.array([1.0, 1.0, spec.get("z_scale", 1.0)]) + np.array(spec["anchor"])
+        c = vertices[faces].mean(axis=1)
+        left, right = spec["bones"]
+        for bone, sel in ((left, c[:, 0] <= spec["anchor"][0]), (right, c[:, 0] > spec["anchor"][0])):
+            meshes[bone] = (vertices, uvs, normals, faces[sel])
+            pivots[bone] = np.array(spec["anchor"], dtype=float)
+            parents[bone] = spec["parent"]
+    return meshes, pivots, parents
+
+
+def padded_texture(source, stem):
+    image = Image.open(source / f"{stem}.png").convert("RGBA")
+    mask = uv_mask([source / f"{stem}.obj"], image.width, image.height)
+    padded = dilate(np.asarray(image)[..., :3], mask, DILATE_STEPS)
+    return Image.fromarray(np.clip(padded, 0, 255).astype(np.uint8)).convert("RGBA") \
+        .resize((TEXTURE_SIZE, TEXTURE_SIZE), Image.Resampling.BOX)
 
 
 def load_mesh():
@@ -535,6 +577,14 @@ def main():
         for number in range(1, TAIL_BONES + 1):
             pivots[f"tail_{number}"] = polyline_point(TAIL, (number - 1) / TAIL_BONES)
             parents[f"tail_{number}"] = "body" if number == 1 else f"tail_{number - 1}"
+    if ATTACHMENTS:
+        # Atlas: textura do personagem na metade esquerda, das pecas presas na direita (o render usa uma textura so).
+        extra, extra_pivots, extra_parents = load_attachments()
+        meshes = {bone: (v, t * np.array([0.5, 1.0]), n, f) for bone, (v, t, n, f) in meshes.items()}
+        for bone, (v, t, n, f) in extra.items():
+            meshes[bone] = (v, t * np.array([0.5, 1.0]) + np.array([0.5, 0.0]), n, f)
+        pivots.update(extra_pivots)
+        parents.update(extra_parents)
     mesh_dir = ASSETS / "meshes" / NAME
     if mesh_dir.exists():
         shutil.rmtree(mesh_dir)
@@ -545,11 +595,14 @@ def main():
         print(f"{bone}: {len(f)} triangulos")
     (ASSETS / "meshes" / f"{NAME}.json").write_text(json.dumps(index, indent=2) + "\n", encoding="utf-8")
     # Textura com borda nas ilhas e reduzida (sem mipmap no Minecraft: 1024 cintila e mostra as costuras).
-    image = Image.open(SOURCE / f"{STEM}.png").convert("RGBA")
-    mask = uv_mask([SOURCE / f"{STEM}.obj"], image.width, image.height)
-    padded = dilate(np.asarray(image)[..., :3], mask, DILATE_STEPS)
-    Image.fromarray(np.clip(padded, 0, 255).astype(np.uint8)).convert("RGBA") \
-        .resize((TEXTURE_SIZE, TEXTURE_SIZE), Image.Resampling.BOX).save(ASSETS / f"textures/entity/{NAME}.png")
+    texture = padded_texture(SOURCE, STEM)
+    if ATTACHMENTS:
+        atlas = Image.new("RGBA", (TEXTURE_SIZE * 2, TEXTURE_SIZE))
+        atlas.paste(texture, (0, 0))
+        stem = ATTACHMENTS[0]["stem"]
+        atlas.paste(padded_texture(ROOT / "tools/art/converted" / stem, stem), (TEXTURE_SIZE, 0))
+        texture = atlas
+    texture.save(ASSETS / f"textures/entity/{NAME}.png")
     bones = []
     for bone, parent in parents.items():
         entry = {"name": bone, "pivot": geo_pivot(pivots[bone])}

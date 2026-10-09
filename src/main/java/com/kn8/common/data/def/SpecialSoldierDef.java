@@ -46,15 +46,32 @@ public record SpecialSoldierDef(float health, float armor, float speed, float fo
         return growth.numbers10();
     }
 
+    public Optional<Flight> flight() {
+        return growth.flight();
+    }
+
     /**
      * Campos que crescem com a luta, lidos no mesmo nivel do JSON (o RecordCodecBuilder aceita no maximo 16 campos
      * por grupo): {@code escalation} e, so com o traje numerado 10 (0.6-F), {@code numbers10}.
      */
-    public record Growth(Escalation escalation, Optional<Numbers10> numbers10) {
+    public record Growth(Escalation escalation, Optional<Numbers10> numbers10, Optional<Flight> flight) {
         public static final MapCodec<Growth> MAP_CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
                 Escalation.CODEC.optionalFieldOf("escalation", Escalation.NONE).forGetter(Growth::escalation),
-                Numbers10.CODEC.optionalFieldOf("numbers10").forGetter(Growth::numbers10)
+                Numbers10.CODEC.optionalFieldOf("numbers10").forGetter(Growth::numbers10),
+                Flight.CODEC.optionalFieldOf("flight").forGetter(Growth::flight)
         ).apply(i, Growth::new));
+    }
+
+    /**
+     * 0.7-D (Kikoru com a arma numerada 4, Biblioteca v22 secao 9): voo. Com alvo, sai do chao e paira
+     * {@code hover_height} blocos acima do topo do alvo a {@code fly_speed} blocos/tick; durante uma tecnica desce ate
+     * a altura do alvo (mergulho) e volta a subir depois. Sem alvo, pousa.
+     */
+    public record Flight(float flySpeed, float hoverHeight) {
+        public static final Codec<Flight> CODEC = RecordCodecBuilder.create(i -> i.group(
+                Codec.floatRange(0.05F, 3.0F).fieldOf("fly_speed").forGetter(Flight::flySpeed),
+                Codec.floatRange(0.0F, 16.0F).optionalFieldOf("hover_height", 2.5F).forGetter(Flight::hoverHeight)
+        ).apply(i, Flight::new));
     }
 
     /**

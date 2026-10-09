@@ -83,6 +83,16 @@ public final class KN8Items {
             () -> new DeferredSpawnEggItem(KN8Entities.MINA, 0x1A1A1A, 0xFF9A3C, new Item.Properties()));
     public static final DeferredItem<DeferredSpawnEggItem> NARUMI_SPAWN_EGG = ITEMS.register("narumi_spawn_egg",
             () -> new DeferredSpawnEggItem(KN8Entities.NARUMI, 0x1A1A1A, 0xFF6FB5, new Item.Properties()));
+    /** 0.7-D: formas com as armas numeradas (Kikoru 4, Reno 6, Narumi 1). */
+    public static final DeferredItem<DeferredSpawnEggItem> KIKORU_NO4_SPAWN_EGG = ITEMS.register(
+            "kikoru_no4_spawn_egg", () -> new DeferredSpawnEggItem(KN8Entities.KIKORU_NO4, 0xE8E8E8, 0x5FD8FF,
+                    new Item.Properties()));
+    public static final DeferredItem<DeferredSpawnEggItem> RENO_NO6_SPAWN_EGG = ITEMS.register(
+            "reno_no6_spawn_egg", () -> new DeferredSpawnEggItem(KN8Entities.RENO_NO6, 0x1B3550, 0xA8E6FF,
+                    new Item.Properties()));
+    public static final DeferredItem<DeferredSpawnEggItem> NARUMI_NO1_SPAWN_EGG = ITEMS.register(
+            "narumi_no1_spawn_egg", () -> new DeferredSpawnEggItem(KN8Entities.NARUMI_NO1, 0x1A1A1A, 0xFFFFFF,
+                    new Item.Properties()));
 
     /** 0.2 (Etapa 2): boneco de treino. */
     public static final DeferredItem<TrainingDummyItem> TRAINING_DUMMY = ITEMS.register("training_dummy",
@@ -131,6 +141,9 @@ public final class KN8Items {
                         output.accept(RENO_SPAWN_EGG.get());
                         output.accept(MINA_SPAWN_EGG.get());
                         output.accept(NARUMI_SPAWN_EGG.get());
+                        output.accept(KIKORU_NO4_SPAWN_EGG.get());
+                        output.accept(RENO_NO6_SPAWN_EGG.get());
+                        output.accept(NARUMI_NO1_SPAWN_EGG.get());
                         output.accept(TRAINING_DUMMY.get());
                         output.accept(DEFENSE_WORKBENCH.get());
                         output.accept(TRAINING_SUIT.get());

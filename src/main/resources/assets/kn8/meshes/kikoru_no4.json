@@ -1,0 +1,12 @@
+{
+  "bones": {
+    "head": "kn8:meshes/kikoru_no4/head.obj",
+    "body": "kn8:meshes/kikoru_no4/body.obj",
+    "arm_left": "kn8:meshes/kikoru_no4/arm_left.obj",
+    "arm_right": "kn8:meshes/kikoru_no4/arm_right.obj",
+    "leg_left": "kn8:meshes/kikoru_no4/leg_left.obj",
+    "leg_right": "kn8:meshes/kikoru_no4/leg_right.obj",
+    "wing_left": "kn8:meshes/kikoru_no4/wing_left.obj",
+    "wing_right": "kn8:meshes/kikoru_no4/wing_right.obj"
+  }
+}
