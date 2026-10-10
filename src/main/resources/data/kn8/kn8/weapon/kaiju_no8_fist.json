@@ -1,6 +1,6 @@
 {
   "item": "kn8:kaiju_no8_fist",
-  "base_damage": 30,
+  "base_damage": 11.0,
   "reach": 3.0,
   "style": "heavy",
   "profile": "kn8:knife",

@@ -52,14 +52,14 @@
     }
   ],
   "hardening": {
-    "chance": 0.3,
+    "chance": 0.15,
     "reduction": 0.5,
     "duration_ticks": 40,
     "cooldown_ticks": 200
   },
   "adaptation": {
-    "per_hit": 0.06,
-    "max_reduction": 0.4,
+    "per_hit": 0.03,
+    "max_reduction": 0.25,
     "decay_ticks": 100
   }
 }

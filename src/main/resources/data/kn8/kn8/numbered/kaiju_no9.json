@@ -60,8 +60,8 @@
     }
   ],
   "adaptation": {
-    "per_hit": 0.04,
-    "max_reduction": 0.3,
+    "per_hit": 0.02,
+    "max_reduction": 0.2,
     "decay_ticks": 100
   }
 }

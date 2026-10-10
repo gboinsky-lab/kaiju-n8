@@ -22,7 +22,7 @@
     "delay_after_hit_ticks": 10
   },
   "hardening": {
-    "chance": 0.15,
+    "chance": 0.1,
     "reduction": 0.4,
     "duration_ticks": 30,
     "cooldown_ticks": 240
@@ -42,8 +42,8 @@
     }
   ],
   "adaptation": {
-    "per_hit": 0.05,
-    "max_reduction": 0.35,
+    "per_hit": 0.03,
+    "max_reduction": 0.25,
     "decay_ticks": 100
   }
 }

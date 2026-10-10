@@ -162,7 +162,7 @@ public final class No9FormsGameTests {
             float before = no9.getHealth();
             no9.hurt(level.damageSources().mobAttack(other), 60.0F);
             losses[8] = before - no9.getHealth();
-            helper.assertTrue(losses[0] > 0 && losses[7] < losses[0] * 0.8F,
+            helper.assertTrue(losses[0] > 0 && losses[7] < losses[0] * 0.9F,
                     "O oitavo golpe igual deveria tirar menos: " + losses[0] + " -> " + losses[7]);
             helper.assertTrue(Math.abs(losses[8] - losses[0]) < 0.5F,
                     "Golpe de outro tipo deveria tirar o dano cheio: " + losses[0] + " -> " + losses[8]);

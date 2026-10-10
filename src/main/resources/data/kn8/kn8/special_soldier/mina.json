@@ -54,7 +54,7 @@
     "charged_cannon": {
       "type": "slash",
       "hits": [
-        2.2
+        3.0
       ],
       "windup_ticks": 30,
       "duration_ticks": 42,
@@ -76,11 +76,11 @@
     "anti_giant_shot": {
       "type": "slash",
       "hits": [
-        4.0
+        10.0
       ],
       "windup_ticks": 50,
       "duration_ticks": 64,
-      "cooldown_ticks": 400,
+      "cooldown_ticks": 300,
       "min_range": 8.0,
       "max_range": 56.0,
       "priority": 2,
