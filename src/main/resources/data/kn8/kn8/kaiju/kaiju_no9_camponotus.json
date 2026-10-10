@@ -7,11 +7,11 @@
     "height": 3.9
   },
   "overrides": {
-    "health": 2400.0,
-    "damage": 38.0,
-    "armor": 17.0
+    "health": 3200.0,
+    "damage": 46.0,
+    "armor": 18.0
   },
-  "speed": 0.42,
+  "speed": 0.45,
   "intelligence": 5,
   "parts": [
     {
@@ -81,7 +81,8 @@
     "kn8:finger_gun",
     "kn8:no9_ant_acid_spray",
     "kn8:no9_ant_pounce",
-    "kn8:no9_ant_mandible_rush"
+    "kn8:no9_ant_mandible_rush",
+    "kn8:no9_ant_rush"
   ],
   "weaknesses": [],
   "spawn": {

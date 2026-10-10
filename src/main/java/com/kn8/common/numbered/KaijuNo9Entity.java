@@ -1,8 +1,10 @@
 package com.kn8.common.numbered;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -45,6 +47,8 @@ public class KaijuNo9Entity extends KaijuEntity {
     /** 0.7-E: pele endurecida ate este tick; proximo endurecimento so depois de {@code hardenReadyAt}. */
     long hardenedUntil;
     long hardenReadyAt;
+    /** 0.7 (v1.2, analise): marcas de adaptacao por tipo de golpe: {marcas, ultimo tick em que levou esse tipo}. */
+    final Map<String, long[]> adaptation = new HashMap<>();
 
     public KaijuNo9Entity(EntityType<? extends KaijuEntity> type, Level level) {
         super(type, level);
@@ -65,14 +69,15 @@ public class KaijuNo9Entity extends KaijuEntity {
     }
 
     /**
-     * 0.7-E: endurecimento da pele (numbered/<id>.json {@code hardening}) reduz o dano depois da armadura. Fica aqui e
+     * 0.7-E: endurecimento da pele (numbered/<id>.json {@code hardening}) e, desde o balanceamento v1.2, a adaptacao
+     * ao tipo de golpe ({@code adaptation}) reduzem o dano depois da armadura. Fica aqui e
      * nao no {@code actuallyHurt}: no NeoForge ele ignora o valor recebido e usa o conteiner de dano, que guarda o
      * resultado deste metodo como reducao da armadura.
      */
     @Override
     protected float getDamageAfterArmorAbsorb(DamageSource source, float amount) {
         float afterArmor = super.getDamageAfterArmorAbsorb(source, amount);
-        return level().isClientSide() ? afterArmor : No9Service.harden(this, afterArmor);
+        return level().isClientSide() ? afterArmor : No9Service.adapt(this, source, No9Service.harden(this, afterArmor));
     }
 
     public boolean isAbsorbing() {

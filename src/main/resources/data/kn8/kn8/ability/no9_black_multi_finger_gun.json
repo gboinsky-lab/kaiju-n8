@@ -1,0 +1,25 @@
+{
+  "type": "kn8:projectile",
+  "damage_multiplier": 0.75,
+  "windup_ticks": 10,
+  "active_ticks": 2,
+  "cooldown_ticks": 70,
+  "animation": "action.multi_finger_gun",
+  "vfx": [
+    {
+      "effect": "kn8:impact",
+      "intensity": 0.7
+    }
+  ],
+  "sound": "kn8:weapon.pistol_shot",
+  "behavior": {
+    "priority": 4,
+    "min_range": 5,
+    "max_range": 26,
+    "hits": 3,
+    "arc_degrees": 16,
+    "projectile_speed": 2.2,
+    "projectile_range": 30,
+    "color": "#FF3048"
+  }
+}

@@ -7,11 +7,11 @@
     "height": 5.0
   },
   "overrides": {
-    "health": 3200.0,
-    "damage": 46.0,
+    "health": 5400.0,
+    "damage": 58.0,
     "armor": 19.0
   },
-  "speed": 0.36,
+  "speed": 0.38,
   "intelligence": 5,
   "parts": [
     {
@@ -71,7 +71,8 @@
     "kn8:no10_heavy_smash",
     "kn8:no10_tail_sweep",
     "kn8:no10_tail_stab",
-    "kn8:finger_gun",
+    "kn8:no10_finger_cannon",
+    "kn8:no9_fusion_multi_finger_cannon",
     "kn8:no10_multi_appendage",
     "kn8:charge",
     "kn8:no9_fusion_tail_barrage",

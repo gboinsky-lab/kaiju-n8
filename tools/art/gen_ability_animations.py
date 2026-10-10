@@ -325,6 +325,34 @@ def ant_finger_gun(name):
     }}
 
 
+def humanoid_leap(name):
+    """Voo curto (No. 9 preto): agacha, estica no impulso com os bracos para tras e cai abrindo os bracos."""
+    hit, end = ability(name)
+    air = hit + (end - hit) * 0.5
+    return {"animation_length": end, "bones": {
+        "body": {"rotation": keys((0, ZERO), (hit * 0.8, [20, 0, 0]), (hit, [-15, 0, 0]), (air, [10, 0, 0]),
+                                  (end, ZERO)),
+                 "position": keys((0, ZERO), (hit * 0.8, [0, -3, 0]), (hit, [0, 0, 0]), (end, ZERO))},
+        "arm_left": rot((0, ZERO), (hit * 0.8, [30, 0, 0]), (hit, [50, 0, -20]), (air, [-60, 0, -40]), (end, ZERO)),
+        "arm_right": rot((0, ZERO), (hit * 0.8, [30, 0, 0]), (hit, [50, 0, 20]), (air, [-60, 0, 40]), (end, ZERO)),
+        "leg_left": rot((0, ZERO), (hit * 0.8, [-40, 0, 0]), (hit, [20, 0, 0]), (air, [-30, 0, 0]), (end, ZERO)),
+        "leg_right": rot((0, ZERO), (hit * 0.8, [-40, 0, 0]), (hit, [10, 0, 0]), (air, [-20, 0, 0]), (end, ZERO)),
+    }}
+
+
+def ant_rush(name):
+    """Ant Rush (forma formiga): o corpo abaixa e avanca com a cabeca baixa e as presas abertas durante a investida."""
+    data = json.loads((ABILITIES / f"{name}.json").read_text(encoding="utf-8"))
+    start = data["windup_ticks"] * TICK
+    end = round(start + data.get("active_ticks", 1) * TICK + 0.2, 3)
+    return {"animation_length": end, "bones": {
+        "body": rot((0, ZERO), (start, [12, 0, 0]), (end - 0.2, [12, 0, 0]), (end, ZERO)),
+        "head": rot((0, ZERO), (start, [18, 0, 0]), (end - 0.2, [18, 0, 0]), (end, ZERO)),
+        "fang_left": rot((0, ZERO), (start, [0, -30, 0]), (end - 0.2, [0, -30, 0]), (end, ZERO)),
+        "fang_right": rot((0, ZERO), (start, [0, 30, 0]), (end - 0.2, [0, 30, 0]), (end, ZERO)),
+    }}
+
+
 def fixed(make, length):
     """Animacao sem habilidade (gesto de absorver/reviver), com a duracao do numbered/<id>.json."""
     return lambda _name: make(length)
@@ -350,11 +378,15 @@ SPECIES = {
                         "action.blade_arm": (blade_arm, "no9_black_blade_arm"),
                         "action.tendril": (tendril, "no9_black_tendril"),
                         "action.spike_burst": (spike_burst, "no9_black_spike_burst"),
+                        "action.multi_finger_gun": (tendril, "no9_black_multi_finger_gun"),
+                        "action.leap": (humanoid_leap, "no9_black_short_flight"),
                         "action.absorb": (fixed(absorb, 3.0), None)},
     "kaiju_no9_fusion": {"action.punch": (punch, "no10_heavy_punch"),
                          "action.tail_swipe": (tail_swipe, "no10_tail_sweep"),
                          "action.tail_stab": (tail_stab, "no10_tail_stab"),
                          "action.finger_gun": (finger_gun, "finger_gun"),
+                         "action.finger_cannon": (finger_gun, "no10_finger_cannon"),
+                         "action.multi_finger_cannon": (tendril, "no9_fusion_multi_finger_cannon"),
                          "action.multi_strike": (multi_strike, "no10_multi_appendage"),
                          "action.tail_barrage": (tail_barrage, "no9_fusion_tail_barrage"),
                          "action.hybrid_beam": (energy_blast, "no9_fusion_hybrid_beam"),
@@ -363,6 +395,7 @@ SPECIES = {
                              "action.acid_spray": (web_shot, "no9_ant_acid_spray"),
                              "action.leap": (leap, "no9_ant_pounce"),
                              "action.mandible_rush": (mandible_rush, "no9_ant_mandible_rush"),
+                             "action.charge": (ant_rush, "no9_ant_rush"),
                              "action.finger_gun": (ant_finger_gun, "finger_gun"),
                              "action.revive": (fixed(ant_absorb, 2.5), None),
                              "action.absorb": (fixed(ant_absorb, 2.5), None)},

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -21,7 +22,7 @@ public record NumberedDef(Map<ResourceLocation, ResourceLocation> revive, float 
         int reviveCooldownTicks, int maxRevivedAlive, float commandRadius, float fleeHealth, int fleeMerit,
         Map<ResourceLocation, ResourceLocation> reviveBoss, float massReviveRadius, int massReviveCastTicks,
         int massReviveIntervalTicks, Regeneration regeneration, Optional<Transform> transform, List<Absorb> absorb,
-        Optional<Hardening> hardening) {
+        Optional<Hardening> hardening, Optional<Adaptation> adaptation) {
 
     /**
      * Mudanca de forma (0.6-E, No. 10 pequeno -> gigante; Miguel: "depois de um tempo na batalha"): depois de
@@ -107,6 +108,25 @@ public record NumberedDef(Map<ResourceLocation, ResourceLocation> revive, float 
         }
     }
 
+    /**
+     * Analise/adaptacao (balanceamento v1.2, secoes 4.1 e 6 "No. 9 Analysis"): cada golpe recebido do mesmo tipo
+     * (tipo de dano + arma ou especie de quem bate) soma uma marca; a partir da segunda, o dano desse tipo cai
+     * {@code per_hit} por marca, ate {@code max_reduction}. Sem levar esse tipo por {@code decay_ticks}, perde uma
+     * marca: variar o ataque (outra arma, outro golpe, outro atacante) contorna a adaptacao.
+     */
+    public record Adaptation(float perHit, float maxReduction, int decayTicks) {
+        public static final Codec<Adaptation> CODEC = RecordCodecBuilder.create(i -> i.group(
+                Codec.floatRange(0.0F, 0.5F).fieldOf("per_hit").forGetter(Adaptation::perHit),
+                Codec.floatRange(0.0F, 0.9F).fieldOf("max_reduction").forGetter(Adaptation::maxReduction),
+                DefCodecs.TICKS.optionalFieldOf("decay_ticks", 100).forGetter(Adaptation::decayTicks)
+        ).apply(i, Adaptation::new));
+
+        /** Reducao do dano com {@code marks} marcas do mesmo tipo (a primeira nao reduz). */
+        public float reductionFor(int marks) {
+            return Math.min(maxReduction, Math.max(0, marks - 1) * perHit);
+        }
+    }
+
     public static final Codec<NumberedDef> CODEC = RecordCodecBuilder.create(i -> i.group(
             Codec.unboundedMap(ResourceLocation.CODEC, ResourceLocation.CODEC).optionalFieldOf("revive", Map.of())
                     .forGetter(NumberedDef::revive),
@@ -129,6 +149,11 @@ public record NumberedDef(Map<ResourceLocation, ResourceLocation> revive, float 
                     .forGetter(NumberedDef::regeneration),
             Transform.CODEC.optionalFieldOf("transform").forGetter(NumberedDef::transform),
             Absorb.CODEC.listOf().optionalFieldOf("absorb", List.of()).forGetter(NumberedDef::absorb),
-            Hardening.CODEC.optionalFieldOf("hardening").forGetter(NumberedDef::hardening)
-    ).apply(i, NumberedDef::new));
+            // O RecordCodecBuilder aceita 16 campos: endurecimento e adaptacao vao juntos num par.
+            Codec.mapPair(Hardening.CODEC.optionalFieldOf("hardening"), Adaptation.CODEC.optionalFieldOf("adaptation"))
+                    .forGetter(def -> Pair.of(def.hardening(), def.adaptation()))
+    ).apply(i, (revive, reviveRadius, reviveCast, reviveCooldown, maxRevived, command, flee, fleeMerit, reviveBoss,
+            massRadius, massCast, massInterval, regeneration, transform, absorb, defense) -> new NumberedDef(revive,
+            reviveRadius, reviveCast, reviveCooldown, maxRevived, command, flee, fleeMerit, reviveBoss, massRadius,
+            massCast, massInterval, regeneration, transform, absorb, defense.getFirst(), defense.getSecond())));
 }

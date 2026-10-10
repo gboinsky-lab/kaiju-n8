@@ -7,9 +7,9 @@
     "height": 1.9
   },
   "overrides": {
-    "health": 1700.0,
-    "damage": 36.0,
-    "armor": 18.0
+    "health": 2200.0,
+    "damage": 42.0,
+    "armor": 17.0
   },
   "speed": 0.36,
   "intelligence": 5,
@@ -67,9 +67,11 @@
     "kn8:claw",
     "kn8:charge",
     "kn8:finger_gun",
+    "kn8:no9_black_multi_finger_gun",
     "kn8:no9_black_blade_arm",
     "kn8:no9_black_tendril",
-    "kn8:no9_black_spike_burst"
+    "kn8:no9_black_spike_burst",
+    "kn8:no9_black_short_flight"
   ],
   "weaknesses": [],
   "spawn": {

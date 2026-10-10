@@ -1,0 +1,28 @@
+{
+  "type": "kn8:projectile",
+  "damage_multiplier": 0.9,
+  "windup_ticks": 16,
+  "active_ticks": 3,
+  "cooldown_ticks": 150,
+  "animation": "action.multi_finger_cannon",
+  "particles": "kn8:energy_charge",
+  "vfx": [
+    {
+      "effect": "kn8:impact",
+      "intensity": 1.0
+    }
+  ],
+  "camera_shake": 0.25,
+  "sound": "kn8:weapon.pistol_shot",
+  "behavior": {
+    "priority": 5,
+    "min_range": 5,
+    "max_range": 30,
+    "hits": 5,
+    "arc_degrees": 30,
+    "projectile_speed": 2.4,
+    "projectile_range": 36,
+    "explosion_radius": 2.0,
+    "color": "#FF2A3A"
+  }
+}

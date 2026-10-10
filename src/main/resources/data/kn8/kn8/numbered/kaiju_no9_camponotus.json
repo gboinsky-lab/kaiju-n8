@@ -16,9 +16,9 @@
   },
   "regeneration": {
     "below": 0.5,
-    "per_second": 0.025,
+    "per_second": 0.032,
     "fast_below": 0.2,
-    "fast_per_second": 0.05,
+    "fast_per_second": 0.032,
     "delay_after_hit_ticks": 10
   },
   "hardening": {
@@ -40,5 +40,10 @@
       "carcass": true,
       "message": "kn8.no9.fusion_form"
     }
-  ]
+  ],
+  "adaptation": {
+    "per_hit": 0.05,
+    "max_reduction": 0.35,
+    "decay_ticks": 100
+  }
 }

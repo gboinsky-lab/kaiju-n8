@@ -1,0 +1,27 @@
+{
+  "type": "kn8:leap",
+  "damage_multiplier": 1.0,
+  "radius": 2.5,
+  "windup_ticks": 8,
+  "active_ticks": 24,
+  "cooldown_ticks": 160,
+  "animation": "action.leap",
+  "heavy": true,
+  "vfx": [
+    {
+      "effect": "kn8:dust",
+      "intensity": 0.8
+    },
+    {
+      "effect": "kn8:shockwave",
+      "intensity": 0.5
+    }
+  ],
+  "camera_shake": 0.2,
+  "sound": "kn8:kaiju.slam",
+  "behavior": {
+    "priority": 3,
+    "min_range": 7,
+    "max_range": 18
+  }
+}

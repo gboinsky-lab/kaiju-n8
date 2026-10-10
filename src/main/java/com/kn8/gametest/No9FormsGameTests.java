@@ -8,6 +8,7 @@ import com.kn8.common.data.KN8Data;
 import com.kn8.common.data.def.KaijuClass;
 import com.kn8.common.data.def.KaijuDef;
 import com.kn8.common.kaiju.KaijuEntity;
+import com.kn8.common.kaiju.KaijuProjectile;
 import com.kn8.common.numbered.KaijuNo9Entity;
 import com.kn8.common.world.KaijuSpawner;
 
@@ -20,6 +21,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.IronGolem;
+import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
@@ -43,17 +45,17 @@ public final class No9FormsGameTests {
 
     @GameTest(template = TEMPLATE)
     public static void blackFormLoadsFromData(GameTestHelper helper) {
-        check(helper, "kaiju_no9_black", 0.8F, 1700.0F);
+        check(helper, "kaiju_no9_black", 0.8F, 2200.0F);
     }
 
     @GameTest(template = TEMPLATE)
     public static void fusionFormLoadsFromData(GameTestHelper helper) {
-        check(helper, "kaiju_no9_fusion", 2.0F, 3200.0F);
+        check(helper, "kaiju_no9_fusion", 2.0F, 5400.0F);
     }
 
     @GameTest(template = TEMPLATE)
     public static void antFormLoadsFromData(GameTestHelper helper) {
-        check(helper, "kaiju_no9_camponotus", 4.0F, 2400.0F);
+        check(helper, "kaiju_no9_camponotus", 4.0F, 3200.0F);
     }
 
     /** Abaixo de 40% da vida o No. 9 muta para a forma preta (transform do numbered/kaiju_no9.json). */
@@ -133,6 +135,52 @@ public final class No9FormsGameTests {
             soft.discard();
             helper.succeed();
         });
+    }
+
+    /**
+     * Analise (v1.2): o mesmo golpe repetido (mesmo atacante, mesmo tipo) tira cada vez menos; um golpe de outro tipo
+     * (outra especie atacando) volta a tirar o dano cheio. No No. 9 base: ele nao tem pele endurecida, que e sorteada
+     * e misturaria os numeros.
+     */
+    @GameTest(template = TEMPLATE)
+    public static void no9AdaptsToRepeatedHits(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        KaijuEntity no9 = KaijuSpawner.spawn(level, KN8Constants.id("kaiju_no9"),
+                helper.absolutePos(new BlockPos(4, 1, 4))).orElseThrow();
+        IronGolem golem = helper.spawn(EntityType.IRON_GOLEM, new BlockPos(1, 1, 1));
+        Zombie other = helper.spawn(EntityType.ZOMBIE, new BlockPos(7, 1, 1));
+        no9.setNoAi(true);
+        golem.setNoAi(true);
+        other.setNoAi(true);
+        helper.runAfterDelay(2, () -> {
+            float[] losses = new float[9];
+            for (int i = 0; i < 8; i++) {
+                float before = no9.getHealth();
+                no9.hurt(level.damageSources().mobAttack(golem), 60.0F);
+                losses[i] = before - no9.getHealth();
+            }
+            float before = no9.getHealth();
+            no9.hurt(level.damageSources().mobAttack(other), 60.0F);
+            losses[8] = before - no9.getHealth();
+            helper.assertTrue(losses[0] > 0 && losses[7] < losses[0] * 0.8F,
+                    "O oitavo golpe igual deveria tirar menos: " + losses[0] + " -> " + losses[7]);
+            helper.assertTrue(Math.abs(losses[8] - losses[0]) < 0.5F,
+                    "Golpe de outro tipo deveria tirar o dano cheio: " + losses[0] + " -> " + losses[8]);
+            no9.discard();
+            helper.succeed();
+        });
+    }
+
+    /** Multi-Finger Gun (v1.2): a forma preta dispara 3 tiros de uma vez (behavior.hits). */
+    @GameTest(template = "empty_9x7x33", timeoutTicks = 60)
+    public static void blackMultiFingerGunFiresThreeShots(GameTestHelper helper) {
+        KaijuEntity black = facingSouth(helper, "kaiju_no9_black");
+        IronGolem golem = helper.spawn(EntityType.IRON_GOLEM, new BlockPos(4, 1, 16));
+        golem.setNoAi(true);
+        helper.runAfterDelay(2, () -> helper.assertTrue(black.startAbility(KN8Constants.id(
+                "no9_black_multi_finger_gun"), golem), "A rajada deveria comecar"));
+        helper.succeedWhen(() -> helper.assertTrue(helper.getLevel().getEntitiesOfClass(KaijuProjectile.class,
+                new AABB(black.blockPosition()).inflate(20)).size() >= 3, "Deveriam sair 3 tiros"));
     }
 
     @GameTest(template = "empty_9x7x33", timeoutTicks = 160)

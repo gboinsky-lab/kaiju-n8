@@ -16,7 +16,7 @@
   },
   "regeneration": {
     "below": 0.5,
-    "per_second": 0.03,
+    "per_second": 0.035,
     "fast_below": 0.2,
     "fast_per_second": 0.06,
     "delay_after_hit_ticks": 10
@@ -26,5 +26,10 @@
     "reduction": 0.4,
     "duration_ticks": 40,
     "cooldown_ticks": 240
+  },
+  "adaptation": {
+    "per_hit": 0.08,
+    "max_reduction": 0.5,
+    "decay_ticks": 120
   }
 }

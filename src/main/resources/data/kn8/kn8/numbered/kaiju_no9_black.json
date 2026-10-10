@@ -7,7 +7,7 @@
   "revive_radius": 24,
   "revive_cast_ticks": 60,
   "revive_cooldown_ticks": 300,
-  "max_revived_alive": 3,
+  "max_revived_alive": 4,
   "command_radius": 40,
   "flee_health": 0.15,
   "flee_merit": 250,
@@ -21,7 +21,7 @@
     "below": 0.5,
     "per_second": 0.03,
     "fast_below": 0.2,
-    "fast_per_second": 0.06,
+    "fast_per_second": 0.055,
     "delay_after_hit_ticks": 10
   },
   "absorb": [
@@ -52,9 +52,14 @@
     }
   ],
   "hardening": {
-    "chance": 0.25,
+    "chance": 0.3,
     "reduction": 0.5,
     "duration_ticks": 40,
     "cooldown_ticks": 200
+  },
+  "adaptation": {
+    "per_hit": 0.06,
+    "max_reduction": 0.4,
+    "decay_ticks": 100
   }
 }

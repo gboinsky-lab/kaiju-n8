@@ -58,5 +58,10 @@
       "carcass": true,
       "message": "kn8.no9.ant_form"
     }
-  ]
+  ],
+  "adaptation": {
+    "per_hit": 0.04,
+    "max_reduction": 0.3,
+    "decay_ticks": 100
+  }
 }

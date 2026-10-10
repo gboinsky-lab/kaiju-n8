@@ -19,6 +19,7 @@ import com.kn8.common.world.KaijuSpawner;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
@@ -27,6 +28,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.AABB;
@@ -246,6 +248,45 @@ public final class No9Service {
             level.playSound(null, no9.blockPosition(), SoundEvents.ANVIL_LAND, SoundSource.HOSTILE, 1.0F, 0.5F);
         }
         return amount;
+    }
+
+    /**
+     * Analise (v1.2): o tipo do golpe e o tipo de dano mais a arma de quem bate (ou a especie, sem arma; ou o
+     * projetil). Cada golpe do mesmo tipo soma uma marca e reduz o dano pela tabela do JSON; uma marca some a cada
+     * {@code decay_ticks} sem levar esse tipo. Faiscas cinzentas avisam que ele esta se adaptando.
+     */
+    static float adapt(KaijuNo9Entity no9, DamageSource source, float amount) {
+        Optional<NumberedDef.Adaptation> found = def(no9).flatMap(NumberedDef::adaptation);
+        if (found.isEmpty() || amount <= 0 || !(no9.level() instanceof ServerLevel level)) {
+            return amount;
+        }
+        NumberedDef.Adaptation adaptation = found.get();
+        long now = level.getGameTime();
+        long[] marks = no9.adaptation.computeIfAbsent(attackKind(source), key -> new long[] {0, now});
+        marks[0] = Math.max(0, marks[0] - (now - marks[1]) / Math.max(1, adaptation.decayTicks()));
+        marks[0]++;
+        marks[1] = now;
+        float reduction = adaptation.reductionFor((int) marks[0]);
+        if (reduction > 0) {
+            level.sendParticles(ParticleTypes.SMOKE, no9.getX(), no9.getY() + no9.getBbHeight() * 0.6, no9.getZ(),
+                    (int) (reduction * 20), no9.getBbWidth() * 0.4, no9.getBbHeight() * 0.3, no9.getBbWidth() * 0.4,
+                    0.02);
+        }
+        return amount * (1.0F - reduction);
+    }
+
+    /** Tipo do golpe para a adaptacao: tipo de dano + projetil, arma na mao ou especie de quem bateu. */
+    static String attackKind(DamageSource source) {
+        String type = source.typeHolder().getRegisteredName();
+        Entity direct = source.getDirectEntity();
+        Entity attacker = source.getEntity();
+        if (direct != null && direct != attacker) {
+            return type + "/" + BuiltInRegistries.ENTITY_TYPE.getKey(direct.getType());
+        }
+        if (attacker instanceof LivingEntity living && !living.getMainHandItem().isEmpty()) {
+            return type + "/" + BuiltInRegistries.ITEM.getKey(living.getMainHandItem().getItem());
+        }
+        return attacker == null ? type : type + "/" + BuiltInRegistries.ENTITY_TYPE.getKey(attacker.getType());
     }
 
     // --- regeneracao (0.6-D) -------------------------------------------------------------------------------------

@@ -37,6 +37,7 @@ final class KaijuAbilities {
     private static final double AIR_DRAG = 0.91;
     /** Folga no alcance dos golpes seguintes do combo (o alvo recua um pouco entre eles). */
     private static final double MULTI_HIT_REACH_TOLERANCE = 1.5;
+    private static final float FULL_CIRCLE = 360.0F;
 
     private KaijuAbilities() {
     }
@@ -135,7 +136,14 @@ final class KaijuAbilities {
         Vec3 aim = target != null && target.isAlive()
                 ? target.getBoundingBox().getCenter().subtract(mouth) : kaiju.bodyForward();
         float damage = (float) (kaiju.getAttributeValue(Attributes.ATTACK_DAMAGE) * ability.damageMultiplier());
-        KaijuProjectile.shoot(kaiju, id, ability, mouth, aim, damage);
+        // Balanceamento v1.2 (Multi-Finger Gun/Cannon): com behavior.hits > 1 saem varios tiros juntos, abertos em
+        // leque na horizontal por arc_degrees (360 = todos na mesma linha); cada tiro tem o dano inteiro.
+        int shots = ability.behavior().hits();
+        float fan = shots > 1 && ability.behavior().arcDegrees() < FULL_CIRCLE ? ability.behavior().arcDegrees() : 0;
+        for (int i = 0; i < shots; i++) {
+            float yaw = shots > 1 ? fan * (i / (float) (shots - 1) - 0.5F) : 0.0F;
+            KaijuProjectile.shoot(kaiju, id, ability, mouth, aim.yRot(yaw * Mth.DEG_TO_RAD), damage);
+        }
     }
 
     /** Ponto de onde saem projeteis e avisos: borda da frente do corpo, a 3/4 da altura. */
