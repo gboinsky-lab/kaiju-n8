@@ -6,7 +6,7 @@
   "knockback_resistance": 0.5,
   "release": 40,
   "max_release": 85,
-  "kaiju_damage": 0.45,
+  "kaiju_damage": 0.52,
   "aura": "kn8:narumi_pink",
   "weapon": "kn8:narumi_bayonet",
   "techniques": {

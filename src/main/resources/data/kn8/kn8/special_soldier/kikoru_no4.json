@@ -6,7 +6,7 @@
   "knockback_resistance": 0.5,
   "release": 40,
   "max_release": 90,
-  "kaiju_damage": 0.6,
+  "kaiju_damage": 0.5,
   "aura": "kn8:kikoru_no4_wind",
   "weapon": "kn8:axe",
   "techniques": {

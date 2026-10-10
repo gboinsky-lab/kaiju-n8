@@ -6,7 +6,7 @@
   "knockback_resistance": 0.5,
   "release": 30,
   "max_release": 75,
-  "kaiju_damage": 0.52,
+  "kaiju_damage": 0.62,
   "aura": "kn8:kikoru_lightning",
   "weapon": "kn8:axe",
   "techniques": {

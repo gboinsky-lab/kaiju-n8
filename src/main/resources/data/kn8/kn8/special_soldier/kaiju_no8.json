@@ -6,7 +6,7 @@
   "knockback_resistance": 1.0,
   "release": 100,
   "max_release": 100,
-  "kaiju_damage": 1.0,
+  "kaiju_damage": 0.6,
   "aura": "kn8:kaiju_no8",
   "weapon": "kn8:kaiju_no8_fist",
   "techniques": {
