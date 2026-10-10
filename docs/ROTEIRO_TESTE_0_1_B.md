@@ -552,3 +552,16 @@ Visto na nuvem (`docs/img/hoshina_modelo.png`, `hoshina_vs_honju.png`, `hoshina_
 | 38.5 | Forma preta contra soldados | Braço-lâmina, tentáculo (deixa lento), espinhos do corpo; às vezes a pele endurece (faíscas e som de bigorna) e o dano cai pela metade |
 | 38.6 | Fusão e forma formiga contra soldados | Fusão: rajada de cauda e raio híbrido que explode; formiga: salto longo, mordidas em sequência e ácido |
 | 38.7 | Servidor dedicado + 2 clientes | Os dois veem as trocas de forma, os tentáculos e os ataques iguais |
+
+## 39. Balanceamento v1.2 (todos os kaiju e personagens)
+
+| # | Passo | Esperado |
+|---|---|---|
+| 39.1 | `/summon kn8:hoshina` e `/summon kn8:kaiju_no9` a 16 blocos, terreno aberto | O Hoshina leva o No. 9 a 15% em ~40–50 s e o No. 9 foge (`docs/BALANCEAMENTO_v1_2_APLICADO.md` tem a matriz inteira) |
+| 39.2 | Bater no No. 9 só com o mesmo golpe (ex.: só a espada) e depois trocar de arma | O dano de cada golpe cai aos poucos (até −20%); com a arma nova volta ao normal (análise do No. 9) |
+| 39.3 | `/summon kn8:kaiju_no9_black` e ficar a 10–20 blocos | Às vezes 3 tiros em leque (Multi-Finger Gun) e salto longo (voo curto) |
+| 39.4 | `/summon kn8:kaiju_no9_fusion` a 10–25 blocos | 5 tiros em leque que explodem (Multi-Finger Cannon) e o canhão de dedo do No. 10 |
+| 39.5 | `/summon kn8:kaiju_no9_camponotus` a 8–20 blocos | Investida longa (Ant Rush) |
+| 39.6 | `/summon kn8:kaiju_no8` contra `kn8:kaiju_no10_small` | O No. 8 vence em ~25 s com ~80% da vida (antes: 5 s) |
+| 39.7 | `/summon kn8:mina` a 40 blocos de `kn8:kaiju_no10_giant` | Anti-Giant Shot (preparo de 2,5 s) tira 4–8% da vida do gigante por tiro (cresce com o Release dela); ela ainda perde (falta recuar: pendência) |
+| 39.8 | Servidor dedicado + 2 clientes | Os dois veem os mesmos tiros em leque e a mesma vida nas barras |

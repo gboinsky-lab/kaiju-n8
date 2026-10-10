@@ -119,9 +119,26 @@ def special_section(name):
            f"Vida **{d['health']}** · armadura **{d['armor']}** · velocidade **{d['speed']}** · Release "
            f"{d.get('release', 0)}% (máx. {d.get('max_release', 0)}%) · dano contra kaiju ×{d['kaiju_damage']} · "
            f"arma `{d['weapon'].split(':')[1]}`", "",
-           "Dano de cada golpe = dano da arma × multiplicador × Release × `kaiju_damage` (contra kaiju).", "",
-           "| Técnica | Tipo | Multiplicadores por golpe | Recarga | Alcance | Observação |",
-           "|---|---|---|---|---|---|"]
+           "Dano de cada golpe = dano da arma × multiplicador × Release × `kaiju_damage` (contra kaiju).", ""]
+    defense = []
+    if d.get("dash"):
+        defense.append(f"esquiva a cada {d['dash']['cooldown_ticks'] / TICK:g} s")
+    if d.get("counter"):
+        c = d["counter"]
+        defense.append(f"contra-ataque ×{c['multiplier']:g} a cada {c['cooldown_ticks'] / TICK:g} s")
+    if d.get("parry"):
+        defense.append(f"apara {d['parry']['chance'] * 100:g}% dos golpes (dano ×{d['parry']['damage_factor']:g})")
+    if d.get("regeneration"):
+        r = d["regeneration"]
+        defense.append(f"regenera {r['per_second'] * 100:g}%/s abaixo de {r['health_below'] * 100:g}%")
+    if d.get("transform"):
+        defense.append(f"vira `{d['transform']['into'].split(':')[1]}`"
+                       + (f" abaixo de {d['transform']['health_below'] * 100:g}%" if d['transform'].get('health_below')
+                          else " sem alvo"))
+    if defense:
+        out += ["Defesa: " + "; ".join(defense) + ".", ""]
+    out += ["| Técnica | Tipo | Multiplicadores por golpe | Recarga | Alcance | Observação |",
+            "|---|---|---|---|---|---|"]
     for tid, t in d.get("techniques", {}).items():
         hits = t.get("hits", [])
         mult = " + ".join(f"{h:g}" for h in hits) if hits else "—"

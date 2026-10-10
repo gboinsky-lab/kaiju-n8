@@ -114,13 +114,17 @@ chefes ficou igual (o Honju subiu para 360 e o revivido para 460, então os mult
 | Absorver o No. 10 (0.7-E) | com a própria vida abaixo de **75%**, puxa um No. 10 pequeno (vivo com qualquer vida, ou a carcaça) a até 24 blocos por 60 ticks e vira a **fusão** (`absorb`) [SUPOSIÇÃO] |
 | Absorver a formiga (0.7-E) | abaixo de **60%**, puxa uma Camponotus (ou a revivida, viva ou carcaça) a até 20 blocos por 50 ticks e vira a **forma formiga** [SUPOSIÇÃO] |
 
-### Formas do No. 9 (0.7-E, `kaiju/` + `numbered/kaiju_no9_<forma>.json`; todos os números [SUPOSIÇÃO])
+### Formas do No. 9 (0.7-E, `kaiju/` + `numbered/kaiju_no9_<forma>.json`; números do Balanceamento v1.2 §5–7)
+
+Matriz de vitória medida (10 duelos por confronto) e o que mudou em cada personagem: `docs/BALANCEAMENTO_v1_2_APLICADO.md`;
+fichas de habilidades de todos: `docs/FICHAS_HABILIDADES.md`. Análise do No. 9 (todas as formas): golpe repetido do
+mesmo tipo tira 2–3% menos a cada vez, até −15/−25% (`adaptation`).
 
 | Forma | Vida | Dano | Armadura | Velocidade | Regeneração (abaixo de 50% / 20%) | Pele endurecida (chance, redução, duração, espera) | Foge com | Ataques novos (multiplicador, recarga em ticks) |
 |---|---|---|---|---|---|---|---|---|
-| Preta (`kaiju_no9_black`, 1,9 m) | 1.700 | 36 | 18 | 0,36 | 3% / 6% por s | 25%, −50%, 40, 200 | 15% (250 de mérito) | braço-lâmina 1,4 (50), tentáculo 0,8 + lentidão II 2,5 s (90, 4–20 blocos), espinhos do corpo 1,2 em 3,5 blocos (120, abaixo de 70%); garra, investida e Finger Gun; ainda absorve o No. 10 e a formiga |
-| Fundida ao No. 10 (`kaiju_no9_fusion`, 5 m) | 3.200 | 46 | 19 | 0,36 | 3% / 6% por s | 20%, −40%, 40, 240 | 10% (500) | rajada de cauda 6 × 0,7 (140), raio híbrido 1,8 que explode em 3 blocos (200, 6–32 blocos); golpes do No. 10 e Finger Gun; comanda kaiju a 64 blocos; revive até 4 |
-| Fundida à formiga (`kaiju_no9_camponotus`, 6 m) | 2.400 | 38 | 17 | **0,42** | 2,5% / 5% por s | 15%, −40%, 30, 240 | 15% (400) | salto 1,5 de 5 a 16 blocos (100), mordidas 5 × 0,6 (110), ácido 0,8 + lentidão II (120); mordida, patas e Finger Gun; ainda absorve o No. 10 |
+| Preta (`kaiju_no9_black`, 1,9 m) | 2.200 | 42 | 17 | 0,36 | 3% / 5,5% por s | 15%, −50%, 40, 200 | 15% (250 de mérito) | Multi-Finger Gun 3 × 0,75 em leque (70), voo curto 1,0 de 7 a 18 blocos (160), braço-lâmina 1,4 (50), tentáculo 0,8 + lentidão II 2,5 s (90, 4–20 blocos), espinhos do corpo 1,2 em 3,5 blocos (120, abaixo de 70%); garra, investida e Finger Gun; ainda absorve o No. 10 e a formiga |
+| Fundida ao No. 10 (`kaiju_no9_fusion`, 5 m) | 5.400 | 58 | 19 | 0,38 | 3,5% / 6% por s | 10%, −40%, 40, 240 | 10% (500) | rajada de cauda 6 × 0,7 (140), raio híbrido 1,8 que explode em 3 blocos (200, 6–32 blocos), Multi-Finger Cannon 5 × 0,9 em leque com explosão 2 (150); golpes do No. 10 e o Finger Cannon dele; comanda kaiju a 64 blocos; revive até 4 |
+| Fundida à formiga (`kaiju_no9_camponotus`, 6 m) | 3.200 | 46 | 18 | **0,45** | 3,2% por s | 5%, −40%, 30, 240 | 15% (400) | salto 1,5 de 5 a 16 blocos (100), mordidas 5 × 0,6 (110), ácido 0,8 + lentidão II (120), Ant Rush 1,4 de 4 a 20 blocos (90); mordida, patas e Finger Gun; ainda absorve o No. 10 |
 
 Fúria abaixo de 30% nas três (dano ×1,15–1,25, velocidade ×1,1–1,2, recargas ×0,6–0,7). Núcleo: peito na preta e na
 fusão; no peito do torso do No. 9 em cima da formiga.
@@ -375,16 +379,16 @@ sobe mais rápido. A fuga do No. 9 só dá mérito a quem causou dano nele.
 | Personagem | Vida | Armadura | Velocidade | Release (teto) | `kaiju_damage` | Arma | Técnicas (multiplicador sobre a arma, recarga em ticks) |
 |---|---|---|---|---|---|---|---|
 | Reno (T5, suporte/rifle) | 360 | 17 | 0,31 | 30% (70%) | 0,5 | rifle (5) | tiro de precisão 2,2 (60), rajada 3 × 0,9 (50), munição congelante 1,2 + Lentidão III 4 s (140), supressão 5 × 0,6 + Lentidão I (160), coronhada 0,8 (40) |
-| Mina (T6, anti-Daikaiju) | 420 | 20 | 0,30 | 40% (90%) | 0,65 | canhão (12) | tiro de precisão 1,4 (40), tiro do canhão 1,0 com explosão de raio 2,5 (50), canhão carregado 2,2 raio 3,5 (140), Anti-Giant 4,0 raio 4,5 (400, preparo de 2,5 s, prioridade contra Honju/numerados) |
-| Narumi (T6, comandante) | 480 | 20 | 0,32 | 40% (85%) | 0,62 | baioneta (9) | estocadas 0,9/1,0/1,3 (40), investida 1,8 (70), tiro da baioneta 1,3 (60), varrida 1,5 com empurrão (90) |
+| Mina (T6, anti-Daikaiju) | 420 | 20 | 0,30 | 40% (90%) | 0,65 | canhão (12) | tiro de precisão 1,4 (40), tiro do canhão 1,0 com explosão de raio 2,5 (50), canhão carregado 3,0 raio 3,5 (140), Anti-Giant 10,0 raio 4,5 (300, preparo de 2,5 s, prioridade contra Honju/numerados) |
+| Narumi (T6, comandante) | 480 | 20 | 0,32 | 40% (85%) | 0,52 | baioneta (9) | estocadas 0,9/1,0/1,3 (40), investida 1,8 (70), tiro da baioneta 1,3 (60), varrida 1,5 com empurrão (90) |
 
 **Formas com as armas numeradas (0.7-D)**, mesma regra (v1.2 seção 12 para vida/armadura/velocidade, o resto
 [SUPOSIÇÃO]):
 
 | Personagem | Vida | Armadura | Velocidade | Release (teto) | `kaiju_damage` | Arma | Técnicas / extra |
 |---|---|---|---|---|---|---|---|
-| Kikoru + No. 4 (T7, aérea) | 580 | 20 | 0,44 | 40% (90%) | 0,7 | machado | voo (`flight`: 0,45 bloco/tick, paira 2,5 acima do alvo, desce nas técnicas); machado veloz 0,9/1,0 (22), mergulho 1,8 com avanço (50), ataque vertical 2,4 expõe o núcleo 60 ticks (90), combo aéreo 0,8/0,9 (40), dash aéreo 1,2 (70) |
-| Reno + No. 6 (T7, criocinese) | 650 | 20 | 0,36 | 50% (100%) | 0,8 | rifle | lança de gelo 2,6 + Lentidão II (50), explosão congelante 2,0 raio 3,5 + Lentidão IV 5 s (120), campo de gelo 8 × 0,8 em volta + Lentidão III (160), congelamento múltiplo 5 × 1,0 (140), canhões auxiliares 2 × 1,2 com explosão 1,5 (60) |
+| Kikoru + No. 4 (T7, aérea) | 580 | 20 | 0,44 | 40% (90%) | 0,5 | machado | voo (`flight`: 0,45 bloco/tick, paira 2,5 acima do alvo, desce nas técnicas); machado veloz 0,9/1,0 (22), mergulho 1,8 com avanço (50), ataque vertical 2,4 expõe o núcleo 60 ticks (90), combo aéreo 0,8/0,9 (40), dash aéreo 1,2 (70) |
+| Reno + No. 6 (T7, criocinese) | 650 | 20 | 0,36 | 50% (100%) | 0,75 | rifle | lança de gelo 2,6 + Lentidão II (50), explosão congelante 2,0 raio 3,5 + Lentidão IV 5 s (120), campo de gelo 8 × 0,8 em volta + Lentidão III (160), congelamento múltiplo 5 × 1,0 (140), canhões auxiliares 2 × 1,2 com explosão 1,5 (60) |
 | Narumi + No. 1 (T7, previsão) | 650 | 20 | 0,36 | 50% (100%) | 0,85 | baioneta | as do Narumi + golpe no ponto fraco 2,0 expõe o núcleo 100 ticks (100) e contra-golpe previsto 1,6 com avanço (60); aparar 35% (era 15%) com janela de 16 ticks, contra-ataque com recarga 120 e reação 10 ticks, esquiva com reação 8 |
 
 **Kafka e Kaiju No. 8 (0.7-F)** (v1.2 seção 11; o resto [SUPOSIÇÃO]):
@@ -392,7 +396,7 @@ sobe mais rápido. A fuga do No. 9 só dá mérito a quem causou dano nele.
 | Forma | Vida | Armadura | Velocidade | Arma | Técnicas / extra |
 |---|---|---|---|---|---|
 | Kafka humano (T2) | 24 | 6 | 0,30 | rifle (5), `kaiju_damage` 0,3 | sequência de socos 0,5/0,6 (40); **vira o No. 8 abaixo de 50% da vida** (`transform.health_below` 0,5) |
-| Kaiju No. 8 (T8) | 1.800 | 19 | 0,40 | punhos (`kn8:kaiju_no8_fist`, 30 de dano, alcance 3), `kaiju_damage` 1,0, Release 100% | sequência de 4 socos 0,9/1,0/1,1/1,4 (30), soco pesado 1,8 com empurrão (60), investida 1,5 (3–12 blocos, 70), golpe no chão 1,6 com explosão de raio 4 (120), rugido 8 × 0,6 + Lentidão II (240); **regenera 3%/s abaixo de 50%**; **volta a ser o Kafka depois de 15 s sem alvo** (`revert_after_idle_ticks` 300). O v1.2 fala em "dano base equivalente 55": o soco pesado dá 54 |
+| Kaiju No. 8 (T8) | 1.800 | 19 | 0,40 | punhos (`kn8:kaiju_no8_fist`, 11 de dano × 5 do Release 100% = 55, alcance 3), `kaiju_damage` 0,6 | sequência de 4 socos 0,9/1,0/1,1/1,4 (30), soco pesado 1,8 com empurrão (60), investida 1,5 (3–12 blocos, 70), golpe no chão 1,6 com explosão de raio 4 (120), rugido 8 × 0,6 + Lentidão II (240); **regenera 3%/s abaixo de 50%**; **volta a ser o Kafka depois de 15 s sem alvo** (`revert_after_idle_ticks` 300). O v1.2 fala em "dano base equivalente 55": é o golpe base (11 × 5) |
 
 Armas novas: `weapon/mina_cannon.json` (arma de fogo, 12 de dano, perfil do rifle) e `weapon/narumi_bayonet.json`
 (pesada, 9 de dano, alcance 3,6, perfil do machado) [SUPOSIÇÃO; as animações próprias para o jogador ficam para
@@ -414,7 +418,9 @@ No. 10 pequeno em 28–34 s (com 10–51%); o Hoshina vence o No. 9 em 30 s com 
 |---|---|---|
 | Defesas copiadas do Hoshina, `kaiju_damage` 0,6 | 10/10 (vida final 17–67%) | 10/10 (4–44%) |
 | Esquiva 100 ticks, contra-ataque 200, aparar 15% | 8/10 (3–16%) | 5/10 |
-| + `kaiju_damage` 0,52 (atual) | **5/10** (vence com 1–9%; perde com o No. 9 a 17–29%) | **3/10** |
+| + `kaiju_damage` 0,52 | **5/10** (vence com 1–9%; perde com o No. 9 a 17–29%) | **3/10** |
+| No. 9 com a análise (v1.2), ainda 0,52 | 0/10 | 0/10 |
+| `kaiju_damage` **0,62** (atual) | **5/10** (vence com 1–20%, todas por fuga) | **0/10** (No. 10 com 13–63%) |
 
 Causa achada antes de mexer nos números (regra 36.7.4): em 2 duelos o No. 9 usou 63 habilidades (43 garras, 14
 Finger Gun, 6 investidas) e só 20 acertaram; a Kikoru esquivou 36 vezes (a esquiva herdada do Hoshina saía a cada
