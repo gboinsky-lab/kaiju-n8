@@ -403,6 +403,7 @@ remedidas na malha [SUPOSIÇÃO: núcleo no peito]. `build_primigenius.py` não 
 
 ## Pendências e [DECIDIR]
 
+- **Alturas (Miguel, 2026-10-10, `docs/TABELA_MESTRA_ALTURAS_v2_0.md`):** auditoria feita, nada alterado (`docs/AUDITORIA_ALTURAS.md`, medida nas malhas: vertices em metros, sem escala no renderer). Batem: jogador, Kafka, No. 8, Narumi, ressurgido, revivido, No. 10 pequeno (4) e gigante (24), fusao pequena (5). [DECIDIR] No. 9 2 -> 8, preta 1,9 -> 10, formiga 3,9 -> 11, aranha 1,7 -> 4,5 e Tecedeira 4,1 -> 9 (parece comprimento), Kikoru 1,57 -> 1,60, soldado por nivel; propostas pequenas (Hoshina 1,72, Mina 1,75, Reno 1,75, Primigenius 5,5, Honju 8,5, Preondactyl 7). Fusao grande de 20 nao existe. Metodo proposto: `visual_scale` por entidade (renderer + hitbox), testar numa antes.
 - **Biblioteca v22 + Balanceamento v1.0 (Miguel, 2026-10-08):** `docs/BIBLIOTECA_KAIJU_N8_v22.md` (v21 + auditoria
   obrigatoria de texturas na Prioridade 2; o arquivo veio cortado na Kikoru e foi completado com a v21) e
   `docs/BALANCEAMENTO_COMPLETO_v1_0.md`. Feitas a 0.5.0-C2 e a 0.5.0-D; proxima: **0.5.0-E** (parkour).
