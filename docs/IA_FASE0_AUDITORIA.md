@@ -109,6 +109,17 @@ Ordenados por gravidade. Cada item foi conferido no código (os de gravidade alt
 - **Sem escalonamento:** nenhuma redução de IA para entidades longe dos jogadores.
 - **Logs de depuração:** nenhum log opcional de estado, alvo ou motivo de decisão.
 
+### Situação depois da IA-1A (2026-10-15)
+
+- **#2 resolvido**: progresso por aproximação ou dano no alvo; sem progresso por 10 s o alvo vira inalcançável por
+  20 s (`KaijuCombatGoal`). Cenário novo `alto_preso`: antes nunca saía do pilar; agora desiste e mata o soldado do
+  chão aos 17,9 s.
+- **#3 resolvido no lado do kaiju**: última posição conhecida + busca (`KaijuSearchGoal`). Do lado dos soldados
+  (detectar o kaiju em qualquer lugar, decisão do Miguel) fica para a IA-1B: no cenário `parede` o kaiju comum não
+  percebe soldados escondidos a 16 blocos (audição 11,2, como pedido) e os soldados ainda não o procuram.
+- Alvo: comum ataca o mais perto (troca com margem), inteligente prioriza atirador e ameaça; atordoado parado.
+- `cenarios_ia.py`: cenário `alto_preso` (soldados sem IA, pilar de bedrock).
+
 ## 5. Fora da IA (registrado, não mexido)
 
 - **Balanceamento:** Anti-Giant da Mina (×30) mata um Honju de 360 com um tiro (820). O piso de 6 m pega qualquer

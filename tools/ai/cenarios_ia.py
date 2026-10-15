@@ -42,6 +42,10 @@ SCEN = {
                 ('h','kn8:hoshina',0,-3,'','A'),
                 ('k1','kn8:trichonephila',-10,22,'','B'), ('k2','kn8:primigenius',0,24,'','B'),
                 ('k3','kn8:camponotus',10,22,'','B')]),
+ 'alto_preso': ([(-1,0,4,1,5,6,'minecraft:bedrock')],
+                [('a','kn8:soldier',0,5,'{kn8_variant:"rifle",NoAI:1b}','A',6),
+                 ('c','kn8:soldier',0,-14,'{kn8_variant:"rifle",NoAI:1b}','A'),
+                 ('k','kn8:primigenius',0,0,'','B')]),
  'pilares': ([(x,0,z,x+1,6,z+1,'minecraft:bedrock') for x in (-8,-2,4) for z in (8,14,20)],
              [('m','kn8:mina',0,0,'','A'), ('k','kn8:primigenius_honju',0,28,'','B')]),
 }

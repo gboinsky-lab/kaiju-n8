@@ -553,7 +553,10 @@ public final class No9Service {
         command(level, no9, def.commandRadius());
     }
 
-    /** Kaiju sem alvo a ate {@code radius} blocos passam a atacar o alvo do numerado (No. 9, No. 10). */
+    /**
+     * Kaiju sem alvo a ate {@code radius} blocos passam a atacar o alvo do numerado (No. 9, No. 10), por
+     * {@code [kaijuAi] commandTicks} (IA-1A); depois voltam a escolher sozinhos.
+     */
     static void command(ServerLevel level, KaijuEntity leader, float radius) {
         LivingEntity target = leader.getTarget();
         if (target == null || radius <= 0) {
@@ -562,7 +565,7 @@ public final class No9Service {
         for (KaijuEntity kaiju : level.getEntitiesOfClass(KaijuEntity.class,
                 leader.getBoundingBox().inflate(radius), kaiju -> kaiju != leader && kaiju.isAlive()
                         && kaiju.getTarget() == null)) {
-            kaiju.setTarget(target);
+            kaiju.command(target);
         }
     }
 

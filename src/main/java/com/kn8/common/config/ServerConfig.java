@@ -182,6 +182,23 @@ public final class ServerConfig {
     public static final ModConfigSpec.DoubleValue LARGE_KAIJU_WIDTH;
     public static final ModConfigSpec.DoubleValue STEP_HEIGHT_FRACTION;
 
+    // --- IA dos kaiju (IA-1A): deteccao, alvo, memoria, travamento -----------------------------------------------
+    public static final ModConfigSpec.IntValue AI_SMART_INTELLIGENCE;
+    public static final ModConfigSpec.DoubleValue AI_HEARING_FRACTION;
+    public static final ModConfigSpec.IntValue AI_RETARGET_TICKS;
+    public static final ModConfigSpec.DoubleValue AI_SWITCH_MARGIN;
+    public static final ModConfigSpec.DoubleValue AI_SHOOTER_BONUS;
+    public static final ModConfigSpec.DoubleValue AI_THREAT_PER_DAMAGE;
+    public static final ModConfigSpec.DoubleValue AI_MAX_THREAT_BONUS;
+    public static final ModConfigSpec.IntValue AI_THREAT_MEMORY_TICKS;
+    public static final ModConfigSpec.DoubleValue AI_PACK_ALERT_RADIUS;
+    public static final ModConfigSpec.IntValue AI_SEARCH_TICKS;
+    public static final ModConfigSpec.IntValue AI_PROGRESS_CHECK_TICKS;
+    public static final ModConfigSpec.DoubleValue AI_MIN_PROGRESS;
+    public static final ModConfigSpec.IntValue AI_GIVE_UP_TICKS;
+    public static final ModConfigSpec.IntValue AI_UNREACHABLE_TICKS;
+    public static final ModConfigSpec.IntValue AI_COMMAND_TICKS;
+
     // --- combat (M10, GDD secoes 7 e 12) ---------------------------------------------------------------------------
     public static final ModConfigSpec.DoubleValue LIGHT_STAMINA_COST;
     public static final ModConfigSpec.DoubleValue HEAVY_STAMINA_COST;
@@ -584,6 +601,39 @@ public final class ServerConfig {
                 + " instead of using vanilla pathfinding (which fails for wide mobs).", 2.5, 1.0, 30.0);
         STEP_HEIGHT_FRACTION = doubleValue("stepHeightFraction", "Step height of a kaiju as a fraction of its"
                 + " height (clamped between 1 and 4 blocks).", 0.25, 0.0, 1.0);
+        BUILDER.pop();
+
+        section("kaijuAi", "Kaiju AI (IA-1A): detection, target choice, memory and getting unstuck.");
+        AI_SMART_INTELLIGENCE = intValue("smartIntelligence", "Kaiju with at least this intelligence (JSON) detect"
+                + " every enemy in range, seen or not, and pick targets by role and threat (No. 9, No. 10).", 4, 0,
+                10);
+        AI_HEARING_FRACTION = doubleValue("hearingFraction", "Common kaiju only notice enemies they cannot see"
+                + " within this fraction of their detection range (or who hurt them recently).", 0.35, 0.0, 1.0);
+        AI_RETARGET_TICKS = intValue("retargetTicks", "How often a kaiju re-evaluates its target.", 20, 1, 400);
+        AI_SWITCH_MARGIN = doubleValue("switchMargin", "A new target must score this much better (blocks) than the"
+                + " current one to make the kaiju switch.", 2.0, 0.0, 64.0);
+        AI_SHOOTER_BONUS = doubleValue("shooterBonus", "Smart kaiju: firearm users count as this many blocks"
+                + " closer.", 12.0, 0.0, 128.0);
+        AI_THREAT_PER_DAMAGE = doubleValue("threatPerDamage", "Smart kaiju: blocks closer per point of damage the"
+                + " enemy dealt recently.", 0.5, 0.0, 16.0);
+        AI_MAX_THREAT_BONUS = doubleValue("maxThreatBonus", "Smart kaiju: cap of the damage bonus, in blocks.", 16.0,
+                0.0, 128.0);
+        AI_THREAT_MEMORY_TICKS = intValue("threatMemoryTicks", "How long a kaiju remembers who hurt it.", 200, 0,
+                6000);
+        AI_PACK_ALERT_RADIUS = doubleValue("packAlertRadius", "Pack kaiju (tag 'pack') within this radius learn who"
+                + " hurt a pack member.", 16.0, 0.0, 128.0);
+        AI_SEARCH_TICKS = intValue("searchTicks", "After losing its target, the kaiju walks to the last known"
+                + " position and looks around for this long.", 200, 0, 6000);
+        AI_PROGRESS_CHECK_TICKS = intValue("progressCheckTicks", "Interval of the chase progress check.", 60, 10,
+                1200);
+        AI_MIN_PROGRESS = doubleValue("minProgress", "Blocks the kaiju must close in per check to count as"
+                + " progress.", 1.0, 0.0, 16.0);
+        AI_GIVE_UP_TICKS = intValue("giveUpTicks", "Without progress for this long, the target is unreachable and"
+                + " the kaiju picks another.", 200, 20, 6000);
+        AI_UNREACHABLE_TICKS = intValue("unreachableTicks", "How long an unreachable target is ignored.", 400, 0,
+                12000);
+        AI_COMMAND_TICKS = intValue("commandTicks", "How long a target given by a numbered kaiju (No. 9, No. 10)"
+                + " is kept before normal targeting resumes.", 200, 0, 6000);
         BUILDER.pop();
 
         section("combat", "Player combat (GDD sections 7 and 12).");

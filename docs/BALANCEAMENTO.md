@@ -84,6 +84,23 @@ as de distância precisam de linha de visão. Todos os números das habilidades 
 **Empurrão dos soldados no kaiju** (`[kaiju] soldierKnockback`, 0.6): 0 (antes, o empurrão vanilla de cada golpe
 impedia o kaiju de chegar perto de um grupo de soldados).
 
+**IA dos kaiju** (`[kaijuAi]`, IA-1A, Miguel 2026-10-15) [SUPOSIÇÃO nos números]:
+
+| Chave | Valor | Efeito |
+|---|---|---|
+| `smartIntelligence` | 4 | inteligência (JSON) a partir da qual o kaiju é "inteligente": No. 9 e formas (5), No. 10 (4) |
+| `hearingFraction` | 0,35 | o comum só percebe quem não vê dentro de 35% do alcance (Primigenius: 32 × 0,35 = 11,2 blocos) |
+| `retargetTicks` | 20 | reavalia o alvo a cada 1 s |
+| `switchMargin` | 2 | só troca de alvo se o novo for 2 blocos "melhor" |
+| `shooterBonus` | 12 | inteligente: atirador conta como 12 blocos mais perto |
+| `threatPerDamage` / `maxThreatBonus` | 0,5 / 16 | inteligente: cada ponto de dano recebido aproxima o agressor 0,5 bloco, no máximo 16 |
+| `threatMemoryTicks` | 200 | lembra quem o feriu por 10 s (o comum percebe esse agressor mesmo sem ver) |
+| `packAlertRadius` | 16 | bando (aranha): vizinhas da mesma espécie ficam sabendo do agressor |
+| `searchTicks` | 200 | sem alvo, vai à última posição conhecida e procura por até 10 s |
+| `progressCheckTicks` / `minProgress` | 60 / 1 | a cada 3 s precisa chegar 1 bloco mais perto ou ferir o alvo |
+| `giveUpTicks` / `unreachableTicks` | 200 / 400 | 10 s sem progresso: alvo inalcançável e ignorado por 20 s |
+| `commandTicks` | 200 | alvo dado pelo No. 9/No. 10 vale 10 s |
+
 **Quebra ao andar** (`[destruction] walk*`, 0.6): força 3 para Yoju, Honju e numerados (quebra frágil, normal e
 resistente: vidro, madeira, terra, pedra, tijolo, concreto), 4 para Daikaiju (também deepslate e ferro); um pedido a
 cada 5 ticks no máximo. Força 0 desliga [SUPOSIÇÃO].

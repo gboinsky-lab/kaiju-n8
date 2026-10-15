@@ -7,7 +7,6 @@ import com.kn8.common.data.KN8Data;
 import com.kn8.common.data.def.AbilityDef;
 import com.kn8.common.data.def.FlyerDef;
 import com.kn8.common.destruction.DestructionService;
-import com.kn8.common.soldier.SoldierEntity;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
@@ -27,8 +26,6 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.FlyingMoveControl;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
-import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.player.Player;
@@ -123,9 +120,8 @@ public class PreondactylEntity extends KaijuEntity {
         // O voo e os golpes ficam no customServerAiStep (abaixo); aqui so olhar e escolher alvo.
         goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 16.0F));
         goalSelector.addGoal(7, new RandomLookAroundGoal(this));
-        targetSelector.addGoal(1, new HurtByTargetGoal(this));
-        targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
-        targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, SoldierEntity.class, true));
+        // IA-1A: a mesma deteccao e escolha de alvo dos outros kaiju (o voo nao muda quem ele ataca).
+        targetSelector.addGoal(1, new KaijuTargetGoal(this));
     }
 
     @Override

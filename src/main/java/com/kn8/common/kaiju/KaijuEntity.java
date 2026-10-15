@@ -64,8 +64,6 @@ import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
-import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -147,6 +145,8 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
     private final KaijuPart[] parts;
     private int appliedVersion = -1;
     private int staggerTicks;
+    /** IA-1A: ameaca, alvos inalcancaveis, ultima posicao conhecida e alvo comandado (so no servidor). */
+    private final KaijuAiMemory aiMemory = new KaijuAiMemory();
     /** Escala do empurrao do golpe em andamento (so dentro do hurt; 1 fora dele). */
     private double knockbackScale = 1.0;
     /** Vida do nucleo; negativa = ainda nao inicializada (enche no primeiro tick com a definicao). */
@@ -370,6 +370,38 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
         staggerTicks = Math.max(staggerTicks, ticks);
     }
 
+    public boolean isStaggered() {
+        return staggerTicks > 0;
+    }
+
+    KaijuAiMemory aiMemory() {
+        return aiMemory;
+    }
+
+    /** IA-1A: inteligencia do JSON a partir de {@code [kaijuAi] smartIntelligence} (No. 9, No. 10). */
+    public boolean isSmart() {
+        return ServerConfig.SPEC.isLoaded()
+                && def().map(def -> def.intelligence() >= ServerConfig.AI_SMART_INTELLIGENCE.get()).orElse(false);
+    }
+
+    /**
+     * Alvo dado por um numerado (No. 9, No. 10 comandando): vale por {@code [kaijuAi] commandTicks}; depois a
+     * escolha normal volta (o comandado nao persegue o mesmo alvo para sempre).
+     */
+    public void command(LivingEntity target) {
+        setTarget(target);
+        aiMemory.command(level().getGameTime() + ServerConfig.AI_COMMAND_TICKS.get());
+    }
+
+    /** IA-1A: alvo que o kaiju nao consegue alcancar e ignorado por {@code [kaijuAi] unreachableTicks}. */
+    void markUnreachable(LivingEntity target) {
+        long now = level().getGameTime();
+        aiMemory.markUnreachable(target.getUUID(), now + ServerConfig.AI_UNREACHABLE_TICKS.get());
+        aiMemory.forgetLastKnown();
+        aiMemory.command(now);
+        setTarget(null);
+    }
+
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
@@ -381,19 +413,15 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new FloatGoal(this));
+        this.goalSelector.addGoal(1, new KaijuStaggerGoal(this));
         this.goalSelector.addGoal(2, new KaijuCombatGoal(this, MELEE_SPEED_MODIFIER));
+        this.goalSelector.addGoal(3, new KaijuSearchGoal(this, MELEE_SPEED_MODIFIER));
         this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, STROLL_SPEED_MODIFIER));
         this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, LOOK_DISTANCE));
         this.goalSelector.addGoal(7, new RandomLookAroundGoal(this));
-        HurtByTargetGoal revenge = new HurtByTargetGoal(this);
-        if (def().map(definition -> definition.tags().contains(PACK_TAG)).orElse(false)) {
-            // Bando (Trichonephila): quem e atacado chama as vizinhas da mesma especie para o mesmo alvo.
-            revenge.setAlertOthers();
-        }
-        this.targetSelector.addGoal(1, revenge);
-        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
-        // 0.1-B: kaiju tambem cacam soldados da Forca de Defesa (prioridade menor que jogadores).
-        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, SoldierEntity.class, true));
+        // IA-1A: deteccao e escolha de alvo proprias (jogadores e soldados; quem feriu o kaiju tambem). O alerta do
+        // bando (Trichonephila) passou para o applyDamage: as vizinhas ficam sabendo de quem atacou.
+        this.targetSelector.addGoal(1, new KaijuTargetGoal(this));
     }
 
     @Override
@@ -1068,8 +1096,33 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
         }
         if (hurt && !level().isClientSide()) {
             triggerAnim("reaction", "hurt");
+            rememberAttacker(source, amount);
         }
         return hurt;
+    }
+
+    /**
+     * IA-1A: memoria de ameaca (quem feriu e quanto, para o inteligente priorizar e para o comum perceber quem o
+     * atacou sem ser visto). Bando (tag "pack"): as vizinhas da mesma especie ficam sabendo de quem atacou.
+     */
+    private void rememberAttacker(DamageSource source, float amount) {
+        if (!(source.getEntity() instanceof LivingEntity attacker) || attacker instanceof KaijuEntity
+                || !ServerConfig.SPEC.isLoaded()) {
+            return;
+        }
+        long now = level().getGameTime();
+        int memory = ServerConfig.AI_THREAT_MEMORY_TICKS.get();
+        aiMemory.hurtBy(attacker.getUUID(), amount, now, memory);
+        if (getTarget() == null) {
+            aiMemory.see(attacker.position(), now);
+        }
+        if (def().map(definition -> definition.tags().contains(PACK_TAG)).orElse(false)) {
+            double radius = ServerConfig.AI_PACK_ALERT_RADIUS.get();
+            for (KaijuEntity mate : level().getEntitiesOfClass(KaijuEntity.class, getBoundingBox().inflate(radius),
+                    mate -> mate != this && mate.isAlive() && mate.kaijuId().equals(kaijuId()))) {
+                mate.aiMemory.hurtBy(attacker.getUUID(), 0.0F, now, memory);
+            }
+        }
     }
 
     @Override

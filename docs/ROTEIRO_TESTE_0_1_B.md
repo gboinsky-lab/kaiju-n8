@@ -621,3 +621,16 @@ Tecla nova: **C** (Parkour; troca em Opções > Controles > Kaiju No. 8). Númer
 | 43.8 | Clicar no painel com o treino em andamento | "Treino encerrado." e o kaiju some |
 | 43.9 | Sair para longe (mais de 24 blocos da arena) por 1 minuto | O treino acaba sozinho |
 | 43.10 | Servidor dedicado + 2 clientes | Os dois veem a cidade, a base, o kaiju e a luta iguais |
+
+## 44. IA dos kaiju: detecção, alvo, busca, travamento e atordoamento (IA-1A)
+
+| # | Passo | Esperado |
+|---|---|---|
+| 44.1 | Dois soldados (`/kn8 soldier spawn`), um a 4 e outro a 12 blocos de um Primigenius; dar o alvo do longe (`/kn8 kaiju` ou deixar ele escolher) | Em até 1 s o kaiju vai para o soldado mais perto; morto esse, passa para o próximo (todos em volta apanham) |
+| 44.2 | Esconder-se atrás de um muro a mais de ~12 blocos de um Primigenius que não viu você | Ele não percebe; perto (menos de ~11 blocos) ou depois de levar um tiro seu, percebe |
+| 44.3 | No. 10 pequeno com um soldado de espada perto e um de rifle a ~10 blocos | O No. 10 ignora o espadachim e vai atrás do atirador; quem mais o fere também vira prioridade |
+| 44.4 | Soldado parado em cima de um pilar de bedrock de 8 blocos, você no chão a ~15 blocos | O kaiju fica embaixo do pilar, pula (tentativa de destravar), em ~10–14 s desiste e vem em você; volta ao pilar depois de ~20 s se nada mais estiver por perto |
+| 44.5 | Fugir do campo de visão do kaiju (atrás de uma casa, longe) | Ele vai até onde te viu por último, olha em volta e, sem achar, desiste em ~10 s |
+| 44.6 | `/kn8 kaiju stagger 100` (ou parry/especial que atordoa) com o kaiju perseguindo | Fica parado no lugar ~5 s (sem andar nem girar para o alvo) e depois volta a perseguir |
+| 44.7 | No. 9 comandando kaiju sem alvo | Os comandados atacam o alvo do No. 9 por 10 s e depois voltam a escolher sozinhos |
+| 44.8 | Servidor dedicado + 2 clientes | Os dois veem o mesmo comportamento |

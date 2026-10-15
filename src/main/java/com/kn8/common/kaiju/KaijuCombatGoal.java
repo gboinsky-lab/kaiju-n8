@@ -3,6 +3,9 @@ package com.kn8.common.kaiju;
 
 import java.util.EnumSet;
 
+import com.kn8.common.config.ServerConfig;
+import com.kn8.core.kaiju.KaijuTargeting;
+
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
 
@@ -14,6 +17,10 @@ import net.minecraft.world.entity.ai.goal.Goal;
  * <p>Aproximacao em duas fases (correcao do M8): longe, segue o caminho da navegacao; perto e ainda fora do
  * alcance, anda direto ate o alvo pelo controle de movimento, porque a navegacao encerra o caminho antes de
  * encostar (tolerancia de waypoint de mobs largos) e o kaiju ficava parado a ~2,4 blocos sem morder.</p>
+ *
+ * <p>IA-1A: checa o progresso a cada {@code [kaijuAi] progressCheckTicks}. Sem chegar mais perto nem ferir o alvo
+ * (ex.: embaixo de um soldado no alto de um pilar), pula e recalcula o caminho; sem progresso por {@code giveUpTicks}, marca
+ * o alvo como inalcancavel e o {@link KaijuTargetGoal} escolhe outro (antes ficava parado embaixo para sempre).</p>
  */
 final class KaijuCombatGoal extends Goal {
 
@@ -25,6 +32,10 @@ final class KaijuCombatGoal extends Goal {
     private final KaijuEntity kaiju;
     private final double speedModifier;
     private int recalcCooldown;
+    private long nextProgressCheck;
+    private double lastEdge;
+    private int stuckTicks;
+    private LivingEntity lastTarget;
 
     KaijuCombatGoal(KaijuEntity kaiju, double speedModifier) {
         this.kaiju = kaiju;
@@ -46,11 +57,20 @@ final class KaijuCombatGoal extends Goal {
     @Override
     public void start() {
         recalcCooldown = 0;
+        resetProgress();
+    }
+
+    private void resetProgress() {
+        LivingEntity target = kaiju.getTarget();
+        lastEdge = target != null ? kaiju.edgeDistance(target) : 0.0;
+        nextProgressCheck = kaiju.level().getGameTime() + ServerConfig.AI_PROGRESS_CHECK_TICKS.get();
+        stuckTicks = 0;
     }
 
     @Override
     public void stop() {
         kaiju.getNavigation().stop();
+        lastTarget = null;
     }
 
     @Override
@@ -64,13 +84,23 @@ final class KaijuCombatGoal extends Goal {
         if (target == null) {
             return;
         }
+        if (target != lastTarget) {
+            // Trocou de alvo (KaijuTargetGoal): o progresso conta do zero para o novo.
+            lastTarget = target;
+            resetProgress();
+        }
         kaiju.getLookControl().setLookAt(target, LOOK_SPEED, LOOK_SPEED);
         if (kaiju.isUsingAbility()) {
+            // Sem zerar o progresso: golpe que erra (alvo no alto de um pilar) nao conta; o que acerta conta pelo
+            // dano no alvo (checkProgress).
             kaiju.getNavigation().stop();
             return;
         }
         double edge = kaiju.edgeDistance(target);
         double reach = kaiju.approachReach();
+        if (checkProgress(target, edge)) {
+            return;
+        }
         if (edge > reach && (kaiju.isLarge() || edge <= reach + DIRECT_APPROACH_DISTANCE)) {
             // Perto, ou kaiju grande (a navegacao vanilla falha com mobs largos): anda direto ate o alvo. O que for
             // fragil no caminho e quebrado pelo DestructionService (Parte 3), se a destruicao estiver ligada.
@@ -82,5 +112,32 @@ final class KaijuCombatGoal extends Goal {
             kaiju.getNavigation().moveTo(target, speedModifier);
         }
         kaiju.tryAttack(target);
+    }
+
+    /** Devolve true se desistiu do alvo (inalcancavel). */
+    private boolean checkProgress(LivingEntity target, double edge) {
+        long now = kaiju.level().getGameTime();
+        if (now < nextProgressCheck) {
+            return false;
+        }
+        int interval = ServerConfig.AI_PROGRESS_CHECK_TICKS.get();
+        nextProgressCheck = now + interval;
+        boolean hit = target.getLastHurtByMob() == kaiju
+                && target.tickCount - target.getLastHurtByMobTimestamp() <= interval;
+        boolean progress = KaijuTargeting.madeProgress(lastEdge, edge, ServerConfig.AI_MIN_PROGRESS.get(), hit);
+        lastEdge = edge;
+        if (progress) {
+            stuckTicks = 0;
+            return false;
+        }
+        stuckTicks += interval;
+        if (stuckTicks >= ServerConfig.AI_GIVE_UP_TICKS.get()) {
+            kaiju.markUnreachable(target);
+            return true;
+        }
+        // Tentativa de destravar: pula (degrau, borda) e recalcula o caminho ja no proximo tick.
+        kaiju.getJumpControl().jump();
+        recalcCooldown = 0;
+        return false;
     }
 }
