@@ -9,8 +9,10 @@ import com.kn8.KN8Constants;
 import com.kn8.common.boss.BossService;
 import com.kn8.common.career.CareerService;
 import com.kn8.common.combat.SlashProjectile;
+import com.kn8.common.combat.WeaponIndex;
 import com.kn8.common.data.KN8Data;
 import com.kn8.common.data.def.NumberedDef;
+import com.kn8.common.data.def.WeaponDef;
 import com.kn8.common.invasion.Invasion;
 import com.kn8.common.invasion.InvasionService;
 import com.kn8.common.kaiju.CarcassEntity;
@@ -313,13 +315,24 @@ public final class No9Service {
         marks[0] = Math.max(0, marks[0] - (now - marks[1]) / Math.max(1, adaptation.decayTicks()));
         marks[0]++;
         marks[1] = now;
-        float reduction = adaptation.reductionFor((int) marks[0]);
+        float reduction = adaptation.reductionFor((int) marks[0], isRanged(source));
         if (reduction > 0) {
             level.sendParticles(ParticleTypes.SMOKE, no9.getX(), no9.getY() + no9.getBbHeight() * 0.6, no9.getZ(),
                     (int) (reduction * 20), no9.getBbWidth() * 0.4, no9.getBbHeight() * 0.3, no9.getBbWidth() * 0.4,
                     0.02);
         }
         return amount * (1.0F - reduction);
+    }
+
+    /** Tiro ou projetil (o No. 9 le mais rapido): veio por outra entidade ou de quem segura arma de fogo. */
+    static boolean isRanged(DamageSource source) {
+        Entity direct = source.getDirectEntity();
+        Entity attacker = source.getEntity();
+        if (direct != null && direct != attacker) {
+            return true;
+        }
+        return attacker instanceof LivingEntity living && WeaponIndex.find(living.getMainHandItem(), false)
+                .map(weapon -> weapon.style() == WeaponDef.Style.FIREARM).orElse(false);
     }
 
     /** Tipo do golpe para a adaptacao: tipo de dano + projetil, arma na mao ou especie de quem bateu. */

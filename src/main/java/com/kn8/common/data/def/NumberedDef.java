@@ -113,23 +113,35 @@ public record NumberedDef(Map<ResourceLocation, ResourceLocation> revive, float 
      * (tipo de dano + arma ou especie de quem bate) soma uma marca; a partir da segunda, o dano desse tipo cai
      * {@code per_hit} por marca, ate {@code max_reduction}. Sem levar esse tipo por {@code decay_ticks}, perde uma
      * marca: variar o ataque (outra arma, outro golpe, outro atacante) contorna a adaptacao.
+     *
+     * <p>{@code ranged_factor} (Miguel, 2026-10-15: a Mina perde para o No. 9 "pois ele e inteligente"): contra tiros
+     * e projeteis ele le o padrao mais rapido, marca e teto vezes o fator (teto limitado a 90%).</p>
      */
-    public record Adaptation(float perHit, float maxReduction, int decayTicks) {
+    public record Adaptation(float perHit, float maxReduction, int decayTicks, float rangedFactor) {
         public static final Codec<Adaptation> CODEC = RecordCodecBuilder.create(i -> i.group(
                 Codec.floatRange(0.0F, 0.5F).fieldOf("per_hit").forGetter(Adaptation::perHit),
                 Codec.floatRange(0.0F, 0.9F).fieldOf("max_reduction").forGetter(Adaptation::maxReduction),
-                DefCodecs.TICKS.optionalFieldOf("decay_ticks", 100).forGetter(Adaptation::decayTicks)
+                DefCodecs.TICKS.optionalFieldOf("decay_ticks", 100).forGetter(Adaptation::decayTicks),
+                Codec.floatRange(1.0F, 5.0F).optionalFieldOf("ranged_factor", 1.0F)
+                        .forGetter(Adaptation::rangedFactor)
         ).apply(i, Adaptation::new));
 
         /** Reducao do dano com {@code marks} marcas do mesmo tipo (a primeira nao reduz). */
         public float reductionFor(int marks) {
-            return Math.min(maxReduction, Math.max(0, marks - 1) * perHit);
+            return reductionFor(marks, false);
+        }
+
+        /** Com {@code ranged}, tiro ou projetil: por marca e teto vezes {@code ranged_factor}. */
+        public float reductionFor(int marks, boolean ranged) {
+            float factor = ranged ? rangedFactor : 1.0F;
+            return Math.min(Math.min(0.9F, maxReduction * factor), Math.max(0, marks - 1) * perHit * factor);
         }
     }
 
     /**
      * Leitura de tiro (Miguel, 2026-10-15: "o No. 9 e inteligente e sabe fazer estrategias"): um tiro pesado que
-     * explode (canhao da Mina; cortes do Hoshina e balas comuns nao contam) que vem na direcao dele a menos de {@code read_radius} blocos, com no maximo
+     * explode (canhao da Mina; cortes do Hoshina e balas comuns nao contam) que vem na direcao dele a menos de
+     * {@code read_radius} blocos, com no maximo
      * {@code max_projectile_speed} blocos/tick (tiros lentos e pesados, como o canhao da Mina; bala rapida nao da
      * tempo), faz o No. 9 saltar para o lado com chance {@code chance} (uma tentativa por tiro), no maximo uma vez a
      * cada {@code cooldown_ticks}.

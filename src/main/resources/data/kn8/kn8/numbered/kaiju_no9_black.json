@@ -60,7 +60,8 @@
   "adaptation": {
     "per_hit": 0.03,
     "max_reduction": 0.25,
-    "decay_ticks": 100
+    "decay_ticks": 100,
+    "ranged_factor": 3.0
   },
   "dodge": {
     "read_radius": 14.0,
