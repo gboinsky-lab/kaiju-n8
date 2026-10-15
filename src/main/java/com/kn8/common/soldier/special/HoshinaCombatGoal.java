@@ -30,8 +30,27 @@ final class HoshinaCombatGoal extends Goal {
     /** Passo do giro em volta do alvo a cada reavaliacao (radianos, ~35 graus). */
     private static final double ORBIT_STEP = 0.6;
 
+    /**
+     * Luta travada (2026-10-15, No. 8 x forma preta): sem ninguem perder vida por este tempo com o alvo perto, sai
+     * para o lado. Caso medido: o No. 8 numa cratera de 3 blocos e a forma preta de 5 m parada por cima dela, sem
+     * caber no buraco; o soco horizontal nao alcanca quem esta em cima e ela nao alcanca quem esta no fundo.
+     */
+    private static final int STUCK_TICKS = 160;
+    private static final double STUCK_RANGE = 8.0;
+    /** Distancia do ponto para onde sai ao destravar (blocos, para o lado do alvo). */
+    private static final double UNSTUCK_STEP = 5.0;
+    private static final double UNSTUCK_SPEED = 1.3;
+    /** Tempo correndo para o ponto ao lado antes de voltar a lutar (o golpe de perto pararia a navegacao). */
+    private static final int UNSTUCK_RUN_TICKS = 30;
+    /** Alvo acima disso (blocos, pe contra pe) e perto: pula para alcancar. */
+    private static final double JUMP_ABOVE = 1.5;
+
     private final HoshinaEntity hoshina;
     private int repath;
+    private int stuckTicks;
+    private int unstuckRun;
+    private float lastOwnHealth = -1.0F;
+    private float lastTargetHealth = -1.0F;
     private double lastEdge = -1.0;
     private int orbitSide = 1;
     private int orbitTicks;
@@ -71,6 +90,9 @@ final class HoshinaCombatGoal extends Goal {
         }
         hoshina.getLookControl().setLookAt(target, 30.0F, 30.0F);
         if (hoshina.isUsingTechnique()) {
+            return;
+        }
+        if (unstick(target)) {
             return;
         }
         Optional<String> technique = hoshina.chooseTechnique(target);
@@ -151,5 +173,41 @@ final class HoshinaCombatGoal extends Goal {
         double radius = keep + target.getBbWidth() * 0.5;
         Vec3 spot = center.add(Math.cos(angle) * radius, 0.0, Math.sin(angle) * radius);
         return hoshina.getNavigation().moveTo(spot.x, hoshina.getY(), spot.z, speed);
+    }
+
+    /**
+     * Destrava a luta: perto do alvo e sem ninguem perder vida por {@link #STUCK_TICKS}, pula e corre para um ponto
+     * ao lado do alvo, na altura dele (sai da cratera ou de baixo dele). Alvo acima e perto: pula. Verdadeiro
+     * enquanto esta saindo (o resto do tick fica para depois).
+     */
+    private boolean unstick(LivingEntity target) {
+        if (unstuckRun > 0) {
+            unstuckRun--;
+            return true;
+        }
+        double edge = hoshina.edgeTo(target);
+        if (target.getY() - hoshina.getY() > JUMP_ABOVE && edge < STUCK_RANGE && hoshina.onGround()) {
+            hoshina.getJumpControl().jump();
+        }
+        boolean progress = hoshina.getHealth() != lastOwnHealth || target.getHealth() != lastTargetHealth;
+        lastOwnHealth = hoshina.getHealth();
+        lastTargetHealth = target.getHealth();
+        if (progress || edge > STUCK_RANGE) {
+            stuckTicks = 0;
+            return false;
+        }
+        if (++stuckTicks < STUCK_TICKS) {
+            return false;
+        }
+        stuckTicks = 0;
+        Vec3 from = hoshina.position().subtract(target.position());
+        double angle = Math.atan2(from.z, from.x) + Math.PI * 0.5 * orbitSide;
+        orbitSide = -orbitSide;
+        double radius = UNSTUCK_STEP + target.getBbWidth() * 0.5;
+        Vec3 spot = target.position().add(Math.cos(angle) * radius, 0.0, Math.sin(angle) * radius);
+        hoshina.getJumpControl().jump();
+        hoshina.getNavigation().moveTo(spot.x, target.getY(), spot.z, UNSTUCK_SPEED);
+        unstuckRun = UNSTUCK_RUN_TICKS;
+        return true;
     }
 }
