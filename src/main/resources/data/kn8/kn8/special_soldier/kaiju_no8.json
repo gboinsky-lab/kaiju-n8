@@ -128,7 +128,7 @@
     "revert_after_idle_ticks": 300
   },
   "regeneration": {
-    "per_second": 0.03,
+    "per_second": 0.015,
     "health_below": 0.5
   }
 }

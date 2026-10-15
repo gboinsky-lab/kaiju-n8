@@ -128,7 +128,7 @@ mesmo tipo tira 2–3% menos a cada vez, até −15/−25% (`adaptation`).
 
 **Fusão gigante** (`kaiju_no9_fusion_giant`, 20 m, tabela mestra de alturas 2026-10-15): surge da fusão de 5 m abaixo
 de 50% da vida, com a vida cheia. Vida 9.000, dano 72, armadura 20, velocidade 0,32, categoria `supergiant`; mesmos
-ataques, regeneração, comando, revividos e fuga (10%) da fusão [SUPOSIÇÃO].
+ataques, regeneração, comando, revividos e fuga (10%) da fusão (números confirmados pelo Miguel, 2026-10-15).
 
 **Alturas (tabela mestra, 2026-10-15):** forma preta 5 m (escala 2,632), formiga 11 m (2,813); escalas de todas as
 entidades em `docs/AUDITORIA_ALTURAS.md`. A escala não muda vida, dano nem velocidade.
@@ -403,7 +403,7 @@ sobe mais rápido. A fuga do No. 9 só dá mérito a quem causou dano nele.
 | Forma | Vida | Armadura | Velocidade | Arma | Técnicas / extra |
 |---|---|---|---|---|---|
 | Kafka humano (T2) | 24 | 6 | 0,30 | rifle (5), `kaiju_damage` 0,3 | sequência de socos 0,5/0,6 (40); **vira o No. 8 abaixo de 50% da vida** (`transform.health_below` 0,5) |
-| Kaiju No. 8 (T8) | 1.800 | 19 | 0,40 | punhos (`kn8:kaiju_no8_fist`, 11 de dano × 5 do Release 100% = 55, alcance 3), `kaiju_damage` 0,6 | sequência de 4 socos 0,9/1,0/1,1/1,4 (30), soco pesado 1,8 com empurrão (60), investida 1,5 (3–12 blocos, 70), golpe no chão 1,6 com explosão de raio 4 (120), rugido 8 × 0,6 + Lentidão II (240); **regenera 3%/s abaixo de 50%**; **volta a ser o Kafka depois de 15 s sem alvo** (`revert_after_idle_ticks` 300). O v1.2 fala em "dano base equivalente 55": é o golpe base (11 × 5) |
+| Kaiju No. 8 (T8) | 1.800 | 19 | 0,40 | punhos (`kn8:kaiju_no8_fist`, 11 de dano × 5 do Release 100% = 55, alcance 3), `kaiju_damage` 0,6 | sequência de 4 socos 0,9/1,0/1,1/1,4 (30), soco pesado 1,8 com empurrão (60), investida 1,5 (3–12 blocos, 70), golpe no chão 1,6 com explosão de raio 4 (120), rugido 8 × 0,6 + Lentidão II (240); **regenera 1,5%/s abaixo de 50%** (era 3%; Miguel, 2026-10-15); **volta a ser o Kafka depois de 15 s sem alvo** (`revert_after_idle_ticks` 300). O v1.2 fala em "dano base equivalente 55": é o golpe base (11 × 5) |
 
 Armas novas: `weapon/mina_cannon.json` (arma de fogo, 12 de dano, perfil do rifle) e `weapon/narumi_bayonet.json`
 (pesada, 9 de dano, alcance 3,6, perfil do machado) [SUPOSIÇÃO; as animações próprias para o jogador ficam para

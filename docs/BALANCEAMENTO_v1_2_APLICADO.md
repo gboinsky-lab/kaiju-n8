@@ -71,7 +71,7 @@ acelerado, sem jogador por perto. As formas do No. 9 foram testadas **isoladas**
 - **Morte** = o kaiju morreu. **Fuga** = o kaiju fugiu com pouca vida (No. 9 e formas fogem com 15%, a fusão com 10%,
   o No. 10 com a regra dele). **Derrota** = o personagem morreu. **Tempo** = 5 min sem fim.
 - O v1.2 §36.1 diz "vitória significa derrotar o Kaiju sem morrer". Na tabela, "vitória" conta **morte + fuga**
-  (o No. 9 foge sempre antes de morrer: sem contar a fuga, ninguém vence o No. 9 nunca). **[DECIDIR]** se a fuga conta.
+  (o No. 9 foge sempre antes de morrer: sem contar a fuga, ninguém vence o No. 9 nunca). **Decidido (Miguel, 2026-10-15): a fuga conta como vitória prévia.**
 
 | Personagem × kaiju | Meta | Vitória (morte + fuga) | Morte / Fuga / Derrota / Tempo | Tempo da luta | Vida do personagem ao vencer | Situação |
 |---|---|---|---|---|---|---|
@@ -113,11 +113,11 @@ e as formas K14–K16 do No. 9 (vermelha, No. 2/Isao, final): não existem no jo
 1. **A fuga decide quase tudo contra o No. 9.** Ele foge com 15% em todas as formas; por isso o resultado vira
    "chegar a 15% antes de morrer". Kikoru (vence com 1–20% de vida) e Narumi (2–14%) estão no fio da navalha: com 10
    duelos, ±15 pontos são ruído. Com o No. 8 é o contrário: ele leva qualquer forma do No. 9 a 15% e o No. 9 sempre
-   escapa (0% de morte). Se a fuga **não** contar, o No. 8 fica com 0% contra o No. 9 (meta 40%). **[DECIDIR]**.
+   escapa (0% de morte). Decidido: a fuga conta como vitória prévia (Miguel, 2026-10-15).
 2. **Regeneração do No. 8 (3%/s abaixo de 50%, v1.2 §11) = 54 de vida por segundo.** Ele "estaciona" em 50%: só a
    fusão (que também regenera a 50%) tem dano para passar disso, e 4 dos 10 duelos com ela deram 5 min de empate. A
-   Biblioteca §5 diz que a regeneração "não deve tornar o combate interminável". Proposta **[DECIDIR]**: regeneração do
-   No. 8 só fora de combate ou 1,5%/s em combate. Não mudei sem você aprovar (é número do v1.2).
+   Biblioteca §5 diz que a regeneração "não deve tornar o combate interminável". Decidido (Miguel, 2026-10-15): regeneração do
+   No. 8 cai para **1,5%/s** abaixo de 50% (27 de vida por segundo).
 3. **Kikoru: as duas metas brigam.** O No. 10 pequeno é mais forte que o No. 9 contra ela (golpes pesados, que furam o
    bloqueio, e regeneração). Com `kaiju_damage` 0,52 ela fazia 0% nos dois; com 0,62, 50% e 0%. Para chegar a 35%
    contra o No. 10 ela passaria muito do No. 9. Valor escolhido: 0,62 (ela "pode vencer ocasionalmente", v1.2 §36.9).
@@ -161,8 +161,8 @@ e as formas K14–K16 do No. 9 (vermelha, No. 2/Isao, final): não existem no jo
 
 ## 5. Pendências
 
-- **[DECIDIR]** fuga do No. 9 conta como vitória? (muda a leitura de 9 confrontos da matriz)
-- **[DECIDIR]** regeneração do No. 8 em combate (proposta: 1,5%/s ou só fora de combate).
+- ~~fuga do No. 9 conta como vitória?~~ Sim, vitória prévia (Miguel, 2026-10-15).
+- ~~regeneração do No. 8~~ 1,5%/s abaixo de 50% (Miguel, 2026-10-15).
 - IA de atirador (Mina, Reno): recuar e manter distância.
 - No. 8 × No. 9 preto: achar por que param de lutar; agarrar/arremessar; detecção de kaiju; soco que quebra blocos.
 - Medir os confrontos com 20 duelos onde ficou no limite (Kikoru, Narumi × No. 9), como pede o §36.7.2.

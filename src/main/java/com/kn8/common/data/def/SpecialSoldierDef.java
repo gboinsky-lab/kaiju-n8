@@ -58,6 +58,11 @@ public record SpecialSoldierDef(float health, float armor, float speed, float fo
         return growth.regeneration();
     }
 
+    /** Comportamento de atirador que mantem distancia (Mina, Reno); vazio = vai ate o alcance da arma. */
+    public Optional<Ranged> ranged() {
+        return growth.ranged();
+    }
+
     /** Altura do personagem em blocos (tabela mestra de alturas; 0 = a do modelo). */
     public float height() {
         return growth.height();
@@ -68,14 +73,16 @@ public record SpecialSoldierDef(float health, float armor, float speed, float fo
      * por grupo): {@code escalation} e, so com o traje numerado 10 (0.6-F), {@code numbers10}.
      */
     public record Growth(Escalation escalation, Optional<Numbers10> numbers10, Optional<Flight> flight,
-            Optional<Transform> transform, Optional<Regeneration> regeneration, float height) {
+            Optional<Transform> transform, Optional<Regeneration> regeneration, float height,
+            Optional<Ranged> ranged) {
         public static final MapCodec<Growth> MAP_CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
                 Escalation.CODEC.optionalFieldOf("escalation", Escalation.NONE).forGetter(Growth::escalation),
                 Numbers10.CODEC.optionalFieldOf("numbers10").forGetter(Growth::numbers10),
                 Flight.CODEC.optionalFieldOf("flight").forGetter(Growth::flight),
                 Transform.CODEC.optionalFieldOf("transform").forGetter(Growth::transform),
                 Regeneration.CODEC.optionalFieldOf("regeneration").forGetter(Growth::regeneration),
-                Codec.floatRange(0.0F, 4.0F).optionalFieldOf("height", 0.0F).forGetter(Growth::height)
+                Codec.floatRange(0.0F, 4.0F).optionalFieldOf("height", 0.0F).forGetter(Growth::height),
+                Ranged.CODEC.optionalFieldOf("ranged").forGetter(Growth::ranged)
         ).apply(i, Growth::new));
     }
 
@@ -91,6 +98,26 @@ public record SpecialSoldierDef(float health, float armor, float speed, float fo
                 Codec.intRange(0, 72000).optionalFieldOf("revert_after_idle_ticks", 0)
                         .forGetter(Transform::revertAfterIdleTicks)
         ).apply(i, Transform::new));
+    }
+
+    /**
+     * Atirador que mantem distancia (Miguel, 2026-10-15: Mina e Reno). Com o alvo a menos de
+     * {@code retreat_distance} blocos (borda a borda) recua para {@code keep_distance}; entre as duas distancias corre
+     * em volta dele ({@code orbit}, trocando de lado a cada {@code orbit_switch_ticks} ou quando o caminho fecha) para
+     * distrai-lo; se o alvo se afasta, sai da distancia ou da linha de visao, persegue. Atira em movimento.
+     */
+    public record Ranged(float keepDistance, float retreatDistance, boolean orbit, int orbitSwitchTicks,
+            float retreatSpeed, float orbitSpeed, float chaseSpeed) {
+        public static final Codec<Ranged> CODEC = RecordCodecBuilder.create(i -> i.group(
+                Codec.floatRange(2.0F, 64.0F).optionalFieldOf("keep_distance", 16.0F).forGetter(Ranged::keepDistance),
+                Codec.floatRange(0.0F, 64.0F).optionalFieldOf("retreat_distance", 9.0F)
+                        .forGetter(Ranged::retreatDistance),
+                Codec.BOOL.optionalFieldOf("orbit", true).forGetter(Ranged::orbit),
+                DefCodecs.TICKS.optionalFieldOf("orbit_switch_ticks", 80).forGetter(Ranged::orbitSwitchTicks),
+                Codec.floatRange(0.1F, 3.0F).optionalFieldOf("retreat_speed", 1.3F).forGetter(Ranged::retreatSpeed),
+                Codec.floatRange(0.1F, 3.0F).optionalFieldOf("orbit_speed", 1.15F).forGetter(Ranged::orbitSpeed),
+                Codec.floatRange(0.1F, 3.0F).optionalFieldOf("chase_speed", 1.3F).forGetter(Ranged::chaseSpeed)
+        ).apply(i, Ranged::new));
     }
 
     /** 0.7-F (Kaiju No. 8): regenera {@code per_second} da vida maxima por segundo abaixo de {@code health_below}. */
