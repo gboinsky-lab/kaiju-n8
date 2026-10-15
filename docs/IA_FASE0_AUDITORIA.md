@@ -120,6 +120,15 @@ Ordenados por gravidade. Cada item foi conferido no código (os de gravidade alt
 - Alvo: comum ataca o mais perto (troca com margem), inteligente prioriza atirador e ameaça; atordoado parado.
 - `cenarios_ia.py`: cenário `alto_preso` (soldados sem IA, pilar de bedrock).
 
+### Situação depois da IA-1B (2026-10-15)
+
+- **#1 resolvido**: sem pentes, quem não tem arma de apoio pega a do config (`[soldierAi] outOfAmmoWeapon`, faca) e
+  o atirador especial sem munição luta de perto; GameTest `specialShooterOutOfAmmoIsNotEmptyHanded`.
+- **#3 resolvido no lado dos soldados**: detecção sem visão até 64 blocos (`SoldierTargetGoal`). Cenário `parede`:
+  antes 40 s sem combate; agora os soldados contornam o muro em 2 s e tiram metade da vida do Primigenius.
+- Funções: recarga recuando, recarga sem alvo, cobertura de quem recarrega, revide; soldado comum só nasce com arma
+  de fogo e parte para a faca depois de 3 recargas (cenário `municao_alvo`: faca na mão aos ~60–100 s).
+
 ## 5. Fora da IA (registrado, não mexido)
 
 - **Balanceamento:** Anti-Giant da Mina (×30) mata um Honju de 360 com um tiro (820). O piso de 6 m pega qualquer

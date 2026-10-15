@@ -24,6 +24,7 @@ import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.registry.KN8Attachments;
 import com.kn8.common.registry.KN8Sounds;
 import com.kn8.common.soldier.SoldierEntity;
+import com.kn8.common.soldier.SoldierTargetGoal;
 import com.kn8.common.vfx.VfxService;
 import com.kn8.core.combat.CombatMath;
 import com.kn8.core.power.PowerMath;
@@ -53,8 +54,6 @@ import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
-import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -256,8 +255,8 @@ public class HoshinaEntity extends SoldierEntity {
         goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8));
         goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
         goalSelector.addGoal(7, new RandomLookAroundGoal(this));
-        targetSelector.addGoal(1, new HurtByTargetGoal(this, SoldierEntity.class, Player.class));
-        targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, KaijuEntity.class, true));
+        // IA-1B: o mesmo alvo dos soldados comuns (detecta sem ver, cobre quem recarrega, revida).
+        targetSelector.addGoal(1, new SoldierTargetGoal(this));
     }
 
     public boolean isUsingTechnique() {

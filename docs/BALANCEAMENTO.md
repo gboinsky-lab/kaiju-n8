@@ -101,6 +101,18 @@ impedia o kaiju de chegar perto de um grupo de soldados).
 | `giveUpTicks` / `unreachableTicks` | 200 / 400 | 10 s sem progresso: alvo inalcançável e ignorado por 20 s |
 | `commandTicks` | 200 | alvo dado pelo No. 9/No. 10 vale 10 s |
 
+**IA dos soldados** (`[soldierAi]`, IA-1B, Miguel 2026-10-15) [SUPOSIÇÃO nos números]:
+
+| Chave | Valor | Efeito |
+|---|---|---|
+| `detectionRange` | 64 | soldados (comuns e especiais) detectam kaiju a até 64 blocos, vendo ou não |
+| `retargetTicks` | 20 | reavalia o alvo a cada 1 s |
+| `switchMargin` | 3 | só troca de alvo se o novo for 3 blocos "melhor" |
+| `coverBonus` | 12 | kaiju mirando um aliado que está recarregando conta como 12 blocos mais perto (cobertura) |
+| `revengeBonus` / `revengeTicks` | 6 / 100 | kaiju que feriu o soldado nos últimos 5 s conta como 6 blocos mais perto |
+| `reloadRetreat` | 6 | recarregando, o atirador recua até a distância de manter + 6 |
+| `outOfAmmoWeapon` | `kn8:combat_knife` | arma branca de quem fica sem munição e não tem arma de apoio (Mina, Reno, Kafka) |
+
 **Quebra ao andar** (`[destruction] walk*`, 0.6): força 3 para Yoju, Honju e numerados (quebra frágil, normal e
 resistente: vidro, madeira, terra, pedra, tijolo, concreto), 4 para Daikaiju (também deepslate e ferro); um pedido a
 cada 5 ticks no máximo. Força 0 desliga [SUPOSIÇÃO].
@@ -411,11 +423,11 @@ A bancada em si: 7 ferros + mesa de trabalho + bloco de redstone (receita vanill
 
 | Invasão | Nível | Ondas (kaiju) | Defensores | Prazo | Mérito | XP | Natural |
 |---|---|---|---|---|---|---|---|
-| Enxame de Trichonephila | 1 | 3 + 5 aranhas | 2 rifle + 1 espada (normal) | 10 min | 80 | 150 | peso 3 |
-| Ataque dos Primigenius | 2 | 2 + 4 + 3 | 3 rifle + 1 machado alto | 15 min | 150 | 300 | peso 2 |
-| Ofensiva do Honju | 3 | 3 + (2 + Honju) | 4 rifle + 2 espada (alto) | 20 min | 400 | 600 | peso 1 |
-| Ressurreição do No. 9 | 3 | 2 + (No. 9 + 1) | 3 rifle + 1 espada (alto) | 20 min | 350 | 500 | só missão |
-| Horda Kaiju | 4 | 10 + (9 + Honju) | 3 rifle + 1 espada (normal) | 30 min | 700 | 900 | só missão |
+| Enxame de Trichonephila | 1 | 3 + 5 aranhas | 2 rifle + 1 pistola (normal) | 10 min | 80 | 150 | peso 3 |
+| Ataque dos Primigenius | 2 | 2 + 4 + 3 | 3 sorteados (rifle/pistola) + 1 pistola alto | 15 min | 150 | 300 | peso 2 |
+| Ofensiva do Honju | 3 | 3 + (2 + Honju) | 4 rifle + 2 pistola (alto) | 20 min | 400 | 600 | peso 1 |
+| Ressurreição do No. 9 | 3 | 2 + (No. 9 + 1) | 3 rifle + 1 pistola (alto) | 20 min | 350 | 500 | só missão |
+| Horda Kaiju | 4 | 10 + (9 + Honju) | 4 sorteados (normal) + Hoshina + Kikoru | 30 min | 700 | 900 | só missão |
 | Ressurreição em Massa | 5 | horda + No. 9 revivendo tudo | 3 rifle + 1 espada | 40 min | 1.500 | 2.000 | só missão |
 
 Chance de invasão natural por noite: 20% (`[invasion] naturalChance`) [SUPOSIÇÃO].
@@ -557,8 +569,10 @@ Balanceamento v1.0 (`level_stats`): vida / armadura / velocidade por nível — 
 24 / 6 / 0,30, alto 28 / 8 / 0,31, elite 34 / 10 / 0,32 (antes todos 24 / 6 / 0,30).
 
 Variantes comuns (0.4, peso no sorteio): Atirador rifle + faca de apoio (4), Patrulheiro pistola + faca (2),
-Espadachim espada (2), Batedor faca (2), Recruta sem arma (0). Troca para a faca com o kaiju a menos de 3,5 blocos
-(`sidearm_distance`). Soldado comum não usa machado (arma especial).
+Espadachim espada (0), Batedor faca (0), Recruta sem arma (0). **IA-1B (Miguel, 2026-10-15):** soldado comum nasce só
+com arma de fogo (espada e faca continuam por comando, peso 0; defensores das invasões que eram "espada" viraram
+"pistola"); 3 pentes reserva (`npc.spare_magazines` do perfil) e depois a arma branca. Troca para a faca com o kaiju
+a menos de 3,5 blocos (`sidearm_distance`). Soldado comum não usa machado (arma especial).
 
 ✅ 0.3 (decisão do Miguel: soldados simples precisam de grupo; fortes resolvem sozinhos): dano contra kaiju ×
 `kaiju_damage` por nível — baixo **0,25**, normal **0,35**, alto **0,8**, elite **1,0**. [SUPOSIÇÃO] O tiro do

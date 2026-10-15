@@ -25,11 +25,11 @@
     },
     "sword": {
       "weapon": "kn8:sword",
-      "weight": 2
+      "weight": 0
     },
     "knife": {
       "weapon": "kn8:combat_knife",
-      "weight": 2
+      "weight": 0
     },
     "unarmed": {
       "weapon": "minecraft:air",

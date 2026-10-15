@@ -199,6 +199,16 @@ public final class ServerConfig {
     public static final ModConfigSpec.IntValue AI_UNREACHABLE_TICKS;
     public static final ModConfigSpec.IntValue AI_COMMAND_TICKS;
 
+    // --- IA dos soldados (IA-1B): deteccao, funcoes, municao -------------------------------------------------------
+    public static final ModConfigSpec.DoubleValue SOLDIER_DETECTION_RANGE;
+    public static final ModConfigSpec.IntValue SOLDIER_RETARGET_TICKS;
+    public static final ModConfigSpec.DoubleValue SOLDIER_SWITCH_MARGIN;
+    public static final ModConfigSpec.DoubleValue SOLDIER_COVER_BONUS;
+    public static final ModConfigSpec.DoubleValue SOLDIER_REVENGE_BONUS;
+    public static final ModConfigSpec.IntValue SOLDIER_REVENGE_TICKS;
+    public static final ModConfigSpec.DoubleValue SOLDIER_RELOAD_RETREAT;
+    public static final ModConfigSpec.ConfigValue<String> SOLDIER_OUT_OF_AMMO_WEAPON;
+
     // --- combat (M10, GDD secoes 7 e 12) ---------------------------------------------------------------------------
     public static final ModConfigSpec.DoubleValue LIGHT_STAMINA_COST;
     public static final ModConfigSpec.DoubleValue HEAVY_STAMINA_COST;
@@ -634,6 +644,26 @@ public final class ServerConfig {
                 12000);
         AI_COMMAND_TICKS = intValue("commandTicks", "How long a target given by a numbered kaiju (No. 9, No. 10)"
                 + " is kept before normal targeting resumes.", 200, 0, 6000);
+        BUILDER.pop();
+
+        section("soldierAi", "Soldier AI (IA-1B): detection, roles, ammunition.");
+        SOLDIER_DETECTION_RANGE = doubleValue("detectionRange", "Soldiers (common and special) detect kaiju within"
+                + " this many blocks, seen or not.", 64.0, 8.0, 256.0);
+        SOLDIER_RETARGET_TICKS = intValue("retargetTicks", "How often a soldier re-evaluates its target.", 20, 1,
+                400);
+        SOLDIER_SWITCH_MARGIN = doubleValue("switchMargin", "A new kaiju must score this much better (blocks) to make"
+                + " the soldier switch.", 3.0, 0.0, 64.0);
+        SOLDIER_COVER_BONUS = doubleValue("coverBonus", "A kaiju targeting an ally who is reloading counts as this"
+                + " many blocks closer (soldiers cover each other).", 12.0, 0.0, 128.0);
+        SOLDIER_REVENGE_BONUS = doubleValue("revengeBonus", "A kaiju that hurt the soldier recently counts as this"
+                + " many blocks closer.", 6.0, 0.0, 128.0);
+        SOLDIER_REVENGE_TICKS = intValue("revengeTicks", "How long \"recently\" lasts for the revenge bonus.", 100, 0,
+                6000);
+        SOLDIER_RELOAD_RETREAT = doubleValue("reloadRetreat", "While reloading, shooters back off to their keep"
+                + " distance plus this many blocks.", 6.0, 0.0, 64.0);
+        SOLDIER_OUT_OF_AMMO_WEAPON = BUILDER.comment("Melee weapon a shooter without a sidearm takes when its spare"
+                + " magazines run out (Mina, Reno, Kafka).").translation(PREFIX + "outOfAmmoWeapon")
+                .define("outOfAmmoWeapon", "kn8:combat_knife");
         BUILDER.pop();
 
         section("combat", "Player combat (GDD sections 7 and 12).");

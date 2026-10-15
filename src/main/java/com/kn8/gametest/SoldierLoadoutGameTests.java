@@ -66,7 +66,9 @@ public final class SoldierLoadoutGameTests {
             soldier.discard();
         }
         helper.assertTrue(COMMON.containsAll(seen), "Sorteio fora das variantes comuns: " + seen);
-        helper.assertTrue(seen.size() >= 3, "O sorteio deveria variar (vieram so " + seen + ")");
+        // IA-1B (Miguel): soldado comum nasce so com arma de fogo; a arma branca vem quando a municao acaba.
+        helper.assertTrue(seen.equals(Set.of("rifle", "pistol")), "O sorteio deveria dar so rifle e pistola (vieram "
+                + seen + ")");
         helper.succeed();
     }
 }

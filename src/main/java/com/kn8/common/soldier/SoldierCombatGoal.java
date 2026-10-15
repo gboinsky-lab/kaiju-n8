@@ -3,6 +3,8 @@ package com.kn8.common.soldier;
 
 import java.util.EnumSet;
 
+import com.kn8.common.config.ServerConfig;
+
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.phys.Vec3;
@@ -11,6 +13,7 @@ import net.minecraft.world.phys.Vec3;
  * Combate do soldado: atirador mantem distancia ({@code keep_distance} do JSON, com folga) e atira com linha de
  * visada; quem usa lamina ou soco se aproxima ate o alcance (medido ate a borda da hitbox, para kaiju grandes).
  * 0.4: o atirador com arma de apoio troca para ela quando o kaiju chega perto (SoldierEntity#updateLoadout).
+ * IA-1B: recarregando, o atirador recua ({@code [soldierAi] reloadRetreat}); sem visao do alvo, da a volta ate ter.
  */
 final class SoldierCombatGoal extends Goal {
 
@@ -64,14 +67,23 @@ final class SoldierCombatGoal extends Goal {
         soldier.updateLoadout(edge);
         if (soldier.isShooter()) {
             double keep = soldier.keepDistance();
+            if (soldier.isReloading()) {
+                // IA-1B (Miguel: "recuar e recarregar"): recarregando, recua ate a distancia de manter + o recuo.
+                keep += ServerConfig.SOLDIER_RELOAD_RETREAT.get();
+                if (--repath <= 0) {
+                    repath = REPATH_TICKS;
+                    if (edge < keep) {
+                        retreat(target, keep);
+                    }
+                }
+                return;
+            }
             if (--repath <= 0) {
                 repath = REPATH_TICKS;
                 if (edge > keep + DISTANCE_SLACK || !sees) {
                     soldier.getNavigation().moveTo(target, SPEED);
                 } else if (edge < keep - DISTANCE_SLACK) {
-                    Vec3 away = soldier.position().subtract(target.position()).normalize().scale(keep);
-                    Vec3 spot = soldier.position().add(away);
-                    soldier.getNavigation().moveTo(spot.x, spot.y, spot.z, RETREAT_SPEED);
+                    retreat(target, keep);
                 } else {
                     soldier.getNavigation().stop();
                 }
@@ -90,5 +102,12 @@ final class SoldierCombatGoal extends Goal {
             soldier.getNavigation().stop();
             soldier.startAttack(target);
         }
+    }
+
+    /** Recua na direcao oposta ao alvo. */
+    private void retreat(LivingEntity target, double distance) {
+        Vec3 away = soldier.position().subtract(target.position()).normalize().scale(distance);
+        Vec3 spot = soldier.position().add(away);
+        soldier.getNavigation().moveTo(spot.x, spot.y, spot.z, RETREAT_SPEED);
     }
 }

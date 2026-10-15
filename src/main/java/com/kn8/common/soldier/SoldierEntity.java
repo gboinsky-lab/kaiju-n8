@@ -18,6 +18,7 @@ import com.kn8.common.data.KN8Data;
 import com.kn8.common.data.def.SoldierDef;
 import com.kn8.common.data.def.WeaponDef;
 import com.kn8.common.data.def.WeaponProfileDef;
+import com.kn8.common.config.ServerConfig;
 import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.registry.KN8Items;
 import com.kn8.common.registry.KN8Sounds;
@@ -51,8 +52,6 @@ import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
-import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -136,6 +135,8 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
     private int reloadStage = -1;
     /** 0.5.0-D2: pentes reserva (-1 = ainda nao recebeu os do perfil) e sem municao (fica na arma de apoio). */
     private int spareMagazines = -1;
+    /** IA-1B: de quanto em quanto tempo o soldado sem alvo confere se precisa recarregar. */
+    private static final int IDLE_RELOAD_CHECK_TICKS = 20;
     private boolean outOfAmmo;
 
     public SoldierEntity(EntityType<? extends SoldierEntity> type, Level level) {
@@ -252,6 +253,11 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
         return spareMagazines;
     }
 
+    /** Ajusta os pentes reserva (GameTests). */
+    public void setSpareMagazines(int value) {
+        spareMagazines = value;
+    }
+
     /** Ajusta o pente atual (GameTests). */
     public void setRounds(int value) {
         rounds = value;
@@ -282,20 +288,68 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
             spareMagazines = weaponProfile().map(profile -> profile.npc().spareMagazines()).orElse(0);
         }
         if (spareMagazines == 0) {
-            // Acabou a municao: fica na arma de apoio (ou sem arma) ate o fim da luta.
+            // IA-1B (Miguel): 3 recargas e depois arma branca. Sem arma de apoio (Mina, Reno, Kafka), pega a do
+            // config ([soldierAi] outOfAmmoWeapon) em vez de ficar de mao vazia.
             outOfAmmo = true;
+            if (!hasMeleeOffhand()) {
+                setItemSlot(EquipmentSlot.OFFHAND, outOfAmmoWeapon());
+            }
             swapHands();
             return false;
         }
-        if (timeline.tryStart(now, "reload", reload.get().totalTicks(), ActionTimeline.NO_IMPACT)) {
+        startReload(now, reload.get());
+        return false;
+    }
+
+    private void startReload(long now, WeaponProfileDef.Reload reload) {
+        if (timeline.tryStart(now, "reload", reload.totalTicks(), ActionTimeline.NO_IMPACT)) {
             spareMagazines--;
-            reloading = reload.get();
+            reloading = reload;
             reloadStartTick = now;
             reloadStage = -1;
             triggerAnim("action", POSE_PISTOL.equals(armPose()) ? "reload_pistol" : "reload_rifle");
             tickReload(now);
         }
-        return false;
+    }
+
+    /** Recarregando agora (os outros soldados cobrem; o atirador recua). */
+    public boolean isReloading() {
+        return reloading != null;
+    }
+
+    public boolean isOutOfAmmo() {
+        return outOfAmmo;
+    }
+
+    private boolean hasMeleeOffhand() {
+        return WeaponIndex.find(getOffhandItem(), false).map(weapon -> weapon.style() != WeaponDef.Style.FIREARM)
+                .orElse(false);
+    }
+
+    private static ItemStack outOfAmmoWeapon() {
+        ResourceLocation id = ServerConfig.SPEC.isLoaded()
+                ? ResourceLocation.tryParse(ServerConfig.SOLDIER_OUT_OF_AMMO_WEAPON.get()) : null;
+        return stack(Optional.ofNullable(id));
+    }
+
+    /**
+     * IA-1B (Miguel: "recuar e recarregar"): sem alvo, com o pente pela metade e pente reserva, recarrega antes da
+     * proxima luta (nao gasta o pente reserva se o atual estiver cheio).
+     */
+    private void reloadWhenIdle(long now) {
+        if (getTarget() != null || isActing() || !isShooter() || spareMagazines == 0) {
+            return;
+        }
+        Optional<WeaponProfileDef.Reload> reload = weaponProfile().flatMap(WeaponProfileDef::reload);
+        if (reload.isEmpty() || rounds < 0 || rounds >= reload.get().magazine()) {
+            return;
+        }
+        if (spareMagazines < 0) {
+            spareMagazines = weaponProfile().map(profile -> profile.npc().spareMagazines()).orElse(0);
+        }
+        if (spareMagazines > 0) {
+            startReload(now, reload.get());
+        }
     }
 
     private void tickReload(long now) {
@@ -427,8 +481,8 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
         goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8));
         goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
         goalSelector.addGoal(7, new RandomLookAroundGoal(this));
-        targetSelector.addGoal(1, new HurtByTargetGoal(this, SoldierEntity.class, Player.class));
-        targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, KaijuEntity.class, true));
+        // IA-1B: deteccao sem precisar ver, cobertura de quem recarrega e revide (SoldierTargetGoal).
+        targetSelector.addGoal(1, new SoldierTargetGoal(this));
     }
 
     /** Aliado: nunca mira em jogadores nem em outros soldados. */
@@ -510,6 +564,9 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
         }
         if (!level().isClientSide() && reloading != null) {
             tickReload(level().getGameTime());
+        }
+        if (!level().isClientSide() && tickCount % IDLE_RELOAD_CHECK_TICKS == 0) {
+            reloadWhenIdle(level().getGameTime());
         }
         if (!level().isClientSide() && timeline.consumeImpact(level().getGameTime())) {
             resolveImpact();

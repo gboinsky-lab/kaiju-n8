@@ -4,6 +4,7 @@ package com.kn8.common.soldier.special;
 import java.util.EnumSet;
 import java.util.Optional;
 
+import com.kn8.common.config.ServerConfig;
 import com.kn8.common.data.def.SpecialSoldierDef;
 
 import net.minecraft.world.entity.LivingEntity;
@@ -99,7 +100,9 @@ final class HoshinaCombatGoal extends Goal {
         if (technique.isPresent() && hoshina.startTechnique(technique.get(), target)) {
             return;
         }
-        Optional<SpecialSoldierDef.Ranged> ranged = hoshina.profile().flatMap(SpecialSoldierDef::ranged);
+        // IA-1B: atirador sem municao (arma branca na mao) luta de perto como os outros.
+        Optional<SpecialSoldierDef.Ranged> ranged = hoshina.profile().flatMap(SpecialSoldierDef::ranged)
+                .filter(value -> hoshina.isShooter());
         if (ranged.isPresent()) {
             rangedTick(target, ranged.get());
             return;
@@ -131,6 +134,15 @@ final class HoshinaCombatGoal extends Goal {
         boolean leaving = lastEdge >= 0.0 && edge - lastEdge > LEAVING_DELTA;
         lastEdge = edge;
         double keep = ranged.keepDistance();
+        if (hoshina.isReloading()) {
+            // IA-1B (Miguel: "recuar e recarregar"): recarregando, se afasta ate a distancia de manter + o recuo.
+            double away = keep + ServerConfig.SOLDIER_RELOAD_RETREAT.get();
+            if (edge < away && !moveAround(target, away, ORBIT_STEP * 0.5, ranged.retreatSpeed())) {
+                orbitSide = -orbitSide;
+                moveAround(target, away, ORBIT_STEP * 0.5, ranged.retreatSpeed());
+            }
+            return;
+        }
         if (!sees || edge > keep + KEEP_SLACK || (leaving && edge > ranged.retreatDistance())) {
             // Longe, sem visao ou o alvo indo embora: persegue (com o dash do perfil se estiver muito longe).
             hoshina.gapClose(target);

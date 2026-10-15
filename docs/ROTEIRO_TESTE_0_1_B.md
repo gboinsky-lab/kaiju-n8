@@ -634,3 +634,17 @@ Tecla nova: **C** (Parkour; troca em Opções > Controles > Kaiju No. 8). Númer
 | 44.6 | `/kn8 kaiju stagger 100` (ou parry/especial que atordoa) com o kaiju perseguindo | Fica parado no lugar ~5 s (sem andar nem girar para o alvo) e depois volta a perseguir |
 | 44.7 | No. 9 comandando kaiju sem alvo | Os comandados atacam o alvo do No. 9 por 10 s e depois voltam a escolher sozinhos |
 | 44.8 | Servidor dedicado + 2 clientes | Os dois veem o mesmo comportamento |
+
+## 45. IA dos soldados: detecção, recarga, cobertura e arma branca (IA-1B)
+
+| # | Passo | Esperado |
+|---|---|---|
+| 45.1 | Ovo de soldado várias vezes | Só nascem atiradores (rifle ou pistola, faca na outra mão); espada e faca só por `/kn8 soldier spawn sword/knife` |
+| 45.2 | Muro de bedrock entre dois soldados de rifle e um Primigenius do outro lado | Em 1–2 s os soldados contornam o muro (detectam sem ver) e atiram; antes ficavam parados |
+| 45.3 | Kaiju a ~50 blocos de um soldado, atrás de uma casa | O soldado vai até ele |
+| 45.4 | Soldado de rifle lutando até esvaziar o pente | Recarrega recuando (se afasta ~6 blocos além da distância normal) e volta a atirar |
+| 45.5 | Soldado com o pente pela metade e sem kaiju por perto | Recarrega sozinho em ~1–2 s (gasta um pente reserva) |
+| 45.6 | Luta longa (No. 10 gigante sem IA: `/summon kn8:kaiju_no10_giant ~ ~ ~20 {NoAI:1b}`) | Depois de 4 pentes (~1 min) o soldado troca para a faca e vai lutar de perto, ficando com a arma de fogo na outra mão |
+| 45.7 | Reno ou Mina até acabar a munição | Pegam uma faca (não ficam de mão vazia) e lutam de perto |
+| 45.8 | Dois soldados, um recarregando com o kaiju em cima dele | O outro soldado passa a atirar nesse kaiju (cobertura) |
+| 45.9 | Servidor dedicado + 2 clientes | Os dois veem o mesmo comportamento |
