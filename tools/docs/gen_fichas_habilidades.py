@@ -17,6 +17,7 @@ ORIGIN = {
 SPECIES_ORIGIN = {
     "kaiju_no9_black": "MOD ORIGINAL (forma preta inicial: v1.2 §5)",
     "kaiju_no9_fusion": "MOD ORIGINAL (fusão: v1.2 §6)",
+    "kaiju_no9_fusion_giant": "MOD ORIGINAL (fusão gigante de 20 m: tabela mestra de alturas, Miguel 2026-10-10)",
     "kaiju_no9_camponotus": "MOD ORIGINAL (fusão com formiga: v1.2 §7)",
     "philinosoma": "MOD ORIGINAL (espécie do Miguel)", "diclonius": "MOD ORIGINAL (espécie do Miguel)",
     "camponotus": "MOD ORIGINAL (espécie do Miguel)", "camponotus_reborn": "MOD ORIGINAL (espécie do Miguel)",
@@ -70,9 +71,12 @@ def ability_row(aid, base_damage):
 def kaiju_section(name):
     d = load("kaiju", name)
     hp, dmg, armor, speed = stats(d)
+    dims = d["dimensions"]
+    scale = dims.get("scale", 1.0)
     out = [f"### `{name}` — {d['class']}", "",
            f"Vida **{hp:,.0f}** · dano base **{dmg:.1f}** · armadura **{armor:g}** · velocidade **{speed}**"
-           .replace(",", ".")]
+           .replace(",", ".")
+           + f" · hitbox {dims['width'] * scale:.1f} × {dims['height'] * scale:.1f} (escala {scale:g})"]
     if name in SPECIES_ORIGIN:
         out.append(f" · origem: {SPECIES_ORIGIN[name]}")
     rage = d.get("rage")
@@ -118,7 +122,7 @@ def special_section(name):
     out = [f"### `{name}`", "",
            f"Vida **{d['health']}** · armadura **{d['armor']}** · velocidade **{d['speed']}** · Release "
            f"{d.get('release', 0)}% (máx. {d.get('max_release', 0)}%) · dano contra kaiju ×{d['kaiju_damage']} · "
-           f"arma `{d['weapon'].split(':')[1]}`", "",
+           f"arma `{d['weapon'].split(':')[1]}`" + (f" · altura **{d['height']:g}**" if d.get("height") else ""), "",
            "Dano de cada golpe = dano da arma × multiplicador × Release × `kaiju_damage` (contra kaiju).", ""]
     defense = []
     if d.get("dash"):

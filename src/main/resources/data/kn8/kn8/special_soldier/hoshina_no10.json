@@ -180,5 +180,6 @@
       "cooldown_multiplier": 0.7,
       "tail_cooldown_multiplier": 0.6
     }
-  }
+  },
+  "height": 1.72
 }

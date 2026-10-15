@@ -32,7 +32,8 @@ public final class TrichonephilaHonjuGameTests {
         helper.runAfterDelay(2, () -> {
             helper.assertTrue(queen.def().map(def -> def.kaijuClass() == KaijuClass.HONJU).orElse(false),
                     "A Trichonephila Honju deveria ser da categoria Honju");
-            helper.assertTrue(Math.abs(queen.getBbWidth() - 6.0F) < 0.01F, "Hitbox deveria ter 6 de largura, veio "
+            // Tabela mestra de alturas: escala 2,184 (9 m de altura) sobre a hitbox de 6 de largura.
+            helper.assertTrue(Math.abs(queen.getBbWidth() - 6.0F * 2.184F) < 0.01F, "Hitbox deveria ter 13,1, veio "
                     + queen.getBbWidth());
             boolean core = false;
             for (KaijuPart part : queen.kaijuParts()) {

@@ -2,6 +2,7 @@
 package com.kn8.common.registry;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import com.kn8.KN8Constants;
@@ -27,6 +28,7 @@ import com.kn8.common.soldier.special.RenoNo6Entity;
 import com.kn8.common.training.TrainingDummyEntity;
 
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobCategory;
@@ -92,6 +94,13 @@ public final class KN8Entities {
             "kaiju_no9_fusion", 2.0F, 5.0F);
     public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> KAIJU_NO9_CAMPONOTUS = no9Form(
             "kaiju_no9_camponotus", 4.0F, 3.9F);
+    /**
+     * Fusao gigante (tabela mestra de alturas, Miguel 2026-10-10): a fusao de 5 m vira esta de 20 m abaixo de 50% da
+     * vida (transform do numbered/kaiju_no9_fusion.json). Mesma arte da fusao ({@link #modelSpecies}), escala 4 no
+     * kaiju/kaiju_no9_fusion_giant.json.
+     */
+    public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> KAIJU_NO9_FUSION_GIANT = no9Form(
+            "kaiju_no9_fusion_giant", 8.0F, 20.0F);
     /** 0.6-E: Kaiju No. 10, forma pequena (4 m) e gigante (24 m); comportamento extra no No10Service. */
     public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> KAIJU_NO10_SMALL = numbered(
             "kaiju_no10_small", 2.0F, 4.0F);
@@ -224,12 +233,25 @@ public final class KN8Entities {
                     .clientTrackingRange(KAIJU_TRACKING_RANGE_CHUNKS)
                     .build("training_dummy"));
 
+    /**
+     * Especies que reaproveitam a arte (geo, textura, malha e animacoes) de outra, so com outra escala: a fusao
+     * gigante usa a da fusao de 5 m. Os nomes das animacoes tambem sao os da especie da arte.
+     */
+    private static final Map<String, String> MODEL_ALIASES = Map.of("kaiju_no9_fusion_giant", "kaiju_no9_fusion");
+
+    /** Especie cuja arte desenha {@code id} (ela mesma, salvo as de {@link #MODEL_ALIASES}). */
+    public static ResourceLocation modelSpecies(ResourceLocation id) {
+        String alias = MODEL_ALIASES.get(id.getPath());
+        return alias == null ? id : id.withPath(alias);
+    }
+
     /** Todas as especies, para atributos, renderers e comandos. */
     public static final List<DeferredHolder<EntityType<?>, EntityType<KaijuEntity>>> KAIJU =
             List.of(TRICHONEPHILA, PRIMIGENIUS, PRIMIGENIUS_RESURRECTED, PRIMIGENIUS_HONJU, PRIMIGENIUS_REVIVED,
                     TRICHONEPHILA_HONJU, KAIJU_NO9, KAIJU_NO10_SMALL, KAIJU_NO10_GIANT,
                     PREONDACTYL, PHILINOSOMA, DICLONIUS, CAMPONOTUS, CAMPONOTUS_REBORN, PHANEROPLASMODIUM,
-                    MYXOGASTEROCARP, KAIJU_LARVA, KAIJU_NO9_BLACK, KAIJU_NO9_FUSION, KAIJU_NO9_CAMPONOTUS);
+                    MYXOGASTEROCARP, KAIJU_LARVA, KAIJU_NO9_BLACK, KAIJU_NO9_FUSION, KAIJU_NO9_CAMPONOTUS,
+                    KAIJU_NO9_FUSION_GIANT);
 
     private KN8Entities() {
     }

@@ -116,7 +116,9 @@ public final class KaijuNewAbilityGameTests {
 
     @GameTest(template = LONG_TEMPLATE, timeoutTicks = TIMEOUT)
     public static void leapLandsOnTheTarget(GameTestHelper helper) {
-        KaijuEntity spider = facingSouth(helper, KN8Entities.TRICHONEPHILA.get(), new BlockPos(4, 1, 2));
+        // Formiga (mesmo salto "leap" da aranha): a aranha de 4,5 m (tabela de alturas, 9 de largura) nao cabe no
+        // corredor de 9 x 7 do teste.
+        KaijuEntity spider = facingSouth(helper, KN8Entities.CAMPONOTUS.get(), new BlockPos(4, 1, 2));
         // Com a IA desligada o mob nao se move pela velocidade: o salto precisa da IA ligada.
         spider.setNoAi(false);
         IronGolem golem = still(helper.spawn(EntityType.IRON_GOLEM, new BlockPos(4, 1, 12)));

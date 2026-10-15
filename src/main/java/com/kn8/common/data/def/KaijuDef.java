@@ -36,11 +36,27 @@ public record KaijuDef(KaijuClass kaijuClass, float fortitude, KaijuSize size, D
     }
 
     /** Hitbox do corpo principal. */
-    public record Dimensions(float width, float height) {
+    /**
+     * Hitbox do modelo no tamanho em que foi feito ({@code width}, {@code height}) e {@code scale}: altura da tabela
+     * mestra (Miguel, 2026-10-10) / altura do modelo. A escala vai no atributo vanilla {@code scale}, que aumenta a
+     * hitbox e o desenho juntos (a GeckoLib escala pelo {@code getScale()}); partes, carcaca e passada seguem.
+     */
+    public record Dimensions(float width, float height, float scale) {
         public static final Codec<Dimensions> CODEC = RecordCodecBuilder.create(i -> i.group(
                 Codec.floatRange(0.1F, 64.0F).fieldOf("width").forGetter(Dimensions::width),
-                Codec.floatRange(0.1F, 64.0F).fieldOf("height").forGetter(Dimensions::height)
+                Codec.floatRange(0.1F, 64.0F).fieldOf("height").forGetter(Dimensions::height),
+                Codec.floatRange(0.0625F, 16.0F).optionalFieldOf("scale", 1.0F).forGetter(Dimensions::scale)
         ).apply(i, Dimensions::new));
+
+        /** Largura no jogo (com a escala). */
+        public float scaledWidth() {
+            return width * scale;
+        }
+
+        /** Altura no jogo (com a escala). */
+        public float scaledHeight() {
+            return height * scale;
+        }
     }
 
     /** Valores fixos que substituem a curva de fortitude (null no JSON = usar a curva). */

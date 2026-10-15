@@ -3,6 +3,7 @@ package com.kn8.client.render;
 
 import com.kn8.client.render.mesh.MeshRenderLayer;
 import com.kn8.common.kaiju.CarcassEntity;
+import com.kn8.common.registry.KN8Entities;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
@@ -29,7 +30,8 @@ public class CarcassRenderer extends GeoEntityRenderer<CarcassEntity> {
     public CarcassRenderer(EntityRendererProvider.Context context) {
         super(context, new SpeciesModel());
         this.shadowRadius = SHADOW_RADIUS;
-        addRenderLayer(new MeshRenderLayer<>(this, CarcassEntity::species));
+        addRenderLayer(new MeshRenderLayer<>(this,
+                carcass -> KN8Entities.modelSpecies(carcass.species())));
     }
 
     @Override
@@ -51,6 +53,10 @@ public class CarcassRenderer extends GeoEntityRenderer<CarcassEntity> {
             poseStack.translate(height * 0.5F * eased, width * 0.5F * eased, 0.0F);
             poseStack.mulPose(Axis.ZP.rotationDegrees(90.0F * eased));
         }
+        // A carcaca nao e LivingEntity (sem atributo scale): o modelo cresce aqui, depois da queda (que ja usa as
+        // medidas com a escala).
+        float scale = carcass.modelScale();
+        poseStack.scale(scale, scale, scale);
     }
 
     /** Arquivos da especie da carcaca: geo/, textures/ e animations/ do kaiju. */
@@ -58,17 +64,20 @@ public class CarcassRenderer extends GeoEntityRenderer<CarcassEntity> {
 
         @Override
         public ResourceLocation getModelResource(CarcassEntity animatable) {
-            return animatable.species().withPath(path -> "geo/entity/" + path + ".geo.json");
+            return KN8Entities.modelSpecies(animatable.species())
+                    .withPath(path -> "geo/entity/" + path + ".geo.json");
         }
 
         @Override
         public ResourceLocation getTextureResource(CarcassEntity animatable) {
-            return animatable.species().withPath(path -> "textures/entity/" + path + ".png");
+            return KN8Entities.modelSpecies(animatable.species())
+                    .withPath(path -> "textures/entity/" + path + ".png");
         }
 
         @Override
         public ResourceLocation getAnimationResource(CarcassEntity animatable) {
-            return animatable.species().withPath(path -> "animations/entity/" + path + ".animation.json");
+            return KN8Entities.modelSpecies(animatable.species())
+                    .withPath(path -> "animations/entity/" + path + ".animation.json");
         }
     }
 }

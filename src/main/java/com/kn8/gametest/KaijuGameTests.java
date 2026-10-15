@@ -47,8 +47,9 @@ public final class KaijuGameTests {
                     "Dano diferente do JSON (10)");
             helper.assertTrue(Math.abs(kaiju.getAttributeValue(Attributes.ARMOR) - 11.0) < TOLERANCE,
                     "Armadura diferente do JSON (11)");
-            helper.assertTrue(Math.abs(kaiju.getBbWidth() - 3.13) < TOLERANCE
-                    && Math.abs(kaiju.getBbHeight() - 6.0) < TOLERANCE, "Hitbox diferente do JSON (3,13 x 6,0)");
+            // Tabela mestra de alturas (2026-10-10): modelo de 6 m com escala 0,917 = 5,5 m.
+            helper.assertTrue(Math.abs(kaiju.getBbWidth() - 3.13 * 0.917) < TOLERANCE
+                    && Math.abs(kaiju.getBbHeight() - 5.5) < TOLERANCE, "Hitbox diferente do JSON (2,87 x 5,5)");
             helper.assertTrue(kaiju.state() == KaijuState.IDLE, "Sem IA e sem alvo deveria ficar IDLE");
             kaiju.discard();
             helper.succeed();
@@ -65,7 +66,7 @@ public final class KaijuGameTests {
         helper.runAfterDelay(SETTLE_TICKS, () -> {
             helper.assertTrue(Math.abs(yoju.getBbHeight() - 6.0) < TOLERANCE,
                     "Yoju ressurgido deveria ter 6 de altura");
-            helper.assertTrue(Math.abs(honju.getBbHeight() - 9.0) < TOLERANCE, "Honju deveria ter 9 de altura");
+            helper.assertTrue(Math.abs(honju.getBbHeight() - 8.5) < TOLERANCE, "Honju deveria ter 8,5 de altura");
             helper.assertTrue(honju.getMaxHealth() > yoju.getMaxHealth(), "Honju deveria ter mais vida que o Yoju");
             yoju.discard();
             honju.discard();
@@ -82,8 +83,10 @@ public final class KaijuGameTests {
             helper.assertTrue(Math.abs(kaiju.getMaxHealth() - 65.0) < HEALTH_TOLERANCE,
                     "Vida maxima " + kaiju.getMaxHealth() + " diferente do JSON (65)");
             // Modelo do Meshy de 2026-10-06: 5,5 de envergadura, corpo baixo (1,7 de altura).
-            helper.assertTrue(Math.abs(kaiju.getBbWidth() - 3.4) < TOLERANCE
-                    && Math.abs(kaiju.getBbHeight() - 1.8) < TOLERANCE, "Hitbox diferente do JSON (3,4 x 1,8)");
+            // Tabela mestra de alturas (2026-10-10): 4,5 de altura (escala 2,679 sobre a hitbox de 3,4 x 1,8).
+            helper.assertTrue(Math.abs(kaiju.getBbWidth() - 3.4 * 2.679) < TOLERANCE
+                    && Math.abs(kaiju.getBbHeight() - 1.8 * 2.679) < TOLERANCE,
+                    "Hitbox diferente do JSON (9,1 x 4,8)");
             helper.assertTrue(kaiju.kaijuId().equals(KN8Constants.id("trichonephila")),
                     "Id da especie deveria ser o do EntityType");
             kaiju.discard();

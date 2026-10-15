@@ -107,5 +107,6 @@
   "flight": {
     "fly_speed": 0.45,
     "hover_height": 2.5
-  }
+  },
+  "height": 1.6
 }

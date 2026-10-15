@@ -310,11 +310,11 @@ public final class DataValidation {
         input.forEach((id, def) -> {
             String where = "kaiju " + id;
             boolean ok = true;
-            if (!KaijuScale.fits(def.kaijuClass().getSerializedName(), def.dimensions().width(),
-                    def.dimensions().height())) {
+            if (!KaijuScale.fits(def.kaijuClass().getSerializedName(), def.dimensions().scaledWidth(),
+                    def.dimensions().scaledHeight())) {
                 // Etapa C: so aviso (a especie continua valendo), para escalas fora da faixa da categoria.
-                report.warning(where + ": tamanho " + KaijuScale.size(def.dimensions().width(),
-                        def.dimensions().height()) + " fora da faixa da categoria " + def.kaijuClass()
+                report.warning(where + ": tamanho " + KaijuScale.size(def.dimensions().scaledWidth(),
+                        def.dimensions().scaledHeight()) + " fora da faixa da categoria " + def.kaijuClass()
                         .getSerializedName());
             }
             Set<String> names = new HashSet<>();

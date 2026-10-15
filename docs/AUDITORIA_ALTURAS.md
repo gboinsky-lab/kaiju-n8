@@ -78,3 +78,52 @@ ossos, pivôs, UVs, texturas, animações e pegada das armas ficam iguais (a esc
 primeiro em uma entidade (ex.: Primigenius Yoju 6,0 → 5,5), conferir no jogo (altura, chão, hitbox, golpes) e só
 depois aplicar nas outras. Vida, dano, IA e velocidade não mudam; o alcance dos golpes de kaiju é medido entre bordas
 da hitbox, então muda um pouco junto com o tamanho (efeito físico do tamanho, não balanceamento).
+
+---
+
+## Aplicado (Miguel, 2026-10-15)
+
+Decisões do Miguel: **No. 9 continua com 2 m**, **forma preta vai para 5 m**, as aranhas **aumentam a altura**
+(4,5 e 9 m), **todas as propostas da tabela** entram e a **fusão grande de 20 blocos** vira uma forma nova.
+
+**Método:** atributo vanilla `scale` (Minecraft 1.21). Ele aumenta a hitbox, a altura dos olhos e o desenho juntos;
+confirmado no bytecode da GeckoLib 4.7.5 que o `GeoEntityRenderer` escala pelo `getScale()`. Modelos, ossos, UVs,
+texturas, animações e pegada das armas **não mudaram**. Vida, dano, IA e velocidade não mudaram.
+
+- Kaiju: `"scale"` dentro de `dimensions` no `kaiju/<id>.json` (a hitbox do JSON é a do modelo original). As partes
+  (cabeça, núcleo...) crescem junto, a carcaça é desenhada no mesmo tamanho e a passada (`locomotion`) acompanha.
+- Personagens: `"height"` no `special_soldier/<id>.json`; soldados comuns: `"height"` por nível no `level_stats` do
+  `soldier/soldier_1.json`. Escala = altura pedida / altura do modelo. Mundos salvos antes também são corrigidos.
+
+| Entidade | Antes | Agora | Escala |
+|---|---:|---:|---:|
+| Hoshina e Hoshina No. 10 | 1,85 | **1,72** | 0,930 |
+| Mina | 1,65 | **1,75** | 1,061 |
+| Reno e Reno No. 6 | 1,70 | **1,75** | 1,029 |
+| Kikoru e Kikoru No. 4 | 1,57 | **1,60** | 1,019 |
+| Soldado recruta / normal / alto / elite | 1,90 | **1,70 / 1,75 / 1,80 / 1,85** | 0,895 / 0,921 / 0,947 / 0,974 |
+| Trichonephila | 1,68 (hitbox 1,8) | **4,5** (hitbox 9,1 × 4,8) | 2,679 |
+| Trichonephila Honju | 4,12 | **9,0** (hitbox 13,1 × 8,7) | 2,184 |
+| Primigenius Yoju | 6,0 | **5,5** | 0,917 |
+| Primigenius Honju | 9,0 | **8,5** | 0,944 |
+| Preondactyl (corpo) | 4,64 | **7,0** | 1,509 |
+| No. 9 forma preta | 1,9 | **5,0** | 2,632 |
+| No. 9 fundido à formiga | 3,91 | **11,0** | 2,813 |
+| **No. 9 + No. 10, fusão gigante (nova)** | — | **20,0** | 4,0 sobre a fusão de 5 m |
+| No. 9, Kafka, No. 8, Narumi, ressurgido, revivido, No. 10 pequeno (4) e gigante (24), fusão pequena (5) | — | sem mudança | 1,0 |
+
+**Fusão gigante** (`kn8:kaiju_no9_fusion_giant`): mesma arte e animações da fusão de 5 m (`KN8Entities.modelSpecies`),
+escala 4. Surge no lugar da fusão de 5 m quando ela cai abaixo de **50% da vida** (`transform` no
+`numbered/kaiju_no9_fusion.json`, aviso "virou um gigante de 20 metros"), com a vida cheia. Números **[SUPOSIÇÃO]**:
+vida 9.000, dano 72, armadura 20, velocidade 0,32, categoria `supergiant` (destruição), mesmos ataques, regeneração,
+comando e fuga (10%) da fusão.
+
+**Testes:** GameTests 135/135 (4 novos em `HeightGameTests`: Primigenius 5,5 com as partes junto, Hoshina 1,72,
+soldado 1,70 → 1,85 pelo nível, fusão → gigante de 20 com vida cheia). Visto em jogo com servidor dedicado + 2
+clientes (`docs/img/alturas_tabela_mestra.jpg`): fila dos personagens, fila dos kaiju, fusão crescendo (nos dois
+clientes, nomes em pt_br e en_us), gigante perseguindo e atacando soldados com as animações da fusão, carcaça no
+tamanho dela.
+
+**Efeitos colaterais (de propósito, físicos, não de balanceamento):** o alcance dos golpes de kaiju é medido da borda
+da hitbox, então um corpo maior alcança mais longe em blocos; a aranha de 9 m de largura não cabe mais em corredores
+de 9 blocos (o GameTest do salto passou a usar a formiga, que tem o mesmo salto).

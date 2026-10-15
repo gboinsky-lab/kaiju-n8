@@ -4,7 +4,7 @@
 
 ### `camponotus` — yoju
 
-Vida **200** · dano base **9.5** · armadura **10** · velocidade **0.33**
+Vida **200** · dano base **9.5** · armadura **10** · velocidade **0.33** · hitbox 4.0 × 2.9 (escala 1)
  · origem: MOD ORIGINAL (espécie do Miguel)
 
 | Habilidade | Tipo | Dano | Preparo | Recarga | Alcance | Efeito | Origem |
@@ -17,7 +17,7 @@ Vida **200** · dano base **9.5** · armadura **10** · velocidade **0.33**
 
 ### `camponotus_reborn` — yoju
 
-Vida **290** · dano base **11.5** · armadura **11** · velocidade **0.34**
+Vida **290** · dano base **11.5** · armadura **11** · velocidade **0.34** · hitbox 4.0 × 2.9 (escala 1)
  · origem: MOD ORIGINAL (espécie do Miguel)
 
 
@@ -33,7 +33,7 @@ Fúria abaixo de 30%: dano ×1.2, velocidade ×1.15, recargas ×0.7.
 
 ### `diclonius` — honju
 
-Vida **430** · dano base **15.5** · armadura **14** · velocidade **0.23**
+Vida **430** · dano base **15.5** · armadura **14** · velocidade **0.23** · hitbox 5.0 × 9.0 (escala 1)
  · origem: MOD ORIGINAL (espécie do Miguel)
 
 | Habilidade | Tipo | Dano | Preparo | Recarga | Alcance | Efeito | Origem |
@@ -46,7 +46,7 @@ Vida **430** · dano base **15.5** · armadura **14** · velocidade **0.23**
 
 ### `kaiju_larva` — numbered
 
-Vida **20** · dano base **2.0** · armadura **0** · velocidade **0.3**
+Vida **20** · dano base **2.0** · armadura **0** · velocidade **0.3** · hitbox 0.5 × 0.5 (escala 1)
  · origem: ADAPTAÇÃO (larva que origina o No. 8)
 
 | Habilidade | Tipo | Dano | Preparo | Recarga | Alcance | Efeito | Origem |
@@ -56,7 +56,7 @@ Vida **20** · dano base **2.0** · armadura **0** · velocidade **0.3**
 
 ### `kaiju_no10_giant` — numbered
 
-Vida **4.600** · dano base **54.5** · armadura **18** · velocidade **0.27**
+Vida **4.600** · dano base **54.5** · armadura **18** · velocidade **0.27** · hitbox 10.0 × 24.0 (escala 1)
 
 
 Fúria abaixo de 25%: dano ×1.25, velocidade ×1.1, recargas ×0.55.
@@ -75,7 +75,7 @@ Numerado: regenera 0.8%/s abaixo de 50% (2%/s abaixo de 20%); comanda kaiju a 64
 
 ### `kaiju_no10_small` — numbered
 
-Vida **1.650** · dano base **39.5** · armadura **17** · velocidade **0.35**
+Vida **1.650** · dano base **39.5** · armadura **17** · velocidade **0.35** · hitbox 2.0 × 4.0 (escala 1)
 
 
 Fúria abaixo de 25%: dano ×1.2, velocidade ×1.15, recargas ×0.6.
@@ -95,7 +95,7 @@ Numerado: regenera 0.8%/s abaixo de 50% (2%/s abaixo de 20%); comanda kaiju a 48
 
 ### `kaiju_no9` — numbered
 
-Vida **1.450** · dano base **34.5** · armadura **16** · velocidade **0.34**
+Vida **1.450** · dano base **34.5** · armadura **16** · velocidade **0.34** · hitbox 0.8 × 2.0 (escala 1)
 
 
 Numerado: regenera 2.5%/s abaixo de 50% (5%/s abaixo de 20%); foge com 15%; comanda kaiju a 32 blocos; revive até 3; análise (−2% por golpe repetido do mesmo tipo, até −20%); vira `kaiju_no9_black` abaixo de 40%; absorve kaiju_no10_small → `kaiju_no9_fusion`; absorve camponotus, camponotus_reborn → `kaiju_no9_camponotus`.
@@ -108,7 +108,7 @@ Numerado: regenera 2.5%/s abaixo de 50% (5%/s abaixo de 20%); foge com 15%; coma
 
 ### `kaiju_no9_black` — numbered
 
-Vida **2.200** · dano base **42.0** · armadura **17** · velocidade **0.36**
+Vida **2.200** · dano base **42.0** · armadura **17** · velocidade **0.36** · hitbox 2.1 × 5.0 (escala 2.632)
  · origem: MOD ORIGINAL (forma preta inicial: v1.2 §5)
 
 
@@ -130,7 +130,7 @@ Numerado: regenera 3%/s abaixo de 50% (5.5%/s abaixo de 20%); foge com 15%; coma
 
 ### `kaiju_no9_camponotus` — numbered
 
-Vida **3.200** · dano base **46.0** · armadura **18** · velocidade **0.45**
+Vida **3.200** · dano base **46.0** · armadura **18** · velocidade **0.45** · hitbox 11.3 × 11.0 (escala 2.813)
  · origem: MOD ORIGINAL (fusão com formiga: v1.2 §7)
 
 
@@ -152,14 +152,14 @@ Numerado: regenera 3.2%/s abaixo de 50% (3.2%/s abaixo de 20%); foge com 15%; co
 
 ### `kaiju_no9_fusion` — numbered
 
-Vida **5.400** · dano base **58.0** · armadura **19** · velocidade **0.38**
+Vida **5.400** · dano base **58.0** · armadura **19** · velocidade **0.38** · hitbox 2.0 × 5.0 (escala 1)
  · origem: MOD ORIGINAL (fusão: v1.2 §6)
 
 
 Fúria abaixo de 30%: dano ×1.25, velocidade ×1.15, recargas ×0.6.
 
 
-Numerado: regenera 3.5%/s abaixo de 50% (6%/s abaixo de 20%); foge com 10%; comanda kaiju a 64 blocos; revive até 4; pele endurecida (10% por golpe, −40% por 2 s); análise (−3% por golpe repetido do mesmo tipo, até −25%).
+Numerado: regenera 3.5%/s abaixo de 50% (6%/s abaixo de 20%); foge com 10%; comanda kaiju a 64 blocos; revive até 4; pele endurecida (10% por golpe, −40% por 2 s); análise (−3% por golpe repetido do mesmo tipo, até −25%); vira `kaiju_no9_fusion_giant` abaixo de 50%.
 
 | Habilidade | Tipo | Dano | Preparo | Recarga | Alcance | Efeito | Origem |
 |---|---|---|---|---|---|---|---|
@@ -174,9 +174,33 @@ Numerado: regenera 3.5%/s abaixo de 50% (6%/s abaixo de 20%); foge com 10%; coma
 | `no9_fusion_tail_barrage` | rajada de golpes | ×0.7 = 41 × 6 | 0.60 s | 7 s | raio 1.5 | — | ADAPTAÇÃO DO MOD |
 | `no9_fusion_hybrid_beam` | projétil | ×1.8 = 104 | 1.20 s | 10 s | 6–32 blocos, explode 3 | — | ADAPTAÇÃO DO MOD |
 
+### `kaiju_no9_fusion_giant` — numbered
+
+Vida **9.000** · dano base **72.0** · armadura **20** · velocidade **0.32** · hitbox 8.0 × 20.0 (escala 4)
+ · origem: MOD ORIGINAL (fusão gigante de 20 m: tabela mestra de alturas, Miguel 2026-10-10)
+
+
+Fúria abaixo de 30%: dano ×1.25, velocidade ×1.15, recargas ×0.6.
+
+
+Numerado: regenera 3.5%/s abaixo de 50% (6%/s abaixo de 20%); foge com 10%; comanda kaiju a 64 blocos; revive até 4; pele endurecida (10% por golpe, −40% por 2 s); análise (−3% por golpe repetido do mesmo tipo, até −25%).
+
+| Habilidade | Tipo | Dano | Preparo | Recarga | Alcance | Efeito | Origem |
+|---|---|---|---|---|---|---|---|
+| `no10_heavy_punch` | corpo a corpo | ×1.8 = 130 | 0.50 s | 2.5 s | alcance do corpo | pesado (fura bloqueio) | ADAPTAÇÃO DO MOD |
+| `no10_heavy_smash` | área | ×1.6 = 115 | 0.90 s | 7 s | raio 4 | pesado (fura bloqueio) | ADAPTAÇÃO DO MOD |
+| `no10_tail_sweep` | varredura | ×1.1 = 79 | 0.50 s | 3.5 s | raio 3.5 | — | ADAPTAÇÃO DO MOD |
+| `no10_tail_stab` | corpo a corpo | ×1.4 = 101 | 0.40 s | 3 s | a partir de 1.5 blocos, raio 3 | — | ADAPTAÇÃO DO MOD |
+| `no10_finger_cannon` | projétil | ×1.5 = 108 | 0.70 s | 5 s | 5–36 blocos, explode 2 | — | ADAPTAÇÃO |
+| `no9_fusion_multi_finger_cannon` | projétil | ×0.9 = 65 × 5 | 0.80 s | 7.5 s | 5–30 blocos, explode 2 | — | ADAPTAÇÃO DO MOD |
+| `no10_multi_appendage` | rajada de golpes | ×0.6 = 43 × 5 | 0.60 s | 8 s | raio 1 | — | ADAPTAÇÃO DO MOD |
+| `charge` | investida | ×1.2 = 86 | 0.75 s | 8 s | 4–14 blocos, raio 1.5 | pesado (fura bloqueio) | ADAPTAÇÃO DO MOD |
+| `no9_fusion_tail_barrage` | rajada de golpes | ×0.7 = 50 × 6 | 0.60 s | 7 s | raio 1.5 | — | ADAPTAÇÃO DO MOD |
+| `no9_fusion_hybrid_beam` | projétil | ×1.8 = 130 | 1.20 s | 10 s | 6–32 blocos, explode 3 | — | ADAPTAÇÃO DO MOD |
+
 ### `myxogasterocarp` — honju
 
-Vida **420** · dano base **15.0** · armadura **13** · velocidade **0.2**
+Vida **420** · dano base **15.0** · armadura **13** · velocidade **0.2** · hitbox 7.0 × 9.0 (escala 1)
  · origem: MOD ORIGINAL (espécie do Miguel)
 
 | Habilidade | Tipo | Dano | Preparo | Recarga | Alcance | Efeito | Origem |
@@ -189,7 +213,7 @@ Vida **420** · dano base **15.0** · armadura **13** · velocidade **0.2**
 
 ### `phaneroplasmodium` — yoju
 
-Vida **240** · dano base **10.5** · armadura **9** · velocidade **0.27**
+Vida **240** · dano base **10.5** · armadura **9** · velocidade **0.27** · hitbox 4.4 × 5.0 (escala 1)
  · origem: MOD ORIGINAL (espécie do Miguel)
 
 | Habilidade | Tipo | Dano | Preparo | Recarga | Alcance | Efeito | Origem |
@@ -202,7 +226,7 @@ Vida **240** · dano base **10.5** · armadura **9** · velocidade **0.27**
 
 ### `philinosoma` — honju
 
-Vida **380** · dano base **14.2** · armadura **12** · velocidade **0.27**
+Vida **380** · dano base **14.2** · armadura **12** · velocidade **0.27** · hitbox 6.0 × 9.0 (escala 1)
  · origem: MOD ORIGINAL (espécie do Miguel)
 
 | Habilidade | Tipo | Dano | Preparo | Recarga | Alcance | Efeito | Origem |
@@ -215,7 +239,7 @@ Vida **380** · dano base **14.2** · armadura **12** · velocidade **0.27**
 
 ### `preondactyl` — yoju
 
-Vida **430** · dano base **15.5** · armadura **13** · velocidade **0.31**
+Vida **430** · dano base **15.5** · armadura **13** · velocidade **0.31** · hitbox 6.0 × 6.0 (escala 1.509)
 
 | Habilidade | Tipo | Dano | Preparo | Recarga | Alcance | Efeito | Origem |
 |---|---|---|---|---|---|---|---|
@@ -227,7 +251,7 @@ Vida **430** · dano base **15.5** · armadura **13** · velocidade **0.31**
 
 ### `primigenius` — yoju
 
-Vida **220** · dano base **10.0** · armadura **11** · velocidade **0.23**
+Vida **220** · dano base **10.0** · armadura **11** · velocidade **0.23** · hitbox 2.9 × 5.5 (escala 0.917)
 
 | Habilidade | Tipo | Dano | Preparo | Recarga | Alcance | Efeito | Origem |
 |---|---|---|---|---|---|---|---|
@@ -238,7 +262,7 @@ Vida **220** · dano base **10.0** · armadura **11** · velocidade **0.23**
 
 ### `primigenius_honju` — honju
 
-Vida **360** · dano base **13.8** · armadura **12** · velocidade **0.25**
+Vida **360** · dano base **13.8** · armadura **12** · velocidade **0.25** · hitbox 5.4 × 8.5 (escala 0.944)
 
 | Habilidade | Tipo | Dano | Preparo | Recarga | Alcance | Efeito | Origem |
 |---|---|---|---|---|---|---|---|
@@ -251,7 +275,7 @@ Vida **360** · dano base **13.8** · armadura **12** · velocidade **0.25**
 
 ### `primigenius_resurrected` — yoju
 
-Vida **310** · dano base **12.8** · armadura **12** · velocidade **0.24**
+Vida **310** · dano base **12.8** · armadura **12** · velocidade **0.24** · hitbox 3.1 × 6.0 (escala 1)
 
 
 Fúria abaixo de 30%: dano ×1.2, velocidade ×1.15, recargas ×0.7.
@@ -265,7 +289,7 @@ Fúria abaixo de 30%: dano ×1.2, velocidade ×1.15, recargas ×0.7.
 
 ### `primigenius_revived` — honju
 
-Vida **460** · dano base **16.5** · armadura **13** · velocidade **0.25**
+Vida **460** · dano base **16.5** · armadura **13** · velocidade **0.25** · hitbox 5.7 × 9.0 (escala 1)
 
 
 Fúria abaixo de 30%: dano ×1.25, velocidade ×1.2, recargas ×0.6.
@@ -281,7 +305,7 @@ Fúria abaixo de 30%: dano ×1.25, velocidade ×1.2, recargas ×0.6.
 
 ### `trichonephila` — yoju
 
-Vida **65** · dano base **4.2** · armadura **7** · velocidade **0.31**
+Vida **65** · dano base **4.2** · armadura **7** · velocidade **0.31** · hitbox 9.1 × 4.8 (escala 2.679)
 
 | Habilidade | Tipo | Dano | Preparo | Recarga | Alcance | Efeito | Origem |
 |---|---|---|---|---|---|---|---|
@@ -294,7 +318,7 @@ Vida **65** · dano base **4.2** · armadura **7** · velocidade **0.31**
 
 ### `trichonephila_honju` — honju
 
-Vida **400** · dano base **15.0** · armadura **13** · velocidade **0.29**
+Vida **400** · dano base **15.0** · armadura **13** · velocidade **0.29** · hitbox 13.1 × 8.7 (escala 2.184)
 
 
 Fúria abaixo de 30%: dano ×1.2, velocidade ×1.25, recargas ×0.7.
@@ -313,7 +337,7 @@ Fúria abaixo de 30%: dano ×1.2, velocidade ×1.25, recargas ×0.7.
 
 ### `hoshina`
 
-Vida **460** · armadura **20** · velocidade **0.3** · Release 40% (máx. 92%) · dano contra kaiju ×1.0 · arma `hoshina_sword`
+Vida **460** · armadura **20** · velocidade **0.3** · Release 40% (máx. 92%) · dano contra kaiju ×1.0 · arma `hoshina_sword` · altura **1.72**
 
 Dano de cada golpe = dano da arma × multiplicador × Release × `kaiju_damage` (contra kaiju).
 
@@ -329,7 +353,7 @@ Defesa: esquiva a cada 1.5 s; contra-ataque ×2.5 a cada 6 s; apara 35% dos golp
 
 ### `hoshina_no10`
 
-Vida **520** · armadura **20** · velocidade **0.3** · Release 50% (máx. 100%) · dano contra kaiju ×1.0 · arma `hoshina_sword`
+Vida **520** · armadura **20** · velocidade **0.3** · Release 50% (máx. 100%) · dano contra kaiju ×1.0 · arma `hoshina_sword` · altura **1.72**
 
 Dano de cada golpe = dano da arma × multiplicador × Release × `kaiju_damage` (contra kaiju).
 
@@ -374,7 +398,7 @@ Defesa: esquiva a cada 5 s; contra-ataque ×2.2 a cada 10 s; apara 20% dos golpe
 
 ### `kikoru`
 
-Vida **390** · armadura **18** · velocidade **0.34** · Release 30% (máx. 75%) · dano contra kaiju ×0.62 · arma `axe`
+Vida **390** · armadura **18** · velocidade **0.34** · Release 30% (máx. 75%) · dano contra kaiju ×0.62 · arma `axe` · altura **1.6**
 
 Dano de cada golpe = dano da arma × multiplicador × Release × `kaiju_damage` (contra kaiju).
 
@@ -391,7 +415,7 @@ Defesa: esquiva a cada 5 s; contra-ataque ×2.2 a cada 10 s; apara 15% dos golpe
 
 ### `kikoru_no4`
 
-Vida **580** · armadura **20** · velocidade **0.44** · Release 40% (máx. 90%) · dano contra kaiju ×0.5 · arma `axe`
+Vida **580** · armadura **20** · velocidade **0.44** · Release 40% (máx. 90%) · dano contra kaiju ×0.5 · arma `axe` · altura **1.6**
 
 Dano de cada golpe = dano da arma × multiplicador × Release × `kaiju_damage` (contra kaiju).
 
@@ -407,7 +431,7 @@ Defesa: esquiva a cada 3.5 s; contra-ataque ×2.2 a cada 10 s; apara 15% dos gol
 
 ### `mina`
 
-Vida **420** · armadura **20** · velocidade **0.3** · Release 40% (máx. 90%) · dano contra kaiju ×0.65 · arma `mina_cannon`
+Vida **420** · armadura **20** · velocidade **0.3** · Release 40% (máx. 90%) · dano contra kaiju ×0.65 · arma `mina_cannon` · altura **1.75**
 
 Dano de cada golpe = dano da arma × multiplicador × Release × `kaiju_damage` (contra kaiju).
 
@@ -454,7 +478,7 @@ Defesa: esquiva a cada 3.5 s; contra-ataque ×2.2 a cada 6 s; apara 35% dos golp
 
 ### `reno`
 
-Vida **360** · armadura **17** · velocidade **0.31** · Release 30% (máx. 70%) · dano contra kaiju ×0.5 · arma `rifle`
+Vida **360** · armadura **17** · velocidade **0.31** · Release 30% (máx. 70%) · dano contra kaiju ×0.5 · arma `rifle` · altura **1.75**
 
 Dano de cada golpe = dano da arma × multiplicador × Release × `kaiju_damage` (contra kaiju).
 
@@ -470,7 +494,7 @@ Defesa: esquiva a cada 5 s; contra-ataque ×2.2 a cada 10 s; apara 15% dos golpe
 
 ### `reno_no6`
 
-Vida **650** · armadura **20** · velocidade **0.36** · Release 50% (máx. 100%) · dano contra kaiju ×0.75 · arma `rifle`
+Vida **650** · armadura **20** · velocidade **0.36** · Release 50% (máx. 100%) · dano contra kaiju ×0.75 · arma `rifle` · altura **1.75**
 
 Dano de cada golpe = dano da arma × multiplicador × Release × `kaiju_damage` (contra kaiju).
 

@@ -245,7 +245,9 @@ public final class No9FormsGameTests {
             helper.assertTrue(kaiju instanceof KaijuNo9Entity, species + " deveria ser um KaijuNo9Entity");
             KaijuDef def = kaiju.def().orElse(null);
             helper.assertTrue(def != null && def.kaijuClass() == KaijuClass.NUMBERED, "Sem kaiju/" + species);
-            helper.assertTrue(Math.abs(kaiju.getBbWidth() - width) < 0.01F, "Hitbox: " + kaiju.getBbWidth());
+            // Largura do JSON vezes a escala da tabela mestra de alturas.
+            helper.assertTrue(Math.abs(kaiju.getBbWidth() - width * def.dimensions().scale()) < 0.01F,
+                    "Hitbox: " + kaiju.getBbWidth());
             helper.assertTrue(Math.abs(kaiju.getMaxHealth() - health) < 0.5F, "Vida: " + kaiju.getMaxHealth());
             helper.assertTrue(KN8Data.NUMBERED.get(kaiju.kaijuId(), false).isPresent(), "Sem numbered/" + species);
             for (ResourceLocation ability : def.abilities()) {

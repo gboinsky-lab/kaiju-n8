@@ -565,3 +565,15 @@ Visto na nuvem (`docs/img/hoshina_modelo.png`, `hoshina_vs_honju.png`, `hoshina_
 | 39.6 | `/summon kn8:kaiju_no8` contra `kn8:kaiju_no10_small` | O No. 8 vence em ~25 s com ~80% da vida (antes: 5 s) |
 | 39.7 | `/summon kn8:mina` a 40 blocos de `kn8:kaiju_no10_giant` | Anti-Giant Shot (preparo de 2,5 s) tira 4–8% da vida do gigante por tiro (cresce com o Release dela); ela ainda perde (falta recuar: pendência) |
 | 39.8 | Servidor dedicado + 2 clientes | Os dois veem os mesmos tiros em leque e a mesma vida nas barras |
+
+## 40. Alturas da tabela mestra (2026-10-15)
+
+| # | Passo | Esperado |
+|---|---|---|
+| 40.1 | Em fila: `/summon kn8:soldier ~ ~ ~ {kn8_power_level:"low"}` e `{kn8_power_level:"elite"}`, `kn8:hoshina`, `kn8:mina`, `kn8:reno`, `kn8:kikoru`, `kn8:narumi`, `kn8:kafka` | Recruta 1,70, elite 1,85, Hoshina 1,72, Mina e Reno 1,75, Kikoru 1,60, Narumi 1,78, Kafka 1,81 (F3+B mostra a hitbox no mesmo tamanho do corpo); armas na mão e animações iguais às de antes |
+| 40.2 | `/summon kn8:trichonephila` e `kn8:trichonephila_honju` | Aranha com 4,5 m de altura e Tecedeira com 9 m; patas e golpes iguais, só maiores |
+| 40.3 | `/summon kn8:primigenius`, `kn8:primigenius_honju`, `kn8:preondactyl` | 5,5 m, 8,5 m e Preondactyl com o corpo de 7 m |
+| 40.4 | `/summon kn8:kaiju_no9`, `kn8:kaiju_no9_black`, `kn8:kaiju_no9_camponotus` | No. 9 continua com 2 m; forma preta 5 m; formiga 11 m |
+| 40.5 | `/summon kn8:kaiju_no9_fusion` e baixar a vida para menos da metade (`/data modify entity @e[type=kn8:kaiju_no9_fusion,limit=1] Health set value 2000f`) | Aviso "virou um gigante de 20 metros"; surge a fusão gigante (20 m) com a vida cheia, que anda e ataca com as animações da fusão |
+| 40.6 | Matar um kaiju grande (`/kill`) | A carcaça cai no tamanho dele e o desmonte funciona |
+| 40.7 | Servidor dedicado + 2 clientes | Os dois veem os mesmos tamanhos |

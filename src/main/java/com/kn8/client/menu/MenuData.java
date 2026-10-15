@@ -155,7 +155,7 @@ final class MenuData {
 
     static Threat threat(KaijuDef def) {
         return switch (def.kaijuClass()) {
-            case YOJU -> def.dimensions().height() >= 5.0F ? Threat.MEDIUM : Threat.LOW;
+            case YOJU -> def.dimensions().scaledHeight() >= 5.0F ? Threat.MEDIUM : Threat.LOW;
             case HONJU -> Threat.HIGH;
             case DAIKAIJU, NUMBERED -> Threat.EXTREME;
         };

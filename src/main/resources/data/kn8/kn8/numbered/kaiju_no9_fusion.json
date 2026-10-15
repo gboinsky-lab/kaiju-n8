@@ -31,5 +31,11 @@
     "per_hit": 0.03,
     "max_reduction": 0.25,
     "decay_ticks": 120
+  },
+  "transform": {
+    "into": "kn8:kaiju_no9_fusion_giant",
+    "after_combat_ticks": 72000,
+    "health_below": 0.5,
+    "message": "kn8.no9.fusion_giant_form"
   }
 }

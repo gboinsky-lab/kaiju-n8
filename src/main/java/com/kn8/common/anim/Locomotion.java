@@ -15,6 +15,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 import software.bernie.geckolib.animatable.GeoAnimatable;
@@ -46,9 +47,17 @@ public final class Locomotion {
             // Animation#length ja vem em ticks (a GeckoLib converte o "animation_length" do JSON).
             double loopTicks = current == null ? 0 : current.animation().length();
             double moved = Math.hypot(entity.getX() - entity.xo, entity.getZ() - entity.zo);
-            return LocomotionMath.animationSpeed(moved, loopTicks, def.stride(), def.minAnimationSpeed(),
-                    def.maxAnimationSpeed());
+            return LocomotionMath.animationSpeed(moved, loopTicks, def.stride() * scale(entity),
+                    def.minAnimationSpeed(), def.maxAnimationSpeed());
         }).orElse(1.0));
+    }
+
+    /**
+     * Passada e intervalo de passo do JSON sao do modelo no tamanho original: crescem com a escala do corpo (tabela
+     * mestra de alturas), senao o kaiju maior arrastaria os pes.
+     */
+    private static float scale(Entity entity) {
+        return entity instanceof LivingEntity living ? living.getScale() : 1.0F;
     }
 
     /** Id do perfil de quem nao e kaiju (soldados): o do tipo de entidade. */
@@ -58,7 +67,7 @@ public final class Locomotion {
 
     /** Proximo passo do vanilla ({@code Entity#nextStep}) pela passada; sem perfil, o do vanilla (1 por bloco). */
     public static float nextStep(Entity entity, ResourceLocation id, float vanilla) {
-        return profile(entity, id).map(def -> LocomotionMath.nextStep(entity.moveDist, def.stepEvery()))
+        return profile(entity, id).map(def -> LocomotionMath.nextStep(entity.moveDist, def.stepEvery() * scale(entity)))
                 .orElse(vanilla);
     }
 

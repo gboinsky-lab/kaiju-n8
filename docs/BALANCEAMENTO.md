@@ -126,6 +126,13 @@ mesmo tipo tira 2–3% menos a cada vez, até −15/−25% (`adaptation`).
 | Fundida ao No. 10 (`kaiju_no9_fusion`, 5 m) | 5.400 | 58 | 19 | 0,38 | 3,5% / 6% por s | 10%, −40%, 40, 240 | 10% (500) | rajada de cauda 6 × 0,7 (140), raio híbrido 1,8 que explode em 3 blocos (200, 6–32 blocos), Multi-Finger Cannon 5 × 0,9 em leque com explosão 2 (150); golpes do No. 10 e o Finger Cannon dele; comanda kaiju a 64 blocos; revive até 4 |
 | Fundida à formiga (`kaiju_no9_camponotus`, 6 m) | 3.200 | 46 | 18 | **0,45** | 3,2% por s | 5%, −40%, 30, 240 | 15% (400) | salto 1,5 de 5 a 16 blocos (100), mordidas 5 × 0,6 (110), ácido 0,8 + lentidão II (120), Ant Rush 1,4 de 4 a 20 blocos (90); mordida, patas e Finger Gun; ainda absorve o No. 10 |
 
+**Fusão gigante** (`kaiju_no9_fusion_giant`, 20 m, tabela mestra de alturas 2026-10-15): surge da fusão de 5 m abaixo
+de 50% da vida, com a vida cheia. Vida 9.000, dano 72, armadura 20, velocidade 0,32, categoria `supergiant`; mesmos
+ataques, regeneração, comando, revividos e fuga (10%) da fusão [SUPOSIÇÃO].
+
+**Alturas (tabela mestra, 2026-10-15):** forma preta 5 m (escala 2,632), formiga 11 m (2,813); escalas de todas as
+entidades em `docs/AUDITORIA_ALTURAS.md`. A escala não muda vida, dano nem velocidade.
+
 Fúria abaixo de 30% nas três (dano ×1,15–1,25, velocidade ×1,1–1,2, recargas ×0,6–0,7). Núcleo: peito na preta e na
 fusão; no peito do torso do No. 9 em cima da formiga.
 

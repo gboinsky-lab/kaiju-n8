@@ -153,12 +153,17 @@ public class CarcassEntity extends Entity implements GeoEntity {
 
     /** Largura do kaiju em pe (dados da especie); o renderer usa para a queda. */
     public float standingWidth() {
-        return def().map(def -> def.dimensions().width()).orElse(getBbWidth());
+        return def().map(def -> def.dimensions().scaledWidth()).orElse(getBbWidth());
+    }
+
+    /** Escala do modelo da especie (tabela mestra de alturas): o renderer desenha a carcaca no mesmo tamanho. */
+    public float modelScale() {
+        return def().map(def -> def.dimensions().scale()).orElse(1.0F);
     }
 
     /** Altura do kaiju em pe (dados da especie). */
     public float standingHeight() {
-        return def().map(def -> def.dimensions().height()).orElse(getBbHeight());
+        return def().map(def -> def.dimensions().scaledHeight()).orElse(getBbHeight());
     }
 
     @Override

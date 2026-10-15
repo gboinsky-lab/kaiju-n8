@@ -58,18 +58,24 @@ public record SpecialSoldierDef(float health, float armor, float speed, float fo
         return growth.regeneration();
     }
 
+    /** Altura do personagem em blocos (tabela mestra de alturas; 0 = a do modelo). */
+    public float height() {
+        return growth.height();
+    }
+
     /**
      * Campos que crescem com a luta, lidos no mesmo nivel do JSON (o RecordCodecBuilder aceita no maximo 16 campos
      * por grupo): {@code escalation} e, so com o traje numerado 10 (0.6-F), {@code numbers10}.
      */
     public record Growth(Escalation escalation, Optional<Numbers10> numbers10, Optional<Flight> flight,
-            Optional<Transform> transform, Optional<Regeneration> regeneration) {
+            Optional<Transform> transform, Optional<Regeneration> regeneration, float height) {
         public static final MapCodec<Growth> MAP_CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
                 Escalation.CODEC.optionalFieldOf("escalation", Escalation.NONE).forGetter(Growth::escalation),
                 Numbers10.CODEC.optionalFieldOf("numbers10").forGetter(Growth::numbers10),
                 Flight.CODEC.optionalFieldOf("flight").forGetter(Growth::flight),
                 Transform.CODEC.optionalFieldOf("transform").forGetter(Growth::transform),
-                Regeneration.CODEC.optionalFieldOf("regeneration").forGetter(Growth::regeneration)
+                Regeneration.CODEC.optionalFieldOf("regeneration").forGetter(Growth::regeneration),
+                Codec.floatRange(0.0F, 4.0F).optionalFieldOf("height", 0.0F).forGetter(Growth::height)
         ).apply(i, Growth::new));
     }
 

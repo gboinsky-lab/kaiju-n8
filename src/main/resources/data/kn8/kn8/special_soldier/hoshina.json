@@ -138,5 +138,6 @@
     "max_points": 52,
     "decay_per_second": 2.0,
     "cooldown_reduction_at_max": 0.4
-  }
+  },
+  "height": 1.72
 }

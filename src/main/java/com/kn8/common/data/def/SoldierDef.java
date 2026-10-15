@@ -35,17 +35,19 @@ public record SoldierDef(float health, float armor, float speed, float followRan
      * Balanceamento v1.0: vida, armadura e velocidade por nivel de forca (recruta/baixo 20, normal 24, alto 28,
      * elite 34). Nivel sem entrada usa os valores de cima do JSON.
      */
-    public record LevelStats(float health, float armor, float speed) {
+    /** {@code height}: altura do soldado desse nivel em blocos (tabela mestra; 0 = a do modelo). */
+    public record LevelStats(float health, float armor, float speed, float height) {
         public static final Codec<LevelStats> CODEC = RecordCodecBuilder.create(i -> i.group(
                 Codec.floatRange(1.0F, 1000.0F).fieldOf("health").forGetter(LevelStats::health),
                 Codec.floatRange(0.0F, 30.0F).fieldOf("armor").forGetter(LevelStats::armor),
-                Codec.floatRange(0.01F, 2.0F).fieldOf("speed").forGetter(LevelStats::speed)
+                Codec.floatRange(0.01F, 2.0F).fieldOf("speed").forGetter(LevelStats::speed),
+                Codec.floatRange(0.0F, 4.0F).optionalFieldOf("height", 0.0F).forGetter(LevelStats::height)
         ).apply(i, LevelStats::new));
     }
 
     /** Vida, armadura e velocidade do nivel (ou as de cima do JSON). */
     public LevelStats statsFor(String level) {
-        return levelStats.getOrDefault(level, new LevelStats(health, armor, speed));
+        return levelStats.getOrDefault(level, new LevelStats(health, armor, speed, 0.0F));
     }
 
     /**

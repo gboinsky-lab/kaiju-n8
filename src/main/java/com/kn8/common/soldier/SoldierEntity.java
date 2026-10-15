@@ -334,8 +334,26 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
                     * (1.0 + PowerMath.speedBonus(release(), PowerService.params())));
             getAttribute(Attributes.FOLLOW_RANGE).setBaseValue(def.followRange());
             getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(def.unarmedDamage());
+            applyHeight(stats.height());
             setHealth(getMaxHealth());
         });
+    }
+
+    /**
+     * Escala do corpo para a altura da tabela mestra (Miguel, 2026-10-10): altura pedida / altura do modelo (a
+     * hitbox registrada no EntityType). Vai no atributo vanilla {@code scale}: hitbox, olhos e desenho (a GeckoLib
+     * escala pelo {@code getScale()}) mudam juntos, sem mexer em modelo nem animacao. 0 = tamanho do modelo.
+     */
+    protected double targetScale(float height) {
+        return height > 0.0F ? height / getType().getDimensions().height() : 1.0;
+    }
+
+    protected void applyHeight(float height) {
+        getAttribute(Attributes.SCALE).setBaseValue(targetScale(height));
+    }
+
+    protected boolean heightApplied(float height) {
+        return Math.abs(getAttribute(Attributes.SCALE).getBaseValue() - targetScale(height)) < 1.0E-4;
     }
 
     public Optional<WeaponDef> weapon() {
@@ -571,6 +589,11 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
             }
             if (!tag.contains(TAG_ATTRIBUTES)) {
                 applyDefinition();
+            } else {
+                // Soldado salvo antes da tabela de alturas: so a escala do nivel muda.
+                def().map(def -> def.statsFor(powerLevel()).height())
+                        .filter(height -> !heightApplied(height))
+                        .ifPresent(this::applyHeight);
             }
         }
     }

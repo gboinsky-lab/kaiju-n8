@@ -196,8 +196,8 @@ public final class KaijuHealthBar {
 
     /** "pequeno/medio/grande" da especie (tambem usado pelo menu da Forca de Defesa). */
     public static Component sizeClass(KaijuDef def) {
-        return KaijuScale.sizeClass(def.kaijuClass().getSerializedName(), def.dimensions().width(),
-                def.dimensions().height())
+        return KaijuScale.sizeClass(def.kaijuClass().getSerializedName(), def.dimensions().scaledWidth(),
+                def.dimensions().scaledHeight())
                 .map(size -> (Component) Component.translatable(
                         "kn8.kaiju_size." + size.name().toLowerCase(Locale.ROOT)))
                 .orElse(Component.empty());

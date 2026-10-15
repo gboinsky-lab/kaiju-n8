@@ -4,7 +4,8 @@
   "size": "large",
   "dimensions": {
     "width": 4.0,
-    "height": 4.0
+    "height": 4.0,
+    "scale": 1.509
   },
   "overrides": {
     "health": 430.0,

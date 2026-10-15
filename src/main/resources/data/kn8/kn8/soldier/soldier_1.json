@@ -47,22 +47,26 @@
     "low": {
       "health": 20,
       "armor": 5,
-      "speed": 0.29
+      "speed": 0.29,
+      "height": 1.7
     },
     "normal": {
       "health": 24,
       "armor": 6,
-      "speed": 0.3
+      "speed": 0.3,
+      "height": 1.75
     },
     "high": {
       "health": 28,
       "armor": 8,
-      "speed": 0.31
+      "speed": 0.31,
+      "height": 1.8
     },
     "elite": {
       "health": 34,
       "armor": 10,
-      "speed": 0.32
+      "speed": 0.32,
+      "height": 1.85
     }
   }
 }

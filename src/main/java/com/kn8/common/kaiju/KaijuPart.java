@@ -23,6 +23,7 @@ public final class KaijuPart extends PartEntity<KaijuEntity> {
     private final String partName;
     private KaijuDef.Part definition;
     private EntityDimensions size;
+    private float scale = 1.0F;
 
     KaijuPart(KaijuEntity parent, KaijuDef.Part definition) {
         super(parent);
@@ -80,9 +81,17 @@ public final class KaijuPart extends PartEntity<KaijuEntity> {
         return this == entity || getParent() == entity;
     }
 
+    /** Escala do corpo do kaiju (atributo {@code scale}): a caixa da parte cresce junto. */
+    void applyScale(float newScale) {
+        if (newScale != scale) {
+            scale = newScale;
+            refreshDimensions();
+        }
+    }
+
     @Override
     public EntityDimensions getDimensions(Pose pose) {
-        return size;
+        return size.scale(scale);
     }
 
     @Override

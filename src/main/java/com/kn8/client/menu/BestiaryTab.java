@@ -112,8 +112,8 @@ final class BestiaryTab implements MenuTab {
         ty += MenuStyle.wrapped(g, font, Component.translatable("kn8.bestiary." + id.getPath() + ".desc"), tx, ty,
                 tw, MenuStyle.TEXT_DIM, 4) + 3;
         MenuStyle.small(g, font, Component.translatable("kn8.menu.bestiary.stats", String.format("%.1f",
-                def.fortitude()), String.format("%.1f", def.dimensions().height()), MenuData.kills(type)), tx, ty,
-                MenuStyle.TEXT);
+                def.fortitude()), String.format("%.1f", def.dimensions().scaledHeight()), MenuData.kills(type)),
+                tx, ty, MenuStyle.TEXT);
         ty += 11;
         // 0.6: ataques da especie, pelo nome (kn8.ability.<id>), numa linha.
         MutableComponent attacks = Component.empty();

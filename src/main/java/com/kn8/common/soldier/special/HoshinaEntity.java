@@ -214,6 +214,7 @@ public class HoshinaEntity extends SoldierEntity {
                     * (1.0 + PowerMath.speedBonus(def.release(), PowerService.params())));
             getAttribute(Attributes.FOLLOW_RANGE).setBaseValue(def.followRange());
             getAttribute(Attributes.KNOCKBACK_RESISTANCE).setBaseValue(def.knockbackResistance());
+            applyHeight(def.height());
             setHealth(getMaxHealth());
         });
     }
@@ -229,6 +230,9 @@ public class HoshinaEntity extends SoldierEntity {
             }
             if (getAttribute(Attributes.MAX_HEALTH).getBaseValue() != def.health()) {
                 applyDefinition();
+            } else if (!heightApplied(def.height())) {
+                // Mundo salvo antes da tabela de alturas: so a escala muda, a vida salva fica.
+                applyHeight(def.height());
             }
         });
     }

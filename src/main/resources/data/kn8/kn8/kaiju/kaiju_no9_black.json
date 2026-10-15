@@ -4,7 +4,8 @@
   "size": "miniature",
   "dimensions": {
     "width": 0.8,
-    "height": 1.9
+    "height": 1.9,
+    "scale": 2.632
   },
   "overrides": {
     "health": 2200.0,

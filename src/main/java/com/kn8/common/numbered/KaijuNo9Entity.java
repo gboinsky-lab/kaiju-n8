@@ -107,7 +107,7 @@ public class KaijuNo9Entity extends KaijuEntity {
         super.registerControllers(controllers);
         // Controle proprio para o gesto de reviver (o "action" do kaiju so conhece as habilidades do JSON).
         controllers.add(new AnimationController<>(this, "special", 0, state -> PlayState.STOP)
-                .triggerableAnim("revive", RawAnimation.begin().thenPlay(kaijuId().getPath() + ".action.revive"))
-                .triggerableAnim("absorb", RawAnimation.begin().thenPlay(kaijuId().getPath() + ".action.absorb")));
+                .triggerableAnim("revive", RawAnimation.begin().thenPlay(animationSpecies() + ".action.revive"))
+                .triggerableAnim("absorb", RawAnimation.begin().thenPlay(animationSpecies() + ".action.absorb")));
     }
 }

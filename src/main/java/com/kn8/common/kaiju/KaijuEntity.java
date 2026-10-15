@@ -18,6 +18,7 @@ import com.kn8.common.combat.CombatService;
 import com.kn8.common.config.ServerConfig;
 import com.kn8.common.data.KN8Data;
 import com.kn8.common.destruction.DestructionService;
+import com.kn8.common.registry.KN8Entities;
 import com.kn8.common.registry.KN8Sounds;
 import com.kn8.common.soldier.SoldierEntity;
 import com.kn8.common.vfx.AbilityEffects;
@@ -253,6 +254,11 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
     /** Id da especie = id do EntityType = id do arquivo {@code kaiju/<id>.json}. */
     public ResourceLocation kaijuId() {
         return BuiltInRegistries.ENTITY_TYPE.getKey(getType());
+    }
+
+    /** Prefixo das animacoes: o da especie cuja arte desenha este kaiju (a fusao gigante usa a da fusao). */
+    public String animationSpecies() {
+        return KN8Entities.modelSpecies(kaijuId()).getPath();
     }
 
     public Optional<KaijuDef> def() {
@@ -846,9 +852,11 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
         setBase(Attributes.MOVEMENT_SPEED, def.speed());
         setBase(Attributes.FOLLOW_RANGE, ServerConfig.FOLLOW_RANGE_BASE.get()
                 + ServerConfig.FOLLOW_RANGE_PER_INTELLIGENCE.get() * def.intelligence());
+        // Tabela mestra de alturas (Miguel, 2026-10-10): escala do modelo no atributo vanilla (hitbox + desenho).
+        setBase(Attributes.SCALE, def.dimensions().scale());
         // Etapa C: kaiju grandes sobem degraus proporcionais ao tamanho (entre 1 e 4 blocos).
         setBase(Attributes.STEP_HEIGHT, Math.max(1.0, Math.min(MAX_STEP_HEIGHT,
-                def.dimensions().height() * ServerConfig.STEP_HEIGHT_FRACTION.get())));
+                def.dimensions().scaledHeight() * ServerConfig.STEP_HEIGHT_FRACTION.get())));
         setHealth(Math.max(1.0F, getMaxHealth() * healthFraction));
         coreHealth = maxCoreHealth() * coreFraction;
     }
@@ -885,8 +893,11 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
         double lookZ = Mth.cos(yaw);
         double rightX = -Mth.cos(yaw);
         double rightZ = -Mth.sin(yaw);
+        // Offsets do JSON sao do modelo no tamanho original: crescem com a escala do corpo (tabela de alturas).
+        float scale = getScale();
         for (KaijuPart part : parts) {
-            Vec3 offset = part.definition().offset();
+            Vec3 offset = part.definition().offset().scale(scale);
+            part.applyScale(scale);
             double previousX = part.getX();
             double previousY = part.getY();
             double previousZ = part.getZ();
@@ -1084,11 +1095,11 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
     // --- animacao --------------------------------------------------------------------------------------------
 
     protected RawAnimation loop(String layer, String name) {
-        return RawAnimation.begin().thenLoop(KN8Ids.animationName(kaijuId().getPath(), layer, name));
+        return RawAnimation.begin().thenLoop(KN8Ids.animationName(animationSpecies(), layer, name));
     }
 
     protected RawAnimation once(String layer, String name) {
-        return RawAnimation.begin().thenPlay(KN8Ids.animationName(kaijuId().getPath(), layer, name));
+        return RawAnimation.begin().thenPlay(KN8Ids.animationName(animationSpecies(), layer, name));
     }
 
     /** Animacao do controller "movement" (0.6-E: o Preondactyl troca por voo enquanto esta no ar). */
@@ -1109,7 +1120,7 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
         for (ResourceLocation id : def().map(KaijuDef::abilities).orElse(List.of())) {
             KN8Data.ABILITY.get(id, level().isClientSide()).ifPresent(ability -> action.triggerableAnim(
                     ability.animation(), RawAnimation.begin().thenPlay(
-                            kaijuId().getPath() + "." + ability.animation())));
+                            animationSpecies() + "." + ability.animation())));
         }
         controllers.add(action);
         controllers.add(new AnimationController<>(this, "reaction", 0, state -> PlayState.STOP)
