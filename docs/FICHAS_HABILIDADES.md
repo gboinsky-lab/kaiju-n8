@@ -386,7 +386,7 @@ Vida **1800** · armadura **19** · velocidade **0.4** · Release 100% (máx. 10
 
 Dano de cada golpe = dano da arma × multiplicador × Release × `kaiju_damage` (contra kaiju).
 
-Defesa: esquiva a cada 5 s; contra-ataque ×2.2 a cada 10 s; apara 20% dos golpes (dano ×0.4); regenera 3%/s abaixo de 50%; vira `kafka` sem alvo.
+Defesa: esquiva a cada 5 s; contra-ataque ×2.2 a cada 10 s; apara 20% dos golpes (dano ×0.4); regenera 1.5%/s abaixo de 50%; vira `kafka` sem alvo.
 
 | Técnica | Tipo | Multiplicadores por golpe | Recarga | Alcance | Observação |
 |---|---|---|---|---|---|

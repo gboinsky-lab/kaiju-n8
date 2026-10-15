@@ -168,3 +168,35 @@ e as formas K14–K16 do No. 9 (vermelha, No. 2/Isao, final): não existem no jo
 - Medir os confrontos com 20 duelos onde ficou no limite (Kikoru, Narumi × No. 9), como pede o §36.7.2.
 - Personagens e formas sem modelo (Isao/No. 2, secundários, No. 9 vermelho/No. 2/final): só depois dos modelos.
 - Hoshina + No. 10: velocidade 0,30 no jogo, 0,35 no v1.2 §12 (não mudei: "não alterar sem teste").
+
+---
+
+## 6. Ajustes depois das decisões do Miguel (2026-10-15)
+
+- **Fuga do No. 9 = vitória prévia.** A coluna "Vitória (morte + fuga)" da matriz é a oficial.
+- **Regeneração do No. 8: 3%/s → 1,5%/s** abaixo de 50%.
+- **Fusão gigante:** números confirmados (9.000 / 72 / 20 / 0,32).
+- **Mina e Reno (e Reno No. 6) com IA de atirador** (`ranged` no `special_soldier/*.json`): recuam se o kaiju chega a
+  menos de `retreat_distance` (Mina 12, Reno 9), correm em volta dele na faixa até `keep_distance` (Mina 22, Reno 16)
+  trocando de lado a cada 4 s (distraem o kaiju) e perseguem se ele se afasta ou some de vista; atiram andando.
+  Números [SUPOSIÇÃO]. Em jogo (servidor dedicado + 2 clientes): o Primigenius Honju investe até 3,4 blocos dela e no
+  segundo seguinte ela está a 16,8, depois muda de lado em volta dele; derruba o Honju em ~9 s.
+- **Luta travada:** soldado especial perto do alvo e 8 s sem ninguém perder vida pula e sai para o lado, na altura do
+  alvo (caso real: No. 8 numa cratera com a forma preta de 5 m parada por cima).
+
+| Duelo (6–10 cada) | Antes | Agora |
+|---|---|---|
+| Mina × No. 10 gigante (meta 30%) | 0%, gigante com 61–71% | 0%, gigante com 41–69% (os tiros de longe do gigante ainda vencem) |
+| Reno × No. 9 (meta 12%) | 0% | 0% (na meta) |
+| Reno No. 6 × No. 9 (meta 70%) | 40% | **100%** (6/6 por fuga; acima da meta) |
+| No. 8 × forma preta (meta 20%) | 70% + 3 empates | **100%** (10/10 por fuga), **sem empate** |
+| No. 8 × No. 10 gigante (meta 45%) | 70% | 100% (6/6) |
+| No. 8 × No. 9 (meta 40%) | 100% | 100% (6/6 por fuga) |
+
+**Os empates de 5 min:** parte vinha do script de teste: ele só mantinha carregada a área de 0 a 64, e os
+lutadores que saíam dela ficavam congelados (sem jogador por perto o Minecraft não roda a entidade). Com a área
+ampliada (−96 a 128) e o destravamento, 0 empates em 10. As medições antigas com "tempo" (No. 8 × fusão, Hoshina +
+No. 10 × formiga) podem ter o mesmo problema.
+
+**O No. 8 continua acima de todas as metas** mesmo com a regeneração menor: a força dele vem do dano dos socos.
+Pendência para você decidir depois: baixar o dano dele contra kaiju ou deixar o No. 8 assim.
