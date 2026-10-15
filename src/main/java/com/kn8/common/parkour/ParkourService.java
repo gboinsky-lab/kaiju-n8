@@ -85,6 +85,13 @@ public final class ParkourService {
         }
     }
 
+    /** Forca do parkour pelo nivel (agilidade do corpo e Release): multiplica velocidades e alturas. */
+    public static double level(ServerPlayer player) {
+        return ParkourMath.levelFactor(PowerService.bodyLevel(player, BodyStat.AGILITY),
+                ServerConfig.BODY_MAX_LEVEL.get(), PowerService.effectiveRelease(player),
+                ServerConfig.PARKOUR_SCALE_PER_AGILITY.get(), ServerConfig.PARKOUR_SCALE_PER_RELEASE.get());
+    }
+
     private static boolean ready(ServerPlayer player, ParkourData data) {
         return now(player) >= data.readyTick;
     }
@@ -119,8 +126,8 @@ public final class ParkourService {
             return false;
         }
         Vec3 forward = ParkourProbe.forward(player.getYRot());
-        Vec3 velocity = forward.scale(ServerConfig.PARKOUR_LONG_JUMP_SPEED.get())
-                .add(0.0, ServerConfig.PARKOUR_LONG_JUMP_LIFT.get(), 0.0);
+        Vec3 velocity = forward.scale(ServerConfig.PARKOUR_LONG_JUMP_SPEED.get() * level(player))
+                .add(0.0, ServerConfig.PARKOUR_LONG_JUMP_LIFT.get() * level(player), 0.0);
         impulse(player, data, velocity, "long_jump");
         return true;
     }
@@ -135,9 +142,10 @@ public final class ParkourService {
         }
         Vec3 forward = ParkourProbe.forward(player.getYRot());
         double height = ParkourProbe.obstacleHeight(player, forward, ServerConfig.PARKOUR_PROBE_REACH.get(),
-                ServerConfig.PARKOUR_CLIMB_MAX_HEIGHT.get());
+                ServerConfig.PARKOUR_CLIMB_MAX_HEIGHT.get() * level(player));
         ParkourMath.Obstacle obstacle = ParkourMath.classify(height, player.maxUpStep(),
-                ServerConfig.PARKOUR_VAULT_MAX_HEIGHT.get(), ServerConfig.PARKOUR_CLIMB_MAX_HEIGHT.get());
+                ServerConfig.PARKOUR_VAULT_MAX_HEIGHT.get() * level(player),
+                ServerConfig.PARKOUR_CLIMB_MAX_HEIGHT.get() * level(player));
         boolean vault = obstacle == ParkourMath.Obstacle.VAULT && recentlySprinting(player, data);
         if (obstacle == ParkourMath.Obstacle.NONE || !pay(player, vault ? ServerConfig.PARKOUR_VAULT_COST.get()
                 : ServerConfig.PARKOUR_CLIMB_COST.get())) {
@@ -170,8 +178,9 @@ public final class ParkourService {
         data.lastRunNormalX = normal.x;
         data.lastRunNormalZ = normal.z;
         data.wallJumpsInAir++;
-        start(player, data, ParkourState.WALL_RUN, along, normal, ServerConfig.PARKOUR_WALL_RUN_SPEED.get(),
-                ServerConfig.PARKOUR_WALL_RUN_LIFT.get(), 0.0, ServerConfig.PARKOUR_WALL_RUN_MAX_TICKS.get());
+        double level = level(player);
+        start(player, data, ParkourState.WALL_RUN, along, normal, ServerConfig.PARKOUR_WALL_RUN_SPEED.get() * level,
+                ServerConfig.PARKOUR_WALL_RUN_LIFT.get() * level, 0.0, ServerConfig.PARKOUR_WALL_RUN_MAX_TICKS.get());
         data.side = side;
         effects(player, side > 0 ? "wall_run_right" : "wall_run_left", along);
         return true;
@@ -200,7 +209,7 @@ public final class ParkourService {
         }
         Vec3 forward = ParkourProbe.forward(player.getYRot());
         double height = ParkourProbe.obstacleHeight(player, forward, ServerConfig.PARKOUR_PROBE_REACH.get(),
-                ServerConfig.PARKOUR_LEDGE_MAX_HEIGHT.get());
+                ServerConfig.PARKOUR_LEDGE_MAX_HEIGHT.get() * level(player));
         if (height < ServerConfig.PARKOUR_LEDGE_MIN_HEIGHT.get()) {
             return false;
         }
@@ -235,9 +244,9 @@ public final class ParkourService {
         }
         data.leftWallState = ParkourState.NONE;
         data.wallJumpsInAir++;
-        Vec3 velocity = normal.scale(ServerConfig.PARKOUR_WALL_JUMP_PUSH.get())
+        Vec3 velocity = normal.scale(ServerConfig.PARKOUR_WALL_JUMP_PUSH.get() * level(player))
                 .add(along.scale(ServerConfig.PARKOUR_WALL_JUMP_CARRY.get()))
-                .add(0.0, ServerConfig.PARKOUR_WALL_JUMP_LIFT.get(), 0.0);
+                .add(0.0, ServerConfig.PARKOUR_WALL_JUMP_LIFT.get() * level(player), 0.0);
         impulse(player, data, velocity, "wall_jump");
         return true;
     }
@@ -263,8 +272,9 @@ public final class ParkourService {
             return false;
         }
         Vec3 forward = ParkourProbe.forward(player.getYRot());
-        start(player, data, ParkourState.SLIDE, forward, Vec3.ZERO, ServerConfig.PARKOUR_SLIDE_SPEED.get(), 0.0,
-                ServerConfig.PARKOUR_SLIDE_FRICTION.get(), ServerConfig.PARKOUR_SLIDE_TICKS.get());
+        start(player, data, ParkourState.SLIDE, forward, Vec3.ZERO,
+                ServerConfig.PARKOUR_SLIDE_SPEED.get() * level(player), 0.0, ServerConfig.PARKOUR_SLIDE_FRICTION.get(),
+                ServerConfig.PARKOUR_SLIDE_TICKS.get());
         player.setForcedPose(Pose.SWIMMING);
         effects(player, "slide", forward);
         return true;

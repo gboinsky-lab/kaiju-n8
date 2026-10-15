@@ -808,5 +808,7 @@
   "kn8.configuration.rollCost": "Custo do rolamento",
   "kn8.configuration.rollForward": "Avanço do rolamento",
   "key.kn8.parkour": "Parkour (salto longo, parede, borda)",
-  "kn8.configuration.landingTicks": "Ticks no chão para pousar"
+  "kn8.configuration.landingTicks": "Ticks no chão para pousar",
+  "kn8.configuration.scalePerAgility": "Bônus pela agilidade",
+  "kn8.configuration.scalePerRelease": "Bônus pelo Release"
 }

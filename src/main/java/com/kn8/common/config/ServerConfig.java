@@ -244,6 +244,8 @@ public final class ServerConfig {
     public static final ModConfigSpec.IntValue PARKOUR_WALL_JUMP_COYOTE_TICKS;
     public static final ModConfigSpec.IntValue PARKOUR_MAX_WALL_JUMPS;
     public static final ModConfigSpec.IntValue PARKOUR_LANDING_TICKS;
+    public static final ModConfigSpec.DoubleValue PARKOUR_SCALE_PER_AGILITY;
+    public static final ModConfigSpec.DoubleValue PARKOUR_SCALE_PER_RELEASE;
     public static final ModConfigSpec.DoubleValue PARKOUR_LEDGE_COST_PER_SECOND;
     public static final ModConfigSpec.DoubleValue PARKOUR_LEDGE_MIN_HEIGHT;
     public static final ModConfigSpec.DoubleValue PARKOUR_LEDGE_MAX_HEIGHT;
@@ -683,6 +685,10 @@ public final class ServerConfig {
                 + " after leaving the wall.", 5, 0, 40);
         PARKOUR_MAX_WALL_JUMPS = intValue("maxWallJumps", "Wall jumps and wall-runs in a row before touching the"
                 + " ground.", 4, 0, 20);
+        PARKOUR_SCALE_PER_AGILITY = doubleValue("scalePerAgility", "Extra parkour speed and reach at the top agility"
+                + " level (0.3 = +30%; grows with the level).", 0.3, 0.0, 3.0);
+        PARKOUR_SCALE_PER_RELEASE = doubleValue("scalePerRelease", "Extra parkour speed and reach at 100% release"
+                + " (0.3 = +30%).", 0.3, 0.0, 3.0);
         PARKOUR_LANDING_TICKS = intValue("landingTicks", "Ticks on the ground in a row that count as landing (frees the"
                 + " same wall and the wall jump count again).", 4, 1, 40);
         PARKOUR_LEDGE_COST_PER_SECOND = doubleValue("ledgeCostPerSecond", "Stamina per second while hanging from a"

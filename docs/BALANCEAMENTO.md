@@ -289,7 +289,7 @@ corpo (treinado gasta ate 60% menos) e cada movimento da 3 XP de agilidade (`[bo
 | Slide | correndo, Shift | 10 | 0,6/tick, atrito 0,93 por tick, ate 20 ticks, deitado (vao de 1 bloco) |
 | Rolamento | Shift ao cair de 4+ blocos | 8 | ate 7 blocos sem dano; acima, -60% |
 
-Intervalo entre impulsos 6 ticks; estados continuos aguentam 6 ticks sem parede (atraso da rede); corrida conta ate 8
+Forca pelo nivel (Miguel, 2026-10-15): velocidades, saltos e alturas maximas x (1 + 0,3 x agilidade/100 + 0,3 x Release/100), ate 1,6x no topo (`scalePerAgility`, `scalePerRelease`); o custo ja cai com a agilidade e a stamina maxima sobe com o Release. Intervalo entre impulsos 6 ticks; estados continuos aguentam 6 ticks sem parede (atraso da rede); corrida conta ate 8
 ticks depois de parar.
 
 ### Fontes de XP de treino e mérito (`[career]`)

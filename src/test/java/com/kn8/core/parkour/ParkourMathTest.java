@@ -65,4 +65,12 @@ class ParkourMathTest {
         assertEquals(15.0, ParkourMath.cost(20.0, 0.75), DELTA);
         assertEquals(0.0, ParkourMath.cost(20.0, -1.0), DELTA);
     }
+
+    @Test
+    void strongerPlayersJumpFurther() {
+        assertEquals(1.0, ParkourMath.levelFactor(0, 100, 0, 0.3, 0.3), DELTA);
+        assertEquals(1.15, ParkourMath.levelFactor(50, 100, 0, 0.3, 0.3), DELTA);
+        assertEquals(1.6, ParkourMath.levelFactor(100, 100, 100, 0.3, 0.3), DELTA);
+        assertEquals(1.6, ParkourMath.levelFactor(300, 100, 250, 0.3, 0.3), DELTA);
+    }
 }

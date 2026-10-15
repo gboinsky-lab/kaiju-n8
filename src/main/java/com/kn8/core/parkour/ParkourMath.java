@@ -87,6 +87,18 @@ public final class ParkourMath {
         return Math.max(0.0F, 1.0F - reduction);
     }
 
+    /**
+     * Forca do parkour pelo nivel do jogador (Miguel, 2026-10-15: "quanto mais forte o jogador, mais forte, rapido e
+     * mais alto ele pula"): 1 + {@code perAgility} x agilidade/maximo + {@code perRelease} x Release/100. Multiplica
+     * velocidades e alturas alcancaveis; o custo ja cai pela agilidade e a stamina maxima sobe com o Release.
+     */
+    public static double levelFactor(int agilityLevel, int maxLevel, int release, double perAgility,
+            double perRelease) {
+        double agility = maxLevel <= 0 ? 0.0 : Math.max(0, Math.min(agilityLevel, maxLevel)) / (double) maxLevel;
+        double power = Math.max(0, Math.min(release, 100)) / 100.0;
+        return 1.0 + perAgility * agility + perRelease * power;
+    }
+
     /** Custo de stamina do movimento com o fator de agilidade do corpo (treinado gasta menos). */
     public static double cost(double base, double agilityFactor) {
         return Math.max(0.0, base * agilityFactor);

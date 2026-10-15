@@ -54,10 +54,10 @@ public final class ParkourClient {
     /** Deteccao do cliente: distancia do obstaculo/parede e maior altura procurada. */
     private static final double OBSTACLE_REACH = 0.6;
     private static final double WALL_REACH = 0.45;
-    private static final double MAX_PROBE_HEIGHT = 2.6;
-    /** Borda segurada pelo cliente (o servidor confere com ledgeMin/MaxHeight). */
+    private static final double MAX_PROBE_HEIGHT = 4.5;
+    /** Borda procurada pelo cliente; o servidor confere com ledgeMin/MaxHeight x nivel (forte alcanca mais). */
     private static final double LEDGE_MIN = 0.9;
-    private static final double LEDGE_MAX = 2.2;
+    private static final double LEDGE_MAX = 3.6;
     /** Segurando C no ar, tenta de novo a cada tantos ticks (sem inundar o servidor). */
     private static final int RETRY_TICKS = 4;
     /** Wall-jump ainda pedido tantos ticks depois de sair da parede (o servidor tem a propria folga). */
