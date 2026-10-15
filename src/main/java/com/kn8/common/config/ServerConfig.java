@@ -214,6 +214,51 @@ public final class ServerConfig {
     public static final ModConfigSpec.IntValue CHARGE_MAX_TICKS;
     public static final ModConfigSpec.DoubleValue CHARGE_FULL_MULTIPLIER;
 
+    // --- parkour (0.5.0-E) -------------------------------------------------------------------------------------------
+    public static final ModConfigSpec.BooleanValue PARKOUR_ENABLED;
+    public static final ModConfigSpec.DoubleValue PARKOUR_PROBE_REACH;
+    public static final ModConfigSpec.IntValue PARKOUR_GRACE_TICKS;
+    public static final ModConfigSpec.IntValue PARKOUR_SPRINT_GRACE_TICKS;
+    public static final ModConfigSpec.IntValue PARKOUR_IMPULSE_COOLDOWN_TICKS;
+    public static final ModConfigSpec.DoubleValue PARKOUR_LAUNCH_MARGIN;
+    public static final ModConfigSpec.DoubleValue PARKOUR_LONG_JUMP_COST;
+    public static final ModConfigSpec.DoubleValue PARKOUR_LONG_JUMP_SPEED;
+    public static final ModConfigSpec.DoubleValue PARKOUR_LONG_JUMP_LIFT;
+    public static final ModConfigSpec.DoubleValue PARKOUR_VAULT_MAX_HEIGHT;
+    public static final ModConfigSpec.DoubleValue PARKOUR_CLIMB_MAX_HEIGHT;
+    public static final ModConfigSpec.DoubleValue PARKOUR_VAULT_COST;
+    public static final ModConfigSpec.DoubleValue PARKOUR_CLIMB_COST;
+    public static final ModConfigSpec.DoubleValue PARKOUR_VAULT_FORWARD;
+    public static final ModConfigSpec.DoubleValue PARKOUR_CLIMB_FORWARD;
+    public static final ModConfigSpec.DoubleValue PARKOUR_WALL_RUN_COST_PER_SECOND;
+    public static final ModConfigSpec.DoubleValue PARKOUR_WALL_RUN_SPEED;
+    public static final ModConfigSpec.DoubleValue PARKOUR_WALL_RUN_LIFT;
+    public static final ModConfigSpec.IntValue PARKOUR_WALL_RUN_MAX_TICKS;
+    public static final ModConfigSpec.DoubleValue PARKOUR_WALL_SLIDE_COST_PER_SECOND;
+    public static final ModConfigSpec.DoubleValue PARKOUR_WALL_SLIDE_MAX_FALL;
+    public static final ModConfigSpec.IntValue PARKOUR_WALL_SLIDE_MAX_TICKS;
+    public static final ModConfigSpec.DoubleValue PARKOUR_WALL_JUMP_COST;
+    public static final ModConfigSpec.DoubleValue PARKOUR_WALL_JUMP_PUSH;
+    public static final ModConfigSpec.DoubleValue PARKOUR_WALL_JUMP_CARRY;
+    public static final ModConfigSpec.DoubleValue PARKOUR_WALL_JUMP_LIFT;
+    public static final ModConfigSpec.IntValue PARKOUR_WALL_JUMP_COYOTE_TICKS;
+    public static final ModConfigSpec.IntValue PARKOUR_MAX_WALL_JUMPS;
+    public static final ModConfigSpec.DoubleValue PARKOUR_LEDGE_COST_PER_SECOND;
+    public static final ModConfigSpec.DoubleValue PARKOUR_LEDGE_MIN_HEIGHT;
+    public static final ModConfigSpec.DoubleValue PARKOUR_LEDGE_MAX_HEIGHT;
+    public static final ModConfigSpec.DoubleValue PARKOUR_LEDGE_HANG_DROP;
+    public static final ModConfigSpec.IntValue PARKOUR_LEDGE_MAX_TICKS;
+    public static final ModConfigSpec.DoubleValue PARKOUR_LEDGE_CLIMB_COST;
+    public static final ModConfigSpec.DoubleValue PARKOUR_SLIDE_COST;
+    public static final ModConfigSpec.DoubleValue PARKOUR_SLIDE_SPEED;
+    public static final ModConfigSpec.DoubleValue PARKOUR_SLIDE_FRICTION;
+    public static final ModConfigSpec.IntValue PARKOUR_SLIDE_TICKS;
+    public static final ModConfigSpec.DoubleValue PARKOUR_ROLL_MIN_FALL;
+    public static final ModConfigSpec.DoubleValue PARKOUR_ROLL_SAFE_FALL;
+    public static final ModConfigSpec.DoubleValue PARKOUR_ROLL_DAMAGE_REDUCTION;
+    public static final ModConfigSpec.DoubleValue PARKOUR_ROLL_COST;
+    public static final ModConfigSpec.DoubleValue PARKOUR_ROLL_FORWARD;
+
     // --- vfx (0.1-B, Etapa D) -------------------------------------------------------------------------------------
     public static final ModConfigSpec.BooleanValue VFX_ENABLED;
     public static final ModConfigSpec.IntValue SUIT_VFX_INTERVAL_TICKS;
@@ -586,6 +631,79 @@ public final class ServerConfig {
                 + " of the heavy action).", 2.0, 1.0, 10.0);
         HEAVY_IGNORES_BLOCK = booleanValue("heavyIgnoresBlock", "Kaiju abilities marked \"heavy\" go through a"
                 + " normal block; only a parry or a dodge avoids them.", true);
+        BUILDER.pop();
+
+        section("parkour", "Player parkour (0.5.0-E). The client sends the intent; the server checks the geometry and"
+                + " the stamina and moves the player.");
+        PARKOUR_ENABLED = booleanValue("parkourEnabled", "Allow player parkour (long jump, vault, climb, wall-run,"
+                + " wall-slide, ledge, slide, roll).", true);
+        PARKOUR_PROBE_REACH = doubleValue("probeReach", "How far the server looks for a wall or obstacle (blocks; a"
+                + " little more than the client for network delay).", 0.9, 0.1, 3.0);
+        PARKOUR_GRACE_TICKS = intValue("graceTicks", "Ticks a continuous state survives without its wall or ground"
+                + " (network delay).", 6, 0, 40);
+        PARKOUR_SPRINT_GRACE_TICKS = intValue("sprintGraceTicks", "A move that needs sprinting still counts this"
+                + " many ticks after the sprint stopped.", 8, 0, 40);
+        PARKOUR_IMPULSE_COOLDOWN_TICKS = intValue("impulseCooldownTicks", "Ticks between two parkour impulses.",
+                6, 0, 100);
+        PARKOUR_LAUNCH_MARGIN = doubleValue("launchMargin", "Extra height over a vaulted or climbed obstacle"
+                + " (blocks).", 0.25, 0.0, 2.0);
+        PARKOUR_LONG_JUMP_COST = doubleValue("longJumpCost", "Stamina spent by a long jump.", 15.0, 0.0, 100.0);
+        PARKOUR_LONG_JUMP_SPEED = doubleValue("longJumpSpeed", "Horizontal speed of the long jump (blocks per tick).",
+                0.95, 0.0, 3.0);
+        PARKOUR_LONG_JUMP_LIFT = doubleValue("longJumpLift", "Vertical speed of the long jump (vanilla jump = 0.42).",
+                0.5, 0.0, 2.0);
+        PARKOUR_VAULT_MAX_HEIGHT = doubleValue("vaultMaxHeight", "Highest obstacle passed with a vault (blocks above"
+                + " the feet).", 1.5, 0.6, 3.0);
+        PARKOUR_CLIMB_MAX_HEIGHT = doubleValue("climbMaxHeight", "Highest obstacle climbed with a short climb.",
+                2.5, 1.0, 5.0);
+        PARKOUR_VAULT_COST = doubleValue("vaultCost", "Stamina spent by a vault.", 6.0, 0.0, 100.0);
+        PARKOUR_CLIMB_COST = doubleValue("climbCost", "Stamina spent by a short climb.", 12.0, 0.0, 100.0);
+        PARKOUR_VAULT_FORWARD = doubleValue("vaultForward", "Forward speed of the vault.", 0.45, 0.0, 2.0);
+        PARKOUR_CLIMB_FORWARD = doubleValue("climbForward", "Forward speed of the short climb and of climbing a"
+                + " ledge.", 0.2, 0.0, 2.0);
+        PARKOUR_WALL_RUN_COST_PER_SECOND = doubleValue("wallRunCostPerSecond", "Stamina per second while running on"
+                + " a wall (a quarter of it to start).", 14.0, 0.0, 100.0);
+        PARKOUR_WALL_RUN_SPEED = doubleValue("wallRunSpeed", "Speed along the wall (blocks per tick; sprinting is"
+                + " about 0.28).", 0.36, 0.0, 2.0);
+        PARKOUR_WALL_RUN_LIFT = doubleValue("wallRunLift", "Vertical speed at the start of a wall-run; it falls"
+                + " linearly to minus this at the end.", 0.16, 0.0, 1.0);
+        PARKOUR_WALL_RUN_MAX_TICKS = intValue("wallRunMaxTicks", "Longest wall-run.", 30, 1, 200);
+        PARKOUR_WALL_SLIDE_COST_PER_SECOND = doubleValue("wallSlideCostPerSecond", "Stamina per second while sliding"
+                + " down a wall.", 4.0, 0.0, 100.0);
+        PARKOUR_WALL_SLIDE_MAX_FALL = doubleValue("wallSlideMaxFall", "Fastest fall while sliding down a wall"
+                + " (blocks per tick).", 0.12, 0.01, 1.0);
+        PARKOUR_WALL_SLIDE_MAX_TICKS = intValue("wallSlideMaxTicks", "Longest wall-slide.", 60, 1, 400);
+        PARKOUR_WALL_JUMP_COST = doubleValue("wallJumpCost", "Stamina spent by a wall jump.", 10.0, 0.0, 100.0);
+        PARKOUR_WALL_JUMP_PUSH = doubleValue("wallJumpPush", "Speed away from the wall on a wall jump.", 0.5, 0.0, 2.0);
+        PARKOUR_WALL_JUMP_CARRY = doubleValue("wallJumpCarry", "Speed kept along the wall on a wall jump.",
+                0.25, 0.0, 2.0);
+        PARKOUR_WALL_JUMP_LIFT = doubleValue("wallJumpLift", "Vertical speed of a wall jump.", 0.55, 0.0, 2.0);
+        PARKOUR_WALL_JUMP_COYOTE_TICKS = intValue("wallJumpCoyoteTicks", "A wall jump still works this many ticks"
+                + " after leaving the wall.", 5, 0, 40);
+        PARKOUR_MAX_WALL_JUMPS = intValue("maxWallJumps", "Wall jumps and wall-runs in a row before touching the"
+                + " ground.", 4, 0, 20);
+        PARKOUR_LEDGE_COST_PER_SECOND = doubleValue("ledgeCostPerSecond", "Stamina per second while hanging from a"
+                + " ledge.", 3.0, 0.0, 100.0);
+        PARKOUR_LEDGE_MIN_HEIGHT = doubleValue("ledgeMinHeight", "Lowest ledge that can be grabbed (blocks above the"
+                + " feet).", 0.9, 0.0, 3.0);
+        PARKOUR_LEDGE_MAX_HEIGHT = doubleValue("ledgeMaxHeight", "Highest ledge that can be grabbed (blocks above"
+                + " the feet).", 2.2, 0.5, 4.0);
+        PARKOUR_LEDGE_HANG_DROP = doubleValue("ledgeHangDrop", "How far below the ledge top the feet hang.",
+                1.7, 0.5, 3.0);
+        PARKOUR_LEDGE_MAX_TICKS = intValue("ledgeMaxTicks", "Longest hang from a ledge.", 60, 1, 400);
+        PARKOUR_LEDGE_CLIMB_COST = doubleValue("ledgeClimbCost", "Stamina spent climbing up a ledge.", 8.0, 0.0, 100.0);
+        PARKOUR_SLIDE_COST = doubleValue("slideCost", "Stamina spent by a slide.", 10.0, 0.0, 100.0);
+        PARKOUR_SLIDE_SPEED = doubleValue("slideSpeed", "Speed at the start of a slide (blocks per tick).",
+                0.6, 0.0, 2.0);
+        PARKOUR_SLIDE_FRICTION = doubleValue("slideFriction", "Speed kept each tick of a slide.", 0.93, 0.5, 1.0);
+        PARKOUR_SLIDE_TICKS = intValue("slideTicks", "Longest slide.", 20, 1, 200);
+        PARKOUR_ROLL_MIN_FALL = doubleValue("rollMinFall", "Holding sneak when landing from this many blocks or more"
+                + " rolls.", 4.0, 0.0, 50.0);
+        PARKOUR_ROLL_SAFE_FALL = doubleValue("rollSafeFall", "A roll takes no damage up to this fall.", 7.0, 0.0, 50.0);
+        PARKOUR_ROLL_DAMAGE_REDUCTION = doubleValue("rollDamageReduction", "Fall damage cut by a roll above the safe"
+                + " fall (0.6 = 60% less).", 0.6, 0.0, 1.0);
+        PARKOUR_ROLL_COST = doubleValue("rollCost", "Stamina spent by a roll.", 8.0, 0.0, 100.0);
+        PARKOUR_ROLL_FORWARD = doubleValue("rollForward", "Forward speed of a roll.", 0.35, 0.0, 2.0);
         BUILDER.pop();
 
         section("vfx", "Visual effects sent to clients (0.1-B). Clients choose how many particles they draw.");

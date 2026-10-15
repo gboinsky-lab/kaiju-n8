@@ -19,6 +19,8 @@ import com.kn8.common.data.DataSyncS2C;
 import com.kn8.common.network.debug.NetPingC2S;
 import com.kn8.common.vfx.VfxS2C;
 import com.kn8.common.network.debug.NetPongS2C;
+import com.kn8.common.parkour.ParkourInputC2S;
+import com.kn8.common.parkour.ParkourStateS2C;
 import com.kn8.common.network.debug.NetProbeSyncS2C;
 import com.kn8.common.registry.KN8Attachments;
 
@@ -53,7 +55,8 @@ public final class KN8Network {
     // 13 = 0.5.0-A: ReleaseInputC2S e PowerView novo. 14 = 0.5.0-C: registro sincronizado "locomotion".
     // 15 = 0.5.0-D: AmmoS2C, CombatResult.RELOADING e registro sincronizado "weapon_profile".
     // 16 = 0.5.0-D3: CombatResult.DENIED_NEEDS_DUAL. 17 = 0.5.0-D7: AnimTriggerS2C.speed (golpes com o Release).
-    private static final String PROTOCOL_VERSION = "17";
+    // 18 = 0.5.0-E: ParkourInputC2S e ParkourStateS2C (parkour do jogador).
+    private static final String PROTOCOL_VERSION = "18";
 
     /** Diagnostico: 20 por segundo, rajada de 40. */
     private static final C2SGuard.Limit DEBUG_LIMIT = new C2SGuard.Limit(20, 40);
@@ -69,6 +72,9 @@ public final class KN8Network {
     private static final C2SGuard.Limit MENU_LIMIT = new C2SGuard.Limit(4, 4);
     /** Tecla de Release: pressionar/soltar, ate 10 por segundo com rajada de 10. */
     private static final C2SGuard.Limit RELEASE_LIMIT = new C2SGuard.Limit(10, 10);
+
+    /** Parkour: intencoes pontuais (pulo, borda, slide), ate 10 por segundo com rajada de 10. */
+    private static final C2SGuard.Limit PARKOUR_LIMIT = new C2SGuard.Limit(10, 10);
 
     private KN8Network() {
     }
@@ -100,6 +106,10 @@ public final class KN8Network {
         toClientHook(registrar, CombatStateS2C.TYPE, CombatStateS2C.STREAM_CODEC);
         // 0.5.0-D: pente da arma de fogo (HUD do dono).
         toClientHook(registrar, AmmoS2C.TYPE, AmmoS2C.STREAM_CODEC);
+        // 0.5.0-E: parkour (intencao do cliente; estado continuo aprovado so para o dono).
+        toServer(registrar, ParkourInputC2S.TYPE, ParkourInputC2S.STREAM_CODEC, PARKOUR_LIMIT,
+                ParkourInputC2S::handle);
+        toClientHook(registrar, ParkourStateS2C.TYPE, ParkourStateS2C.STREAM_CODEC);
         // M9: animacao PAL do jogador (tratada por codigo de cliente via KN8ClientHooks).
         toClientHook(registrar, AnimTriggerS2C.TYPE, AnimTriggerS2C.STREAM_CODEC);
     }

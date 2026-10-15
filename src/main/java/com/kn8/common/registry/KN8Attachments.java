@@ -9,6 +9,7 @@ import com.kn8.common.attribute.PowerData;
 import com.kn8.common.career.CareerData;
 import com.kn8.common.career.CareerView;
 import com.kn8.common.combat.CombatState;
+import com.kn8.common.parkour.ParkourData;
 import com.kn8.common.attribute.PowerView;
 import com.mojang.serialization.Codec;
 
@@ -75,6 +76,10 @@ public final class KN8Attachments {
     /** M10: estado de combate do jogador (so no servidor, nunca salvo e nunca sincronizado). */
     public static final Supplier<AttachmentType<CombatState>> COMBAT = ATTACHMENT_TYPES.register("combat",
             () -> AttachmentType.builder(() -> new CombatState()).build());
+
+    /** 0.5.0-E: estado de parkour do jogador (so no servidor, nunca salvo e nunca sincronizado). */
+    public static final Supplier<AttachmentType<ParkourData>> PARKOUR = ATTACHMENT_TYPES.register("parkour",
+            () -> AttachmentType.builder(() -> new ParkourData()).build());
 
     /** Aura padrao (jogador sem traje com aura propria): {@code data/kn8/kn8/aura/defense_force.json}. */
     public static final ResourceLocation DEFAULT_AURA = KN8Constants.id("defense_force");

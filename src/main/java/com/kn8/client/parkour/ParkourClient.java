@@ -1,0 +1,308 @@
+// src/main/java/com/kn8/client/parkour/ParkourClient.java
+package com.kn8.client.parkour;
+
+import org.lwjgl.glfw.GLFW;
+
+import com.kn8.KN8Constants;
+import com.kn8.common.network.KN8ClientHooks;
+import com.kn8.common.parkour.ParkourInputC2S;
+import com.kn8.common.parkour.ParkourMove;
+import com.kn8.common.parkour.ParkourProbe;
+import com.kn8.common.parkour.ParkourState;
+import com.kn8.common.parkour.ParkourStateS2C;
+import com.kn8.core.parkour.ParkourMath;
+import com.mojang.blaze3d.platform.InputConstants;
+
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.Input;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.phys.Vec3;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.MovementInputUpdateEvent;
+import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
+
+/**
+ * Parkour do jogador no cliente (0.5.0-E). So detecta e pede ({@link ParkourInputC2S}); o servidor decide. Quando o
+ * servidor aprova um estado continuo ({@link ParkourStateS2C}), este cliente aplica a fisica dele tick a tick com os
+ * numeros recebidos (o movimento do jogador e do cliente no Minecraft).
+ *
+ * <p>Comandos (Miguel pode trocar a tecla nas opcoes):</p>
+ * <ul>
+ *   <li>pular correndo contra um obstaculo: vault (baixo) ou escalada curta (ate 2,5 blocos);</li>
+ *   <li>C correndo no chao: salto longo;</li>
+ *   <li>C no ar: segura a borda a frente; sem borda, corre pela parede ao lado; de frente para a parede, escorrega;</li>
+ *   <li>pular na parede: wall-jump; pendurado: sobe; Shift: solta;</li>
+ *   <li>Shift correndo: slide; Shift ao cair de 4+ blocos: rolamento (so no servidor).</li>
+ * </ul>
+ *
+ * <p>Os alcances abaixo sao da deteccao do cliente (um pouco menores que o {@code probeReach} do servidor, que
+ * confere com folga); os numeros de jogo vem do config do servidor.</p>
+ */
+@EventBusSubscriber(modid = KN8Constants.MOD_ID, value = Dist.CLIENT)
+public final class ParkourClient {
+
+    public static final KeyMapping PARKOUR_KEY = new KeyMapping("key.kn8.parkour", InputConstants.Type.KEYSYM,
+            GLFW.GLFW_KEY_C, "key.categories.kn8");
+
+    /** Deteccao do cliente: distancia do obstaculo/parede e maior altura procurada. */
+    private static final double OBSTACLE_REACH = 0.6;
+    private static final double WALL_REACH = 0.45;
+    private static final double MAX_PROBE_HEIGHT = 2.6;
+    /** Borda segurada pelo cliente (o servidor confere com ledgeMin/MaxHeight). */
+    private static final double LEDGE_MIN = 0.9;
+    private static final double LEDGE_MAX = 2.2;
+    /** Segurando C no ar, tenta de novo a cada tantos ticks (sem inundar o servidor). */
+    private static final int RETRY_TICKS = 4;
+    /** Wall-jump ainda pedido tantos ticks depois de sair da parede (o servidor tem a propria folga). */
+    private static final int COYOTE_TICKS = 5;
+    /** Ticks sem parede/chao antes de soltar o estado localmente. */
+    private static final int LOST_TICKS = 3;
+    /** Empurrao contra a parede por tick (mantem o contato no wall-run e pendurado). */
+    private static final double STICK = 0.04;
+    /** Velocidade vertical maxima ao ajustar a altura pendurado. */
+    private static final double HANG_SNAP = 0.5;
+    /** Slide termina abaixo desta velocidade. */
+    private static final double SLIDE_MIN_SPEED = 0.08;
+
+    private static LocalPlayer boundPlayer;
+    private static ParkourStateS2C active = ParkourStateS2C.NONE;
+    private static int activeTicks;
+    private static int lostTicks;
+    private static int leftWallTicks = Integer.MAX_VALUE;
+    private static int retryIn;
+    private static boolean lastJump;
+    private static boolean lastShift;
+    private static boolean lastKey;
+    private static boolean wasSprinting;
+
+    private ParkourClient() {
+    }
+
+    /** Mod bus. */
+    public static void registerKeys(RegisterKeyMappingsEvent event) {
+        event.register(PARKOUR_KEY);
+    }
+
+    /** Chamado no setup do cliente. */
+    public static void install() {
+        KN8ClientHooks.register(ParkourStateS2C.TYPE, ParkourClient::onState);
+    }
+
+    /** Estado atual do jogador local (para HUD e testes). */
+    public static ParkourState state() {
+        return active.parkourState();
+    }
+
+    private static void onState(ParkourStateS2C payload) {
+        LocalPlayer player = Minecraft.getInstance().player;
+        ParkourState old = active.parkourState();
+        active = payload;
+        activeTicks = 0;
+        lostTicks = 0;
+        if (player == null) {
+            return;
+        }
+        if (payload.parkourState() == ParkourState.SLIDE) {
+            player.setForcedPose(Pose.SWIMMING);
+        } else if (old == ParkourState.SLIDE) {
+            player.setForcedPose(null);
+        }
+        if (old.onWall() && !payload.parkourState().onWall()) {
+            leftWallTicks = 0;
+        }
+    }
+
+    private static void send(ParkourMove move, int side) {
+        PacketDistributor.sendToServer(new ParkourInputC2S(move, side));
+    }
+
+    /** Solta o estado aqui sem esperar o servidor (pulo, Shift, perda da parede) e avisa o servidor. */
+    private static void endLocally(LocalPlayer player, boolean tellServer) {
+        ParkourState old = active.parkourState();
+        if (old == ParkourState.NONE) {
+            return;
+        }
+        if (old == ParkourState.SLIDE) {
+            player.setForcedPose(null);
+        }
+        if (old.onWall()) {
+            leftWallTicks = 0;
+        }
+        active = ParkourStateS2C.NONE;
+        if (tellServer) {
+            send(ParkourMove.STOP, 0);
+        }
+    }
+
+    // --- entrada (dentro do aiStep, antes do movimento) ---------------------------------------------------------
+
+    @SubscribeEvent
+    public static void onInput(MovementInputUpdateEvent event) {
+        Minecraft minecraft = Minecraft.getInstance();
+        if (!(event.getEntity() instanceof LocalPlayer player) || player != minecraft.player) {
+            return;
+        }
+        if (player != boundPlayer) {
+            // Jogador novo (login, respawn, dimensao): nada do anterior vale.
+            boundPlayer = player;
+            active = ParkourStateS2C.NONE;
+            leftWallTicks = Integer.MAX_VALUE;
+        }
+        Input input = event.getInput();
+        boolean key = minecraft.screen == null && PARKOUR_KEY.isDown();
+        boolean jumpPressed = input.jumping && !lastJump;
+        boolean shiftPressed = input.shiftKeyDown && !lastShift;
+        boolean keyPressed = key && !lastKey;
+        lastJump = input.jumping;
+        lastShift = input.shiftKeyDown;
+        lastKey = key;
+        boolean sprinting = player.isSprinting() || wasSprinting;
+        wasSprinting = player.isSprinting();
+        if (player.isSpectator() || player.getAbilities().flying || player.isPassenger() || player.isInWater()
+                || player.isFallFlying()) {
+            endLocally(player, true);
+            return;
+        }
+        ParkourState state = active.parkourState();
+        switch (state) {
+            case WALL_RUN, WALL_SLIDE -> {
+                if (jumpPressed) {
+                    endLocally(player, false);
+                    send(ParkourMove.WALL_JUMP, 0);
+                } else if (shiftPressed) {
+                    endLocally(player, true);
+                }
+                input.jumping = false;
+            }
+            case LEDGE_HANG -> {
+                if (jumpPressed) {
+                    endLocally(player, false);
+                    send(ParkourMove.LEDGE_CLIMB, 0);
+                } else if (shiftPressed) {
+                    endLocally(player, true);
+                }
+                input.forwardImpulse = 0.0F;
+                input.leftImpulse = 0.0F;
+                input.jumping = false;
+            }
+            case SLIDE -> {
+                if (!input.shiftKeyDown || jumpPressed) {
+                    endLocally(player, true);
+                }
+            }
+            case NONE -> idleInput(player, input, key, keyPressed, jumpPressed, shiftPressed, sprinting);
+        }
+    }
+
+    private static void idleInput(LocalPlayer player, Input input, boolean key, boolean keyPressed,
+            boolean jumpPressed, boolean shiftPressed, boolean sprinting) {
+        Vec3 forward = ParkourProbe.forward(player.getYRot());
+        if (player.onGround()) {
+            retryIn = 0;
+            if (jumpPressed && input.forwardImpulse > 0.0F) {
+                double height = ParkourProbe.obstacleHeight(player, forward, OBSTACLE_REACH, MAX_PROBE_HEIGHT);
+                if (height > player.maxUpStep()) {
+                    // O pulo vanilla sai junto; o impulso do servidor chega logo depois e o substitui.
+                    send(ParkourMove.VAULT, 0);
+                }
+            } else if (keyPressed && sprinting) {
+                send(ParkourMove.LONG_JUMP, 0);
+            } else if (shiftPressed && sprinting) {
+                send(ParkourMove.SLIDE, 0);
+            }
+            return;
+        }
+        if (jumpPressed && leftWallTicks <= COYOTE_TICKS) {
+            send(ParkourMove.WALL_JUMP, 0);
+            leftWallTicks = Integer.MAX_VALUE;
+            return;
+        }
+        if (!key) {
+            return;
+        }
+        if (!keyPressed && --retryIn > 0) {
+            return;
+        }
+        retryIn = RETRY_TICKS;
+        double ledge = ParkourProbe.obstacleHeight(player, forward, WALL_REACH, LEDGE_MAX);
+        if (ledge >= LEDGE_MIN) {
+            send(ParkourMove.LEDGE_GRAB, 0);
+            return;
+        }
+        int side = ParkourProbe.wallSide(player, WALL_REACH, 1);
+        Vec3 motion = player.getDeltaMovement();
+        if (side != 0 && sprinting && motion.horizontalDistanceSqr() > 0.01) {
+            send(ParkourMove.WALL_RUN, side);
+        } else if (ParkourProbe.wallAt(player, forward, WALL_REACH) && motion.y < 0.0) {
+            send(ParkourMove.WALL_SLIDE, 0);
+        }
+    }
+
+    // --- fisica dos estados (depois do tick do jogador: vale para o movimento do proximo tick) --------------------
+
+    @SubscribeEvent
+    public static void onClientTick(ClientTickEvent.Post event) {
+        LocalPlayer player = Minecraft.getInstance().player;
+        if (player == null || player != boundPlayer) {
+            return;
+        }
+        if (leftWallTicks < Integer.MAX_VALUE) {
+            leftWallTicks++;
+        }
+        ParkourState state = active.parkourState();
+        if (state == ParkourState.NONE) {
+            return;
+        }
+        if (activeTicks > active.maxTicks() + LOST_TICKS) {
+            endLocally(player, true);
+            return;
+        }
+        Vec3 toWall = new Vec3(-active.normalX(), 0.0, -active.normalZ());
+        Vec3 dir = new Vec3(active.dirX(), 0.0, active.dirZ());
+        Vec3 motion = player.getDeltaMovement();
+        boolean valid = switch (state) {
+            case WALL_RUN, WALL_SLIDE -> !player.onGround() && ParkourProbe.wallAt(player, toWall, WALL_REACH);
+            case LEDGE_HANG -> true;
+            case SLIDE -> true;
+            case NONE -> false;
+        };
+        lostTicks = valid ? 0 : lostTicks + 1;
+        if (lostTicks > LOST_TICKS) {
+            endLocally(player, true);
+            return;
+        }
+        switch (state) {
+            case WALL_RUN -> {
+                double vy = ParkourMath.wallRunVertical(activeTicks, active.maxTicks(), active.vertical());
+                Vec3 along = dir.scale(active.speed()).add(toWall.scale(STICK));
+                player.setDeltaMovement(along.x, vy, along.z);
+            }
+            case WALL_SLIDE -> {
+                double vy = ParkourMath.wallSlideVertical(motion.y, active.vertical());
+                player.setDeltaMovement(motion.x * 0.5 + toWall.x * STICK, vy, motion.z * 0.5 + toWall.z * STICK);
+            }
+            case LEDGE_HANG -> {
+                double vy = Math.max(-HANG_SNAP, Math.min(HANG_SNAP, active.vertical() - player.getY()));
+                player.setDeltaMovement(toWall.x * STICK, vy, toWall.z * STICK);
+            }
+            case SLIDE -> {
+                double speed = ParkourMath.slideSpeed(active.speed(), activeTicks, active.friction());
+                if (speed < SLIDE_MIN_SPEED) {
+                    endLocally(player, true);
+                    return;
+                }
+                player.setDeltaMovement(dir.x * speed, motion.y, dir.z * speed);
+            }
+            default -> {
+            }
+        }
+        player.resetFallDistance();
+        activeTicks++;
+    }
+}

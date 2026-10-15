@@ -13,6 +13,7 @@ import com.kn8.client.invasion.ClientInvasion;
 import com.kn8.client.menu.DefenseForceScreen;
 import com.kn8.client.menu.MenuInput;
 import com.kn8.client.net.ClientNetDebug;
+import com.kn8.client.parkour.ParkourClient;
 import com.kn8.client.render.CarcassRenderer;
 import com.kn8.client.render.HeldWeaponPoses;
 import com.kn8.client.render.KaijuRenderer;
@@ -50,6 +51,7 @@ public final class KN8Client {
         VfxEffects.install();
         DefenseForceScreen.install();
         ClientInvasion.install();
+        ParkourClient.install();
         // M6: HUD de poder.
         modEventBus.addListener(KN8Hud::register);
         // 0.1-B: barra de vida do kaiju mirado.
@@ -70,6 +72,8 @@ public final class KN8Client {
         // 0.2: menu da Forca de Defesa (tecla M).
         modEventBus.addListener(MenuInput::registerKeys);
         modEventBus.addListener(ReleaseInput::registerKeys);
+        // 0.5.0-E: tecla de parkour (C).
+        modEventBus.addListener(ParkourClient::registerKeys);
     }
 
     /** Um renderer GeckoLib por especie; a sombra acompanha mais ou menos a largura da hitbox registrada. */
