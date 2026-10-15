@@ -6,7 +6,7 @@
   "knockback_resistance": 0.5,
   "release": 40,
   "max_release": 90,
-  "kaiju_damage": 0.65,
+  "kaiju_damage": 0.75,
   "aura": "kn8:mina_command",
   "weapon": "kn8:mina_cannon",
   "techniques": {
@@ -54,7 +54,7 @@
     "charged_cannon": {
       "type": "slash",
       "hits": [
-        6.0
+        7.0
       ],
       "windup_ticks": 40,
       "duration_ticks": 52,
@@ -76,7 +76,7 @@
     "anti_giant_shot": {
       "type": "slash",
       "hits": [
-        18.0
+        24.0
       ],
       "windup_ticks": 60,
       "duration_ticks": 74,

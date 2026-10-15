@@ -31,6 +31,9 @@ public class KaijuNo9Entity extends KaijuEntity {
     UUID reviving;
     long reviveEndsAt;
     long nextReviveAt;
+    /** Leitura de tiro (esquiva): proxima vez que pode saltar e o ultimo tiro ja avaliado (uma tentativa por tiro). */
+    long nextDodgeAt;
+    int lastReadProjectile = -1;
     boolean fled;
     final List<UUID> revived = new ArrayList<>();
     /** 0.3: carcacas na fila da ressurreicao em massa e o tick do proximo levante. */

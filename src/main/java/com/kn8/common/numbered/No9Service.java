@@ -8,6 +8,7 @@ import java.util.Optional;
 import com.kn8.KN8Constants;
 import com.kn8.common.boss.BossService;
 import com.kn8.common.career.CareerService;
+import com.kn8.common.combat.SlashProjectile;
 import com.kn8.common.data.KN8Data;
 import com.kn8.common.data.def.NumberedDef;
 import com.kn8.common.invasion.Invasion;
@@ -85,6 +86,7 @@ public final class No9Service {
         }
         long now = level.getGameTime();
         regenerate(level, no9, def.regeneration());
+        def.dodge().ifPresent(dodge -> dodge(level, no9, dodge, now));
         if (tickForms(level, no9, def, now)) {
             return;
         }
@@ -110,6 +112,51 @@ public final class No9Service {
         });
         if (now >= no9.nextReviveAt && no9.revived.size() < def.maxRevivedAlive() && !no9.isUsingAbility()) {
             nearestCarcass(level, no9, def).ifPresent(carcass -> startRevive(level, no9, def, carcass, now));
+        }
+    }
+
+    /**
+     * Leitura de tiro (Miguel, 2026-10-15): o No. 9 ve o tiro lento e pesado chegando (o canhao da Mina) e salta para o
+     * lado. O No. 10, so de combate fisico, nao tem isso. Uma tentativa por tiro (sorteio com {@code chance}).
+     */
+    static void dodge(ServerLevel level, KaijuNo9Entity no9, NumberedDef.Dodge dodge, long now) {
+        if (now < no9.nextDodgeAt || no9.reviving != null || no9.isAbsorbing()) {
+            return;
+        }
+        Vec3 center = no9.getBoundingBox().getCenter();
+        double reach = no9.getBbWidth() * 0.5 + 1.0;
+        for (SlashProjectile shot : level.getEntitiesOfClass(SlashProjectile.class,
+                no9.getBoundingBox().inflate(dodge.readRadius()),
+                shot -> shot.isExplosive() && shot.getOwner() instanceof LivingEntity owner
+                        && !(owner instanceof KaijuEntity))) {
+            Vec3 velocity = shot.getDeltaMovement();
+            double speed = velocity.length();
+            if (speed < 1.0E-3 || speed > dodge.maxProjectileSpeed() || shot.getId() == no9.lastReadProjectile) {
+                continue;
+            }
+            Vec3 toKaiju = center.subtract(shot.position());
+            Vec3 heading = velocity.scale(1.0 / speed);
+            double along = toKaiju.dot(heading);
+            // Vindo na direcao dele: o ponto mais perto da trajetoria passa dentro do corpo (mais uma folga).
+            if (along <= 0.0 || toKaiju.subtract(heading.scale(along)).length() > reach) {
+                continue;
+            }
+            no9.lastReadProjectile = shot.getId();
+            if (no9.getRandom().nextFloat() >= dodge.chance()) {
+                continue;
+            }
+            Vec3 side = new Vec3(-heading.z, 0.0, heading.x).normalize();
+            if (side.dot(toKaiju) < 0.0) {
+                side = side.scale(-1.0);
+            }
+            if (no9.getRandom().nextBoolean()) {
+                side = side.scale(-1.0);
+            }
+            no9.setDeltaMovement(side.scale(dodge.leapSpeed()).add(0.0, 0.35, 0.0));
+            no9.hurtMarked = true;
+            no9.nextDodgeAt = now + dodge.cooldownTicks();
+            level.sendParticles(ParticleTypes.CLOUD, center.x, no9.getY() + 0.2, center.z, 8, 0.4, 0.1, 0.4, 0.05);
+            return;
         }
     }
 

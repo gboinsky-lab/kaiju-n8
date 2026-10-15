@@ -22,7 +22,7 @@ public record NumberedDef(Map<ResourceLocation, ResourceLocation> revive, float 
         int reviveCooldownTicks, int maxRevivedAlive, float commandRadius, float fleeHealth, int fleeMerit,
         Map<ResourceLocation, ResourceLocation> reviveBoss, float massReviveRadius, int massReviveCastTicks,
         int massReviveIntervalTicks, Regeneration regeneration, Optional<Transform> transform, List<Absorb> absorb,
-        Optional<Hardening> hardening, Optional<Adaptation> adaptation) {
+        Optional<Hardening> hardening, Optional<Adaptation> adaptation, Optional<Dodge> dodge) {
 
     /**
      * Mudanca de forma (0.6-E, No. 10 pequeno -> gigante; Miguel: "depois de um tempo na batalha"): depois de
@@ -127,6 +127,24 @@ public record NumberedDef(Map<ResourceLocation, ResourceLocation> revive, float 
         }
     }
 
+    /**
+     * Leitura de tiro (Miguel, 2026-10-15: "o No. 9 e inteligente e sabe fazer estrategias"): um tiro pesado que
+     * explode (canhao da Mina; cortes do Hoshina e balas comuns nao contam) que vem na direcao dele a menos de {@code read_radius} blocos, com no maximo
+     * {@code max_projectile_speed} blocos/tick (tiros lentos e pesados, como o canhao da Mina; bala rapida nao da
+     * tempo), faz o No. 9 saltar para o lado com chance {@code chance} (uma tentativa por tiro), no maximo uma vez a
+     * cada {@code cooldown_ticks}.
+     */
+    public record Dodge(float readRadius, float maxProjectileSpeed, float chance, int cooldownTicks, float leapSpeed) {
+        public static final Codec<Dodge> CODEC = RecordCodecBuilder.create(i -> i.group(
+                Codec.floatRange(1.0F, 64.0F).optionalFieldOf("read_radius", 14.0F).forGetter(Dodge::readRadius),
+                Codec.floatRange(0.1F, 10.0F).optionalFieldOf("max_projectile_speed", 3.0F)
+                        .forGetter(Dodge::maxProjectileSpeed),
+                Codec.floatRange(0.0F, 1.0F).fieldOf("chance").forGetter(Dodge::chance),
+                DefCodecs.TICKS.optionalFieldOf("cooldown_ticks", 40).forGetter(Dodge::cooldownTicks),
+                Codec.floatRange(0.1F, 4.0F).optionalFieldOf("leap_speed", 1.1F).forGetter(Dodge::leapSpeed)
+        ).apply(i, Dodge::new));
+    }
+
     public static final Codec<NumberedDef> CODEC = RecordCodecBuilder.create(i -> i.group(
             Codec.unboundedMap(ResourceLocation.CODEC, ResourceLocation.CODEC).optionalFieldOf("revive", Map.of())
                     .forGetter(NumberedDef::revive),
@@ -149,11 +167,13 @@ public record NumberedDef(Map<ResourceLocation, ResourceLocation> revive, float 
                     .forGetter(NumberedDef::regeneration),
             Transform.CODEC.optionalFieldOf("transform").forGetter(NumberedDef::transform),
             Absorb.CODEC.listOf().optionalFieldOf("absorb", List.of()).forGetter(NumberedDef::absorb),
-            // O RecordCodecBuilder aceita 16 campos: endurecimento e adaptacao vao juntos num par.
-            Codec.mapPair(Hardening.CODEC.optionalFieldOf("hardening"), Adaptation.CODEC.optionalFieldOf("adaptation"))
-                    .forGetter(def -> Pair.of(def.hardening(), def.adaptation()))
+            // O RecordCodecBuilder aceita 16 campos: endurecimento, adaptacao e esquiva vao juntos em pares.
+            Codec.mapPair(Hardening.CODEC.optionalFieldOf("hardening"), Codec.mapPair(
+                    Adaptation.CODEC.optionalFieldOf("adaptation"), Dodge.CODEC.optionalFieldOf("dodge")))
+                    .forGetter(def -> Pair.of(def.hardening(), Pair.of(def.adaptation(), def.dodge())))
     ).apply(i, (revive, reviveRadius, reviveCast, reviveCooldown, maxRevived, command, flee, fleeMerit, reviveBoss,
             massRadius, massCast, massInterval, regeneration, transform, absorb, defense) -> new NumberedDef(revive,
             reviveRadius, reviveCast, reviveCooldown, maxRevived, command, flee, fleeMerit, reviveBoss, massRadius,
-            massCast, massInterval, regeneration, transform, absorb, defense.getFirst(), defense.getSecond())));
+            massCast, massInterval, regeneration, transform, absorb, defense.getFirst(), defense.getSecond().getFirst(),
+            defense.getSecond().getSecond())));
 }

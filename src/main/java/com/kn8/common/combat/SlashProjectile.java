@@ -190,6 +190,11 @@ public class SlashProjectile extends Projectile {
         discard();
     }
 
+    /** Tiro pesado que explode (canhao da Mina): o No. 9 le e desvia (esquiva do numbered). */
+    public boolean isExplosive() {
+        return explosionRadius > 0.0F;
+    }
+
     /**
      * 0.7-C: municao congelante (Lentidao do JSON) em quem o tiro acertou. 2026-10-15: no kaiju, a area congelada
      * expoe o nucleo e fica vulneravel (todo dano, de qualquer aliado, multiplicado enquanto dura o gelo).
