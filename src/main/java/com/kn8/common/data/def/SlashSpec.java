@@ -15,9 +15,15 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
  * arco; {@code explosion_radius} (maior que 0) faz o projetil explodir no primeiro alvo, no primeiro bloco ou no fim
  * do alcance, ferindo quem estiver no raio (aliados de fora, sem quebrar blocos). {@code slow_ticks}/
  * {@code slow_level}: Lentidao em quem for atingido (municao congelante do Reno).</p>
+ *
+ * <p>Gelo do Reno (Miguel, 2026-10-15: "deixa o inimigo paralisado ou expoe pontos fracos congelando areas"): no kaiju
+ * atingido, {@code expose_core_ticks} expoe o nucleo e {@code vulnerable} multiplica todo dano que ele recebe de
+ * qualquer um durante {@code slow_ticks} (a area congelada fica exposta para os aliados). {@code slow_level} 6-7 quase
+ * paralisa.</p>
  */
 public record SlashSpec(int count, float spreadDegrees, float rollDegrees, float speed, float range, float width,
-        int color, boolean bullet, float explosionRadius, int slowTicks, int slowLevel) {
+        int color, boolean bullet, float explosionRadius, int slowTicks, int slowLevel, int exposeCoreTicks,
+        float vulnerable) {
 
     public static final Codec<SlashSpec> CODEC = RecordCodecBuilder.create(i -> i.group(
             Codec.intRange(1, 8).optionalFieldOf("count", 1).forGetter(SlashSpec::count),
@@ -31,8 +37,11 @@ public record SlashSpec(int count, float spreadDegrees, float rollDegrees, float
             Codec.floatRange(0.0F, 16.0F).optionalFieldOf("explosion_radius", 0.0F)
                     .forGetter(SlashSpec::explosionRadius),
             Codec.intRange(0, 600).optionalFieldOf("slow_ticks", 0).forGetter(SlashSpec::slowTicks),
-            Codec.intRange(1, 5).optionalFieldOf("slow_level", 1).forGetter(SlashSpec::slowLevel)
+            Codec.intRange(1, 7).optionalFieldOf("slow_level", 1).forGetter(SlashSpec::slowLevel),
+            Codec.intRange(0, 600).optionalFieldOf("expose_core_ticks", 0).forGetter(SlashSpec::exposeCoreTicks),
+            Codec.floatRange(1.0F, 3.0F).optionalFieldOf("vulnerable", 1.0F).forGetter(SlashSpec::vulnerable)
     ).apply(i, SlashSpec::new));
 
-    public static final SlashSpec DEFAULT = new SlashSpec(1, 0.0F, 0.0F, 1.6F, 10.0F, 1.2F, 0xB070FF, false, 0.0F, 0, 1);
+    public static final SlashSpec DEFAULT = new SlashSpec(1, 0.0F, 0.0F, 1.6F, 10.0F, 1.2F, 0xB070FF, false, 0.0F, 0, 1,
+            0, 1.0F);
 }

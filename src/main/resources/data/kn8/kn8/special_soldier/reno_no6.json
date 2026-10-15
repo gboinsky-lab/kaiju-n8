@@ -6,7 +6,7 @@
   "knockback_resistance": 0.5,
   "release": 50,
   "max_release": 100,
-  "kaiju_damage": 0.75,
+  "kaiju_damage": 0.55,
   "aura": "kn8:reno_no6_ice",
   "weapon": "kn8:rifle",
   "techniques": {
@@ -29,7 +29,8 @@
         "color": 11069183,
         "bullet": true,
         "slow_ticks": 60,
-        "slow_level": 2
+        "slow_level": 2,
+        "vulnerable": 1.15
       }
     },
     "freeze_burst": {
@@ -52,7 +53,9 @@
         "bullet": true,
         "explosion_radius": 3.5,
         "slow_ticks": 100,
-        "slow_level": 4
+        "slow_level": 7,
+        "expose_core_ticks": 100,
+        "vulnerable": 1.4
       },
       "honju_priority": 2
     },
@@ -75,7 +78,8 @@
         "width": 1.0,
         "color": 12578815,
         "slow_ticks": 80,
-        "slow_level": 3
+        "slow_level": 6,
+        "vulnerable": 1.25
       }
     },
     "multi_freeze": {
@@ -98,7 +102,9 @@
         "bullet": true,
         "spread_degrees": 20.0,
         "slow_ticks": 80,
-        "slow_level": 3
+        "slow_level": 3,
+        "expose_core_ticks": 60,
+        "vulnerable": 1.25
       }
     },
     "auxiliary_cannons": {

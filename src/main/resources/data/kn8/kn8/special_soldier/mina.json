@@ -17,7 +17,7 @@
       ],
       "windup_ticks": 10,
       "duration_ticks": 18,
-      "cooldown_ticks": 40,
+      "cooldown_ticks": 60,
       "min_range": 4.0,
       "max_range": 48.0,
       "priority": 1,
@@ -33,11 +33,11 @@
     "cannon_shot": {
       "type": "slash",
       "hits": [
-        1.0
+        2.2
       ],
-      "windup_ticks": 14,
-      "duration_ticks": 26,
-      "cooldown_ticks": 50,
+      "windup_ticks": 20,
+      "duration_ticks": 32,
+      "cooldown_ticks": 80,
       "min_range": 5.0,
       "max_range": 40.0,
       "priority": 2,
@@ -54,11 +54,11 @@
     "charged_cannon": {
       "type": "slash",
       "hits": [
-        3.0
+        6.0
       ],
-      "windup_ticks": 30,
-      "duration_ticks": 42,
-      "cooldown_ticks": 140,
+      "windup_ticks": 40,
+      "duration_ticks": 52,
+      "cooldown_ticks": 180,
       "min_range": 6.0,
       "max_range": 44.0,
       "priority": 3,
@@ -76,10 +76,10 @@
     "anti_giant_shot": {
       "type": "slash",
       "hits": [
-        10.0
+        18.0
       ],
-      "windup_ticks": 50,
-      "duration_ticks": 64,
+      "windup_ticks": 60,
+      "duration_ticks": 74,
       "cooldown_ticks": 300,
       "min_range": 8.0,
       "max_range": 56.0,

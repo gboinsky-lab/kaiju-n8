@@ -69,6 +69,8 @@ public class SlashProjectile extends Projectile {
     private float explosionRadius;
     private int slowTicks;
     private int slowLevel = 1;
+    private int exposeCoreTicks;
+    private float vulnerable = 1.0F;
 
     public SlashProjectile(EntityType<? extends SlashProjectile> type, Level level) {
         super(type, level);
@@ -99,6 +101,8 @@ public class SlashProjectile extends Projectile {
             slash.explosionRadius = spec.explosionRadius();
             slash.slowTicks = spec.slowTicks();
             slash.slowLevel = spec.slowLevel();
+            slash.exposeCoreTicks = spec.exposeCoreTicks();
+            slash.vulnerable = spec.vulnerable();
             slash.setPos(owner.getEyePosition().subtract(0, 0.3, 0).add(heading.scale(FORWARD_SPAWN)));
             slash.setDeltaMovement(heading.scale(spec.speed()));
             slash.setYRot(yaw + offset);
@@ -186,10 +190,21 @@ public class SlashProjectile extends Projectile {
         discard();
     }
 
-    /** 0.7-C: municao congelante (Lentidao do JSON) em quem o tiro acertou. */
+    /**
+     * 0.7-C: municao congelante (Lentidao do JSON) em quem o tiro acertou. 2026-10-15: no kaiju, a area congelada
+     * expoe o nucleo e fica vulneravel (todo dano, de qualquer aliado, multiplicado enquanto dura o gelo).
+     */
     private void slow(LivingEntity target) {
         if (slowTicks > 0) {
             target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, slowTicks, slowLevel - 1));
+        }
+        if (target instanceof KaijuEntity kaiju) {
+            if (exposeCoreTicks > 0) {
+                kaiju.exposeCore(exposeCoreTicks);
+            }
+            if (vulnerable > 1.0F) {
+                kaiju.markVulnerable(Math.max(slowTicks, exposeCoreTicks), vulnerable);
+            }
         }
     }
 

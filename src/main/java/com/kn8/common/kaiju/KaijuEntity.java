@@ -152,6 +152,8 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
     private float coreHealth = -1;
     private long lastExplosionTick = Long.MIN_VALUE;
     private long coreExposedUntil = Long.MIN_VALUE;
+    private long vulnerableUntil = Long.MIN_VALUE;
+    private float vulnerableMultiplier = 1.0F;
     private long nextPathClearTick;
     private final ActionTimeline abilityTimeline = new ActionTimeline();
     private final Map<ResourceLocation, Long> abilityReadyAt = new HashMap<>();
@@ -329,6 +331,28 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
 
     public boolean syncedCoreExposed() {
         return entityData.get(CORE_EXPOSED);
+    }
+
+    /**
+     * Gelo do Reno (2026-10-15): por {@code ticks}, todo dano que o kaiju recebe (de qualquer um) e multiplicado por
+     * {@code multiplier}; o maior multiplicador ativo vale.
+     */
+    public void markVulnerable(int ticks, float multiplier) {
+        long now = level().getGameTime();
+        if (now >= vulnerableUntil || multiplier >= vulnerableMultiplier) {
+            vulnerableMultiplier = multiplier;
+        }
+        vulnerableUntil = Math.max(vulnerableUntil, now + ticks);
+    }
+
+    public float vulnerability() {
+        return level().getGameTime() < vulnerableUntil ? vulnerableMultiplier : 1.0F;
+    }
+
+    @Override
+    protected float getDamageAfterArmorAbsorb(DamageSource source, float amount) {
+        // Aplicado aqui, nao no actuallyHurt: no NeoForge ele usa o conteiner de dano (bug da pele endurecida, 0.7-E).
+        return super.getDamageAfterArmorAbsorb(source, amount) * vulnerability();
     }
 
     /** GDD secao 12: golpe pesado expoe o nucleo por alguns ticks (multiplicador extra do config). */

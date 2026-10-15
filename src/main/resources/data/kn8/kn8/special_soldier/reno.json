@@ -70,7 +70,9 @@
         "color": 9427199,
         "bullet": true,
         "slow_ticks": 80,
-        "slow_level": 3
+        "slow_level": 5,
+        "expose_core_ticks": 60,
+        "vulnerable": 1.3
       }
     },
     "suppression": {
@@ -93,7 +95,8 @@
         "bullet": true,
         "spread_degrees": 12.0,
         "slow_ticks": 40,
-        "slow_level": 1
+        "slow_level": 1,
+        "vulnerable": 1.1
       }
     },
     "butt_strike": {
