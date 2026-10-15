@@ -24,13 +24,31 @@ class Piece(Build):
     def __init__(self, size, seed, floor=FLOOR):
         super().__init__(size, seed)
         self.floor_block = floor
+        # Conteudo de uma peca pequena desenhado dentro de uma grande (alas duplas, centro grande).
+        self.origin = (0, 0)
+        # Encaixes regravados no fim: um chao ou caminho desenhado depois nao pode apagar o jigsaw.
+        self.jigsaws = []
+
+    def set(self, x, y, z, name, props=None, nbt=None):
+        super().set(x + self.origin[0], y, z + self.origin[1], name, props, nbt)
+
+    def get(self, x, y, z):
+        return super().get(x + self.origin[0], y, z + self.origin[1])
+
+    def entity(self, x, y, z, nbt):
+        super().entity(x + self.origin[0], y, z + self.origin[1], nbt)
 
     def jigsaw(self, x, z, facing, name, target, pool, final=FLOOR):
-        self.set(x, 0, z, "minecraft:jigsaw", {"orientation": f"{facing}_up"},
+        entry = (x + self.origin[0], z + self.origin[1], {"orientation": f"{facing}_up"},
                  {"id": "minecraft:jigsaw", "name": name, "target": target, "pool": pool, "final_state": final,
                   "joint": "aligned", "placement_priority": 0, "selection_priority": 0})
+        self.jigsaws.append(entry)
+        Build.set(self, entry[0], 0, entry[1], "minecraft:jigsaw", entry[2], entry[3])
 
     def finish(self, name):
+        self.origin = (0, 0)
+        for x, z, props, nbt in self.jigsaws:
+            Build.set(self, x, 0, z, "minecraft:jigsaw", props, nbt)
         w, h, d = self.size
         for x in range(w):
             for z in range(d):
@@ -100,6 +118,13 @@ def stairs(facing):
 
 def core():
     b = Piece((25, 22, 25), 101)
+    content_core(b)
+    for x, z, facing in ((12, 0, "north"), (12, 24, "south"), (0, 12, "west"), (24, 12, "east")):
+        b.jigsaw(x, z, facing, "kn8:base_core", "kn8:base_wing", f"{POOL}/wings", ROAD)
+    b.finish("defense_base/core")
+
+
+def content_core(b):
     # Ruas das quatro saidas ate o QG e praca em volta.
     for i in range(25):
         for w in range(10, 15):
@@ -183,14 +208,10 @@ def core():
     for y in (7, 8, 9):
         for dz, color in ((-1, "blue"), (-2, "white" if y == 8 else "blue"), (-3, "blue")):
             b.set(20, y, 7 + dz, f"minecraft:{color}_wool")
-    # Saidas para as alas (jigsaw no meio de cada lado, virado para fora).
-    for x, z, facing in ((12, 0, "north"), (12, 24, "south"), (0, 12, "west"), (24, 12, "east")):
-        b.jigsaw(x, z, facing, "kn8:base_core", "kn8:base_wing", f"{POOL}/wings", ROAD)
     # Guardas nas portas do QG.
     b.entity(12, 1, 5, soldier("rifle", "normal", 180.0))
     b.entity(12, 1, 19, soldier("rifle", "normal", 0.0))
     b.entity(5, 1, 12, soldier("pistol", "normal", 90.0))
-    b.finish("defense_base/core")
 
 
 # --- alas -------------------------------------------------------------------------------------------------------
@@ -211,6 +232,11 @@ def wing(name, seed):
 
 def wing_barracks():
     b = wing("barracks", 111)
+    content_barracks(b)
+    b.finish("defense_base/wing_barracks")
+
+
+def content_barracks(b):
     for bx0, bx1 in ((1, 8), (16, 23)):
         b.building(bx0, 2, bx1, 16, 5, wall="minecraft:light_gray_concrete", stripe="minecraft:green_concrete",
                    door=("east" if bx0 == 1 else "west", 8, 10))
@@ -227,11 +253,15 @@ def wing_barracks():
     b.lamp_post(14, 2)
     b.entity(12, 1, 17, soldier("rifle", "normal", 0.0))
     b.entity(9, 1, 9, soldier("sword", "low", 90.0))
-    b.finish("defense_base/wing_barracks")
 
 
 def wing_armory():
     b = wing("armory", 112)
+    content_armory(b)
+    b.finish("defense_base/wing_armory")
+
+
+def content_armory(b):
     b.building(1, 2, 9, 15, 6, wall="minecraft:gray_concrete", stripe="minecraft:orange_concrete",
                door=("east", 7, 10))
     b.set(2, 1, 4, "kn8:defense_workbench", {"facing": "east"})
@@ -253,11 +283,15 @@ def wing_armory():
     b.fill(17, 1, 13, 23, 1, 15, "minecraft:barrel", {"facing": "up", "open": "false"})
     b.entity(12, 1, 17, soldier("rifle", "normal", 0.0))
     b.entity(11, 1, 6, soldier("pistol", "normal", 270.0))
-    b.finish("defense_base/wing_armory")
 
 
 def wing_training():
     b = wing("training", 113)
+    content_training(b)
+    b.finish("defense_base/wing_training")
+
+
+def content_training(b):
     b.fill(1, 0, 1, 9, 0, 17, "minecraft:coarse_dirt")
     for z in (3, 6, 9):
         b.entity(3, 1, z, {"id": "kn8:training_dummy", "Rotation": [Float(90.0), Float(0.0)]})
@@ -279,11 +313,15 @@ def wing_training():
     b.lamp_post(14, 1)
     b.entity(12, 1, 17, soldier("rifle", "normal", 0.0))
     b.entity(6, 1, 12, soldier("knife", "high", 270.0))
-    b.finish("defense_base/wing_training")
 
 
 def wing_hangar():
     b = wing("hangar", 114)
+    content_hangar(b)
+    b.finish("defense_base/wing_hangar")
+
+
+def content_hangar(b):
     # Heliporto.
     b.fill(1, 0, 2, 9, 0, 10, "minecraft:black_concrete")
     for z in range(4, 9):
@@ -307,11 +345,15 @@ def wing_hangar():
         b.set(22, 1, z, "minecraft:barrel", {"facing": "up", "open": "false"})
     b.set(22, 1, 14, "minecraft:lava_cauldron")
     b.entity(12, 1, 17, soldier("rifle", "normal", 0.0))
-    b.finish("defense_base/wing_hangar")
 
 
 def wing_medical():
     b = wing("medical", 115)
+    content_medical(b)
+    b.finish("defense_base/wing_medical")
+
+
+def content_medical(b):
     b.building(2, 2, 22, 13, 5, wall="minecraft:white_concrete", stripe="minecraft:red_concrete",
                door=("south", 11, 13))
     for x in range(4, 21, 3):
@@ -325,7 +367,6 @@ def wing_medical():
     for x, z in ((12, 6), (12, 7), (12, 8), (11, 7), (13, 7)):
         b.set(x, 6, z, "minecraft:red_concrete")
     b.entity(12, 1, 17, soldier("rifle", "normal", 0.0))
-    b.finish("defense_base/wing_medical")
 
 
 # --- cantos -----------------------------------------------------------------------------------------------------
@@ -342,8 +383,16 @@ def corner(name, side):
     else:
         b.jigsaw(19, 10, "east", "kn8:base_corner", "kn8:base_side", "minecraft:empty")
     # Torre de vigia no canto de fora.
-    tx = 14 if side > 0 else 1
-    tz = 14
+    tower(b, 14 if side > 0 else 1, 14)
+    # Caixas de suprimento e um poste no patio do canto.
+    b.lamp_post(9, 9)
+    for x, z in ((5, 5), (6, 5), (5, 6)):
+        b.set(x, 1, z, "minecraft:spruce_planks")
+    b.finish(f"defense_base/{name}")
+
+
+def tower(b, tx, tz):
+    """Torre de vigia 5 x 5 com escada, plataforma a 13, sino, holofote e soldado."""
     for x, z in ((tx, tz), (tx + 4, tz), (tx, tz + 4), (tx + 4, tz + 4)):
         b.fill(x, 1, z, x, 12, z, "minecraft:polished_deepslate")
     b.fill(tx, 13, tz, tx + 4, 13, tz + 4, "minecraft:smooth_stone")
@@ -358,11 +407,6 @@ def corner(name, side):
     for x, z in ((tx, tz), (tx + 4, tz), (tx, tz + 4), (tx + 4, tz + 4)):
         b.set(x, 15, z, "minecraft:polished_deepslate")
     b.entity(tx + 2, 14, tz + 3, soldier("rifle", "normal", 0.0))
-    # Caixas de suprimento e um poste no patio do canto.
-    b.lamp_post(9, 9)
-    for x, z in ((5, 5), (6, 5), (5, 6)):
-        b.set(x, 1, z, "minecraft:spruce_planks")
-    b.finish(f"defense_base/{name}")
 
 
 # --- worldgen e loot ------------------------------------------------------------------------------------------
@@ -417,6 +461,265 @@ def worldgen():
             "rolls": {"type": "minecraft:uniform", "min": rolls[0], "max": rolls[1]}, "entries": entries}]})
 
 
+# --- base grande (construcoes C2) -------------------------------------------------------------------------------
+# Mesmo encaixe da base pequena em escala maior: centro 51 x 51, alas 51 x 30 (duas alas pequenas lado a lado),
+# cantos 30 x 30. A saida "sul" do centro leva a arena de treino (111 x 50), que ocupa a ala e os dois cantos dela.
+
+LARGE = "defense_base_large"
+CONTENTS = {"barracks": "content_barracks", "armory": "content_armory", "training": "content_training",
+            "hangar": "content_hangar", "medical": "content_medical"}
+LARGE_WINGS = [("barracks", "armory", 3), ("training", "medical", 2), ("hangar", "barracks", 2),
+               ("armory", "training", 2), ("medical", "hangar", 1)]
+
+
+def half_road(b):
+    """Rua da ala pequena (o conteudo nao desenha a rua; a moldura pequena desenhava)."""
+    for z in range(20):
+        for x in range(10, 15):
+            b.set(x, 0, z, ROAD)
+
+
+def core_large():
+    b = Piece((51, 22, 51), 131)
+    for i in range(51):
+        for w in range(23, 28):
+            b.set(i, 0, w, ROAD)
+            b.set(w, 0, i, ROAD)
+    b.origin = (13, 13)
+    content_core(b)
+    b.origin = (0, 0)
+    # Refeitorio (noroeste): mesas longas e cozinha.
+    b.building(2, 2, 18, 11, 5, wall="minecraft:light_gray_concrete", stripe="minecraft:yellow_concrete",
+               door=("south", 9, 11))
+    for z in (4, 7):
+        b.fill(4, 1, z, 16, 1, z, "minecraft:spruce_slab", {"type": "top", "waterlogged": "false"})
+    b.set(4, 1, 9, "minecraft:smoker", {"facing": "north", "lit": "false"})
+    b.set(5, 1, 9, "minecraft:smoker", {"facing": "north", "lit": "false"})
+    b.chest(16, 1, 9, "kn8:chests/base_barracks", "north")
+    # Garagem (nordeste): tres caminhoes cobertos.
+    b.fill(32, 1, 2, 48, 6, 2, "minecraft:gray_concrete")
+    b.fill(32, 6, 2, 48, 6, 12, "minecraft:gray_concrete")
+    for x in (32, 48):
+        b.fill(x, 1, 2, x, 5, 12, "minecraft:gray_concrete")
+    for tx in (34, 39, 44):
+        b.fill(tx, 1, 4, tx + 2, 1, 10, "minecraft:black_concrete")
+        b.fill(tx, 2, 4, tx + 2, 3, 6, "minecraft:green_terracotta")
+        b.fill(tx, 2, 7, tx + 2, 3, 10, "minecraft:green_concrete")
+        b.fill(tx, 3, 4, tx + 2, 3, 4, "minecraft:glass")
+    # Torre de radio (sudoeste): treliça alta com antena e luz de aviso.
+    for y in range(1, 20):
+        for x, z in ((6, 40), (10, 40), (6, 44), (10, 44)):
+            b.set(x, y, z, "minecraft:iron_bars" if y % 4 else "minecraft:polished_andesite")
+    b.fill(6, 20, 40, 10, 20, 44, "minecraft:smooth_stone_slab", {"type": "bottom", "waterlogged": "false"})
+    b.set(8, 21, 42, "minecraft:lightning_rod", {"facing": "up", "powered": "false", "waterlogged": "false"})
+    b.set(8, 20, 42, "minecraft:redstone_lamp", {"lit": "false"})
+    b.building(13, 38, 20, 47, 4, wall="minecraft:white_concrete", stripe="minecraft:cyan_concrete",
+               door=("north", 15, 17))
+    b.chest(18, 1, 45, "kn8:chests/base_command", "north")
+    # Patio de formatura (sudeste): bandeiras e soldados em fila.
+    b.fill(31, 0, 31, 48, 0, 48, "minecraft:polished_andesite")
+    for x in (33, 39, 45):
+        b.fill(x, 1, 47, x, 8, 47, "minecraft:iron_bars")
+        for y in (6, 7, 8):
+            b.set(x + 1, y, 47, "minecraft:blue_wool" if y != 7 else "minecraft:white_wool")
+    for x in (34, 37, 40, 43):
+        b.entity(x, 1, 38, soldier("rifle", "normal", 180.0))
+    for x, z in ((2, 22), (2, 28), (48, 22), (48, 28), (22, 2), (28, 2), (22, 48), (28, 48)):
+        b.lamp_post(x, z)
+    for x, z, facing, pool in ((25, 0, "north", "large_wings"), (0, 25, "west", "large_wings"),
+                               (50, 25, "east", "large_wings"), (25, 50, "south", "large_arena")):
+        b.jigsaw(x, z, facing, "kn8:base_core_l", "kn8:base_wing_l", f"{POOL}/{pool}", ROAD)
+    b.finish(f"{LARGE}/core")
+
+
+def wing_large(a, c, seed):
+    b = Piece((51, 16, 30), seed)
+    b.origin = (0, 0)
+    half_road(b)
+    globals()[CONTENTS[a]](b)
+    b.origin = (26, 0)
+    half_road(b)
+    globals()[CONTENTS[c]](b)
+    b.origin = (0, 0)
+    for z in range(30):
+        b.set(25, 0, z, ROAD)
+    for z in range(20, 30):
+        for x in range(23, 28):
+            b.set(x, 0, z, ROAD)
+    for x in range(51):
+        for z in (20, 21):
+            b.set(x, 0, z, ROAD)
+    # Estacionamento e caixas na faixa de tras.
+    for x in range(2, 21, 4):
+        b.fill(x, 0, 23, x, 0, 27, "minecraft:white_concrete")
+    for x in (3, 11):
+        b.fill(x, 1, 24, x + 2, 1, 26, "minecraft:black_concrete")
+        b.fill(x, 2, 24, x + 2, 2, 25, "minecraft:blue_concrete")
+    for x, z in ((32, 24), (33, 24), (32, 25), (40, 26), (41, 26)):
+        b.set(x, 1, z, "minecraft:spruce_planks")
+    b.lamp_post(22, 24)
+    b.lamp_post(28, 24)
+    b.wall_line(0, 29, 50, 29, gate=(23, 27))
+    b.jigsaw(25, 0, "north", "kn8:base_wing_l", "kn8:base_core_l", "minecraft:empty", ROAD)
+    b.jigsaw(50, 15, "east", "kn8:base_side_l", "kn8:base_corner_l", f"{POOL}/large_corners_px")
+    b.jigsaw(0, 15, "west", "kn8:base_side_l", "kn8:base_corner_l", f"{POOL}/large_corners_nx")
+    b.finish(f"{LARGE}/wing_{a}_{c}")
+
+
+def corner_large(name, side):
+    b = Piece((30, 22, 30), 140 + side)
+    outer_x = 29 if side > 0 else 0
+    b.wall_line(outer_x, 0, outer_x, 29)
+    b.wall_line(0, 29, 29, 29)
+    if side > 0:
+        b.jigsaw(0, 15, "west", "kn8:base_corner_l", "kn8:base_side_l", "minecraft:empty")
+    else:
+        b.jigsaw(29, 15, "east", "kn8:base_corner_l", "kn8:base_side_l", "minecraft:empty")
+    tower(b, 23 if side > 0 else 2, 23)
+    # Tanques de combustivel e heliporto pequeno.
+    fx = 4 if side > 0 else 18
+    for k in range(3):
+        b.fill(fx + k * 3, 1, 4, fx + k * 3 + 1, 4, 5, "minecraft:white_concrete")
+        b.set(fx + k * 3, 4, 4, "minecraft:red_concrete")
+    hx = 6 if side > 0 else 14
+    b.fill(hx, 0, 12, hx + 8, 0, 20, "minecraft:black_concrete")
+    for z in range(14, 19):
+        b.set(hx + 2, 0, z, "minecraft:yellow_concrete")
+        b.set(hx + 6, 0, z, "minecraft:yellow_concrete")
+    for x in (hx + 3, hx + 4, hx + 5):
+        b.set(x, 0, 16, "minecraft:yellow_concrete")
+    b.lamp_post(15, 25)
+    b.finish(f"{LARGE}/{name}")
+
+
+ARENA_WALL = "minecraft:polished_blackstone_bricks"
+
+
+def arena():
+    """Arena de treino 111 x 50: encaixa no centro grande pelo jigsaw em (55, 0, 0). Painel em (55, 1, 2) virado
+    para o sul: centro da arena 22 blocos a frente (55, 24); area de luta x 31-79, z 4-44 (config [trainingArena]:
+    arenaDistance 22, arenaHalfWidth 24, arenaHalfLength 20, arenaHeight 16)."""
+    b = Piece((111, 22, 50), 150)
+    x0, x1, z0, z1, top = 29, 81, 3, 45, 16
+    # Chao da arena: terra batida e areia, com marcas de batalha.
+    rnd = b.random
+    for x in range(x0 + 1, x1):
+        for z in range(z0 + 1, z1):
+            r = rnd.random()
+            b.set(x, 0, z, "minecraft:coarse_dirt" if r < 0.5 else "minecraft:packed_mud" if r < 0.8
+                  else "minecraft:gravel")
+    for x in range(x0, x1 + 1):
+        for z in (z0, z1):
+            b.fill(x, 1, z, x, top, z, ARENA_WALL)
+    for z in range(z0, z1 + 1):
+        for x in (x0, x1):
+            b.fill(x, 1, z, x, top, z, ARENA_WALL)
+    # Janelas da arquibancada (parede oeste) e luzes nas paredes.
+    for z in range(8, 42):
+        if z % 6 != 2:
+            b.fill(x0, 3, z, x0, 8, z, "minecraft:glass")
+    for x in range(x0 + 4, x1, 8):
+        b.set(x, 10, z0, "minecraft:sea_lantern")
+        b.set(x, 10, z1, "minecraft:sea_lantern")
+    for z in range(z0 + 4, z1, 8):
+        b.set(x1, 10, z, "minecraft:sea_lantern")
+    for x in range(x0, x1 + 1):
+        for z in (z0, z1):
+            b.set(x, top + 1, z, "minecraft:iron_bars")
+    for z in range(z0, z1 + 1):
+        for x in (x0, x1):
+            b.set(x, top + 1, z, "minecraft:iron_bars")
+    # Coberturas dentro da arena (pilares e muretas) para usar o parkour e se esconder.
+    for x, z in ((40, 14), (70, 14), (40, 34), (70, 34)):
+        b.fill(x, 1, z, x + 1, 4, z + 1, "minecraft:gray_concrete")
+    for x, z in ((50, 30), (58, 18)):
+        b.fill(x, 1, z, x + 3, 2, z, "minecraft:stone_bricks")
+    # Portao dos jogadores (norte) e painel no patio da frente.
+    b.fill(47, 1, z0, 51, 4, z0, "minecraft:air")
+    for x in range(47, 52):
+        b.set(x, 0, z0, "minecraft:yellow_concrete" if x % 2 else "minecraft:black_concrete")
+    for x in range(111):
+        for z in range(0, 3):
+            b.set(x, 0, z, ROAD)
+    b.set(55, 1, 2, "kn8:training_console", {"facing": "south", "selection": "1"})
+    b.set(54, 1, 2, "minecraft:iron_block")
+    b.set(56, 1, 2, "minecraft:iron_block")
+    b.fill(54, 4, 1, 56, 4, 2, "minecraft:smooth_stone_slab", {"type": "bottom", "waterlogged": "false"})
+    for x in (54, 56):
+        b.fill(x, 2, 1, x, 3, 1, "minecraft:iron_bars")
+    b.set(55, 3, 1, "minecraft:lantern", {"hanging": "true", "waterlogged": "false"})
+    # Arquibancada (oeste): degraus subindo para longe da parede, com cobertura.
+    for step in range(8):
+        x = x0 - 1 - step
+        for z in range(6, 43):
+            b.fill(x, 1, z, x, step + 1, z, "minecraft:light_gray_concrete")
+            b.set(x, step + 1, z, "minecraft:smooth_stone_slab", {"type": "top", "waterlogged": "false"})
+    b.fill(x0 - 9, 12, 6, x0 - 1, 12, 42, "minecraft:gray_concrete")
+    for z in (6, 24, 42):
+        b.fill(x0 - 9, 9, z, x0 - 9, 11, z, "minecraft:iron_bars")
+    b.fill(x0 - 12, 1, 6, x0 - 10, 1, 42, "minecraft:light_gray_concrete")
+    # Laboratorio de kaiju (leste): jaulas com restos e baus de pesquisa.
+    lx0, lx1 = 85, 106
+    b.building(lx0, 6, lx1, 22, 6, wall="minecraft:white_concrete", stripe="minecraft:purple_concrete",
+               door=("west", 13, 15))
+    for cx in (88, 94, 100):
+        b.fill(cx, 1, 8, cx + 3, 3, 8, "minecraft:iron_bars")
+        b.fill(cx, 1, 8, cx, 3, 11, "minecraft:iron_bars")
+        b.fill(cx + 3, 1, 8, cx + 3, 3, 11, "minecraft:iron_bars")
+        b.set(cx + 1, 1, 10, "minecraft:bone_block", {"axis": "y"})
+        b.set(cx + 2, 1, 10, "minecraft:magma_block")
+    for z in (17, 19):
+        b.chest(104, 1, z, "kn8:chests/kaiju_remains", "west")
+    b.set(88, 1, 19, "minecraft:brewing_stand",
+          {"has_bottle_0": "false", "has_bottle_1": "false", "has_bottle_2": "false"})
+    b.set(90, 1, 19, "kn8:defense_workbench", {"facing": "north"})
+    # Enfermaria de campo (leste, ao sul do laboratorio).
+    b.building(88, 28, 104, 38, 5, wall="minecraft:white_concrete", stripe="minecraft:red_concrete",
+               door=("west", 32, 34))
+    for z in (30, 33, 36):
+        b.bed(101, z, "west", "white")
+    b.chest(90, 1, 36, "kn8:chests/base_medical", "east")
+    # Muro externo (oeste, leste e sul) com torres nos cantos de fora.
+    b.wall_line(0, 0, 0, 49)
+    b.wall_line(110, 0, 110, 49)
+    b.wall_line(0, 49, 110, 49, gate=(53, 57))
+    tower(b, 2, 43)
+    tower(b, 104, 43)
+    for x, z in ((24, 46), (86, 46), (60, 47), (50, 47)):
+        b.lamp_post(x, z)
+    # Soldados: guarda do portao, instrutores na arquibancada e no laboratorio.
+    b.entity(49, 1, 1, soldier("rifle", "high", 0.0))
+    b.entity(58, 1, 1, soldier("sword", "high", 0.0))
+    b.entity(24, 5, 20, soldier("rifle", "normal", 90.0))
+    b.entity(95, 1, 15, soldier("pistol", "normal", 0.0))
+    b.jigsaw(55, 0, "north", "kn8:base_wing_l", "kn8:base_core_l", "minecraft:empty", ROAD)
+    b.finish(f"{LARGE}/arena")
+
+
+def worldgen_large():
+    wg = DATA / "kn8/worldgen"
+    dump(DATA / f"kn8/tags/worldgen/biome/has_structure/{LARGE}.json", {"values": BIOMES})
+    dump(wg / f"template_pool/defense_base/large_wings.json", {"fallback": "minecraft:empty", "elements": [
+        {"weight": w, "element": element(f"kn8:{LARGE}/wing_{a}_{c}")} for a, c, w in LARGE_WINGS]})
+    dump(wg / f"template_pool/defense_base/large_arena.json", {"fallback": "minecraft:empty", "elements": [
+        {"weight": 1, "element": element(f"kn8:{LARGE}/arena")}]})
+    dump(wg / f"template_pool/defense_base/large_core.json", {"fallback": "minecraft:empty", "elements": [
+        {"weight": 1, "element": element(f"kn8:{LARGE}/core")}]})
+    for side in ("px", "nx"):
+        dump(wg / f"template_pool/defense_base/large_corners_{side}.json", {
+            "fallback": "minecraft:empty",
+            "elements": [{"weight": 1, "element": element(f"kn8:{LARGE}/corner_{side}")}]})
+    # Bem mais rara que a base pequena: ~1 a cada 2.000 blocos, so planicies largas.
+    dump(wg / f"structure/{LARGE}.json", {
+        "type": "minecraft:jigsaw", "biomes": f"#kn8:has_structure/{LARGE}", "step": "surface_structures",
+        "spawn_overrides": {}, "terrain_adaptation": "beard_thin", "start_pool": f"{POOL}/large_core",
+        "size": 3, "start_height": {"absolute": -1}, "project_start_to_heightmap": "WORLD_SURFACE_WG",
+        "max_distance_from_center": 100, "use_expansion_hack": False})
+    dump(wg / f"structure_set/{LARGE}.json", {
+        "structures": [{"structure": f"kn8:{LARGE}", "weight": 1}],
+        "placement": {"type": "minecraft:random_spread", "spacing": 128, "separation": 48, "salt": 280_430_022}})
+
+
 if __name__ == "__main__":
     (DATA / "kn8/structure/defense_base").mkdir(parents=True, exist_ok=True)
     core()
@@ -428,3 +731,11 @@ if __name__ == "__main__":
     corner("corner_px", 1)
     corner("corner_nx", -1)
     worldgen()
+    (DATA / f"kn8/structure/{LARGE}").mkdir(parents=True, exist_ok=True)
+    core_large()
+    for a, c, _ in LARGE_WINGS:
+        wing_large(a, c, 160 + len(a) + len(c))
+    corner_large("corner_px", 1)
+    corner_large("corner_nx", -1)
+    arena()
+    worldgen_large()

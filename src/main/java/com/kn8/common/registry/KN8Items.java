@@ -110,6 +110,8 @@ public final class KN8Items {
     /** 0.2 (Etapa 3): bancada, trajes (armadura vem do suit/*.json) e suprimentos. */
     public static final DeferredItem<BlockItem> DEFENSE_WORKBENCH = ITEMS.registerSimpleBlockItem("defense_workbench",
             KN8Blocks.DEFENSE_WORKBENCH);
+    public static final DeferredItem<BlockItem> TRAINING_CONSOLE = ITEMS.registerSimpleBlockItem("training_console",
+            KN8Blocks.TRAINING_CONSOLE);
     public static final DeferredItem<ArmorItem> TRAINING_SUIT = suit("training_suit", KN8ArmorMaterials.TRAINING_SUIT);
     public static final DeferredItem<ArmorItem> MK1 = suit("mk1", KN8ArmorMaterials.MK1);
     public static final DeferredItem<ArmorItem> MK1_REINFORCED = suit("mk1_reinforced",
@@ -157,6 +159,7 @@ public final class KN8Items {
                         output.accept(KAIJU_NO8_SPAWN_EGG.get());
                         output.accept(TRAINING_DUMMY.get());
                         output.accept(DEFENSE_WORKBENCH.get());
+                        output.accept(TRAINING_CONSOLE.get());
                         output.accept(TRAINING_SUIT.get());
                         output.accept(MK1.get());
                         output.accept(MK1_REINFORCED.get());

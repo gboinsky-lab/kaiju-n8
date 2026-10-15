@@ -9,6 +9,7 @@ import com.kn8.common.combat.CombatInputC2S;
 import com.kn8.common.combat.CombatService;
 import com.kn8.common.config.ServerConfig;
 import com.kn8.common.kaiju.CarcassEntity;
+import com.kn8.common.registry.KN8Blocks;
 import com.kn8.core.combat.CombatMath;
 import com.mojang.blaze3d.platform.InputConstants;
 
@@ -16,7 +17,10 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -78,6 +82,14 @@ public final class CombatInput {
             useStartedOnCarcass = true;
             return;
         }
+        // C2: mirando no painel da arena ou na bancada, o clique direito usa o bloco (abrir, soltar o kaiju), nao o
+        // golpe pesado.
+        if (event.isUseItem() && Minecraft.getInstance().hitResult instanceof BlockHitResult hit
+                && hit.getType() == HitResult.Type.BLOCK && isInteractiveBlock(player.level().getBlockState(
+                        hit.getBlockPos()))) {
+            useStartedOnCarcass = true;
+            return;
+        }
         // Clique direito que comecou numa carcaca: quando ela some (ultima etapa do desmonte) o botao continua
         // segurado e o vanilla repete o evento; isso nao pode virar ataque carregado ate soltar (teste em jogo, 0.2).
         if (event.isUseItem() && useStartedOnCarcass) {
@@ -100,6 +112,11 @@ public final class CombatInput {
         }
         event.setCanceled(true);
         event.setSwingHand(false);
+    }
+
+    /** Blocos do kn8 que se usam com o clique direito mesmo de arma na mao. */
+    private static boolean isInteractiveBlock(BlockState state) {
+        return state.is(KN8Blocks.TRAINING_CONSOLE.get()) || state.is(KN8Blocks.DEFENSE_WORKBENCH.get());
     }
 
     @SubscribeEvent

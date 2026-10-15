@@ -810,5 +810,21 @@
   "key.kn8.parkour": "Parkour (long jump, wall, ledge)",
   "kn8.configuration.landingTicks": "Landing ticks",
   "kn8.configuration.scalePerAgility": "Extra per agility level",
-  "kn8.configuration.scalePerRelease": "Extra per release"
+  "kn8.configuration.scalePerRelease": "Extra per release",
+  "block.kn8.training_console": "Training Arena Console",
+  "kn8.configuration.trainingArena": "Training arena",
+  "kn8.configuration.arenaKaiju": "Arena kaiju",
+  "kn8.configuration.arenaDistance": "Distance to the arena center",
+  "kn8.configuration.arenaHalfWidth": "Arena half width",
+  "kn8.configuration.arenaHalfLength": "Arena half length",
+  "kn8.configuration.arenaHeight": "Arena height",
+  "kn8.configuration.arenaProtectMargin": "Protected margin",
+  "kn8.configuration.arenaLeashCheckTicks": "Leash check (ticks)",
+  "kn8.configuration.arenaIdleRange": "Training range",
+  "kn8.configuration.arenaIdleDespawnTicks": "Idle time to end (ticks)",
+  "kn8.arena.selected": "Training kaiju: %s (use to release; shift + use with an empty hand to change)",
+  "kn8.arena.started": "Training started: %s is in the arena!",
+  "kn8.arena.ended": "Training ended.",
+  "kn8.arena.failed": "The kaiju could not be released here.",
+  "kn8.arena.empty": "No kaiju configured for the arena."
 }

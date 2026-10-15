@@ -1,6 +1,7 @@
 package com.kn8.common.career;
 
 import com.kn8.KN8Constants;
+import com.kn8.common.arena.TrainingArenaService;
 import com.kn8.common.attribute.PowerService;
 import com.kn8.common.boss.BossService;
 import com.kn8.common.config.ServerConfig;
@@ -70,6 +71,10 @@ public final class CareerEvents {
             return;
         }
         if (event.getEntity() instanceof KaijuEntity kaiju && !kaiju.level().isClientSide()) {
+            // Kaiju da arena de treino nao conta: sem merito, missao ou chefe.
+            if (TrainingArenaService.isTraining(kaiju)) {
+                return;
+            }
             if (event.getSource().getEntity() instanceof ServerPlayer player) {
                 KaijuClass kaijuClass = kaiju.def().map(def -> def.kaijuClass()).orElse(KaijuClass.YOJU);
                 CareerService.onKaijuKilled(player, kaiju.kaijuId(), kaijuClass);

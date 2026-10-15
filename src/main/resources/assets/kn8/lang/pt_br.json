@@ -810,5 +810,21 @@
   "key.kn8.parkour": "Parkour (salto longo, parede, borda)",
   "kn8.configuration.landingTicks": "Ticks no chão para pousar",
   "kn8.configuration.scalePerAgility": "Bônus pela agilidade",
-  "kn8.configuration.scalePerRelease": "Bônus pelo Release"
+  "kn8.configuration.scalePerRelease": "Bônus pelo Release",
+  "block.kn8.training_console": "Painel da Arena de Treino",
+  "kn8.configuration.trainingArena": "Arena de treino",
+  "kn8.configuration.arenaKaiju": "Kaiju da arena",
+  "kn8.configuration.arenaDistance": "Distância até o centro da arena",
+  "kn8.configuration.arenaHalfWidth": "Meia largura da arena",
+  "kn8.configuration.arenaHalfLength": "Meio comprimento da arena",
+  "kn8.configuration.arenaHeight": "Altura da arena",
+  "kn8.configuration.arenaProtectMargin": "Margem protegida",
+  "kn8.configuration.arenaLeashCheckTicks": "Conferência da arena (ticks)",
+  "kn8.configuration.arenaIdleRange": "Alcance do treino",
+  "kn8.configuration.arenaIdleDespawnTicks": "Tempo parado para encerrar (ticks)",
+  "kn8.arena.selected": "Kaiju de treino: %s (usar solta; Shift + usar, de mão vazia, troca)",
+  "kn8.arena.started": "Treino começou: %s está na arena!",
+  "kn8.arena.ended": "Treino encerrado.",
+  "kn8.arena.failed": "Não foi possível soltar o kaiju aqui.",
+  "kn8.arena.empty": "Nenhum kaiju configurado para a arena."
 }

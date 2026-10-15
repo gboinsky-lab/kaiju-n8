@@ -9,6 +9,7 @@ import com.kn8.core.power.BodyParams;
 import com.kn8.core.power.PowerParams;
 import com.kn8.core.power.TalentParams;
 
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 /**
@@ -261,6 +262,17 @@ public final class ServerConfig {
     public static final ModConfigSpec.DoubleValue PARKOUR_ROLL_DAMAGE_REDUCTION;
     public static final ModConfigSpec.DoubleValue PARKOUR_ROLL_COST;
     public static final ModConfigSpec.DoubleValue PARKOUR_ROLL_FORWARD;
+
+    // --- arena de treino (construcoes C2) ----------------------------------------------------------------------------
+    public static final ModConfigSpec.ConfigValue<List<? extends String>> ARENA_KAIJU;
+    public static final ModConfigSpec.IntValue ARENA_DISTANCE;
+    public static final ModConfigSpec.IntValue ARENA_HALF_WIDTH;
+    public static final ModConfigSpec.IntValue ARENA_HALF_LENGTH;
+    public static final ModConfigSpec.IntValue ARENA_HEIGHT;
+    public static final ModConfigSpec.IntValue ARENA_PROTECT_MARGIN;
+    public static final ModConfigSpec.IntValue ARENA_LEASH_CHECK_TICKS;
+    public static final ModConfigSpec.IntValue ARENA_IDLE_RANGE;
+    public static final ModConfigSpec.IntValue ARENA_IDLE_DESPAWN_TICKS;
 
     // --- vfx (0.1-B, Etapa D) -------------------------------------------------------------------------------------
     public static final ModConfigSpec.BooleanValue VFX_ENABLED;
@@ -713,6 +725,32 @@ public final class ServerConfig {
                 + " fall (0.6 = 60% less).", 0.6, 0.0, 1.0);
         PARKOUR_ROLL_COST = doubleValue("rollCost", "Stamina spent by a roll.", 8.0, 0.0, 100.0);
         PARKOUR_ROLL_FORWARD = doubleValue("rollForward", "Forward speed of a roll.", 0.35, 0.0, 2.0);
+        BUILDER.pop();
+
+        section("trainingArena", "Training arena of the large Defense Force base (C2): the console releases a real kaiju"
+                + " in the arena; it gives no carcass nor merit.");
+        ARENA_KAIJU = BUILDER.comment("Kaiju the console can release, in order (shift + use cycles; up to 16).")
+                .translation(PREFIX + "arenaKaiju").defineList("arenaKaiju", List.of("kn8:trichonephila",
+                        "kn8:primigenius", "kn8:camponotus", "kn8:phaneroplasmodium", "kn8:primigenius_resurrected",
+                        "kn8:primigenius_honju", "kn8:trichonephila_honju", "kn8:philinosoma", "kn8:diclonius",
+                        "kn8:myxogasterocarp", "kn8:primigenius_revived", "kn8:kaiju_no9", "kn8:kaiju_no10_small"),
+                        () -> "kn8:primigenius", value -> value instanceof String text
+                                && ResourceLocation.tryParse(text) != null);
+        ARENA_DISTANCE = intValue("arenaDistance", "Blocks from the console (its front) to the arena center.", 22, 1,
+                128);
+        ARENA_HALF_WIDTH = intValue("arenaHalfWidth", "Half width of the arena, sideways from the console.", 24, 2,
+                64);
+        ARENA_HALF_LENGTH = intValue("arenaHalfLength", "Half length of the arena, along the console front.", 20, 2,
+                64);
+        ARENA_HEIGHT = intValue("arenaHeight", "Arena height above the floor.", 16, 4, 64);
+        ARENA_PROTECT_MARGIN = intValue("arenaProtectMargin", "Extra blocks around the arena protected from"
+                + " destruction (walls).", 3, 0, 16);
+        ARENA_LEASH_CHECK_TICKS = intValue("arenaLeashCheckTicks", "How often a training kaiju outside the arena is"
+                + " sent back to the center.", 20, 1, 200);
+        ARENA_IDLE_RANGE = intValue("arenaIdleRange", "A player this far from the arena still counts as training.",
+                24, 0, 128);
+        ARENA_IDLE_DESPAWN_TICKS = intValue("arenaIdleDespawnTicks", "Training ends by itself after this long with"
+                + " nobody near the arena.", 1200, 20, 72000);
         BUILDER.pop();
 
         section("vfx", "Visual effects sent to clients (0.1-B). Clients choose how many particles they draw.");

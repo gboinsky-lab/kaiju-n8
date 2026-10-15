@@ -292,6 +292,19 @@ corpo (treinado gasta ate 60% menos) e cada movimento da 3 XP de agilidade (`[bo
 Forca pelo nivel (Miguel, 2026-10-15): velocidades, saltos e alturas maximas x (1 + 0,3 x agilidade/100 + 0,3 x Release/100), ate 1,6x no topo (`scalePerAgility`, `scalePerRelease`); o custo ja cai com a agilidade e a stamina maxima sobe com o Release. Intervalo entre impulsos 6 ticks; estados continuos aguentam 6 ticks sem parede (atraso da rede); corrida conta ate 8
 ticks depois de parar.
 
+### Arena de treino (construções C2, `[trainingArena]`)
+
+| Chave | Valor | O que faz |
+|---|---|---|
+| `arenaKaiju` | aranha, Primigenius, formiga, cogumelo, ressurgido, Honju, Tecedeira, Philinosoma, Diclonius, Myxogasterocarp, revivido, No. 9, No. 10 pequeno | Kaiju que o painel solta, na ordem da troca (até 16); os gigantes (No. 10 gigante, fusões, formiga do No. 9) ficam fora porque não cabem na arena |
+| `arenaDistance` | 22 | Do painel ao centro da arena (bate com a arena gerada) |
+| `arenaHalfWidth` / `arenaHalfLength` / `arenaHeight` | 24 / 20 / 16 | Área de luta: 49 x 41 x 16 |
+| `arenaProtectMargin` | 3 | Margem protegida da destruição em volta (paredes e painel) |
+| `arenaLeashCheckTicks` | 20 | Kaiju fora da arena volta ao centro a cada 1 s |
+| `arenaIdleRange` / `arenaIdleDespawnTicks` | 24 / 1.200 | Sem ninguém a 24 blocos da arena por 1 minuto, o treino acaba |
+
+O kaiju de treino tem a vida, o dano e as habilidades normais; só não deixa carcaça, mérito, missão nem chefe.
+
 ### Fontes de XP de treino e mérito (`[career]`)
 
 | Fonte | XP de treino | Mérito |

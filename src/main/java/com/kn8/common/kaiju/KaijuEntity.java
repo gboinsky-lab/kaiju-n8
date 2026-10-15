@@ -12,6 +12,7 @@ import java.util.UUID;
 
 import com.kn8.KN8Constants;
 import com.kn8.common.anim.Locomotion;
+import com.kn8.common.arena.TrainingArenaService;
 import com.kn8.common.boss.BossService;
 import com.kn8.common.boss.BossState;
 import com.kn8.common.combat.CombatService;
@@ -1086,6 +1087,11 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
     @Override
     protected void tickDeath() {
         if (level().isClientSide()) {
+            return;
+        }
+        // Construcoes C2: kaiju da arena de treino some em fumaca, sem carcaca (nem desmonte, nem material).
+        if (TrainingArenaService.isTraining(this)) {
+            TrainingArenaService.vanish((ServerLevel) level(), this);
             return;
         }
         CarcassEntity.from(this).ifPresent(level()::addFreshEntity);

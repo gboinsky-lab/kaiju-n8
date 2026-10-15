@@ -606,3 +606,18 @@ Tecla nova: **C** (Parkour; troca em Opções > Controles > Kaiju No. 8). Númer
 | 42.5 | Soldados e bonecos | ~15 soldados de guarda (portas do QG, portões, torres) e 3 bonecos de treino; os baús abrem com o loot da base (comando, arsenal, enfermaria, alojamento) |
 | 42.6 | Mundo novo em planície, savana, deserto ou neve | Bases aparecem sozinhas, bem mais raras que o posto avançado (uma a cada ~1.150 blocos) |
 | 42.7 | Servidor dedicado + 2 clientes | Os dois veem a mesma base |
+
+## 43. Cidade e base grande com arena de treino (construções C2)
+
+| # | Passo | Esperado |
+|---|---|---|
+| 43.1 | Área plana carregada (`/forceload add` em volta): `/place structure kn8:city` | Cidade com praça central (fonte, 4 árvores, monumento azul, bancos), ruas que se ramificam com faixa amarela, postes e cruzamentos com faixa de pedestre; dos lados das ruas: loja de conveniência, restaurante de ramen, casas com telhado, prédios de 4 e 8 andares com sacadas, torre de escritório de vidro com heliporto, parque com lago, estacionamento com carros e prédio destruído por kaiju; ruas terminam em barreira listrada |
+| 43.2 | Entrar nas construções da cidade | Portas abertas, escada de mão nos prédios, baús de loja e de casa com loot |
+| 43.3 | `/place structure kn8:defense_base_large` (precisa de ~130 x 130 carregado) | Base grande: centro com o QG, refeitório, garagem com 3 caminhões, torre de rádio e pátio de formatura com soldados; 3 alas duplas (duas alas da base pequena lado a lado + estacionamento); cantos com torre, tanques e heliporto; do 4º lado a arena de treino |
+| 43.4 | Arena de treino | Arena fechada de paredes escuras (51 x 41, 16 de altura) com luzes, coberturas por dentro, arquibancada com janelas de vidro, laboratório de kaiju (jaulas) e enfermaria; portão listrado para entrar e o Painel da Arena de Treino na frente |
+| 43.5 | Clicar no painel (com ou sem arma na mão) | "Treino começou: Primigenius está na arena!" e o kaiju aparece no centro da arena e persegue quem está dentro |
+| 43.6 | Shift + clique no painel de mão vazia | "Kaiju de treino: ..." troca a cada clique (aranha, Primigenius, formiga, cogumelo, ressurgido, Honju, Tecedeira, Philinosoma, Diclonius, Myxogasterocarp, revivido, No. 9, No. 10 pequeno) |
+| 43.7 | Lutar dentro da arena | O kaiju não quebra as paredes; se sair (salto, fuga do No. 9, `/tp`), volta ao centro em 1 s; morto, some em fumaça sem carcaça, sem mérito e sem desmonte |
+| 43.8 | Clicar no painel com o treino em andamento | "Treino encerrado." e o kaiju some |
+| 43.9 | Sair para longe (mais de 24 blocos da arena) por 1 minuto | O treino acaba sozinho |
+| 43.10 | Servidor dedicado + 2 clientes | Os dois veem a cidade, a base, o kaiju e a luta iguais |
