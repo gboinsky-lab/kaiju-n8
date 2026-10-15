@@ -594,3 +594,15 @@ Tecla nova: **C** (Parkour; troca em Opções > Controles > Kaiju No. 8). Númer
 | 41.8 | Correndo, apertar Shift | Slide deitado (mergulho de cabeça) por ~1 s; passa por vão de 1 bloco; soltar Shift levanta |
 | 41.9 | Cair de 6 blocos segurando Shift | Rolamento: cambalhota sem dano; de 10 blocos, dano bem menor (−60%) |
 | 41.10 | Servidor dedicado + 2 clientes | O outro jogador vê as animações (vault, wall-run, borda, slide deitado, rolamento) |
+
+## 42. Base da Força de Defesa (construções, etapa C1)
+
+| # | Passo | Esperado |
+|---|---|---|
+| 42.1 | Em área plana carregada: `/place structure kn8:defense_base` | Base de ~65 x 65: QG branco de 3 andares com faixa ciano no centro, 4 alas sorteadas, torre de vigia em cada canto, muro de 4 blocos fechando tudo com portão listrado em cada lado |
+| 42.2 | Entrar no QG (portas nos 4 lados) | Térreo iluminado com 2 bancadas, baú, mesa de cartografia e atril; escada de pedra até o 1º andar (sala de comando), 2º andar (sala do capitão, cama, estantes) e telhado (heliporto com H amarelo, grade, antena) |
+| 42.3 | Andar pelas alas | Alojamento (dois prédios com beliches e armários), arsenal (oficina com 2 bancadas, bigorna, baús de munição e 2 caminhões), treino (bonecos, alvos e pista de parkour), hangar (heliporto e helicóptero de blocos) e enfermaria (camas brancas, poção, baús de remédio, cruz vermelha); as alas variam a cada base |
+| 42.4 | Pista de parkour da ala de treino | Muro de 1 (vault), muro de 2 (escalada), corredor de parede (wall-run e wall-jump), borda de 3 (segurar e subir) e barra baixa (slide) |
+| 42.5 | Soldados e bonecos | ~15 soldados de guarda (portas do QG, portões, torres) e 3 bonecos de treino; os baús abrem com o loot da base (comando, arsenal, enfermaria, alojamento) |
+| 42.6 | Mundo novo em planície, savana, deserto ou neve | Bases aparecem sozinhas, bem mais raras que o posto avançado (uma a cada ~1.150 blocos) |
+| 42.7 | Servidor dedicado + 2 clientes | Os dois veem a mesma base |
