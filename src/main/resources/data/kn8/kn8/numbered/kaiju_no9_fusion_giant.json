@@ -37,6 +37,6 @@
     "max_projectile_speed": 3.0,
     "chance": 0.4,
     "cooldown_ticks": 40,
-    "leap_speed": 1.1
+    "leap_speed": 1.8
   }
 }

@@ -86,7 +86,7 @@
       "priority": 2,
       "slash": {
         "count": 1,
-        "speed": 4.0,
+        "speed": 2.5,
         "range": 60.0,
         "width": 1.0,
         "color": 16777215,
