@@ -71,6 +71,12 @@ public final class ParkourProbe {
         return onRight ? 1 : onLeft ? -1 : 0;
     }
 
+    /** Normal de parede no eixo mais proximo (paredes de bloco sao retas em X ou em Z). */
+    public static Vec3 axisAligned(Vec3 normal) {
+        return Math.abs(normal.x) >= Math.abs(normal.z) ? new Vec3(Math.signum(normal.x), 0.0, 0.0)
+                : new Vec3(0.0, 0.0, Math.signum(normal.z));
+    }
+
     /** Direcao ao longo da parede de normal {@code normal}, no sentido de {@code forward}. */
     public static Vec3 alongWall(Vec3 forward, Vec3 normal) {
         Vec3 along = forward.subtract(normal.scale(forward.dot(normal)));

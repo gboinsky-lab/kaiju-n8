@@ -807,5 +807,6 @@
   "kn8.configuration.rollDamageReduction": "Roll damage reduction",
   "kn8.configuration.rollCost": "Roll cost",
   "kn8.configuration.rollForward": "Roll forward speed",
-  "key.kn8.parkour": "Parkour (long jump, wall, ledge)"
+  "key.kn8.parkour": "Parkour (long jump, wall, ledge)",
+  "kn8.configuration.landingTicks": "Landing ticks"
 }

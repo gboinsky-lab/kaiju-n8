@@ -281,10 +281,10 @@ corpo (treinado gasta ate 60% menos) e cada movimento da 3 XP de agilidade (`[bo
 |---|---|---|---|
 | Vault | correndo, pular contra obstaculo de 0,6 a 1,5 | 6 | sobe a altura + 0,25, avanco 0,45/tick |
 | Escalada curta | pular contra obstaculo de 1,5 a 2,5 (ou mais baixo sem correr) | 12 | sobe a altura + 0,25, avanco 0,2 |
-| Salto longo | correndo, tecla C no chao | 15 | 0,95 na horizontal + 0,5 para cima (~7 blocos) |
+| Salto longo | correndo, tecla C no chao | 15 | 0,95 na horizontal + 0,5 para cima (medido: ~7,9 blocos no ar) |
 | Wall-run | no ar, correndo, C com parede ao lado | 14/s (1/4 para comecar) | 0,36/tick ao longo, sobe 0,16 e cai ate -0,16; ate 30 ticks |
 | Wall-slide | no ar, C de frente para a parede | 4/s | queda maxima 0,12/tick, sem dano; ate 60 ticks |
-| Wall-jump | Espaco na parede (ate 5 ticks depois de sair) | 10 | 0,5 para longe, 0,25 ao longo, 0,55 para cima; ate 4 seguidos no ar |
+| Wall-jump | Espaco na parede (ate 5 ticks depois de sair) | 10 | 0,5 para longe, 0,25 ao longo, 0,55 para cima; ate 4 (wall-runs + wall-jumps) sem pousar; a mesma parede so depois de 4 ticks no chao (`landingTicks`) |
 | Segurar a borda | no ar, C com borda de 0,9 a 2,2 acima dos pes | 3/s | pes 1,7 abaixo da borda; ate 60 ticks; subir 8 |
 | Slide | correndo, Shift | 10 | 0,6/tick, atrito 0,93 por tick, ate 20 ticks, deitado (vao de 1 bloco) |
 | Rolamento | Shift ao cair de 4+ blocos | 8 | ate 7 blocos sem dano; acima, -60% |

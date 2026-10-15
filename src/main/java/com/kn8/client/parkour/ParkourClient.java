@@ -36,7 +36,8 @@ import net.neoforged.neoforge.network.PacketDistributor;
  * <ul>
  *   <li>pular correndo contra um obstaculo: vault (baixo) ou escalada curta (ate 2,5 blocos);</li>
  *   <li>C correndo no chao: salto longo;</li>
- *   <li>C no ar: segura a borda a frente; sem borda, corre pela parede ao lado; de frente para a parede, escorrega;</li>
+ *   <li>C no ar: segura a borda a frente; sem borda, corre pela parede ao lado; de frente para a parede,
+ *   escorrega;</li>
  *   <li>pular na parede: wall-jump; pendurado: sobe; Shift: solta;</li>
  *   <li>Shift correndo: slide; Shift ao cair de 4+ blocos: rolamento (so no servidor).</li>
  * </ul>
@@ -76,6 +77,7 @@ public final class ParkourClient {
     private static int lostTicks;
     private static int leftWallTicks = Integer.MAX_VALUE;
     private static int retryIn;
+    private static int groundRetryIn;
     private static boolean lastJump;
     private static boolean lastShift;
     private static boolean lastKey;
@@ -158,7 +160,13 @@ public final class ParkourClient {
         boolean key = minecraft.screen == null && PARKOUR_KEY.isDown();
         boolean jumpPressed = input.jumping && !lastJump;
         boolean shiftPressed = input.shiftKeyDown && !lastShift;
-        boolean keyPressed = key && !lastKey;
+        // consumeClick pega o toque rapido que comeca e termina entre dois ticks (isDown nao veria); com a tecla ja
+        // segurada os cliques sao a repeticao do teclado e nao contam.
+        boolean clicked = false;
+        while (PARKOUR_KEY.consumeClick()) {
+            clicked = true;
+        }
+        boolean keyPressed = minecraft.screen == null && !lastKey && (clicked || key);
         lastJump = input.jumping;
         lastShift = input.shiftKeyDown;
         lastKey = key;
@@ -204,12 +212,14 @@ public final class ParkourClient {
             boolean jumpPressed, boolean shiftPressed, boolean sprinting) {
         Vec3 forward = ParkourProbe.forward(player.getYRot());
         if (player.onGround()) {
-            retryIn = 0;
-            if (jumpPressed && input.forwardImpulse > 0.0F) {
+            groundRetryIn--;
+            // Segurar Espaco tambem vale (de novo a cada RETRY_TICKS x 2, sem inundar o servidor).
+            if (input.jumping && input.forwardImpulse > 0.0F && (jumpPressed || groundRetryIn <= 0)) {
                 double height = ParkourProbe.obstacleHeight(player, forward, OBSTACLE_REACH, MAX_PROBE_HEIGHT);
                 if (height > player.maxUpStep()) {
                     // O pulo vanilla sai junto; o impulso do servidor chega logo depois e o substitui.
                     send(ParkourMove.VAULT, 0);
+                    groundRetryIn = RETRY_TICKS * 2;
                 }
             } else if (keyPressed && sprinting) {
                 send(ParkourMove.LONG_JUMP, 0);
@@ -230,7 +240,7 @@ public final class ParkourClient {
             return;
         }
         retryIn = RETRY_TICKS;
-        double ledge = ParkourProbe.obstacleHeight(player, forward, WALL_REACH, LEDGE_MAX);
+        double ledge = ParkourProbe.obstacleHeight(player, forward, OBSTACLE_REACH, LEDGE_MAX);
         if (ledge >= LEDGE_MIN) {
             send(ParkourMove.LEDGE_GRAB, 0);
             return;

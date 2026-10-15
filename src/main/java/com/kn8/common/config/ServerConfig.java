@@ -243,6 +243,7 @@ public final class ServerConfig {
     public static final ModConfigSpec.DoubleValue PARKOUR_WALL_JUMP_LIFT;
     public static final ModConfigSpec.IntValue PARKOUR_WALL_JUMP_COYOTE_TICKS;
     public static final ModConfigSpec.IntValue PARKOUR_MAX_WALL_JUMPS;
+    public static final ModConfigSpec.IntValue PARKOUR_LANDING_TICKS;
     public static final ModConfigSpec.DoubleValue PARKOUR_LEDGE_COST_PER_SECOND;
     public static final ModConfigSpec.DoubleValue PARKOUR_LEDGE_MIN_HEIGHT;
     public static final ModConfigSpec.DoubleValue PARKOUR_LEDGE_MAX_HEIGHT;
@@ -682,6 +683,8 @@ public final class ServerConfig {
                 + " after leaving the wall.", 5, 0, 40);
         PARKOUR_MAX_WALL_JUMPS = intValue("maxWallJumps", "Wall jumps and wall-runs in a row before touching the"
                 + " ground.", 4, 0, 20);
+        PARKOUR_LANDING_TICKS = intValue("landingTicks", "Ticks on the ground in a row that count as landing (frees the"
+                + " same wall and the wall jump count again).", 4, 1, 40);
         PARKOUR_LEDGE_COST_PER_SECOND = doubleValue("ledgeCostPerSecond", "Stamina per second while hanging from a"
                 + " ledge.", 3.0, 0.0, 100.0);
         PARKOUR_LEDGE_MIN_HEIGHT = doubleValue("ledgeMinHeight", "Lowest ledge that can be grabbed (blocks above the"

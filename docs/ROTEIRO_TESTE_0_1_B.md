@@ -586,10 +586,10 @@ Tecla nova: **C** (Parkour; troca em Opções > Controles > Kaiju No. 8). Númer
 |---|---|---|
 | 41.1 | Correr (Ctrl+W) contra um muro de 1 bloco e pular | Vault: passa por cima com as mãos no muro, sem parar; gasta um pouco de stamina |
 | 41.2 | Andar contra um muro de 2 blocos e pular (com ou sem correr) | Escalada curta: sobe o muro de 2 (o vanilla só sobe 1,25); muro de 3+ não sobe |
-| 41.3 | Correndo no chão, apertar C | Salto longo (~7 blocos) com os braços para cima; sem stamina, nada |
-| 41.4 | Correndo, pular ao lado de uma parede alta e segurar C | Corre pela parede (sobe um pouco e desce) por até 1,5 s, inclinado para a parede |
+| 41.3 | Correndo no chão, apertar C | Salto longo (~8 blocos) com os braços para cima; sem stamina, nada |
+| 41.4 | Correndo, pular ao lado de uma parede alta e segurar C | Corre pela parede (sobe um pouco e desce) por até 1,5 s, inclinado para a parede; segurando C a mesma parede não recomeça sem pousar |
 | 41.5 | No wall-run, apertar Espaço | Wall-jump: salta para longe da parede; dá para encadear entre duas paredes (até 4 sem tocar o chão) |
-| 41.6 | Cair de frente para uma parede segurando C | Escorrega devagar (wall-slide) sem dano de queda; Espaço = wall-jump, Shift = solta |
+| 41.6 | Cair encostado e de frente para uma parede segurando C | Escorrega devagar (wall-slide) sem dano de queda; Espaço = wall-jump, Shift = solta |
 | 41.7 | Pular e segurar C perto de uma borda na altura das mãos (muro de 2–3 blocos) | Segura a borda pendurado (até 3 s); Espaço sobe, Shift solta |
 | 41.8 | Correndo, apertar Shift | Slide deitado (mergulho de cabeça) por ~1 s; passa por vão de 1 bloco; soltar Shift levanta |
 | 41.9 | Cair de 6 blocos segurando Shift | Rolamento: cambalhota sem dano; de 10 blocos, dano bem menor (−60%) |

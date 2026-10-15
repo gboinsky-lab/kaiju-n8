@@ -807,5 +807,6 @@
   "kn8.configuration.rollDamageReduction": "Redução do dano no rolamento",
   "kn8.configuration.rollCost": "Custo do rolamento",
   "kn8.configuration.rollForward": "Avanço do rolamento",
-  "key.kn8.parkour": "Parkour (salto longo, parede, borda)"
+  "key.kn8.parkour": "Parkour (salto longo, parede, borda)",
+  "kn8.configuration.landingTicks": "Ticks no chão para pousar"
 }

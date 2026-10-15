@@ -30,6 +30,11 @@ public final class ParkourData {
     long lastSprintTick = NEVER;
     /** Proximo tick em que um impulso de parkour pode sair de novo. */
     long readyTick = NEVER;
+    /** Normal da parede do ultimo wall-run (a mesma parede so vale de novo depois de tocar o chao). */
+    double lastRunNormalX;
+    double lastRunNormalZ;
+    /** Ticks seguidos no chao. */
+    int groundTicks;
     /** Paredes ja usadas para wall-jump seguido (sem subir a mesma parede para sempre). */
     int wallJumpsInAir;
 

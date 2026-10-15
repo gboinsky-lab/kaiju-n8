@@ -157,14 +157,19 @@ public final class ParkourService {
         }
         double reach = ServerConfig.PARKOUR_PROBE_REACH.get();
         int side = ParkourProbe.wallSide(player, reach, sideHint);
-        if (side == 0 || !pay(player, ServerConfig.PARKOUR_WALL_RUN_COST_PER_SECOND.get() / 4.0)) {
+        if (side == 0) {
             return false;
         }
-        Vec3 normal = ParkourProbe.right(player.getYRot()).scale(-side);
+        Vec3 normal = ParkourProbe.axisAligned(ParkourProbe.right(player.getYRot()).scale(-side));
         Vec3 along = ParkourProbe.alongWall(ParkourProbe.forward(player.getYRot()), normal);
-        if (along == Vec3.ZERO) {
+        // Sem chao no meio, a mesma parede nao conta de novo (segurar C nao vira corrida infinita); outra vale.
+        if (along == Vec3.ZERO || normal.x * data.lastRunNormalX + normal.z * data.lastRunNormalZ > 0.9
+                || !pay(player, ServerConfig.PARKOUR_WALL_RUN_COST_PER_SECOND.get() / 4.0)) {
             return false;
         }
+        data.lastRunNormalX = normal.x;
+        data.lastRunNormalZ = normal.z;
+        data.wallJumpsInAir++;
         start(player, data, ParkourState.WALL_RUN, along, normal, ServerConfig.PARKOUR_WALL_RUN_SPEED.get(),
                 ServerConfig.PARKOUR_WALL_RUN_LIFT.get(), 0.0, ServerConfig.PARKOUR_WALL_RUN_MAX_TICKS.get());
         data.side = side;
@@ -181,7 +186,7 @@ public final class ParkourService {
         if (!ParkourProbe.wallAt(player, forward, ServerConfig.PARKOUR_PROBE_REACH.get())) {
             return false;
         }
-        start(player, data, ParkourState.WALL_SLIDE, Vec3.ZERO, forward.scale(-1.0), 0.0,
+        start(player, data, ParkourState.WALL_SLIDE, Vec3.ZERO, ParkourProbe.axisAligned(forward.scale(-1.0)), 0.0,
                 ServerConfig.PARKOUR_WALL_SLIDE_MAX_FALL.get(), 0.0, ServerConfig.PARKOUR_WALL_SLIDE_MAX_TICKS.get());
         player.resetFallDistance();
         AnimationBridge.playPlayer(player, animation("wall_slide"));
@@ -204,8 +209,8 @@ public final class ParkourService {
         }
         double hangDrop = ServerConfig.PARKOUR_LEDGE_HANG_DROP.get();
         double hangY = player.getY() + height - hangDrop;
-        start(player, data, ParkourState.LEDGE_HANG, Vec3.ZERO, forward.scale(-1.0), 0.0, hangY, 0.0,
-                ServerConfig.PARKOUR_LEDGE_MAX_TICKS.get());
+        start(player, data, ParkourState.LEDGE_HANG, Vec3.ZERO, ParkourProbe.axisAligned(forward.scale(-1.0)), 0.0,
+                hangY, 0.0, ServerConfig.PARKOUR_LEDGE_MAX_TICKS.get());
         data.hangY = hangY;
         data.ledgeHeight = hangDrop;
         player.resetFallDistance();
@@ -315,8 +320,13 @@ public final class ParkourService {
         if (player.isSprinting()) {
             data.lastSprintTick = now;
         }
-        if (player.onGround()) {
+        // Chao de verdade: alguns ticks seguidos (no fim do arco do wall-run o pe encosta 1 tick no chao e a mesma
+        // parede nao pode valer de novo por isso).
+        data.groundTicks = player.onGround() ? data.groundTicks + 1 : 0;
+        if (data.groundTicks >= ServerConfig.PARKOUR_LANDING_TICKS.get()) {
             data.wallJumpsInAir = 0;
+            data.lastRunNormalX = 0.0;
+            data.lastRunNormalZ = 0.0;
         }
         if (data.state == ParkourState.NONE) {
             return;
@@ -370,6 +380,8 @@ public final class ParkourService {
         }
         data.state = ParkourState.NONE;
         data.wallJumpsInAir = 0;
+        data.lastRunNormalX = 0.0;
+        data.lastRunNormalZ = 0.0;
         PacketDistributor.sendToPlayer(player, ParkourStateS2C.NONE);
     }
 
