@@ -20,10 +20,13 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
  * atingido, {@code expose_core_ticks} expoe o nucleo e {@code vulnerable} multiplica todo dano que ele recebe de
  * qualquer um durante {@code slow_ticks} (a area congelada fica exposta para os aliados). {@code slow_level} 6-7 quase
  * paralisa.</p>
+ *
+ * <p>{@code min_target_height}: a tecnica so e escolhida contra alvo com pelo menos essa altura (Anti-Giant Shot da
+ * Mina so contra gigantes; Miguel, 2026-10-15).</p>
  */
 public record SlashSpec(int count, float spreadDegrees, float rollDegrees, float speed, float range, float width,
         int color, boolean bullet, float explosionRadius, int slowTicks, int slowLevel, int exposeCoreTicks,
-        float vulnerable) {
+        float vulnerable, float minTargetHeight) {
 
     public static final Codec<SlashSpec> CODEC = RecordCodecBuilder.create(i -> i.group(
             Codec.intRange(1, 8).optionalFieldOf("count", 1).forGetter(SlashSpec::count),
@@ -39,9 +42,11 @@ public record SlashSpec(int count, float spreadDegrees, float rollDegrees, float
             Codec.intRange(0, 600).optionalFieldOf("slow_ticks", 0).forGetter(SlashSpec::slowTicks),
             Codec.intRange(1, 7).optionalFieldOf("slow_level", 1).forGetter(SlashSpec::slowLevel),
             Codec.intRange(0, 600).optionalFieldOf("expose_core_ticks", 0).forGetter(SlashSpec::exposeCoreTicks),
-            Codec.floatRange(1.0F, 3.0F).optionalFieldOf("vulnerable", 1.0F).forGetter(SlashSpec::vulnerable)
+            Codec.floatRange(1.0F, 3.0F).optionalFieldOf("vulnerable", 1.0F).forGetter(SlashSpec::vulnerable),
+            Codec.floatRange(0.0F, 64.0F).optionalFieldOf("min_target_height", 0.0F)
+                    .forGetter(SlashSpec::minTargetHeight)
     ).apply(i, SlashSpec::new));
 
-    public static final SlashSpec DEFAULT = new SlashSpec(1, 0.0F, 0.0F, 1.6F, 10.0F, 1.2F, 0xB070FF, false, 0.0F, 0, 1,
-            0, 1.0F);
+    public static final SlashSpec DEFAULT = new SlashSpec(1, 0.0F, 0.0F, 1.6F, 10.0F, 1.2F, 0xB070FF, false, 0.0F,
+            0, 1, 0, 1.0F, 0.0F);
 }

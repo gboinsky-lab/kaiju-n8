@@ -31,7 +31,7 @@
     "per_hit": 0.03,
     "max_reduction": 0.25,
     "decay_ticks": 120,
-    "ranged_factor": 3.0
+    "ranged_factor": 2.0
   },
   "transform": {
     "into": "kn8:kaiju_no9_fusion_giant",

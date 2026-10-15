@@ -310,7 +310,7 @@ public class HoshinaEntity extends SoldierEntity {
             SpecialSoldierDef.Technique candidate = entry.getValue();
             if ((candidate.requiresFullRelease() && !isFullRelease())
                     || now < readyAt.getOrDefault(entry.getKey(), 0L) || edge < candidate.minRange()
-                    || edge > candidate.maxRange()
+                    || edge > candidate.maxRange() || target.getBbHeight() < candidate.slash().minTargetHeight()
                     || (candidate.type() == SpecialSoldierDef.TechniqueType.SLASH && !sees)) {
                 continue;
             }

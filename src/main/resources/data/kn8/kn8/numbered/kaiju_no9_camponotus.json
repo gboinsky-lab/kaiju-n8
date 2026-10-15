@@ -45,7 +45,7 @@
     "per_hit": 0.02,
     "max_reduction": 0.15,
     "decay_ticks": 100,
-    "ranged_factor": 3.0
+    "ranged_factor": 2.0
   },
   "dodge": {
     "read_radius": 14.0,
