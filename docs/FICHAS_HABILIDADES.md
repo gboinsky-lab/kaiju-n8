@@ -431,7 +431,7 @@ Defesa: esquiva a cada 3.5 s; contra-ataque ×2.2 a cada 10 s; apara 15% dos gol
 
 ### `mina`
 
-Vida **420** · armadura **20** · velocidade **0.3** · Release 40% (máx. 90%) · dano contra kaiju ×0.65 · arma `mina_cannon` · altura **1.75**
+Vida **420** · armadura **20** · velocidade **0.3** · Release 40% (máx. 90%) · dano contra kaiju ×0.6 · arma `mina_cannon` · altura **1.75**
 
 Dano de cada golpe = dano da arma × multiplicador × Release × `kaiju_damage` (contra kaiju).
 
@@ -439,10 +439,10 @@ Defesa: esquiva a cada 5 s; contra-ataque ×2.2 a cada 10 s; apara 15% dos golpe
 
 | Técnica | Tipo | Multiplicadores por golpe | Recarga | Alcance | Observação |
 |---|---|---|---|---|---|
-| `precision_shot` | slash | ×(1.4) | 2 s | 4–48 | tiro ×1 |
-| `cannon_shot` | slash | ×(1) | 2.5 s | 5–40 | tiro ×1, explode 2.5 |
-| `charged_cannon` | slash | ×(3) | 7 s | 6–44 | tiro ×1, explode 3.5, prefere Honju |
-| `anti_giant_shot` | slash | ×(10) | 15 s | 8–56 | tiro ×1, explode 4.5, prefere Honju |
+| `precision_shot` | slash | ×(1.4) | 3 s | 4–48 | tiro ×1 |
+| `cannon_shot` | slash | ×(2.2) | 4 s | 5–40 | tiro ×1, explode 2.5 |
+| `charged_cannon` | slash | ×(7) | 9 s | 6–44 | tiro ×1, explode 3.5, prefere Honju |
+| `anti_giant_shot` | slash | ×(30) | 15 s | 8–56 | tiro ×1, explode 4.5, prefere Honju |
 
 ### `narumi`
 
@@ -488,13 +488,13 @@ Defesa: esquiva a cada 5 s; contra-ataque ×2.2 a cada 10 s; apara 15% dos golpe
 |---|---|---|---|---|---|
 | `precision_shot` | slash | ×(2.2) | 3 s | 6–36 | tiro ×1 |
 | `burst_fire` | slash | ×(0.9) | 2.5 s | 3–28 | tiro ×3 |
-| `freeze_round` | slash | ×(1.2) | 7 s | 4–30 | tiro ×1, lentidão 3 |
+| `freeze_round` | slash | ×(1.2) | 7 s | 4–30 | tiro ×1, lentidão 5 |
 | `suppression` | slash | ×(0.6) | 8 s | 4–26 | tiro ×5, lentidão 1 |
 | `butt_strike` | combo | ×(0.8) | 2 s | 0–2.5 | — |
 
 ### `reno_no6`
 
-Vida **650** · armadura **20** · velocidade **0.36** · Release 50% (máx. 100%) · dano contra kaiju ×0.75 · arma `rifle` · altura **1.75**
+Vida **650** · armadura **20** · velocidade **0.36** · Release 50% (máx. 100%) · dano contra kaiju ×0.7 · arma `rifle` · altura **1.75**
 
 Dano de cada golpe = dano da arma × multiplicador × Release × `kaiju_damage` (contra kaiju).
 
@@ -503,8 +503,8 @@ Defesa: esquiva a cada 5 s; contra-ataque ×2.2 a cada 10 s; apara 15% dos golpe
 | Técnica | Tipo | Multiplicadores por golpe | Recarga | Alcance | Observação |
 |---|---|---|---|---|---|
 | `ice_spear` | slash | ×(2.6) | 2.5 s | 3–40 | tiro ×1, lentidão 2 |
-| `freeze_burst` | slash | ×(2) | 6 s | 4–30 | tiro ×1, explode 3.5, lentidão 4, prefere Honju |
-| `ice_field` | slash | ×(0.8) | 8 s | 0–6 | corte a distância ×8, lentidão 3 |
+| `freeze_burst` | slash | ×(2) | 6 s | 4–30 | tiro ×1, explode 3.5, lentidão 7, prefere Honju |
+| `ice_field` | slash | ×(0.8) | 8 s | 0–6 | corte a distância ×8, lentidão 6 |
 | `multi_freeze` | slash | ×(1) | 7 s | 4–28 | tiro ×5, lentidão 3 |
 | `auxiliary_cannons` | slash | ×(1.2) | 3 s | 4–36 | tiro ×2, explode 1.5 |
 

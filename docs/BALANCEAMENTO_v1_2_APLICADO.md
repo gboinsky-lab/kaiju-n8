@@ -200,3 +200,41 @@ No. 10 × formiga) podem ter o mesmo problema.
 
 **O No. 8 continua acima de todas as metas** mesmo com a regeneração menor: a força dele vem do dano dos socos.
 Pendência para você decidir depois: baixar o dano dele contra kaiju ou deixar o No. 8 assim.
+
+---
+
+## 7. Papéis definidos pelo Miguel (2026-10-15)
+
+**O que o Miguel pediu:**
+- **No. 8** vence as formas atuais do No. 9 (base, preta, formiga); perde ou empata com a fusão (e a fusão gigante);
+  perderá para as próximas formas (vermelha, No. 2/Isao, final).
+- **Mina** é de longa distância, com canhão pesado: tiros demorados, mas devastadores. Vence o No. 10 pequeno e o
+  gigante (combate físico direto); perde só para o No. 9, que é inteligente e faz estratégia.
+- **Reno** é forte principalmente com aliados: congela, paralisa e expõe pontos fracos.
+
+**O que mudou:**
+- **No. 9 lê tiros** (`dodge` no `numbered/*.json`): tiro pesado que explode e vem devagar na direção dele → salto
+  lateral (No. 9 e forma preta 90%, formiga e fusões 40%; recarga 2 s). O No. 10 não tem isso.
+- **No. 9 se adapta mais rápido a tiros** (`adaptation.ranged_factor` 2): contra projéteis e armas de fogo, cada
+  repetição tira o dobro (teto dobrado).
+- **Mina:**
+  - Tiro básico a cada 40 ticks, dano 18 (era 24 ticks, 12).
+  - Canhão ×2,2 (preparo 20, recarga 80); carregado ×7 (40/180).
+  - **Anti-Giant ×30, tiro lento, só contra alvo de 6 m ou mais** (`min_target_height`).
+  - Dano contra kaiju 0,60.
+- **Reno (gelo):**
+  - O tiro congelante expõe o núcleo e deixa o kaiju **vulnerável**: todo dano de todos ×1,3 enquanto dura (`expose_core_ticks`, `vulnerable`).
+  - Reno No. 6: explosão congelante paralisa (Lentidão VII por 5 s) com ×1,4; congelamento múltiplo e campo ×1,25; lança ×1,15.
+  - Reno No. 6: dano contra kaiju 0,70.
+
+| Duelo | Resultado | Pedido |
+|---|---|---|
+| No. 8 × No. 9 / preta / formiga | 100% / 100% / 100% | vence ✅ |
+| No. 8 × fusão / fusão gigante | empate (5 min, os dois param em ~50%) | perde ou empata ✅ |
+| Mina × No. 10 pequeno | 100% | vence ✅ |
+| Mina × No. 10 gigante | 83% | vence ✅ |
+| Mina × No. 9 | 16% (perde 5 de 6) | perde ✅ |
+| Reno No. 6 × No. 9 (sozinho) | 83% | — |
+| Hoshina × No. 10 gigante: sozinho → **com o Reno** | 0% → **66%** | Reno forte em grupo ✅ |
+| Hoshina × No. 9 / Kikoru × No. 9 / Narumi × No. 9 | 100% / 33% / 50% | sem mudança relevante |
+| Hoshina + No. 10 × forma preta | 50% | — |
