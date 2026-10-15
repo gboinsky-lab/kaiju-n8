@@ -66,7 +66,7 @@
   "dodge": {
     "read_radius": 14.0,
     "max_projectile_speed": 3.0,
-    "chance": 0.8,
+    "chance": 0.9,
     "cooldown_ticks": 40,
     "leap_speed": 1.8
   }
