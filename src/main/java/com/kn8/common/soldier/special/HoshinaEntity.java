@@ -935,6 +935,8 @@ public class HoshinaEntity extends SoldierEntity {
         // 0.5.0-D7: as tecnicas aceleram com o Release, junto com os golpes no servidor.
         action.setAnimationSpeedHandler(hoshina -> (double) hoshina.getEntityData().get(ACTION_SPEED));
         action.triggerableAnim("attack", RawAnimation.begin().thenPlay(prefix + "action.attack"));
+        // MOV-2: salto tatico (gen_vault_animations.py).
+        action.triggerableAnim("vault", RawAnimation.begin().thenPlay(prefix + "action.vault"));
         for (String id : animatedTechniques()) {
             action.triggerableAnim(id, RawAnimation.begin().thenPlay(prefix + "action." + id));
         }

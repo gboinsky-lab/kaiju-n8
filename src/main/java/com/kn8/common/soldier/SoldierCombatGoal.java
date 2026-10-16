@@ -68,7 +68,7 @@ final class SoldierCombatGoal extends Goal {
         }
         soldier.getLookControl().setLookAt(target, 30.0F, 30.0F);
         // MOV-1: saindo de um travamento, a navegacao e do StuckWatch ate chegar ao lado.
-        if (stuck.busy()) {
+        if (stuck.busy(soldier)) {
             return;
         }
         if (stuck.tick(soldier, wantsToMove, target.position())) {

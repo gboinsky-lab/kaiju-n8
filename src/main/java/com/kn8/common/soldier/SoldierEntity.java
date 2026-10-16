@@ -648,6 +648,16 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
     }
 
     /**
+     * MOV-2: o caminho do soldado so desce quedas que o pouso aceita ({@code [soldierAi] landingMaxDrop}). O vanilla
+     * deixa mob com vida cheia descer ate ~18 blocos com alvo (cenario "vao": os soldados pulavam no fundo de uma vala
+     * de 5, se feriam e ficavam presos); o que fica do outro lado de um vao e alcancado pelo salto ({@link SoldierLeap}).
+     */
+    @Override
+    public int getMaxFallDistance() {
+        return Math.min(super.getMaxFallDistance(), ServerConfig.SOLDIER_LANDING_MAX_DROP.get());
+    }
+
+    /**
      * Miguel (2026-10-16: soldados ficavam presos embaixo ou atras de corpos de kaiju no meio da batalha): carcaca nao
      * barra soldado (comum e especial); continua solida para o jogador (desmonte).
      */
@@ -895,7 +905,8 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
                 .triggerableAnim("shoot_rifle", RawAnimation.begin().thenPlay("soldier.action.shoot_rifle"))
                 .triggerableAnim("shoot_pistol", RawAnimation.begin().thenPlay("soldier.action.shoot_pistol"))
                 .triggerableAnim("reload_rifle", RawAnimation.begin().thenPlay("soldier.action.reload_rifle"))
-                .triggerableAnim("reload_pistol", RawAnimation.begin().thenPlay("soldier.action.reload_pistol")));
+                .triggerableAnim("reload_pistol", RawAnimation.begin().thenPlay("soldier.action.reload_pistol"))
+                .triggerableAnim("vault", RawAnimation.begin().thenPlay("soldier.action.vault")));
         controllers.add(new AnimationController<>(this, "reaction", 0, state -> PlayState.STOP)
                 .triggerableAnim("hurt", RawAnimation.begin().thenPlay("soldier.reaction.hurt")));
     }

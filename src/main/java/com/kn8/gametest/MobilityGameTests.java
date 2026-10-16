@@ -6,6 +6,7 @@ import com.kn8.common.config.ServerConfig;
 import com.kn8.common.registry.KN8Entities;
 import com.kn8.common.soldier.MoveSafety;
 import com.kn8.common.soldier.SoldierEntity;
+import com.kn8.common.soldier.SoldierLeap;
 import com.kn8.common.soldier.StuckWatch;
 
 import net.minecraft.core.BlockPos;
@@ -19,7 +20,7 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 /**
  * GameTests da MOV-1 (plano de mobilidade v3): o pouso de um impulso e conferido pelas colisoes (parede logo a
  * frente e queda grande recusam; chao livre aceita; degrau de 1 bloco sobe) e o soldado travado sai para o lado sem
- * teleporte.
+ * teleporte. MOV-2: o salto tatico sobe em plataforma de 2, atravessa vao de 3 e recusa muro alto demais.
  */
 @GameTestHolder(KN8Constants.MOD_ID)
 @PrefixGameTestTemplate(false)
@@ -108,6 +109,82 @@ public final class MobilityGameTests {
             helper.assertTrue(soldier.position().distanceTo(start[0]) < 0.01,
                     "Nao pode teleportar: so a navegacao move o soldado");
             helper.assertTrue(soldier.getNavigation().getPath() != null, "Deveria ter caminho para o lado");
+        });
+    }
+
+    private static final String BIG = "empty_15x12x15";
+    private static final String LEAP_BATCH = "kn8_mov2_leap";
+
+    /** Soldado com IA (mob sem IA nao anda pela velocidade) e sem alvo, para o salto ser so o do teste. */
+    private static SoldierEntity leaper(GameTestHelper helper, BlockPos pos) {
+        SoldierEntity soldier = helper.spawn(KN8Entities.SOLDIER.get(), pos);
+        soldier.goalSelector.removeAllGoals(goal -> true);
+        soldier.targetSelector.removeAllGoals(goal -> true);
+        return soldier;
+    }
+
+    private static void fill(GameTestHelper helper, int x0, int y0, int z0, int x1, int y1, int z1) {
+        for (int x = x0; x <= x1; x++) {
+            for (int y = y0; y <= y1; y++) {
+                for (int z = z0; z <= z1; z++) {
+                    helper.setBlock(new BlockPos(x, y, z), Blocks.STONE);
+                }
+            }
+        }
+    }
+
+    /** Salta, segura o controle no ar como o goal de combate e confere o pouso. */
+    private static void leapAndCheck(GameTestHelper helper, SoldierEntity soldier, Vec3 toward, double minY,
+            double minX, String what) {
+        SoldierLeap leap = new SoldierLeap();
+        boolean[] launched = new boolean[1];
+        double[] startY = new double[1];
+        helper.runAfterDelay(10, () -> {
+            startY[0] = soldier.getY();
+            launched[0] = leap.tryLeap(soldier, helper.absoluteVec(toward));
+            helper.assertTrue(launched[0], "Deveria saltar " + what);
+        });
+        helper.onEachTick(() -> {
+            if (launched[0] && leap.active()) {
+                leap.tickAir(soldier);
+            }
+        });
+        helper.succeedWhen(() -> {
+            helper.assertTrue(launched[0] && !leap.active(), "Ainda no ar");
+            Vec3 at = helper.relativeVec(soldier.position());
+            helper.assertTrue(soldier.onGround() && at.y >= minY - 0.01 && at.x >= minX,
+                    "Deveria pousar " + what + ": " + at);
+            helper.assertTrue(soldier.getHealth() >= soldier.getMaxHealth(), "O salto nao pode ferir");
+        });
+    }
+
+    /** Plataforma de 2 blocos colada a leste: sobe em cima dela. */
+    @GameTest(template = BIG, batch = LEAP_BATCH, timeoutTicks = 100)
+    public static void soldierLeapsOntoATwoBlockLedge(GameTestHelper helper) {
+        fill(helper, 5, 1, 0, 14, 2, 14);
+        SoldierEntity soldier = leaper(helper, new BlockPos(4, 1, 7));
+        leapAndCheck(helper, soldier, new Vec3(12.5, 3, 7.5), 3.0, 5.0, "em cima da plataforma");
+    }
+
+    /** Vao de 3 blocos e 5 de fundo (mais que a queda maxima): salta para o outro lado. */
+    @GameTest(template = BIG, batch = LEAP_BATCH, timeoutTicks = 100)
+    public static void soldierLeapsAcrossAThreeBlockGap(GameTestHelper helper) {
+        fill(helper, 0, 1, 0, 5, 5, 14);
+        fill(helper, 9, 1, 0, 14, 5, 14);
+        SoldierEntity soldier = leaper(helper, new BlockPos(5, 6, 7));
+        leapAndCheck(helper, soldier, new Vec3(12.5, 6, 7.5), 6.0, 8.7, "do outro lado do vao");
+    }
+
+    /** Muro de 5 (acima de [soldierAi] leapMaxHeight 3): nao salta. */
+    @GameTest(template = BIG, batch = LEAP_BATCH)
+    public static void soldierDoesNotLeapATooHighWall(GameTestHelper helper) {
+        fill(helper, 5, 1, 0, 14, 5, 14);
+        SoldierEntity soldier = leaper(helper, new BlockPos(4, 1, 7));
+        helper.runAfterDelay(10, () -> {
+            helper.assertTrue(ServerConfig.SOLDIER_LEAP_MAX_HEIGHT.get() < 5.0, "Teste supoe salto maximo < 5");
+            helper.assertFalse(new SoldierLeap().tryLeap(soldier, helper.absoluteVec(new Vec3(12.5, 6, 7.5))),
+                    "Muro de 5 nao deveria ter salto");
+            helper.succeed();
         });
     }
 }

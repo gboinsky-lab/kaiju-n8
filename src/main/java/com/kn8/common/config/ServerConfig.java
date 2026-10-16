@@ -236,6 +236,10 @@ public final class ServerConfig {
     public static final ModConfigSpec.IntValue SOLDIER_STUCK_TICKS;
     public static final ModConfigSpec.DoubleValue SOLDIER_STUCK_MIN_MOVE;
     public static final ModConfigSpec.DoubleValue SOLDIER_UNSTUCK_STEP;
+    public static final ModConfigSpec.DoubleValue SOLDIER_LEAP_MAX_HEIGHT;
+    public static final ModConfigSpec.DoubleValue SOLDIER_LEAP_MAX_DISTANCE;
+    public static final ModConfigSpec.IntValue SOLDIER_LEAP_CHECK_TICKS;
+    public static final ModConfigSpec.IntValue SOLDIER_LEAP_COOLDOWN_TICKS;
 
     // --- esquadroes (IA-5) ----------------------------------------------------------------------------------------
     public static final ModConfigSpec.DoubleValue SQUAD_FOLLOW_DISTANCE;
@@ -757,6 +761,14 @@ public final class ServerConfig {
         SOLDIER_STUCK_MIN_MOVE = doubleValue("stuckMinMove", "MOV-1: see stuckTicks.", 1.0, 0.1, 16.0);
         SOLDIER_UNSTUCK_STEP = doubleValue("unstuckStep", "MOV-1: how far to the side a stuck soldier goes (blocks).",
                 5.0, 1.0, 32.0);
+        SOLDIER_LEAP_MAX_HEIGHT = doubleValue("leapMaxHeight", "MOV-2: highest obstacle or ledge a soldier leaps onto"
+                + " (blocks above its feet; up to 1.2 the vanilla jump does it).", 3.0, 1.2, 6.0);
+        SOLDIER_LEAP_MAX_DISTANCE = doubleValue("leapMaxDistance", "MOV-2: farthest landing spot of a leap over a gap"
+                + " or onto a platform (blocks).", 4.0, 1.0, 8.0);
+        SOLDIER_LEAP_CHECK_TICKS = intValue("leapCheckTicks", "MOV-2: a soldier trying to move that barely moved for"
+                + " this long looks for a leap toward its goal.", 10, 2, 200);
+        SOLDIER_LEAP_COOLDOWN_TICKS = intValue("leapCooldownTicks", "MOV-2: minimum time between two leaps.", 40, 0,
+                1200);
         BUILDER.pop();
 
         section("squad", "Squads (IA-5): the player's squad and the invasion defender squads.");

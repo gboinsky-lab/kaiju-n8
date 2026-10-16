@@ -108,7 +108,7 @@ final class HoshinaCombatGoal extends Goal {
             wasUsingTechnique = true;
             return;
         }
-        if (stuck.busy()) {
+        if (stuck.busy(hoshina)) {
             return;
         }
         if (unstick(target)) {

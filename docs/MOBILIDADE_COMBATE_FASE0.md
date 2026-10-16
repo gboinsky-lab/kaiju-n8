@@ -128,3 +128,25 @@ tempo parado, tiros bloqueados, dano duplicado = 0).
 - Medidor: cenários novos `beco` e `degraus` (kaiju morto nos dois); `parede` 99 de 220 (faixa de antes), `corredor`,
   `abrigo` e `grupo` sem regressão. GameTests 189/189 (4 novos em `MobilityGameTests`).
 - Visto em jogo com 2 clientes: `docs/img/mov1_pouso_e_golpe_de_perto.jpg`.
+
+## 7. MOV-2 feita (2026-10-16)
+
+- `core/soldier/LeapMath` (JUnit 5): física do mob no ar (gravidade 0,08, freio 0,98 vertical e 0,91 horizontal),
+  impulso vertical que passa da altura, tempo até pousar, impulso horizontal que cobre a distância, viabilidade
+  (até 0,7 por tick).
+- `common/soldier/SoldierLeap` (no `StuckWatch`, comum e especial): obstáculo de 1,2 a 3 a frente → pousa em cima
+  ou atrás dele; sem obstáculo → vão/plataforma depois da beira (até 1,5 bloco de corrida), primeiro o outro lado,
+  depois o fundo; pouso conferido (`MoveSafety.restsAt`), 1 bloco para dentro da quina, arco sem teto. Duas fases
+  como o vault do jogador (sobe, depois vai para a frente); no ar segura o controle até pousar, sem dano de queda.
+  Dispara quando o soldado quer andar e fica quase parado por `leapCheckTicks`, ou no travamento.
+- `SoldierEntity.getMaxFallDistance` = `landingMaxDrop`: o caminho não se joga em quedas maiores (achado no cenário
+  `vao`).
+- Animação `<espécie>.action.vault` (corpo e pernas; braços ficam na postura da arma) por
+  `tools/art/gen_vault_animations.py` em soldado e nos 11 especiais.
+- Medidor: `plataforma` 2 soldados × Primigenius parado em cima de 2 blocos: sem salto nenhum dano em 30 s, com salto
+  morto em 12 s; `vao` (3 de largura, 5 de fundo): antes pulavam no fundo e ficavam presos, agora atravessam e matam
+  em 12 s (3 rodadas iguais); `plataforma_especiais` (Hoshina e Kikoru × Honju) 8 s; `beco`, `degraus`, `corredor`,
+  `abrigo`, `grupo` sem regressão; `parede` varia muito por rodada (46–146 de dano com ou sem salto). GameTests
+  192/192 duas vezes.
+- Visto em jogo com 2 clientes: `docs/img/mov2_saltos_plataforma_e_vao.jpg` (a pose do salto aparece pequena nas
+  capturas; conferir de perto no roteiro §56).

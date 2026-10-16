@@ -25,6 +25,8 @@ public final class StuckWatch {
     /** Obstaculo a frente: distancia conferida e altura maxima que o pulo vanilla vence (blocos). */
     private static final double OBSTACLE_REACH = 0.8;
     private static final double JUMPABLE = 1.2;
+    /** Conferida rapida do salto: andou menos que isto no intervalo = barrado. */
+    private static final double QUICK_MIN_MOVE = 0.5;
     /** Volta por onde veio: tantas vezes o passo de destravar. */
     private static final double BACK_FACTOR = 2.0;
 
@@ -35,9 +37,17 @@ public final class StuckWatch {
     /** Travamentos seguidos sem sair do lugar entre eles: do segundo em diante tenta voltar por onde veio. */
     private int strikes;
     private Vec3 strikeAt;
+    /** MOV-2: salto tatico e a conferida rapida (quase parado por {@code leapCheckTicks}). */
+    private final SoldierLeap leap = new SoldierLeap();
+    private Vec3 quickFrom;
+    private int quickTicks;
 
-    /** Verdadeiro enquanto esta saindo para o lado (o goal nao mexe na navegacao). */
-    public boolean busy() {
+    /** Verdadeiro enquanto salta ou esta saindo para o lado (o goal nao mexe na navegacao). */
+    public boolean busy(Mob mob) {
+        if (leap.active()) {
+            leap.tickAir(mob);
+            return true;
+        }
         if (asideTicks > 0) {
             asideTicks--;
             return true;
@@ -52,8 +62,21 @@ public final class StuckWatch {
     public boolean tick(Mob mob, boolean wantsToMove, Vec3 toward) {
         if (!wantsToMove || from == null) {
             from = mob.position();
+            quickFrom = from;
             ticks = 0;
+            quickTicks = 0;
             return false;
+        }
+        // MOV-2: quase parado querendo andar (caminho do vanilla nao passa: muro, vao, plataforma) → salto, sem
+        // esperar o travamento inteiro.
+        if (++quickTicks >= ServerConfig.SOLDIER_LEAP_CHECK_TICKS.get()) {
+            boolean blocked = mob.position().distanceTo(quickFrom) < QUICK_MIN_MOVE;
+            quickFrom = mob.position();
+            quickTicks = 0;
+            if (blocked && leap.tryLeap(mob, toward)) {
+                from = null;
+                return true;
+            }
         }
         if (++ticks < ServerConfig.SOLDIER_STUCK_TICKS.get()) {
             return false;
@@ -77,6 +100,9 @@ public final class StuckWatch {
             return false;
         }
         dir = dir.normalize();
+        if (leap.tryLeap(mob, toward)) {
+            return true;
+        }
         double height = ParkourProbe.obstacleHeight(mob, dir, OBSTACLE_REACH, JUMPABLE);
         if (height > 0.0 && mob.onGround()) {
             mob.getJumpControl().jump();

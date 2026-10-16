@@ -786,3 +786,16 @@ Servidor dedicado + 2 clientes, mundo plano. Para ver os motivos no log do servi
 | 55.3 | Beco em U de bedrock com 2 soldados de espada e um Primigenius parado (`NoAI`) no fundo | Os soldados chegam e **acertam** o kaiju (antes paravam a ~4 blocos sem dano: o golpe mirava o centro do corpo alto); kaiju perde vida |
 | 55.4 | Soldado comum preso atrás de um muro de 2 tentando chegar ao kaiju | Em ~3 s ele sai para um lado com chão (ou volta) e tenta de novo; nunca teleporta |
 | 55.5 | Degraus de pedra de 1 bloco entre soldado/Hoshina e o kaiju | Sobem e lutam normalmente |
+
+## 56. Saltos táticos dos soldados (MOV-2)
+
+Servidor dedicado + 2 clientes, mundo plano. Log dos saltos com `[kaijuAi] debugLog = true` (`[kn8 IA] ... salto
+subindo 2.0`, `salto por cima do vao`, `salto pousou`).
+
+| # | Passo | Esperado |
+|---|---|---|
+| 56.1 | Plataforma de pedra de 2 blocos sem rampa (17 x 16), Primigenius parado (`NoAI`) no meio; 2 soldados de espada no chão a 6 blocos | Em ~1 s parados na parede, saltam para cima (corpo inclina, pernas encolhem) e matam o kaiju em cima |
+| 56.2 | Dois platôs de 5 de altura com um vão de 3 entre eles; soldados num, kaiju no outro | Os soldados **não** pulam no fundo da vala (5 é mais que a queda de 3); saltam por cima do vão e pousam do outro lado, sem perder vida |
+| 56.3 | Muro de 5 de altura entre o soldado e o kaiju | Não salta (acima de 3): contorna ou sai para o lado (MOV-1) |
+| 56.4 | Muro de 2 de altura e 1 de espessura | Salta para cima dele ou por cima |
+| 56.5 | Hoshina e Kikoru na cena 56.1 | Chegam ao kaiju (salto, dash ou alcance da técnica) |

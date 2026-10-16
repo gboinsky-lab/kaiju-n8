@@ -110,6 +110,17 @@ public final class MoveSafety {
         return Optional.empty();
     }
 
+    /** A caixa do soldado cabe em {@code p} (pes) e tem chao logo abaixo (MOV-2: pouso do salto). */
+    public static boolean restsAt(Mob mob, Vec3 p) {
+        AABB at = mob.getBoundingBox().move(p.subtract(mob.position()));
+        return mob.level().noCollision(mob, at) && dropBelow(mob, at) == 0;
+    }
+
+    /** A caixa do soldado cabe em {@code p} (pes), sem conferir o chao (MOV-2: arco do salto). */
+    public static boolean fits(Mob mob, Vec3 p) {
+        return mob.level().noCollision(mob, mob.getBoundingBox().move(p.subtract(mob.position())));
+    }
+
     /** Quantos blocos a caixa cai ate o chao (0 = chao logo abaixo; -1 = mais que a queda maxima). */
     private static int dropBelow(Mob mob, AABB box) {
         boolean[] supported = new boolean[ServerConfig.SOLDIER_LANDING_MAX_DROP.get() + 1];

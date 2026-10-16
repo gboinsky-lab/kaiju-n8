@@ -128,6 +128,11 @@ Fases dos chefes (IA-6) [SUPOSIÇÃO nos pesos]: **Honju** acima de 50% soco pes
 | `dashBlocksPerSpeed` | 5,0 | MOV-1: distância conferida do dash = velocidade do impulso × 5 blocos |
 | `stuckTicks` / `stuckMinMove` | 60 / 1,0 | MOV-1: soldado (comum e especial) que quer chegar ao alvo e anda menos de 1 bloco em 3 s está travado |
 | `unstuckStep` | 5,0 | MOV-1: travado, pula obstáculo de até 1,2 ou anda 5 blocos para um lado com chão (o outro lado, ou para trás se travar de novo no mesmo lugar); sem teleporte |
+| `leapMaxHeight` | 3,0 | MOV-2: obstáculo ou borda mais alta onde o soldado salta (blocos acima dos pés; até 1,2 é o pulo vanilla) |
+| `leapMaxDistance` | 4,0 | MOV-2: maior vão/plataforma do salto depois da beira (com até 1,5 bloco de corrida antes dela) |
+| `leapCheckTicks` | 10 | MOV-2: querendo andar e andando menos de 0,5 bloco em 0,5 s, procura um salto para o alvo |
+| `leapCooldownTicks` | 40 | MOV-2: espera entre dois saltos |
+| queda do caminho | = `landingMaxDrop` (3) | MOV-2: o caminho do soldado só desce quedas de até 3 (o vanilla aceitava ~18 com vida cheia e alvo) |
 
 **Destruição pelos ataques** (IA-2, Miguel 2026-10-15) [SUPOSIÇÃO nos números]:
 

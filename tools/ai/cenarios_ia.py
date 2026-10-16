@@ -80,6 +80,19 @@ SCEN = {
  'degraus': ([(-6,0,4,6,0,6,'minecraft:stone'),(-6,0,7,6,1,9,'minecraft:stone'),(-6,0,10,6,0,11,'minecraft:stone')],
              [('s1','kn8:soldier',-1,0,'{kn8_variant:"sword",kn8_power_level:"high"}','A'),
               ('h','kn8:hoshina',1,0,'','A'), ('k','kn8:primigenius',0,16,'{NoAI:1b}','B')]),
+ # MOV-2: kaiju parado em cima de uma plataforma de 2 blocos sem rampa (so subindo com o salto) e do outro lado de
+ # um vao de 3 blocos com 5 de fundo (so atravessando com o salto).
+ 'plataforma': ([(-10,0,6,10,1,26,'minecraft:stone')],
+                [('s1','kn8:soldier',-1,0,'{kn8_variant:"sword",kn8_power_level:"high"}','A'),
+                 ('s2','kn8:soldier',1,0,'{kn8_variant:"sword",kn8_power_level:"high"}','A'),
+                 ('k','kn8:primigenius',0,16,'{NoAI:1b}','B',2)]),
+ 'plataforma_especiais': ([(-10,0,6,10,1,26,'minecraft:stone')],
+                          [('h','kn8:hoshina',-2,0,'','A'), ('ki','kn8:kikoru',2,0,'','A'),
+                           ('k','kn8:primigenius_honju',0,17,'{NoAI:1b}','B',2)]),
+ 'vao': ([(-12,0,-6,12,4,4,'minecraft:stone'),(-12,0,8,12,4,28,'minecraft:stone')],
+         [('s1','kn8:soldier',-1,0,'{kn8_variant:"sword",kn8_power_level:"high"}','A',5),
+          ('s2','kn8:soldier',1,0,'{kn8_variant:"sword",kn8_power_level:"high"}','A',5),
+          ('k','kn8:primigenius',0,18,'{NoAI:1b}','B',5)]),
  'pilares': ([(x,0,z,x+1,6,z+1,'minecraft:bedrock') for x in (-8,-2,4) for z in (8,14,20)],
              [('m','kn8:mina',0,0,'','A'), ('k','kn8:primigenius_honju',0,28,'','B')]),
 }
@@ -87,6 +100,9 @@ name=sys.argv[1]; secs=float(sys.argv[2]) if len(sys.argv)>2 else 40
 blocks, ents = SCEN[name]
 rcon('difficulty normal'); rcon('gamerule doMobSpawning false'); rcon('gamerule mobGriefing true')
 rcon(f'forceload add {X0-48} {Z0-48} {X0+48} {Z0+48}')
+# MOV-2: logo depois de reiniciar o servidor as entidades salvas carregam alguns ticks depois do forceload (sem esperar,
+# os soldados da rodada anterior escapavam da limpeza e eram medidos no lugar dos novos).
+time.sleep(2.0)
 rcon(f'kill @e[type=!minecraft:player,x={X0-60},y=-70,z={Z0-60},dx=120,dy=60,dz=120]'); time.sleep(0.3)
 rcon(f'kill @e[type=!minecraft:player,x={X0-60},y=-70,z={Z0-60},dx=120,dy=60,dz=120]')
 time.sleep(0.5)
