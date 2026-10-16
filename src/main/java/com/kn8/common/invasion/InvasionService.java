@@ -23,6 +23,7 @@ import com.kn8.common.registry.KN8Sounds;
 import com.kn8.common.server.KN8Server;
 import com.kn8.common.soldier.SoldierEntity;
 import com.kn8.common.world.KaijuSpawner;
+import com.kn8.core.soldier.SquadRules;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -35,6 +36,7 @@ import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.entity.Entity;
@@ -138,6 +140,7 @@ public final class InvasionService {
             }
             case FIGHT -> {
                 march(level, invasion);
+                assignSquads(level, invasion);
                 if (invasion.alive.isEmpty()) {
                     if (invasion.wave + 1 >= invasion.def.waves().size()) {
                         finish(level, invasion, Invasion.Phase.VICTORY, true);
@@ -246,7 +249,14 @@ public final class InvasionService {
         }
     }
 
+    /**
+     * IA-5 (bug 13 da Fase 0: a marca {@code kn8_invasion} nunca era lida e os defensores vagavam): os defensores se
+     * dividem em esquadroes de {@code [squad] invasionSquadSize}, cada um num posto em volta do centro
+     * ({@code invasionPostDistance}); sem alvo, voltam ao posto (SquadMoveGoal) e so lutam perto dele, menos com o
+     * kaiju designado ao esquadrao, que perseguem.
+     */
     private static void spawnDefenders(ServerLevel level, Invasion invasion) {
+        List<SoldierEntity> soldiers = new ArrayList<>();
         for (InvasionDef.Defender defender : invasion.def.defenders()) {
             // 0.6-D: variante com o nome de um soldado especial ("hoshina") chama o soldado especial.
             Optional<EntityType<? extends SoldierEntity>> special = KN8Entities.specialSoldier(defender.variant());
@@ -266,7 +276,67 @@ public final class InvasionService {
                 soldier.setPowerLevel(defender.level());
                 soldier.finalizeSpawn(level, level.getCurrentDifficultyAt(pos), MobSpawnType.EVENT, null);
                 soldier.getPersistentData().putBoolean(TAG, true);
+                soldiers.add(soldier);
+            }
+        }
+        List<Integer> sizes = SquadRules.partition(soldiers.size(), ServerConfig.SQUAD_INVASION_SIZE.get());
+        int next = 0;
+        for (int squad = 0; squad < sizes.size(); squad++) {
+            double[] post = SquadRules.post(invasion.center.getX() + 0.5, invasion.center.getZ() + 0.5, squad,
+                    sizes.size(), ServerConfig.SQUAD_INVASION_POST_DISTANCE.get());
+            BlockPos postPos = KaijuSpawner.surface(level, Mth.floor(post[0]), Mth.floor(post[1]));
+            List<UUID> members = new ArrayList<>();
+            for (int i = 0; i < sizes.get(squad); i++) {
+                SoldierEntity soldier = soldiers.get(next++);
+                BlockPos pos = KaijuSpawner.surfaceAround(level, postPos, 0, 2, level.random);
+                soldier.moveTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, level.random.nextFloat() * 360.0F,
+                        0.0F);
+                soldier.setSquadPost(postPos);
                 level.addFreshEntity(soldier);
+                members.add(soldier.getUUID());
+            }
+            invasion.squads.add(members);
+            invasion.posts.add(postPos);
+            invasion.squadTargets.add(null);
+        }
+    }
+
+    /** Kaiju de cada esquadrao: fica com o seu enquanto vivo; quem ficou sem pega o menos disputado e mais perto. */
+    private static void assignSquads(ServerLevel level, Invasion invasion) {
+        if (invasion.squads.isEmpty()) {
+            return;
+        }
+        List<KaijuEntity> kaiju = new ArrayList<>();
+        for (UUID uuid : invasion.alive) {
+            if (level.getEntity(uuid) instanceof KaijuEntity found && found.isAlive()) {
+                kaiju.add(found);
+            }
+        }
+        double[][] posts = new double[invasion.posts.size()][];
+        int[] current = new int[posts.length];
+        for (int i = 0; i < posts.length; i++) {
+            BlockPos post = invasion.posts.get(i);
+            posts[i] = new double[] {post.getX() + 0.5, post.getZ() + 0.5};
+            current[i] = -1;
+            UUID target = invasion.squadTargets.get(i);
+            for (int k = 0; k < kaiju.size(); k++) {
+                if (kaiju.get(k).getUUID().equals(target)) {
+                    current[i] = k;
+                }
+            }
+        }
+        double[][] points = new double[kaiju.size()][];
+        for (int k = 0; k < points.length; k++) {
+            points[k] = new double[] {kaiju.get(k).getX(), kaiju.get(k).getZ()};
+        }
+        int[] chosen = SquadRules.assign(posts, points, current);
+        for (int i = 0; i < chosen.length; i++) {
+            UUID target = chosen[i] >= 0 ? kaiju.get(chosen[i]).getUUID() : null;
+            invasion.squadTargets.set(i, target);
+            for (UUID member : invasion.squads.get(i)) {
+                if (level.getEntity(member) instanceof SoldierEntity soldier && soldier.isAlive()) {
+                    soldier.setAssignedKaiju(target);
+                }
             }
         }
     }
@@ -323,6 +393,14 @@ public final class InvasionService {
     private static void finish(ServerLevel level, Invasion invasion, Invasion.Phase result, boolean rewards) {
         invasion.phase = result;
         invasion.bar.removeAllPlayers();
+        // IA-5: sem invasao, ninguem fica designado; os esquadroes continuam guardando o posto.
+        for (List<UUID> squad : invasion.squads) {
+            for (UUID member : squad) {
+                if (level.getEntity(member) instanceof SoldierEntity soldier) {
+                    soldier.setAssignedKaiju(null);
+                }
+            }
+        }
         KN8Server.get(level.getServer()).invasions().remove(level.dimension());
         boolean victory = result == Invasion.Phase.VICTORY;
         List<ServerPlayer> rewarded = new ArrayList<>();

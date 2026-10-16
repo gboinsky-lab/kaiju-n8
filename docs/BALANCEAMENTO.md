@@ -144,6 +144,22 @@ dano nem armadura]:
 | No. 9 formiga | — | — | — | 10 | 16 | |
 | Preondactyl | — | — | — | — | — | raio +1 além de 10; só mergulha com golpe de perto pronto |
 
+**Esquadrões** (`[squad]`, IA-5, Miguel 2026-10-16) [SUPOSIÇÃO nos números]:
+
+| Chave | Padrão | Efeito |
+|---|---|---|
+| `followDistance` | 4 | seguindo, o membro volta para perto do líder quando passa disso (para a ~1,6 bloco dele, cada um num lado) |
+| `leashRange` | 20 | seguindo ou no posto, só luta com kaiju a até 20 blocos do líder/posto ("atacar" caça no alcance inteiro; o kaiju designado da invasão conta sempre) |
+| `guardRadius` | 6 | no posto ("ficar" e invasão), sem alvo, volta quando passa disso |
+| `recruitRange` | 8 | distância máxima para recrutar |
+| `specialRankOrder` | 4 | soldado especial só entra no esquadrão de Vice-Capitão (ordem 4) para cima |
+| `invasionSquadSize` | 3 | defensores de invasão em esquadrões de 3 (o último pode ser menor) |
+| `invasionPostDistance` | 12 | postos dos esquadrões em volta do centro da invasão |
+| `assignedBonus` | 16 | o kaiju designado ao esquadrão conta 16 blocos mais perto na escolha de alvo |
+| `separationRadius` | 4 | com aliado a até 4 blocos, cada soldado chega ao alvo por um ângulo próprio (gira 30° por reavaliação para longe do aliado) |
+
+Tamanho do esquadrão do jogador = `npc_squad_size` da patente (`rank/*.json`): Candidato e Oficial 0, Oficial Sênior 2, Líder de Pelotão 4, Vice-Capitão 6, Capitão 8; no criativo, o maior.
+
 **Perfis táticos e guarda contra golpe pesado** (IA-3, Miguel 2026-10-16) [SUPOSIÇÃO nos números; fichas em
 `docs/FICHAS_IA_PERSONAGENS.md`]:
 

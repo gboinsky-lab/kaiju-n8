@@ -146,6 +146,21 @@ Ordenados por gravidade. Cada item foi conferido no código (os de gravidade alt
 - **#18, #19 e #22 resolvidos (IA-4)**: Preondactyl só mergulha com golpe pronto e desce até o pé do alvo;
   aproximação pelo alcance das habilidades prontas; fúria salva.
 
+### Situação depois da IA-5 (2026-10-16)
+
+- **#12 resolvido**: com aliado a até 4 blocos (`[squad] separationRadius`), cada soldado chega ao alvo girando o
+  ângulo para longe do aliado mais perto; atiradores recuam e orbitam por linhas próprias (desvio pelo id). Cenário
+  novo `separacao` (Hoshina, Kikoru, Narumi e um soldado × Primigenius Honju, 4 rodadas cada): menor distância média
+  entre aliados na luta 3,5 blocos com a separação contra 2,2 sem ela; colados (< 1 bloco) 1,5% do tempo contra 7,8%.
+- **#13 resolvido**: defensores de invasão em esquadrões de 3, cada um num posto a 12 blocos do centro e com um
+  kaiju da onda designado (os esquadrões se dividem entre os kaiju antes de dobrar em um; quando o dele morre, pega
+  outro); sem alvo voltam ao posto. Visto em jogo na `honju_assault`: entre ondas cada grupo no seu posto; na
+  segunda onda a Kikoru foi atrás do Honju designado (fora do raio do posto) e o derrubou.
+- **#14 resolvido**: aba Esquadrão com Recrutar/Dispensar e as 4 ordens (`SquadCommandC2S`, protocolo 19); tamanho
+  pela patente (`npc_squad_size`), especiais a partir de Vice-Capitão [SUPOSIÇÃO].
+- Medidor: `grupo` e `cerco` vencidos; `parede` tira ~110 de 220 do Primigenius (como na IA-1B), mas os dois
+  soldados morrem perto dos 30 s (4 rodadas); não medi o `parede` com o código da IA-4 para saber desde quando.
+
 ## 5. Fora da IA (registrado, não mexido)
 
 - **Balanceamento:** Anti-Giant da Mina (×30) mata um Honju de 360 com um tiro (820). O piso de 6 m pega qualquer

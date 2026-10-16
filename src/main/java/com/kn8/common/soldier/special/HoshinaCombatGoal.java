@@ -45,6 +45,8 @@ final class HoshinaCombatGoal extends Goal {
     private static final int UNSTUCK_RUN_TICKS = 30;
     /** Alvo acima disso (blocos, pe contra pe) e perto: pula para alcancar. */
     private static final double JUMP_ABOVE = 1.5;
+    /** IA-5: a esta distancia da borda do alvo, passa a chegar pelo proprio angulo. */
+    private static final double SPREAD_RANGE = 8.0;
 
     private final HoshinaEntity hoshina;
     private int repath;
@@ -75,6 +77,8 @@ final class HoshinaCombatGoal extends Goal {
     @Override
     public void start() {
         hoshina.setAggressive(true);
+        // IA-5: metade orbita para cada lado (pelo id).
+        orbitSide = (hoshina.getId() & 1) == 0 ? 1 : -1;
     }
 
     @Override
@@ -121,7 +125,13 @@ final class HoshinaCombatGoal extends Goal {
             hoshina.gapClose(target);
             if (--repath <= 0) {
                 repath = REPATH_TICKS;
-                hoshina.getNavigation().moveTo(target, SPEED);
+                // IA-5: perto, chega pelo proprio angulo (sem empilhar com os aliados).
+                if (edge < SPREAD_RANGE) {
+                    Vec3 spot = hoshina.approachSpot(target, hoshina.attackReach() * 0.6);
+                    hoshina.getNavigation().moveTo(spot.x, spot.y, spot.z, SPEED);
+                } else {
+                    hoshina.getNavigation().moveTo(target, SPEED);
+                }
             }
         } else {
             hoshina.getNavigation().stop();
@@ -234,7 +244,8 @@ final class HoshinaCombatGoal extends Goal {
     private boolean moveAround(LivingEntity target, double keep, double step, double speed) {
         Vec3 center = target.position();
         Vec3 from = hoshina.position().subtract(center);
-        double angle = Math.atan2(from.z, from.x) + step * orbitSide;
+        // IA-5: desvio proprio de cada um (atiradores nao orbitam todos no mesmo ponto).
+        double angle = Math.atan2(from.z, from.x) + step * orbitSide + hoshina.spreadOffset() * 0.5;
         double radius = keep + target.getBbWidth() * 0.5;
         Vec3 spot = center.add(Math.cos(angle) * radius, 0.0, Math.sin(angle) * radius);
         return hoshina.getNavigation().moveTo(spot.x, hoshina.getY(), spot.z, speed);

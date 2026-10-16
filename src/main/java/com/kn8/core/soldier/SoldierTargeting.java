@@ -16,23 +16,34 @@ public final class SoldierTargeting {
 
     /** Numeros do config {@code [soldierAi]}. */
     public record Params(double range, double coverBonus, double revengeBonus, double switchMargin, double allyBonus,
-            double bigBonus) {
+            double bigBonus, double assignedBonus) {
+
+        /** Sem kaiju designado (IA-3). */
+        public Params(double range, double coverBonus, double revengeBonus, double switchMargin, double allyBonus,
+                double bigBonus) {
+            this(range, coverBonus, revengeBonus, switchMargin, allyBonus, bigBonus, 0.0);
+        }
 
         /** Soldado comum: sem os bonus do perfil tatico dos especiais (IA-3). */
         public Params(double range, double coverBonus, double revengeBonus, double switchMargin) {
-            this(range, coverBonus, revengeBonus, switchMargin, 0.0, 0.0);
+            this(range, coverBonus, revengeBonus, switchMargin, 0.0, 0.0, 0.0);
         }
     }
 
     /**
      * Um kaiju possivel. {@code threatensReloadingAlly} = o alvo dele e um aliado recarregando;
-     * {@code hurtMe} = feriu este soldado ha pouco.
+     * {@code hurtMe} = feriu este soldado ha pouco; {@code assigned} = o kaiju designado ao esquadrao (IA-5, invasao).
      */
     public record Candidate(int id, double distance, boolean threatensReloadingAlly, boolean hurtMe,
-            boolean threatensAlly, boolean big) {
+            boolean threatensAlly, boolean big, boolean assigned) {
+
+        public Candidate(int id, double distance, boolean threatensReloadingAlly, boolean hurtMe,
+                boolean threatensAlly, boolean big) {
+            this(id, distance, threatensReloadingAlly, hurtMe, threatensAlly, big, false);
+        }
 
         public Candidate(int id, double distance, boolean threatensReloadingAlly, boolean hurtMe) {
-            this(id, distance, threatensReloadingAlly, hurtMe, false, false);
+            this(id, distance, threatensReloadingAlly, hurtMe, false, false, false);
         }
     }
 
@@ -43,7 +54,8 @@ public final class SoldierTargeting {
         return candidate.distance() - (candidate.threatensReloadingAlly() ? params.coverBonus() : 0.0)
                 - (candidate.hurtMe() ? params.revengeBonus() : 0.0)
                 - (candidate.threatensAlly() ? params.allyBonus() : 0.0)
-                - (candidate.big() ? params.bigBonus() : 0.0);
+                - (candidate.big() ? params.bigBonus() : 0.0)
+                - (candidate.assigned() ? params.assignedBonus() : 0.0);
     }
 
     /** Id do alvo escolhido (-1 se nenhum kaiju no alcance); o atual fica se nao houver outro melhor pela margem. */

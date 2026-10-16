@@ -4,6 +4,7 @@ package com.kn8.common.soldier;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.UUID;
 
 import com.kn8.common.config.ServerConfig;
 import com.kn8.common.data.def.KaijuClass;
@@ -11,10 +12,12 @@ import com.kn8.common.data.def.SpecialSoldierDef;
 import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.soldier.special.HoshinaEntity;
 import com.kn8.core.soldier.SoldierTargeting;
+import com.kn8.core.soldier.SquadRules;
 
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * Alvo dos soldados (IA-1B, comuns e especiais), no lugar do {@code NearestAttackableTargetGoal} com visao: Miguel,
@@ -54,19 +57,30 @@ public final class SoldierTargetGoal extends Goal {
             return;
         }
         nextEvaluation = now + ServerConfig.SOLDIER_RETARGET_TICKS.get();
+        if (soldier.squadOrder() == SquadRules.Order.RETREAT && soldier.squadLeader().isPresent()) {
+            // IA-5: "recuar" larga a luta e volta para o lider (SquadMoveGoal).
+            soldier.setTarget(null);
+            return;
+        }
+        // IA-5: seguindo ou no posto, so luta perto do lider/posto; o kaiju designado (invasao) conta sempre.
+        Vec3 home = soldier.isLeashed() ? soldier.squadHome() : null;
+        double leash = ServerConfig.SQUAD_LEASH_RANGE.get();
+        UUID assigned = soldier.assignedKaiju();
         double range = ServerConfig.SOLDIER_DETECTION_RANGE.get();
         SpecialSoldierDef.Tactics tactics = soldier instanceof HoshinaEntity special
                 ? special.profile().map(SpecialSoldierDef::tactics).orElse(SpecialSoldierDef.Tactics.DEFAULT)
                 : SpecialSoldierDef.Tactics.DEFAULT;
         SoldierTargeting.Params params = new SoldierTargeting.Params(range, ServerConfig.SOLDIER_COVER_BONUS.get(),
                 ServerConfig.SOLDIER_REVENGE_BONUS.get(), ServerConfig.SOLDIER_SWITCH_MARGIN.get(),
-                tactics.protectAlly(), tactics.bigTarget());
+                tactics.protectAlly(), tactics.bigTarget(), ServerConfig.SQUAD_ASSIGNED_BONUS.get());
         LivingEntity current = soldier.getTarget();
         LivingEntity attacker = soldier.getLastHurtByMob();
         boolean revenge = attacker != null
                 && soldier.tickCount - soldier.getLastHurtByMobTimestamp() <= ServerConfig.SOLDIER_REVENGE_TICKS.get();
         List<KaijuEntity> found = soldier.level().getEntitiesOfClass(KaijuEntity.class,
-                soldier.getBoundingBox().inflate(range), kaiju -> kaiju.isAlive() && soldier.canAttack(kaiju));
+                soldier.getBoundingBox().inflate(range), kaiju -> kaiju.isAlive() && soldier.canAttack(kaiju)
+                        && (home == null || kaiju.getUUID().equals(assigned)
+                        || kaiju.getBoundingBox().distanceToSqr(home) <= leash * leash));
         List<SoldierTargeting.Candidate> candidates = new ArrayList<>(found.size());
         int currentId = -1;
         for (int i = 0; i < found.size(); i++) {
@@ -76,7 +90,8 @@ public final class SoldierTargetGoal extends Goal {
             }
             candidates.add(new SoldierTargeting.Candidate(i, soldier.distanceTo(kaiju),
                     threatensReloadingAlly(kaiju), revenge && attacker == kaiju, threatensAlly(kaiju),
-                    kaiju.def().map(def -> def.kaijuClass() != KaijuClass.YOJU).orElse(false)));
+                    kaiju.def().map(def -> def.kaijuClass() != KaijuClass.YOJU).orElse(false),
+                    kaiju.getUUID().equals(assigned)));
         }
         int chosen = SoldierTargeting.choose(params, candidates, currentId);
         if (chosen >= 0) {

@@ -217,6 +217,17 @@ public final class ServerConfig {
     public static final ModConfigSpec.DoubleValue SOLDIER_RELOAD_RETREAT;
     public static final ModConfigSpec.ConfigValue<String> SOLDIER_OUT_OF_AMMO_WEAPON;
 
+    // --- esquadroes (IA-5) ----------------------------------------------------------------------------------------
+    public static final ModConfigSpec.DoubleValue SQUAD_FOLLOW_DISTANCE;
+    public static final ModConfigSpec.DoubleValue SQUAD_LEASH_RANGE;
+    public static final ModConfigSpec.DoubleValue SQUAD_GUARD_RADIUS;
+    public static final ModConfigSpec.DoubleValue SQUAD_RECRUIT_RANGE;
+    public static final ModConfigSpec.IntValue SQUAD_SPECIAL_RANK_ORDER;
+    public static final ModConfigSpec.IntValue SQUAD_INVASION_SIZE;
+    public static final ModConfigSpec.DoubleValue SQUAD_INVASION_POST_DISTANCE;
+    public static final ModConfigSpec.DoubleValue SQUAD_ASSIGNED_BONUS;
+    public static final ModConfigSpec.DoubleValue SQUAD_SEPARATION;
+
     // --- combat (M10, GDD secoes 7 e 12) ---------------------------------------------------------------------------
     public static final ModConfigSpec.DoubleValue LIGHT_STAMINA_COST;
     public static final ModConfigSpec.DoubleValue HEAVY_STAMINA_COST;
@@ -683,6 +694,27 @@ public final class ServerConfig {
         SOLDIER_OUT_OF_AMMO_WEAPON = BUILDER.comment("Melee weapon a shooter without a sidearm takes when its spare"
                 + " magazines run out (Mina, Reno, Kafka).").translation(PREFIX + "outOfAmmoWeapon")
                 .define("outOfAmmoWeapon", "kn8:combat_knife");
+        BUILDER.pop();
+
+        section("squad", "Squads (IA-5): the player's squad and the invasion defender squads.");
+        SQUAD_FOLLOW_DISTANCE = doubleValue("followDistance", "Squad members following the leader stay about this far"
+                + " from them.", 4.0, 1.0, 32.0);
+        SQUAD_LEASH_RANGE = doubleValue("leashRange", "Following or holding, squad members only fight kaiju within"
+                + " this many blocks of the leader (or of the post).", 20.0, 4.0, 128.0);
+        SQUAD_GUARD_RADIUS = doubleValue("guardRadius", "Without a target, members on \"stay\" (and invasion"
+                + " defenders) walk back when farther than this from their post.", 6.0, 1.0, 64.0);
+        SQUAD_RECRUIT_RANGE = doubleValue("recruitRange", "The player must be this close to recruit a soldier.", 8.0,
+                1.0, 64.0);
+        SQUAD_SPECIAL_RANK_ORDER = intValue("specialRankOrder", "Rank order (rank JSON \"order\") from which special"
+                + " soldiers can join the player's squad (4 = Vice-Captain).", 4, 0, 100);
+        SQUAD_INVASION_SIZE = intValue("invasionSquadSize", "Invasion defenders are split into squads of this size,"
+                + " each with its own post and kaiju.", 3, 1, 32);
+        SQUAD_INVASION_POST_DISTANCE = doubleValue("invasionPostDistance", "Distance of the invasion squad posts from"
+                + " the invasion center.", 12.0, 0.0, 128.0);
+        SQUAD_ASSIGNED_BONUS = doubleValue("assignedBonus", "The kaiju assigned to an invasion squad counts as this"
+                + " many blocks closer when its members choose a target.", 16.0, 0.0, 128.0);
+        SQUAD_SEPARATION = doubleValue("separationRadius", "Soldiers with another ally this close (blocks) reach the"
+                + " kaiju from their own angle instead of all walking to the same spot.", 4.0, 0.0, 32.0);
         BUILDER.pop();
 
         section("combat", "Player combat (GDD sections 7 and 12).");

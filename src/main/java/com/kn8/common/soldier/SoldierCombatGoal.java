@@ -14,6 +14,7 @@ import net.minecraft.world.phys.Vec3;
  * visada; quem usa lamina ou soco se aproxima ate o alcance (medido ate a borda da hitbox, para kaiju grandes).
  * 0.4: o atirador com arma de apoio troca para ela quando o kaiju chega perto (SoldierEntity#updateLoadout).
  * IA-1B: recarregando, o atirador recua ({@code [soldierAi] reloadRetreat}); sem visao do alvo, da a volta ate ter.
+ * IA-5: separacao entre aliados (chegada e recuo por angulos proprios).
  */
 final class SoldierCombatGoal extends Goal {
 
@@ -21,6 +22,8 @@ final class SoldierCombatGoal extends Goal {
     private static final double SPEED = 1.0;
     private static final double RETREAT_SPEED = 1.1;
     private static final int REPATH_TICKS = 10;
+    /** IA-5: a esta distancia da borda do alvo, o soldado de perto passa a chegar pelo proprio angulo. */
+    private static final double SPREAD_RANGE = 8.0;
 
     private final SoldierEntity soldier;
     private int repath;
@@ -96,7 +99,13 @@ final class SoldierCombatGoal extends Goal {
         if (edge > soldier.attackReach() * 0.9) {
             if (--repath <= 0) {
                 repath = REPATH_TICKS;
-                soldier.getNavigation().moveTo(target, SPEED);
+                // IA-5: perto, cada um chega por um lado (sem empilhar no mesmo ponto); longe, o caminho ate o alvo.
+                if (edge < SPREAD_RANGE) {
+                    Vec3 spot = soldier.approachSpot(target, soldier.attackReach() * 0.6);
+                    soldier.getNavigation().moveTo(spot.x, spot.y, spot.z, SPEED);
+                } else {
+                    soldier.getNavigation().moveTo(target, SPEED);
+                }
             }
         } else {
             soldier.getNavigation().stop();
@@ -106,7 +115,9 @@ final class SoldierCombatGoal extends Goal {
 
     /** Recua na direcao oposta ao alvo. */
     private void retreat(LivingEntity target, double distance) {
-        Vec3 away = soldier.position().subtract(target.position()).normalize().scale(distance);
+        // IA-5: cada atirador recua por uma linha propria (desvio pelo id), sem empilhar no mesmo ponto.
+        Vec3 away = soldier.position().subtract(target.position()).normalize().yRot((float) soldier.spreadOffset())
+                .scale(distance);
         Vec3 spot = soldier.position().add(away);
         soldier.getNavigation().moveTo(spot.x, spot.y, spot.z, RETREAT_SPEED);
     }

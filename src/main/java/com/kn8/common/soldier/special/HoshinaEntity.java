@@ -27,6 +27,7 @@ import com.kn8.common.registry.KN8Attachments;
 import com.kn8.common.registry.KN8Sounds;
 import com.kn8.common.soldier.SoldierEntity;
 import com.kn8.common.soldier.SoldierTargetGoal;
+import com.kn8.common.soldier.SquadMoveGoal;
 import com.kn8.common.vfx.VfxService;
 import com.kn8.core.combat.CombatMath;
 import com.kn8.core.power.PowerMath;
@@ -268,6 +269,7 @@ public class HoshinaEntity extends SoldierEntity {
         goalSelector.addGoal(7, new RandomLookAroundGoal(this));
         // IA-1B: o mesmo alvo dos soldados comuns (detecta sem ver, cobre quem recarrega, revida).
         targetSelector.addGoal(1, new SoldierTargetGoal(this));
+        goalSelector.addGoal(2, new SquadMoveGoal(this));
     }
 
     public boolean isUsingTechnique() {

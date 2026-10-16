@@ -4,6 +4,7 @@ package com.kn8.common.soldier;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -26,7 +27,9 @@ import com.kn8.common.vfx.VfxService;
 import com.kn8.core.combat.ActionTimeline;
 import com.kn8.core.power.PowerMath;
 import com.kn8.core.soldier.AmmoMath;
+import com.kn8.core.soldier.SquadRules;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -37,6 +40,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -53,6 +57,7 @@ import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -92,6 +97,14 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
     private static final String TAG_ROUNDS = "kn8_rounds";
     private static final String TAG_RESERVE = "kn8_reserve_rounds";
     private static final String TAG_OUT_OF_AMMO = "kn8_out_of_ammo";
+    /** IA-5: esquadrao (lider, ordem e posto sincronizados: a aba Esquadrao do menu mostra quem e de quem). */
+    private static final EntityDataAccessor<Optional<UUID>> SQUAD_LEADER =
+            SynchedEntityData.defineId(SoldierEntity.class, EntityDataSerializers.OPTIONAL_UUID);
+    private static final EntityDataAccessor<Integer> SQUAD_ORDER =
+            SynchedEntityData.defineId(SoldierEntity.class, EntityDataSerializers.INT);
+    private static final String TAG_SQUAD_LEADER = "kn8_squad_leader";
+    private static final String TAG_SQUAD_ORDER = "kn8_squad_order";
+    private static final String TAG_SQUAD_POST = "kn8_squad_post";
     /** Chaves que o vanilla grava em todo mob salvo (Mob / LivingEntity). */
     private static final String TAG_HAND_ITEMS = "HandItems";
     private static final String TAG_ATTRIBUTES = "attributes";
@@ -100,6 +113,10 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
     private static final float MELEE_VOLUME = 0.8F;
     private static final double MUZZLE_DISTANCE = 0.9;
     private static final int SWAP_COOLDOWN_TICKS = 20;
+    /** IA-5: desvio maximo do angulo de chegada de cada soldado (45 graus). */
+    private static final double SPREAD_RADIANS = Math.PI * 0.25;
+    /** IA-5: giro do angulo de chegada para longe do aliado mais perto, por reavaliacao (30 graus). */
+    private static final double SPREAD_STEP = Math.PI / 6.0;
 
     private static final RawAnimation IDLE = RawAnimation.begin().thenLoop("soldier.movement.idle");
     private static final RawAnimation WALK = RawAnimation.begin().thenLoop("soldier.movement.walk");
@@ -137,6 +154,11 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
     private long reloadStartTick = -1;
     private WeaponProfileDef.Reload reloading;
     private int reloadStage = -1;
+    /** IA-5: posto (ordem "ficar" ou esquadrao de invasao) e kaiju designado pela invasao (nao salvo). */
+    @Nullable
+    private BlockPos squadPost;
+    @Nullable
+    private UUID assignedKaiju;
     /**
      * 0.5.0-D2: municao reserva (IA-2: em balas, -1 = ainda nao recebeu a do perfil; o que sobra no pente volta para
      * ela na recarga) e sem municao (fica na arma branca).
@@ -480,6 +502,8 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
         super.defineSynchedData(builder);
         builder.define(VARIANT, DEFAULT_VARIANT);
         builder.define(LEVEL, DEFAULT_LEVEL);
+        builder.define(SQUAD_LEADER, Optional.empty());
+        builder.define(SQUAD_ORDER, SquadRules.Order.FOLLOW.ordinal());
     }
 
     @Override
@@ -505,6 +529,116 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
         goalSelector.addGoal(7, new RandomLookAroundGoal(this));
         // IA-1B: deteccao sem precisar ver, cobertura de quem recarrega e revide (SoldierTargetGoal).
         targetSelector.addGoal(1, new SoldierTargetGoal(this));
+        // IA-5: sem alvo, segue o lider ou volta ao posto (acima do passeio).
+        goalSelector.addGoal(2, new SquadMoveGoal(this));
+    }
+
+    // --- esquadrao (IA-5) --------------------------------------------------------------------------------------
+
+    public Optional<UUID> squadLeader() {
+        return entityData.get(SQUAD_LEADER);
+    }
+
+    public boolean isLedBy(Player player) {
+        return squadLeader().filter(player.getUUID()::equals).isPresent();
+    }
+
+    public SquadRules.Order squadOrder() {
+        return SquadRules.Order.byIndex(entityData.get(SQUAD_ORDER));
+    }
+
+    /** Lider online na mesma dimensao (null se nao ha ou nao esta). */
+    @Nullable
+    public Player squadLeaderPlayer() {
+        return squadLeader().map(level()::getPlayerByUUID).orElse(null);
+    }
+
+    /** Entra no esquadrao do jogador, seguindo; deixa de ser defensor de invasao. */
+    public void joinSquad(UUID leader) {
+        entityData.set(SQUAD_LEADER, Optional.of(leader));
+        assignedKaiju = null;
+        setSquadOrder(SquadRules.Order.FOLLOW);
+    }
+
+    public void leaveSquad() {
+        entityData.set(SQUAD_LEADER, Optional.empty());
+        entityData.set(SQUAD_ORDER, SquadRules.Order.FOLLOW.ordinal());
+        squadPost = null;
+    }
+
+    /** "Ficar" guarda o ponto onde o soldado esta; "recuar" larga o alvo na hora. */
+    public void setSquadOrder(SquadRules.Order order) {
+        entityData.set(SQUAD_ORDER, order.ordinal());
+        squadPost = order == SquadRules.Order.STAY ? blockPosition() : null;
+        if (order == SquadRules.Order.RETREAT) {
+            setTarget(null);
+        }
+    }
+
+    /** Posto de um esquadrao de invasao (sem lider). */
+    public void setSquadPost(@Nullable BlockPos post) {
+        squadPost = post;
+    }
+
+    @Nullable
+    public BlockPos squadPost() {
+        return squadPost;
+    }
+
+    @Nullable
+    public UUID assignedKaiju() {
+        return assignedKaiju;
+    }
+
+    public void setAssignedKaiju(@Nullable UUID kaiju) {
+        assignedKaiju = kaiju;
+    }
+
+    /**
+     * Ponto do esquadrao: o posto ("ficar" ou invasao) ou o lider (seguir, atacar, recuar). Null = soldado livre ou
+     * lider fora do mundo.
+     */
+    @Nullable
+    public Vec3 squadHome() {
+        if (squadPost != null) {
+            return Vec3.atBottomCenterOf(squadPost);
+        }
+        Player leader = squadLeader().isPresent() ? squadLeaderPlayer() : null;
+        return leader != null ? leader.position() : null;
+    }
+
+    /**
+     * IA-5 (bug 12): ponto de chegada ao alvo, a {@code edge} blocos da borda dele. Com outro soldado a
+     * {@code [squad] separationRadius}, gira o angulo de chegada em volta do alvo para longe do aliado mais perto
+     * ({@code SPREAD_STEP} por reavaliacao): os dois se afastam pela borda do alvo em vez de chegar ao mesmo ponto.
+     * Sozinho, o proprio alvo.
+     */
+    public Vec3 approachSpot(LivingEntity target, double edge) {
+        double separation = ServerConfig.SQUAD_SEPARATION.get();
+        SoldierEntity ally = separation <= 0.0 ? null : level().getNearestEntity(SoldierEntity.class,
+                TargetingConditions.forNonCombat().ignoreLineOfSight().selector(other -> other != this),
+                this, getX(), getY(), getZ(), getBoundingBox().inflate(separation));
+        if (ally == null) {
+            return target.position();
+        }
+        double mine = Math.atan2(getZ() - target.getZ(), getX() - target.getX());
+        double theirs = Math.atan2(ally.getZ() - target.getZ(), ally.getX() - target.getX());
+        double diff = Mth.wrapDegrees(Math.toDegrees(mine - theirs));
+        int side = diff > 0.0 ? 1 : diff < 0.0 ? -1 : (getId() < ally.getId() ? 1 : -1);
+        double angle = mine + side * SPREAD_STEP;
+        double radius = edge + target.getBbWidth() * 0.5;
+        return new Vec3(target.getX() + Math.cos(angle) * radius, target.getY(),
+                target.getZ() + Math.sin(angle) * radius);
+    }
+
+    /** Desvio do recuo/orbita deste soldado (radianos), para atiradores nao recuarem todos pela mesma linha. */
+    public double spreadOffset() {
+        return SquadRules.spreadOffset(getId(), SPREAD_RADIANS);
+    }
+
+    /** Com coleira: so luta perto do ponto do esquadrao ({@code [squad] leashRange}); "atacar" caca livre. */
+    public boolean isLeashed() {
+        return squadOrder() != SquadRules.Order.ATTACK && squadHome() != null;
     }
 
     /** Aliado: nunca mira em jogadores nem em outros soldados. */
@@ -652,6 +786,11 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
         tag.putInt(TAG_ROUNDS, rounds);
         tag.putInt(TAG_RESERVE, reserveRounds);
         tag.putBoolean(TAG_OUT_OF_AMMO, outOfAmmo);
+        squadLeader().ifPresent(leader -> tag.putUUID(TAG_SQUAD_LEADER, leader));
+        tag.putInt(TAG_SQUAD_ORDER, entityData.get(SQUAD_ORDER));
+        if (squadPost != null) {
+            tag.putLong(TAG_SQUAD_POST, squadPost.asLong());
+        }
     }
 
     @Override
@@ -669,6 +808,11 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
             reserveRounds = tag.getInt(TAG_RESERVE);
             outOfAmmo = tag.getBoolean(TAG_OUT_OF_AMMO);
         }
+        if (tag.hasUUID(TAG_SQUAD_LEADER)) {
+            entityData.set(SQUAD_LEADER, Optional.of(tag.getUUID(TAG_SQUAD_LEADER)));
+        }
+        entityData.set(SQUAD_ORDER, tag.getInt(TAG_SQUAD_ORDER));
+        squadPost = tag.contains(TAG_SQUAD_POST) ? BlockPos.of(tag.getLong(TAG_SQUAD_POST)) : null;
         // "/summon kn8:soldier ~ ~ ~ {kn8_variant:...}" nao chama finalizeSpawn: sem itens/atributos salvos (soldado
         // novo, nao carregado do mundo), aplica aqui a arma da variante e os atributos do nivel.
         if (!level().isClientSide()) {

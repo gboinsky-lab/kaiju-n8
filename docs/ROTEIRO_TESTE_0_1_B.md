@@ -692,3 +692,19 @@ Tecla nova: **C** (Parkour; troca em Opções > Controles > Kaiju No. 8). Númer
 | 48.6 | Preondactyl contra soldados | Mergulha só quando vai golpear e o golpe acerta (desce até o chão do alvo) |
 | 48.7 | Revivido enfurecido (abaixo de 30%), salve e reabra o mundo | Continua enfurecido e não ruge de novo |
 | 48.8 | Servidor dedicado + 2 clientes | Os dois veem o mesmo comportamento |
+
+## 49. Esquadrões (IA-5)
+
+| # | Passo | Esperado |
+|---|---|---|
+| 49.1 | `/kn8 rank set kn8:oficial Dev`, menu (M) > Esquadrão, escolha um soldado e Recrutar | Recusado: "Sua patente ainda não comanda esquadrão"; botões de ordem cinza |
+| 49.2 | `/kn8 rank set kn8:lider_pelotao Dev`, recrute 3 soldados comuns e o Hoshina | Os 3 entram (faixa verde e "Seguir" na linha, "Esquadrão: 3/4"); o Hoshina é recusado (especial só de Vice-Capitão para cima) |
+| 49.3 | Ande uns 20 blocos | Os 3 vêm atrás e param em volta de você, cada um num lado |
+| 49.4 | Ordem Ficar e afaste-se 40 blocos | Ficam no lugar; um kaiju a até 20 blocos do posto é atacado, um mais longe não |
+| 49.5 | Com eles lutando, ordem Recuar | Largam o kaiju e correm até você |
+| 49.6 | Ordem Atacar | Caçam qualquer kaiju no alcance (64 blocos) |
+| 49.7 | Escolha um membro e Dispensar | Sai do esquadrão (sem faixa verde) e volta a agir sozinho |
+| 49.8 | `/kn8 invasion start kn8:honju_assault` | Os 7 defensores nascem em 3 grupos (postos a ~12 blocos do centro); no aviso ficam no posto |
+| 49.9 | `/kn8 invasion next` | Cada grupo vai atrás de um kaiju diferente; quando o dele morre, pega outro; entre ondas voltam ao posto |
+| 49.10 | Vários soldados de perto (Hoshina, Kikoru, Narumi) contra o mesmo kaiju | Chegam por lados diferentes, sem ficar um em cima do outro |
+| 49.11 | Servidor dedicado + 2 clientes | O segundo cliente vê os mesmos movimentos; o menu do outro jogador não mostra o seu esquadrão como dele |

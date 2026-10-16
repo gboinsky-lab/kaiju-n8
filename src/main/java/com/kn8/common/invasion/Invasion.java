@@ -1,7 +1,9 @@
 package com.kn8.common.invasion;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -34,6 +36,10 @@ public final class Invasion {
     /** 0.3: dano em kaiju da invasao e abates por jogador (a recompensa final depende da contribuicao). */
     final Map<UUID, Float> damage = new HashMap<>();
     final Map<UUID, Integer> kills = new HashMap<>();
+    /** IA-5: esquadroes de defensores (membros, posto e kaiju designado de cada um). */
+    final List<List<UUID>> squads = new ArrayList<>();
+    final List<BlockPos> posts = new ArrayList<>();
+    final List<UUID> squadTargets = new ArrayList<>();
     Phase phase = Phase.WARNING;
     /** Indice da onda atual (FIGHT) ou da proxima (WARNING/BREAK). */
     int wave;

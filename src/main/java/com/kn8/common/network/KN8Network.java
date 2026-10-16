@@ -7,6 +7,7 @@ import com.kn8.common.career.CareerService;
 import com.kn8.common.career.CareerSyncS2C;
 import com.kn8.common.career.MissionActionC2S;
 import com.kn8.common.craft.CraftC2S;
+import com.kn8.common.soldier.SquadCommandC2S;
 import com.kn8.common.craft.OpenWorkbenchS2C;
 import com.kn8.common.invasion.InvasionStateS2C;
 import com.kn8.common.combat.CombatInputC2S;
@@ -55,8 +56,8 @@ public final class KN8Network {
     // 13 = 0.5.0-A: ReleaseInputC2S e PowerView novo. 14 = 0.5.0-C: registro sincronizado "locomotion".
     // 15 = 0.5.0-D: AmmoS2C, CombatResult.RELOADING e registro sincronizado "weapon_profile".
     // 16 = 0.5.0-D3: CombatResult.DENIED_NEEDS_DUAL. 17 = 0.5.0-D7: AnimTriggerS2C.speed (golpes com o Release).
-    // 18 = 0.5.0-E: ParkourInputC2S e ParkourStateS2C (parkour do jogador).
-    private static final String PROTOCOL_VERSION = "18";
+    // 18 = 0.5.0-E: ParkourInputC2S e ParkourStateS2C (parkour do jogador). 19 = IA-5: SquadCommandC2S (esquadrao).
+    private static final String PROTOCOL_VERSION = "19";
 
     /** Diagnostico: 20 por segundo, rajada de 40. */
     private static final C2SGuard.Limit DEBUG_LIMIT = new C2SGuard.Limit(20, 40);
@@ -93,6 +94,8 @@ public final class KN8Network {
         registrar.playToClient(CareerSyncS2C.TYPE, CareerSyncS2C.STREAM_CODEC, CareerSyncS2C::handleOnClient);
         toServer(registrar, MissionActionC2S.TYPE, MissionActionC2S.STREAM_CODEC, MENU_LIMIT, MissionActionC2S::handle);
         toServer(registrar, CraftC2S.TYPE, CraftC2S.STREAM_CODEC, MENU_LIMIT, CraftC2S::handle);
+        // IA-5: esquadrao do jogador (recrutar, dispensar, ordens) pela aba Esquadrao.
+        toServer(registrar, SquadCommandC2S.TYPE, SquadCommandC2S.STREAM_CODEC, MENU_LIMIT, SquadCommandC2S::handle);
         toClientHook(registrar, OpenWorkbenchS2C.TYPE, OpenWorkbenchS2C.STREAM_CODEC);
         toClientHook(registrar, InvasionStateS2C.TYPE, InvasionStateS2C.STREAM_CODEC);
         // 0.5.0: tecla de Release (so na mudanca; o servidor sobe/desce a % no tick).

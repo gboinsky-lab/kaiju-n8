@@ -69,6 +69,8 @@ SCEN = {
                 ('h','kn8:hoshina',0,-2,'','A'),
                 ('k1','kn8:primigenius',-4,18,'','B'), ('k2','kn8:primigenius',0,20,'','B'),
                 ('k3','kn8:primigenius',4,18,'','B')]),
+ 'separacao': ([], [('h','kn8:hoshina',-2,0,'','A'), ('i','kn8:kikoru',0,0,'','A'), ('n','kn8:narumi',2,0,'','A'),
+                    ('s','kn8:soldier',0,-2,'{kn8_variant:"rifle"}','A'), ('k','kn8:primigenius_honju',0,18,'','B')]),
  'pilares': ([(x,0,z,x+1,6,z+1,'minecraft:bedrock') for x in (-8,-2,4) for z in (8,14,20)],
              [('m','kn8:mina',0,0,'','A'), ('k','kn8:primigenius_honju',0,28,'','B')]),
 }
@@ -149,3 +151,14 @@ for t,smp in hist:
         gaps.append(min(dist(pos[i],pos[j]) for i in range(len(pos)) for j in range(i+1,len(pos))))
 if gaps:
     print(json.dumps({'kaiju_menor_distancia_media':round(sum(gaps)/len(gaps),2)}))
+
+# IA-5: separacao do lado A (menor distancia media entre aliados vivos, so com o lado B perto: na luta).
+gaps=[]
+for t,smp in hist:
+    pos=[smp[e[0]][0] for e in ents if e[5]=='A' and smp[e[0]][1] and len(smp[e[0]][0])==3]
+    foes=[smp[e[0]][0] for e in ents if e[5]=='B' and smp[e[0]][1] and len(smp[e[0]][0])==3]
+    if len(pos)>1 and foes and min(dist(p,f) for p in pos for f in foes)<10:
+        gaps.append(min(dist(pos[i],pos[j]) for i in range(len(pos)) for j in range(i+1,len(pos))))
+if gaps:
+    print(json.dumps({'aliados_menor_distancia_media':round(sum(gaps)/len(gaps),2),
+                      'aliados_colados_pct':round(100*sum(g<1.0 for g in gaps)/len(gaps))}))
