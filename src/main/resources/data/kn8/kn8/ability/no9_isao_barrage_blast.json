@@ -1,10 +1,10 @@
 {
   "type": "kn8:multi_hit",
-  "damage_multiplier": 0.55,
+  "damage_multiplier": 0.75,
   "radius": 1.2,
   "windup_ticks": 8,
   "active_ticks": 15,
-  "cooldown_ticks": 90,
+  "cooldown_ticks": 70,
   "animation": "action.barrage_blast",
   "vfx": [
     {

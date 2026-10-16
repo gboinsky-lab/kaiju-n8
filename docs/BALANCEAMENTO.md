@@ -676,3 +676,48 @@ Medido em jogo (2026-10-07, soldados com rifle contra kaiju parado):
 | 4 normais | 3,4 s | 13 s |
 | 1 alto | 6,4 s | 16 s |
 | 1 elite | 2,4 s | 9 s |
+
+### 0.8-A: Isao (Numbers 2), No. 9 com o Isao e Kaiju No. 13
+
+Fichas e fontes: `docs/FICHAS_0_8_A.md`. Duelos no servidor dedicado (`duel12.py`, 5 por confronto, formas do No. 9
+isoladas pelo datapack sem `transform`/`absorb`; fuga do No. 9 conta como vitória).
+
+**Isao** (`special_soldier/isao.json`, v1.2 §12 "Isao + No. 2"): vida 700, armadura 20, velocidade 0,32, Release 50
+(teto 96 [SUPOSIÇÃO]), `kaiju_damage` **1,2**, altura 1,90. Manoplas `weapon/numbers2_gauntlet.json` (base 9, como o
+punho do No. 8). Técnicas: Barrage Blast 0,7/0,7/0,8/0,8/1,2 (1 a cada 3 ticks, recarga 40), Spiral Blast 1,5 (onda
+reta de 28 blocos, recarga 70), Force Blast 7 ondas de 0,8 em 90° (recarga 160), Thunder Emperor 1,6 + **3,0**
+(avanço, expõe o núcleo 60 ticks, recarga **160**). Pesados (quebram blocos, força 4, raio 3): Thunder Emperor e Force
+Blast. Guarda contra golpe pesado 45%, arco 140°. `tactics`: agressão 0,85, distância 3, recua com 12%, pesado contra
+grande **3**, rápido contra pequeno 1, protege aliado 10.
+
+| Isao × | 1ª rodada (`kaiju_damage` 0,8) | 2ª (1,0; Thunder 1,6/3,0) | Final (1,2; pesado contra grande 3) | Meta v1.2 |
+|---|---|---|---|---|
+| No. 10 pequeno | 5/5 (43–75% de vida) | 5/5 | 5/5 (68–81%) | 85% |
+| No. 9 | 5/5 (todas por fuga) | 5/5 (fuga) | — | 75% |
+| No. 10 gigante | 0/5 (gigante com 18–29%) | 0/5 (2–17%) | **4/5** (vence com 10–32%) | 60% |
+| No. 9 preto | 0/5 (preto com 38–48%) | 1/5 | **3/5** (3 por fuga) | 40% |
+| No. 13 | 5/5 (84–92%) | — | — | — |
+
+**No. 9 com o Isao** (`kaiju/kaiju_no9_isao.json`, v1.2 §9): vida 7.500, dano 72, armadura 20, velocidade 0,38,
+fortitude 9,5, regeneração 4,5%/s abaixo de 50% e 7,5%/s abaixo de 20%; pele endurecida 20%/−55%, análise 3,5% por
+golpe até 30% [SUPOSIÇÃO]. Habilidades: garra, Finger Gun, rajada de dedos, tentáculo, voo curto (do No. 9 preto) e
+`no9_isao_barrage_blast` (5 × 0,75), `no9_isao_thunder_emperor` (×3,0 pesado, cratera), `no9_isao_force_blast` (área
+6 blocos ×1,3 pesado, abaixo de 80% da vida), `no9_isao_sonic_blast` (projétil ×1,5 com explosão 2,5). IA: circula
+pouco (0,1; chefe que pressiona). Surge pela absorção do Isao abaixo de 30% da vida (`absorb` do No. 9 e da forma preta).
+
+| Confronto | Resultado | Meta v1.2 |
+|---|---|---|
+| Hoshina No. 10 × No. 9 com o Isao | 0/5 (o kaiju termina com 89–94%) | 5% |
+| Kaiju No. 8 × No. 9 com o Isao | antes do ajuste: 5/5 empates de 300 s com os dois a ~50% (regeneração dos dois) | 3% |
+
+**Kaiju No. 13** (`kaiju/kaiju_no13.json`, tudo [SUPOSIÇÃO]: o v1.2 só diz "velocidade/musculatura"): vida 900, dano
+**34** (era 26), armadura 12, velocidade 0,48, fortitude 7, inteligência 3. Habilidades: garra, `no13_flurry` (4 × 0,5),
+`no13_heavy_punch` (×1,7 pesado), `no13_throat_grab` (projétil curto ×1,1, lento nível 4 por 2 s), `no13_sprint`
+(investida ×1,3 até 22 blocos), `no13_pounce` (salto ×1,4). IA: circula (0,45) e persegue rápido (×1,25).
+
+| No. 13 × | Dano 26 | Dano 34 |
+|---|---|---|
+| Hoshina | 5/5 (Hoshina com 76–84%) | 5/5 (52–76%) |
+| Kikoru | 5/5 (52–72%) | 5/5 (25–49%) |
+| Kaiju No. 8 | 5/5 em 12–22 s (96–98%) | — |
+| Isao | 5/5 (84–92%) | — |

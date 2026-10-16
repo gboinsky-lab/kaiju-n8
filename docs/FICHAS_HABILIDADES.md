@@ -93,12 +93,28 @@ Numerado: regenera 0.8%/s abaixo de 50% (2%/s abaixo de 20%); comanda kaiju a 48
 | `no10_multi_appendage` | rajada de golpes | ×0.6 = 24 × 5 | 0.60 s | 8 s | raio 1 | — | ADAPTAÇÃO DO MOD |
 | `charge` | investida | ×1.2 = 47 | 0.75 s | 8 s | 4–14 blocos, raio 1.5 | pesado (fura bloqueio) | ADAPTAÇÃO DO MOD |
 
+### `kaiju_no13` — numbered
+
+Vida **900** · dano base **34.0** · armadura **12** · velocidade **0.48** · hitbox 0.8 × 2.2 (escala 1)
+
+
+Fúria abaixo de 35%: dano ×1.15, velocidade ×1.15, recargas ×0.75.
+
+| Habilidade | Tipo | Dano | Preparo | Recarga | Alcance | Efeito | Origem |
+|---|---|---|---|---|---|---|---|
+| `claw` | corpo a corpo | ×1.3 = 44 | 0.40 s | 0.8 s | alcance do corpo | — | ADAPTAÇÃO DO MOD |
+| `no13_flurry` | rajada de golpes | ×0.5 = 17 × 4 | 0.25 s | 3.5 s | 0–3 blocos, raio 1 | — | ADAPTAÇÃO DO MOD |
+| `no13_heavy_punch` | corpo a corpo | ×1.7 = 58 | 0.45 s | 3.5 s | 0–3.5 blocos | pesado (fura bloqueio) | ADAPTAÇÃO DO MOD |
+| `no13_throat_grab` | projétil | ×1.1 = 37 | 0.30 s | 6 s | 1.5–6 blocos | lentidão 4 por 2 s | ADAPTAÇÃO DO MOD |
+| `no13_sprint` | investida | ×1.3 = 44 | 0.40 s | 4 s | 5–22 blocos, raio 1.3 | pesado (fura bloqueio) | ADAPTAÇÃO DO MOD |
+| `no13_pounce` | salto | ×1.4 = 48 | 0.40 s | 7 s | 6–16 blocos, raio 2 | pesado (fura bloqueio) | ADAPTAÇÃO DO MOD |
+
 ### `kaiju_no9` — numbered
 
 Vida **1.450** · dano base **34.5** · armadura **16** · velocidade **0.34** · hitbox 0.8 × 2.0 (escala 1)
 
 
-Numerado: regenera 2.5%/s abaixo de 50% (5%/s abaixo de 20%); foge com 15%; comanda kaiju a 32 blocos; revive até 3; análise (−2% por golpe repetido do mesmo tipo, até −20%); vira `kaiju_no9_black` abaixo de 40%; absorve kaiju_no10_small → `kaiju_no9_fusion`; absorve camponotus, camponotus_reborn → `kaiju_no9_camponotus`.
+Numerado: regenera 2.5%/s abaixo de 50% (5%/s abaixo de 20%); foge com 15%; comanda kaiju a 32 blocos; revive até 3; análise (−2% por golpe repetido do mesmo tipo, até −20%); vira `kaiju_no9_black` abaixo de 40%; absorve isao → `kaiju_no9_isao`; absorve kaiju_no10_small → `kaiju_no9_fusion`; absorve camponotus, camponotus_reborn → `kaiju_no9_camponotus`.
 
 | Habilidade | Tipo | Dano | Preparo | Recarga | Alcance | Efeito | Origem |
 |---|---|---|---|---|---|---|---|
@@ -115,7 +131,7 @@ Vida **2.200** · dano base **42.0** · armadura **17** · velocidade **0.36** �
 Fúria abaixo de 30%: dano ×1.15, velocidade ×1.1, recargas ×0.7.
 
 
-Numerado: regenera 3%/s abaixo de 50% (5.5%/s abaixo de 20%); foge com 15%; comanda kaiju a 40 blocos; revive até 4; pele endurecida (15% por golpe, −50% por 2 s); análise (−3% por golpe repetido do mesmo tipo, até −25%); absorve kaiju_no10_small → `kaiju_no9_fusion`; absorve camponotus, camponotus_reborn → `kaiju_no9_camponotus`.
+Numerado: regenera 3%/s abaixo de 50% (5.5%/s abaixo de 20%); foge com 15%; comanda kaiju a 40 blocos; revive até 4; pele endurecida (15% por golpe, −50% por 2 s); análise (−3% por golpe repetido do mesmo tipo, até −25%); absorve isao → `kaiju_no9_isao`; absorve kaiju_no10_small → `kaiju_no9_fusion`; absorve camponotus, camponotus_reborn → `kaiju_no9_camponotus`.
 
 | Habilidade | Tipo | Dano | Preparo | Recarga | Alcance | Efeito | Origem |
 |---|---|---|---|---|---|---|---|
@@ -197,6 +213,28 @@ Numerado: regenera 3.5%/s abaixo de 50% (6%/s abaixo de 20%); foge com 10%; coma
 | `charge` | investida | ×1.2 = 86 | 0.75 s | 8 s | 4–14 blocos, raio 1.5 | pesado (fura bloqueio) | ADAPTAÇÃO DO MOD |
 | `no9_fusion_tail_barrage` | rajada de golpes | ×0.7 = 50 × 6 | 0.60 s | 7 s | raio 1.5 | — | ADAPTAÇÃO DO MOD |
 | `no9_fusion_hybrid_beam` | projétil | ×1.8 = 130 | 1.20 s | 10 s | 6–32 blocos, explode 3 | — | ADAPTAÇÃO DO MOD |
+
+### `kaiju_no9_isao` — numbered
+
+Vida **7.500** · dano base **72.0** · armadura **20** · velocidade **0.38** · hitbox 0.8 × 2.0 (escala 1)
+
+
+Fúria abaixo de 30%: dano ×1.2, velocidade ×1.1, recargas ×0.7.
+
+
+Numerado: regenera 4.5%/s abaixo de 50% (7.5%/s abaixo de 20%); foge com 15%; comanda kaiju a 40 blocos; revive até 5; pele endurecida (20% por golpe, −55% por 2 s); análise (−3.5% por golpe repetido do mesmo tipo, até −30%).
+
+| Habilidade | Tipo | Dano | Preparo | Recarga | Alcance | Efeito | Origem |
+|---|---|---|---|---|---|---|---|
+| `claw` | corpo a corpo | ×1.3 = 94 | 0.40 s | 0.8 s | alcance do corpo | — | ADAPTAÇÃO DO MOD |
+| `finger_gun` | projétil | ×1 = 72 | 0.40 s | 1.5 s | 4–28 blocos | — | ADAPTAÇÃO (No. 9 dispara pelos dedos) |
+| `no9_black_multi_finger_gun` | projétil | ×0.75 = 54 × 3 | 0.50 s | 3.5 s | 5–26 blocos | — | ADAPTAÇÃO DO MOD |
+| `no9_black_tendril` | projétil | ×0.8 = 58 | 0.50 s | 4.5 s | 4–20 blocos | lentidão 2 por 2.5 s | ADAPTAÇÃO DO MOD |
+| `no9_isao_barrage_blast` | rajada de golpes | ×0.75 = 54 × 5 | 0.40 s | 3.5 s | 0–3.5 blocos, raio 1.2 | — | ADAPTAÇÃO DO MOD |
+| `no9_isao_thunder_emperor` | corpo a corpo | ×3 = 216 | 0.80 s | 7 s | 0–4 blocos | pesado (fura bloqueio) | ADAPTAÇÃO DO MOD |
+| `no9_isao_force_blast` | área | ×1.3 = 94 | 0.90 s | 10 s | raio 6 | só abaixo de 80%, pesado (fura bloqueio) | ADAPTAÇÃO DO MOD |
+| `no9_isao_sonic_blast` | projétil | ×1.5 = 108 | 0.60 s | 5.5 s | 5–30 blocos, explode 2.5 | — | ADAPTAÇÃO DO MOD |
+| `no9_black_short_flight` | salto | ×1 = 72 | 0.40 s | 8 s | 7–18 blocos, raio 2.5 | pesado (fura bloqueio) | ADAPTAÇÃO DO MOD |
 
 ### `myxogasterocarp` — honju
 
@@ -367,6 +405,21 @@ Defesa: esquiva a cada 1.5 s; contra-ataque ×2.5 a cada 6 s; apara 35% dos golp
 | `kasumi_uchi` | combo | ×(0.5 + 0.5 + 1.5) | 5 s | 0–3.5 | — |
 | `yae_uchi` | combo | ×(0.45 + 0.45 + 0.45 + 0.45 + 0.45 + 0.45 + 0.45 + 0.45) | 12 s | 0–3.5 | expõe o núcleo 5 s, prefere Honju |
 | `juni_hitoe` | combo | ×(0.45 + 0.45 + 0.45 + 0.45 + 0.45 + 0.45 + 0.45 + 0.45 + 0.45 + 0.45 + 0.45 + 3.5) | 30 s | 0–4 | expõe o núcleo 8 s, só com Full Release |
+
+### `isao`
+
+Vida **700** · armadura **20** · velocidade **0.32** · Release 50% (máx. 96%) · dano contra kaiju ×1.2 · arma `numbers2_gauntlet` · altura **1.9**
+
+Dano de cada golpe = dano da arma × multiplicador × Release × `kaiju_damage` (contra kaiju).
+
+Defesa: esquiva a cada 5.5 s; contra-ataque ×2.4 a cada 10 s; apara 20% dos golpes (dano ×0.4).
+
+| Técnica | Tipo | Multiplicadores por golpe | Recarga | Alcance | Observação |
+|---|---|---|---|---|---|
+| `barrage_blast` | combo | ×(0.7 + 0.7 + 0.8 + 0.8 + 1.2) | 2 s | 0–3.2 | — |
+| `spiral_blast` | slash | ×(1.5) | 3.5 s | 3–24 | tiro ×1 |
+| `force_blast` | slash | ×(0.8) | 8 s | 0–7 | corte a distância ×7, prefere Honju |
+| `thunder_emperor` | combo | ×(1.6 + 3) | 8 s | 0–3.6 | expõe o núcleo 3 s, prefere Honju, avança até o alvo |
 
 ### `kafka`
 
