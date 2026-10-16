@@ -268,6 +268,7 @@
   "kn8.configuration.farFromPlayers": "Longe dos jogadores (blocos)",
   "kn8.configuration.farRetargetFactor": "Fator da escolha de alvo longe",
   "kn8.configuration.debugLog": "Log de depuração da IA",
+  "kn8.configuration.sinkHeight": "Altura para descer de construções (blocos)",
   "kn8.configuration.separationRadius": "Raio de separação",
   "kn8.configuration.invasionSquadSize": "Tamanho do esquadrão de invasão",
   "kn8.configuration.invasionPostDistance": "Distância dos postos da invasão",

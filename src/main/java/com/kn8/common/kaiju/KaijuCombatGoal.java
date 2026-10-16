@@ -243,8 +243,10 @@ final class KaijuCombatGoal extends Goal {
             kaiju.markUnreachable(target);
             return true;
         }
-        // Tentativa de destravar: pula (degrau, borda) e recalcula o caminho ja no proximo tick.
+        // Tentativa de destravar: pula (degrau, borda), quebra o que esta no caminho ou embaixo (Miguel 2026-10-16:
+        // kaiju nao fica preso no meio de construcoes) e recalcula o caminho ja no proximo tick.
         kaiju.getJumpControl().jump();
+        kaiju.breakOutTowards(target);
         recalcCooldown = 0;
         return false;
     }

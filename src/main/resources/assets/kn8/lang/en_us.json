@@ -268,6 +268,7 @@
   "kn8.configuration.farFromPlayers": "Far from players (blocks)",
   "kn8.configuration.farRetargetFactor": "Far retarget factor",
   "kn8.configuration.debugLog": "AI debug log",
+  "kn8.configuration.sinkHeight": "Sink height (blocks)",
   "kn8.configuration.separationRadius": "Separation radius",
   "kn8.configuration.invasionSquadSize": "Invasion squad size",
   "kn8.configuration.invasionPostDistance": "Invasion post distance",

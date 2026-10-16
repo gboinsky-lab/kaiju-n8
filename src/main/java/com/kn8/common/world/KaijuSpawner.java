@@ -2,6 +2,7 @@ package com.kn8.common.world;
 
 import java.util.Optional;
 
+import com.kn8.common.destruction.DestructionService;
 import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.registry.KN8Entities;
 
@@ -21,6 +22,8 @@ import net.minecraft.world.level.levelgen.Heightmap;
 public final class KaijuSpawner {
 
     private static final int GROUND_SEARCH_BLOCKS = 24;
+    /** Tempo quebrando o que ocupa o corpo depois de nascer no lugar (a escala da especie entra no primeiro tick). */
+    private static final int CLEAR_BODY_TICKS = 60;
 
     private KaijuSpawner() {
     }
@@ -48,6 +51,17 @@ public final class KaijuSpawner {
 
     /** Faz surgir um kaiju da especie no ponto (no chao livre mais proximo). Vazio se a especie nao existir. */
     public static Optional<KaijuEntity> spawn(ServerLevel level, ResourceLocation species, BlockPos pos) {
+        return spawn(level, species, pos, false);
+    }
+
+    /**
+     * Miguel (2026-10-16: "o numero 10 quando vai para a forma grande na base fica preso em cima das construcoes"):
+     * com {@code inPlace} (troca de forma), o kaiju fica na altura do ponto e quebra o que ocupa o corpo
+     * ({@link KaijuEntity#clearBodyFor}) em vez de subir ate nao colidir, que o punha em cima do telhado. Sem poder
+     * quebrar (destruicao desligada ou mobGriefing), volta ao chao livre.
+     */
+    public static Optional<KaijuEntity> spawn(ServerLevel level, ResourceLocation species, BlockPos pos,
+            boolean inPlace) {
         Optional<EntityType<KaijuEntity>> type = type(species);
         if (type.isEmpty()) {
             return Optional.empty();
@@ -57,7 +71,11 @@ public final class KaijuSpawner {
             return Optional.empty();
         }
         kaiju.moveTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, level.random.nextFloat() * 360.0F, 0.0F);
-        placeOnFreeGround(level, kaiju);
+        if (inPlace && DestructionService.canBreak(kaiju)) {
+            kaiju.clearBodyFor(CLEAR_BODY_TICKS);
+        } else {
+            placeOnFreeGround(level, kaiju);
+        }
         kaiju.finalizeSpawn(level, level.getCurrentDifficultyAt(kaiju.blockPosition()), MobSpawnType.EVENT, null);
         kaiju.setPersistenceRequired();
         return level.addFreshEntity(kaiju) ? Optional.of(kaiju) : Optional.empty();

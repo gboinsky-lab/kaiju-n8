@@ -20,6 +20,7 @@ import com.kn8.common.data.def.SoldierDef;
 import com.kn8.common.data.def.WeaponDef;
 import com.kn8.common.data.def.WeaponProfileDef;
 import com.kn8.common.config.ServerConfig;
+import com.kn8.common.kaiju.CarcassEntity;
 import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.registry.KN8Items;
 import com.kn8.common.registry.KN8Sounds;
@@ -639,6 +640,15 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
     /** Com coleira: so luta perto do ponto do esquadrao ({@code [squad] leashRange}); "atacar" caca livre. */
     public boolean isLeashed() {
         return squadOrder() != SquadRules.Order.ATTACK && squadHome() != null;
+    }
+
+    /**
+     * Miguel (2026-10-16: soldados ficavam presos embaixo ou atras de corpos de kaiju no meio da batalha): carcaca nao
+     * barra soldado (comum e especial); continua solida para o jogador (desmonte).
+     */
+    @Override
+    public boolean canCollideWith(Entity other) {
+        return !(other instanceof CarcassEntity) && super.canCollideWith(other);
     }
 
     /** Aliado: nunca mira em jogadores nem em outros soldados. */

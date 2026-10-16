@@ -85,6 +85,8 @@ public final class ServerConfig {
     public static final ModConfigSpec.BooleanValue DESTRUCTION_DROP_ITEMS;
     public static final ModConfigSpec.IntValue DESTRUCTION_LOG_LIMIT;
     public static final ModConfigSpec.IntValue PATH_CLEAR_COOLDOWN_TICKS;
+    /** Miguel 2026-10-16: kaiju em cima de construcao acima do alvo quebra o chao construido embaixo dele. */
+    public static final ModConfigSpec.DoubleValue SINK_HEIGHT;
     /** IA-2: destruicao automatica dos ataques de kaiju (habilidades sem bloco "destruction" no JSON). */
     public static final ModConfigSpec.BooleanValue ABILITY_AUTO_DESTRUCTION;
     public static final ModConfigSpec.DoubleValue ABILITY_DESTRUCTION_RADIUS;
@@ -460,6 +462,9 @@ public final class ServerConfig {
         // valores novos valerem tambem em servidores com o arquivo antigo (pathPower* era 1/2/3).
         PATH_CLEAR_COOLDOWN_TICKS = intValue("walkBreakCooldownTicks", "Minimum ticks between two path breaks of a"
                 + " kaiju that bumps into blocks while walking (or is stuck inside them).", 5, 1, 200);
+        SINK_HEIGHT = doubleValue("sinkHeight", "A kaiju with a target this many blocks (or more) below it, standing on"
+                + " built blocks (not natural ground, tag kn8:destruction/natural_ground), breaks the floor under it"
+                + " and comes down instead of staying stuck on top of buildings.", 3.0, 1.0, 64.0);
         PATH_POWER_YOJU = intValue("walkPowerYoju", "Destruction power (0-4) of a walking Yoju: breaks the block"
                 + " categories below it (3 = fragile, normal and resistant: stone, bricks, concrete; 0 = off).", 3, 0,
                 4);

@@ -160,6 +160,9 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
     private long vulnerableUntil = Long.MIN_VALUE;
     private float vulnerableMultiplier = 1.0F;
     private long nextPathClearTick;
+    private long nextSinkTick;
+    /** Ate quando quebra o que ocupa o corpo (forma nova nascida no lugar). */
+    private long clearBodyUntil;
     private final ActionTimeline abilityTimeline = new ActionTimeline();
     private final Map<ResourceLocation, Long> abilityReadyAt = new HashMap<>();
     private ResourceLocation currentAbility;
@@ -934,14 +937,69 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
         if (isNoAi() || isUsingAbility()) {
             return;
         }
-        if (isInWall()) {
+        if (isInWall() || clearBodyUntil > level().getGameTime()) {
+            // Preso dentro de blocos ou recem-nascido no lugar (troca de forma): quebra o que ocupa o corpo.
             DestructionService.requestPathClear(this, true);
-            return;
+            if (isInWall()) {
+                return;
+            }
         }
         boolean tryingToMove = getNavigation().isInProgress() || getMoveControl().hasWanted() || getTarget() != null;
         if (horizontalCollision && tryingToMove) {
             DestructionService.requestPathClear(this, false);
         }
+        sinkFromBuilding();
+    }
+
+    /**
+     * Miguel (2026-10-16: "os kaijus nao podem ficar presos em meio as construcoes, eles devem destruir elas"; o No. 10
+     * gigante ficava em cima dos predios da base): em pe sobre construcao (nao chao natural) e
+     * {@code [destruction] sinkHeight} blocos ou mais acima do alvo ou do chao natural, quebra a camada de baixo e desce,
+     * no intervalo de {@code walkBreakCooldownTicks}. Vale para todo kaiju, com ou sem alvo.
+     */
+    private void sinkFromBuilding() {
+        long now = level().getGameTime();
+        if (!onGround() || now < nextSinkTick) {
+            return;
+        }
+        nextSinkTick = now + ServerConfig.PATH_CLEAR_COOLDOWN_TICKS.get();
+        if (!DestructionService.standsOnBuilt(this)) {
+            return;
+        }
+        double sink = ServerConfig.SINK_HEIGHT.get();
+        LivingEntity target = getTarget();
+        boolean aboveTarget = target != null && target.isAlive() && getY() - target.getY() >= sink;
+        if (aboveTarget || DestructionService.heightAboveNaturalGround(this, (int) Math.ceil(sink)) >= sink) {
+            DestructionService.requestBelow(this, DestructionService.walkPower(this));
+        }
+    }
+
+    /**
+     * Travado sem chegar no alvo (KaijuCombatGoal): abre a faixa da frente mesmo sem bater em bloco (preso entre
+     * construcoes, o caminho vanilla desvia e nunca encosta) e, se estiver em cima de construcao acima do alvo, desce.
+     */
+    void breakOutTowards(LivingEntity target) {
+        if (!DestructionService.canBreak(this)) {
+            return;
+        }
+        int power = DestructionService.walkPower(this);
+        if (power > 0) {
+            DestructionService.requestFront(this, power, 1.0);
+        }
+        if (getY() - target.getY() >= ServerConfig.SINK_HEIGHT.get() && DestructionService.standsOnBuilt(this)) {
+            DestructionService.requestBelow(this, power);
+        }
+    }
+
+    /** Forma nova nascida no lugar (KaijuSpawner): quebra o que ocupa o corpo pelos proximos {@code ticks}. */
+    public void clearBodyFor(int ticks) {
+        clearBodyUntil = level().getGameTime() + ticks;
+    }
+
+    /** Carcacas nao barram kaiju (Miguel 2026-10-16: corpos no meio da batalha prendiam quem passava). */
+    @Override
+    public boolean canCollideWith(Entity other) {
+        return !(other instanceof CarcassEntity) && super.canCollideWith(other);
     }
 
     /** Alcance da primeira habilidade da especie (ou corpo a corpo): o goal de combate usa para se aproximar. */

@@ -74,7 +74,8 @@ public final class No10Service {
             NumberedDef.Transform transform) {
         // 0.7-E: serve tambem as formas do No. 9 (preta, fundidas); a forma nova nasce ja "transformada".
         markTransformed(no10);
-        Optional<KaijuEntity> spawned = KaijuSpawner.spawn(level, transform.into(), no10.blockPosition());
+        Optional<KaijuEntity> spawned = KaijuSpawner.spawn(level, transform.into(), no10.blockPosition(),
+                true);
         if (spawned.isEmpty()) {
             KN8Constants.LOGGER.warn("[kn8] Numerado: especie da forma nova inexistente {}", transform.into());
             return spawned;

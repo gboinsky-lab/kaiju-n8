@@ -50,9 +50,14 @@ public final class DestructionService {
     public static final TagKey<Block> RESISTANT = tag("resistant");
     public static final TagKey<Block> VERY_RESISTANT = tag("very_resistant");
     public static final TagKey<Block> INDESTRUCTIBLE = tag("indestructible");
+    /** Chao natural (terra, pedra do mundo, areia...): o kaiju nao cava nele para descer (so construcoes). */
+    public static final TagKey<Block> NATURAL_GROUND = tag("natural_ground");
 
-    /** Um pedido na fila: posicoes ainda por quebrar, com a forca do ataque. */
-    public record Job(Deque<BlockPos> positions, int power, boolean fromMob) {
+    /**
+     * Um pedido na fila: posicoes ainda por quebrar, com a forca do ataque. {@code blockEntities}: tambem quebra blocos
+     * com dados (baus, pulpitos, camas), soltando o conteudo; so a descida do kaiju de cima de construcoes usa.
+     */
+    public record Job(Deque<BlockPos> positions, int power, boolean fromMob, boolean blockEntities) {
     }
 
     private DestructionService() {
@@ -111,6 +116,62 @@ public final class DestructionService {
     }
 
     /**
+     * Miguel (2026-10-16: "os kaijus nao podem ficar presos em meio as construcoes, eles devem destruir elas"): a
+     * camada logo abaixo dos pes do kaiju, dentro da largura dele, se for construcao (nao o chao natural). Uma camada
+     * por pedido; o kaiju cai e o proximo pedido pega a de baixo.
+     */
+    public static void requestBelow(KaijuEntity kaiju, int power) {
+        ServerLevel level = (ServerLevel) kaiju.level();
+        if (!allowed(level, kaiju) || power <= 0) {
+            return;
+        }
+        AABB feet = kaiju.getBoundingBox();
+        AABB layer = new AABB(feet.minX + 0.05, feet.minY - 1.0, feet.minZ + 0.05, feet.maxX - 0.05, feet.minY - 0.05,
+                feet.maxZ - 0.05);
+        List<BlockPos> positions = new ArrayList<>();
+        BlockPos.betweenClosedStream(layer).forEach(pos -> {
+            BlockState state = level.getBlockState(pos);
+            if (!state.isAir() && !state.is(NATURAL_GROUND)) {
+                positions.add(pos.immutable());
+            }
+        });
+        // Um unico bloco com dados (pulpito, bau) embaixo segurava o corpo inteiro: a descida quebra esses tambem,
+        // soltando o conteudo no chao.
+        enqueue(level, positions, power, true, true);
+    }
+
+    /** O bloco embaixo do centro do kaiju e construcao (nem ar nem chao natural)? */
+    public static boolean standsOnBuilt(KaijuEntity kaiju) {
+        BlockPos below = BlockPos.containing(kaiju.getX(), kaiju.getBoundingBox().minY - 0.5, kaiju.getZ());
+        BlockState state = kaiju.level().getBlockState(below);
+        return !state.isAir() && !state.is(NATURAL_GROUND);
+    }
+
+    /**
+     * Quantos blocos o pe do kaiju esta acima do chao natural, descendo pela coluna do centro (para no primeiro bloco
+     * de {@link #NATURAL_GROUND}); conta no maximo {@code limit} (o que basta para decidir).
+     */
+    public static int heightAboveNaturalGround(KaijuEntity kaiju, int limit) {
+        BlockPos.MutableBlockPos pos = BlockPos.containing(kaiju.getX(), kaiju.getBoundingBox().minY - 0.5,
+                kaiju.getZ()).mutable();
+        for (int depth = 0; depth < limit; depth++) {
+            if (pos.getY() <= kaiju.level().getMinBuildHeight()) {
+                return depth;
+            }
+            if (kaiju.level().getBlockState(pos).is(NATURAL_GROUND)) {
+                return depth;
+            }
+            pos.move(0, -1, 0);
+        }
+        return limit;
+    }
+
+    /** O mundo deixa este kaiju quebrar blocos agora (destruicao ligada e mobGriefing)? */
+    public static boolean canBreak(KaijuEntity kaiju) {
+        return kaiju.level() instanceof ServerLevel level && allowed(level, kaiju);
+    }
+
+    /**
      * Kaiju batendo em blocos enquanto anda (0.6: qualquer tamanho, passeando ou perseguindo) abre passagem com a
      * forca de andar da categoria dele ({@code destruction.walkPower*}); preso dentro de blocos
      * ({@code inside}), quebra o que ocupa o proprio corpo. Intervalo minimo entre pedidos.
@@ -145,9 +206,15 @@ public final class DestructionService {
     }
 
     private static void enqueue(ServerLevel level, List<BlockPos> positions, int power, boolean fromMob) {
+        enqueue(level, positions, power, fromMob, false);
+    }
+
+    private static void enqueue(ServerLevel level, List<BlockPos> positions, int power, boolean fromMob,
+            boolean blockEntities) {
         KN8Server services = KN8Server.getOrNull(level.getServer());
         if (services != null && !positions.isEmpty()) {
-            services.destructionJobs(level.dimension()).addLast(new Job(new ArrayDeque<>(positions), power, fromMob));
+            services.destructionJobs(level.dimension()).addLast(new Job(new ArrayDeque<>(positions), power, fromMob,
+                    blockEntities));
         }
     }
 
@@ -170,22 +237,33 @@ public final class DestructionService {
                 jobs.pollFirst();
                 continue;
             }
-            if (breakIfAllowed(level, pos, job.power(), protectedAreas, log)) {
+            if (breakIfAllowed(level, pos, job.power(), job.blockEntities(), protectedAreas, log)) {
                 budget--;
             }
         }
         tickRestore(level, services, log);
     }
 
-    private static boolean breakIfAllowed(ServerLevel level, BlockPos pos, int power, ProtectedAreas protectedAreas,
-            DestructionLog log) {
+    private static boolean breakIfAllowed(ServerLevel level, BlockPos pos, int power, boolean blockEntities,
+            ProtectedAreas protectedAreas, DestructionLog log) {
         if (!level.isLoaded(pos) || protectedAreas.isProtected(pos)) {
             return false;
         }
         BlockState state = level.getBlockState(pos);
         // Ar e liquidos nao "quebram"; o resto depende da categoria do bloco e da forca do ataque.
-        if (state.isAir() || !state.getFluidState().isEmpty()
-                || !DestructionMath.canBreak(power, tierOf(level, pos, state))) {
+        if (state.isAir() || !state.getFluidState().isEmpty()) {
+            return false;
+        }
+        if (blockEntities && state.hasBlockEntity() && !state.is(INDESTRUCTIBLE)) {
+            // Descida do kaiju: bloco com dados quebra pela dureza e sempre solta o que tinha (nada some); fica fora
+            // do registro de restauracao (os dados nao voltariam).
+            if (!DestructionMath.canBreak(power, DestructionMath.tierFromHardness(state.getDestroySpeed(level, pos)))) {
+                return false;
+            }
+            level.destroyBlock(pos, true);
+            return true;
+        }
+        if (!DestructionMath.canBreak(power, tierOf(level, pos, state))) {
             return false;
         }
         log.record(pos, state, ServerConfig.DESTRUCTION_LOG_LIMIT.get());

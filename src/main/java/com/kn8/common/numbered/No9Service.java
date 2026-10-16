@@ -469,7 +469,7 @@ public final class No9Service {
         ResourceLocation species = def.revive().get(carcass.species());
         carcass.discard();
         Optional<KaijuEntity> result = boss != null ? BossService.spawn(level, boss, pos)
-                : species != null ? KaijuSpawner.spawn(level, species, pos) : Optional.empty();
+                : species != null ? KaijuSpawner.spawn(level, species, pos, true) : Optional.empty();
         result.ifPresent(revived -> {
             revived.setYRot(yaw);
             revived.getPersistentData().putBoolean(KN8_REVIVED, true);

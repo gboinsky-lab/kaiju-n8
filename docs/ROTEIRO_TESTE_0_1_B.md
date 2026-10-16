@@ -729,3 +729,14 @@ Tecla nova: **C** (Parkour; troca em Opções > Controles > Kaiju No. 8). Númer
 | 51.3 | `debugLog = true` no `kn8-server.toml` (reiniciar), lute | O log do servidor mostra `[kn8 IA] <entidade> alvo X -> Y (motivo)` |
 | 51.4 | `python3 tools/ai/carga_ia.py 40 40 40` com o servidor ligado | Média abaixo de ~12 ms/tick nesta máquina de testes (80 entidades lutando) |
 | 51.5 | Invasão de nível 4–5 com 2 clientes | Sem travadas novas; os kaiju longe de todos continuam lutando (só trocam de alvo mais devagar) |
+
+## 52. Kaiju e soldados presos (correção de 2026-10-16)
+
+| # | Passo | Esperado |
+|---|---|---|
+| 52.1 | Mate um kaiju grande no meio de soldados | Os soldados atravessam a carcaça (não ficam presos embaixo nem atrás dela); você continua batendo nela para desmontar |
+| 52.2 | `/place structure kn8:defense_base`, No. 10 pequeno do lado do QG, leve-o abaixo de 50% | A forma gigante nasce no chão (não em cima do QG/prédios) e quebra o que ocupa o corpo |
+| 52.3 | `/summon kn8:primigenius_honju` em cima do telhado do QG | Ele quebra os andares embaixo e desce até o chão em poucos segundos |
+| 52.4 | Kaiju num morro natural acima de você | Não cava o morro (só construções) |
+| 52.5 | Kaiju preso entre prédios sem conseguir chegar no alvo | Quebra o caminho à frente em vez de desistir parado |
+| 52.6 | `/gamerule mobGriefing false` | Nada é quebrado; a forma nova nasce no chão livre mais próximo, como antes |

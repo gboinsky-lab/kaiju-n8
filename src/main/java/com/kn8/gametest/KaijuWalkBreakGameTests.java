@@ -28,7 +28,9 @@ public final class KaijuWalkBreakGameTests {
     private KaijuWalkBreakGameTests() {
     }
 
-    @GameTest(template = "empty_9x7x9", timeoutTicks = TIMEOUT)
+    // Lote proprio (2026-10-16): no lote padrao o kaiju as vezes trocava o golem por um soldado de outro teste
+    // (deteccao de kaiju e soldados de longo alcance) e nunca chegava na parede (1 falha em 5 rodadas).
+    @GameTest(template = "empty_9x7x9", timeoutTicks = TIMEOUT, batch = "kn8_walk_break")
     public static void yojuBreaksAStoneBrickWallWhileWalking(GameTestHelper helper) {
         for (int x = 0; x < 9; x++) {
             for (int y = 1; y < 6; y++) {

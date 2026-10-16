@@ -108,6 +108,7 @@ impedia o kaiju de chegar perto de um grupo de soldados).
 | `scanIntervalTicks` | 5 | IA-7: buscas de vizinhos da IA (reações dos especiais, kaiju se espalhando) refeitas a cada 5 ticks |
 | `farFromPlayers` / `farRetargetFactor` | 96 / 4 | IA-7: sem jogador a 96 blocos, a escolha de alvo de kaiju e soldados fica 4x mais espaçada (alvo morto reavalia na hora) |
 | `debugLog` | false | IA-7: com true, cada troca de alvo vai para o log do servidor com o motivo |
+| `[destruction] sinkHeight` | 3 | Miguel 2026-10-16: kaiju em pé sobre construção 3+ blocos acima do alvo ou do chão natural (tag `kn8:destruction/natural_ground`) quebra o piso embaixo e desce (inclusive baú/púlpito, soltando o conteúdo) |
 
 Fases dos chefes (IA-6) [SUPOSIÇÃO nos pesos]: **Honju** acima de 50% soco pesado 2, pisão 3, mordida 1; abaixo, investida 3, raio 3, pisão 2. **Revivido** soco 2 / pisão 3 → investida 2, raio 3, pisão 2 → investida 3, raio 3, rabada 1. Tecedeira e Honju do exame sem mudança.
 
