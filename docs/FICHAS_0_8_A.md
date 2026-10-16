@@ -56,6 +56,6 @@ Cada ficha separa **CANON** (o que a obra mostra), **INFERÊNCIA** (leitura para
 - **Não confirmado:** braços e pernas vermelhos e chifres (só o modelo mostra); altura.
 - **INFERÊNCIA:** rápido (investida longa, salto), agarra pelo pescoço (prende o alvo), sequência de socos e soco
   pesado; forte para um esquadrão comum, fraco contra o No. 8.
-- **MOD ORIGINAL:** todos os números [SUPOSIÇÃO] (o v1.2 só diz "velocidade/musculatura"): 900 de vida, dano 26,
-  armadura 12, velocidade 0,48, fortitude 7. Agarrão = projétil curto que deixa lento nível 4 por 2 s. Altura **6 m** (Miguel,
+- **MOD ORIGINAL:** números da proposta do Miguel (2026-10-16): 2.600 de vida, dano 44, armadura 17, velocidade
+  0,48, fortitude 9,1 (proposta 9,0–9,2). Agarrão = projétil curto que deixa lento nível 4 por 2 s. Altura **6 m** (Miguel,
   2026-10-16): `dimensions.scale` 2,727 sobre o modelo de 2,2 m. Onde aparece: terceira onda do `ariake_assault` com 50% de chance (o No. 9 traz a criação dele).

@@ -1,6 +1,6 @@
 {
   "class": "numbered",
-  "fortitude": 7.0,
+  "fortitude": 9.1,
   "size": "miniature",
   "dimensions": {
     "width": 0.8,
@@ -8,9 +8,9 @@
     "scale": 2.727
   },
   "overrides": {
-    "health": 900.0,
-    "damage": 34.0,
-    "armor": 12.0
+    "health": 2600.0,
+    "damage": 44.0,
+    "armor": 17.0
   },
   "speed": 0.48,
   "intelligence": 3,

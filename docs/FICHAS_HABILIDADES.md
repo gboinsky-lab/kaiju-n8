@@ -95,19 +95,19 @@ Numerado: regenera 0.8%/s abaixo de 50% (2%/s abaixo de 20%); comanda kaiju a 48
 
 ### `kaiju_no13` — numbered
 
-Vida **900** · dano base **34.0** · armadura **12** · velocidade **0.48** · hitbox 0.8 × 2.2 (escala 1)
+Vida **2.600** · dano base **44.0** · armadura **17** · velocidade **0.48** · hitbox 2.2 × 6.0 (escala 2.727)
 
 
 Fúria abaixo de 35%: dano ×1.15, velocidade ×1.15, recargas ×0.75.
 
 | Habilidade | Tipo | Dano | Preparo | Recarga | Alcance | Efeito | Origem |
 |---|---|---|---|---|---|---|---|
-| `claw` | corpo a corpo | ×1.3 = 44 | 0.40 s | 0.8 s | alcance do corpo | — | ADAPTAÇÃO DO MOD |
-| `no13_flurry` | rajada de golpes | ×0.5 = 17 × 4 | 0.25 s | 3.5 s | 0–3 blocos, raio 1 | — | ADAPTAÇÃO DO MOD |
-| `no13_heavy_punch` | corpo a corpo | ×1.7 = 58 | 0.45 s | 3.5 s | 0–3.5 blocos | pesado (fura bloqueio) | ADAPTAÇÃO DO MOD |
-| `no13_throat_grab` | projétil | ×1.1 = 37 | 0.30 s | 6 s | 1.5–6 blocos | lentidão 4 por 2 s | ADAPTAÇÃO DO MOD |
-| `no13_sprint` | investida | ×1.3 = 44 | 0.40 s | 4 s | 5–22 blocos, raio 1.3 | pesado (fura bloqueio) | ADAPTAÇÃO DO MOD |
-| `no13_pounce` | salto | ×1.4 = 48 | 0.40 s | 7 s | 6–16 blocos, raio 2 | pesado (fura bloqueio) | ADAPTAÇÃO DO MOD |
+| `claw` | corpo a corpo | ×1.3 = 57 | 0.40 s | 0.8 s | alcance do corpo | — | ADAPTAÇÃO DO MOD |
+| `no13_flurry` | rajada de golpes | ×0.5 = 22 × 4 | 0.25 s | 3.5 s | 0–3 blocos, raio 1 | — | ADAPTAÇÃO DO MOD |
+| `no13_heavy_punch` | corpo a corpo | ×1.7 = 75 | 0.45 s | 3.5 s | 0–3.5 blocos | pesado (fura bloqueio) | ADAPTAÇÃO DO MOD |
+| `no13_throat_grab` | projétil | ×1.1 = 48 | 0.30 s | 6 s | 1.5–6 blocos | lentidão 4 por 2 s | ADAPTAÇÃO DO MOD |
+| `no13_sprint` | investida | ×1.3 = 57 | 0.40 s | 4 s | 5–22 blocos, raio 1.3 | pesado (fura bloqueio) | ADAPTAÇÃO DO MOD |
+| `no13_pounce` | salto | ×1.4 = 62 | 0.40 s | 7 s | 6–16 blocos, raio 2 | pesado (fura bloqueio) | ADAPTAÇÃO DO MOD |
 
 ### `kaiju_no9` — numbered
 
@@ -216,7 +216,7 @@ Numerado: regenera 3.5%/s abaixo de 50% (6%/s abaixo de 20%); foge com 10%; coma
 
 ### `kaiju_no9_isao` — numbered
 
-Vida **7.500** · dano base **72.0** · armadura **20** · velocidade **0.38** · hitbox 0.8 × 2.0 (escala 1)
+Vida **7.500** · dano base **72.0** · armadura **20** · velocidade **0.38** · hitbox 3.2 × 8.0 (escala 4)
 
 
 Fúria abaixo de 30%: dano ×1.2, velocidade ×1.1, recargas ×0.7.

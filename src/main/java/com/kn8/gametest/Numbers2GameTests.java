@@ -87,7 +87,7 @@ public final class Numbers2GameTests {
 
     @GameTest(template = TEMPLATE)
     public static void no13LoadsFromData(GameTestHelper helper) {
-        check(helper, "kaiju_no13", 900.0F, false);
+        check(helper, "kaiju_no13", 2600.0F, false);
     }
 
     /** O No. 9 absorve o Isao derrotado (abaixo de 30% da vida) e vira a forma com o Isao no lugar. */
