@@ -954,8 +954,8 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
     /**
      * Miguel (2026-10-16: "os kaijus nao podem ficar presos em meio as construcoes, eles devem destruir elas"; o No. 10
      * gigante ficava em cima dos predios da base): em pe sobre construcao (nao chao natural) e
-     * {@code [destruction] sinkHeight} blocos ou mais acima do alvo ou do chao natural, quebra a camada de baixo e desce,
-     * no intervalo de {@code walkBreakCooldownTicks}. Vale para todo kaiju, com ou sem alvo.
+     * {@code [destruction] sinkHeight} blocos ou mais acima do alvo ou do chao natural, quebra a camada de baixo e
+     * desce, no intervalo de {@code walkBreakCooldownTicks}. Vale para todo kaiju, com ou sem alvo.
      */
     private void sinkFromBuilding() {
         long now = level().getGameTime();
