@@ -6,7 +6,7 @@
   "knockback_resistance": 0.8,
   "release": 50,
   "max_release": 96,
-  "kaiju_damage": 1.0,
+  "kaiju_damage": 1.2,
   "aura": "kn8:isao_numbers2",
   "weapon": "kn8:numbers2_gauntlet",
   "height": 1.9,
@@ -66,7 +66,8 @@
         "range": 9.0,
         "width": 1.4,
         "color": 16766080
-      }
+      },
+      "honju_priority": 2
     },
     "thunder_emperor": {
       "type": "combo",
@@ -126,7 +127,7 @@
     "preferred_distance": 3.0,
     "damage_tolerance": 0.12,
     "safety_distance": 9.0,
-    "heavy_vs_big": 2,
+    "heavy_vs_big": 3,
     "fast_vs_small": 1,
     "protect_ally": 10.0
   },
