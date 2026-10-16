@@ -11,7 +11,19 @@ import com.kn8.common.soldier.SoldierEntity;
 import com.kn8.common.soldier.SoldierLeap;
 import com.kn8.common.soldier.StuckWatch;
 
+import java.util.UUID;
+
+import com.mojang.authlib.GameProfile;
+
+import com.kn8.common.registry.KN8Items;
+
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.util.FakePlayer;
+import net.neoforged.neoforge.common.util.FakePlayerFactory;
+import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.level.block.Blocks;
@@ -23,7 +35,8 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
  * GameTests da MOV-1 (plano de mobilidade v3): o pouso de um impulso e conferido pelas colisoes (parede logo a
  * frente e queda grande recusam; chao livre aceita; degrau de 1 bloco sobe) e o soldado travado sai para o lado sem
  * teleporte. MOV-2: o salto tatico sobe em plataforma de 2, atravessa vao de 3 e recusa muro alto demais. MOV-3: a
- * cobertura fica atras de um muro que corta a visao do kaiju e deixa de valer quando o muro cai.
+ * cobertura fica atras de um muro que corta a visao do kaiju e deixa de valer quando o muro cai. Armadura cinetica:
+ * soldado e jogador de traje sem dano de queda.
  */
 @GameTestHolder(KN8Constants.MOD_ID)
 @PrefixGameTestTemplate(false)
@@ -118,6 +131,7 @@ public final class MobilityGameTests {
     private static final String BIG = "empty_15x12x15";
     private static final String LEAP_BATCH = "kn8_mov2_leap";
     private static final String COVER_BATCH = "kn8_mov3_cover";
+    private static final String FALL_BATCH = "kn8_kinetic_fall";
 
     /** Soldado com IA (mob sem IA nao anda pela velocidade) e sem alvo, para o salto ser so o do teste. */
     private static SoldierEntity leaper(GameTestHelper helper, BlockPos pos) {
@@ -237,5 +251,31 @@ public final class MobilityGameTests {
                     "Sem o muro a cobertura nao esconde mais");
             helper.succeed();
         });
+    }
+
+    /** Soldado caindo de 10 blocos: a armadura cinetica absorve a queda. */
+    @GameTest(template = BIG, batch = FALL_BATCH, timeoutTicks = 100)
+    public static void soldierTakesNoFallDamage(GameTestHelper helper) {
+        SoldierEntity soldier = leaper(helper, new BlockPos(7, 11, 7));
+        helper.succeedWhen(() -> {
+            helper.assertTrue(soldier.onGround() && soldier.getY() < helper.absoluteVec(new Vec3(0, 2, 0)).y,
+                    "Ainda caindo");
+            helper.assertTrue(soldier.getHealth() >= soldier.getMaxHealth(), "Tomou dano de queda: "
+                    + soldier.getHealth());
+        });
+    }
+
+    /** Jogador de traje: o dano da queda vai a zero; sem traje, continua. */
+    @GameTest(template = TEMPLATE, batch = FALL_BATCH)
+    public static void suitedPlayerTakesNoFallDamage(GameTestHelper helper) {
+        FakePlayer player = FakePlayerFactory.get(helper.getLevel(), new GameProfile(UUID.randomUUID(),
+                "kn8_fall_test"));
+        LivingFallEvent bare = NeoForge.EVENT_BUS.post(new LivingFallEvent(player, 10.0F, 1.0F));
+        helper.assertTrue(bare.getDamageMultiplier() > 0.0F, "Sem traje a queda deveria ferir");
+        player.setItemSlot(EquipmentSlot.CHEST, new ItemStack(KN8Items.MK1.get()));
+        LivingFallEvent suited = NeoForge.EVENT_BUS.post(new LivingFallEvent(player, 10.0F, 1.0F));
+        player.setItemSlot(EquipmentSlot.CHEST, ItemStack.EMPTY);
+        helper.assertTrue(suited.getDamageMultiplier() == 0.0F, "Com traje a queda nao fere");
+        helper.succeed();
     }
 }

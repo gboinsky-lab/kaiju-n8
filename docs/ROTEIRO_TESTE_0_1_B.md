@@ -812,3 +812,12 @@ com ponto de tiro`, `cobertura perdida`).
 | 57.3 | Soldado de rifle recarregando contra um Primigenius (sem ataque a distância) com um muro por perto | Recarrega atrás do muro |
 | 57.4 | Mesmos muros contra um Primigenius, sem recarregar | Não usa cobertura: mantém distância e atira como antes |
 | 57.5 | `cover = false` no config | Comportamento antigo |
+
+## 58. Armadura cinética: sem dano de queda (Miguel, 2026-10-16)
+
+| # | Passo | Esperado |
+|---|---|---|
+| 58.1 | Sobrevivência, traje Mk1 (ou de treino/Mk1 Reforçado) no peito, cair de 25 blocos | Nenhum dano |
+| 58.2 | Sem traje, cair de 25 blocos | Dano normal do vanilla (morre) |
+| 58.3 | `/summon` soldado e Hoshina a 20 blocos do chão | Caem sem perder vida |
+| 58.4 | `soldierNoFallDamage`/`kineticSuitNoFallDamage = false` no config | Volta o dano de queda |

@@ -95,6 +95,8 @@ public final class ServerConfig {
     public static final ModConfigSpec.DoubleValue ABILITY_MAX_DESTRUCTION_RADIUS;
     /** IA-2: a guarda da cauda do Hoshina No. 10 segura golpe pesado de kaiju? */
     public static final ModConfigSpec.BooleanValue TAIL_GUARD_BLOCKS_HEAVY;
+    public static final ModConfigSpec.BooleanValue KINETIC_SUIT_NO_FALL_DAMAGE;
+    public static final ModConfigSpec.BooleanValue SOLDIER_NO_FALL_DAMAGE;
     public static final ModConfigSpec.IntValue PATH_POWER_YOJU;
     public static final ModConfigSpec.IntValue PATH_POWER_HONJU;
     public static final ModConfigSpec.IntValue PATH_POWER_DAIKAIJU;
@@ -826,6 +828,10 @@ public final class ServerConfig {
         TAIL_GUARD_BLOCKS_HEAVY = booleanValue("tailGuardBlocksHeavy", "Hoshina No. 10's tail guard also reduces"
                 + " heavy kaiju hits (Miguel, IA-3: the strongest characters defend heavy hits but still take some"
                 + " damage).", true);
+        KINETIC_SUIT_NO_FALL_DAMAGE = booleanValue("kineticSuitNoFallDamage", "A player wearing a Defense Force suit"
+                + " takes no fall damage: the kinetic armor absorbs the impact (Miguel, 2026-10-16).", true);
+        SOLDIER_NO_FALL_DAMAGE = booleanValue("soldierNoFallDamage", "Soldiers (common and special) take no fall"
+                + " damage: they wear the kinetic armor (Miguel, 2026-10-16).", true);
         LIGHT_STAMINA_COST = doubleValue("lightStaminaCost", "Stamina spent by a light attack.", 5.0, 0.0, 100.0);
         HEAVY_STAMINA_COST = doubleValue("heavyStaminaCost", "Stamina spent by a heavy attack.", 12.0, 0.0, 100.0);
         DODGE_STAMINA_COST = doubleValue("dodgeStaminaCost", "Stamina spent by a dodge (refused without it).", 20.0,
