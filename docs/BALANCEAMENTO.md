@@ -738,6 +738,6 @@ dano 26 → 34, armadura 12, fortitude 7. Habilidades: garra, `no13_flurry` (4 �
 | Kikoru × No. 13 | 0/5 (No. 13 com 50–73%) | |
 | Isao × No. 13 | 5/5 (Isao com 48–65%) | |
 | Hoshina No. 10 × No. 13 | 5/5 (53–69%) | |
-| Narumi × No. 13 | 0/5 com 0,52 (No. 13 com 45–56%); 3/5 com 1,1; **5/5 com 1,3** (Narumi com 3–49%) | Miguel 2026-10-16: o Narumi vence o No. 13 e fica mais forte no geral → `kaiju_damage` 1,3. Com 1,1: No. 9 5/5 (fuga), No. 10 pequeno 5/5, No. 10 gigante 0/5 |
+| Narumi × No. 13 | 0/5 com 0,52 (No. 13 com 45–56%); 3/5 com 1,1; **5/5 com 1,3** (Narumi com 3–49%) | Miguel 2026-10-16: o Narumi vence o No. 13 e fica mais forte no geral → `kaiju_damage` 1,3. Com 1,3: No. 9 5/5 (todas por fuga, Narumi com 62–96%), No. 10 pequeno 5/5 (4 viram a forma gigante perto de 50%: o script conta como fuga), No. 10 gigante 0/5 (gigante com 18–55%) |
 | Kaiju No. 8 × No. 9 com o Isao (8 m) | 0/5 (3 derrotas em 184–260 s, 2 empates de 300 s com o No. 8 a 18–31% e o kaiju a 45–50%) | meta 3%; os empates voltaram com o corpo maior [DECIDIR] |
 | Hoshina No. 10 × No. 9 com o Isao (8 m) | 0/5 (kaiju com 88–95%, 19–26 s) | meta 5% |
