@@ -919,5 +919,8 @@
   "item.kn8.numbers2_gauntlet": "Numbers 2 Gauntlets",
   "entity.kn8.kaiju_no9_isao": "Kaiju No. 9 (Isao Absorbed)",
   "entity.kn8.kaiju_no13": "Kaiju No. 13",
-  "kn8.no9.isao_form": "Kaiju No. 9 absorbed Isao Shinomiya and Numbers Weapon 2!"
+  "kn8.no9.isao_form": "Kaiju No. 9 absorbed Isao Shinomiya and Numbers Weapon 2!",
+  "kn8.command.duel.invalid": "Pick two different soldiers for the duel.",
+  "kn8.command.duel.started": "Test duel: %s versus %s.",
+  "kn8.command.duel.stopped": "Duels stopped: %s soldiers."
 }

@@ -15,6 +15,8 @@ import com.kn8.common.soldier.special.HoshinaEntity;
 import com.kn8.core.soldier.SoldierTargeting;
 import com.kn8.core.soldier.SquadRules;
 
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.player.Player;
@@ -57,6 +59,12 @@ public final class SoldierTargetGoal extends Goal {
         // IA-7: alvo morto ou removido reavalia na hora (longe dos jogadores o intervalo e maior e o soldado ficava
         // parado preso a um alvo morto).
         LivingEntity held = soldier.getTarget();
+        if (soldier.duelOpponent().isPresent() && soldier.level() instanceof ServerLevel server) {
+            // Duelo de teste: so o oponente marcado, sem kaiju nem esquadrao.
+            Entity foe = server.getEntity(soldier.duelOpponent().get());
+            soldier.setTarget(foe instanceof LivingEntity living && living.isAlive() ? living : null);
+            return;
+        }
         if (now < nextEvaluation && (held == null || held.isAlive())) {
             return;
         }

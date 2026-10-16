@@ -33,6 +33,7 @@ public final class KN8Commands {
                 .then(AnimCommands.build())
                 .then(DestructionCommands.build())
                 .then(SoldierCommands.build())
+                .then(DuelCommands.build())
                 .then(CareerCommands.rank())
                 .then(CareerCommands.merit())
                 .then(CareerCommands.mission())

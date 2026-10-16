@@ -112,6 +112,9 @@ public final class SpecialAttacks {
 
     /** Aliado de quem ataca (soldados, suportes de armadura, jogadores sem PvP): fica fora do golpe. */
     public static boolean isAlly(LivingEntity source, LivingEntity target) {
+        if (SoldierEntity.isDuelFoe(source, target)) {
+            return false;
+        }
         if (target instanceof ArmorStand || target instanceof SoldierEntity) {
             return true;
         }

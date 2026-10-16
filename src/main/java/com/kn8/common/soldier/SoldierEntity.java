@@ -88,6 +88,8 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
     public static final ResourceLocation DEFINITION = KN8Constants.id("soldier_1");
     public static final String DEFAULT_VARIANT = "rifle";
     public static final String DEFAULT_LEVEL = "normal";
+    /** Duelo de teste entre soldados ({@code /kn8 duel}): UUID do oponente nos dados persistentes. */
+    public static final String DUEL_TAG = "kn8_duel";
 
     private static final EntityDataAccessor<String> VARIANT =
             SynchedEntityData.defineId(SoldierEntity.class, EntityDataSerializers.STRING);
@@ -651,16 +653,35 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
         return !(other instanceof CarcassEntity) && super.canCollideWith(other);
     }
 
-    /** Aliado: nunca mira em jogadores nem em outros soldados. */
+    /** Aliado: nunca mira em jogadores nem em outros soldados (salvo o oponente do duelo de teste). */
     @Override
     public boolean canAttack(LivingEntity target) {
-        return !(target instanceof Player) && !(target instanceof SoldierEntity) && super.canAttack(target);
+        return (isDuelFoe(this, target) || !(target instanceof Player) && !(target instanceof SoldierEntity))
+                && super.canAttack(target);
+    }
+
+    /**
+     * Duelo de teste ({@code /kn8 duel}, Miguel 2026-10-16: "em um combate dos soldados especiais quem ganharia?"):
+     * dois soldados marcados um com o UUID do outro ({@link #DUEL_TAG} nos dados persistentes) podem se ferir; fora
+     * disso continuam aliados. So comando, nunca no jogo normal.
+     */
+    public static boolean isDuelFoe(Entity attacker, Entity target) {
+        return attacker instanceof SoldierEntity soldier && target instanceof SoldierEntity
+                && soldier.getPersistentData().hasUUID(DUEL_TAG)
+                && soldier.getPersistentData().getUUID(DUEL_TAG).equals(target.getUUID());
+    }
+
+    /** Oponente do duelo de teste, se houver (UUID nos dados persistentes). */
+    public Optional<UUID> duelOpponent() {
+        return getPersistentData().hasUUID(DUEL_TAG) ? Optional.of(getPersistentData().getUUID(DUEL_TAG))
+                : Optional.empty();
     }
 
     /** Release do traje reduz o dano recebido (mesma formula do jogador). */
     @Override
     public boolean hurt(DamageSource source, float amount) {
-        if (source.getEntity() instanceof Player || source.getEntity() instanceof SoldierEntity) {
+        if ((source.getEntity() instanceof Player || source.getEntity() instanceof SoldierEntity)
+                && !isDuelFoe(source.getEntity(), this)) {
             // Fogo amigo nao fere (o raycast ja evita, isto cobre o resto).
             return false;
         }
@@ -756,7 +777,8 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
                     aim.normalize(), 1.0F, 0.0F);
         }
         Optional<Entity> hit = MeleeRaycast.findTarget(level, this, eye, aim, reach,
-                entity -> !(rootOf(entity) instanceof Player) && !(rootOf(entity) instanceof SoldierEntity));
+                entity -> isDuelFoe(this, rootOf(entity))
+                        || !(rootOf(entity) instanceof Player) && !(rootOf(entity) instanceof SoldierEntity));
         if (hit.isEmpty()) {
             return;
         }

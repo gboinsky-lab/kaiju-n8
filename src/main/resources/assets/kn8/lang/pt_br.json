@@ -919,5 +919,8 @@
   "item.kn8.numbers2_gauntlet": "Manoplas Numbers 2",
   "entity.kn8.kaiju_no9_isao": "Kaiju No. 9 (Após Absorver o Isao)",
   "entity.kn8.kaiju_no13": "Kaiju No. 13",
-  "kn8.no9.isao_form": "O Kaiju No. 9 absorveu o Isao Shinomiya e a arma numerada 2!"
+  "kn8.no9.isao_form": "O Kaiju No. 9 absorveu o Isao Shinomiya e a arma numerada 2!",
+  "kn8.command.duel.invalid": "Escolha dois soldados diferentes para o duelo.",
+  "kn8.command.duel.started": "Duelo de teste: %s contra %s.",
+  "kn8.command.duel.stopped": "Duelos encerrados: %s soldados."
 }

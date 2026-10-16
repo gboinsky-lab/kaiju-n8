@@ -469,6 +469,13 @@ public class HoshinaEntity extends SoldierEntity {
         if (other instanceof Mob mob && getTarget() != null) {
             mob.setTarget(getTarget());
         }
+        // Duelo de teste (/kn8 duel): a forma nova herda o oponente e o oponente passa a mirar nela.
+        duelOpponent().ifPresent(foe -> {
+            other.getPersistentData().putUUID(DUEL_TAG, foe);
+            if (server.getEntity(foe) instanceof SoldierEntity rival) {
+                rival.getPersistentData().putUUID(DUEL_TAG, other.getUUID());
+            }
+        });
         server.addFreshEntity(other);
         server.sendParticles(ParticleTypes.EXPLOSION_EMITTER, getX(), getY() + 1.0, getZ(), 1, 0, 0, 0, 0);
         server.sendParticles(ParticleTypes.LARGE_SMOKE, getX(), getY() + 1.0, getZ(), 30, 0.6, 1.0, 0.6, 0.05);
