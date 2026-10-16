@@ -45,8 +45,7 @@ Cada ficha separa **CANON** (o que a obra mostra), **INFERÊNCIA** (leitura para
   regeneração 4,5%/s abaixo de 50% e 7,5%/s abaixo de 20%, T9). Pele endurecida e análise um pouco mais fortes que na
   forma preta [SUPOSIÇÃO]. **Como surge:** o No. 9 (base ou preto) absorve o Isao **derrotado** (abaixo de 30% da
   vida; `absorb` com presa `kn8:isao`, que não é kaiju: a absorção agora aceita qualquer mob pelo id do tipo). Altura
-  2 m (a do modelo); a tabela mestra de alturas propõe **25 blocos** [DECIDIR]: no anime ele continua do tamanho do
-  Isao, então ficou 2 m; para 25, basta pôr `dimensions.scale` 12,5 no `kaiju/kaiju_no9_isao.json`.
+  **8 m** (Miguel, 2026-10-16): `dimensions.scale` 4 sobre o modelo de 2 m.
 
 ## Kaiju No. 13 (`kaiju_no13`)
 
@@ -58,5 +57,5 @@ Cada ficha separa **CANON** (o que a obra mostra), **INFERÊNCIA** (leitura para
 - **INFERÊNCIA:** rápido (investida longa, salto), agarra pelo pescoço (prende o alvo), sequência de socos e soco
   pesado; forte para um esquadrão comum, fraco contra o No. 8.
 - **MOD ORIGINAL:** todos os números [SUPOSIÇÃO] (o v1.2 só diz "velocidade/musculatura"): 900 de vida, dano 26,
-  armadura 12, velocidade 0,48, fortitude 7. Agarrão = projétil curto que deixa lento nível 4 por 2 s. Altura 2,2 m
-  (a do modelo). Onde aparece: terceira onda do `ariake_assault` com 50% de chance (o No. 9 traz a criação dele).
+  armadura 12, velocidade 0,48, fortitude 7. Agarrão = projétil curto que deixa lento nível 4 por 2 s. Altura **6 m** (Miguel,
+  2026-10-16): `dimensions.scale` 2,727 sobre o modelo de 2,2 m. Onde aparece: terceira onda do `ariake_assault` com 50% de chance (o No. 9 traz a criação dele).

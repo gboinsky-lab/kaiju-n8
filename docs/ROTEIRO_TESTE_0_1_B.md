@@ -767,9 +767,9 @@ Fichas e fontes: `docs/FICHAS_0_8_A.md`. Servidor dedicado + 2 clientes, mundo p
 |---|---|---|
 | 54.1 | Ovo do Isao Shinomiya (aba criativa) ao lado de um Dev | Isao de 1,90 m, cabelo loiro e manoplas brancas/pretas nos dois braços, aura laranja com faíscas; em guarda de punhos na frente do rosto |
 | 54.2 | `/summon kn8:primigenius` a 10 blocos do Isao | Ele vai até o kaiju: sequência de 5 socos (Barrage Blast), onda que vai longe (Spiral Blast), leque de ondas abrindo os braços (Force Blast) e o soco duplo (Thunder Emperor) que deixa o núcleo do kaiju exposto (brilho) |
-| 54.3 | `/summon kn8:kaiju_no9` perto do Isao e deixe lutarem (ou `/data modify entity <isao> Health set value 150`) | Quando o Isao cai abaixo de 30%, o No. 9 o agarra com tentáculos, aviso "O Kaiju No. 9 absorveu o Isao Shinomiya e a arma numerada 2!" e surge o **No. 9 com o Isao** no lugar (preto, espinhos vermelhos, boca com dentes) |
+| 54.3 | `/summon kn8:kaiju_no9` perto do Isao e deixe lutarem (ou `/data modify entity <isao> Health set value 150`) | Quando o Isao cai abaixo de 30%, o No. 9 o agarra com tentáculos, aviso "O Kaiju No. 9 absorveu o Isao Shinomiya e a arma numerada 2!" e surge o **No. 9 com o Isao** no lugar (preto, espinhos vermelhos, boca com dentes, **8 m** de altura) |
 | 54.4 | Isao inteiro perto do No. 9 | O No. 9 **não** absorve (só quem ele já derrotou) |
 | 54.5 | `/summon kn8:kaiju_no9_isao` contra o Hoshina No. 10 ou o Kaiju No. 8 | Chefe muito forte (7.500 de vida): rajada de socos, soco duplo pesado que quebra blocos, onda em volta dele, onda sônica a distância, Finger Gun, tentáculo e voo curto; regenera abaixo de 50% |
-| 54.6 | `/summon kn8:kaiju_no13` perto de soldados | Humanoide branco de 2,2 m com braços/pernas vermelhos; rápido (investida e salto), agarra pelo pescoço (o alvo fica quase parado 2 s), sequência de socos e soco pesado |
+| 54.6 | `/summon kn8:kaiju_no13` perto de soldados | Humanoide branco de **6 m** com braços/pernas vermelhos; rápido (investida e salto), agarra pelo pescoço (o alvo fica quase parado 2 s), sequência de socos e soco pesado |
 | 54.7 | Kaiju No. 8 contra o No. 13 | O No. 8 vence com folga (na obra ele o derruba com um soco) |
 | 54.8 | Mundo novo, Base Marítima de Ariake | Na guarnição, além do Narumi, aparece o Isao; no `ariake_assault` o Isao defende e o No. 13 pode vir na última onda |

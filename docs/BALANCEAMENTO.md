@@ -698,7 +698,7 @@ grande **3**, rápido contra pequeno 1, protege aliado 10.
 | No. 9 preto | 0/5 (preto com 38–48%) | 1/5 | **3/5** (3 por fuga) | 40% |
 | No. 13 | 5/5 (84–92%) | — | — | — |
 
-**No. 9 com o Isao** (`kaiju/kaiju_no9_isao.json`, v1.2 §9): vida 7.500, dano 72, armadura 20, velocidade 0,38,
+**No. 9 com o Isao** (`kaiju/kaiju_no9_isao.json`, v1.2 §9): **8 m** (escala 4, Miguel 2026-10-16), vida 7.500, dano 72, armadura 20, velocidade 0,38,
 fortitude 9,5, regeneração 4,5%/s abaixo de 50% e 7,5%/s abaixo de 20%; pele endurecida 20%/−55%, análise 3,5% por
 golpe até 30% [SUPOSIÇÃO]. Habilidades: garra, Finger Gun, rajada de dedos, tentáculo, voo curto (do No. 9 preto) e
 `no9_isao_barrage_blast` (5 × 0,75), `no9_isao_thunder_emperor` (×3,0 pesado, cratera), `no9_isao_force_blast` (área
@@ -710,7 +710,7 @@ pouco (0,1; chefe que pressiona). Surge pela absorção do Isao abaixo de 30% da
 | Hoshina No. 10 × No. 9 com o Isao | 0/5 (o kaiju termina com 89–94%) | 5% |
 | Kaiju No. 8 × No. 9 com o Isao | antes: 5/5 empates de 300 s com os dois a ~50% (regeneração dos dois); depois (circula 0,1, Barrage 0,75 recarga 70, Thunder ×3,0 recarga 140): **0/3**, o No. 8 cai em 157–202 s com o kaiju a 49% | 3% |
 
-**Kaiju No. 13** (`kaiju/kaiju_no13.json`, tudo [SUPOSIÇÃO]: o v1.2 só diz "velocidade/musculatura"): vida 900, dano
+**Kaiju No. 13** (`kaiju/kaiju_no13.json`, tudo [SUPOSIÇÃO]: o v1.2 só diz "velocidade/musculatura"): **6 m** (escala 2,727, Miguel 2026-10-16), vida 900, dano
 **34** (era 26), armadura 12, velocidade 0,48, fortitude 7, inteligência 3. Habilidades: garra, `no13_flurry` (4 × 0,5),
 `no13_heavy_punch` (×1,7 pesado), `no13_throat_grab` (projétil curto ×1,1, lento nível 4 por 2 s), `no13_sprint`
 (investida ×1,3 até 22 blocos), `no13_pounce` (salto ×1,4). IA: circula (0,45) e persegue rápido (×1,25).
