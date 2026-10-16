@@ -248,6 +248,11 @@ public final class ServerConfig {
     public static final ModConfigSpec.DoubleValue SOLDIER_COVER_MIN_THREAT_DISTANCE;
     public static final ModConfigSpec.IntValue SOLDIER_COVER_HIDE_TICKS;
     public static final ModConfigSpec.DoubleValue SOLDIER_COVER_DANGER_RADIUS;
+    public static final ModConfigSpec.BooleanValue SOLDIER_AVOID_DANGER;
+    public static final ModConfigSpec.DoubleValue SOLDIER_DANGER_MARGIN;
+    public static final ModConfigSpec.DoubleValue SOLDIER_DANGER_ESCAPE_SPEED;
+    public static final ModConfigSpec.DoubleValue SOLDIER_ALLY_LINE_SIDESTEP;
+    public static final ModConfigSpec.DoubleValue SOLDIER_PROJECTILE_DODGE_RANGE;
 
     // --- esquadroes (IA-5) ----------------------------------------------------------------------------------------
     public static final ModConfigSpec.DoubleValue SQUAD_FOLLOW_DISTANCE;
@@ -790,6 +795,17 @@ public final class ServerConfig {
                 + " kaiju aimed at it, before peeking out again.", 20, 0, 400);
         SOLDIER_COVER_DANGER_RADIUS = doubleValue("coverDangerRadius", "MOV-3: cover within this distance of a kaiju"
                 + " preparing a heavy attack (edge) is left.", 4.0, 0.0, 32.0);
+        SOLDIER_AVOID_DANGER = BUILDER.comment("MOV-4: soldiers walk out of the area of a heavy kaiju attack being"
+                + " prepared (special soldiers also dodge out of it).").translation(PREFIX + "avoidDanger")
+                .define("avoidDanger", true);
+        SOLDIER_DANGER_MARGIN = doubleValue("dangerMargin", "MOV-4: soldiers leave the area of a heavy kaiju attack"
+                + " being prepared (the warning on the ground) with this much room to spare (blocks).", 1.5, 0.0, 8.0);
+        SOLDIER_DANGER_ESCAPE_SPEED = doubleValue("dangerEscapeSpeed", "MOV-4: speed multiplier while leaving the area"
+                + " of a heavy attack.", 1.5, 0.5, 3.0);
+        SOLDIER_ALLY_LINE_SIDESTEP = doubleValue("allyLineSidestep", "MOV-4: a shooter with an ally in its line of"
+                + " fire holds the shot and steps this many blocks aside.", 3.0, 0.0, 16.0);
+        SOLDIER_PROJECTILE_DODGE_RANGE = doubleValue("projectileDodgeRange", "MOV-4: special soldiers watch kaiju"
+                + " projectiles this close and dodge the ones that will hit them.", 12.0, 0.0, 64.0);
         BUILDER.pop();
 
         section("squad", "Squads (IA-5): the player's squad and the invasion defender squads.");

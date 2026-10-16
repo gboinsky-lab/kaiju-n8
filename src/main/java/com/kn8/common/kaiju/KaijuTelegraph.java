@@ -1,11 +1,14 @@
 // src/main/java/com/kn8/common/kaiju/KaijuTelegraph.java
 package com.kn8.common.kaiju;
 
+import java.util.Optional;
+
 import org.joml.Vector3f;
 
 import com.kn8.common.config.ServerConfig;
 import com.kn8.common.data.def.AbilityDef;
 import com.kn8.core.kaiju.AbilityGeometry;
+import com.kn8.core.kaiju.DangerZone;
 import com.kn8.core.kaiju.TelegraphShapes;
 
 import net.minecraft.core.particles.DustParticleOptions;
@@ -32,6 +35,8 @@ final class KaijuTelegraph {
     /** Alcance da linha quando o JSON nao da {@code max_range} (investida). */
     private static final double DEFAULT_LINE = 14.0;
     private static final double LEAP_RING_EXTRA = 1.0;
+    /** MOV-4: meia largura da faixa de um tiro (blocos). */
+    private static final double LANE_HALF_WIDTH = 1.0;
 
     private KaijuTelegraph() {
     }
@@ -45,6 +50,49 @@ final class KaijuTelegraph {
         if (applies(ability) && kaiju.level() instanceof ServerLevel level) {
             level.playSound(null, kaiju.blockPosition(), SoundEvents.WARDEN_SONIC_CHARGE, SoundSource.HOSTILE,
                     2.0F, 0.6F);
+        }
+    }
+
+    /**
+     * MOV-4: a area do golpe em preparo como area de verdade (a mesma forma que o aviso desenha), para os soldados
+     * sairem dela. Vazio sem area (golpe sem aviso, salto sem alvo).
+     */
+    static Optional<DangerZone> zone(KaijuEntity kaiju, AbilityDef ability, LivingEntity target) {
+        Vec3 forward = kaiju.bodyForward();
+        double facing = Math.atan2(forward.z, forward.x);
+        switch (ability.type().getPath()) {
+            case KaijuEntity.TYPE_AREA_MELEE -> {
+                Vec3 center = kaiju.position().add(forward.scale(AbilityGeometry.slamCenterForward(
+                        kaiju.getBbWidth())));
+                return Optional.of(DangerZone.disc(center.x, center.z, ability.radius()));
+            }
+            case KaijuEntity.TYPE_CHARGE, KaijuAbilities.TYPE_PROJECTILE -> {
+                double length = ability.behavior().maxRange() >= 0 ? ability.behavior().maxRange() : DEFAULT_LINE;
+                Vec3 to = target != null ? new Vec3(target.getX() - kaiju.getX(), 0, target.getZ() - kaiju.getZ())
+                        : forward;
+                Vec3 dir = to.lengthSqr() < 1.0E-4 ? forward : to.normalize();
+                double start = kaiju.getBbWidth() * 0.5;
+                // Investida: o corpo inteiro passa; tiro: a faixa do projetil.
+                double half = KaijuEntity.TYPE_CHARGE.equals(ability.type().getPath())
+                        ? Math.max(LANE_HALF_WIDTH, kaiju.getBbWidth() * 0.5) : LANE_HALF_WIDTH;
+                return Optional.of(DangerZone.lane(kaiju.getX() + dir.x * start, kaiju.getZ() + dir.z * start,
+                        kaiju.getX() + dir.x * (start + length), kaiju.getZ() + dir.z * (start + length), half));
+            }
+            case KaijuAbilities.TYPE_LEAP -> {
+                return target == null ? Optional.empty() : Optional.of(DangerZone.disc(target.getX(), target.getZ(),
+                        ability.radius() + LEAP_RING_EXTRA));
+            }
+            case KaijuAbilities.TYPE_SWEEP -> {
+                AbilityDef.Behavior behavior = ability.behavior();
+                double reach = kaiju.getBbWidth() * 0.5 + (behavior.maxRange() >= 0 ? behavior.maxRange()
+                        : kaiju.reachOf(ability));
+                return Optional.of(DangerZone.sector(kaiju.getX(), kaiju.getZ(), reach,
+                        facing + Math.toRadians(behavior.arcCenter()), Math.toRadians(behavior.arcDegrees())));
+            }
+            default -> {
+                return Optional.of(DangerZone.sector(kaiju.getX(), kaiju.getZ(),
+                        kaiju.getBbWidth() * 0.5 + kaiju.reachOf(ability), facing, PUNCH_ARC));
+            }
         }
     }
 

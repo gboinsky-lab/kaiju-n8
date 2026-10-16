@@ -650,7 +650,8 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
     /**
      * MOV-2: o caminho do soldado so desce quedas que o pouso aceita ({@code [soldierAi] landingMaxDrop}). O vanilla
      * deixa mob com vida cheia descer ate ~18 blocos com alvo (cenario "vao": os soldados pulavam no fundo de uma vala
-     * de 5, se feriam e ficavam presos); o que fica do outro lado de um vao e alcancado pelo salto ({@link SoldierLeap}).
+     * de 5, se feriam e ficavam presos); o que fica do outro lado de um vao e alcancado pelo salto
+     * ({@link SoldierLeap}).
      */
     @Override
     public int getMaxFallDistance() {
@@ -667,7 +668,7 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
     }
 
     /** Ponto da caixa mais perto de {@code from}, um pouco para dentro (o raio precisa entrar na caixa). */
-    static Vec3 nearestInside(AABB box, Vec3 from) {
+    public static Vec3 nearestInside(AABB box, Vec3 from) {
         double inset = NEAREST_INSET;
         return new Vec3(Mth.clamp(from.x, box.minX + inset, box.maxX - inset),
                 Mth.clamp(from.y, box.minY + inset, box.maxY - inset),

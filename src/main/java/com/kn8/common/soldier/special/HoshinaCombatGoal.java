@@ -7,6 +7,7 @@ import java.util.Optional;
 import com.kn8.common.ai.AiTuning;
 import com.kn8.common.config.ServerConfig;
 import com.kn8.common.data.def.SpecialSoldierDef;
+import com.kn8.common.soldier.DangerAvoid;
 import com.kn8.common.soldier.MoveSafety;
 import com.kn8.common.soldier.StuckWatch;
 
@@ -27,6 +28,8 @@ final class HoshinaCombatGoal extends Goal {
 
     private static final double SPEED = 1.15;
     private static final int REPATH_TICKS = 8;
+    /** MOV-4: intervalo da conferida da area de golpe pesado. */
+    private static final int DANGER_CHECK_TICKS = 2;
     /** Folga em volta da distancia de manter, em blocos (sem ficar indo e voltando na borda). */
     private static final double KEEP_SLACK = 3.0;
     /** Quanto a distancia precisa crescer entre duas reavaliacoes para contar como "o alvo esta se afastando". */
@@ -54,6 +57,9 @@ final class HoshinaCombatGoal extends Goal {
     private final HoshinaEntity hoshina;
     /** MOV-1: travamento de movimento (a "luta travada" do unstick e outra coisa: perto e ninguem se fere). */
     private final StuckWatch stuck = new StuckWatch();
+    /** MOV-4: saida da area de golpe pesado, conferida a cada DANGER_CHECK_TICKS. */
+    private Vec3 evade;
+    private int dangerCheck;
     private int repath;
     private int stuckTicks;
     private int unstuckRun;
@@ -109,6 +115,18 @@ final class HoshinaCombatGoal extends Goal {
             return;
         }
         if (stuck.busy(hoshina)) {
+            return;
+        }
+        // MOV-4: dentro da area de um golpe pesado em preparo (sem esquiva pronta), sai andando dela.
+        if (--dangerCheck <= 0) {
+            dangerCheck = DANGER_CHECK_TICKS;
+            evade = DangerAvoid.exitSpot(hoshina).orElse(null);
+            if (evade != null) {
+                AiTuning.logMove(hoshina, "saindo da area do golpe pesado");
+            }
+        }
+        if (evade != null) {
+            hoshina.getNavigation().moveTo(evade.x, evade.y, evade.z, ServerConfig.SOLDIER_DANGER_ESCAPE_SPEED.get());
             return;
         }
         if (unstick(target)) {

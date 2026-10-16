@@ -99,6 +99,11 @@ SCEN = {
                [('s1','kn8:soldier',-2,0,'{kn8_variant:"rifle",kn8_power_level:"normal"}','A'),
                 ('s2','kn8:soldier',2,0,'{kn8_variant:"rifle",kn8_power_level:"normal"}','A'),
                 ('k','kn8:camponotus',0,26,'','B')]),
+ # MOV-4: soldados de espada colados num Honju (pisao, soco pesado, investida com aviso no chao).
+ 'pisao': ([], [('s1','kn8:soldier',-2,0,'{kn8_variant:"sword",kn8_power_level:"high"}','A'),
+                ('s2','kn8:soldier',0,0,'{kn8_variant:"sword",kn8_power_level:"high"}','A'),
+                ('s3','kn8:soldier',2,0,'{kn8_variant:"sword",kn8_power_level:"high"}','A'),
+                ('k','kn8:primigenius_honju',0,10,'','B')]),
  'pilares': ([(x,0,z,x+1,6,z+1,'minecraft:bedrock') for x in (-8,-2,4) for z in (8,14,20)],
              [('m','kn8:mina',0,0,'','A'), ('k','kn8:primigenius_honju',0,28,'','B')]),
 }

@@ -87,7 +87,7 @@ final class ShooterCover {
         } else {
             soldier.getNavigation().stop();
         }
-        if (!hide && sees && edge <= soldier.attackReach()) {
+        if (!hide && sees && edge <= soldier.attackReach() && !DangerAvoid.allyInLine(soldier, target)) {
             soldier.startAttack(target);
         }
         return true;

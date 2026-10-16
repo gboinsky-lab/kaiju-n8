@@ -2,7 +2,9 @@
 package com.kn8.common.soldier;
 
 import java.util.EnumSet;
+import java.util.Optional;
 
+import com.kn8.common.ai.AiTuning;
 import com.kn8.common.config.ServerConfig;
 
 import net.minecraft.world.entity.LivingEntity;
@@ -15,7 +17,8 @@ import net.minecraft.world.phys.Vec3;
  * 0.4: o atirador com arma de apoio troca para ela quando o kaiju chega perto (SoldierEntity#updateLoadout).
  * IA-1B: recarregando, o atirador recua ({@code [soldierAi] reloadRetreat}); sem visao do alvo, da a volta ate ter.
  * IA-5: separacao entre aliados (chegada e recuo por angulos proprios).
- * MOV-3: atirador com cobertura ({@link ShooterCover}).
+ * MOV-3: atirador com cobertura ({@link ShooterCover}). MOV-4: sai da area de golpe pesado ({@link DangerAvoid}) e
+ * nao atira com aliado na frente.
  */
 final class SoldierCombatGoal extends Goal {
 
@@ -25,11 +28,19 @@ final class SoldierCombatGoal extends Goal {
     private static final int REPATH_TICKS = 10;
     /** IA-5: a esta distancia da borda do alvo, o soldado de perto passa a chegar pelo proprio angulo. */
     private static final double SPREAD_RANGE = 8.0;
+    /** MOV-4: intervalo da conferida da area de golpe pesado e tempo do passo que abre a linha de tiro. */
+    private static final int DANGER_CHECK_TICKS = 2;
+    private static final int SIDESTEP_TICKS = 20;
 
     private final SoldierEntity soldier;
     private final StuckWatch stuck = new StuckWatch();
     /** MOV-3: cobertura do atirador. */
     private final ShooterCover cover = new ShooterCover();
+    /** MOV-4: saida da area de golpe pesado (a cada DANGER_CHECK_TICKS) e passo para abrir a linha de tiro. */
+    private Vec3 evade;
+    private int dangerCheck;
+    private long sidestepUntil;
+    private int sidestepSide = 1;
     private int repath;
     /** MOV-1: o tick quis andar (ate o alvo, contornando ou recuando): conta para o travamento. */
     private boolean wantsToMove;
@@ -75,6 +86,20 @@ final class SoldierCombatGoal extends Goal {
         if (stuck.busy(soldier)) {
             return;
         }
+        // MOV-4: dentro da area de um golpe pesado em preparo (o aviso no chao), sai dela antes de qualquer coisa.
+        if (--dangerCheck <= 0) {
+            dangerCheck = DANGER_CHECK_TICKS;
+            evade = DangerAvoid.exitSpot(soldier).orElse(null);
+            if (evade != null) {
+                AiTuning.logMove(soldier, "saindo da area do golpe pesado");
+            }
+        }
+        if (evade != null) {
+            wantsToMove = true;
+            soldier.getNavigation().moveTo(evade.x, evade.y, evade.z,
+                    ServerConfig.SOLDIER_DANGER_ESCAPE_SPEED.get());
+            return;
+        }
         if (stuck.tick(soldier, wantsToMove, target.position())) {
             return;
         }
@@ -115,7 +140,7 @@ final class SoldierCombatGoal extends Goal {
                 }
             }
             if (sees && edge <= soldier.attackReach()) {
-                soldier.startAttack(target);
+                shoot(target);
             }
             return;
         }
@@ -136,6 +161,31 @@ final class SoldierCombatGoal extends Goal {
             soldier.getNavigation().stop();
             soldier.startAttack(target);
         }
+    }
+
+    /**
+     * MOV-4: atira, salvo com um aliado na linha de tiro: ai segura o tiro e da {@code [soldierAi] allyLineSidestep}
+     * blocos para o lado (alternando o lado a cada vez).
+     */
+    void shoot(LivingEntity target) {
+        long now = soldier.level().getGameTime();
+        if (now < sidestepUntil) {
+            return;
+        }
+        double step = ServerConfig.SOLDIER_ALLY_LINE_SIDESTEP.get();
+        if (step > 0.0 && DangerAvoid.allyInLine(soldier, target)) {
+            Vec3 to = target.position().subtract(soldier.position());
+            Vec3 side = new Vec3(-to.z, 0.0, to.x).normalize().scale(step * sidestepSide);
+            sidestepSide = -sidestepSide;
+            Optional<Vec3> spot = MoveSafety.standable(soldier, soldier.position().add(side));
+            if (spot.isPresent()) {
+                soldier.getNavigation().moveTo(spot.get().x, spot.get().y, spot.get().z, SPEED);
+                sidestepUntil = now + SIDESTEP_TICKS;
+                AiTuning.logMove(soldier, "aliado na linha de tiro, passo para o lado");
+                return;
+            }
+        }
+        soldier.startAttack(target);
     }
 
     /** Recua na direcao oposta ao alvo. */

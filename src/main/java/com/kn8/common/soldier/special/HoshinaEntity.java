@@ -24,14 +24,17 @@ import com.kn8.common.data.def.SpecialSoldierDef;
 import com.kn8.common.data.def.WeaponDef;
 import com.kn8.common.destruction.DestructionService;
 import com.kn8.common.kaiju.KaijuEntity;
+import com.kn8.common.kaiju.KaijuProjectile;
 import com.kn8.common.registry.KN8Attachments;
 import com.kn8.common.registry.KN8Sounds;
+import com.kn8.common.soldier.DangerAvoid;
 import com.kn8.common.soldier.MoveSafety;
 import com.kn8.common.soldier.SoldierEntity;
 import com.kn8.common.soldier.SoldierTargetGoal;
 import com.kn8.common.soldier.SquadMoveGoal;
 import com.kn8.common.vfx.VfxService;
 import com.kn8.core.combat.CombatMath;
+import com.kn8.core.kaiju.DangerZone;
 import com.kn8.core.power.PowerMath;
 
 import net.minecraft.core.particles.ParticleTypes;
@@ -106,9 +109,13 @@ public class HoshinaEntity extends SoldierEntity {
     private static final float COUNTER_REACH_SLACK = 3.0F;
     private static final double SIDESTEP_SPEED = 0.6;
     private static final double DASH_LIFT = 0.15;
+    /** MOV-4: o tiro acerta se passar a menos de meia largura + isto do centro (blocos). */
+    private static final double PROJECTILE_HIT_SLACK = 0.8;
     private static final double REACTION_SEARCH = 16.0;
     /** IA-7: kaiju por perto para as reacoes (refeito a cada scanIntervalTicks). */
     private List<KaijuEntity> reactionKaiju = List.of();
+    /** MOV-4: projeteis de kaiju por perto (lista refeita junto com a dos kaiju). */
+    private List<KaijuProjectile> reactionProjectiles = List.of();
     private long reactionScanAt;
     private static final float SWING_VOLUME = 0.8F;
     private static final float TICKS_PER_SECOND = 20.0F;
@@ -320,6 +327,8 @@ public class HoshinaEntity extends SoldierEntity {
         boolean big = target instanceof KaijuEntity kaiju
                 && kaiju.def().map(kd -> kd.kaijuClass() != KaijuClass.YOJU).orElse(false);
         boolean sees = getSensing().hasLineOfSight(target);
+        // MOV-4: tecnica corpo a corpo so com caminho livre ate o alvo (antes saia atraves de parede).
+        boolean reaches = sees || DangerAvoid.clearReach(this, target);
         int best = Integer.MIN_VALUE;
         List<String> tied = new ArrayList<>();
         for (Map.Entry<String, SpecialSoldierDef.Technique> entry : def.get().techniques().entrySet()) {
@@ -327,7 +336,7 @@ public class HoshinaEntity extends SoldierEntity {
             if ((candidate.requiresFullRelease() && !isFullRelease())
                     || now < readyAt.getOrDefault(entry.getKey(), 0L) || edge < candidate.minRange()
                     || edge > candidate.maxRange() || target.getBbHeight() < candidate.slash().minTargetHeight()
-                    || (candidate.type() == SpecialSoldierDef.TechniqueType.SLASH && !sees)
+                    || (candidate.type() == SpecialSoldierDef.TechniqueType.SLASH && !sees) || !reaches
                     || usesLeft(def.get(), entry.getKey()) == 0) {
                 continue;
             }
@@ -512,13 +521,22 @@ public class HoshinaEntity extends SoldierEntity {
         LivingEntity target = techniqueTarget;
         // 0.5.0-D7: com mais Release os golpes da tecnica saem antes (tempo da tecnica = tempo real x velocidade).
         int elapsed = (int) ((now - techniqueStart) * techniqueSpeed);
+        int count = technique.type() == SpecialSoldierDef.TechniqueType.SLASH ? 1 : technique.hits().size();
         if (target != null && target.isAlive()) {
             getLookControl().setLookAt(target, 60.0F, 60.0F);
-            int count = technique.type() == SpecialSoldierDef.TechniqueType.SLASH ? 1 : technique.hits().size();
             while (nextHit < count && elapsed >= technique.hitTick(nextHit)) {
                 fireHit(target, nextHit, count);
                 nextHit++;
             }
+        } else if (nextHit < count) {
+            // MOV-4: o alvo morreu (ou sumiu) no meio da tecnica: corta a tecnica e a animacao em vez de golpear o ar
+            // ate o fim; o goal escolhe outro alvo.
+            AiTuning.logMove(this, "tecnica " + techniqueId + " cortada: alvo morto");
+            stopTriggeredAnim("action", animatedTechniques().contains(techniqueId) ? techniqueId : "attack");
+            technique = null;
+            techniqueId = null;
+            techniqueTarget = null;
+            return;
         }
         if (elapsed >= technique.durationTicks()) {
             technique = null;
@@ -567,7 +585,8 @@ public class HoshinaEntity extends SoldierEntity {
      * avancam junto). Kaiju levam no corpo, com o {@code kaiju_damage} do perfil.
      */
     protected boolean strike(LivingEntity target, float multiplier, float knockback, WeaponDef weapon, float slack) {
-        if (edgeTo(target) > weapon.reach() + slack) {
+        // MOV-4: nada de acertar atraves de parede (antes media so a distancia).
+        if (edgeTo(target) > weapon.reach() + slack || !DangerAvoid.clearReach(this, target)) {
             return false;
         }
         float damage = (float) (weapon.baseDamage() * multiplier * damageMultiplier());
@@ -658,6 +677,12 @@ public class HoshinaEntity extends SoldierEntity {
             reactionScanAt = now + ServerConfig.AI_SCAN_INTERVAL.get();
             reactionKaiju = level().getEntitiesOfClass(KaijuEntity.class, getBoundingBox().inflate(REACTION_SEARCH),
                     KaijuEntity::isAlive);
+            reactionProjectiles = level().getEntitiesOfClass(KaijuProjectile.class, getBoundingBox().inflate(
+                    ServerConfig.SOLDIER_PROJECTILE_DODGE_RANGE.get()), Entity::isAlive);
+        }
+        // MOV-4: tiro de kaiju que vai acertar (antes a esquiva so lia golpes de kaiju): de lado para fora da linha.
+        if (now >= dashReadyAt && dodgeProjectile(dashDef, tactics, now)) {
+            return;
         }
         for (KaijuEntity kaiju : reactionKaiju) {
             if (!kaiju.isAlive() || !threatens(kaiju)) {
@@ -680,19 +705,71 @@ public class HoshinaEntity extends SoldierEntity {
         }
     }
 
+    /**
+     * MOV-4: algum projetil de kaiju por perto passa por ele em ate {@code react_ticks}: esquiva (pela chance do
+     * perfil) para o lado de fora da linha do tiro. Verdadeiro se reagiu (esquivou ou decidiu nao esquivar deste).
+     */
+    private boolean dodgeProjectile(SpecialSoldierDef.Dash def, SpecialSoldierDef.Tactics tactics, long now) {
+        Vec3 center = getBoundingBox().getCenter();
+        for (KaijuProjectile projectile : reactionProjectiles) {
+            Vec3 velocity = projectile.getDeltaMovement();
+            double speed2 = velocity.lengthSqr();
+            if (!projectile.isAlive() || speed2 < 1.0E-4) {
+                continue;
+            }
+            Vec3 toMe = center.subtract(projectile.position());
+            double ticks = toMe.dot(velocity) / speed2;
+            if (ticks <= 0.0 || ticks > def.reactTicks()) {
+                continue;
+            }
+            Vec3 miss = toMe.subtract(velocity.scale(ticks));
+            if (miss.length() > getBbWidth() * 0.5 + PROJECTILE_HIT_SLACK) {
+                continue;
+            }
+            if (getRandom().nextFloat() < tactics.dodgeChance()) {
+                Vec3 side = new Vec3(miss.x, 0.0, miss.z);
+                if (side.lengthSqr() < 1.0E-4) {
+                    side = new Vec3(-velocity.z, 0.0, velocity.x);
+                }
+                AiTuning.logMove(this, "esquiva de projetil");
+                dodgeTowards(side, def, now);
+            } else {
+                dashReadyAt = now + def.reactTicks() + 1;
+            }
+            return true;
+        }
+        return false;
+    }
+
     /** O golpe em preparo e contra ele: alvo da habilidade, ou ele perto o bastante do kaiju para ser pego. */
     private boolean threatens(KaijuEntity kaiju) {
         if (kaiju.abilityTarget().map(target -> target == this).orElse(false)) {
             return true;
         }
-        return kaiju.isUsingAbility() && kaiju.edgeDistance(this) <= kaiju.meleeReach() + 2.0;
+        // MOV-4: ou dentro da area real do golpe pesado (a do aviso no chao).
+        return kaiju.isUsingAbility() && (kaiju.edgeDistance(this) <= kaiju.meleeReach() + 2.0
+                || ServerConfig.SOLDIER_AVOID_DANGER.get() && kaiju.dangerZone().map(zone -> zone.contains(getX(),
+                        getZ(), ServerConfig.SOLDIER_DANGER_MARGIN.get())).orElse(false));
     }
 
     private void dodge(KaijuEntity kaiju, SpecialSoldierDef.Dash def, long now) {
         // MOV-1: o lado sorteado, o outro e, por ultimo, para tras; so para onde ha pouso (antes: lado sorteado as
         // cegas, contra parede ou para dentro de um buraco).
-        Optional<Vec3> dir = MoveSafety.dodgeDirection(this, position().subtract(kaiju.position()),
-                getRandom().nextBoolean(), MoveSafety.dashDistance(def.speed()));
+        // MOV-4: dentro da area do golpe pesado, a esquiva sai pelo caminho mais curto para fora dela.
+        Vec3 away = position().subtract(kaiju.position());
+        Optional<DangerZone> zone = kaiju.dangerZone().filter(z -> ServerConfig.SOLDIER_AVOID_DANGER.get()
+                && z.contains(getX(), getZ(), ServerConfig.SOLDIER_DANGER_MARGIN.get()));
+        if (zone.isPresent()) {
+            double[] exit = zone.get().exit(getX(), getZ(), away.x, away.z);
+            away = new Vec3(exit[0], 0.0, exit[1]);
+        }
+        dodgeTowards(away, def, now);
+    }
+
+    /** Esquiva para longe de {@code away} (lados, depois tras), so com pouso valido. */
+    private void dodgeTowards(Vec3 away, SpecialSoldierDef.Dash def, long now) {
+        Optional<Vec3> dir = MoveSafety.dodgeDirection(this, away, getRandom().nextBoolean(),
+                MoveSafety.dashDistance(def.speed()));
         if (dir.isEmpty()) {
             AiTuning.logMove(this, "esquiva sem espaco");
             dashReadyAt = now + def.reactTicks() + 1;

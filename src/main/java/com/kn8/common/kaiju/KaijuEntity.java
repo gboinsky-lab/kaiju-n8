@@ -25,6 +25,7 @@ import com.kn8.common.soldier.SoldierEntity;
 import com.kn8.common.vfx.AbilityEffects;
 import com.kn8.common.vfx.VfxService;
 import com.kn8.common.data.def.AbilityDef;
+import com.kn8.core.kaiju.DangerZone;
 import com.kn8.common.data.def.KaijuAiDef;
 import com.kn8.common.data.def.KaijuDef;
 import com.kn8.core.KN8Ids;
@@ -515,6 +516,18 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
         }
         long ticks = abilityTimeline.startTick() + currentWindup - level().getGameTime();
         return ticks >= 0 ? Optional.of((int) ticks) : Optional.empty();
+    }
+
+    /**
+     * MOV-4: area do golpe pesado em preparo (a do aviso no chao), enquanto falta tempo para o impacto; vazio sem
+     * golpe pesado avisado.
+     */
+    public Optional<DangerZone> dangerZone() {
+        if (currentAbility == null || ticksToImpact().isEmpty()) {
+            return Optional.empty();
+        }
+        return KN8Data.ABILITY.get(currentAbility, false).filter(KaijuTelegraph::applies)
+                .flatMap(ability -> KaijuTelegraph.zone(this, ability, abilityTarget));
     }
 
     /** MOV-3: a especie tem ataque a distancia (projetil): contra ela os atiradores usam cobertura. */
