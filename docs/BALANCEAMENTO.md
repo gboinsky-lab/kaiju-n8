@@ -723,3 +723,16 @@ dano 26 → 34, armadura 12, fortitude 7. Habilidades: garra, `no13_flurry` (4 �
 | Kikoru | 5/5 (52–72%) | 5/5 (25–49%) |
 | Kaiju No. 8 | 5/5 em 12–22 s (96–98%) | — |
 | Isao | 5/5 (84–92%) | — |
+
+**Depois da altura (No. 9 com o Isao 8 m, No. 13 6 m) e dos números do No. 13 do Miguel (2026-10-16)**, 5 duelos:
+
+| Confronto | Resultado | Observação |
+|---|---|---|
+| Kaiju No. 8 × No. 13 | 5/5 (No. 8 com 73–84%, 40–51 s) | antes 92–98% em 12–22 s |
+| Hoshina × No. 13 | 3/5 (vence com 3–25%; perde com o No. 13 a 3–5%) | luta parelha |
+| Kikoru × No. 13 | 0/5 (No. 13 com 50–73%) | |
+| Isao × No. 13 | 5/5 (Isao com 48–65%) | |
+| Hoshina No. 10 × No. 13 | 5/5 (53–69%) | |
+| Narumi × No. 13 | 0/5 (No. 13 com 45–56%) | [DECIDIR] na obra o capitão deveria vencer; causa provável: `kaiju_damage` 0,52 do Narumi (v1.2) |
+| Kaiju No. 8 × No. 9 com o Isao (8 m) | 0/5 (3 derrotas em 184–260 s, 2 empates de 300 s com o No. 8 a 18–31% e o kaiju a 45–50%) | meta 3%; os empates voltaram com o corpo maior [DECIDIR] |
+| Hoshina No. 10 × No. 9 com o Isao (8 m) | 0/5 (kaiju com 88–95%, 19–26 s) | meta 5% |
