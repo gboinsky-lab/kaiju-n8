@@ -166,5 +166,12 @@
     "retreat_speed": 1.3,
     "orbit_speed": 1.15,
     "chase_speed": 1.35
+  },
+  "tactics": {
+    "damage_tolerance": 0.25,
+    "safety_distance": 18.0,
+    "dodge_chance": 0.85,
+    "melee_counter": false,
+    "protect_ally": 10.0
   }
 }

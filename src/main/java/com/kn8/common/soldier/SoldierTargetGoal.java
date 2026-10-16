@@ -6,11 +6,15 @@ import java.util.EnumSet;
 import java.util.List;
 
 import com.kn8.common.config.ServerConfig;
+import com.kn8.common.data.def.KaijuClass;
+import com.kn8.common.data.def.SpecialSoldierDef;
 import com.kn8.common.kaiju.KaijuEntity;
+import com.kn8.common.soldier.special.HoshinaEntity;
 import com.kn8.core.soldier.SoldierTargeting;
 
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.player.Player;
 
 /**
  * Alvo dos soldados (IA-1B, comuns e especiais), no lugar do {@code NearestAttackableTargetGoal} com visao: Miguel,
@@ -51,8 +55,12 @@ public final class SoldierTargetGoal extends Goal {
         }
         nextEvaluation = now + ServerConfig.SOLDIER_RETARGET_TICKS.get();
         double range = ServerConfig.SOLDIER_DETECTION_RANGE.get();
+        SpecialSoldierDef.Tactics tactics = soldier instanceof HoshinaEntity special
+                ? special.profile().map(SpecialSoldierDef::tactics).orElse(SpecialSoldierDef.Tactics.DEFAULT)
+                : SpecialSoldierDef.Tactics.DEFAULT;
         SoldierTargeting.Params params = new SoldierTargeting.Params(range, ServerConfig.SOLDIER_COVER_BONUS.get(),
-                ServerConfig.SOLDIER_REVENGE_BONUS.get(), ServerConfig.SOLDIER_SWITCH_MARGIN.get());
+                ServerConfig.SOLDIER_REVENGE_BONUS.get(), ServerConfig.SOLDIER_SWITCH_MARGIN.get(),
+                tactics.protectAlly(), tactics.bigTarget());
         LivingEntity current = soldier.getTarget();
         LivingEntity attacker = soldier.getLastHurtByMob();
         boolean revenge = attacker != null
@@ -67,7 +75,8 @@ public final class SoldierTargetGoal extends Goal {
                 currentId = i;
             }
             candidates.add(new SoldierTargeting.Candidate(i, soldier.distanceTo(kaiju),
-                    threatensReloadingAlly(kaiju), revenge && attacker == kaiju));
+                    threatensReloadingAlly(kaiju), revenge && attacker == kaiju, threatensAlly(kaiju),
+                    kaiju.def().map(def -> def.kaijuClass() != KaijuClass.YOJU).orElse(false)));
         }
         int chosen = SoldierTargeting.choose(params, candidates, currentId);
         if (chosen >= 0) {
@@ -82,6 +91,12 @@ public final class SoldierTargetGoal extends Goal {
         } else if (current != null && (current instanceof KaijuEntity || !current.isAlive())) {
             soldier.setTarget(null);
         }
+    }
+
+    /** IA-3 (protecao de aliados): o alvo do kaiju e outro soldado ou um jogador. */
+    private boolean threatensAlly(KaijuEntity kaiju) {
+        LivingEntity target = kaiju.getTarget();
+        return target != null && target != soldier && (target instanceof SoldierEntity || target instanceof Player);
     }
 
     /** O alvo do kaiju e outro soldado recarregando (a cobertura e a funcao de quem esta livre). */

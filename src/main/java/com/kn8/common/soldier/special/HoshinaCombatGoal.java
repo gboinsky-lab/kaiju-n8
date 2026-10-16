@@ -54,6 +54,11 @@ final class HoshinaCombatGoal extends Goal {
     private float lastTargetHealth = -1.0F;
     private double lastEdge = -1.0;
     private int orbitSide = 1;
+    /** IA-3: perfil tatico (reposicionar depois da tecnica, recuar com pouca vida). */
+    private boolean wasUsingTechnique;
+    private long repositionUntil;
+    private long retreatUntil;
+    private long retreatReadyAt;
     private int orbitTicks;
 
     HoshinaCombatGoal(HoshinaEntity hoshina) {
@@ -91,9 +96,13 @@ final class HoshinaCombatGoal extends Goal {
         }
         hoshina.getLookControl().setLookAt(target, 30.0F, 30.0F);
         if (hoshina.isUsingTechnique()) {
+            wasUsingTechnique = true;
             return;
         }
         if (unstick(target)) {
+            return;
+        }
+        if (tactics(target)) {
             return;
         }
         Optional<String> technique = hoshina.chooseTechnique(target);
@@ -118,6 +127,50 @@ final class HoshinaCombatGoal extends Goal {
             hoshina.getNavigation().stop();
             hoshina.startAttack(target);
         }
+    }
+
+    /**
+     * IA-3: perfil tatico do personagem. Com pouca vida ({@code damage_tolerance}) recua ate {@code safety_distance};
+     * no fim de uma tecnica, com chance 1 - {@code aggression}, reposiciona (passo para o lado ou volta a
+     * {@code preferred_distance}) em vez de emendar outro golpe. Devolve true se o tick ja foi usado.
+     */
+    private boolean tactics(LivingEntity target) {
+        SpecialSoldierDef.Tactics tactics = hoshina.profile().map(SpecialSoldierDef::tactics)
+                .orElse(SpecialSoldierDef.Tactics.DEFAULT);
+        long now = hoshina.level().getGameTime();
+        if (wasUsingTechnique) {
+            wasUsingTechnique = false;
+            if (hoshina.getRandom().nextFloat() >= tactics.aggression()) {
+                repositionUntil = now + tactics.repositionTicks();
+                orbitSide = hoshina.getRandom().nextBoolean() ? 1 : -1;
+            }
+        }
+        if (tactics.damageTolerance() > 0.0F && now >= retreatReadyAt
+                && hoshina.getHealth() < hoshina.getMaxHealth() * tactics.damageTolerance()) {
+            retreatUntil = now + tactics.retreatTicks();
+            retreatReadyAt = now + tactics.retreatCooldownTicks();
+        }
+        if (now < retreatUntil) {
+            double away = Math.max(tactics.safetyDistance(), hoshina.attackReach() + KEEP_SLACK);
+            if (hoshina.edgeTo(target) < away && --repath <= 0) {
+                repath = REPATH_TICKS;
+                if (!moveAround(target, away, ORBIT_STEP * 0.5, SPEED * 1.2)) {
+                    orbitSide = -orbitSide;
+                }
+            }
+            return true;
+        }
+        if (now < repositionUntil) {
+            double distance = Math.max(tactics.preferredDistance(), hoshina.attackReach() * 0.8);
+            if (--repath <= 0) {
+                repath = REPATH_TICKS;
+                if (!moveAround(target, distance, tactics.lateralStep() ? ORBIT_STEP : 0.0, SPEED)) {
+                    orbitSide = -orbitSide;
+                }
+            }
+            return true;
+        }
+        return false;
     }
 
     /** Atirador: recua, circula ou persegue pela distancia (borda a borda) e atira em movimento. */

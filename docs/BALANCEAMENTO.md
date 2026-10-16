@@ -122,7 +122,20 @@ impedia o kaiju de chegar perto de um grupo de soldados).
 | `abilityHeavyPowerBonus` | 1 | ataque pesado quebra uma categoria a mais (força = a de andar da categoria + 1, até 4) |
 | `abilityMaxRadius` | 6 | maior raio automático |
 | `heavy` no `special_soldier` | força 3, raio 2–3 | Kikoru (golpe pesado, onda de choque, golpe no chão, quebra-guarda), Kikoru No. 4 (mergulho, ataque vertical), Mina (3 tiros de canhão), Narumi e No. 1 (investida, varrida; No. 1 também estocada no ponto fraco), Kaiju No. 8 (soco pesado, investida, golpe no chão) |
-| `[combat] tailGuardBlocksHeavy` | false | a guarda da cauda do Hoshina No. 10 deixa de segurar golpe pesado (golpe pesado não tem bloqueio) [DECIDIR] |
+| `[combat] tailGuardBlocksHeavy` | true | a guarda da cauda do Hoshina No. 10 continua segurando golpe pesado (Miguel, 2026-10-16) |
+
+**Perfis táticos e guarda contra golpe pesado** (IA-3, Miguel 2026-10-16) [SUPOSIÇÃO nos números; fichas em
+`docs/FICHAS_IA_PERSONAGENS.md`]:
+
+| Personagem | aggression | recuo (vida / distância) | preferência de golpe | esquiva | outros | guarda pesado |
+|---|---|---|---|---|---|---|
+| Hoshina / No. 10 | 0,6 / 0,65, passo lateral | 25% / 20% → 8 | rápido vs Yoju +2 | 1,0 | | ½ dano, 120°, 2 s |
+| Kikoru / No. 4 | 0,85 / 0,9, passo lateral | 20% → 8 / 10 | pesado vs grande +1, rápido +1 | 0,9 | | ½ dano |
+| Mina | 1,0 | 30% → 24 | pesado vs grande +2 | 0,6 | alvo grande 12, sem contra-ataque | — |
+| Reno / No. 6 | 1,0 | 30% / 25% → 18 | | 0,8 / 0,85 | protege aliado 10, sem contra-ataque | — |
+| Narumi / No. 1 | 0,75 / 0,8, passo lateral | 15% → 10 | pesado vs grande +1 | 1,0 | alvo grande 6 / 8 | ½ dano |
+| Kafka | 0,4 | 60% → 14 | | 0,7 | protege aliado 6, sem contra-ataque | — |
+| Kaiju No. 8 | 0,95 | — | pesado vs grande +2, rápido +1 | 0,5 | | ½ dano |
 
 **Quebra ao andar** (`[destruction] walk*`, 0.6): força 3 para Yoju, Honju e numerados (quebra frágil, normal e
 resistente: vidro, madeira, terra, pedra, tijolo, concreto), 4 para Daikaiju (também deepslate e ferro); um pedido a

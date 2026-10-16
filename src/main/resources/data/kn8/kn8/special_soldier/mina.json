@@ -144,5 +144,13 @@
   },
   "technique_uses": {
     "anti_giant_shot": 4
+  },
+  "tactics": {
+    "damage_tolerance": 0.3,
+    "safety_distance": 24.0,
+    "heavy_vs_big": 2,
+    "dodge_chance": 0.6,
+    "melee_counter": false,
+    "big_target": 12.0
   }
 }

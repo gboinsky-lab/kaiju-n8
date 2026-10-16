@@ -139,5 +139,16 @@
     ],
     "power": 3,
     "radius": 3.0
+  },
+  "tactics": {
+    "aggression": 0.95,
+    "heavy_vs_big": 2,
+    "fast_vs_small": 1,
+    "dodge_chance": 0.5
+  },
+  "heavy_guard": {
+    "factor": 0.5,
+    "front_arc_degrees": 120.0,
+    "cooldown_ticks": 40
   }
 }

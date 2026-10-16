@@ -665,3 +665,17 @@ Tecla nova: **C** (Parkour; troca em Opções > Controles > Kaiju No. 8). Númer
 | 46.10 | Soldado de rifle numa luta longa | 5 pentes no total (150 tiros); recarregar sem alvo não perde as balas que sobravam |
 | 46.11 | Mina contra um Primigenius pequeno | Pode usar o Anti-Giant; depois de 4 tiros não usa mais (nem depois de sair e voltar ao mundo) |
 | 46.12 | Servidor dedicado + 2 clientes | Os dois veem a mesma destruição |
+
+## 47. Personagens: perfis táticos e guarda contra golpe pesado (IA-3)
+
+| # | Passo | Esperado |
+|---|---|---|
+| 47.1 | Hoshina e Narumi contra um Primigenius Honju | Depois de algumas técnicas eles se afastam para o lado (reposicionam) em vez de emendar golpe atrás de golpe; continuam vencendo |
+| 47.2 | Narumi, No. 8, Hoshina ou Kikoru levando um golpe pesado de frente (raio do Honju, soco pesado) | Faíscas e animação de defesa; levam cerca de metade do dano (não zero) |
+| 47.3 | Hoshina No. 10 levando golpe pesado pelas costas | A cauda defende (como antes) |
+| 47.4 | Mina com uma aranha perto e um Honju mais longe | Ela mira o Honju |
+| 47.5 | Reno com um soldado sendo atacado por um kaiju e outro kaiju mais perto dele | Reno prefere o kaiju que ataca o aliado |
+| 47.6 | Mina ou Reno com um kaiju preparando golpe pesado em cima deles | Esquivam (às vezes), nunca dão o dash de espada para dentro do kaiju |
+| 47.7 | Kafka humano perdendo vida (antes de virar o No. 8) | Abaixo de ~60% ele recua por alguns segundos e volta |
+| 47.8 | Kaiju No. 8 contra um Honju | Pressiona sem parar, prefere os golpes pesados |
+| 47.9 | Servidor dedicado + 2 clientes | Os dois veem o mesmo comportamento |

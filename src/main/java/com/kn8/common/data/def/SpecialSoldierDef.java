@@ -46,6 +46,14 @@ public record SpecialSoldierDef(float health, float armor, float speed, float fo
         return growth.heavy();
     }
 
+    public Optional<HeavyGuard> heavyGuard() {
+        return growth.heavyGuard();
+    }
+
+    public Tactics tactics() {
+        return growth.tactics();
+    }
+
     /** IA-2: tecnicas com usos limitados por vida ({@code technique_uses}; Anti-Giant da Mina = 4 tiros). */
     public Map<String, Integer> techniqueUses() {
         return growth.techniqueUses();
@@ -83,7 +91,8 @@ public record SpecialSoldierDef(float health, float armor, float speed, float fo
      */
     public record Growth(Escalation escalation, Optional<Numbers10> numbers10, Optional<Flight> flight,
             Optional<Transform> transform, Optional<Regeneration> regeneration, float height,
-            Optional<Ranged> ranged, Optional<Heavy> heavy, Map<String, Integer> techniqueUses) {
+            Optional<Ranged> ranged, Optional<Heavy> heavy, Map<String, Integer> techniqueUses,
+            Optional<HeavyGuard> heavyGuard, Tactics tactics) {
         public static final MapCodec<Growth> MAP_CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
                 Escalation.CODEC.optionalFieldOf("escalation", Escalation.NONE).forGetter(Growth::escalation),
                 Numbers10.CODEC.optionalFieldOf("numbers10").forGetter(Growth::numbers10),
@@ -94,8 +103,67 @@ public record SpecialSoldierDef(float health, float armor, float speed, float fo
                 Ranged.CODEC.optionalFieldOf("ranged").forGetter(Growth::ranged),
                 Heavy.CODEC.optionalFieldOf("heavy").forGetter(Growth::heavy),
                 Codec.unboundedMap(Codec.STRING, Codec.intRange(1, 1000)).optionalFieldOf("technique_uses", Map.of())
-                        .forGetter(Growth::techniqueUses)
+                        .forGetter(Growth::techniqueUses),
+                HeavyGuard.CODEC.optionalFieldOf("heavy_guard").forGetter(Growth::heavyGuard),
+                Tactics.CODEC.optionalFieldOf("tactics", Tactics.DEFAULT).forGetter(Growth::tactics)
         ).apply(i, Growth::new));
+    }
+
+    /**
+     * IA-3 (Miguel, 2026-10-16: "alguns personagens conseguem defender mas ainda tomam dano"): golpe pesado de kaiju
+     * vindo de frente ({@code front_arc_degrees}) cai para {@code factor} do dano, uma vez a cada
+     * {@code cooldown_ticks}. So os mais fortes (Narumi, Kaiju No. 8, Hoshina, Kikoru) tem.
+     */
+    public record HeavyGuard(float factor, float frontArcDegrees, int cooldownTicks) {
+        public static final Codec<HeavyGuard> CODEC = RecordCodecBuilder.create(i -> i.group(
+                Codec.floatRange(0.0F, 1.0F).fieldOf("factor").forGetter(HeavyGuard::factor),
+                Codec.floatRange(1.0F, 360.0F).optionalFieldOf("front_arc_degrees", 120.0F)
+                        .forGetter(HeavyGuard::frontArcDegrees),
+                DefCodecs.TICKS.optionalFieldOf("cooldown_ticks", 40).forGetter(HeavyGuard::cooldownTicks)
+        ).apply(i, HeavyGuard::new));
+    }
+
+    /**
+     * IA-3: perfil tatico do personagem (plano de IA, Parte 4.3 e 9; ficha em docs/FICHAS_IA_PERSONAGENS.md). Nao
+     * muda atributos de combate, so decisoes:
+     * <ul>
+     *   <li>{@code aggression} (0-1): depois de uma tecnica, chance de continuar pressionando; senao reposiciona
+     *   ({@code lateral_step}: passo para o lado; senao recua ate {@code preferred_distance}) por
+     *   {@code reposition_ticks};</li>
+     *   <li>{@code damage_tolerance} (fracao da vida; 0 = nunca): abaixo disso recua ate {@code safety_distance} por
+     *   {@code retreat_ticks} (uma vez a cada {@code retreat_cooldown_ticks});</li>
+     *   <li>{@code heavy_vs_big} / {@code fast_vs_small}: prioridade extra das tecnicas pesadas ({@code heavy}) contra
+     *   Honju/numerados/Daikaiju e das outras contra Yoju;</li>
+     *   <li>{@code dodge_chance} (0-1): chance de esquivar quando um golpe vem nele;</li>
+     *   <li>{@code melee_counter}: usa o contra-ataque corpo a corpo (atiradores nao: bug #16 da auditoria);</li>
+     *   <li>{@code protect_ally} / {@code big_target}: blocos de bonus na escolha de alvo (kaiju que mira um aliado;
+     *   kaiju grande).</li>
+     * </ul>
+     */
+    public record Tactics(float aggression, float preferredDistance, boolean lateralStep, int repositionTicks,
+            float damageTolerance, float safetyDistance, int retreatTicks, int retreatCooldownTicks, int heavyVsBig,
+            int fastVsSmall, float dodgeChance, boolean meleeCounter, float protectAlly, float bigTarget) {
+        public static final Tactics DEFAULT = new Tactics(1.0F, 0.0F, false, 20, 0.0F, 0.0F, 40, 200, 0, 0, 1.0F,
+                true, 0.0F, 0.0F);
+        public static final Codec<Tactics> CODEC = RecordCodecBuilder.create(i -> i.group(
+                Codec.floatRange(0.0F, 1.0F).optionalFieldOf("aggression", 1.0F).forGetter(Tactics::aggression),
+                Codec.floatRange(0.0F, 64.0F).optionalFieldOf("preferred_distance", 0.0F)
+                        .forGetter(Tactics::preferredDistance),
+                Codec.BOOL.optionalFieldOf("lateral_step", false).forGetter(Tactics::lateralStep),
+                DefCodecs.TICKS.optionalFieldOf("reposition_ticks", 20).forGetter(Tactics::repositionTicks),
+                Codec.floatRange(0.0F, 1.0F).optionalFieldOf("damage_tolerance", 0.0F)
+                        .forGetter(Tactics::damageTolerance),
+                Codec.floatRange(0.0F, 64.0F).optionalFieldOf("safety_distance", 0.0F)
+                        .forGetter(Tactics::safetyDistance),
+                DefCodecs.TICKS.optionalFieldOf("retreat_ticks", 40).forGetter(Tactics::retreatTicks),
+                DefCodecs.TICKS.optionalFieldOf("retreat_cooldown_ticks", 200).forGetter(Tactics::retreatCooldownTicks),
+                Codec.intRange(0, 100).optionalFieldOf("heavy_vs_big", 0).forGetter(Tactics::heavyVsBig),
+                Codec.intRange(0, 100).optionalFieldOf("fast_vs_small", 0).forGetter(Tactics::fastVsSmall),
+                Codec.floatRange(0.0F, 1.0F).optionalFieldOf("dodge_chance", 1.0F).forGetter(Tactics::dodgeChance),
+                Codec.BOOL.optionalFieldOf("melee_counter", true).forGetter(Tactics::meleeCounter),
+                Codec.floatRange(0.0F, 128.0F).optionalFieldOf("protect_ally", 0.0F).forGetter(Tactics::protectAlly),
+                Codec.floatRange(0.0F, 128.0F).optionalFieldOf("big_target", 0.0F).forGetter(Tactics::bigTarget)
+        ).apply(i, Tactics::new));
     }
 
     /**

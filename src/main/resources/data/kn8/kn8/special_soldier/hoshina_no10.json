@@ -181,5 +181,18 @@
       "tail_cooldown_multiplier": 0.6
     }
   },
-  "height": 1.72
+  "height": 1.72,
+  "tactics": {
+    "aggression": 0.65,
+    "preferred_distance": 3.0,
+    "lateral_step": true,
+    "damage_tolerance": 0.2,
+    "safety_distance": 8.0,
+    "fast_vs_small": 2
+  },
+  "heavy_guard": {
+    "factor": 0.5,
+    "front_arc_degrees": 120.0,
+    "cooldown_ticks": 40
+  }
 }

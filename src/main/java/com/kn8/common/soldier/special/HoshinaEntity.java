@@ -124,6 +124,9 @@ public class HoshinaEntity extends SoldierEntity {
     private long parryReadyAt;
     private long invulnerableUntil;
     private long counterWindowUntil;
+    /** IA-3: guarda contra golpe pesado (heavy_guard do perfil) e quantas vezes defendeu (GameTests). */
+    private long heavyGuardReadyAt;
+    private int heavyGuards;
     private long counterStrikeAt = -1;
     private LivingEntity counterTarget;
     private int lastVisualRelease = -1;
@@ -322,7 +325,8 @@ public class HoshinaEntity extends SoldierEntity {
                     || usesLeft(def.get(), entry.getKey()) == 0) {
                 continue;
             }
-            int priority = candidate.priority() + (big ? candidate.honjuPriority() : 0);
+            int priority = candidate.priority() + (big ? candidate.honjuPriority() : 0)
+                    + tacticsBonus(def.get(), entry.getKey(), big);
             if (priority > best) {
                 best = priority;
                 tied.clear();
@@ -333,6 +337,16 @@ public class HoshinaEntity extends SoldierEntity {
         }
         tied.sort(String::compareTo);
         return tied.isEmpty() ? Optional.empty() : Optional.of(tied.get(getRandom().nextInt(tied.size())));
+    }
+
+    /**
+     * IA-3: preferencia de golpe do perfil tatico: tecnicas pesadas contra alvo grande ({@code heavy_vs_big}), as
+     * outras contra Yoju ({@code fast_vs_small}).
+     */
+    private static int tacticsBonus(SpecialSoldierDef def, String id, boolean big) {
+        boolean heavy = def.heavy().map(value -> value.techniques().contains(id)).orElse(false);
+        SpecialSoldierDef.Tactics tactics = def.tactics();
+        return heavy && big ? tactics.heavyVsBig() : !heavy && !big ? tactics.fastVsSmall() : 0;
     }
 
     /** Usos que restam da tecnica (-1 = sem limite). */
@@ -599,7 +613,12 @@ public class HoshinaEntity extends SoldierEntity {
         }
         SpecialSoldierDef.Counter counter = def.get().counter();
         SpecialSoldierDef.Dash dashDef = def.get().dash();
-        if (now < counterWindowUntil && now >= counterReadyAt && getTarget() != null && getTarget().isAlive()) {
+        SpecialSoldierDef.Tactics tactics = def.get().tactics();
+        // IA-3 (bug #16 da auditoria): atirador nao usa o contra-ataque de espada (Mina e Reno davam dash para dentro
+        // do kaiju). O contra-ataque continua cortando a tecnica em andamento: contra golpe pesado e a defesa.
+        boolean canCounter = tactics.meleeCounter();
+        if (canCounter && now < counterWindowUntil && now >= counterReadyAt && getTarget() != null
+                && getTarget().isAlive()) {
             counterWindowUntil = 0;
             startCounter(getTarget(), counter, now);
             return;
@@ -610,12 +629,17 @@ public class HoshinaEntity extends SoldierEntity {
                 continue;
             }
             int ticks = kaiju.ticksToImpact().orElse(Integer.MAX_VALUE);
-            if (kaiju.isPreparingHeavy() && ticks <= counter.reactTicks() && now >= counterReadyAt) {
+            if (canCounter && kaiju.isPreparingHeavy() && ticks <= counter.reactTicks() && now >= counterReadyAt) {
                 startCounter(kaiju, counter, now);
                 return;
             }
             if (ticks <= dashDef.reactTicks() && now >= dashReadyAt) {
-                dodge(kaiju, dashDef, now);
+                if (getRandom().nextFloat() < tactics.dodgeChance()) {
+                    dodge(kaiju, dashDef, now);
+                } else {
+                    // IA-3: nao esquivou deste golpe; nao sorteia de novo a cada tick ate ele sair.
+                    dashReadyAt = now + dashDef.reactTicks() + 1;
+                }
                 return;
             }
         }
@@ -698,7 +722,7 @@ public class HoshinaEntity extends SoldierEntity {
         if (now < invulnerableUntil && !source.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
             return false;
         }
-        float dealt = amount;
+        float dealt = heavyGuard(source, amount, now);
         Optional<SpecialSoldierDef.Parry> parry = profile().map(SpecialSoldierDef::parry);
         if (parry.isPresent() && source.getEntity() instanceof KaijuEntity kaiju
                 && !source.is(DamageTypeTags.IS_PROJECTILE) && !source.is(DamageTypeTags.IS_EXPLOSION)
@@ -717,6 +741,39 @@ public class HoshinaEntity extends SoldierEntity {
                     1.1F);
         }
         return super.hurt(source, dealt);
+    }
+
+    /**
+     * IA-3 (Miguel: os mais fortes "conseguem defender mas ainda tomam dano"): golpe pesado de kaiju vindo de frente
+     * cai para o {@code factor} do {@code heavy_guard}; uma vez a cada {@code cooldown_ticks}.
+     */
+    private float heavyGuard(DamageSource source, float amount, long now) {
+        Optional<SpecialSoldierDef.HeavyGuard> guard = profile().flatMap(SpecialSoldierDef::heavyGuard);
+        Vec3 from = source.getSourcePosition();
+        if (guard.isEmpty() || from == null || now < heavyGuardReadyAt || !(source.getEntity() instanceof KaijuEntity)
+                || !CombatService.isHeavyHit(source)) {
+            return amount;
+        }
+        Vec3 look = getViewVector(1.0F);
+        Vec3 to = from.subtract(position());
+        double cos = (look.x * to.x + look.z * to.z) / Math.max(1.0E-6, Math.hypot(look.x, look.z) * Math.hypot(to.x,
+                to.z));
+        if (cos < Math.cos(Math.toRadians(guard.get().frontArcDegrees() / 2.0))) {
+            return amount;
+        }
+        heavyGuardReadyAt = now + guard.get().cooldownTicks();
+        heavyGuards++;
+        triggerAnim("action", "parry");
+        ServerLevel level = (ServerLevel) level();
+        Vec3 at = getEyePosition().add(getLookAngle().scale(0.6));
+        level.sendParticles(ParticleTypes.CRIT, at.x, at.y, at.z, 16, 0.25, 0.25, 0.25, 0.3);
+        level.playSound(null, getX(), getEyeY(), getZ(), KN8Sounds.PARRY.get(), SoundSource.NEUTRAL, 1.0F, 0.8F);
+        return amount * guard.get().factor();
+    }
+
+    /** Golpes pesados defendidos com a guarda (GameTests). */
+    public int heavyGuards() {
+        return heavyGuards;
     }
 
     // --- aura --------------------------------------------------------------------------------------------------

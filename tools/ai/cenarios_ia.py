@@ -60,6 +60,10 @@ SCEN = {
  'abrigo': ([(-4,0,-4,4,4,4,'minecraft:stone_bricks'),(-3,0,-3,3,3,3,'minecraft:air')],
             [('s1','kn8:soldier',-1,0,'{kn8_variant:"rifle"}','A'), ('s2','kn8:soldier',1,0,'{kn8_variant:"rifle"}','A'),
              ('k','kn8:primigenius',0,10,'','B')]),
+ 'narumi': ([], [('n','kn8:narumi',0,0,'','A'), ('k','kn8:primigenius_honju',0,18,'','B')]),
+ 'no8': ([], [('n','kn8:kaiju_no8',0,0,'','A'), ('k','kn8:primigenius_honju',0,18,'','B')]),
+ 'reno_cobre': ([], [('s','kn8:soldier',0,4,'{kn8_variant:"rifle"}','A'), ('r','kn8:reno',0,-8,'','A'),
+                     ('k1','kn8:primigenius',-14,16,'','B'), ('k2','kn8:primigenius',2,10,'','B')]),
  'pilares': ([(x,0,z,x+1,6,z+1,'minecraft:bedrock') for x in (-8,-2,4) for z in (8,14,20)],
              [('m','kn8:mina',0,0,'','A'), ('k','kn8:primigenius_honju',0,28,'','B')]),
 }

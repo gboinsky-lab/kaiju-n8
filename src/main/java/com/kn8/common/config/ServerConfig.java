@@ -687,7 +687,8 @@ public final class ServerConfig {
 
         section("combat", "Player combat (GDD sections 7 and 12).");
         TAIL_GUARD_BLOCKS_HEAVY = booleanValue("tailGuardBlocksHeavy", "Hoshina No. 10's tail guard also reduces"
-                + " heavy kaiju hits (IA-2: heavy hits have no block, so off by default).", false);
+                + " heavy kaiju hits (Miguel, IA-3: the strongest characters defend heavy hits but still take some"
+                + " damage).", true);
         LIGHT_STAMINA_COST = doubleValue("lightStaminaCost", "Stamina spent by a light attack.", 5.0, 0.0, 100.0);
         HEAVY_STAMINA_COST = doubleValue("heavyStaminaCost", "Stamina spent by a heavy attack.", 12.0, 0.0, 100.0);
         DODGE_STAMINA_COST = doubleValue("dodgeStaminaCost", "Stamina spent by a dodge (refused without it).", 20.0,

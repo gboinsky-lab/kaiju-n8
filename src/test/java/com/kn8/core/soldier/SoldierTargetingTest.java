@@ -42,6 +42,17 @@ class SoldierTargetingTest {
     }
 
     @Test
+    void minaPrefersTheBigKaijuAndRenoProtectsAllies() {
+        SoldierTargeting.Params mina = new SoldierTargeting.Params(64.0, 12.0, 6.0, 3.0, 0.0, 12.0);
+        Candidate small = plain(1, 8.0);
+        Candidate big = new Candidate(2, 18.0, false, false, false, true);
+        assertEquals(2, SoldierTargeting.choose(mina, List.of(small, big), -1));
+        SoldierTargeting.Params reno = new SoldierTargeting.Params(64.0, 12.0, 6.0, 3.0, 10.0, 0.0);
+        Candidate onAlly = new Candidate(2, 15.0, false, false, true, false);
+        assertEquals(2, SoldierTargeting.choose(reno, List.of(small, onAlly), -1));
+    }
+
+    @Test
     void keepsTheCurrentTargetInsideTheMargin() {
         assertEquals(1, SoldierTargeting.choose(PARAMS, List.of(plain(1, 12.0), plain(2, 10.0)), 1));
     }

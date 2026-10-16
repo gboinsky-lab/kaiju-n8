@@ -54,5 +54,13 @@
   "transform": {
     "into": "kn8:kaiju_no8",
     "health_below": 0.5
+  },
+  "tactics": {
+    "aggression": 0.4,
+    "damage_tolerance": 0.6,
+    "safety_distance": 14.0,
+    "dodge_chance": 0.7,
+    "melee_counter": false,
+    "protect_ally": 6.0
   }
 }

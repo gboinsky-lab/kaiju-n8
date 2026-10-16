@@ -105,5 +105,19 @@
     ],
     "power": 3,
     "radius": 2.0
+  },
+  "tactics": {
+    "aggression": 0.75,
+    "preferred_distance": 4.0,
+    "lateral_step": true,
+    "damage_tolerance": 0.15,
+    "safety_distance": 10.0,
+    "heavy_vs_big": 1,
+    "big_target": 6.0
+  },
+  "heavy_guard": {
+    "factor": 0.5,
+    "front_arc_degrees": 120.0,
+    "cooldown_ticks": 40
   }
 }

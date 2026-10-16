@@ -8,20 +8,32 @@ import java.util.List;
  * (sem precisar ver, dentro do alcance de deteccao) e cada um faz sua funcao: quem pode cobre o aliado que esta
  * recarregando (o kaiju que mira nele vira prioridade) e o kaiju que acabou de ferir o soldado tambem.
  *
- * <p>Pontuacao menor = melhor: distancia, menos o bonus de cobertura e o de revide. O alvo atual so e trocado se outro
+ * <p>Pontuacao menor = melhor: distancia, menos o bonus de cobertura e o de revide (IA-3: e, no especial, os do
+ * perfil tatico: kaiju que mira um aliado e kaiju grande). O alvo atual so e trocado se outro
  * for melhor pela margem.</p>
  */
 public final class SoldierTargeting {
 
     /** Numeros do config {@code [soldierAi]}. */
-    public record Params(double range, double coverBonus, double revengeBonus, double switchMargin) {
+    public record Params(double range, double coverBonus, double revengeBonus, double switchMargin, double allyBonus,
+            double bigBonus) {
+
+        /** Soldado comum: sem os bonus do perfil tatico dos especiais (IA-3). */
+        public Params(double range, double coverBonus, double revengeBonus, double switchMargin) {
+            this(range, coverBonus, revengeBonus, switchMargin, 0.0, 0.0);
+        }
     }
 
     /**
      * Um kaiju possivel. {@code threatensReloadingAlly} = o alvo dele e um aliado recarregando;
      * {@code hurtMe} = feriu este soldado ha pouco.
      */
-    public record Candidate(int id, double distance, boolean threatensReloadingAlly, boolean hurtMe) {
+    public record Candidate(int id, double distance, boolean threatensReloadingAlly, boolean hurtMe,
+            boolean threatensAlly, boolean big) {
+
+        public Candidate(int id, double distance, boolean threatensReloadingAlly, boolean hurtMe) {
+            this(id, distance, threatensReloadingAlly, hurtMe, false, false);
+        }
     }
 
     private SoldierTargeting() {
@@ -29,7 +41,9 @@ public final class SoldierTargeting {
 
     public static double score(Params params, Candidate candidate) {
         return candidate.distance() - (candidate.threatensReloadingAlly() ? params.coverBonus() : 0.0)
-                - (candidate.hurtMe() ? params.revengeBonus() : 0.0);
+                - (candidate.hurtMe() ? params.revengeBonus() : 0.0)
+                - (candidate.threatensAlly() ? params.allyBonus() : 0.0)
+                - (candidate.big() ? params.bigBonus() : 0.0);
     }
 
     /** Id do alvo escolhido (-1 se nenhum kaiju no alcance); o atual fica se nao houver outro melhor pela margem. */
