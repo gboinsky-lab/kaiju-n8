@@ -545,7 +545,7 @@ sobe mais rápido. A fuga do No. 9 só dá mérito a quem causou dano nele.
 |---|---|---|---|---|---|---|---|
 | Reno (T5, suporte/rifle) | 360 | 17 | 0,31 | 30% (70%) | 0,5 | rifle (5) | tiro de precisão 2,2 (60), rajada 3 × 0,9 (50), munição congelante 1,2 + Lentidão III 4 s (140), supressão 5 × 0,6 + Lentidão I (160), coronhada 0,8 (40) |
 | Mina (T6, anti-Daikaiju) | 420 | 20 | 0,30 | 40% (90%) | 0,65 | canhão (12) | tiro de precisão 1,4 (40), tiro do canhão 1,0 com explosão de raio 2,5 (50), canhão carregado 3,0 raio 3,5 (140), Anti-Giant 10,0 raio 4,5 (300, preparo de 2,5 s, prioridade contra Honju/numerados; IA-2: contra qualquer kaiju, só 4 tiros por vida) |
-| Narumi (T6, comandante) | 480 | 20 | 0,32 | 40% (85%) | 0,52 | baioneta (9) | estocadas 0,9/1,0/1,3 (40), investida 1,8 (70), tiro da baioneta 1,3 (60), varrida 1,5 com empurrão (90) |
+| Narumi (T6, comandante) | 480 | 20 | 0,32 | 40% (85%) | 1,3 (era 0,52; Miguel 2026-10-16: mais forte no geral) | baioneta (9) | estocadas 0,9/1,0/1,3 (40), investida 1,8 (70), tiro da baioneta 1,3 (60), varrida 1,5 com empurrão (90) |
 
 **Formas com as armas numeradas (0.7-D)**, mesma regra (v1.2 seção 12 para vida/armadura/velocidade, o resto
 [SUPOSIÇÃO]):
@@ -738,6 +738,6 @@ dano 26 → 34, armadura 12, fortitude 7. Habilidades: garra, `no13_flurry` (4 �
 | Kikoru × No. 13 | 0/5 (No. 13 com 50–73%) | |
 | Isao × No. 13 | 5/5 (Isao com 48–65%) | |
 | Hoshina No. 10 × No. 13 | 5/5 (53–69%) | |
-| Narumi × No. 13 | 0/5 (No. 13 com 45–56%) | [DECIDIR] na obra o capitão deveria vencer; causa provável: `kaiju_damage` 0,52 do Narumi (v1.2) |
+| Narumi × No. 13 | 0/5 com 0,52 (No. 13 com 45–56%); 3/5 com 1,1; **5/5 com 1,3** (Narumi com 3–49%) | Miguel 2026-10-16: o Narumi vence o No. 13 e fica mais forte no geral → `kaiju_damage` 1,3. Com 1,1: No. 9 5/5 (fuga), No. 10 pequeno 5/5, No. 10 gigante 0/5 |
 | Kaiju No. 8 × No. 9 com o Isao (8 m) | 0/5 (3 derrotas em 184–260 s, 2 empates de 300 s com o No. 8 a 18–31% e o kaiju a 45–50%) | meta 3%; os empates voltaram com o corpo maior [DECIDIR] |
 | Hoshina No. 10 × No. 9 com o Isao (8 m) | 0/5 (kaiju com 88–95%, 19–26 s) | meta 5% |
