@@ -6,7 +6,7 @@
   "knockback_resistance": 0.8,
   "release": 50,
   "max_release": 96,
-  "kaiju_damage": 0.8,
+  "kaiju_damage": 1.0,
   "aura": "kn8:isao_numbers2",
   "weapon": "kn8:numbers2_gauntlet",
   "height": 1.9,
@@ -71,12 +71,12 @@
     "thunder_emperor": {
       "type": "combo",
       "hits": [
-        1.4,
-        2.4
+        1.6,
+        3.0
       ],
       "windup_ticks": 10,
       "duration_ticks": 28,
-      "cooldown_ticks": 200,
+      "cooldown_ticks": 160,
       "max_range": 3.6,
       "priority": 4,
       "hit_interval": 6,
