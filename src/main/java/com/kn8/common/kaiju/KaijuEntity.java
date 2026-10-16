@@ -25,6 +25,7 @@ import com.kn8.common.soldier.SoldierEntity;
 import com.kn8.common.vfx.AbilityEffects;
 import com.kn8.common.vfx.VfxService;
 import com.kn8.common.data.def.AbilityDef;
+import com.kn8.common.data.def.KaijuAiDef;
 import com.kn8.common.data.def.KaijuDef;
 import com.kn8.core.KN8Ids;
 import com.kn8.core.combat.ActionTimeline;
@@ -123,6 +124,7 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
     private static final float LOOK_DISTANCE = 12.0F;
     private static final int TRANSITION_TICKS = 5;
     private static final String TAG_CORE_HEALTH = "kn8_core_health";
+    private static final String TAG_ENRAGED = "kn8_enraged";
     private static final String TAG_BOSS = "kn8_boss";
     private static final String TAG_BOSS_PHASE = "kn8_boss_phase";
     private static final double MAX_STEP_HEIGHT = 4.0;
@@ -174,6 +176,10 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
     private long leapStartTick;
     /** 0.6: furia ja ativada (rage do JSON; nao volta). */
     private boolean enraged;
+    /** IA-4 (bug #22 da auditoria): furia salva no mundo; os modificadores voltam no primeiro tick depois de carregar. */
+    private boolean rageApplied;
+    /** IA-4: a ultima habilidade comecada era pesada (Honju fica parado depois dela: janela de reacao). */
+    private boolean lastAbilityHeavy;
     private final Set<UUID> chargeHits = new HashSet<>();
     /** Verdadeiro so durante a aplicacao de dano de uma habilidade "heavy" (lido pelo bloqueio do jogador). */
     private boolean dealingHeavyHit;
@@ -571,6 +577,7 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
         }
         currentAbility = id;
         abilityTarget = target;
+        lastAbilityHeavy = ability.heavy();
         // 0.6: enfurecido (rage do JSON da especie), as recargas encurtam.
         double cooldown = ability.cooldownTicks() * (enraged ? def().flatMap(KaijuDef::rage)
                 .map(KaijuDef.Rage::cooldownMultiplier).orElse(1.0F) : 1.0F);
@@ -640,6 +647,15 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
      * (modificadores de atributo) e as recargas encurtam; avisa com o efeito de rugido e o som.
      */
     private void checkRage() {
+        if (enraged && !rageApplied) {
+            // Furia carregada do mundo: so os modificadores voltam (sem rugir de novo).
+            def().flatMap(KaijuDef::rage).ifPresent(rage -> {
+                addRageModifier(Attributes.ATTACK_DAMAGE, rage.damageMultiplier() - 1.0);
+                addRageModifier(Attributes.MOVEMENT_SPEED, rage.speedMultiplier() - 1.0);
+                rageApplied = true;
+            });
+            return;
+        }
         if (enraged || tickCount % RAGE_CHECK_TICKS != 0) {
             return;
         }
@@ -648,6 +664,7 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
             return;
         }
         enraged = true;
+        rageApplied = true;
         addRageModifier(Attributes.ATTACK_DAMAGE, rage.get().damageMultiplier() - 1.0);
         addRageModifier(Attributes.MOVEMENT_SPEED, rage.get().speedMultiplier() - 1.0);
         if (level() instanceof ServerLevel server) {
@@ -889,13 +906,45 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
     }
 
     /** Alcance da primeira habilidade da especie (ou corpo a corpo): o goal de combate usa para se aproximar. */
+    /**
+     * Distancia de borda ate onde o kaiju se aproxima. IA-4 (bug #19 da auditoria): o menor alcance so entre as
+     * habilidades corpo a corpo prontas (antes contava ate as em recarga e o kaiju sempre grudava no alvo); sem
+     * nenhuma pronta, o menor de todas (fica perto para a proxima).
+     */
     double approachReach() {
+        long now = level().getGameTime();
+        List<AbilityDef> melee = def().map(KaijuDef::abilities).orElse(List.of()).stream()
+                .flatMap(id -> KN8Data.ABILITY.get(id, false).filter(ability -> !KaijuAbilities.isRanged(ability))
+                        .filter(ability -> now >= abilityReadyAt.getOrDefault(id, Long.MIN_VALUE)).stream())
+                .toList();
+        if (!melee.isEmpty()) {
+            return melee.stream().mapToDouble(this::reachOf).min().orElse(meleeReach());
+        }
         return def().map(KaijuDef::abilities).orElse(List.of()).stream()
                 .map(id -> KN8Data.ABILITY.get(id, false))
                 .flatMap(Optional::stream)
                 .mapToDouble(this::reachOf)
                 .min()
                 .orElse(meleeReach());
+    }
+
+    /** IA-4: perfil tatico da especie ({@code kaiju_ai/<id>.json}); sem arquivo, o padrao (luta como antes). */
+    public KaijuAiDef aiDef() {
+        return KN8Data.KAIJU_AI.get(kaijuId(), false).orElse(KaijuAiDef.DEFAULT);
+    }
+
+    /** Alguma habilidade corpo a corpo pronta (fora da recarga)? */
+    boolean hasReadyMeleeAbility() {
+        long now = level().getGameTime();
+        return def().map(KaijuDef::abilities).orElse(List.of()).stream()
+                .anyMatch(id -> now >= abilityReadyAt.getOrDefault(id, Long.MIN_VALUE)
+                        && KN8Data.ABILITY.get(id, false).map(ability -> !KaijuAbilities.isRanged(ability))
+                                .orElse(false));
+    }
+
+    /** A ultima habilidade comecada era pesada? */
+    boolean lastAbilityWasHeavy() {
+        return lastAbilityHeavy;
     }
 
     /**
@@ -1194,6 +1243,7 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
     public void addAdditionalSaveData(CompoundTag tag) {
         super.addAdditionalSaveData(tag);
         tag.putFloat(TAG_CORE_HEALTH, coreHealth);
+        tag.putBoolean(TAG_ENRAGED, enraged);
         if (bossState != null) {
             tag.putString(TAG_BOSS, bossState.id().toString());
             tag.putInt(TAG_BOSS_PHASE, bossState.phase());
@@ -1206,6 +1256,8 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
         if (tag.contains(TAG_CORE_HEALTH)) {
             coreHealth = tag.getFloat(TAG_CORE_HEALTH);
         }
+        enraged = tag.getBoolean(TAG_ENRAGED);
+        rageApplied = false;
         if (tag.contains(TAG_BOSS)) {
             ResourceLocation boss = ResourceLocation.tryParse(tag.getString(TAG_BOSS));
             if (boss != null) {

@@ -1,0 +1,5 @@
+{
+  "recovery_after_heavy_ticks": 10,
+  "chase_speed": 1.1,
+  "look_speed": 20.0
+}

@@ -64,6 +64,11 @@ SCEN = {
  'no8': ([], [('n','kn8:kaiju_no8',0,0,'','A'), ('k','kn8:primigenius_honju',0,18,'','B')]),
  'reno_cobre': ([], [('s','kn8:soldier',0,4,'{kn8_variant:"rifle"}','A'), ('r','kn8:reno',0,-8,'','A'),
                      ('k1','kn8:primigenius',-14,16,'','B'), ('k2','kn8:primigenius',2,10,'','B')]),
+ 'cerco': ([], [('s1','kn8:soldier',-3,0,'{kn8_variant:"rifle",kn8_power_level:"elite"}','A'),
+                ('s2','kn8:soldier',3,0,'{kn8_variant:"rifle",kn8_power_level:"elite"}','A'),
+                ('h','kn8:hoshina',0,-2,'','A'),
+                ('k1','kn8:primigenius',-4,18,'','B'), ('k2','kn8:primigenius',0,20,'','B'),
+                ('k3','kn8:primigenius',4,18,'','B')]),
  'pilares': ([(x,0,z,x+1,6,z+1,'minecraft:bedrock') for x in (-8,-2,4) for z in (8,14,20)],
              [('m','kn8:mina',0,0,'','A'), ('k','kn8:primigenius_honju',0,28,'','B')]),
 }
@@ -135,3 +140,12 @@ if name=='parede':
             a[t][1] is None or (len(a[t][0])==3 and a[t][0][2]<Z0+7.4) for t in ('s1','s2'))
         if hidden and k1[1]<k0[1]: lost+=k0[1]-k1[1]
     print(json.dumps({'parede_dano_no_kaiju_sem_visao':round(lost,1)}))
+
+# IA-4: empilhamento do lado B (menor distancia media entre kaiju vivos do mesmo lado, em blocos).
+gaps=[]
+for t,smp in hist:
+    pos=[smp[e[0]][0] for e in ents if e[5]=='B' and smp[e[0]][1] and len(smp[e[0]][0])==3]
+    if len(pos)>1:
+        gaps.append(min(dist(pos[i],pos[j]) for i in range(len(pos)) for j in range(i+1,len(pos))))
+if gaps:
+    print(json.dumps({'kaiju_menor_distancia_media':round(sum(gaps)/len(gaps),2)}))

@@ -679,3 +679,16 @@ Tecla nova: **C** (Parkour; troca em Opções > Controles > Kaiju No. 8). Númer
 | 47.7 | Kafka humano perdendo vida (antes de virar o No. 8) | Abaixo de ~60% ele recua por alguns segundos e volta |
 | 47.8 | Kaiju No. 8 contra um Honju | Pressiona sem parar, prefere os golpes pesados |
 | 47.9 | Servidor dedicado + 2 clientes | Os dois veem o mesmo comportamento |
+
+## 48. Kaiju por espécie (IA-4)
+
+| # | Passo | Esperado |
+|---|---|---|
+| 48.1 | Três Primigenius contra você (resistência ligada) | Chegam por lados diferentes (cercam), não ficam um em cima do outro; às vezes circulam em volta antes de voltar a atacar |
+| 48.2 | Bata num Primigenius até ~20% da vida | Ele recua uns blocos por ~2 s e volta |
+| 48.3 | Lute com um Primigenius Honju | Depois do soco pesado, pisão ou raio, fica ~1 s parado (janela para atacar); gira devagar para te seguir |
+| 48.4 | Fique longe (~10 blocos) de uma Trichonephila | Ela prefere a teia; perto, morde |
+| 48.5 | No. 10 pequeno | Persegue mais rápido; a janela depois do golpe pesado é curta |
+| 48.6 | Preondactyl contra soldados | Mergulha só quando vai golpear e o golpe acerta (desce até o chão do alvo) |
+| 48.7 | Revivido enfurecido (abaixo de 30%), salve e reabra o mundo | Continua enfurecido e não ruge de novo |
+| 48.8 | Servidor dedicado + 2 clientes | Os dois veem o mesmo comportamento |

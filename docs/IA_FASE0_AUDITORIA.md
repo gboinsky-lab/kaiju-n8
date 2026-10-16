@@ -139,6 +139,13 @@ Ordenados por gravidade. Cada item foi conferido no código (os de gravidade alt
 - **#1 (resto)**: munição salva no mundo.
 - **Pendente:** #20 (velocidade da técnica) e #21 (animações que faltam), para a IA-3.
 
+### Situação depois da IA-3 e da IA-4 (2026-10-16)
+
+- **#16 resolvido (IA-3)**: atiradores sem contra-ataque de espada; o contra-ataque continua cortando a técnica (é a
+  defesa contra golpe pesado).
+- **#18, #19 e #22 resolvidos (IA-4)**: Preondactyl só mergulha com golpe pronto e desce até o pé do alvo;
+  aproximação pelo alcance das habilidades prontas; fúria salva.
+
 ## 5. Fora da IA (registrado, não mexido)
 
 - **Balanceamento:** Anti-Giant da Mina (×30) mata um Honju de 360 com um tiro (820). O piso de 6 m pega qualquer

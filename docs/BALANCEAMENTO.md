@@ -124,6 +124,26 @@ impedia o kaiju de chegar perto de um grupo de soldados).
 | `heavy` no `special_soldier` | força 3, raio 2–3 | Kikoru (golpe pesado, onda de choque, golpe no chão, quebra-guarda), Kikoru No. 4 (mergulho, ataque vertical), Mina (3 tiros de canhão), Narumi e No. 1 (investida, varrida; No. 1 também estocada no ponto fraco), Kaiju No. 8 (soco pesado, investida, golpe no chão) |
 | `[combat] tailGuardBlocksHeavy` | true | a guarda da cauda do Hoshina No. 10 continua segurando golpe pesado (Miguel, 2026-10-16) |
 
+**Tática por espécie de kaiju** (`kaiju_ai/<id>.json`, IA-4, Miguel 2026-10-16) [SUPOSIÇÃO nos números; não muda vida,
+dano nem armadura]:
+
+| Espécie | circular (chance / distância / ticks) | cercar | recuo (vida → blocos) | janela após pesado | giro (°/tick) | outros |
+|---|---|---|---|---|---|---|
+| Trichonephila | 0,4 / 3 / 30 | 6 | 25% → 10 | — | 30 | teia +2 com o alvo a mais de 6 |
+| Primigenius | 0,3 / 3 / 30 | 6 | 20% → 10 | — | 30 | |
+| Primigenius ressurgido | 0,25 / 3 / 30 | 6 | 15% → 10 | — | 30 | |
+| Camponotus / revivida | 0,35 / 3 / 30 | 6 | 20% / 15% → 10 | — | 30 | ácido +1 além de 6 |
+| Phaneroplasmodium | 0,2 / 3 / 30 | 6 | 20% → 10 | — | 30 | |
+| Primigenius Honju / Philinosoma / Diclonius | — | — | — | 20 ticks | 12 | tiro +1 além de 8 |
+| Primigenius revivido | — | — | — | 14 | 14 | tiro +1 além de 8 |
+| Myxogasterocarp | — | — | — | 24 | 10 | |
+| Tecedeira Abissal | — | — | — | 16 | 14 | teia +2 além de 6 |
+| No. 10 pequeno / gigante | — | — | — | 8 / 10 | 24 / 10 | perseguição ×1,15 / ×1,1 |
+| No. 9 / forma preta | 0,3 / 4 / 30 | — | — | — | 30 | Finger Gun +1 além de 8 |
+| Fusão No. 9 + No. 10 / gigante | — | — | — | 10 / 20 | 20 / 8 | perseguição ×1,1 (pequena) |
+| No. 9 formiga | — | — | — | 10 | 16 | |
+| Preondactyl | — | — | — | — | — | raio +1 além de 10; só mergulha com golpe de perto pronto |
+
 **Perfis táticos e guarda contra golpe pesado** (IA-3, Miguel 2026-10-16) [SUPOSIÇÃO nos números; fichas em
 `docs/FICHAS_IA_PERSONAGENS.md`]:
 

@@ -1,0 +1,6 @@
+{
+  "recovery_after_heavy_ticks": 20,
+  "look_speed": 12.0,
+  "ranged_beyond": 8.0,
+  "ranged_priority": 1
+}

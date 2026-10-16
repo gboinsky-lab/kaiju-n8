@@ -9,6 +9,7 @@ import com.kn8.common.data.def.AuraDef;
 import com.kn8.common.data.def.BossDef;
 import com.kn8.common.data.def.DismantleDef;
 import com.kn8.common.data.def.InvasionDef;
+import com.kn8.common.data.def.KaijuAiDef;
 import com.kn8.common.data.def.KaijuDef;
 import com.kn8.common.data.def.LocomotionDef;
 import com.kn8.common.data.def.MissionDef;
@@ -73,11 +74,14 @@ public final class KN8Data {
     public static final DataRegistry<LocomotionDef> LOCOMOTION =
             new DataRegistry<>("locomotion", LocomotionDef.CODEC, true);
 
+    /** IA-4: perfil tatico por especie de kaiju (so o servidor). */
+    public static final DataRegistry<KaijuAiDef> KAIJU_AI = new DataRegistry<>("kaiju_ai", KaijuAiDef.CODEC, false);
+
     /** Ordem = ordem de validacao (cada um so referencia os anteriores). */
     public static final List<DataRegistry<?>> ALL =
             List.of(RANK, ABILITY, DISMANTLE, KAIJU, BOSS, WEAPON_PROFILE, WEAPON, AURA, SUIT, MISSION, SOLDIER, WORKBENCH,
                     INVASION,
-                    NUMBERED, SPECIAL_SOLDIER, FLYER, LOCOMOTION);
+                    NUMBERED, SPECIAL_SOLDIER, FLYER, LOCOMOTION, KAIJU_AI);
 
     private KN8Data() {
     }

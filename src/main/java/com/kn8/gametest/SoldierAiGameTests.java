@@ -46,8 +46,11 @@ public final class SoldierAiGameTests {
         });
     }
 
-    /** Miguel: recuar e recarregar; sem luta, o soldado completa o pente com a reserva (sem perder balas). */
-    @GameTest(template = TEMPLATE, timeoutTicks = 200)
+    /**
+     * Miguel: recuar e recarregar; sem luta, o soldado completa o pente com a reserva (sem perder balas). Lote
+     * proprio: com a deteccao de 64 blocos ele mirava o kaiju de um teste vizinho e nao ficava ocioso.
+     */
+    @GameTest(template = TEMPLATE, timeoutTicks = 200, batch = "soldier_idle_reload")
     public static void soldierReloadsWhenIdle(GameTestHelper helper) {
         SoldierEntity soldier = helper.spawn(KN8Entities.SOLDIER.get(), new BlockPos(7, 1, 7));
         soldier.setVariant("rifle");

@@ -1,0 +1,5 @@
+{
+  "recovery_after_heavy_ticks": 10,
+  "separation_radius": 0.0,
+  "look_speed": 16.0
+}

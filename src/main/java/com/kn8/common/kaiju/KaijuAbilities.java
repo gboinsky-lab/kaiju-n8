@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import com.kn8.common.data.KN8Data;
 import com.kn8.common.data.def.AbilityDef;
+import com.kn8.common.data.def.KaijuAiDef;
 import com.kn8.common.vfx.AbilityEffects;
 import com.kn8.core.kaiju.AbilitySelection;
 
@@ -88,7 +89,10 @@ final class KaijuAbilities {
                 continue;
             }
             candidates.add(id);
-            priorities.add(behavior.priority());
+            // IA-4: com o alvo longe, golpe a distancia ganha prioridade (teia da aranha, raio do Honju).
+            KaijuAiDef ai = kaiju.aiDef();
+            boolean far = ai.rangedPriority() > 0 && edge > ai.rangedBeyond() && isRanged(ability);
+            priorities.add(behavior.priority() + (far ? ai.rangedPriority() : 0));
         }
         int index = AbilitySelection.pick(priorities, kaiju.getRandom()::nextInt);
         return index < 0 ? Optional.empty() : Optional.of(candidates.get(index));

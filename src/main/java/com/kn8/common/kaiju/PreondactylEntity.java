@@ -62,6 +62,8 @@ public class PreondactylEntity extends KaijuEntity {
     private static final double MIN_GROUND_CLEARANCE = 3.0;
     private static final int MAX_DIVE_TICKS = 60;
     private static final int CLIMB_TICKS = 30;
+    /** IA-4: sem golpe de perto pronto, tenta o mergulho de novo depois disso. */
+    private static final int DIVE_RETRY_TICKS = 20;
     private static final double CLIMB_HEIGHT = 7.0;
     private static final double DIVE_REACH_SLACK = 1.5;
     private static final double LAND_SPEED = 0.6;
@@ -176,13 +178,18 @@ public class PreondactylEntity extends KaijuEntity {
                 moveControl.setWantedPosition(x, y, z, 1.0);
                 tryAttack(target);
                 if (now >= nextDiveAt) {
-                    phase = Phase.DIVE;
-                    phaseEndsAt = now + MAX_DIVE_TICKS;
+                    if (hasReadyMeleeAbility()) {
+                        phase = Phase.DIVE;
+                        phaseEndsAt = now + MAX_DIVE_TICKS;
+                    } else {
+                        // IA-4 (bug #18 da auditoria): sem golpe de perto pronto, mergulhar era a toa; espera.
+                        nextDiveAt = now + DIVE_RETRY_TICKS;
+                    }
                 }
             }
             case DIVE -> {
-                moveControl.setWantedPosition(target.getX(), target.getY() + target.getBbHeight() * 0.5,
-                        target.getZ(), def.diveSpeed());
+                // IA-4 (bug #18): desce ate o pe do alvo; mirando o meio dele, ficava alto demais para o golpe.
+                moveControl.setWantedPosition(target.getX(), target.getY(), target.getZ(), def.diveSpeed());
                 boolean close = edgeDistance(target) <= meleeReach() + DIVE_REACH_SLACK
                         && Math.abs(target.getY() - getY()) <= getBbHeight() + DIVE_REACH_SLACK;
                 if ((close && tryAttack(target)) || now >= phaseEndsAt) {

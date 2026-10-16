@@ -1,0 +1,11 @@
+{
+  "circle_chance": 0.35,
+  "circle_distance": 3.0,
+  "circle_ticks": 30,
+  "separation_radius": 6.0,
+  "retreat_health": 0.2,
+  "retreat_distance": 10.0,
+  "retreat_ticks": 40,
+  "ranged_beyond": 6.0,
+  "ranged_priority": 1
+}

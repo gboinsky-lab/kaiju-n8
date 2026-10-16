@@ -17,6 +17,7 @@ import com.kn8.common.data.def.AuraDef;
 import com.kn8.common.data.def.BossDef;
 import com.kn8.common.data.def.DismantleDef;
 import com.kn8.common.data.def.InvasionDef;
+import com.kn8.common.data.def.KaijuAiDef;
 import com.kn8.common.data.def.KaijuDef;
 import com.kn8.common.data.def.LocomotionDef;
 import com.kn8.common.data.def.MissionDef;
@@ -84,6 +85,7 @@ public final class DataValidation {
                 report);
         publish(KN8Data.SOLDIER, validateSoldiers(KN8Data.SOLDIER.loaded(), report), report);
         publish(KN8Data.FLYER, validateFlyers(KN8Data.FLYER.loaded(), kaiju.keySet(), report), report);
+        publish(KN8Data.KAIJU_AI, validateKaijuAi(KN8Data.KAIJU_AI.loaded(), kaiju.keySet(), report), report);
         publish(KN8Data.SPECIAL_SOLDIER, validateSpecialSoldiers(KN8Data.SPECIAL_SOLDIER.loaded(), auras.keySet(),
                 report), report);
         publish(KN8Data.WORKBENCH, validateWorkbench(KN8Data.WORKBENCH.loaded(), report), report);
@@ -219,6 +221,20 @@ public final class DataValidation {
         input.forEach((id, def) -> {
             if (def.minAnimationSpeed() > def.maxAnimationSpeed()) {
                 report.error("locomotion " + id + ": min_animation_speed acima de max_animation_speed");
+                return;
+            }
+            valid.put(id, def);
+        });
+        return valid;
+    }
+
+    /** IA-4: o id do perfil tatico precisa ser um kaiju existente. */
+    public static Map<ResourceLocation, KaijuAiDef> validateKaijuAi(Map<ResourceLocation, KaijuAiDef> input,
+            Set<ResourceLocation> kaiju, DataReport report) {
+        Map<ResourceLocation, KaijuAiDef> valid = new LinkedHashMap<>();
+        input.forEach((id, def) -> {
+            if (!kaiju.contains(id)) {
+                report.error("kaiju_ai " + id + ": o id precisa ser um kaiju existente");
                 return;
             }
             valid.put(id, def);

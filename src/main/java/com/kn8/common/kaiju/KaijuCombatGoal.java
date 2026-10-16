@@ -4,6 +4,8 @@ package com.kn8.common.kaiju;
 import java.util.EnumSet;
 
 import com.kn8.common.config.ServerConfig;
+import com.kn8.common.data.def.KaijuAiDef;
+import com.kn8.core.kaiju.KaijuTactics;
 import com.kn8.core.kaiju.KaijuTargeting;
 
 import net.minecraft.world.entity.LivingEntity;
@@ -21,13 +23,17 @@ import net.minecraft.world.entity.ai.goal.Goal;
  * <p>IA-1A: checa o progresso a cada {@code [kaijuAi] progressCheckTicks}. Sem chegar mais perto nem ferir o alvo
  * (ex.: embaixo de um soldado no alto de um pilar), pula e recalcula o caminho; sem progresso por {@code giveUpTicks}, marca
  * o alvo como inalcancavel e o {@link KaijuTargetGoal} escolhe outro (antes ficava parado embaixo para sempre).</p>
+ *
+ * <p>IA-4: perfil da especie ({@code kaiju_ai/<id>.json}): janela parada depois de golpe pesado, circular o alvo,
+ * recuar com pouca vida, chegar espalhado em grupo, velocidade de perseguicao e de giro.</p>
  */
 final class KaijuCombatGoal extends Goal {
 
     private static final int PATH_RECALC_TICKS = 10;
     /** Abaixo desta distancia entre as bordas (alem do alcance), o kaiju anda direto em vez de seguir o caminho. */
     private static final double DIRECT_APPROACH_DISTANCE = 3.0;
-    private static final float LOOK_SPEED = 30.0F;
+    /** IA-4: passo do giro em volta do alvo ao circular (radianos, ~35 graus). */
+    private static final double CIRCLE_STEP = 0.6;
 
     private final KaijuEntity kaiju;
     private final double speedModifier;
@@ -36,6 +42,13 @@ final class KaijuCombatGoal extends Goal {
     private double lastEdge;
     private int stuckTicks;
     private LivingEntity lastTarget;
+    /** IA-4: perfil da especie (kaiju_ai): janela depois do golpe pesado, circular, recuar. */
+    private boolean wasUsingAbility;
+    private long recoveryUntil;
+    private long circleUntil;
+    private long retreatUntil;
+    private long retreatReadyAt;
+    private int circleSide = 1;
 
     KaijuCombatGoal(KaijuEntity kaiju, double speedModifier) {
         this.kaiju = kaiju;
@@ -89,11 +102,23 @@ final class KaijuCombatGoal extends Goal {
             lastTarget = target;
             resetProgress();
         }
-        kaiju.getLookControl().setLookAt(target, LOOK_SPEED, LOOK_SPEED);
+        KaijuAiDef ai = kaiju.aiDef();
+        // IA-4: grandes giram devagar (look_speed), sem virar na hora para cada soldado.
+        kaiju.getLookControl().setLookAt(target, ai.lookSpeed(), ai.lookSpeed());
         if (kaiju.isUsingAbility()) {
             // Sem zerar o progresso: golpe que erra (alvo no alto de um pilar) nao conta; o que acerta conta pelo
             // dano no alvo (checkProgress).
             kaiju.getNavigation().stop();
+            wasUsingAbility = true;
+            return;
+        }
+        long now = kaiju.level().getGameTime();
+        if (wasUsingAbility) {
+            wasUsingAbility = false;
+            afterAbility(ai, now);
+        }
+        if (tactics(ai, target, now)) {
+            resetProgress();
             return;
         }
         double edge = kaiju.edgeDistance(target);
@@ -101,17 +126,88 @@ final class KaijuCombatGoal extends Goal {
         if (checkProgress(target, edge)) {
             return;
         }
+        double speed = speedModifier * ai.chaseSpeed();
+        double[] spot = approachSpot(ai, target, reach);
         if (edge > reach && (kaiju.isLarge() || edge <= reach + DIRECT_APPROACH_DISTANCE)) {
             // Perto, ou kaiju grande (a navegacao vanilla falha com mobs largos): anda direto ate o alvo. O que for
             // fragil no caminho e quebrado pelo DestructionService (Parte 3), se a destruicao estiver ligada.
             kaiju.getNavigation().stop();
-            kaiju.getMoveControl().setWantedPosition(target.getX(), target.getY(), target.getZ(), speedModifier);
+            kaiju.getMoveControl().setWantedPosition(spot[0], target.getY(), spot[1], speed);
             kaiju.clearPathIfBlocked();
         } else if (edge > reach && --recalcCooldown <= 0) {
             recalcCooldown = PATH_RECALC_TICKS;
-            kaiju.getNavigation().moveTo(target, speedModifier);
+            kaiju.getNavigation().moveTo(spot[0], target.getY(), spot[1], speed);
         }
         kaiju.tryAttack(target);
+    }
+
+    /**
+     * Fim de uma habilidade: depois de golpe pesado, janela parada ({@code recovery_after_heavy_ticks}, Honju e
+     * No. 10); senao, chance de circular ({@code circle_chance}, Yoju).
+     */
+    private void afterAbility(KaijuAiDef ai, long now) {
+        if (kaiju.lastAbilityWasHeavy() && ai.recoveryAfterHeavyTicks() > 0) {
+            recoveryUntil = now + ai.recoveryAfterHeavyTicks();
+        } else if (ai.circleChance() > 0.0F && kaiju.getRandom().nextFloat() < ai.circleChance()) {
+            circleUntil = now + ai.circleTicks();
+            circleSide = kaiju.getRandom().nextBoolean() ? 1 : -1;
+        }
+    }
+
+    /** Janela, recuo e circular (perfil da especie). Devolve true se o tick ja foi usado. */
+    private boolean tactics(KaijuAiDef ai, LivingEntity target, long now) {
+        if (now < recoveryUntil) {
+            // Janela de reacao: parado, sem golpe.
+            kaiju.getNavigation().stop();
+            kaiju.getMoveControl().setWantedPosition(kaiju.getX(), kaiju.getY(), kaiju.getZ(), 0.0);
+            return true;
+        }
+        if (ai.retreatHealth() > 0.0F && now >= retreatReadyAt
+                && kaiju.getHealth() < kaiju.getMaxHealth() * ai.retreatHealth()) {
+            retreatUntil = now + ai.retreatTicks();
+            retreatReadyAt = now + ai.retreatCooldownTicks();
+        }
+        if (now < retreatUntil) {
+            double radius = ai.retreatDistance() + kaiju.getBbWidth() * 0.5;
+            double[] spot = KaijuTactics.orbit(target.getX(), target.getZ(), kaiju.getX(), kaiju.getZ(), radius,
+                    CIRCLE_STEP * 0.3, circleSide);
+            moveTo(spot, target.getY(), speedModifier * 1.2);
+            return true;
+        }
+        if (now < circleUntil) {
+            double radius = kaiju.approachReach() + ai.circleDistance() + (kaiju.getBbWidth()
+                    + target.getBbWidth()) * 0.5;
+            double[] spot = KaijuTactics.orbit(target.getX(), target.getZ(), kaiju.getX(), kaiju.getZ(), radius,
+                    CIRCLE_STEP, circleSide);
+            moveTo(spot, target.getY(), speedModifier);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Ponto de chegada: o alvo; com outro kaiju a {@code separation_radius} (grupo), um ponto em volta do alvo no
+     * angulo deste kaiju (cada um chega por um lado, sem empilhar).
+     */
+    private double[] approachSpot(KaijuAiDef ai, LivingEntity target, double reach) {
+        if (ai.separationRadius() <= 0.0F || kaiju.level().getEntitiesOfClass(KaijuEntity.class,
+                kaiju.getBoundingBox().inflate(ai.separationRadius()), other -> other != kaiju && other.isAlive())
+                .isEmpty()) {
+            return new double[] {target.getX(), target.getZ()};
+        }
+        double radius = Math.max(0.5, reach * 0.5) + (kaiju.getBbWidth() + target.getBbWidth()) * 0.5;
+        return KaijuTactics.around(target.getX(), target.getZ(), KaijuTactics.spreadAngle(kaiju.getId()), radius);
+    }
+
+    private void moveTo(double[] spot, double y, double speed) {
+        if (kaiju.isLarge()) {
+            kaiju.getNavigation().stop();
+            kaiju.getMoveControl().setWantedPosition(spot[0], y, spot[1], speed);
+            kaiju.clearPathIfBlocked();
+        } else if (--recalcCooldown <= 0) {
+            recalcCooldown = PATH_RECALC_TICKS;
+            kaiju.getNavigation().moveTo(spot[0], y, spot[1], speed);
+        }
     }
 
     /** Devolve true se desistiu do alvo (inalcancavel). */
