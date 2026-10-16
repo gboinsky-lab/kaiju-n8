@@ -129,6 +129,16 @@ Ordenados por gravidade. Cada item foi conferido no código (os de gravidade alt
 - Funções: recarga recuando, recarga sem alvo, cobertura de quem recarrega, revide; soldado comum só nasce com arma
   de fogo e parte para a faca depois de 3 recargas (cenário `municao_alvo`: faca na mão aos ~60–100 s).
 
+### Situação depois da IA-2 (2026-10-16)
+
+- **#5 mudou de sentido por decisão do Miguel**: ataques de kaiju passam por construções de propósito e quebram o que
+  está no ponto do golpe (`attackDestruction`). O ângulo (golpe acertando para trás) ficou como estava.
+- **#7 resolvido**: o projétil guarda o "heavy" (o bloqueio não segura) e o parry só vale no corpo a corpo.
+- **#8 resolvido**: cada tiro da rajada conta (GameTest `everyShotOfABurstCounts`).
+- **#9 em parte**: o salto atordoado não dá dano; a aterrissagem continua fora da timeline.
+- **#1 (resto)**: munição salva no mundo.
+- **Pendente:** #20 (velocidade da técnica) e #21 (animações que faltam), para a IA-3.
+
 ## 5. Fora da IA (registrado, não mexido)
 
 - **Balanceamento:** Anti-Giant da Mina (×30) mata um Honju de 360 com um tiro (820). O piso de 6 m pega qualquer

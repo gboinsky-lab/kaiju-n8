@@ -121,15 +121,20 @@ public final class DestructionService {
             return;
         }
         kaiju.setNextPathClearTick(now + ServerConfig.PATH_CLEAR_COOLDOWN_TICKS.get());
+        int power = walkPower(kaiju);
+        if (power > 0) {
+            requestFront(kaiju, power, inside ? 0.0 : 1.0);
+        }
+    }
+
+    /** Forca de quebra da categoria do kaiju ({@code destruction.walkPower*}); serve tambem aos ataques (IA-2). */
+    public static int walkPower(KaijuEntity kaiju) {
         KaijuClass kaijuClass = kaiju.def().map(def -> def.kaijuClass()).orElse(KaijuClass.YOJU);
-        int power = switch (kaijuClass) {
+        return switch (kaijuClass) {
             case YOJU -> ServerConfig.PATH_POWER_YOJU.get();
             case HONJU, NUMBERED -> ServerConfig.PATH_POWER_HONJU.get();
             case DAIKAIJU -> ServerConfig.PATH_POWER_DAIKAIJU.get();
         };
-        if (power > 0) {
-            requestFront(kaiju, power, inside ? 0.0 : 1.0);
-        }
     }
 
     private static boolean allowed(ServerLevel level, Entity source) {

@@ -25,6 +25,7 @@ import com.kn8.common.registry.KN8Sounds;
 import com.kn8.common.vfx.VfxService;
 import com.kn8.core.combat.ActionTimeline;
 import com.kn8.core.power.PowerMath;
+import com.kn8.core.soldier.AmmoMath;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -88,6 +89,9 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
             SynchedEntityData.defineId(SoldierEntity.class, EntityDataSerializers.STRING);
     private static final String TAG_VARIANT = "kn8_variant";
     private static final String TAG_LEVEL = "kn8_power_level";
+    private static final String TAG_ROUNDS = "kn8_rounds";
+    private static final String TAG_RESERVE = "kn8_reserve_rounds";
+    private static final String TAG_OUT_OF_AMMO = "kn8_out_of_ammo";
     /** Chaves que o vanilla grava em todo mob salvo (Mob / LivingEntity). */
     private static final String TAG_HAND_ITEMS = "HandItems";
     private static final String TAG_ATTRIBUTES = "attributes";
@@ -133,8 +137,11 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
     private long reloadStartTick = -1;
     private WeaponProfileDef.Reload reloading;
     private int reloadStage = -1;
-    /** 0.5.0-D2: pentes reserva (-1 = ainda nao recebeu os do perfil) e sem municao (fica na arma de apoio). */
-    private int spareMagazines = -1;
+    /**
+     * 0.5.0-D2: municao reserva (IA-2: em balas, -1 = ainda nao recebeu a do perfil; o que sobra no pente volta para
+     * ela na recarga) e sem municao (fica na arma branca).
+     */
+    private int reserveRounds = -1;
     /** IA-1B: de quanto em quanto tempo o soldado sem alvo confere se precisa recarregar. */
     private static final int IDLE_RELOAD_CHECK_TICKS = 20;
     private boolean outOfAmmo;
@@ -248,14 +255,30 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
         return weapon().flatMap(weapon -> WeaponHandling.profile(weapon, level().isClientSide()));
     }
 
-    /** Pentes reserva que restam (para os GameTests; -1 = ainda nao recebeu os do perfil). */
+    /** Pentes reserva que restam, arredondados para cima (GameTests; -1 = ainda nao recebeu os do perfil). */
     public int spareMagazines() {
-        return spareMagazines;
+        return reserveRounds < 0 ? -1 : AmmoMath.magazinesLeft(reserveRounds, magazineSize());
     }
 
-    /** Ajusta os pentes reserva (GameTests). */
+    /** Balas na reserva (GameTests; -1 = ainda nao recebeu as do perfil). */
+    public int reserveRounds() {
+        return reserveRounds;
+    }
+
+    /** Ajusta a reserva em pentes cheios (GameTests). */
     public void setSpareMagazines(int value) {
-        spareMagazines = value;
+        reserveRounds = AmmoMath.initialReserve(value, magazineSize());
+    }
+
+    private int magazineSize() {
+        return weaponProfile().flatMap(WeaponProfileDef::reload).map(WeaponProfileDef.Reload::magazine).orElse(0);
+    }
+
+    private void initReserve() {
+        if (reserveRounds < 0) {
+            reserveRounds = AmmoMath.initialReserve(
+                    weaponProfile().map(profile -> profile.npc().spareMagazines()).orElse(0), magazineSize());
+        }
     }
 
     /** Ajusta o pente atual (GameTests). */
@@ -284,10 +307,8 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
         if (rounds > 0) {
             return true;
         }
-        if (spareMagazines < 0) {
-            spareMagazines = weaponProfile().map(profile -> profile.npc().spareMagazines()).orElse(0);
-        }
-        if (spareMagazines == 0) {
+        initReserve();
+        if (reserveRounds == 0) {
             // IA-1B (Miguel): 3 recargas e depois arma branca. Sem arma de apoio (Mina, Reno, Kafka), pega a do
             // config ([soldierAi] outOfAmmoWeapon) em vez de ficar de mao vazia.
             outOfAmmo = true;
@@ -303,7 +324,6 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
 
     private void startReload(long now, WeaponProfileDef.Reload reload) {
         if (timeline.tryStart(now, "reload", reload.totalTicks(), ActionTimeline.NO_IMPACT)) {
-            spareMagazines--;
             reloading = reload;
             reloadStartTick = now;
             reloadStage = -1;
@@ -337,17 +357,15 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
      * proxima luta (nao gasta o pente reserva se o atual estiver cheio).
      */
     private void reloadWhenIdle(long now) {
-        if (getTarget() != null || isActing() || !isShooter() || spareMagazines == 0) {
+        if (getTarget() != null || isActing() || !isShooter() || reserveRounds == 0) {
             return;
         }
         Optional<WeaponProfileDef.Reload> reload = weaponProfile().flatMap(WeaponProfileDef::reload);
         if (reload.isEmpty() || rounds < 0 || rounds >= reload.get().magazine()) {
             return;
         }
-        if (spareMagazines < 0) {
-            spareMagazines = weaponProfile().map(profile -> profile.npc().spareMagazines()).orElse(0);
-        }
-        if (spareMagazines > 0) {
+        initReserve();
+        if (reserveRounds > 0) {
             startReload(now, reload.get());
         }
     }
@@ -367,7 +385,11 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
             stageStart += stage.ticks();
         }
         if (elapsed >= reloading.totalTicks()) {
-            rounds = reloading.magazine();
+            // IA-2: completa o pente com a reserva; o que ainda estava nele nao se perde.
+            initReserve();
+            AmmoMath.Reload result = AmmoMath.topUp(rounds, reloading.magazine(), reserveRounds);
+            rounds = result.rounds();
+            reserveRounds = result.reserve();
             reloading = null;
             reloadStartTick = -1;
         }
@@ -626,6 +648,10 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
         super.addAdditionalSaveData(tag);
         tag.putString(TAG_VARIANT, variant());
         tag.putString(TAG_LEVEL, powerLevel());
+        // IA-2 (bug da Fase 0): municao salva; recarregar o chunk nao enche mais os pentes.
+        tag.putInt(TAG_ROUNDS, rounds);
+        tag.putInt(TAG_RESERVE, reserveRounds);
+        tag.putBoolean(TAG_OUT_OF_AMMO, outOfAmmo);
     }
 
     @Override
@@ -637,6 +663,11 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
         }
         if (tag.contains(TAG_LEVEL)) {
             entityData.set(LEVEL, tag.getString(TAG_LEVEL));
+        }
+        if (tag.contains(TAG_RESERVE)) {
+            rounds = tag.getInt(TAG_ROUNDS);
+            reserveRounds = tag.getInt(TAG_RESERVE);
+            outOfAmmo = tag.getBoolean(TAG_OUT_OF_AMMO);
         }
         // "/summon kn8:soldier ~ ~ ~ {kn8_variant:...}" nao chama finalizeSpawn: sem itens/atributos salvos (soldado
         // novo, nao carregado do mundo), aplica aqui a arma da variante e os atributos do nivel.

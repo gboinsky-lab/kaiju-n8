@@ -36,6 +36,6 @@
   "first_person": false,
   "npc": {
     "arm_pose": "rifle",
-    "spare_magazines": 3
+    "spare_magazines": 4
   }
 }

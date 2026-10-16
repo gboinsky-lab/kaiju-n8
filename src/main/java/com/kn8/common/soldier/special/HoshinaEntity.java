@@ -16,10 +16,12 @@ import com.kn8.common.combat.CombatService;
 import com.kn8.common.combat.SlashProjectile;
 import com.kn8.common.config.ServerConfig;
 import com.kn8.common.data.KN8Data;
+import com.kn8.common.data.def.AbilityDef;
 import com.kn8.common.data.def.KaijuClass;
 import com.kn8.common.data.def.SoldierDef;
 import com.kn8.common.data.def.SpecialSoldierDef;
 import com.kn8.common.data.def.WeaponDef;
+import com.kn8.common.destruction.DestructionService;
 import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.registry.KN8Attachments;
 import com.kn8.common.registry.KN8Sounds;
@@ -31,6 +33,7 @@ import com.kn8.core.power.PowerMath;
 
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -84,6 +87,7 @@ public class HoshinaEntity extends SoldierEntity {
      * 0.5.0-D7 (Miguel): velocidade das tecnicas pelo Release (o servidor decide; o controller "action" de cada
      * cliente toca nessa velocidade).
      */
+    private static final String TAG_TECHNIQUE_USES = "kn8_technique_uses";
     private static final EntityDataAccessor<Float> ACTION_SPEED =
             SynchedEntityData.defineId(HoshinaEntity.class, EntityDataSerializers.FLOAT);
 
@@ -106,6 +110,10 @@ public class HoshinaEntity extends SoldierEntity {
 
 
     private final Map<String, Long> readyAt = new HashMap<>();
+    /** IA-2: usos das tecnicas com limite ({@code technique_uses}; Anti-Giant da Mina = 4 tiros), salvos no mundo. */
+    private final Map<String, Integer> techniqueUsed = new HashMap<>();
+    /** IA-2: golpe pesado sendo aplicado agora (dentro do hurt; atravessa a pele endurecida do No. 9). */
+    private boolean heavyStrike;
     private String techniqueId;
     private SpecialSoldierDef.Technique technique;
     private long techniqueStart;
@@ -310,7 +318,8 @@ public class HoshinaEntity extends SoldierEntity {
             if ((candidate.requiresFullRelease() && !isFullRelease())
                     || now < readyAt.getOrDefault(entry.getKey(), 0L) || edge < candidate.minRange()
                     || edge > candidate.maxRange() || target.getBbHeight() < candidate.slash().minTargetHeight()
-                    || (candidate.type() == SpecialSoldierDef.TechniqueType.SLASH && !sees)) {
+                    || (candidate.type() == SpecialSoldierDef.TechniqueType.SLASH && !sees)
+                    || usesLeft(def.get(), entry.getKey()) == 0) {
                 continue;
             }
             int priority = candidate.priority() + (big ? candidate.honjuPriority() : 0);
@@ -326,12 +335,33 @@ public class HoshinaEntity extends SoldierEntity {
         return tied.isEmpty() ? Optional.empty() : Optional.of(tied.get(getRandom().nextInt(tied.size())));
     }
 
+    /** Usos que restam da tecnica (-1 = sem limite). */
+    public int usesLeft(SpecialSoldierDef def, String id) {
+        Integer limit = def.techniqueUses().get(id);
+        return limit == null ? -1 : Math.max(0, limit - techniqueUsed.getOrDefault(id, 0));
+    }
+
+    /** IA-2: a tecnica em andamento e pesada (lista {@code heavy.techniques} do perfil)? */
+    private Optional<SpecialSoldierDef.Heavy> heavyTechnique() {
+        return techniqueId == null ? Optional.empty()
+                : profile().flatMap(SpecialSoldierDef::heavy).filter(heavy -> heavy.techniques().contains(techniqueId));
+    }
+
+    /** Golpe pesado sendo aplicado agora (lido pela pele endurecida do No. 9). */
+    public boolean isHeavyStrike() {
+        return heavyStrike;
+    }
+
     /** Comeca uma tecnica do perfil contra o alvo (goal, comando, testes). */
     public boolean startTechnique(String id, LivingEntity target) {
         Optional<SpecialSoldierDef.Technique> found = profile().map(def -> def.techniques().get(id));
         if (found.isEmpty() || isUsingTechnique() || isActing() || weapon().isEmpty()
-                || (found.get().requiresFullRelease() && !isFullRelease())) {
+                || (found.get().requiresFullRelease() && !isFullRelease())
+                || profile().map(def -> usesLeft(def, id)).orElse(-1) == 0) {
             return false;
+        }
+        if (profile().map(def -> def.techniqueUses().containsKey(id)).orElse(false)) {
+            techniqueUsed.merge(id, 1, Integer::sum);
         }
         long now = level().getGameTime();
         technique = found.get();
@@ -479,7 +509,10 @@ public class HoshinaEntity extends SoldierEntity {
         if (technique.type() == SpecialSoldierDef.TechniqueType.SLASH) {
             lookAt(target, 360.0F, 90.0F);
             Vec3 aim = target.getBoundingBox().getCenter().subtract(getEyePosition());
-            SlashProjectile.fire(this, aim, technique.slash(), base * technique.hits().get(0), kaijuDamageMultiplier());
+            Optional<SpecialSoldierDef.Heavy> heavy = heavyTechnique();
+            SlashProjectile.fire(this, aim, technique.slash(), base * technique.hits().get(0), kaijuDamageMultiplier(),
+                    heavy.map(SpecialSoldierDef.Heavy::power).orElse(0),
+                    heavy.map(SpecialSoldierDef.Heavy::radius).orElse(0.0F));
             level().playSound(null, getX(), getEyeY(), getZ(), KN8Sounds.SWORD_HEAVY.get(), SoundSource.NEUTRAL,
                     SWING_VOLUME, 1.1F);
             return;
@@ -517,10 +550,21 @@ public class HoshinaEntity extends SoldierEntity {
         // [SUPOSICAO] tecnica de Full Release (Juni-hitoe) "ignora parte da defesa": dano que passa pela armadura.
         DamageSource source = technique != null && technique.requiresFullRelease()
                 ? damageSources().indirectMagic(this, this) : damageSources().mobAttack(this);
-        if (!target.hurt(source, damage)) {
+        Optional<SpecialSoldierDef.Heavy> heavy = heavyTechnique();
+        heavyStrike = heavy.isPresent();
+        boolean hurt;
+        try {
+            hurt = target.hurt(source, damage);
+        } finally {
+            heavyStrike = false;
+        }
+        if (!hurt) {
             return false;
         }
         ServerLevel level = (ServerLevel) level();
+        // IA-2 (Miguel): golpe pesado dos especiais pesados quebra o que estiver em volta do ponto do golpe.
+        heavy.ifPresent(value -> DestructionService.request(level, target.position(),
+                new AbilityDef.Destruction(value.radius(), value.power(), false, 1.0F), this));
         Vec3 aim = target.getBoundingBox().getCenter().subtract(getEyePosition()).normalize();
         VfxService.play(level, VfxService.SLASH, target.getBoundingBox().getCenter(), aim, 0.8F, 0.0F);
         level.playSound(null, target.getX(), target.getY(), target.getZ(),
@@ -793,5 +837,23 @@ public class HoshinaEntity extends SoldierEntity {
         controllers.add(new AnimationController<>(this, "reaction", 0, state -> PlayState.STOP)
                 .triggerableAnim("hurt", RawAnimation.begin().thenPlay(prefix + "reaction.hurt")));
         registerExtraControllers(controllers);
+    }
+
+    @Override
+    public void addAdditionalSaveData(CompoundTag tag) {
+        super.addAdditionalSaveData(tag);
+        CompoundTag uses = new CompoundTag();
+        techniqueUsed.forEach(uses::putInt);
+        tag.put(TAG_TECHNIQUE_USES, uses);
+    }
+
+    @Override
+    public void readAdditionalSaveData(CompoundTag tag) {
+        super.readAdditionalSaveData(tag);
+        techniqueUsed.clear();
+        CompoundTag uses = tag.getCompound(TAG_TECHNIQUE_USES);
+        for (String key : uses.getAllKeys()) {
+            techniqueUsed.put(key, uses.getInt(key));
+        }
     }
 }

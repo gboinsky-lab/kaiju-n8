@@ -62,15 +62,17 @@ public final class CombatEvents {
         if (!CombatMath.inFront(look.x, look.z, toAttacker.x, toAttacker.z)) {
             return;
         }
-        if (CombatService.isParry(player)) {
+        if (CombatService.isParry(player) && event.getSource().getDirectEntity() == attacker) {
+            // IA-2: parry so em golpe corpo a corpo (antes um projetil aparado atordoava o kaiju a distancia).
             // Parry (M10b): bloqueio comecou ate poucos ticks antes do golpe -> sem dano nenhum.
             event.setCanceled(true);
             CombatService.parry(player, attacker);
             return;
         }
-        if (attacker instanceof KaijuEntity kaiju && kaiju.isDealingHeavyHit()
+        if (attacker instanceof KaijuEntity && CombatService.isHeavyHit(event.getSource())
                 && ServerConfig.HEAVY_IGNORES_BLOCK.get()) {
-            // Ataque pesado de kaiju (slam, investida): o bloqueio comum nao segura; so parry ou esquiva.
+            // Ataque pesado de kaiju (slam, investida, raio, sopro): o bloqueio comum nao segura; so parry (corpo a
+            // corpo) ou esquiva. IA-2: o projetil pesado tambem.
             return;
         }
         CombatMath.Block block = CombatMath.block(event.getAmount(), ServerConfig.BLOCK_DAMAGE_REDUCTION.get(),

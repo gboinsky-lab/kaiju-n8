@@ -10,8 +10,10 @@ import com.kn8.common.config.ServerConfig;
 import com.kn8.common.data.def.KaijuClass;
 import com.kn8.common.data.def.WeaponDef;
 import com.kn8.common.kaiju.KaijuEntity;
+import com.kn8.common.kaiju.KaijuProjectile;
 import com.kn8.common.registry.KN8Attachments;
 import com.kn8.common.registry.KN8Sounds;
+import com.kn8.common.soldier.special.HoshinaEntity;
 import com.kn8.common.vfx.VfxService;
 import com.kn8.core.combat.CombatMath;
 import com.kn8.core.power.BodyStat;
@@ -310,6 +312,24 @@ public final class CombatService {
     /** Balanceamento v1.0: o golpe que esta acertando agora e pesado (ou carregado)? Decide o teto por golpe. */
     public static boolean isHeavyStrike(ServerPlayer player) {
         return state(player).currentAction == CombatAction.HEAVY;
+    }
+
+    /**
+     * IA-2 (Miguel: "ataques pesados nao tem bloqueio"): o dano vem de um golpe pesado? Jogador no golpe pesado ou
+     * carregado, especial pesado na tecnica pesada (corpo a corpo ou tiro/corte), kaiju no golpe "heavy" (corpo a
+     * corpo ou projetil).
+     */
+    public static boolean isHeavyHit(DamageSource source) {
+        if (source.getDirectEntity() instanceof SlashProjectile slash) {
+            return slash.isHeavy();
+        }
+        if (source.getDirectEntity() instanceof KaijuProjectile projectile) {
+            return projectile.isHeavy();
+        }
+        Entity attacker = source.getEntity();
+        return attacker instanceof ServerPlayer player && isHeavyStrike(player)
+                || attacker instanceof HoshinaEntity special && special.isHeavyStrike()
+                || attacker instanceof KaijuEntity kaiju && kaiju.isDealingHeavyHit();
     }
 
     /** Ticks que faltam para o ataque especial ficar pronto (0 = pronto). */

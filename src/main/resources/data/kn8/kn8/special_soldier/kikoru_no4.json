@@ -108,5 +108,13 @@
     "fly_speed": 0.45,
     "hover_height": 2.5
   },
-  "height": 1.6
+  "height": 1.6,
+  "heavy": {
+    "techniques": [
+      "dive_strike",
+      "vertical_assault"
+    ],
+    "power": 3,
+    "radius": 2.5
+  }
 }

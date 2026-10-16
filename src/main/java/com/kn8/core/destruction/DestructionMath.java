@@ -85,4 +85,17 @@ public final class DestructionMath {
         h ^= (h >>> 29);
         return (h >>> 11) / (double) (1L << 53);
     }
+
+    /**
+     * IA-2 (Miguel: "ataques mais fortes destroem mais"): raio da quebra automatica de um ataque de kaiju = raio base
+     * (normal ou pesado) x multiplicador de dano do ataque (pelo menos 1), limitado ao maximo.
+     */
+    public static double attackRadius(double baseRadius, double damageMultiplier, double maxRadius) {
+        return Math.min(maxRadius, baseRadius * Math.max(1.0, damageMultiplier));
+    }
+
+    /** Forca da quebra automatica: a de andar da categoria, mais o bonus se o ataque for pesado (no maximo 4). */
+    public static int attackPower(int walkPower, boolean heavy, int heavyBonus) {
+        return walkPower <= 0 ? 0 : Math.min(4, walkPower + (heavy ? heavyBonus : 0));
+    }
 }

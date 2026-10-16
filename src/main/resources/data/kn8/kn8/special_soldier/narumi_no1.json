@@ -122,5 +122,14 @@
     "max_points": 45,
     "decay_per_second": 2.0,
     "cooldown_reduction_at_max": 0.35
+  },
+  "heavy": {
+    "techniques": [
+      "lunge",
+      "sweeping_slash",
+      "weak_point_thrust"
+    ],
+    "power": 3,
+    "radius": 2.0
   }
 }

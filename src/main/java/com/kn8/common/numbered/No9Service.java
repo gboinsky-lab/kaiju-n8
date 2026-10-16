@@ -8,6 +8,7 @@ import java.util.Optional;
 import com.kn8.KN8Constants;
 import com.kn8.common.boss.BossService;
 import com.kn8.common.career.CareerService;
+import com.kn8.common.combat.CombatService;
 import com.kn8.common.combat.SlashProjectile;
 import com.kn8.common.combat.WeaponIndex;
 import com.kn8.common.data.KN8Data;
@@ -276,10 +277,14 @@ public final class No9Service {
                 rule.message()));
     }
 
-    /** Dano depois da armadura: reduzido com a pele endurecida; cada golpe pode endurecer (chance do JSON). */
-    static float harden(KaijuNo9Entity no9, float amount) {
+    /**
+     * Dano depois da armadura: reduzido com a pele endurecida; cada golpe pode endurecer (chance do JSON). IA-2
+     * (Miguel: "ataques pesados nao tem bloqueio"): golpe pesado (jogador, especial pesado, tiro de canhao) passa
+     * inteiro e nao faz a pele endurecer.
+     */
+    static float harden(KaijuNo9Entity no9, DamageSource source, float amount) {
         Optional<NumberedDef.Hardening> found = def(no9).flatMap(NumberedDef::hardening);
-        if (found.isEmpty() || !(no9.level() instanceof ServerLevel level)) {
+        if (found.isEmpty() || !(no9.level() instanceof ServerLevel level) || CombatService.isHeavyHit(source)) {
             return amount;
         }
         NumberedDef.Hardening hardening = found.get();

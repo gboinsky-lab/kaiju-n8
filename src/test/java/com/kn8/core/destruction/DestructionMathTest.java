@@ -46,4 +46,15 @@ class DestructionMathTest {
         }
         assertTrue(differs, "A borda deveria variar com o angulo");
     }
+
+    @Test
+    void strongerAttacksBreakMore() {
+        assertEquals(1.5, DestructionMath.attackRadius(1.5, 0.8, 6.0), 1e-9);
+        assertEquals(4.5, DestructionMath.attackRadius(1.5, 3.0, 6.0), 1e-9);
+        assertEquals(6.0, DestructionMath.attackRadius(3.0, 4.0, 6.0), 1e-9);
+        assertEquals(4, DestructionMath.attackPower(3, true, 1));
+        assertEquals(3, DestructionMath.attackPower(3, false, 1));
+        assertEquals(4, DestructionMath.attackPower(4, true, 1));
+        assertEquals(0, DestructionMath.attackPower(0, true, 1));
+    }
 }

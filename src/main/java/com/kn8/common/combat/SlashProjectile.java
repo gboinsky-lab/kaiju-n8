@@ -7,7 +7,9 @@ import java.util.UUID;
 
 import org.joml.Vector3f;
 
+import com.kn8.common.data.def.AbilityDef;
 import com.kn8.common.data.def.SlashSpec;
+import com.kn8.common.destruction.DestructionService;
 import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.registry.KN8Entities;
 
@@ -71,6 +73,10 @@ public class SlashProjectile extends Projectile {
     private int slowLevel = 1;
     private int exposeCoreTicks;
     private float vulnerable = 1.0F;
+    /** IA-2: tiro/corte pesado de um especial pesado (quebra blocos onde acerta; 0 = nao quebra). */
+    private int destructionPower;
+    private float destructionRadius;
+    private boolean destroyed;
 
     public SlashProjectile(EntityType<? extends SlashProjectile> type, Level level) {
         super(type, level);
@@ -82,6 +88,15 @@ public class SlashProjectile extends Projectile {
      * quantos cortes sairam. O segundo corte de um par inclina para o outro lado (o "X").
      */
     public static int fire(LivingEntity owner, Vec3 direction, SlashSpec spec, float damage, float kaijuFactor) {
+        return fire(owner, direction, spec, damage, kaijuFactor, 0, 0.0F);
+    }
+
+    /**
+     * IA-2: com {@code destructionPower} > 0 o tiro/corte e pesado: quebra blocos no ponto onde acerta (explosao,
+     * bloco ou primeiro alvo), no raio {@code destructionRadius} (ou no da explosao, se for maior).
+     */
+    public static int fire(LivingEntity owner, Vec3 direction, SlashSpec spec, float damage, float kaijuFactor,
+            int destructionPower, float destructionRadius) {
         Vec3 dir = direction.normalize();
         float yaw = (float) Math.toDegrees(Math.atan2(-dir.x, dir.z));
         float pitch = (float) Math.toDegrees(-Math.asin(Mth.clamp(dir.y, -1.0, 1.0)));
@@ -103,6 +118,8 @@ public class SlashProjectile extends Projectile {
             slash.slowLevel = spec.slowLevel();
             slash.exposeCoreTicks = spec.exposeCoreTicks();
             slash.vulnerable = spec.vulnerable();
+            slash.destructionPower = destructionPower;
+            slash.destructionRadius = Math.max(destructionRadius, spec.explosionRadius());
             slash.setPos(owner.getEyePosition().subtract(0, 0.3, 0).add(heading.scale(FORWARD_SPAWN)));
             slash.setDeltaMovement(heading.scale(spec.speed()));
             slash.setYRot(yaw + offset);
@@ -141,7 +158,11 @@ public class SlashProjectile extends Projectile {
             explode(hit);
             return;
         }
+        if (hit != null) {
+            destroyAt(hit);
+        }
         if (block.getType() != HitResult.Type.MISS) {
+            destroyAt(to);
             if (explosionRadius > 0.0F) {
                 explode(to);
                 return;
@@ -163,7 +184,7 @@ public class SlashProjectile extends Projectile {
 
     /**
      * 0.7-C: explosao do tiro do canhao. Fere uma vez quem estiver no raio (menos aliados e quem o tiro ja acertou),
-     * com o mesmo dano e fator contra kaiju; nao quebra blocos (o dano a construcoes fica com os kaiju).
+     * com o mesmo dano e fator contra kaiju. IA-2: quebra blocos so se o tiro for pesado (especial pesado).
      */
     private void explode(Vec3 at) {
         ServerLevel server = (ServerLevel) level();
@@ -171,6 +192,7 @@ public class SlashProjectile extends Projectile {
         server.sendParticles(ParticleTypes.LARGE_SMOKE, at.x, at.y, at.z, 12, explosionRadius * 0.3,
                 explosionRadius * 0.3, explosionRadius * 0.3, 0.02);
         server.playSound(null, at.x, at.y, at.z, SoundEvents.GENERIC_EXPLODE, SoundSource.HOSTILE, 1.5F, 1.1F);
+        destroyAt(at);
         if (getOwner() instanceof LivingEntity source) {
             DamageSource damageSource = damageSources().explosion(this, source);
             AABB area = new AABB(at, at).inflate(explosionRadius);
@@ -188,6 +210,21 @@ public class SlashProjectile extends Projectile {
             }
         }
         discard();
+    }
+
+    /** IA-2: quebra os blocos em volta do ponto, uma vez por tiro/corte, se for pesado. */
+    private void destroyAt(Vec3 at) {
+        if (destructionPower <= 0 || destroyed || !(level() instanceof ServerLevel server)) {
+            return;
+        }
+        destroyed = true;
+        DestructionService.request(server, at, new AbilityDef.Destruction(destructionRadius, destructionPower, false,
+                1.0F), getOwner() != null ? getOwner() : this);
+    }
+
+    /** IA-2: golpe pesado (atravessa a pele endurecida do No. 9). */
+    public boolean isHeavy() {
+        return destructionPower > 0;
     }
 
     /** Tiro pesado que explode (canhao da Mina): o No. 9 le e desvia (esquiva do numbered). */

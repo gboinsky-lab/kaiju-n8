@@ -42,6 +42,15 @@ public record SpecialSoldierDef(float health, float armor, float speed, float fo
         return growth.escalation();
     }
 
+    public Optional<Heavy> heavy() {
+        return growth.heavy();
+    }
+
+    /** IA-2: tecnicas com usos limitados por vida ({@code technique_uses}; Anti-Giant da Mina = 4 tiros). */
+    public Map<String, Integer> techniqueUses() {
+        return growth.techniqueUses();
+    }
+
     public Optional<Numbers10> numbers10() {
         return growth.numbers10();
     }
@@ -74,7 +83,7 @@ public record SpecialSoldierDef(float health, float armor, float speed, float fo
      */
     public record Growth(Escalation escalation, Optional<Numbers10> numbers10, Optional<Flight> flight,
             Optional<Transform> transform, Optional<Regeneration> regeneration, float height,
-            Optional<Ranged> ranged) {
+            Optional<Ranged> ranged, Optional<Heavy> heavy, Map<String, Integer> techniqueUses) {
         public static final MapCodec<Growth> MAP_CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
                 Escalation.CODEC.optionalFieldOf("escalation", Escalation.NONE).forGetter(Growth::escalation),
                 Numbers10.CODEC.optionalFieldOf("numbers10").forGetter(Growth::numbers10),
@@ -82,8 +91,26 @@ public record SpecialSoldierDef(float health, float armor, float speed, float fo
                 Transform.CODEC.optionalFieldOf("transform").forGetter(Growth::transform),
                 Regeneration.CODEC.optionalFieldOf("regeneration").forGetter(Growth::regeneration),
                 Codec.floatRange(0.0F, 4.0F).optionalFieldOf("height", 0.0F).forGetter(Growth::height),
-                Ranged.CODEC.optionalFieldOf("ranged").forGetter(Growth::ranged)
+                Ranged.CODEC.optionalFieldOf("ranged").forGetter(Growth::ranged),
+                Heavy.CODEC.optionalFieldOf("heavy").forGetter(Growth::heavy),
+                Codec.unboundedMap(Codec.STRING, Codec.intRange(1, 1000)).optionalFieldOf("technique_uses", Map.of())
+                        .forGetter(Growth::techniqueUses)
         ).apply(i, Growth::new));
+    }
+
+    /**
+     * IA-2 (Miguel): so os especiais pesados destroem construcoes, com os golpes pesados e os tiros poderosos (Kikoru,
+     * Mina, Narumi, Kaiju No. 8; Isao quando existir). {@code techniques}: quais tecnicas do perfil sao pesadas;
+     * {@code power}: forca de destruicao (1 a 4, tags {@code destruction/*}); {@code radius}: raio da quebra no ponto
+     * do golpe (tiro explosivo usa o maior entre este e o da explosao). Golpe pesado tambem nao e "bloqueado" pela
+     * pele endurecida do No. 9.
+     */
+    public record Heavy(List<String> techniques, int power, float radius) {
+        public static final Codec<Heavy> CODEC = RecordCodecBuilder.create(i -> i.group(
+                Codec.STRING.listOf().fieldOf("techniques").forGetter(Heavy::techniques),
+                Codec.intRange(1, 4).fieldOf("power").forGetter(Heavy::power),
+                Codec.floatRange(0.5F, 16.0F).fieldOf("radius").forGetter(Heavy::radius)
+        ).apply(i, Heavy::new));
     }
 
     /**

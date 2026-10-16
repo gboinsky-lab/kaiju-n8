@@ -28,6 +28,7 @@ import com.kn8.common.data.def.AbilityDef;
 import com.kn8.common.data.def.KaijuDef;
 import com.kn8.core.KN8Ids;
 import com.kn8.core.combat.ActionTimeline;
+import com.kn8.core.destruction.DestructionMath;
 import com.kn8.core.kaiju.AbilityGeometry;
 import com.kn8.core.kaiju.KaijuBrain;
 import com.kn8.core.kaiju.KaijuState;
@@ -687,10 +688,14 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
                     dealAbilityDamage(target, ability, null);
                     AbilityEffects.play(this, ability, target.position().add(0, target.getBbHeight() / 2, 0));
                 }
+                destroyAt(frontPoint(ability), ability);
             }
             case TYPE_AREA_MELEE -> resolveSlam(ability);
             case TYPE_CHARGE -> startCharge();
-            case KaijuAbilities.TYPE_SWEEP -> KaijuAbilities.sweep(this, ability);
+            case KaijuAbilities.TYPE_SWEEP -> {
+                KaijuAbilities.sweep(this, ability);
+                destroyAt(frontPoint(ability), ability);
+            }
             case KaijuAbilities.TYPE_PROJECTILE -> KaijuAbilities.fire(this, id, ability, abilityTarget);
             case KaijuAbilities.TYPE_LEAP -> {
                 KaijuAbilities.leap(this, abilityTarget);
@@ -711,6 +716,41 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
                 }
             }
         }
+    }
+
+    /**
+     * IA-2 (Miguel: "ataques de kaiju podem passar por construcoes com facilidade, ataques mais fortes destroem mais"):
+     * a quebra do JSON ({@code destruction}) ou, sem ela, a automatica: forca de andar da categoria (+ bonus se
+     * pesado) e raio base x multiplicador de dano ({@code [destruction] ability*}).
+     */
+    Optional<AbilityDef.Destruction> attackDestruction(AbilityDef ability) {
+        if (ability.destruction().isPresent()) {
+            return ability.destruction();
+        }
+        if (!ServerConfig.SPEC.isLoaded() || !ServerConfig.ABILITY_AUTO_DESTRUCTION.get()) {
+            return Optional.empty();
+        }
+        int power = DestructionMath.attackPower(DestructionService.walkPower(this), ability.heavy(),
+                ServerConfig.ABILITY_HEAVY_POWER_BONUS.get());
+        double base = (ability.heavy() ? ServerConfig.ABILITY_HEAVY_DESTRUCTION_RADIUS
+                : ServerConfig.ABILITY_DESTRUCTION_RADIUS).get();
+        double radius = DestructionMath.attackRadius(base, ability.damageMultiplier(),
+                ServerConfig.ABILITY_MAX_DESTRUCTION_RADIUS.get());
+        return power <= 0 || radius <= 0.0 ? Optional.empty()
+                : Optional.of(new AbilityDef.Destruction((float) radius, power, false, 1.0F));
+    }
+
+    /** Quebra os blocos em volta do ponto do golpe (do JSON ou automatica). */
+    void destroyAt(Vec3 center, AbilityDef ability) {
+        if (level() instanceof ServerLevel server) {
+            attackDestruction(ability).ifPresent(destruction -> DestructionService.request(server, center,
+                    destruction, this));
+        }
+    }
+
+    /** Ponto do golpe a frente do corpo: borda da frente + metade do alcance do ataque. */
+    private Vec3 frontPoint(AbilityDef ability) {
+        return position().add(bodyForward().scale(getBbWidth() * 0.5 + reachOf(ability) * 0.5));
     }
 
     /** Frente do corpo no plano horizontal (rotacao do corpo, nao da cabeca). */
@@ -736,8 +776,7 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
             }
         }
         // 0.1-B: o mesmo impacto quebra o ambiente, solta os efeitos, o tremor e o som.
-        ability.destruction().ifPresent(destruction -> DestructionService.request((ServerLevel) level(), center,
-                destruction, this));
+        destroyAt(center, ability);
         AbilityEffects.play(this, ability, center);
     }
 
@@ -764,7 +803,7 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
         double speed = ServerConfig.CHARGE_SPEED.get();
         setDeltaMovement(chargeDirection.x * speed, getDeltaMovement().y, chargeDirection.z * speed);
         // 0.1-B: a investida atravessa o que a forca dela quebra (faixa logo a frente do corpo).
-        ability.get().destruction().ifPresent(destruction -> DestructionService.requestFront(this,
+        attackDestruction(ability.get()).ifPresent(destruction -> DestructionService.requestFront(this,
                 destruction.power(), destruction.radius()));
         double radius = ability.get().radius();
         for (LivingEntity target : level().getEntitiesOfClass(LivingEntity.class,

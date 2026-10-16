@@ -169,6 +169,10 @@ final class KaijuAbilities {
 
     /** Aterrissagem do salto: golpe em area (raio = {@code radius}) em volta do kaiju. */
     static void land(KaijuEntity kaiju, AbilityDef ability) {
+        if (kaiju.isStaggered()) {
+            // IA-2 (bug da Fase 0): salto atordoado no ar nao da dano ao cair.
+            return;
+        }
         double radius = kaiju.reachOf(ability);
         for (LivingEntity target : kaiju.level().getEntitiesOfClass(LivingEntity.class,
                 kaiju.getBoundingBox().inflate(radius, 1.0, radius))) {
@@ -178,6 +182,7 @@ final class KaijuAbilities {
                         target.getZ() - kaiju.getZ()));
             }
         }
+        kaiju.destroyAt(kaiju.position(), ability);
         AbilityEffects.play(kaiju, ability, kaiju.position());
     }
 
@@ -190,6 +195,7 @@ final class KaijuAbilities {
         // Golpes a cada poucos ticks: sem isso a invulnerabilidade vanilla (10 ticks) engolia o combo.
         target.invulnerableTime = 0;
         kaiju.dealAbilityDamage(target, ability, null);
+        kaiju.destroyAt(target.position(), ability);
         AbilityEffects.play(kaiju, ability, target.position().add(0, target.getBbHeight() / 2, 0));
     }
 }

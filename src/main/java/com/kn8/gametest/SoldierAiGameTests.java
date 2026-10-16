@@ -46,7 +46,7 @@ public final class SoldierAiGameTests {
         });
     }
 
-    /** Miguel: recuar e recarregar; sem luta, o soldado completa o pente com um dos reserva. */
+    /** Miguel: recuar e recarregar; sem luta, o soldado completa o pente com a reserva (sem perder balas). */
     @GameTest(template = TEMPLATE, timeoutTicks = 200)
     public static void soldierReloadsWhenIdle(GameTestHelper helper) {
         SoldierEntity soldier = helper.spawn(KN8Entities.SOLDIER.get(), new BlockPos(7, 1, 7));
@@ -54,8 +54,10 @@ public final class SoldierAiGameTests {
         soldier.setRounds(1);
         soldier.setSpareMagazines(3);
         helper.succeedWhen(() -> {
-            helper.assertTrue(soldier.spareMagazines() == 2 && !soldier.isReloading(),
-                    "Sem alvo, o soldado deveria recarregar (gastou um pente reserva)");
+            // IA-2: completa o pente (29 balas) e as que sobravam no pente velho nao se perdem.
+            helper.assertTrue(soldier.rounds() == 30 && soldier.reserveRounds() == 61 && !soldier.isReloading(),
+                    "Sem alvo, o soldado deveria completar o pente com 29 balas da reserva (pente " + soldier.rounds()
+                            + ", reserva " + soldier.reserveRounds() + ")");
             soldier.discard();
         });
     }

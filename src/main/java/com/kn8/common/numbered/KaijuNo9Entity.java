@@ -80,7 +80,8 @@ public class KaijuNo9Entity extends KaijuEntity {
     @Override
     protected float getDamageAfterArmorAbsorb(DamageSource source, float amount) {
         float afterArmor = super.getDamageAfterArmorAbsorb(source, amount);
-        return level().isClientSide() ? afterArmor : No9Service.adapt(this, source, No9Service.harden(this, afterArmor));
+        return level().isClientSide() ? afterArmor
+                : No9Service.adapt(this, source, No9Service.harden(this, source, afterArmor));
     }
 
     public boolean isAbsorbing() {

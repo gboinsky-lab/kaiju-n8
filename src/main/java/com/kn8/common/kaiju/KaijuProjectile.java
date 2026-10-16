@@ -47,6 +47,8 @@ public class KaijuProjectile extends Projectile {
     private static final double FORWARD_SPAWN = 0.6;
 
     private float damage;
+    /** IA-2 (bug da Fase 0): o projetil guarda o "heavy" da habilidade (o bloqueio comum nao segura). */
+    private boolean heavy;
     private double travelled;
 
     public KaijuProjectile(EntityType<? extends KaijuProjectile> type, Level level) {
@@ -62,6 +64,7 @@ public class KaijuProjectile extends Projectile {
         projectile.setOwner(owner);
         projectile.entityData.set(ABILITY, abilityId.toString());
         projectile.damage = damage;
+        projectile.heavy = ability.heavy();
         projectile.setPos(from.add(dir.scale(FORWARD_SPAWN)));
         projectile.setDeltaMovement(dir.scale(ability.behavior().projectileSpeed()));
         owner.level().addFreshEntity(projectile);
@@ -145,6 +148,10 @@ public class KaijuProjectile extends Projectile {
             if (def.behavior().explosionRadius() > 0) {
                 explode(def, where);
             }
+            if (getOwner() instanceof KaijuEntity kaiju) {
+                // IA-2: o tiro do kaiju quebra o que acerta (mais forte = mais destruicao).
+                kaiju.destroyAt(where, def);
+            }
             if (getOwner() != null) {
                 AbilityEffects.play(getOwner(), def, where);
             }
@@ -169,8 +176,16 @@ public class KaijuProjectile extends Projectile {
         }
     }
 
+    /** Golpe pesado (raio do Honju, sopro do Diclonius...): passa pelo bloqueio comum, so esquiva evita. */
+    public boolean isHeavy() {
+        return heavy;
+    }
+
     private void hurt(LivingEntity target, AbilityDef ability) {
         Entity owner = getOwner();
+        // IA-2 (bug da Fase 0): rajada de varios tiros (Multi-Finger Gun/Cannon) chega no mesmo tick; a
+        // invulnerabilidade vanilla engolia todos menos um. Cada tiro conta.
+        target.invulnerableTime = 0;
         boolean hurt = target.hurt(damageSources().mobProjectile(this,
                 owner instanceof LivingEntity living ? living : null), damage);
         if (hurt && ability.behavior().slowTicks() > 0) {

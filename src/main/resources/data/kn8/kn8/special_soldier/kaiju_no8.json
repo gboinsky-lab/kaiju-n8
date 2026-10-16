@@ -130,5 +130,14 @@
   "regeneration": {
     "per_second": 0.015,
     "health_below": 0.5
+  },
+  "heavy": {
+    "techniques": [
+      "heavy_punch",
+      "dash_strike",
+      "ground_smash"
+    ],
+    "power": 3,
+    "radius": 3.0
   }
 }

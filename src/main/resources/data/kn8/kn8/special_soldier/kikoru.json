@@ -131,5 +131,15 @@
     "decay_per_second": 2.0,
     "cooldown_reduction_at_max": 0.35
   },
-  "height": 1.6
+  "height": 1.6,
+  "heavy": {
+    "techniques": [
+      "heavy_swing",
+      "shockwave",
+      "ground_smash",
+      "guard_break"
+    ],
+    "power": 3,
+    "radius": 2.5
+  }
 }

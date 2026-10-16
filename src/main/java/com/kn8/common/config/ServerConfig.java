@@ -85,6 +85,14 @@ public final class ServerConfig {
     public static final ModConfigSpec.BooleanValue DESTRUCTION_DROP_ITEMS;
     public static final ModConfigSpec.IntValue DESTRUCTION_LOG_LIMIT;
     public static final ModConfigSpec.IntValue PATH_CLEAR_COOLDOWN_TICKS;
+    /** IA-2: destruicao automatica dos ataques de kaiju (habilidades sem bloco "destruction" no JSON). */
+    public static final ModConfigSpec.BooleanValue ABILITY_AUTO_DESTRUCTION;
+    public static final ModConfigSpec.DoubleValue ABILITY_DESTRUCTION_RADIUS;
+    public static final ModConfigSpec.DoubleValue ABILITY_HEAVY_DESTRUCTION_RADIUS;
+    public static final ModConfigSpec.IntValue ABILITY_HEAVY_POWER_BONUS;
+    public static final ModConfigSpec.DoubleValue ABILITY_MAX_DESTRUCTION_RADIUS;
+    /** IA-2: a guarda da cauda do Hoshina No. 10 segura golpe pesado de kaiju? */
+    public static final ModConfigSpec.BooleanValue TAIL_GUARD_BLOCKS_HEAVY;
     public static final ModConfigSpec.IntValue PATH_POWER_YOJU;
     public static final ModConfigSpec.IntValue PATH_POWER_HONJU;
     public static final ModConfigSpec.IntValue PATH_POWER_DAIKAIJU;
@@ -436,6 +444,17 @@ public final class ServerConfig {
                 + " kaiju.", 3, 0, 4);
         PATH_POWER_DAIKAIJU = intValue("walkPowerDaikaiju", "Destruction power (0-4) of a walking Daikaiju.", 4,
                 0, 4);
+        ABILITY_AUTO_DESTRUCTION = booleanValue("abilityAutoDestruction", "Kaiju attacks without a \"destruction\""
+                + " block in their JSON still break blocks where they hit (power of the walk for the kaiju class).",
+                true);
+        ABILITY_DESTRUCTION_RADIUS = doubleValue("abilityRadius", "Break radius of a normal kaiju attack, times its"
+                + " damage multiplier (at least 1).", 1.5, 0.0, 16.0);
+        ABILITY_HEAVY_DESTRUCTION_RADIUS = doubleValue("abilityHeavyRadius", "Break radius of a heavy kaiju attack,"
+                + " times its damage multiplier (at least 1).", 3.0, 0.0, 16.0);
+        ABILITY_HEAVY_POWER_BONUS = intValue("abilityHeavyPowerBonus", "Extra destruction power of heavy kaiju"
+                + " attacks (capped at 4).", 1, 0, 4);
+        ABILITY_MAX_DESTRUCTION_RADIUS = doubleValue("abilityMaxRadius", "Largest automatic break radius.", 6.0, 0.0,
+                32.0);
         BUILDER.pop();
 
         section("boss", "Boss fights (GDD section 23).");
@@ -667,6 +686,8 @@ public final class ServerConfig {
         BUILDER.pop();
 
         section("combat", "Player combat (GDD sections 7 and 12).");
+        TAIL_GUARD_BLOCKS_HEAVY = booleanValue("tailGuardBlocksHeavy", "Hoshina No. 10's tail guard also reduces"
+                + " heavy kaiju hits (IA-2: heavy hits have no block, so off by default).", false);
         LIGHT_STAMINA_COST = doubleValue("lightStaminaCost", "Stamina spent by a light attack.", 5.0, 0.0, 100.0);
         HEAVY_STAMINA_COST = doubleValue("heavyStaminaCost", "Stamina spent by a heavy attack.", 12.0, 0.0, 100.0);
         DODGE_STAMINA_COST = doubleValue("dodgeStaminaCost", "Stamina spent by a dodge (refused without it).", 20.0,

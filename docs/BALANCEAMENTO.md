@@ -113,6 +113,17 @@ impedia o kaiju de chegar perto de um grupo de soldados).
 | `reloadRetreat` | 6 | recarregando, o atirador recua até a distância de manter + 6 |
 | `outOfAmmoWeapon` | `kn8:combat_knife` | arma branca de quem fica sem munição e não tem arma de apoio (Mina, Reno, Kafka) |
 
+**Destruição pelos ataques** (IA-2, Miguel 2026-10-15) [SUPOSIÇÃO nos números]:
+
+| Chave / campo | Valor | Efeito |
+|---|---|---|
+| `[destruction] abilityAutoDestruction` | true | ataque de kaiju sem `destruction` no JSON quebra no ponto do golpe |
+| `abilityRadius` / `abilityHeavyRadius` | 1,5 / 3,0 | raio da quebra (normal / pesado), × multiplicador de dano do ataque (pelo menos 1) |
+| `abilityHeavyPowerBonus` | 1 | ataque pesado quebra uma categoria a mais (força = a de andar da categoria + 1, até 4) |
+| `abilityMaxRadius` | 6 | maior raio automático |
+| `heavy` no `special_soldier` | força 3, raio 2–3 | Kikoru (golpe pesado, onda de choque, golpe no chão, quebra-guarda), Kikoru No. 4 (mergulho, ataque vertical), Mina (3 tiros de canhão), Narumi e No. 1 (investida, varrida; No. 1 também estocada no ponto fraco), Kaiju No. 8 (soco pesado, investida, golpe no chão) |
+| `[combat] tailGuardBlocksHeavy` | false | a guarda da cauda do Hoshina No. 10 deixa de segurar golpe pesado (golpe pesado não tem bloqueio) [DECIDIR] |
+
 **Quebra ao andar** (`[destruction] walk*`, 0.6): força 3 para Yoju, Honju e numerados (quebra frágil, normal e
 resistente: vidro, madeira, terra, pedra, tijolo, concreto), 4 para Daikaiju (também deepslate e ferro); um pedido a
 cada 5 ticks no máximo. Força 0 desliga [SUPOSIÇÃO].
@@ -449,7 +460,7 @@ sobe mais rápido. A fuga do No. 9 só dá mérito a quem causou dano nele.
 | Personagem | Vida | Armadura | Velocidade | Release (teto) | `kaiju_damage` | Arma | Técnicas (multiplicador sobre a arma, recarga em ticks) |
 |---|---|---|---|---|---|---|---|
 | Reno (T5, suporte/rifle) | 360 | 17 | 0,31 | 30% (70%) | 0,5 | rifle (5) | tiro de precisão 2,2 (60), rajada 3 × 0,9 (50), munição congelante 1,2 + Lentidão III 4 s (140), supressão 5 × 0,6 + Lentidão I (160), coronhada 0,8 (40) |
-| Mina (T6, anti-Daikaiju) | 420 | 20 | 0,30 | 40% (90%) | 0,65 | canhão (12) | tiro de precisão 1,4 (40), tiro do canhão 1,0 com explosão de raio 2,5 (50), canhão carregado 3,0 raio 3,5 (140), Anti-Giant 10,0 raio 4,5 (300, preparo de 2,5 s, prioridade contra Honju/numerados) |
+| Mina (T6, anti-Daikaiju) | 420 | 20 | 0,30 | 40% (90%) | 0,65 | canhão (12) | tiro de precisão 1,4 (40), tiro do canhão 1,0 com explosão de raio 2,5 (50), canhão carregado 3,0 raio 3,5 (140), Anti-Giant 10,0 raio 4,5 (300, preparo de 2,5 s, prioridade contra Honju/numerados; IA-2: contra qualquer kaiju, só 4 tiros por vida) |
 | Narumi (T6, comandante) | 480 | 20 | 0,32 | 40% (85%) | 0,52 | baioneta (9) | estocadas 0,9/1,0/1,3 (40), investida 1,8 (70), tiro da baioneta 1,3 (60), varrida 1,5 com empurrão (90) |
 
 **Formas com as armas numeradas (0.7-D)**, mesma regra (v1.2 seção 12 para vida/armadura/velocidade, o resto
@@ -571,7 +582,7 @@ Balanceamento v1.0 (`level_stats`): vida / armadura / velocidade por nível — 
 Variantes comuns (0.4, peso no sorteio): Atirador rifle + faca de apoio (4), Patrulheiro pistola + faca (2),
 Espadachim espada (0), Batedor faca (0), Recruta sem arma (0). **IA-1B (Miguel, 2026-10-15):** soldado comum nasce só
 com arma de fogo (espada e faca continuam por comando, peso 0; defensores das invasões que eram "espada" viraram
-"pistola"); 3 pentes reserva (`npc.spare_magazines` do perfil) e depois a arma branca. Troca para a faca com o kaiju
+"pistola"); **4 pentes reserva** (IA-2, Miguel 2026-10-16; `npc.spare_magazines` do perfil, contados em balas: a recarga completa o pente e as balas que sobravam voltam para a reserva; rifle 30 + 120 = 150 tiros, pistola 12 + 48 = 60) e depois a arma branca. Troca para a faca com o kaiju
 a menos de 3,5 blocos (`sidearm_distance`). Soldado comum não usa machado (arma especial).
 
 ✅ 0.3 (decisão do Miguel: soldados simples precisam de grupo; fortes resolvem sozinhos): dano contra kaiju ×

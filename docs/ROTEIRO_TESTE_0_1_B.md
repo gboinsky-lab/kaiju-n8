@@ -648,3 +648,20 @@ Tecla nova: **C** (Parkour; troca em Opções > Controles > Kaiju No. 8). Númer
 | 45.7 | Reno ou Mina até acabar a munição | Pegam uma faca (não ficam de mão vazia) e lutam de perto |
 | 45.8 | Dois soldados, um recarregando com o kaiju em cima dele | O outro soldado passa a atirar nesse kaiju (cobertura) |
 | 45.9 | Servidor dedicado + 2 clientes | Os dois veem o mesmo comportamento |
+
+## 46. Combate: destruição, golpe pesado sem bloqueio, rajada, munição e Anti-Giant (IA-2)
+
+| # | Passo | Esperado |
+|---|---|---|
+| 46.1 | Fique dentro de uma casa de tijolo/pedra com um Primigenius a ~10 blocos (`gamerule mobGriefing true`) | O kaiju bate na parede e abre um rombo em poucos golpes; entra e ataca |
+| 46.2 | Honju ou No. 10 usando golpe pesado perto de construções | Quebra mais (raio maior, também deepslate/ferro com o bônus de força) |
+| 46.3 | Raio/sopro de kaiju batendo num muro | O tiro quebra o ponto onde bateu |
+| 46.4 | Kikoru, Mina, Narumi e Kaiju No. 8 lutando perto de pilares de pedra | Os golpes pesados e os tiros de canhão quebram os blocos em volta do alvo |
+| 46.5 | Hoshina, Reno, soldados comuns lutando perto de pilares | Não quebram nada |
+| 46.6 | Bloquear (com o jogador) o raio de energia do Honju | O bloqueio não segura (dano cheio); só a esquiva evita |
+| 46.7 | Bloquear um golpe comum de kaiju | O bloqueio continua reduzindo o dano; parry continua atordoando só no corpo a corpo |
+| 46.8 | No. 9 forma preta com pele endurecida (partículas de ferro) levando golpe pesado do machado | O golpe pesado passa inteiro |
+| 46.9 | Multi-Finger Gun do No. 9 em você | Cada tiro da rajada tira vida (antes só um contava) |
+| 46.10 | Soldado de rifle numa luta longa | 5 pentes no total (150 tiros); recarregar sem alvo não perde as balas que sobravam |
+| 46.11 | Mina contra um Primigenius pequeno | Pode usar o Anti-Giant; depois de 4 tiros não usa mais (nem depois de sair e voltar ao mundo) |
+| 46.12 | Servidor dedicado + 2 clientes | Os dois veem a mesma destruição |

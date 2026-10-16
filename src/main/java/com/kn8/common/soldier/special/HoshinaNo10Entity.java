@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Optional;
 
 import com.kn8.KN8Constants;
+import com.kn8.common.combat.CombatService;
+import com.kn8.common.config.ServerConfig;
 import com.kn8.common.data.def.SpecialSoldierDef;
 import com.kn8.common.data.def.WeaponDef;
 import com.kn8.common.kaiju.KaijuEntity;
@@ -174,8 +176,11 @@ public class HoshinaNo10Entity extends HoshinaEntity {
         }
         Optional<SpecialSoldierDef.Numbers10> n10 = numbers10();
         long now = level().getGameTime();
-        boolean heavy = source.getEntity() instanceof KaijuEntity kaiju && kaiju.isDealingHeavyHit();
-        boolean threat = heavy || source.is(DamageTypeTags.IS_PROJECTILE);
+        // IA-2 (Miguel: golpe pesado nao tem bloqueio): a cauda so segura golpe pesado de kaiju com
+        // [combat] tailGuardBlocksHeavy; projetil comum continua sendo guardado.
+        boolean heavyHit = source.getEntity() instanceof KaijuEntity && CombatService.isHeavyHit(source);
+        boolean heavy = heavyHit && ServerConfig.TAIL_GUARD_BLOCKS_HEAVY.get();
+        boolean threat = heavy || (source.is(DamageTypeTags.IS_PROJECTILE) && !heavyHit);
         if (n10.isPresent() && threat && now >= guardReadyAt && !isInvulnerableNow()) {
             SpecialSoldierDef.Tail tail = n10.get().tail();
             double half = Math.toRadians(tail.frontArcDegrees() / 2.0);
