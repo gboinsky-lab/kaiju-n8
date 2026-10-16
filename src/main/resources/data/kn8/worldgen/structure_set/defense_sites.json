@@ -2,11 +2,11 @@
   "structures": [
     {
       "structure": "kn8:ariake_base",
-      "weight": 1
+      "weight": 2
     },
     {
       "structure": "kn8:tachikawa_base",
-      "weight": 1
+      "weight": 2
     },
     {
       "structure": "kn8:shinagawa_city",
@@ -19,8 +19,8 @@
   ],
   "placement": {
     "type": "minecraft:random_spread",
-    "spacing": 64,
-    "separation": 24,
+    "spacing": 48,
+    "separation": 16,
     "salt": 280430031
   }
 }

@@ -515,11 +515,12 @@ invasões do local (pesos: Ariake `ariake_assault` 3 / `no9_resurrection` 1; bas
 `[sites] garrison`): Ariake = Narumi + 2 rifle elite; base de Tachikawa = Mina, Hoshina, Kikoru e Reno.
 `[sites] checkIntervalTicks` 20 (de quanto em quanto o servidor confere em que local o jogador está).
 
-**Onde os locais nascem (C3):** conjunto `kn8:defense_sites` (`spacing` 64, `separation` 24 chunks: ~1 local a cada
-1.000 blocos, antes das recusas) [SUPOSIÇÃO]; terreno (`check_step` 12): raio 104/112 (bases) e 96 (cidades),
-desnível máximo 16 (bases) e 18 (cidades), até 5% das amostras com água (`max_water`: riacho ou lagoa pequena); evita (raio em chunks) vilas 10, postos de
-saqueadores 8, mansões 10, templos do deserto/selva, iglus e cabanas 6. As construções pequenas do mod não nascem a
-8 chunks dos locais. A base grande genérica saiu do mundo (só `/place`) [DECIDIR].
+**Onde os locais nascem (C3):** conjunto `kn8:defense_sites` (`spacing` 48, `separation` 16 chunks: ~1 candidato a
+cada 770 blocos, antes das recusas; bases com peso 2) [SUPOSIÇÃO]; terreno (`check_step` 12): raio 104/112 (bases) e 96
+(cidades), desnível máximo 14 (bases) e 16 (cidades) só no miolo de raio 64 (`slope_radius`), até 5% das amostras com
+água (`max_water`: riacho ou lagoa pequena). Medido na seed 8008: locais a 4–16 mil blocos do spawn. Evita (raio em
+chunks, só onde o bioma deixa a construção nascer) vilas 14, postos de saqueadores 8, mansões 10, templos do
+deserto/selva, iglus e cabanas 6. As construções pequenas do mod não nascem a 8 chunks dos locais. A base grande genérica saiu do mundo (só `/place`) [DECIDIR].
 
 **Recompensa por contribuição (0.3, pedido do Miguel):** o mérito e o XP da tabela acima são a recompensa de quem
 lutou "na média". Cada jogador recebe isso × (sua parte do dano dos jogadores × nº de jogadores que lutaram), entre

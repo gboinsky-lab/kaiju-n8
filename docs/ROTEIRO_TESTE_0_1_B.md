@@ -747,7 +747,8 @@ Mundo **novo** (as estruturas só nascem em chunks novos). Pesquisa e fontes: `d
 
 | # | Passo | Esperado |
 |---|---|---|
-| 53.1 | `/locate structure kn8:ariake_base` (e `tachikawa_base`, `shinagawa_city`, `tachikawa_city`) | Acha cada um (pode levar alguns minutos no servidor) |
+| 53.0 | No `server.properties`, `generate-structures=true` (com `false` nenhuma estrutura nasce, mas o `/locate` ainda procura e nunca acha) | — |
+| 53.1 | `/locate structure #kn8:defense_sites` (qualquer local) e `/locate structure kn8:ariake_base` (e `tachikawa_base`, `shinagawa_city`, `tachikawa_city`) | Acha cada um em segundos; os locais ficam a alguns milhares de blocos uns dos outros |
 | 53.2 | `/tp` até cada um e olhe em volta (F5, voando) | Nenhum em cima de lago, rio ou mar; nenhuma vila, posto de saqueadores ou outra construção grudada |
 | 53.3 | Entre andando na base de Ariake | Título "Base Marítima de Ariake" / "Força de Defesa, Primeira Divisão"; na primeira vez aparecem o Narumi e 2 soldados elite na entrada oeste |
 | 53.4 | Passeie por Ariake | QG de vidro de 7 andares com heliporto, laboratório de armas numeradas, celas (a do Kafka), catapulta eletromagnética, salão das divisões com 6 bandeiras; ao sul, o porto (cais, bacia com água, 2 barcos, guindastes, contêineres, farol) |

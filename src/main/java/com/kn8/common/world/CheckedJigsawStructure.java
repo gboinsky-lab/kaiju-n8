@@ -29,8 +29,9 @@ import net.minecraft.world.level.levelgen.structure.placement.StructurePlacement
  * templos...) tiver ponto candidato a ate {@code chunks} chunks num bioma em que ele pode nascer; (2) confere o bioma
  * no centro; (3) mede o terreno numa grade de passo {@code check_step} no raio {@code check_radius}
  * ({@link SiteTerrain}): ate {@code max_water} das amostras com agua na superficie e, no miolo
- * ({@code slope_radius}), desnivel do chao seco ate {@code max_slope} (a borda irregular fica com o beard_thin). Tudo aqui dentro porque o /locate
- * desta versao nao chama as regras de posicao do conjunto ({@code exclusion_zone}); assim ele e a geracao concordam.
+ * ({@code slope_radius}), desnivel do chao seco ate {@code max_slope} (a borda irregular fica com o beard_thin).
+ * Tudo aqui dentro porque o /locate desta versao nao chama as regras de posicao do conjunto ({@code exclusion_zone});
+ * assim ele e a geracao concordam.
  * Mede na coluna de ruido (antes de arvores e construcoes).
  */
 public final class CheckedJigsawStructure extends Structure {

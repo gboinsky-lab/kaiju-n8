@@ -27,7 +27,8 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
 /**
  * GameTests dos locais da obra (construcoes C3): as pecas de Ariake, Tachikawa e Shinagawa carregam com os encaixes,
- * os quatro locais conferem o terreno e evitam vilas ({@code kn8:checked_jigsaw}), e os dados dos locais apontam para invasoes e personagens que existem.
+ * os quatro locais conferem o terreno e evitam vilas ({@code kn8:checked_jigsaw}), e os dados dos locais apontam para
+ * invasoes e personagens que existem.
  */
 @GameTestHolder(KN8Constants.MOD_ID)
 @PrefixGameTestTemplate(false)
@@ -91,12 +92,17 @@ public final class SiteGameTests {
         Structure site = level.registryAccess().registryOrThrow(Registries.STRUCTURE)
                 .get(KN8Constants.id("tachikawa_city"));
         ChunkGenerator generator = level.getChunkSource().getGenerator();
-        ChunkPos chunk = new ChunkPos(helper.absolutePos(BlockPos.ZERO).offset(4096, 0, 4096));
-        Structure.GenerationContext context = new Structure.GenerationContext(level.registryAccess(), generator,
-                generator.getBiomeSource(), level.getChunkSource().randomState(), level.getStructureManager(),
-                level.getSeed(), chunk, level, biome -> true);
-        helper.assertTrue(site != null && site.findValidGenerationPoint(context).isPresent(),
-                "No chao plano e seco a cidade de Tachikawa deveria passar na checagem do terreno");
+        // Alguns chunks seguidos: um ou outro cai perto de um ponto candidato de vila (planicie) e e recusado.
+        ChunkPos base = new ChunkPos(helper.absolutePos(BlockPos.ZERO).offset(4096, 0, 4096));
+        boolean accepted = false;
+        for (int i = 0; i < 12 && !accepted && site != null; i++) {
+            ChunkPos chunk = new ChunkPos(base.x + i * 23, base.z - i * 17);
+            Structure.GenerationContext context = new Structure.GenerationContext(level.registryAccess(), generator,
+                    generator.getBiomeSource(), level.getChunkSource().randomState(), level.getStructureManager(),
+                    level.getSeed(), chunk, level, biome -> true);
+            accepted = site.findValidGenerationPoint(context).isPresent();
+        }
+        helper.assertTrue(accepted, "No chao plano e seco a cidade de Tachikawa deveria passar na checagem do terreno");
         helper.succeed();
     }
 

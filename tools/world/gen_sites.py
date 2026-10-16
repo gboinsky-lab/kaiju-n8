@@ -23,8 +23,9 @@
                          Garden)
 
 As ruas das duas cidades sao as da cidade comum com pools proprios (gen_city.street_piece(prefix)); os lotes de cada
-cidade misturam os proprios com os da cidade comum. Onde nascem: worldgen no fim (kn8:checked_jigsaw: longe de vilas, sem
-agua, plano; conjunto kn8:defense_sites). Uso: python3 tools/world/gen_sites.py
+cidade misturam os proprios com os da cidade comum. Onde nascem: worldgen no fim (kn8:checked_jigsaw: longe de vilas,
+sem agua, plano; conjunto kn8:defense_sites; /locate structure #kn8:defense_sites).
+Uso: python3 tools/world/gen_sites.py
 Ver no jogo: /place structure kn8:ariake_base_layout (sem conferir o terreno) ou kn8:ariake_base (conferindo).
 """
 from gen_base import Piece, ROAD, element, stairs
@@ -863,7 +864,7 @@ SITES = [
 MAX_WATER = 0.05
 SLOPE_RADIUS = 64
 # Conjuntos que os locais evitam (chunks de raio): vilas e as construcoes de superficie do vanilla.
-AVOID = [("minecraft:villages", 10), ("minecraft:pillager_outposts", 8), ("minecraft:desert_pyramids", 6),
+AVOID = [("minecraft:villages", 14), ("minecraft:pillager_outposts", 8), ("minecraft:desert_pyramids", 6),
          ("minecraft:igloos", 6), ("minecraft:swamp_huts", 6), ("minecraft:woodland_mansions", 10),
          ("minecraft:jungle_temples", 6)]
 
@@ -894,10 +895,15 @@ def worldgen():
             "check_step": 12, "max_slope": slope, "slope_radius": SLOPE_RADIUS,
             "max_water": MAX_WATER,
             "avoid": [{"structure_set": s, "chunks": c} for s, c in AVOID]}))
-    # Um conjunto para os quatro: os locais nunca nascem colados um no outro. ~1 a cada 1.000 blocos [SUPOSICAO].
+    # Tag para o /locate achar qualquer um dos quatro (/locate structure #kn8:defense_sites).
+    dump(DATA / "kn8/tags/worldgen/structure/defense_sites.json", {"values": [f"kn8:{name}" for name, *_ in SITES]})
+    # Um conjunto para os quatro: os locais nunca nascem colados um no outro. ~1 candidato a cada 770 blocos
+    # [SUPOSICAO].
+    # Bases com peso 2: os biomas delas sao menos e o terreno delas e maior (sem isso nasciam a ~20.000 blocos).
     dump(wg / "structure_set/defense_sites.json", {
-        "structures": [{"structure": f"kn8:{name}", "weight": 1} for name, *_ in SITES],
-        "placement": {"type": "minecraft:random_spread", "spacing": 64, "separation": 24, "salt": 280_430_031}})
+        "structures": [{"structure": f"kn8:{name}", "weight": 2 if name.endswith("_base") else 1}
+                       for name, *_ in SITES],
+        "placement": {"type": "minecraft:random_spread", "spacing": 48, "separation": 16, "salt": 280_430_031}})
     loot = {
         "ariake_lab": [(3, 6), [item("kn8:core_fragment", 6, 1, 2), item("kn8:kaiju_tissue", 10, 2, 5),
                                 item("kn8:muscle_fiber", 8, 1, 4), item("kn8:release_catalyst", 2),

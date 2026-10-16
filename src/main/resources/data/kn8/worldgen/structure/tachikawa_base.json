@@ -13,7 +13,7 @@
   "avoid": [
     {
       "structure_set": "minecraft:villages",
-      "chunks": 10
+      "chunks": 14
     },
     {
       "structure_set": "minecraft:pillager_outposts",
