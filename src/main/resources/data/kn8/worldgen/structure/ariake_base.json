@@ -7,5 +7,36 @@
   "layout": "kn8:ariake_base_layout",
   "check_radius": 104,
   "check_step": 12,
-  "max_slope": 12
+  "max_slope": 16,
+  "max_water": 0.05,
+  "avoid": [
+    {
+      "structure_set": "minecraft:villages",
+      "chunks": 10
+    },
+    {
+      "structure_set": "minecraft:pillager_outposts",
+      "chunks": 8
+    },
+    {
+      "structure_set": "minecraft:desert_pyramids",
+      "chunks": 6
+    },
+    {
+      "structure_set": "minecraft:igloos",
+      "chunks": 6
+    },
+    {
+      "structure_set": "minecraft:swamp_huts",
+      "chunks": 6
+    },
+    {
+      "structure_set": "minecraft:woodland_mansions",
+      "chunks": 10
+    },
+    {
+      "structure_set": "minecraft:jungle_temples",
+      "chunks": 6
+    }
+  ]
 }

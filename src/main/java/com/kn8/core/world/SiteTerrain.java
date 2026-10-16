@@ -3,39 +3,56 @@ package com.kn8.core.world;
 
 /**
  * Regra pura do terreno de um local da obra (construcoes C3), testavel com JUnit: amostras em grade em volta do
- * ponto; o local so nasce se nenhuma amostra tiver agua na superficie e o desnivel do chao (maior menos menor
- * altura) nao passar de {@code maxSlope}. Para na primeira amostra que reprova ({@link #add} devolve false).
+ * ponto; o local so nasce se no maximo {@code maxWet} amostras tiverem agua na superficie (riacho ou lagoa pequena,
+ * que a construcao cobre; lago, rio largo ou mar passam disso) e o desnivel do chao seco (maior menos menor altura)
+ * nao passar de {@code maxSlope}. Para na primeira amostra que reprova ({@link #add} devolve false).
  */
 public final class SiteTerrain {
 
     private final int maxSlope;
+    private final int maxWet;
     private int min = Integer.MAX_VALUE;
     private int max = Integer.MIN_VALUE;
     private int samples;
+    private int wet;
     private boolean rejected;
 
-    public SiteTerrain(int maxSlope) {
+    public SiteTerrain(int maxSlope, int maxWet) {
         this.maxSlope = maxSlope;
+        this.maxWet = maxWet;
+    }
+
+    /** Quantas amostras molhadas a fracao permite numa grade de {@code samples} pontos. */
+    public static int allowedWet(int samples, double fraction) {
+        return (int) Math.floor(samples * fraction);
     }
 
     /** Uma amostra: altura do chao e se a superficie ali e agua (ou outro fluido). False = local reprovado. */
-    public boolean add(int ground, boolean wet) {
+    public boolean add(int ground, boolean isWet) {
         if (rejected) {
             return false;
         }
         samples++;
+        if (isWet) {
+            rejected = ++wet > maxWet;
+            return !rejected;
+        }
         min = Math.min(min, ground);
         max = Math.max(max, ground);
-        rejected = wet || max - min > maxSlope;
+        rejected = max - min > maxSlope;
         return !rejected;
     }
 
     public boolean accepted() {
-        return !rejected && samples > 0;
+        return !rejected && samples > wet;
     }
 
     public int slope() {
-        return samples == 0 ? 0 : max - min;
+        return max < min ? 0 : max - min;
+    }
+
+    public int wet() {
+        return wet;
     }
 
     /** Pontos (dx, dz) da grade de passo {@code step} dentro do circulo de raio {@code radius} (centro incluso). */
@@ -59,5 +76,10 @@ public final class SiteTerrain {
             }
         }
         return points;
+    }
+
+    /** Algum ponto candidato (cx, cz) a ate {@code range} chunks de (x, z)? (vizinhanca quadrada, em chunks). */
+    public static boolean within(int x, int z, int cx, int cz, int range) {
+        return Math.abs(cx - x) <= range && Math.abs(cz - z) <= range;
     }
 }

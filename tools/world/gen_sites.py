@@ -23,8 +23,8 @@
                          Garden)
 
 As ruas das duas cidades sao as da cidade comum com pools proprios (gen_city.street_piece(prefix)); os lotes de cada
-cidade misturam os proprios com os da cidade comum. Onde nascem: worldgen no fim (kn8:checked_jigsaw + conjunto
-kn8:defense_sites). Uso: python3 tools/world/gen_sites.py
+cidade misturam os proprios com os da cidade comum. Onde nascem: worldgen no fim (kn8:checked_jigsaw: longe de vilas, sem
+agua, plano; conjunto kn8:defense_sites). Uso: python3 tools/world/gen_sites.py
 Ver no jogo: /place structure kn8:ariake_base_layout (sem conferir o terreno) ou kn8:ariake_base (conferindo).
 """
 from gen_base import Piece, ROAD, element, stairs
@@ -853,11 +853,13 @@ TACHIKAWA_LOTS = [("tachikawa/lot_department", 3), ("tachikawa/lot_showa_park", 
                   ("city/lot_parking", 1)]
 # (estrutura, pool inicial, size, distancia max., biomas, raio da checagem, desnivel max.)
 SITES = [
-    ("ariake_base", "kn8:ariake_base/core", 3, 100, BASE_BIOMES, 104, 12),
-    ("tachikawa_base", "kn8:tachikawa_base/core", 3, 110, BASE_BIOMES, 112, 12),
-    ("shinagawa_city", "kn8:shinagawa/station", 6, 116, CITY_BIOMES, 96, 14),
-    ("tachikawa_city", "kn8:tachikawa/station", 6, 116, CITY_BIOMES, 96, 14),
+    ("ariake_base", "kn8:ariake_base/core", 3, 100, BASE_BIOMES, 104, 16),
+    ("tachikawa_base", "kn8:tachikawa_base/core", 3, 110, BASE_BIOMES, 112, 16),
+    ("shinagawa_city", "kn8:shinagawa/station", 6, 116, CITY_BIOMES, 96, 18),
+    ("tachikawa_city", "kn8:tachikawa/station", 6, 116, CITY_BIOMES, 96, 18),
 ]
+# Fracao das amostras que pode ter agua (riacho ou lagoa pequena, que a construcao cobre; lago e rio largo nao).
+MAX_WATER = 0.05
 # Conjuntos que os locais evitam (chunks de raio): vilas e as construcoes de superficie do vanilla.
 AVOID = [("minecraft:villages", 10), ("minecraft:pillager_outposts", 8), ("minecraft:desert_pyramids", 6),
          ("minecraft:igloos", 6), ("minecraft:swamp_huts", 6), ("minecraft:woodland_mansions", 10),
@@ -887,12 +889,12 @@ def worldgen():
             "use_expansion_hack": False}))
         dump(wg / f"structure/{name}.json", dict(settings, **{
             "type": "kn8:checked_jigsaw", "layout": f"kn8:{name}_layout", "check_radius": radius,
-            "check_step": 12, "max_slope": slope}))
+            "check_step": 12, "max_slope": slope, "max_water": MAX_WATER,
+            "avoid": [{"structure_set": s, "chunks": c} for s, c in AVOID]}))
     # Um conjunto para os quatro: os locais nunca nascem colados um no outro. ~1 a cada 1.000 blocos [SUPOSICAO].
     dump(wg / "structure_set/defense_sites.json", {
         "structures": [{"structure": f"kn8:{name}", "weight": 1} for name, *_ in SITES],
-        "placement": {"type": "kn8:avoiding_spread", "spacing": 64, "separation": 24, "salt": 280_430_031,
-                      "avoid": [{"structure_set": s, "chunks": c} for s, c in AVOID]}})
+        "placement": {"type": "minecraft:random_spread", "spacing": 64, "separation": 24, "salt": 280_430_031}})
     loot = {
         "ariake_lab": [(3, 6), [item("kn8:core_fragment", 6, 1, 2), item("kn8:kaiju_tissue", 10, 2, 5),
                                 item("kn8:muscle_fiber", 8, 1, 4), item("kn8:release_catalyst", 2),

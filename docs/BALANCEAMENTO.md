@@ -517,7 +517,7 @@ invasões do local (pesos: Ariake `ariake_assault` 3 / `no9_resurrection` 1; bas
 
 **Onde os locais nascem (C3):** conjunto `kn8:defense_sites` (`spacing` 64, `separation` 24 chunks: ~1 local a cada
 1.000 blocos, antes das recusas) [SUPOSIÇÃO]; terreno (`check_step` 12): raio 104/112 (bases) e 96 (cidades),
-desnível máximo 12 (bases) e 14 (cidades), nenhuma amostra com água; evita (raio em chunks) vilas 10, postos de
+desnível máximo 16 (bases) e 18 (cidades), até 5% das amostras com água (`max_water`: riacho ou lagoa pequena); evita (raio em chunks) vilas 10, postos de
 saqueadores 8, mansões 10, templos do deserto/selva, iglus e cabanas 6. As construções pequenas do mod não nascem a
 8 chunks dos locais. A base grande genérica saiu do mundo (só `/place`) [DECIDIR].
 

@@ -8,7 +8,6 @@ import com.kn8.KN8Constants;
 import com.kn8.common.data.KN8Data;
 import com.kn8.common.data.def.SiteDef;
 import com.kn8.common.registry.KN8Entities;
-import com.kn8.common.world.AvoidingSpreadPlacement;
 import com.kn8.common.world.CheckedJigsawStructure;
 
 import net.minecraft.core.BlockPos;
@@ -28,8 +27,7 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
 /**
  * GameTests dos locais da obra (construcoes C3): as pecas de Ariake, Tachikawa e Shinagawa carregam com os encaixes,
- * os quatro locais conferem o terreno ({@code kn8:checked_jigsaw}) e o conjunto evita vilas
- * ({@code kn8:avoiding_spread}), e os dados dos locais apontam para invasoes e personagens que existem.
+ * os quatro locais conferem o terreno e evitam vilas ({@code kn8:checked_jigsaw}), e os dados dos locais apontam para invasoes e personagens que existem.
  */
 @GameTestHolder(KN8Constants.MOD_ID)
 @PrefixGameTestTemplate(false)
@@ -79,8 +77,8 @@ public final class SiteGameTests {
         }
         StructureSet set = helper.getLevel().registryAccess().registryOrThrow(Registries.STRUCTURE_SET)
                 .get(KN8Constants.id("defense_sites"));
-        helper.assertTrue(set != null && set.placement() instanceof AvoidingSpreadPlacement
-                && set.structures().size() == SITES.size(), "kn8:defense_sites deveria ter os 4 locais e evitar vilas");
+        helper.assertTrue(set != null && set.structures().size() == SITES.size(),
+                "kn8:defense_sites deveria ter os 4 locais");
         helper.assertTrue(helper.getLevel().registryAccess().registryOrThrow(Registries.STRUCTURE_SET)
                 .get(KN8Constants.id("defense_base_large")) == null, "A base grande generica nao nasce mais sozinha");
         helper.succeed();

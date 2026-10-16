@@ -25,6 +25,5 @@ public final class KN8Registration {
         KN8Attachments.ATTACHMENT_TYPES.register(modEventBus);
         KN8DataComponents.DATA_COMPONENTS.register(modEventBus);
         KN8Worldgen.STRUCTURE_TYPES.register(modEventBus);
-        KN8Worldgen.PLACEMENT_TYPES.register(modEventBus);
     }
 }

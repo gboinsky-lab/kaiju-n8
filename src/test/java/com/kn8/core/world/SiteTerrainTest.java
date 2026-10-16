@@ -10,7 +10,7 @@ class SiteTerrainTest {
 
     @Test
     void flatDryGroundIsAccepted() {
-        SiteTerrain terrain = new SiteTerrain(6);
+        SiteTerrain terrain = new SiteTerrain(6, 0);
         for (int ground : new int[] {64, 66, 63, 69, 65}) {
             assertTrue(terrain.add(ground, false));
         }
@@ -19,25 +19,45 @@ class SiteTerrainTest {
     }
 
     @Test
-    void anyWaterRejects() {
-        SiteTerrain terrain = new SiteTerrain(20);
+    void waterAboveTheAllowanceRejects() {
+        SiteTerrain terrain = new SiteTerrain(20, 1);
         assertTrue(terrain.add(64, false));
+        assertTrue(terrain.add(62, true));
         assertFalse(terrain.add(62, true));
         assertFalse(terrain.add(64, false));
         assertFalse(terrain.accepted());
     }
 
     @Test
+    void wetSamplesDoNotCountForTheSlope() {
+        SiteTerrain terrain = new SiteTerrain(4, 2);
+        assertTrue(terrain.add(64, false));
+        assertTrue(terrain.add(40, true));
+        assertTrue(terrain.add(66, false));
+        assertTrue(terrain.accepted());
+        assertEquals(2, terrain.slope());
+    }
+
+    @Test
     void steepGroundRejects() {
-        SiteTerrain terrain = new SiteTerrain(6);
+        SiteTerrain terrain = new SiteTerrain(6, 0);
         assertTrue(terrain.add(64, false));
         assertFalse(terrain.add(71, false));
         assertFalse(terrain.accepted());
     }
 
     @Test
-    void noSamplesIsNotAccepted() {
-        assertFalse(new SiteTerrain(6).accepted());
+    void onlyWaterOrNoSamplesIsNotAccepted() {
+        assertFalse(new SiteTerrain(6, 0).accepted());
+        SiteTerrain allWet = new SiteTerrain(6, 5);
+        allWet.add(60, true);
+        assertFalse(allWet.accepted());
+    }
+
+    @Test
+    void allowanceFollowsTheFraction() {
+        assertEquals(12, SiteTerrain.allowedWet(241, 0.05));
+        assertEquals(0, SiteTerrain.allowedWet(241, 0.0));
     }
 
     @Test
@@ -47,5 +67,11 @@ class SiteTerrainTest {
         for (int[] point : grid) {
             assertTrue(point[0] * point[0] + point[1] * point[1] <= 24 * 24);
         }
+    }
+
+    @Test
+    void withinIsASquareInChunks() {
+        assertTrue(SiteTerrain.within(0, 0, 10, -10, 10));
+        assertFalse(SiteTerrain.within(0, 0, 11, 0, 10));
     }
 }
