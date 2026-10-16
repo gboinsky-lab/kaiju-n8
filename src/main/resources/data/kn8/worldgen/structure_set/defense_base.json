@@ -9,6 +9,10 @@
     "type": "minecraft:random_spread",
     "spacing": 72,
     "separation": 28,
-    "salt": 280430021
+    "salt": 280430021,
+    "exclusion_zone": {
+      "other_set": "kn8:defense_sites",
+      "chunk_count": 8
+    }
   }
 }

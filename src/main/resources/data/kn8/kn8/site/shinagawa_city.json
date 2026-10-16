@@ -1,0 +1,14 @@
+{
+  "structure": "kn8:shinagawa_city",
+  "division": "first",
+  "invasions": [
+    {
+      "invasion": "kn8:shinagawa_ants",
+      "weight": 3
+    },
+    {
+      "invasion": "kn8:spider_swarm",
+      "weight": 1
+    }
+  ]
+}

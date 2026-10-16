@@ -21,6 +21,7 @@ import com.kn8.common.numbered.No9Service;
 import com.kn8.common.registry.KN8Entities;
 import com.kn8.common.registry.KN8Sounds;
 import com.kn8.common.server.KN8Server;
+import com.kn8.common.site.SiteService;
 import com.kn8.common.soldier.SoldierEntity;
 import com.kn8.common.world.KaijuSpawner;
 import com.kn8.core.soldier.SquadRules;
@@ -521,6 +522,17 @@ public final class InvasionService {
         if (candidates.isEmpty()) {
             return;
         }
+        // C3: jogador num local da obra recebe a invasao do lugar (raide do No. 10 em Tachikawa, formigas em
+        // Shinagawa...), na entrada da peca inicial.
+        ServerPlayer chosen = candidates.get(level.random.nextInt(candidates.size()));
+        Optional<SiteService.Hit> site = SiteService.siteAt(level, chosen.blockPosition());
+        if (site.isPresent() && level.random.nextDouble() < ServerConfig.SITE_INVASION_CHANCE.get()) {
+            Optional<ResourceLocation> invasion = SiteService.rollInvasion(site.get(), level.random);
+            if (invasion.isPresent()) {
+                start(level, invasion.get(), site.get().gate());
+                return;
+            }
+        }
         int totalWeight = KN8Data.INVASION.server().values().stream().mapToInt(InvasionDef::naturalWeight).sum();
         if (totalWeight <= 0) {
             return;
@@ -529,8 +541,7 @@ public final class InvasionService {
         for (Map.Entry<ResourceLocation, InvasionDef> entry : KN8Data.INVASION.server().entrySet()) {
             roll -= entry.getValue().naturalWeight();
             if (roll < 0) {
-                ServerPlayer target = candidates.get(level.random.nextInt(candidates.size()));
-                start(level, entry.getKey(), target.blockPosition());
+                start(level, entry.getKey(), chosen.blockPosition());
                 return;
             }
         }

@@ -1,6 +1,8 @@
 // src/main/java/com/kn8/common/registry/KN8Registration.java
 package com.kn8.common.registry;
 
+import com.kn8.common.world.KN8Worldgen;
+
 import net.neoforged.bus.api.IEventBus;
 
 /**
@@ -22,5 +24,7 @@ public final class KN8Registration {
         KN8Particles.PARTICLE_TYPES.register(modEventBus);
         KN8Attachments.ATTACHMENT_TYPES.register(modEventBus);
         KN8DataComponents.DATA_COMPONENTS.register(modEventBus);
+        KN8Worldgen.STRUCTURE_TYPES.register(modEventBus);
+        KN8Worldgen.PLACEMENT_TYPES.register(modEventBus);
     }
 }

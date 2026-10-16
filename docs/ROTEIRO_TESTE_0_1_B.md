@@ -740,3 +740,20 @@ Tecla nova: **C** (Parkour; troca em Opções > Controles > Kaiju No. 8). Númer
 | 52.4 | Kaiju num morro natural acima de você | Não cava o morro (só construções) |
 | 52.5 | Kaiju preso entre prédios sem conseguir chegar no alvo | Quebra o caminho à frente em vez de desistir parado |
 | 52.6 | `/gamerule mobGriefing false` | Nada é quebrado; a forma nova nasce no chão livre mais próximo, como antes |
+
+## 53. Locais da obra: Ariake, Tachikawa e Shinagawa (construções C3)
+
+Mundo **novo** (as estruturas só nascem em chunks novos). Pesquisa e fontes: `docs/LOCAIS_KAIJU_N8.md`.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 53.1 | `/locate structure kn8:ariake_base` (e `tachikawa_base`, `shinagawa_city`, `tachikawa_city`) | Acha cada um (pode levar alguns minutos no servidor) |
+| 53.2 | `/tp` até cada um e olhe em volta (F5, voando) | Nenhum em cima de lago, rio ou mar; nenhuma vila, posto de saqueadores ou outra construção grudada |
+| 53.3 | Entre andando na base de Ariake | Título "Base Marítima de Ariake" / "Força de Defesa, Primeira Divisão"; na primeira vez aparecem o Narumi e 2 soldados elite na entrada oeste |
+| 53.4 | Passeie por Ariake | QG de vidro de 7 andares com heliporto, laboratório de armas numeradas, celas (a do Kafka), catapulta eletromagnética, salão das divisões com 6 bandeiras; ao sul, o porto (cais, bacia com água, 2 barcos, guindastes, contêineres, farol) |
+| 53.5 | Entre na base de Tachikawa | Título "Base de Tachikawa" / "Terceira Divisão"; na primeira vez Mina, Hoshina, Kikoru e Reno aparecem |
+| 53.6 | Passeie por Tachikawa | QG comprido com pórtico e torre com o "3" laranja, sala de operações, pátio de formatura; a arena de treino (painel funciona) e o aeródromo (pista, hangares com helicópteros, torre de controle, tanques) |
+| 53.7 | Entre em Shinagawa | Estação com trilhos elevados, Shinkansen e plataforma (escada de mão no pilar); torres do Intercity; ruas com torres altas, calçadão coberto e restos de formigueiro |
+| 53.8 | Entre na cidade de Tachikawa | Monotrilho elevado com estação e trem (escada de mão), estação da JR dos dois lados ligada pela passarela, loja de departamentos, Parque Showa Kinen (girassóis, lago) e a sala de shows |
+| 53.9 | Saia e entre de novo num local; outro jogador entra | O título aparece de novo para quem entra; a guarnição **não** aparece de novo (uma vez por mundo) |
+| 53.10 | Dentro de um local, `/time set 12990` e espere (com `naturalChance` 1 no config) | A invasão é a do local (ex.: Raide do No. 10 em Tachikawa) e começa na entrada da peça inicial |

@@ -379,6 +379,10 @@ WORLDGEN = [
 ]
 
 
+# C3: as construcoes pequenas nao nascem perto dos locais da obra (Ariake, Tachikawa, Shinagawa).
+SITES_EXCLUSION = {"other_set": "kn8:defense_sites", "chunk_count": 8}
+
+
 def item(name, weight, low=1, high=1):
     entry = {"type": "minecraft:item", "name": name, "weight": weight}
     if high > 1 or low > 1:
@@ -427,7 +431,7 @@ def worldgen():
         dump(wg / f"structure_set/{name}.json", {
             "structures": [{"structure": f"kn8:{name}", "weight": 1}],
             "placement": {"type": "minecraft:random_spread", "spacing": spacing, "separation": separation,
-                          "salt": salt}})
+                          "salt": salt, "exclusion_zone": SITES_EXCLUSION}})
     for name, (rolls, entries) in LOOT.items():
         dump(DATA / f"kn8/loot_table/chests/{name}.json", {"type": "minecraft:chest", "pools": [{
             "rolls": {"type": "minecraft:uniform", "min": rolls[0], "max": rolls[1]}, "entries": entries}]})

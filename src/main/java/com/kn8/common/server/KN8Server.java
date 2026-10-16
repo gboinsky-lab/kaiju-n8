@@ -20,6 +20,7 @@ import com.kn8.core.net.RateLimiter;
 import com.kn8.core.sched.DelayedTaskQueue;
 
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
 
@@ -51,6 +52,8 @@ public final class KN8Server {
     private final Set<ResourceKey<Level>> restoring = new HashSet<>();
     // 0.2 (Etapa 7): invasao ativa por dimensao (nao salva).
     private final Map<ResourceKey<Level>, Invasion> invasions = new HashMap<>();
+    // C3: local da obra em que cada jogador esta agora (para mostrar o nome so ao entrar; nao salvo).
+    private final Map<UUID, ResourceLocation> playerSites = new HashMap<>();
 
     private KN8Server(MinecraftServer server) {
         this.server = server;
@@ -131,6 +134,10 @@ public final class KN8Server {
 
     public Map<ResourceKey<Level>, Invasion> invasions() {
         return invasions;
+    }
+
+    public Map<UUID, ResourceLocation> playerSites() {
+        return playerSites;
     }
 
     public boolean isRestoring(ResourceKey<Level> dimension) {

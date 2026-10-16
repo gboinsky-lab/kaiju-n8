@@ -242,6 +242,11 @@ public final class ServerConfig {
     public static final ModConfigSpec.DoubleValue SQUAD_ASSIGNED_BONUS;
     public static final ModConfigSpec.DoubleValue SQUAD_SEPARATION;
 
+    // --- sites (construcoes C3: Ariake, Tachikawa, Shinagawa) -------------------------------------------------------
+    public static final ModConfigSpec.IntValue SITE_CHECK_TICKS;
+    public static final ModConfigSpec.BooleanValue SITE_GARRISON;
+    public static final ModConfigSpec.DoubleValue SITE_INVASION_CHANCE;
+
     // --- combat (M10, GDD secoes 7 e 12) ---------------------------------------------------------------------------
     public static final ModConfigSpec.DoubleValue LIGHT_STAMINA_COST;
     public static final ModConfigSpec.DoubleValue HEAVY_STAMINA_COST;
@@ -755,6 +760,17 @@ public final class ServerConfig {
                 + " many blocks closer when its members choose a target.", 16.0, 0.0, 128.0);
         SQUAD_SEPARATION = doubleValue("separationRadius", "Soldiers with another ally this close (blocks) reach the"
                 + " kaiju from their own angle instead of all walking to the same spot.", 4.0, 0.0, 32.0);
+        BUILDER.pop();
+
+        section("sites", "Places from the series (C3): Ariake, Tachikawa base and city, Shinagawa.");
+        SITE_CHECK_TICKS = intValue("checkIntervalTicks", "How often (ticks) the server checks which place each player"
+                + " is in (name on screen, garrison).", 20, 1, 1200);
+        SITE_GARRISON = booleanValue("garrison", "The series characters of a place (Narumi at Ariake; Mina, Hoshina,"
+                + " Kikoru and Reno at Tachikawa) appear there once per world, the first time a player arrives.",
+                true);
+        SITE_INVASION_CHANCE = doubleValue("invasionChance", "When the natural invasion picks a player inside a place,"
+                + " chance that it is one of that place's invasions (at the place) instead of a random one.", 1.0, 0.0,
+                1.0);
         BUILDER.pop();
 
         section("combat", "Player combat (GDD sections 7 and 12).");

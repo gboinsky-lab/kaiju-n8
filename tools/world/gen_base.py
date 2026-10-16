@@ -11,7 +11,7 @@ A base inteira tem ~65 x 65 blocos. Pecas encaixam por blocos jigsaw no chao (y 
 canto e tentado pelas duas alas vizinhas e so a primeira cabe. Uso: python3 tools/world/gen_base.py
 Ver no jogo: /place structure kn8:defense_base   (ou /place jigsaw kn8:defense_base/core kn8:base_core 3 ~ ~ ~)
 """
-from gen_structures import DATA, Build, Float, dump, item, soldier
+from gen_structures import DATA, SITES_EXCLUSION, Build, Float, dump, item, soldier
 
 FLOOR = "minecraft:gray_concrete"
 ROAD = "minecraft:light_gray_concrete"
@@ -38,17 +38,18 @@ class Piece(Build):
     def entity(self, x, y, z, nbt):
         super().entity(x + self.origin[0], y, z + self.origin[1], nbt)
 
-    def jigsaw(self, x, z, facing, name, target, pool, final=FLOOR):
+    def jigsaw(self, x, z, facing, name, target, pool, final=FLOOR, y=0):
+        """Encaixe no chao (y 0); y > 0 deixa a peca mais baixa que a vizinha (porto de Ariake, C3)."""
         entry = (x + self.origin[0], z + self.origin[1], {"orientation": f"{facing}_up"},
                  {"id": "minecraft:jigsaw", "name": name, "target": target, "pool": pool, "final_state": final,
-                  "joint": "aligned", "placement_priority": 0, "selection_priority": 0})
+                  "joint": "aligned", "placement_priority": 0, "selection_priority": 0}, y)
         self.jigsaws.append(entry)
-        Build.set(self, entry[0], 0, entry[1], "minecraft:jigsaw", entry[2], entry[3])
+        Build.set(self, entry[0], y, entry[1], "minecraft:jigsaw", entry[2], entry[3])
 
     def finish(self, name):
         self.origin = (0, 0)
-        for x, z, props, nbt in self.jigsaws:
-            Build.set(self, x, 0, z, "minecraft:jigsaw", props, nbt)
+        for x, z, props, nbt, y in self.jigsaws:
+            Build.set(self, x, y, z, "minecraft:jigsaw", props, nbt)
         w, h, d = self.size
         for x in range(w):
             for z in range(d):
@@ -439,7 +440,8 @@ def worldgen():
         "max_distance_from_center": 80, "use_expansion_hack": False})
     dump(wg / "structure_set/defense_base.json", {
         "structures": [{"structure": "kn8:defense_base", "weight": 1}],
-        "placement": {"type": "minecraft:random_spread", "spacing": 72, "separation": 28, "salt": 280_430_021}})
+        "placement": {"type": "minecraft:random_spread", "spacing": 72, "separation": 28, "salt": 280_430_021,
+                      "exclusion_zone": SITES_EXCLUSION}})
     loot = {
         "base_command": [(3, 6), [item("minecraft:iron_ingot", 8, 2, 5), item("minecraft:paper", 8, 2, 6),
                                   item("minecraft:map", 4), item("kn8:release_catalyst", 1),
@@ -709,15 +711,14 @@ def worldgen_large():
         dump(wg / f"template_pool/defense_base/large_corners_{side}.json", {
             "fallback": "minecraft:empty",
             "elements": [{"weight": 1, "element": element(f"kn8:{LARGE}/corner_{side}")}]})
-    # Bem mais rara que a base pequena: ~1 a cada 2.000 blocos, so planicies largas.
+    # C3: a base grande nao nasce mais sozinha (a de Tachikawa, com a mesma arena, ocupa o lugar dela); fica para o
+    # /place. [DECIDIR] voltar com ela no mundo.
+    (wg / f"structure_set/{LARGE}.json").unlink(missing_ok=True)
     dump(wg / f"structure/{LARGE}.json", {
         "type": "minecraft:jigsaw", "biomes": f"#kn8:has_structure/{LARGE}", "step": "surface_structures",
         "spawn_overrides": {}, "terrain_adaptation": "beard_thin", "start_pool": f"{POOL}/large_core",
         "size": 3, "start_height": {"absolute": -1}, "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "max_distance_from_center": 100, "use_expansion_hack": False})
-    dump(wg / f"structure_set/{LARGE}.json", {
-        "structures": [{"structure": f"kn8:{LARGE}", "weight": 1}],
-        "placement": {"type": "minecraft:random_spread", "spacing": 128, "separation": 48, "salt": 280_430_022}})
 
 
 if __name__ == "__main__":

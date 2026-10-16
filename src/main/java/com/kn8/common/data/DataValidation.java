@@ -23,6 +23,7 @@ import com.kn8.common.data.def.LocomotionDef;
 import com.kn8.common.data.def.MissionDef;
 import com.kn8.common.data.def.NumberedDef;
 import com.kn8.common.data.def.RankDef;
+import com.kn8.common.data.def.SiteDef;
 import com.kn8.common.data.def.FlyerDef;
 import com.kn8.common.data.def.SoldierDef;
 import com.kn8.common.data.def.SpecialSoldierDef;
@@ -91,8 +92,9 @@ public final class DataValidation {
         publish(KN8Data.WORKBENCH, validateWorkbench(KN8Data.WORKBENCH.loaded(), report), report);
         publish(KN8Data.NUMBERED, validateNumbered(KN8Data.NUMBERED.loaded(), kaiju.keySet(),
                 bosses.keySet(), report), report);
-        publish(KN8Data.INVASION, validateInvasions(KN8Data.INVASION.loaded(), kaiju.keySet(), bosses.keySet(), report),
-                report);
+        Map<ResourceLocation, InvasionDef> invasions = publish(KN8Data.INVASION,
+                validateInvasions(KN8Data.INVASION.loaded(), kaiju.keySet(), bosses.keySet(), report), report);
+        publish(KN8Data.SITE, validateSites(KN8Data.SITE.loaded(), invasions.keySet(), report), report);
         publish(KN8Data.LOCOMOTION, validateLocomotion(KN8Data.LOCOMOTION.loaded(), report), report);
         // Patentes apontam para missoes de avaliacao, que so foram validadas agora: confere no fim (so aviso).
         ranks.forEach((id, rank) -> rank.promotionMission().filter(mission -> !missions.containsKey(mission))
@@ -114,6 +116,19 @@ public final class DataValidation {
         registry.publishValidated(valid);
         report.count(registry.id().getPath(), valid.size());
         return registry.server();
+    }
+
+    /** C3: invasao de local inexistente sai da lista (aviso); o local continua (nome, divisao, guarnicao). */
+    public static Map<ResourceLocation, SiteDef> validateSites(Map<ResourceLocation, SiteDef> input,
+            Set<ResourceLocation> invasions, DataReport report) {
+        Map<ResourceLocation, SiteDef> valid = new LinkedHashMap<>();
+        input.forEach((id, def) -> {
+            def.invasions().stream().filter(entry -> !invasions.contains(entry.invasion())).forEach(entry ->
+                    report.warning("site " + id + ": invasao inexistente " + entry.invasion()));
+            valid.put(id, new SiteDef(def.structure(), def.division(), def.garrison(), def.invasions().stream()
+                    .filter(entry -> invasions.contains(entry.invasion())).toList()));
+        });
+        return valid;
     }
 
     /** 0.2 (Etapa 3): resultado e ingredientes precisam ser itens registrados (senao a receita sai). */

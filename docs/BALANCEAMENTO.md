@@ -500,8 +500,26 @@ A bancada em si: 7 ferros + mesa de trabalho + bloco de redstone (receita vanill
 | Ressurreição do No. 9 | 3 | 2 + (No. 9 + 1) | 3 rifle + 1 pistola (alto) | 20 min | 350 | 500 | só missão |
 | Horda Kaiju | 4 | 10 + (9 + Honju) | 4 sorteados (normal) + Hoshina + Kikoru | 30 min | 700 | 900 | só missão |
 | Ressurreição em Massa | 5 | horda + No. 9 revivendo tudo | 3 rifle + 1 espada | 40 min | 1.500 | 2.000 | só missão |
+| Kaiju sobre Tachikawa (C3) | 3 | (3 Primigenius + 4 aranhas) + (2 Preondactyl + 2 ressurgidos) | 4 sorteados (normal) + 2 rifle (alto) | 20 min | 400 | 600 | cidade de Tachikawa |
+| Horda de Formigas em Shinagawa (C3) | 5 | 6 + (4 + 3 revividas) + (3 revividas + No. 9 50% + No. 9 formiga 20%) | 4 sorteados (alto) + 2 rifle elite + Narumi + Hoshina | 30 min | 1.500 | 2.000 | Shinagawa |
+| Raide do No. 10 a Tachikawa (C3) | 6 | (4 Preondactyl + 3 Primigenius) + (3 + 2 ressurgidos + 3 aranhas) + (No. 10 + 2 Preondactyl) | 4 sorteados (alto) + 2 rifle elite + Hoshina | 40 min | 2.500 | 3.000 | base de Tachikawa |
+| Ataque a Ariake (C3) [SUPOSIÇÃO] | 6 | (4 formigas + 3 ressurgidos) + (revivido + 3 formigas revividas) + (No. 9 + forma preta 30% + 2) | 4 sorteados (alto) + 2 rifle elite + Narumi + Hoshina | 40 min | 2.500 | 3.000 | Ariake |
 
 Chance de invasão natural por noite: 20% (`[invasion] naturalChance`) [SUPOSIÇÃO].
+
+**Locais da obra (C3, `site/<id>.json`):** quando a invasão natural cai num jogador dentro de um local, é uma das
+invasões do local (pesos: Ariake `ariake_assault` 3 / `no9_resurrection` 1; base de Tachikawa `tachikawa_raid` 3 /
+`primigenius_raid` 1; Shinagawa `shinagawa_ants` 3 / `spider_swarm` 1; cidade de Tachikawa `tachikawa_city_raid` 3 /
+`primigenius_raid` 1), na entrada oeste da peça inicial (`[sites] invasionChance` 1,0). As quatro novas têm
+`natural_weight` 0 (só no local, por missão ou comando). Guarnição (uma vez por mundo, na primeira visita;
+`[sites] garrison`): Ariake = Narumi + 2 rifle elite; base de Tachikawa = Mina, Hoshina, Kikoru e Reno.
+`[sites] checkIntervalTicks` 20 (de quanto em quanto o servidor confere em que local o jogador está).
+
+**Onde os locais nascem (C3):** conjunto `kn8:defense_sites` (`spacing` 64, `separation` 24 chunks: ~1 local a cada
+1.000 blocos, antes das recusas) [SUPOSIÇÃO]; terreno (`check_step` 12): raio 104/112 (bases) e 96 (cidades),
+desnível máximo 12 (bases) e 14 (cidades), nenhuma amostra com água; evita (raio em chunks) vilas 10, postos de
+saqueadores 8, mansões 10, templos do deserto/selva, iglus e cabanas 6. As construções pequenas do mod não nascem a
+8 chunks dos locais. A base grande genérica saiu do mundo (só `/place`) [DECIDIR].
 
 **Recompensa por contribuição (0.3, pedido do Miguel):** o mérito e o XP da tabela acima são a recompensa de quem
 lutou "na média". Cada jogador recebe isso × (sua parte do dano dos jogadores × nº de jogadores que lutaram), entre

@@ -1,0 +1,57 @@
+{
+  "level": 3,
+  "warning_ticks": 400,
+  "spawn_min": 40,
+  "spawn_max": 60,
+  "radius": 112,
+  "time_limit_ticks": 24000,
+  "waves": [
+    {
+      "kaiju": [
+        {
+          "species": "kn8:primigenius",
+          "count": 3
+        },
+        {
+          "species": "kn8:trichonephila",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "kaiju": [
+        {
+          "species": "kn8:preondactyl",
+          "count": 2
+        },
+        {
+          "species": "kn8:primigenius_resurrected",
+          "count": 2
+        }
+      ],
+      "delay_ticks": 500
+    }
+  ],
+  "defenders": [
+    {
+      "variant": "random",
+      "level": "normal",
+      "count": 4
+    },
+    {
+      "variant": "rifle",
+      "level": "high",
+      "count": 2
+    }
+  ],
+  "rewards": {
+    "merit": 400,
+    "training_xp": 600,
+    "items": [
+      "kn8:core_fragment",
+      "kn8:core_fragment",
+      "kn8:release_catalyst"
+    ]
+  },
+  "natural_weight": 0
+}

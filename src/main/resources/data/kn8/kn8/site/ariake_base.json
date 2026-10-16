@@ -1,0 +1,25 @@
+{
+  "structure": "kn8:ariake_base",
+  "division": "first",
+  "garrison": [
+    {
+      "variant": "narumi",
+      "count": 1
+    },
+    {
+      "variant": "rifle",
+      "level": "elite",
+      "count": 2
+    }
+  ],
+  "invasions": [
+    {
+      "invasion": "kn8:ariake_assault",
+      "weight": 3
+    },
+    {
+      "invasion": "kn8:no9_resurrection",
+      "weight": 1
+    }
+  ]
+}

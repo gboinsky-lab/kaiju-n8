@@ -1,0 +1,14 @@
+{
+  "structure": "kn8:tachikawa_city",
+  "division": "third",
+  "invasions": [
+    {
+      "invasion": "kn8:tachikawa_city_raid",
+      "weight": 3
+    },
+    {
+      "invasion": "kn8:primigenius_raid",
+      "weight": 1
+    }
+  ]
+}

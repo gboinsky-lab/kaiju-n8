@@ -41,8 +41,10 @@ def street_lamp(b, x, z):
     b.set(x, 5, z, "minecraft:sea_lantern")
 
 
-def street_piece():
-    """Rua 9 x 16: entra em (4, 0, 0), segue em (4, 0, 15), lotes em z 3 e 11 dos dois lados."""
+def street_piece(prefix="city"):
+    """Rua 9 x 16: entra em (4, 0, 0), segue em (4, 0, 15), lotes em z 3 e 11 dos dois lados. prefix = cidade dona
+    das pecas (C3: Shinagawa e Tachikawa tem ruas e lotes proprios com o mesmo desenho)."""
+    pool = f"kn8:{prefix}"
     b = Piece((9, 8, 16), 201, floor=ASPHALT)
     for z in range(16):
         for x in (0, 1, 7, 8):
@@ -54,14 +56,14 @@ def street_piece():
     street_lamp(b, 0, 7)
     street_lamp(b, 8, 7)
     b.jigsaw(4, 0, "north", "kn8:city_street", "kn8:city_link", "minecraft:empty", ASPHALT)
-    b.jigsaw(4, 15, "south", "kn8:city_link", "kn8:city_street", f"{POOL}/streets", ASPHALT)
+    b.jigsaw(4, 15, "south", "kn8:city_link", "kn8:city_street", f"{pool}/streets", ASPHALT)
     for z in (3, 11):
-        b.jigsaw(0, z, "west", "kn8:city_slot", "kn8:city_lot", f"{POOL}/lots", SIDEWALK)
-        b.jigsaw(8, z, "east", "kn8:city_slot", "kn8:city_lot", f"{POOL}/lots", SIDEWALK)
-    b.finish("city/street")
+        b.jigsaw(0, z, "west", "kn8:city_slot", "kn8:city_lot", f"{pool}/lots", SIDEWALK)
+        b.jigsaw(8, z, "east", "kn8:city_slot", "kn8:city_lot", f"{pool}/lots", SIDEWALK)
+    b.finish(f"{prefix}/street")
 
 
-def crossing_piece():
+def crossing_piece(prefix="city"):
     b = Piece((9, 8, 9), 202, floor=ASPHALT)
     for x, z in ((0, 0), (8, 0), (0, 8), (8, 8)):
         b.set(x, 0, z, SIDEWALK)
@@ -74,11 +76,11 @@ def crossing_piece():
     b.set(0, 2, 0, "minecraft:redstone_lamp", {"lit": "false"})
     b.jigsaw(4, 0, "north", "kn8:city_street", "kn8:city_link", "minecraft:empty", ASPHALT)
     for x, z, facing in ((4, 8, "south"), (0, 4, "west"), (8, 4, "east")):
-        b.jigsaw(x, z, facing, "kn8:city_link", "kn8:city_street", f"{POOL}/streets", ASPHALT)
-    b.finish("city/crossing")
+        b.jigsaw(x, z, facing, "kn8:city_link", "kn8:city_street", f"kn8:{prefix}/streets", ASPHALT)
+    b.finish(f"{prefix}/crossing")
 
 
-def street_end_piece():
+def street_end_piece(prefix="city"):
     b = Piece((9, 4, 4), 203, floor=ASPHALT)
     for z in range(4):
         for x in (0, 1, 7, 8):
@@ -86,7 +88,7 @@ def street_end_piece():
     for x in range(1, 8):
         b.set(x, 1, 3, "minecraft:yellow_concrete" if x % 2 else "minecraft:black_concrete")
     b.jigsaw(4, 0, "north", "kn8:city_street", "kn8:city_link", "minecraft:empty", ASPHALT)
-    b.finish("city/street_end")
+    b.finish(f"{prefix}/street_end")
 
 
 def plaza_piece():
@@ -344,18 +346,24 @@ BIOMES = ["minecraft:plains", "minecraft:sunflower_plains", "minecraft:savanna",
           "minecraft:desert", "minecraft:snowy_plains", "minecraft:forest", "minecraft:birch_forest"]
 
 
+def street_pools(prefix, lots, street_weight=6, crossing_weight=2):
+    """Pools de ruas e lotes de uma cidade: lots = [(template sem o kn8:, peso)] (pode usar lotes de outra)."""
+    wg = DATA / "kn8/worldgen"
+    dump(wg / f"template_pool/{prefix}/streets.json", {"fallback": f"kn8:{prefix}/street_ends", "elements": [
+        {"weight": street_weight, "element": element(f"kn8:{prefix}/street")},
+        {"weight": crossing_weight, "element": element(f"kn8:{prefix}/crossing")}]})
+    dump(wg / f"template_pool/{prefix}/street_ends.json", {"fallback": "minecraft:empty", "elements": [
+        {"weight": 1, "element": element(f"kn8:{prefix}/street_end")}]})
+    dump(wg / f"template_pool/{prefix}/lots.json", {"fallback": "minecraft:empty", "elements": [
+        {"weight": w, "element": element(f"kn8:{name}")} for name, w in lots]})
+
+
 def worldgen():
     wg = DATA / "kn8/worldgen"
     dump(DATA / "kn8/tags/worldgen/biome/has_structure/city.json", {"values": BIOMES})
     dump(wg / "template_pool/city/plaza.json", {"fallback": "minecraft:empty", "elements": [
         {"weight": 1, "element": element("kn8:city/plaza")}]})
-    dump(wg / "template_pool/city/streets.json", {"fallback": "kn8:city/street_ends", "elements": [
-        {"weight": 6, "element": element("kn8:city/street")},
-        {"weight": 2, "element": element("kn8:city/crossing")}]})
-    dump(wg / "template_pool/city/street_ends.json", {"fallback": "minecraft:empty", "elements": [
-        {"weight": 1, "element": element("kn8:city/street_end")}]})
-    dump(wg / "template_pool/city/lots.json", {"fallback": "minecraft:empty", "elements": [
-        {"weight": w, "element": element(f"kn8:city/{name}")} for name, w in LOTS]})
+    street_pools("city", [(f"city/{name}", w) for name, w in LOTS])
     # So a estrutura (para o /place); onde e quanto ela nasce no mundo fica para a etapa C3 (structure_set).
     dump(wg / "structure/city.json", {
         "type": "minecraft:jigsaw", "biomes": "#kn8:has_structure/city", "step": "surface_structures",
