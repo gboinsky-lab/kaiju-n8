@@ -517,6 +517,17 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
         return ticks >= 0 ? Optional.of((int) ticks) : Optional.empty();
     }
 
+    /** MOV-3: a especie tem ataque a distancia (projetil): contra ela os atiradores usam cobertura. */
+    public boolean hasRangedAttack() {
+        for (ResourceLocation id : def().map(KaijuDef::abilities).orElse(List.of())) {
+            if (KN8Data.ABILITY.get(id, false).map(ability -> KaijuAbilities.TYPE_PROJECTILE.equals(
+                    ability.type().getPath())).orElse(false)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /** 0.6-D: a habilidade em andamento e "heavy" (atravessa o bloqueio; o Hoshina responde com Kaeshi-uchi)? */
     public boolean isPreparingHeavy() {
         return currentAbility().flatMap(id -> KN8Data.ABILITY.get(id, false)).map(AbilityDef::heavy).orElse(false);

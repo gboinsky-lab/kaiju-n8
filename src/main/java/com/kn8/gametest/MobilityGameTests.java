@@ -4,6 +4,8 @@ package com.kn8.gametest;
 import com.kn8.KN8Constants;
 import com.kn8.common.config.ServerConfig;
 import com.kn8.common.registry.KN8Entities;
+import com.kn8.common.kaiju.KaijuEntity;
+import com.kn8.common.soldier.CoverFinder;
 import com.kn8.common.soldier.MoveSafety;
 import com.kn8.common.soldier.SoldierEntity;
 import com.kn8.common.soldier.SoldierLeap;
@@ -20,7 +22,8 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 /**
  * GameTests da MOV-1 (plano de mobilidade v3): o pouso de um impulso e conferido pelas colisoes (parede logo a
  * frente e queda grande recusam; chao livre aceita; degrau de 1 bloco sobe) e o soldado travado sai para o lado sem
- * teleporte. MOV-2: o salto tatico sobe em plataforma de 2, atravessa vao de 3 e recusa muro alto demais.
+ * teleporte. MOV-2: o salto tatico sobe em plataforma de 2, atravessa vao de 3 e recusa muro alto demais. MOV-3: a
+ * cobertura fica atras de um muro que corta a visao do kaiju e deixa de valer quando o muro cai.
  */
 @GameTestHolder(KN8Constants.MOD_ID)
 @PrefixGameTestTemplate(false)
@@ -114,6 +117,7 @@ public final class MobilityGameTests {
 
     private static final String BIG = "empty_15x12x15";
     private static final String LEAP_BATCH = "kn8_mov2_leap";
+    private static final String COVER_BATCH = "kn8_mov3_cover";
 
     /** Soldado com IA (mob sem IA nao anda pela velocidade) e sem alvo, para o salto ser so o do teste. */
     private static SoldierEntity leaper(GameTestHelper helper, BlockPos pos) {
@@ -184,6 +188,53 @@ public final class MobilityGameTests {
             helper.assertTrue(ServerConfig.SOLDIER_LEAP_MAX_HEIGHT.get() < 5.0, "Teste supoe salto maximo < 5");
             helper.assertFalse(new SoldierLeap().tryLeap(soldier, helper.absoluteVec(new Vec3(12.5, 6, 7.5))),
                     "Muro de 5 nao deveria ter salto");
+            helper.succeed();
+        });
+    }
+
+    /** Muro de pedra de 3 de altura entre o kaiju (parado) e o atirador. */
+    private static KaijuEntity coverScene(GameTestHelper helper) {
+        for (int x = 3; x <= 11; x++) {
+            fill(helper, x, 1, 7, x, 3, 7);
+        }
+        KaijuEntity kaiju = helper.spawn(KN8Entities.CAMPONOTUS.get(), new BlockPos(7, 1, 2));
+        kaiju.setNoAi(true);
+        return kaiju;
+    }
+
+    /** O atirador acha cobertura atras do muro (o kaiju nao ve o ponto), com ponto de tiro na ponta do muro. */
+    @GameTest(template = BIG, batch = COVER_BATCH)
+    public static void shooterFindsCoverBehindAWall(GameTestHelper helper) {
+        KaijuEntity kaiju = coverScene(helper);
+        SoldierEntity soldier = soldier(helper, new BlockPos(7, 1, 11));
+        helper.runAfterDelay(SETTLE, () -> {
+            CoverFinder.Cover cover = CoverFinder.find(soldier, kaiju, 12.0).orElse(null);
+            helper.assertTrue(cover != null, "Deveria achar cobertura");
+            Vec3 at = helper.relativeVec(cover.spot());
+            helper.assertTrue(at.z > 8.0 && at.x > 3.0 && at.x < 12.0, "Cobertura atras do muro: " + at);
+            helper.assertTrue(CoverFinder.stillHides(soldier, kaiju, cover.spot()), "O kaiju nao pode ver o ponto");
+            helper.succeed();
+        });
+    }
+
+    /** Muro derrubado: a mesma cobertura deixa de esconder. */
+    @GameTest(template = BIG, batch = COVER_BATCH)
+    public static void coverIsLostWhenTheWallBreaks(GameTestHelper helper) {
+        KaijuEntity kaiju = coverScene(helper);
+        SoldierEntity soldier = soldier(helper, new BlockPos(7, 1, 11));
+        CoverFinder.Cover[] cover = new CoverFinder.Cover[1];
+        helper.runAfterDelay(SETTLE, () -> {
+            cover[0] = CoverFinder.find(soldier, kaiju, 12.0).orElse(null);
+            helper.assertTrue(cover[0] != null, "Deveria achar cobertura");
+            for (int x = 3; x <= 11; x++) {
+                for (int y = 1; y <= 3; y++) {
+                    helper.setBlock(new BlockPos(x, y, 7), Blocks.AIR);
+                }
+            }
+        });
+        helper.runAfterDelay(SETTLE + 2, () -> {
+            helper.assertFalse(CoverFinder.stillHides(soldier, kaiju, cover[0].spot()),
+                    "Sem o muro a cobertura nao esconde mais");
             helper.succeed();
         });
     }

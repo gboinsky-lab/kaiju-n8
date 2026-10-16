@@ -240,6 +240,12 @@ public final class ServerConfig {
     public static final ModConfigSpec.DoubleValue SOLDIER_LEAP_MAX_DISTANCE;
     public static final ModConfigSpec.IntValue SOLDIER_LEAP_CHECK_TICKS;
     public static final ModConfigSpec.IntValue SOLDIER_LEAP_COOLDOWN_TICKS;
+    public static final ModConfigSpec.BooleanValue SOLDIER_COVER;
+    public static final ModConfigSpec.DoubleValue SOLDIER_COVER_RADIUS;
+    public static final ModConfigSpec.IntValue SOLDIER_COVER_CHECK_TICKS;
+    public static final ModConfigSpec.DoubleValue SOLDIER_COVER_MIN_THREAT_DISTANCE;
+    public static final ModConfigSpec.IntValue SOLDIER_COVER_HIDE_TICKS;
+    public static final ModConfigSpec.DoubleValue SOLDIER_COVER_DANGER_RADIUS;
 
     // --- esquadroes (IA-5) ----------------------------------------------------------------------------------------
     public static final ModConfigSpec.DoubleValue SQUAD_FOLLOW_DISTANCE;
@@ -769,6 +775,19 @@ public final class ServerConfig {
                 + " this long looks for a leap toward its goal.", 10, 2, 200);
         SOLDIER_LEAP_COOLDOWN_TICKS = intValue("leapCooldownTicks", "MOV-2: minimum time between two leaps.", 40, 0,
                 1200);
+        SOLDIER_COVER = BUILDER.comment("MOV-3: shooters use cover (a solid block between the kaiju and them) against"
+                + " kaiju with ranged attacks, peeking out to shoot, and duck behind cover to reload.")
+                .translation(PREFIX + "cover").define("cover", true);
+        SOLDIER_COVER_RADIUS = doubleValue("coverRadius", "MOV-3: how far a shooter looks for cover (blocks).", 10.0,
+                2.0, 32.0);
+        SOLDIER_COVER_CHECK_TICKS = intValue("coverCheckTicks", "MOV-3: how often the cover is checked (still hides,"
+                + " not flanked or destroyed) and a new one searched.", 20, 5, 400);
+        SOLDIER_COVER_MIN_THREAT_DISTANCE = doubleValue("coverMinThreatDistance", "MOV-3: cover closer than this to"
+                + " the kaiju (edge) is useless: it walks there; the shooter falls back instead.", 9.0, 0.0, 64.0);
+        SOLDIER_COVER_HIDE_TICKS = intValue("coverHideTicks", "MOV-3: time a shooter stays behind cover after the"
+                + " kaiju aimed at it, before peeking out again.", 20, 0, 400);
+        SOLDIER_COVER_DANGER_RADIUS = doubleValue("coverDangerRadius", "MOV-3: cover within this distance of a kaiju"
+                + " preparing a heavy attack (edge) is left.", 4.0, 0.0, 32.0);
         BUILDER.pop();
 
         section("squad", "Squads (IA-5): the player's squad and the invasion defender squads.");

@@ -93,6 +93,12 @@ SCEN = {
          [('s1','kn8:soldier',-1,0,'{kn8_variant:"sword",kn8_power_level:"high"}','A',5),
           ('s2','kn8:soldier',1,0,'{kn8_variant:"sword",kn8_power_level:"high"}','A',5),
           ('k','kn8:primigenius',0,18,'{NoAI:1b}','B',5)]),
+ # MOV-3: dois atiradores, muros de 3 x 3 entre eles e uma formiga que cospe acido (ataque a distancia).
+ 'cobertura': ([(x,0,6,x+2,2,6,'minecraft:stone_bricks') for x in (-7,-1,5)]
+               + [(x,0,12,x+2,2,12,'minecraft:stone_bricks') for x in (-4,2)],
+               [('s1','kn8:soldier',-2,0,'{kn8_variant:"rifle",kn8_power_level:"normal"}','A'),
+                ('s2','kn8:soldier',2,0,'{kn8_variant:"rifle",kn8_power_level:"normal"}','A'),
+                ('k','kn8:camponotus',0,26,'','B')]),
  'pilares': ([(x,0,z,x+1,6,z+1,'minecraft:bedrock') for x in (-8,-2,4) for z in (8,14,20)],
              [('m','kn8:mina',0,0,'','A'), ('k','kn8:primigenius_honju',0,28,'','B')]),
 }

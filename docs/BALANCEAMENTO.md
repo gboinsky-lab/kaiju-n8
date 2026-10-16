@@ -133,6 +133,12 @@ Fases dos chefes (IA-6) [SUPOSIÇÃO nos pesos]: **Honju** acima de 50% soco pes
 | `leapCheckTicks` | 10 | MOV-2: querendo andar e andando menos de 0,5 bloco em 0,5 s, procura um salto para o alvo |
 | `leapCooldownTicks` | 40 | MOV-2: espera entre dois saltos |
 | queda do caminho | = `landingMaxDrop` (3) | MOV-2: o caminho do soldado só desce quedas de até 3 (o vanilla aceitava ~18 com vida cheia e alvo) |
+| `cover` | true | MOV-3: atirador comum usa cobertura contra kaiju com ataque a distância (projétil) e para recarregar |
+| `coverRadius` | 10 | MOV-3: raio da busca (4 anéis × 12 direções) |
+| `coverCheckTicks` | 20 | MOV-3: a cada 1 s confere se a cobertura ainda corta a visão e procura outra |
+| `coverMinThreatDistance` | 9 | MOV-3: kaiju a menos de 9 da cobertura → larga e volta a recuar (com 6 os soldados ficavam presos à cobertura e morriam antes) |
+| `coverHideTicks` | 20 | MOV-3: escondido por 1 s depois de o kaiju mirar um ataque nele |
+| `coverDangerRadius` | 4 | MOV-3: cobertura a menos de 4 de um kaiju preparando golpe pesado é largada |
 
 **Destruição pelos ataques** (IA-2, Miguel 2026-10-15) [SUPOSIÇÃO nos números]:
 

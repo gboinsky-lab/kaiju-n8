@@ -150,3 +150,26 @@ tempo parado, tiros bloqueados, dano duplicado = 0).
   192/192 duas vezes.
 - Visto em jogo com 2 clientes: `docs/img/mov2_saltos_plataforma_e_vao.jpg` (a pose do salto aparece pequena nas
   capturas; conferir de perto no roteiro §56).
+
+## 8. MOV-3 feita (2026-10-16)
+
+- `core/soldier/CoverScore` (JUnit 3): só vale ponto onde um bloco corta a visão; recusa área de golpe pesado e kaiju
+  perto demais; pontos por ponto de tiro ao lado, distância perto da de manter, pouco caminho, sem aliado no mesmo
+  lugar e bloco resistente (vidro conta pouco).
+- `common/soldier/CoverFinder`: 4 anéis × 12 direções até `coverRadius`, chão pelo `MoveSafety.standable`, visão do
+  kaiju até os olhos **e** o peito do soldado pelo mesmo teste de colisão dos tiros (nada através de parede), ponto
+  de tiro a 1,5 bloco para o lado com linha até o kaiju, coberturas dos aliados contam como ocupadas.
+- `ShooterCover` no `SoldierCombatGoal` (atirador comum): contra kaiju com projétil fica no ponto de tiro e volta para
+  trás da cobertura quando o kaiju prepara um ataque contra ele (`coverHideTicks`) e para recarregar; contra
+  qualquer kaiju recarrega atrás de cobertura; confere a cada `coverCheckTicks` (contornada, quebrada, kaiju a menos
+  de `coverMinThreatDistance`, área de golpe pesado) e troca; ainda escondendo mas sem ponto de tiro, fica com ela até
+  achar outra (sem trocar a cada conferida).
+- Soldados especiais atiradores (Mina, Reno) **não** usam cobertura nesta etapa: a IA de atirador deles circula o
+  alvo para distrair (IA de 2026-10-15); entra nos perfis da MOV-5 [DECIDIR].
+- Medidor, cenário `cobertura` (2 atiradores normais × Camponotus, 5 muros): com cobertura ~83 de dano na formiga e
+  2 de 5 rodadas com sobrevivente aos 60 s; sem cobertura ~89 e 1 de 5. **Neutro** contra kaiju que avança para o
+  corpo a corpo (a formiga quebra os muros ao passar); o ganho é contra ataque a distância, e o kaiju comum não
+  escolhe tiro sem ver o alvo. Com `coverMinThreatDistance` 6 ficava pior (40–75 de dano, mortes em 15–21 s): os
+  soldados ficavam na cobertura até a formiga chegar → 9. Regressão (`corredor`, `abrigo`, `grupo`, `parede`,
+  `separacao`, `municao_alvo`) sem perda. GameTests 194/194.
+- Visto em jogo com 2 clientes: `docs/img/mov3_cobertura.jpg`.

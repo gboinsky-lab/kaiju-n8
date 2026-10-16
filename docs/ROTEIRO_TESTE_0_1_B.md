@@ -799,3 +799,16 @@ subindo 2.0`, `salto por cima do vao`, `salto pousou`).
 | 56.3 | Muro de 5 de altura entre o soldado e o kaiju | Não salta (acima de 3): contorna ou sai para o lado (MOV-1) |
 | 56.4 | Muro de 2 de altura e 1 de espessura | Salta para cima dele ou por cima |
 | 56.5 | Hoshina e Kikoru na cena 56.1 | Chegam ao kaiju (salto, dash ou alcance da técnica) |
+
+## 57. Cobertura dos atiradores (MOV-3)
+
+Servidor dedicado + 2 clientes, mundo plano. Log com `[kaijuAi] debugLog = true` (`[kn8 IA] ... cobertura em ...
+com ponto de tiro`, `cobertura perdida`).
+
+| # | Passo | Esperado |
+|---|---|---|
+| 57.1 | 5 muros de tijolo de 3 x 3 entre 2 soldados de rifle e uma Camponotus (cospe ácido) a 26 blocos | Os soldados vão para trás dos muros e atiram de um passo ao lado (o "ponto de tiro"); quando a formiga mira um deles, ele volta para trás do muro por ~1 s |
+| 57.2 | A formiga contorna ou quebra o muro | O soldado larga aquela cobertura e procura outra (ou recua se a formiga está a menos de 9) |
+| 57.3 | Soldado de rifle recarregando contra um Primigenius (sem ataque a distância) com um muro por perto | Recarrega atrás do muro |
+| 57.4 | Mesmos muros contra um Primigenius, sem recarregar | Não usa cobertura: mantém distância e atira como antes |
+| 57.5 | `cover = false` no config | Comportamento antigo |

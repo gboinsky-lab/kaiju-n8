@@ -15,6 +15,7 @@ import net.minecraft.world.phys.Vec3;
  * 0.4: o atirador com arma de apoio troca para ela quando o kaiju chega perto (SoldierEntity#updateLoadout).
  * IA-1B: recarregando, o atirador recua ({@code [soldierAi] reloadRetreat}); sem visao do alvo, da a volta ate ter.
  * IA-5: separacao entre aliados (chegada e recuo por angulos proprios).
+ * MOV-3: atirador com cobertura ({@link ShooterCover}).
  */
 final class SoldierCombatGoal extends Goal {
 
@@ -27,6 +28,8 @@ final class SoldierCombatGoal extends Goal {
 
     private final SoldierEntity soldier;
     private final StuckWatch stuck = new StuckWatch();
+    /** MOV-3: cobertura do atirador. */
+    private final ShooterCover cover = new ShooterCover();
     private int repath;
     /** MOV-1: o tick quis andar (ate o alvo, contornando ou recuando): conta para o travamento. */
     private boolean wantsToMove;
@@ -50,6 +53,7 @@ final class SoldierCombatGoal extends Goal {
 
     @Override
     public void stop() {
+        cover.clear(soldier);
         soldier.restorePrimary();
         soldier.setAggressive(false);
         soldier.getNavigation().stop();
@@ -79,6 +83,11 @@ final class SoldierCombatGoal extends Goal {
         boolean sees = soldier.getSensing().hasLineOfSight(target);
         soldier.updateLoadout(edge);
         if (soldier.isShooter()) {
+            // MOV-3: contra kaiju com ataque a distancia (e para recarregar) usa cobertura quando acha uma.
+            if (cover.tick(soldier, target, edge, sees)) {
+                wantsToMove = cover.moving();
+                return;
+            }
             double keep = soldier.keepDistance();
             if (soldier.isReloading()) {
                 // IA-1B (Miguel: "recuar e recarregar"): recarregando, recua ate a distancia de manter + o recuo.

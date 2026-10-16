@@ -714,6 +714,17 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
         return hurt;
     }
 
+    /** MOV-3: cobertura escolhida (nao salva): os aliados evitam o mesmo ponto. */
+    private Vec3 coverSpot;
+
+    public Vec3 coverSpot() {
+        return coverSpot;
+    }
+
+    void setCoverSpot(Vec3 spot) {
+        coverSpot = spot;
+    }
+
     // --- combate -----------------------------------------------------------------------------------------------
 
     public boolean isActing() {
