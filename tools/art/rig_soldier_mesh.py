@@ -110,6 +110,12 @@ SPECIES = {
                      "tail": [[-0.3, 0.72, -0.12], [-0.45, 0.63, 0.2], [-0.5, 1.1, 0.38], [-0.35, 1.6, 0.25],
                               [-0.1, 1.8, 0.0], [0.32, 1.6, -0.42]],
                      "head_box": [-0.19, 0.23, -0.37, 0.08, 1.64]},
+    # 0.8-A: Isao Shinomiya (1,85 m, traje preto, manoplas da arma numerada 2 nos dois bracos abertos em A): o tronco
+    # vai ate |x| 0,20 (bolsas do cinto ate 0,22), as manoplas descem ate y 0,77 por fora; o cabelo e mais largo que
+    # o pescoco (acima de 1,52 nada e braco).
+    "isao": {"stem": "isao", "hip_y": 0.85, "neck_y": 1.50, "hand_min_y": 0.74,
+             "arm_inner_x": [(1.0, 0.205), (0.0, 0.25)], "arm_max_y": 1.52, "back_items": None,
+             "leg_pivot_center": True},
 }
 # Esqueleto do resto do corpo (sementes que disputam a pele com as da cauda): (inicio, fim).
 BODY_SEEDS = [([0, 0.9, 0], [0, 1.25, 0]), ([0, 1.25, 0], [0, 1.7, 0]), ([0, 1.3, 0], [0.33, 1.3, 0]),

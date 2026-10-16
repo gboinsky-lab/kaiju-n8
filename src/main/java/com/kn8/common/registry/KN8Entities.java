@@ -16,6 +16,7 @@ import com.kn8.common.numbered.KaijuNo9Entity;
 import com.kn8.common.soldier.SoldierEntity;
 import com.kn8.common.soldier.special.HoshinaEntity;
 import com.kn8.common.soldier.special.HoshinaNo10Entity;
+import com.kn8.common.soldier.special.IsaoEntity;
 import com.kn8.common.soldier.special.KikoruEntity;
 import com.kn8.common.soldier.special.KafkaEntity;
 import com.kn8.common.soldier.special.KaijuNo8Entity;
@@ -101,6 +102,15 @@ public final class KN8Entities {
      */
     public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> KAIJU_NO9_FUSION_GIANT = no9Form(
             "kaiju_no9_fusion_giant", 8.0F, 20.0F);
+    /**
+     * 0.8-A: No. 9 depois de absorver o Isao Shinomiya e a arma numerada 2 (modelo do Miguel, 2 m; Biblioteca v22
+     * secao 33.5): nasce pela absorcao do Isao derrotado (absorb do numbered/kaiju_no9.json e da forma preta).
+     */
+    public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> KAIJU_NO9_ISAO = no9Form(
+            "kaiju_no9_isao", 0.8F, 2.0F);
+    /** 0.8-A: Kaiju No. 13 (criado pelo No. 9; humanoide palido de 2,2 m, rapido, agarra e soca). */
+    public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> KAIJU_NO13 = kaiju(
+            "kaiju_no13", 0.8F, 2.2F);
     /** 0.6-E: Kaiju No. 10, forma pequena (4 m) e gigante (24 m); comportamento extra no No10Service. */
     public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> KAIJU_NO10_SMALL = numbered(
             "kaiju_no10_small", 2.0F, 4.0F);
@@ -206,6 +216,13 @@ public final class KN8Entities {
                     .eyeHeight(1.75F)
                     .clientTrackingRange(KAIJU_TRACKING_RANGE_CHUNKS)
                     .build("kaiju_no8"));
+    /** 0.8-A: Isao Shinomiya com a arma numerada 2 (manoplas; special_soldier/isao.json; 1,90 m pelo height). */
+    public static final DeferredHolder<EntityType<?>, EntityType<IsaoEntity>> ISAO = ENTITY_TYPES.register(
+            "isao", () -> EntityType.Builder.<IsaoEntity>of(IsaoEntity::new, MobCategory.CREATURE)
+                    .sized(0.7F, 1.85F)
+                    .eyeHeight(1.62F)
+                    .clientTrackingRange(KAIJU_TRACKING_RANGE_CHUNKS)
+                    .build("isao"));
 
     /** 0.6: projetil de habilidade de kaiju (raio de energia, teia, Finger Gun); so particulas no cliente. */
     public static final DeferredHolder<EntityType<?>, EntityType<KaijuProjectile>> KAIJU_PROJECTILE =
@@ -251,7 +268,7 @@ public final class KN8Entities {
                     TRICHONEPHILA_HONJU, KAIJU_NO9, KAIJU_NO10_SMALL, KAIJU_NO10_GIANT,
                     PREONDACTYL, PHILINOSOMA, DICLONIUS, CAMPONOTUS, CAMPONOTUS_REBORN, PHANEROPLASMODIUM,
                     MYXOGASTEROCARP, KAIJU_LARVA, KAIJU_NO9_BLACK, KAIJU_NO9_FUSION, KAIJU_NO9_CAMPONOTUS,
-                    KAIJU_NO9_FUSION_GIANT);
+                    KAIJU_NO9_FUSION_GIANT, KAIJU_NO9_ISAO, KAIJU_NO13);
 
     private KN8Entities() {
     }
@@ -287,6 +304,9 @@ public final class KN8Entities {
         }
         if (KaijuNo8Entity.VARIANT_NO8.equals(name)) {
             return Optional.of(KAIJU_NO8.get());
+        }
+        if (IsaoEntity.VARIANT_ISAO.equals(name)) {
+            return Optional.of(ISAO.get());
         }
         return HoshinaEntity.VARIANT.equals(name) ? Optional.of(HOSHINA.get()) : Optional.empty();
     }
@@ -341,6 +361,7 @@ public final class KN8Entities {
         event.put(NARUMI_NO1.get(), SoldierEntity.createAttributes().build());
         event.put(KAFKA.get(), SoldierEntity.createAttributes().build());
         event.put(KAIJU_NO8.get(), SoldierEntity.createAttributes().build());
+        event.put(ISAO.get(), SoldierEntity.createAttributes().build());
         event.put(TRAINING_DUMMY.get(), LivingEntity.createLivingAttributes().build());
         KAIJU.forEach(type -> event.put(type.get(), KaijuEntity.baseAttributes().build()));
     }

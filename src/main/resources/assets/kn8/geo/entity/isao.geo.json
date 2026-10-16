@@ -1,0 +1,101 @@
+{
+  "format_version": "1.12.0",
+  "minecraft:geometry": [
+    {
+      "description": {
+        "identifier": "geometry.isao",
+        "texture_width": 16,
+        "texture_height": 16,
+        "visible_bounds_width": 3,
+        "visible_bounds_height": 3,
+        "visible_bounds_offset": [
+          0,
+          1,
+          0
+        ]
+      },
+      "bones": [
+        {
+          "name": "root",
+          "pivot": [
+            -0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "name": "body",
+          "pivot": [
+            -0.0,
+            13.6,
+            0.0
+          ],
+          "parent": "root"
+        },
+        {
+          "name": "head",
+          "pivot": [
+            -0.0,
+            24.0,
+            0.53
+          ],
+          "parent": "body"
+        },
+        {
+          "name": "arm_left",
+          "pivot": [
+            4.867,
+            23.578,
+            0.733
+          ],
+          "parent": "body"
+        },
+        {
+          "name": "arm_right",
+          "pivot": [
+            -4.871,
+            23.567,
+            0.632
+          ],
+          "parent": "body"
+        },
+        {
+          "name": "leg_left",
+          "pivot": [
+            2.432,
+            13.6,
+            1.403
+          ],
+          "parent": "root"
+        },
+        {
+          "name": "leg_right",
+          "pivot": [
+            -2.425,
+            13.6,
+            0.767
+          ],
+          "parent": "root"
+        },
+        {
+          "name": "item_right",
+          "pivot": [
+            -8.141,
+            13.849,
+            -1.634
+          ],
+          "parent": "arm_right"
+        },
+        {
+          "name": "item_left",
+          "pivot": [
+            8.282,
+            13.867,
+            -1.557
+          ],
+          "parent": "arm_left"
+        }
+      ]
+    }
+  ]
+}

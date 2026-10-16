@@ -1,0 +1,138 @@
+{
+  "health": 700,
+  "armor": 20,
+  "speed": 0.32,
+  "follow_range": 56,
+  "knockback_resistance": 0.8,
+  "release": 50,
+  "max_release": 96,
+  "kaiju_damage": 0.8,
+  "aura": "kn8:isao_numbers2",
+  "weapon": "kn8:numbers2_gauntlet",
+  "height": 1.9,
+  "techniques": {
+    "barrage_blast": {
+      "type": "combo",
+      "hits": [
+        0.7,
+        0.7,
+        0.8,
+        0.8,
+        1.2
+      ],
+      "windup_ticks": 4,
+      "duration_ticks": 26,
+      "cooldown_ticks": 40,
+      "max_range": 3.2,
+      "priority": 1,
+      "hit_interval": 3,
+      "final_knockback": 1.0
+    },
+    "spiral_blast": {
+      "type": "slash",
+      "hits": [
+        1.5
+      ],
+      "windup_ticks": 8,
+      "duration_ticks": 18,
+      "cooldown_ticks": 70,
+      "min_range": 3.0,
+      "max_range": 24.0,
+      "priority": 2,
+      "slash": {
+        "count": 1,
+        "speed": 2.4,
+        "range": 28.0,
+        "width": 0.9,
+        "color": 16752448,
+        "bullet": true
+      }
+    },
+    "force_blast": {
+      "type": "slash",
+      "hits": [
+        0.8
+      ],
+      "windup_ticks": 12,
+      "duration_ticks": 26,
+      "cooldown_ticks": 160,
+      "min_range": 0.0,
+      "max_range": 7.0,
+      "priority": 3,
+      "slash": {
+        "count": 7,
+        "spread_degrees": 90.0,
+        "speed": 1.2,
+        "range": 9.0,
+        "width": 1.4,
+        "color": 16766080
+      }
+    },
+    "thunder_emperor": {
+      "type": "combo",
+      "hits": [
+        1.4,
+        2.4
+      ],
+      "windup_ticks": 10,
+      "duration_ticks": 28,
+      "cooldown_ticks": 200,
+      "max_range": 3.6,
+      "priority": 4,
+      "hit_interval": 6,
+      "dash_in": 1.2,
+      "expose_core_ticks": 60,
+      "final_knockback": 2.5,
+      "honju_priority": 3
+    }
+  },
+  "dash": {
+    "cooldown_ticks": 110,
+    "speed": 0.9,
+    "invulnerable_ticks": 6,
+    "react_ticks": 5,
+    "gap_close_distance": 8.0
+  },
+  "counter": {
+    "multiplier": 2.4,
+    "cooldown_ticks": 200,
+    "dash_speed": 0.8,
+    "invulnerable_ticks": 10,
+    "strike_delay_ticks": 8,
+    "react_ticks": 6
+  },
+  "parry": {
+    "chance": 0.2,
+    "damage_factor": 0.4,
+    "cooldown_ticks": 25,
+    "counter_window_ticks": 10
+  },
+  "escalation": {
+    "points_per_second": 2.0,
+    "max_points": 46,
+    "decay_per_second": 2.0,
+    "cooldown_reduction_at_max": 0.35
+  },
+  "heavy": {
+    "techniques": [
+      "thunder_emperor",
+      "force_blast"
+    ],
+    "power": 4,
+    "radius": 3.0
+  },
+  "tactics": {
+    "aggression": 0.85,
+    "preferred_distance": 3.0,
+    "damage_tolerance": 0.12,
+    "safety_distance": 9.0,
+    "heavy_vs_big": 2,
+    "fast_vs_small": 1,
+    "protect_ally": 10.0
+  },
+  "heavy_guard": {
+    "factor": 0.45,
+    "front_arc_degrees": 140.0,
+    "cooldown_ticks": 35
+  }
+}

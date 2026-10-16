@@ -51,9 +51,26 @@ SPECIES = {
         "hip_right": [0.13, 0.9, 0], "knee_right": [0.18, 0.5, 0], "foot_right": [0.25, 0.06, -0.08],
     },
 }
+# 0.8-A: No. 9 depois de absorver o Isao (2 m, preto, espinhos vermelhos nos ombros, cabeca de chapeu com a boca a
+# 1,8 m) e Kaiju No. 13 (2,2 m, branco, bracos longos e vermelhos abertos ate |x| 0,65, chifres para os lados).
+# Medidos na vista em grade da malha convertida.
+SPECIES["kaiju_no9_isao"] = {
+    "pelvis": [0, 0.95, 0], "chest": [0, 1.38, 0], "neck": [0, 1.7, 0], "head": [0, 1.86, 0],
+    "shoulder_left": [-0.33, 1.55, 0], "elbow_left": [-0.4, 1.15, 0], "hand_left": [-0.44, 0.85, 0],
+    "shoulder_right": [0.33, 1.55, 0], "elbow_right": [0.4, 1.15, 0], "hand_right": [0.44, 0.85, 0],
+    "hip_left": [-0.13, 0.9, 0], "knee_left": [-0.15, 0.5, 0], "foot_left": [-0.17, 0.05, 0],
+    "hip_right": [0.13, 0.9, 0], "knee_right": [0.15, 0.5, 0], "foot_right": [0.17, 0.05, 0],
+}
+SPECIES["kaiju_no13"] = {
+    "pelvis": [0, 1.0, 0], "chest": [0, 1.4, 0], "neck": [0, 1.68, 0], "head": [0, 1.85, 0],
+    "shoulder_left": [-0.33, 1.45, 0], "elbow_left": [-0.6, 1.15, 0], "hand_left": [-0.62, 0.8, 0],
+    "shoulder_right": [0.33, 1.45, 0], "elbow_right": [0.6, 1.15, 0], "hand_right": [0.62, 0.8, 0],
+    "hip_left": [-0.13, 0.95, 0], "knee_left": [-0.22, 0.55, 0], "foot_left": [-0.25, 0.06, 0],
+    "hip_right": [0.13, 0.95, 0], "knee_right": [0.22, 0.55, 0], "foot_right": [0.25, 0.06, 0],
+}
 SKELETON = SPECIES[NAME]
 # Abaixo desta altura nada e cabeca (na forma preta o caminho pela pele levava os espinhos do peito para a cabeca).
-HEAD_MIN_Y = {"kaiju_no9_black": 1.62}.get(NAME)
+HEAD_MIN_Y = {"kaiju_no9_black": 1.62, "kaiju_no9_isao": 1.72, "kaiju_no13": 1.6}.get(NAME)
 SEEDS = [
     ("body", "pelvis", "chest", 0.0, 1.0), ("body", "chest", "neck", 0.0, 0.7),
     ("body", "chest", "shoulder_left", 0.0, 0.6), ("body", "chest", "shoulder_right", 0.0, 0.6),

@@ -353,6 +353,71 @@ def ant_rush(name):
     }}
 
 
+# --- 0.8-A: No. 9 com o Isao (manoplas Numbers 2) e No. 13 (ossos do No. 9) ---------------------------------------
+def fist_barrage(name):
+    """Barrage Blast / rajada de socos: bracos alternados, um soco por golpe do JSON, corpo girando a cada um."""
+    times, step, end = multi_hits(name)
+    right, left, body = [(0, ZERO)], [(0, ZERO)], [(0, ZERO)]
+    for i, t in enumerate(times):
+        out, back = [-90, 0, 0], [-35, 0, 0]
+        if i % 2 == 0:
+            right += [(t - step * 0.5, back), (t, out)]
+            left += [(t, back)]
+            body += [(t, [6, -18, 0])]
+        else:
+            left += [(t - step * 0.5, back), (t, out)]
+            right += [(t, back)]
+            body += [(t, [6, 18, 0])]
+    return {"animation_length": end, "bones": {
+        "arm_right": rot(*(right + [(end, ZERO)])), "arm_left": rot(*(left + [(end, ZERO)])),
+        "body": rot(*(body + [(end, ZERO)])),
+    }}
+
+
+def double_punch(name):
+    """Thunder Emperor: recolhe os dois punhos na cintura agachando e solta os dois juntos para a frente."""
+    hit, end = ability(name)
+    load = hit * 0.7
+    return {"animation_length": end, "bones": {
+        "arm_right": rot((0, ZERO), (load, [20, -20, 20]), (hit, [-95, 10, 0]), (end - 0.1, [-80, 10, 0]),
+                         (end, ZERO)),
+        "arm_left": rot((0, ZERO), (load, [20, 20, -20]), (hit, [-95, -10, 0]), (end - 0.1, [-80, -10, 0]),
+                        (end, ZERO)),
+        "forearm_right": rot((0, ZERO), (load, [-80, 0, 0]), (hit, [0, 0, 0]), (end, ZERO)),
+        "forearm_left": rot((0, ZERO), (load, [-80, 0, 0]), (hit, [0, 0, 0]), (end, ZERO)),
+        "body": {"rotation": keys((0, ZERO), (load, [-10, 0, 0]), (hit, [16, 0, 0]), (end, ZERO)),
+                 "position": keys((0, ZERO), (load, [0, -2.5, 1.0]), (hit, [0, -1.5, -1.5]), (end, ZERO))},
+        "leg_left": rot((0, ZERO), (load, [25, 0, -8]), (hit, [30, 0, -8]), (end, ZERO)),
+        "leg_right": rot((0, ZERO), (load, [-30, 0, 8]), (hit, [-35, 0, 8]), (end, ZERO)),
+    }}
+
+
+def straight_punch(name):
+    """Soco reto (onda sonica do Isao, soco pesado do No. 13): puxa o braco direito e estica com o corpo."""
+    hit, end = ability(name)
+    load = hit * 0.65
+    return {"animation_length": end, "bones": {
+        "arm_right": rot((0, ZERO), (load, [-20, 30, 25]), (hit, [-92, -5, 0]), (end - 0.1, [-85, 0, 0]),
+                         (end, ZERO)),
+        "forearm_right": rot((0, ZERO), (load, [-75, 0, 0]), (hit, [0, 0, 0]), (end, ZERO)),
+        "arm_left": rot((0, ZERO), (load, [-40, 0, -10]), (hit, [-10, 0, -10]), (end, ZERO)),
+        "body": rot((0, ZERO), (load, [-4, 28, 0]), (hit, [10, -22, 0]), (end, ZERO)),
+    }}
+
+
+def throat_grab(name):
+    """Agarrao do No. 13: o braco direito se estica na altura do pescoco do alvo e fecha, o corpo inclina junto."""
+    hit, end = ability(name)
+    reach = hit * 0.6
+    return {"animation_length": end, "bones": {
+        "arm_right": rot((0, ZERO), (reach, [-70, 0, 15]), (hit, [-100, 0, 0]), (end - 0.15, [-100, 0, 0]),
+                         (end, ZERO)),
+        "forearm_right": rot((0, ZERO), (reach, [-30, 0, 0]), (hit, [0, 0, 0]), (end, ZERO)),
+        "body": rot((0, ZERO), (reach, [-8, 10, 0]), (hit, [14, -6, 0]), (end - 0.15, [10, 0, 0]), (end, ZERO)),
+        "head": rot((0, ZERO), (hit, [-12, 0, 0]), (end, ZERO)),
+    }}
+
+
 def fixed(make, length):
     """Animacao sem habilidade (gesto de absorver/reviver), com a duracao do numbered/<id>.json."""
     return lambda _name: make(length)
@@ -399,6 +464,19 @@ SPECIES = {
                              "action.finger_gun": (ant_finger_gun, "finger_gun"),
                              "action.revive": (fixed(ant_absorb, 2.5), None),
                              "action.absorb": (fixed(ant_absorb, 2.5), None)},
+    # 0.8-A: No. 9 com o Isao (tecnicas das manoplas Numbers 2 e as do No. 9 preto) e No. 13 (ossos do No. 9).
+    "kaiju_no9_isao": {"action.finger_gun": (finger_gun, "finger_gun"),
+                       "action.multi_finger_gun": (tendril, "no9_black_multi_finger_gun"),
+                       "action.tendril": (tendril, "no9_black_tendril"),
+                       "action.barrage_blast": (fist_barrage, "no9_isao_barrage_blast"),
+                       "action.thunder_emperor": (double_punch, "no9_isao_thunder_emperor"),
+                       "action.force_blast": (spike_burst, "no9_isao_force_blast"),
+                       "action.sonic_blast": (straight_punch, "no9_isao_sonic_blast"),
+                       "action.leap": (humanoid_leap, "no9_black_short_flight"),
+                       "action.absorb": (fixed(absorb, 3.0), None)},
+    "kaiju_no13": {"action.flurry": (fist_barrage, "no13_flurry"), "action.punch": (straight_punch, "no13_heavy_punch"),
+                   "action.throat_grab": (throat_grab, "no13_throat_grab"),
+                   "action.leap": (humanoid_leap, "no13_pounce")},
     # 0.6-E: Kaiju No. 10 (ossos do Primigenius); "action.slam" e "action.charge" vem do build_primigenius.py.
     "kaiju_no10_small": {"action.punch": (punch, "no10_heavy_punch"),
                          "action.tail_swipe": (tail_swipe, "no10_tail_sweep"),

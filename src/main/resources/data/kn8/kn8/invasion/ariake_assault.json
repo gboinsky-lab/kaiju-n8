@@ -43,6 +43,11 @@
           "chance": 0.3
         },
         {
+          "species": "kn8:kaiju_no13",
+          "count": 1,
+          "chance": 0.5
+        },
+        {
           "species": "kn8:camponotus_reborn",
           "count": 2
         }
@@ -63,6 +68,10 @@
     },
     {
       "variant": "narumi",
+      "count": 1
+    },
+    {
+      "variant": "isao",
       "count": 1
     },
     {

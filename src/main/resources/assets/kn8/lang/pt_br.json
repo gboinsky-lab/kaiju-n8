@@ -912,5 +912,12 @@
   "kn8.arena.started": "Treino começou: %s está na arena!",
   "kn8.arena.ended": "Treino encerrado.",
   "kn8.arena.failed": "Não foi possível soltar o kaiju aqui.",
-  "kn8.arena.empty": "Nenhum kaiju configurado para a arena."
+  "kn8.arena.empty": "Nenhum kaiju configurado para a arena.",
+  "entity.kn8.isao": "Isao Shinomiya (Numbers 2)",
+  "item.kn8.isao_spawn_egg": "Ovo do Isao Shinomiya (Numbers 2)",
+  "kn8.soldier.variant.isao": "Isao Shinomiya (Numbers 2)",
+  "item.kn8.numbers2_gauntlet": "Manoplas Numbers 2",
+  "entity.kn8.kaiju_no9_isao": "Kaiju No. 9 (Após Absorver o Isao)",
+  "entity.kn8.kaiju_no13": "Kaiju No. 13",
+  "kn8.no9.isao_form": "O Kaiju No. 9 absorveu o Isao Shinomiya e a arma numerada 2!"
 }

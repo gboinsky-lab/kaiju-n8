@@ -1,0 +1,26 @@
+{
+  "type": "kn8:projectile",
+  "damage_multiplier": 1.1,
+  "windup_ticks": 6,
+  "active_ticks": 2,
+  "cooldown_ticks": 120,
+  "animation": "action.throat_grab",
+  "vfx": [
+    {
+      "effect": "kn8:impact",
+      "intensity": 0.7
+    }
+  ],
+  "camera_shake": 0.15,
+  "sound": "kn8:kaiju.bite",
+  "behavior": {
+    "priority": 4,
+    "min_range": 1.5,
+    "max_range": 6,
+    "projectile_speed": 2.6,
+    "projectile_range": 7,
+    "color": "#E8E0D8",
+    "slow_ticks": 40,
+    "slow_level": 4
+  }
+}

@@ -27,6 +27,18 @@
   "absorb": [
     {
       "species": [
+        "kn8:isao"
+      ],
+      "into": "kn8:kaiju_no9_isao",
+      "seek_radius": 16,
+      "cast_ticks": 60,
+      "target_health_below": 0.3,
+      "self_health_below": 1.0,
+      "carcass": false,
+      "message": "kn8.no9.isao_form"
+    },
+    {
+      "species": [
         "kn8:kaiju_no10_small"
       ],
       "into": "kn8:kaiju_no9_fusion",

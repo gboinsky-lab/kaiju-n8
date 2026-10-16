@@ -67,8 +67,9 @@ gameplay) e **MOD ORIGINAL** (decisão do Miguel ou do mod). Os números ficam n
   pequeno (1), esquiva pouco (0,5: aguenta o golpe).
 - **MOD ORIGINAL:** guarda contra golpe pesado no No. 8 (Miguel citou o No. 8); troca de forma pela vida.
 
-## Isao Shinomiya
-- **CANON:** diretor-geral da Força de Defesa, força pesada, traje numerado 2.
-- **Ainda sem modelo:** entra quando o modelo do Miguel for implementado (`docs/MODELOS_RECEBIDOS_2026_10_15.md`); o
-  perfil seguirá a Parte 9.8 (postura estável, golpes comprometidos contra ameaças importantes, não persegue alvo
-  pequeno) e ele fará parte dos especiais pesados (IA-2).
+## Isao Shinomiya (`isao`)
+- **CANON:** diretor-geral da Força de Defesa, força pesada, arma numerada 2 (manoplas com ondas de choque).
+- **INFERÊNCIA:** postura estável, golpes comprometidos, pressão de perto (`aggression` 0,85), pesado contra grande
+  (2), protege aliados (10).
+- **MOD ORIGINAL:** guarda contra golpe pesado (45%); quebra blocos com o Thunder Emperor e o Force Blast (IA-2).
+  Ficha completa, fontes e as duas criaturas novas da 0.8-A em `docs/FICHAS_0_8_A.md`.

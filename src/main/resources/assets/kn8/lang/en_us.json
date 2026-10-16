@@ -912,5 +912,12 @@
   "kn8.arena.started": "Training started: %s is in the arena!",
   "kn8.arena.ended": "Training ended.",
   "kn8.arena.failed": "The kaiju could not be released here.",
-  "kn8.arena.empty": "No kaiju configured for the arena."
+  "kn8.arena.empty": "No kaiju configured for the arena.",
+  "entity.kn8.isao": "Isao Shinomiya (Numbers 2)",
+  "item.kn8.isao_spawn_egg": "Isao Shinomiya (Numbers 2) Spawn Egg",
+  "kn8.soldier.variant.isao": "Isao Shinomiya (Numbers 2)",
+  "item.kn8.numbers2_gauntlet": "Numbers 2 Gauntlets",
+  "entity.kn8.kaiju_no9_isao": "Kaiju No. 9 (Isao Absorbed)",
+  "entity.kn8.kaiju_no13": "Kaiju No. 13",
+  "kn8.no9.isao_form": "Kaiju No. 9 absorbed Isao Shinomiya and Numbers Weapon 2!"
 }

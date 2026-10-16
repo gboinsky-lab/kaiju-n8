@@ -100,6 +100,7 @@ public final class KN8Client {
         event.registerEntityRenderer(KN8Entities.KAFKA.get(), context -> new SoldierRenderer<>(context, "kafka"));
         event.registerEntityRenderer(KN8Entities.KAIJU_NO8.get(),
                 context -> new SoldierRenderer<>(context, "kaiju_no8"));
+        event.registerEntityRenderer(KN8Entities.ISAO.get(), context -> new SoldierRenderer<>(context, "isao"));
         event.registerEntityRenderer(KN8Entities.TRAINING_DUMMY.get(), ArmorStandRenderer::new);
     }
 

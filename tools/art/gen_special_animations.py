@@ -64,7 +64,10 @@ STANCES["fists"] = {
     "aim": ([-85, -30, 0], [-80, 35, 0], None),
 }
 FAMILY = {"reno": "rifle", "mina": "cannon", "narumi": "spear", "reno_no6": "rifle", "kafka": "rifle",
-          "kaiju_no8": "fists"}
+          "kaiju_no8": "fists", "isao": "fists"}
+# 0.8-A: tecnicas de onda do Isao (manoplas Numbers 2) com a animacao dos punhos: Force Blast abre os bracos como o
+# rugido e solta a onda em leque; Spiral Blast e um soco para a frente que dispara a onda.
+FIST_WAVES = {"roar": "roar", "force_blast": "roar", "ground_smash": "ground_smash"}
 # Perfis que usam o modelo (e o arquivo de animacoes) de outra especie.
 SHARED = {"narumi": ["narumi_no1"]}
 # 0.7-D: tecnicas da Kikoru Numbers 4 -> animacao da Kikoru com os mesmos tempos (special_soldier/kikoru_no4.json).
@@ -262,7 +265,10 @@ def technique_animation(name, technique, family, stances):
     ticks = hit_ticks(technique)
     duration = technique["duration_ticks"]
     if technique["type"] == "slash" and family == "fists":
-        return (roar if name == "roar" else ground_smash)(stances, ticks[0], duration)
+        wave = FIST_WAVES.get(name)
+        if wave is None:
+            return thrusts(stances, ticks, duration)
+        return (roar if wave == "roar" else ground_smash)(stances, ticks[0], duration)
     if technique["type"] == "slash":
         slash = technique.get("slash", {})
         big = slash.get("explosion_radius", 0) >= 3.0
@@ -335,7 +341,8 @@ def kikoru_no4():
 
 
 def main():
-    for species in sys.argv[1:] or ["reno", "mina", "narumi", "reno_no6", "kikoru_no4", "kafka", "kaiju_no8"]:
+    for species in sys.argv[1:] or ["reno", "mina", "narumi", "reno_no6", "kikoru_no4", "kafka", "kaiju_no8",
+                                   "isao"]:
         path = ASSETS / f"{species}.animation.json"
         raw = path.read_bytes().decode("utf-8")
         newline = "\r\n" if "\r\n" in raw else "\n"

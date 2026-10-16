@@ -1,0 +1,7 @@
+{
+  "circle_chance": 0.3,
+  "circle_distance": 4.0,
+  "circle_ticks": 30,
+  "ranged_beyond": 8.0,
+  "ranged_priority": 1
+}

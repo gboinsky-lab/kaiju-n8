@@ -1,0 +1,32 @@
+{
+  "type": "kn8:melee",
+  "damage_multiplier": 2.4,
+  "windup_ticks": 16,
+  "active_ticks": 2,
+  "cooldown_ticks": 180,
+  "animation": "action.thunder_emperor",
+  "particles": "kn8:dust",
+  "heavy": true,
+  "destruction": {
+    "radius": 2.5,
+    "power": 3,
+    "crater": true,
+    "depth": 1.0
+  },
+  "vfx": [
+    {
+      "effect": "kn8:impact",
+      "intensity": 1.2
+    },
+    {
+      "effect": "kn8:shockwave",
+      "intensity": 1.2
+    }
+  ],
+  "camera_shake": 0.45,
+  "sound": "kn8:kaiju.slam",
+  "behavior": {
+    "priority": 5,
+    "max_range": 4.0
+  }
+}

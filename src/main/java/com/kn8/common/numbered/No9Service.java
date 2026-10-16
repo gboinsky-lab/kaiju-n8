@@ -37,6 +37,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
@@ -209,6 +210,13 @@ public final class No9Service {
                 kaiju -> kaiju != no9 && kaiju.isAlive() && rule.species().contains(kaiju.kaijuId())
                         && (rule.targetHealthBelow() >= 1.0F
                         || kaiju.getHealth() < kaiju.getMaxHealth() * rule.targetHealthBelow())));
+        // 0.8-A: presa que nao e kaiju (o Isao, soldado especial) pelo id do tipo de entidade; viva e abaixo da vida
+        // do JSON (o No. 9 so absorve quem ja derrotou).
+        found.addAll(level.getEntitiesOfClass(Mob.class, area,
+                mob -> !(mob instanceof KaijuEntity) && mob.isAlive()
+                        && rule.species().contains(BuiltInRegistries.ENTITY_TYPE.getKey(mob.getType()))
+                        && (rule.targetHealthBelow() >= 1.0F
+                        || mob.getHealth() < mob.getMaxHealth() * rule.targetHealthBelow())));
         if (rule.carcass()) {
             found.addAll(level.getEntitiesOfClass(CarcassEntity.class, area,
                     carcass -> carcass.isAlive() && rule.species().contains(carcass.species())));
@@ -250,14 +258,15 @@ public final class No9Service {
             // Sendo absorvido, o No. 10 nao vira a forma gigante.
             no10.transformed = true;
         }
-        if (prey instanceof KaijuEntity kaiju) {
-            kaiju.setTarget(null);
-            kaiju.getNavigation().stop();
+        if (prey instanceof Mob mob) {
+            // Kaiju ou soldado especial (Isao): presos pelos tentaculos, param de lutar e sao puxados.
+            mob.setTarget(null);
+            mob.getNavigation().stop();
             double gap = pull.horizontalDistance() - (no9.getBbWidth() + prey.getBbWidth()) * 0.5;
             if (gap > 0.5) {
                 Vec3 step = new Vec3(pull.x, 0, pull.z).normalize().scale(Math.min(ABSORB_PULL_SPEED, gap));
-                kaiju.setDeltaMovement(step.x, kaiju.getDeltaMovement().y, step.z);
-                kaiju.hurtMarked = true;
+                mob.setDeltaMovement(step.x, mob.getDeltaMovement().y, step.z);
+                mob.hurtMarked = true;
             }
         }
         if (no9.tickCount % 2 == 0) {
