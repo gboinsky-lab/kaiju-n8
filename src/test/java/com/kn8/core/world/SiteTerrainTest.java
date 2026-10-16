@@ -39,6 +39,15 @@ class SiteTerrainTest {
     }
 
     @Test
+    void onlyTheCoreCountsForTheSlope() {
+        SiteTerrain terrain = new SiteTerrain(4, 0);
+        assertTrue(terrain.add(64, false, true));
+        assertTrue(terrain.add(90, false, false));
+        assertTrue(terrain.accepted());
+        assertFalse(terrain.add(70, false, true));
+    }
+
+    @Test
     void steepGroundRejects() {
         SiteTerrain terrain = new SiteTerrain(6, 0);
         assertTrue(terrain.add(64, false));

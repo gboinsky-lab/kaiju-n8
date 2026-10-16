@@ -14,6 +14,7 @@ public final class SiteTerrain {
     private int min = Integer.MAX_VALUE;
     private int max = Integer.MIN_VALUE;
     private int samples;
+    private int slopeSamples;
     private int wet;
     private boolean rejected;
 
@@ -29,6 +30,14 @@ public final class SiteTerrain {
 
     /** Uma amostra: altura do chao e se a superficie ali e agua (ou outro fluido). False = local reprovado. */
     public boolean add(int ground, boolean isWet) {
+        return add(ground, isWet, true);
+    }
+
+    /**
+     * Amostra que so conta para o desnivel se {@code slope} (o miolo do local; a borda irregular fica com o
+     * beard_thin). A agua conta em qualquer amostra.
+     */
+    public boolean add(int ground, boolean isWet, boolean slope) {
         if (rejected) {
             return false;
         }
@@ -37,6 +46,10 @@ public final class SiteTerrain {
             rejected = ++wet > maxWet;
             return !rejected;
         }
+        if (!slope) {
+            return true;
+        }
+        slopeSamples++;
         min = Math.min(min, ground);
         max = Math.max(max, ground);
         rejected = max - min > maxSlope;
@@ -44,7 +57,7 @@ public final class SiteTerrain {
     }
 
     public boolean accepted() {
-        return !rejected && samples > wet;
+        return !rejected && slopeSamples > 0;
     }
 
     public int slope() {

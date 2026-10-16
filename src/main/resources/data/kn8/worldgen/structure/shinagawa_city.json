@@ -7,7 +7,8 @@
   "layout": "kn8:shinagawa_city_layout",
   "check_radius": 96,
   "check_step": 12,
-  "max_slope": 18,
+  "max_slope": 16,
+  "slope_radius": 64,
   "max_water": 0.05,
   "avoid": [
     {

@@ -7,7 +7,8 @@
   "layout": "kn8:ariake_base_layout",
   "check_radius": 104,
   "check_step": 12,
-  "max_slope": 16,
+  "max_slope": 14,
+  "slope_radius": 64,
   "max_water": 0.05,
   "avoid": [
     {

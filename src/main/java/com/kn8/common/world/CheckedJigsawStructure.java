@@ -14,6 +14,7 @@ import net.minecraft.core.QuartPos;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.NoiseColumn;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.Structure;
@@ -25,9 +26,10 @@ import net.minecraft.world.level.levelgen.structure.placement.StructurePlacement
 /**
  * Local da obra (construcoes C3): o desenho e outra estrutura jigsaw ({@code layout}). Antes de gerar, na ordem do
  * mais barato para o mais caro: (1) recusa se algum conjunto de {@code avoid} (vilas, postos de saqueadores,
- * templos...) tiver ponto candidato a ate {@code chunks} chunks; (2) confere o bioma no centro; (3) mede o terreno
- * numa grade de passo {@code check_step} no raio {@code check_radius} ({@link SiteTerrain}): ate {@code max_water} das
- * amostras com agua na superficie e desnivel do chao seco ate {@code max_slope}. Tudo aqui dentro porque o /locate
+ * templos...) tiver ponto candidato a ate {@code chunks} chunks num bioma em que ele pode nascer; (2) confere o bioma
+ * no centro; (3) mede o terreno numa grade de passo {@code check_step} no raio {@code check_radius}
+ * ({@link SiteTerrain}): ate {@code max_water} das amostras com agua na superficie e, no miolo
+ * ({@code slope_radius}), desnivel do chao seco ate {@code max_slope} (a borda irregular fica com o beard_thin). Tudo aqui dentro porque o /locate
  * desta versao nao chama as regras de posicao do conjunto ({@code exclusion_zone}); assim ele e a geracao concordam.
  * Mede na coluna de ruido (antes de arvores e construcoes).
  */
@@ -47,6 +49,7 @@ public final class CheckedJigsawStructure extends Structure {
             Codec.intRange(8, 256).fieldOf("check_radius").forGetter(s -> s.radius),
             Codec.intRange(4, 64).optionalFieldOf("check_step", 16).forGetter(s -> s.step),
             Codec.intRange(0, 128).optionalFieldOf("max_slope", 12).forGetter(s -> s.maxSlope),
+            Codec.intRange(0, 256).optionalFieldOf("slope_radius", 64).forGetter(s -> s.slopeRadius),
             Codec.doubleRange(0.0, 1.0).optionalFieldOf("max_water", 0.0).forGetter(s -> s.maxWater),
             Avoid.CODEC.listOf().optionalFieldOf("avoid", List.of()).forGetter(s -> s.avoid)
     ).apply(i, CheckedJigsawStructure::new));
@@ -55,17 +58,19 @@ public final class CheckedJigsawStructure extends Structure {
     private final int radius;
     private final int step;
     private final int maxSlope;
+    private final int slopeRadius;
     private final double maxWater;
     private final List<Avoid> avoid;
     private final int[][] grid;
 
     private CheckedJigsawStructure(StructureSettings settings, Holder<Structure> layout, int radius, int step,
-            int maxSlope, double maxWater, List<Avoid> avoid) {
+            int maxSlope, int slopeRadius, double maxWater, List<Avoid> avoid) {
         super(settings);
         this.layout = layout;
         this.radius = radius;
         this.step = step;
         this.maxSlope = maxSlope;
+        this.slopeRadius = slopeRadius;
         this.maxWater = maxWater;
         this.avoid = avoid;
         this.grid = SiteTerrain.grid(radius, step);
@@ -85,7 +90,9 @@ public final class CheckedJigsawStructure extends Structure {
         for (int[] offset : grid) {
             NoiseColumn column = generator.getBaseColumn(x0 + offset[0], z0 + offset[1], height,
                     context.randomState());
-            if (!sample(terrain, column, height)) {
+            int[] surface = surface(column, height);
+            boolean core = offset[0] * offset[0] + offset[1] * offset[1] <= slopeRadius * slopeRadius;
+            if (!terrain.add(surface[0], surface[1] == 1, core)) {
                 return Optional.empty();
             }
         }
@@ -111,7 +118,8 @@ public final class CheckedJigsawStructure extends Structure {
                         rz++) {
                     ChunkPos candidate = spread.getPotentialStructureChunk(seed, rx * spacing, rz * spacing);
                     if (SiteTerrain.within(here.x, here.z, candidate.x, candidate.z, range)
-                            && spread.applyAdditionalChunkRestrictions(candidate.x, candidate.z, seed)) {
+                            && spread.applyAdditionalChunkRestrictions(candidate.x, candidate.z, seed)
+                            && canSpawnThere(context, entry.set().value(), candidate)) {
                         return true;
                     }
                 }
@@ -120,24 +128,37 @@ public final class CheckedJigsawStructure extends Structure {
         return false;
     }
 
-    /** Bioma no centro antes do terreno (barato: evita medir o mar inteiro); o desenho confere de novo no ponto. */
-    private static boolean centerBiomeValid(GenerationContext context) {
-        int x = context.chunkPos().getMiddleBlockX();
-        int z = context.chunkPos().getMiddleBlockZ();
-        int y = context.chunkGenerator().getSeaLevel();
-        return context.validBiome().test(context.biomeSource().getNoiseBiome(QuartPos.fromBlock(x),
-                QuartPos.fromBlock(y), QuartPos.fromBlock(z), context.randomState().sampler()));
+    /** O ponto candidato so conta se o bioma dele aceita alguma estrutura do conjunto (iglu so na neve...). */
+    private static boolean canSpawnThere(GenerationContext context, StructureSet set, ChunkPos candidate) {
+        Holder<Biome> biome = biomeAt(context, candidate);
+        for (StructureSet.StructureSelectionEntry entry : set.structures()) {
+            if (entry.structure().value().biomes().contains(biome)) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    /** Primeiro bloco nao-ar de cima para baixo: fluido = agua na superficie; senao, altura do chao. */
-    private static boolean sample(SiteTerrain terrain, NoiseColumn column, LevelHeightAccessor height) {
+    private static Holder<Biome> biomeAt(GenerationContext context, ChunkPos chunk) {
+        return context.biomeSource().getNoiseBiome(QuartPos.fromBlock(chunk.getMiddleBlockX()),
+                QuartPos.fromBlock(context.chunkGenerator().getSeaLevel()), QuartPos.fromBlock(chunk.getMiddleBlockZ()),
+                context.randomState().sampler());
+    }
+
+    /** Bioma no centro antes do terreno (barato: evita medir o mar inteiro); o desenho confere de novo no ponto. */
+    private static boolean centerBiomeValid(GenerationContext context) {
+        return context.validBiome().test(biomeAt(context, context.chunkPos()));
+    }
+
+    /** Primeiro bloco nao-ar de cima para baixo: {altura, 1 se e fluido (agua na superficie)}. */
+    private static int[] surface(NoiseColumn column, LevelHeightAccessor height) {
         for (int y = height.getMaxBuildHeight() - 1; y >= height.getMinBuildHeight(); y--) {
             BlockState state = column.getBlock(y);
             if (!state.isAir()) {
-                return terrain.add(y, !state.getFluidState().isEmpty());
+                return new int[] {y, state.getFluidState().isEmpty() ? 0 : 1};
             }
         }
-        return terrain.add(height.getMinBuildHeight(), true);
+        return new int[] {height.getMinBuildHeight(), 1};
     }
 
     @Override

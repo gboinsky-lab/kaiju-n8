@@ -853,13 +853,15 @@ TACHIKAWA_LOTS = [("tachikawa/lot_department", 3), ("tachikawa/lot_showa_park", 
                   ("city/lot_parking", 1)]
 # (estrutura, pool inicial, size, distancia max., biomas, raio da checagem, desnivel max.)
 SITES = [
-    ("ariake_base", "kn8:ariake_base/core", 3, 100, BASE_BIOMES, 104, 16),
-    ("tachikawa_base", "kn8:tachikawa_base/core", 3, 110, BASE_BIOMES, 112, 16),
-    ("shinagawa_city", "kn8:shinagawa/station", 6, 116, CITY_BIOMES, 96, 18),
-    ("tachikawa_city", "kn8:tachikawa/station", 6, 116, CITY_BIOMES, 96, 18),
+    ("ariake_base", "kn8:ariake_base/core", 3, 100, BASE_BIOMES, 104, 14),
+    ("tachikawa_base", "kn8:tachikawa_base/core", 3, 110, BASE_BIOMES, 112, 14),
+    ("shinagawa_city", "kn8:shinagawa/station", 6, 116, CITY_BIOMES, 96, 16),
+    ("tachikawa_city", "kn8:tachikawa/station", 6, 116, CITY_BIOMES, 96, 16),
 ]
-# Fracao das amostras que pode ter agua (riacho ou lagoa pequena, que a construcao cobre; lago e rio largo nao).
+# Fracao das amostras que pode ter agua (riacho ou lagoa pequena, que a construcao cobre; lago e rio largo nao) e
+# raio do miolo em que o desnivel conta (a borda irregular fica com o beard_thin).
 MAX_WATER = 0.05
+SLOPE_RADIUS = 64
 # Conjuntos que os locais evitam (chunks de raio): vilas e as construcoes de superficie do vanilla.
 AVOID = [("minecraft:villages", 10), ("minecraft:pillager_outposts", 8), ("minecraft:desert_pyramids", 6),
          ("minecraft:igloos", 6), ("minecraft:swamp_huts", 6), ("minecraft:woodland_mansions", 10),
@@ -889,7 +891,8 @@ def worldgen():
             "use_expansion_hack": False}))
         dump(wg / f"structure/{name}.json", dict(settings, **{
             "type": "kn8:checked_jigsaw", "layout": f"kn8:{name}_layout", "check_radius": radius,
-            "check_step": 12, "max_slope": slope, "max_water": MAX_WATER,
+            "check_step": 12, "max_slope": slope, "slope_radius": SLOPE_RADIUS,
+            "max_water": MAX_WATER,
             "avoid": [{"structure_set": s, "chunks": c} for s, c in AVOID]}))
     # Um conjunto para os quatro: os locais nunca nascem colados um no outro. ~1 a cada 1.000 blocos [SUPOSICAO].
     dump(wg / "structure_set/defense_sites.json", {
