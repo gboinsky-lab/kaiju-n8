@@ -38,8 +38,9 @@ import net.minecraft.world.phys.AABB;
 
 /**
  * Chefes (0.2, Etapa 6, GDD secao 23): um kaiju dos dados com barra de chefe, fases por vida e invocacao de Yoju
- * da propria especie. A IA de ataque continua a do kaiju (as habilidades do JSON da especie).
- * [SUPOSICAO] os pesos de ataque por fase do {@code boss/*.json} ainda nao mudam a escolha da IA.
+ * da propria especie. A IA de ataque e a do kaiju; desde a IA-6 os ataques da fase atual ({@code attacks} do
+ * {@code boss/*.json}) ganham {@code [kaijuAi] bossPhaseBonus} de prioridade e o peso decide o empate
+ * (KaijuAbilities#choose). A fase so avanca (sem voltar com cura), entao nao ha troca repetida em laco.
  */
 public final class BossService {
 

@@ -100,6 +100,12 @@ impedia o kaiju de chegar perto de um grupo de soldados).
 | `progressCheckTicks` / `minProgress` | 60 / 1 | a cada 3 s precisa chegar 1 bloco mais perto ou ferir o alvo |
 | `giveUpTicks` / `unreachableTicks` | 200 / 400 | 10 s sem progresso: alvo inalcançável e ignorado por 20 s |
 | `commandTicks` | 200 | alvo dado pelo No. 9/No. 10 vale 10 s |
+| `telegraphHeavy` | true | IA-6: golpe pesado marca no chão a área ameaçada durante o preparo (anel, arco ou linha; amarelo → vermelho perto do impacto) e toca um som grave no início |
+| `telegraphIntervalTicks` / `telegraphPoints` | 4 / 28 | IA-6: um pulso do aviso a cada 4 ticks, 28 partículas por pulso |
+| `bossPhaseBonus` | 3 | IA-6: os ataques da fase atual do chefe (`boss/*.json`) ganham +3 de prioridade; o peso do JSON decide o empate; ataque listado que a espécie não tem é liberado |
+| `adaptationMemory` | 6 | IA-6: a análise do No. 9 lembra no máximo 6 tipos de golpe (esquece o mais antigo); tipo sem marcas sai da memória |
+
+Fases dos chefes (IA-6) [SUPOSIÇÃO nos pesos]: **Honju** acima de 50% soco pesado 2, pisão 3, mordida 1; abaixo, investida 3, raio 3, pisão 2. **Revivido** soco 2 / pisão 3 → investida 2, raio 3, pisão 2 → investida 3, raio 3, rabada 1. Tecedeira e Honju do exame sem mudança.
 
 **IA dos soldados** (`[soldierAi]`, IA-1B, Miguel 2026-10-15) [SUPOSIÇÃO nos números]:
 

@@ -58,4 +58,14 @@ class AbilitySelectionTest {
         assertEquals(0.0, y, 1e-6);
         assertTrue(vy > 0.5, "O salto deveria subir antes de cair");
     }
+
+    @Test
+    void phaseWeightsBreakTheTie() {
+        // Empate entre 0 (peso 3) e 2 (peso 1): de 4 numeros sorteados, 0..2 caem no primeiro e 3 no segundo.
+        assertEquals(0, AbilitySelection.pickWeighted(List.of(5, 1, 5), List.of(3, 1, 1), total -> 2));
+        assertEquals(2, AbilitySelection.pickWeighted(List.of(5, 1, 5), List.of(3, 1, 1), total -> 3));
+        // Maior prioridade sempre vence, qualquer que seja o peso.
+        assertEquals(1, AbilitySelection.pickWeighted(List.of(1, 8, 2), List.of(50, 1, 50), total -> 0));
+        assertEquals(-1, AbilitySelection.pickWeighted(List.of(), List.of(), total -> 0));
+    }
 }

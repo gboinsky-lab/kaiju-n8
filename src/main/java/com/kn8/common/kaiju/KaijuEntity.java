@@ -131,8 +131,8 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
     private static final int CORE_SYNC_STEPS = 200;
     private static final String PACK_TAG = "pack";
     private static final String TYPE_MELEE = "melee";
-    private static final String TYPE_AREA_MELEE = "area_melee";
-    private static final String TYPE_CHARGE = "charge";
+    static final String TYPE_AREA_MELEE = "area_melee";
+    static final String TYPE_CHARGE = "charge";
     /** 0.6: o salto so "aterrissa" depois de alguns ticks no ar; desiste se nao voltar ao chao. */
     private static final int LEAP_MIN_AIR_TICKS = 3;
     private static final int LEAP_MAX_TICKS = 80;
@@ -468,6 +468,11 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
         bossState = state;
     }
 
+    /** IA-6: ataques da fase atual do chefe (habilidade -> peso do JSON); vazio se nao for chefe. */
+    public Map<ResourceLocation, Integer> bossPhaseAttacks() {
+        return KaijuAbilities.phaseAttacks(this);
+    }
+
     @Override
     public void remove(RemovalReason reason) {
         if (bossState != null) {
@@ -583,6 +588,8 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
                 .map(KaijuDef.Rage::cooldownMultiplier).orElse(1.0F) : 1.0F);
         abilityReadyAt.put(id, now + duration + Math.round(cooldown));
         triggerAnim("action", ability.animation());
+        // IA-6: golpe pesado avisa com som e marca a area ameacada durante o preparo (KaijuTelegraph).
+        KaijuTelegraph.start(this, ability);
         // 0.6 (telegraph): o efeito de aviso ("particles" do JSON) sai no inicio do preparo, para dar tempo de reagir.
         ability.particles().ifPresent(effect -> {
             if (level() instanceof ServerLevel server) {
@@ -609,6 +616,13 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
                 endAbility();
             } else if (chargeDirection != null) {
                 tickCharge();
+            } else {
+                long left = abilityTimeline.startTick() + KN8Data.ABILITY.get(currentAbility, false)
+                        .map(AbilityDef::windupTicks).orElse(0) - now;
+                if (left > 0) {
+                    KN8Data.ABILITY.get(currentAbility, false).ifPresent(def ->
+                            KaijuTelegraph.pulse(this, def, abilityTarget, (int) left));
+                }
             }
             return;
         }

@@ -3,6 +3,7 @@ package com.kn8.common.numbered;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import com.kn8.KN8Constants;
@@ -11,6 +12,7 @@ import com.kn8.common.career.CareerService;
 import com.kn8.common.combat.CombatService;
 import com.kn8.common.combat.SlashProjectile;
 import com.kn8.common.combat.WeaponIndex;
+import com.kn8.common.config.ServerConfig;
 import com.kn8.common.data.KN8Data;
 import com.kn8.common.data.def.NumberedDef;
 import com.kn8.common.data.def.WeaponDef;
@@ -316,7 +318,11 @@ public final class No9Service {
         }
         NumberedDef.Adaptation adaptation = found.get();
         long now = level.getGameTime();
-        long[] marks = no9.adaptation.computeIfAbsent(attackKind(source), key -> new long[] {0, now});
+        String kind = attackKind(source);
+        // IA-6 (Parte 12: memoria limitada, com expiracao): tipos ja esquecidos saem e, no limite do config, o tipo
+        // mais antigo e esquecido; a reducao continua com o teto do JSON (nunca imunidade).
+        forget(no9.adaptation, kind, now, adaptation.decayTicks(), ServerConfig.AI_ADAPTATION_MEMORY.get());
+        long[] marks = no9.adaptation.computeIfAbsent(kind, key -> new long[] {0, now});
         marks[0] = Math.max(0, marks[0] - (now - marks[1]) / Math.max(1, adaptation.decayTicks()));
         marks[0]++;
         marks[1] = now;
@@ -327,6 +333,24 @@ public final class No9Service {
                     0.02);
         }
         return amount * (1.0F - reduction);
+    }
+
+    /**
+     * Esquece da memoria de adaptacao os tipos cujas marcas ja zeraram ({@code decayTicks} por marca) e, se ainda
+     * passar de {@code limit} com o tipo novo, o tipo usado ha mais tempo.
+     */
+    public static void forget(Map<String, long[]> memory, String incoming, long now, int decayTicks, int limit) {
+        memory.entrySet().removeIf(entry -> !entry.getKey().equals(incoming)
+                && entry.getValue()[0] - (now - entry.getValue()[1]) / Math.max(1, decayTicks) <= 0);
+        while (memory.size() >= limit && !memory.containsKey(incoming)) {
+            String oldest = null;
+            for (Map.Entry<String, long[]> entry : memory.entrySet()) {
+                if (oldest == null || entry.getValue()[1] < memory.get(oldest)[1]) {
+                    oldest = entry.getKey();
+                }
+            }
+            memory.remove(oldest);
+        }
     }
 
     /** Tiro ou projetil (o No. 9 le mais rapido): veio por outra entidade ou de quem segura arma de fogo. */

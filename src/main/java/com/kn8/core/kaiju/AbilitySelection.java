@@ -69,6 +69,36 @@ public final class AbilitySelection {
     }
 
     /**
+     * IA-6: como {@link #pick}, mas o empate e sorteado pelo peso de cada uma ({@code weights}, &gt;= 1; fase de chefe:
+     * {@code attacks[].weight} do {@code boss/*.json}). {@code random} recebe a soma dos pesos do empate.
+     */
+    public static int pickWeighted(List<Integer> priorities, List<Integer> weights, IntUnaryOperator random) {
+        if (priorities.isEmpty()) {
+            return -1;
+        }
+        int best = Integer.MIN_VALUE;
+        for (int priority : priorities) {
+            best = Math.max(best, priority);
+        }
+        int total = 0;
+        for (int i = 0; i < priorities.size(); i++) {
+            if (priorities.get(i) == best) {
+                total += Math.max(1, weights.get(i));
+            }
+        }
+        int roll = random.applyAsInt(total);
+        for (int i = 0; i < priorities.size(); i++) {
+            if (priorities.get(i) == best) {
+                roll -= Math.max(1, weights.get(i));
+                if (roll < 0) {
+                    return i;
+                }
+            }
+        }
+        return -1;
+    }
+
+    /**
      * Indice da habilidade escolhida: a maior prioridade; empate sorteado com {@code random} (recebe o tamanho e
      * devolve 0..tamanho-1). -1 se a lista estiver vazia.
      */

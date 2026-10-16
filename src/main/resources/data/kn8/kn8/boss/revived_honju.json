@@ -11,12 +11,12 @@
       "invuln_ticks": 20,
       "attacks": [
         {
-          "ability": "kn8:slam",
-          "weight": 3
+          "ability": "kn8:heavy_punch",
+          "weight": 2
         },
         {
-          "ability": "kn8:charge",
-          "weight": 2
+          "ability": "kn8:slam",
+          "weight": 3
         }
       ]
     },
@@ -25,12 +25,16 @@
       "invuln_ticks": 40,
       "attacks": [
         {
-          "ability": "kn8:slam",
+          "ability": "kn8:charge",
           "weight": 2
         },
         {
-          "ability": "kn8:charge",
+          "ability": "kn8:energy_blast_revived",
           "weight": 3
+        },
+        {
+          "ability": "kn8:slam",
+          "weight": 2
         }
       ]
     },
@@ -40,6 +44,14 @@
       "attacks": [
         {
           "ability": "kn8:charge",
+          "weight": 3
+        },
+        {
+          "ability": "kn8:energy_blast_revived",
+          "weight": 3
+        },
+        {
+          "ability": "kn8:tail_swipe",
           "weight": 1
         }
       ]

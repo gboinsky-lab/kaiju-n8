@@ -10,11 +10,15 @@
       "invuln_ticks": 30,
       "attacks": [
         {
+          "ability": "kn8:heavy_punch",
+          "weight": 2
+        },
+        {
           "ability": "kn8:slam",
           "weight": 3
         },
         {
-          "ability": "kn8:charge",
+          "ability": "kn8:bite",
           "weight": 1
         }
       ]
@@ -24,11 +28,15 @@
       "invuln_ticks": 40,
       "attacks": [
         {
-          "ability": "kn8:slam",
-          "weight": 2
+          "ability": "kn8:charge",
+          "weight": 3
         },
         {
-          "ability": "kn8:charge",
+          "ability": "kn8:energy_blast",
+          "weight": 3
+        },
+        {
+          "ability": "kn8:slam",
           "weight": 2
         }
       ]

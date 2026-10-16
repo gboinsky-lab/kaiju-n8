@@ -205,6 +205,11 @@ public final class ServerConfig {
     public static final ModConfigSpec.DoubleValue AI_MIN_PROGRESS;
     public static final ModConfigSpec.IntValue AI_GIVE_UP_TICKS;
     public static final ModConfigSpec.IntValue AI_UNREACHABLE_TICKS;
+    public static final ModConfigSpec.BooleanValue AI_TELEGRAPH_HEAVY;
+    public static final ModConfigSpec.IntValue AI_TELEGRAPH_INTERVAL;
+    public static final ModConfigSpec.IntValue AI_TELEGRAPH_POINTS;
+    public static final ModConfigSpec.IntValue AI_BOSS_PHASE_BONUS;
+    public static final ModConfigSpec.IntValue AI_ADAPTATION_MEMORY;
     public static final ModConfigSpec.IntValue AI_COMMAND_TICKS;
 
     // --- IA dos soldados (IA-1B): deteccao, funcoes, municao -------------------------------------------------------
@@ -674,6 +679,14 @@ public final class ServerConfig {
                 12000);
         AI_COMMAND_TICKS = intValue("commandTicks", "How long a target given by a numbered kaiju (No. 9, No. 10)"
                 + " is kept before normal targeting resumes.", 200, 0, 6000);
+        AI_TELEGRAPH_HEAVY = booleanValue("telegraphHeavy", "Heavy kaiju attacks mark the threatened area (ring,"
+                + " arc or line of particles, yellow turning red as the impact gets close) during the windup.", true);
+        AI_TELEGRAPH_INTERVAL = intValue("telegraphIntervalTicks", "Ticks between two warning pulses.", 4, 1, 40);
+        AI_TELEGRAPH_POINTS = intValue("telegraphPoints", "Particles per warning pulse.", 28, 4, 200);
+        AI_BOSS_PHASE_BONUS = intValue("bossPhaseBonus", "Priority bonus of the attacks listed in the current boss"
+                + " phase (boss JSON); attacks listed there but not in the species list are unlocked.", 3, 0, 100);
+        AI_ADAPTATION_MEMORY = intValue("adaptationMemory", "Attack kinds a numbered kaiju remembers for its"
+                + " adaptation (oldest forgotten first).", 6, 1, 64);
         BUILDER.pop();
 
         section("soldierAi", "Soldier AI (IA-1B): detection, roles, ammunition.");

@@ -161,6 +161,19 @@ Ordenados por gravidade. Cada item foi conferido no código (os de gravidade alt
 - Medidor: `grupo` e `cerco` vencidos; `parede` tira ~110 de 220 do Primigenius (como na IA-1B), mas os dois
   soldados morrem perto dos 30 s (4 rodadas); não medi o `parede` com o código da IA-4 para saber desde quando.
 
+### Situação depois da IA-6 (2026-10-16)
+
+- **#23 resolvido**: os ataques da fase atual do chefe ganham prioridade (`[kaijuAi] bossPhaseBonus`) e o peso do JSON
+  decide o empate (`AbilitySelection.pickWeighted`); ataque listado na fase que a espécie não tem fica liberado. A
+  fase só avança (sem laço de transição). Os chefes Honju e revivido ganharam listas diferentes por fase.
+- **Ataques perigosos legíveis (Parte 12)**: toda habilidade `heavy` marca a área ameaçada durante o preparo
+  (`KaijuTelegraph`: anel no pisão e no salto, arco no soco/varredura, linha na investida/tiro), amarelo → vermelho
+  conforme o impacto chega, com som grave no início. Visto em jogo (`docs/img/ia6_aviso_golpe_pesado.jpg`).
+- **Adaptação do No. 9 revisada**: já tinha teto (JSON, no máximo 0,25 × 2 contra tiro = 50%) e expiração por marca;
+  faltava limitar a memória: no máximo `[kaijuAi] adaptationMemory` 6 tipos, tipos sem marca são esquecidos.
+- **Pressão do No. 10**: já veio na IA-4 (`chase_speed` 1,2 e janela curta depois do golpe pesado).
+- Dificuldade mudando a janela de reação: não feito ([DECIDIR] se o Miguel quiser por dificuldade do mundo).
+
 ## 5. Fora da IA (registrado, não mexido)
 
 - **Balanceamento:** Anti-Giant da Mina (×30) mata um Honju de 360 com um tiro (820). O piso de 6 m pega qualquer

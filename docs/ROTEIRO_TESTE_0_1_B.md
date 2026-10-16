@@ -708,3 +708,14 @@ Tecla nova: **C** (Parkour; troca em Opções > Controles > Kaiju No. 8). Númer
 | 49.9 | `/kn8 invasion next` | Cada grupo vai atrás de um kaiju diferente; quando o dele morre, pega outro; entre ondas voltam ao posto |
 | 49.10 | Vários soldados de perto (Hoshina, Kikoru, Narumi) contra o mesmo kaiju | Chegam por lados diferentes, sem ficar um em cima do outro |
 | 49.11 | Servidor dedicado + 2 clientes | O segundo cliente vê os mesmos movimentos; o menu do outro jogador não mostra o seu esquadrão como dele |
+
+## 50. Chefes, aviso de golpe pesado e adaptação (IA-6)
+
+| # | Passo | Esperado |
+|---|---|---|
+| 50.1 | Lute com um Primigenius Honju | Antes do pisão aparece um anel de partículas no chão onde ele vai bater; antes do soco pesado, um arco à frente dele; antes da investida e do raio, uma linha até você. Começa amarelo e fica vermelho perto do impacto; um som grave avisa no começo |
+| 50.2 | Saia do anel/linha quando aparecer | O golpe não acerta (dá tempo de reagir) |
+| 50.3 | `/kn8 boss spawn kn8:honju` (ou missão do chefe) e lute acima de 50% | Usa mais soco pesado e pisão |
+| 50.4 | Leve o chefe abaixo de 50% | "Fase 2", ruge; passa a usar mais investida e raio |
+| 50.5 | Bata no No. 9 sempre com a mesma arma por ~30 s, depois troque | Com a mesma arma as faíscas cinzas aumentam e o dano cai (no máximo o teto do JSON, nunca imune); com a arma nova volta o dano cheio |
+| 50.6 | Servidor dedicado + 2 clientes | O segundo cliente vê os mesmos avisos |

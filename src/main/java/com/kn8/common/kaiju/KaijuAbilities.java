@@ -2,10 +2,13 @@
 package com.kn8.common.kaiju;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.kn8.common.boss.BossState;
+import com.kn8.common.config.ServerConfig;
 import com.kn8.common.data.KN8Data;
 import com.kn8.common.data.def.AbilityDef;
 import com.kn8.common.data.def.KaijuAiDef;
@@ -60,8 +63,14 @@ final class KaijuAbilities {
         float health = kaiju.getHealth() / Math.max(1.0F, kaiju.getMaxHealth());
         List<ResourceLocation> candidates = new ArrayList<>();
         List<Integer> priorities = new ArrayList<>();
+        List<Integer> weights = new ArrayList<>();
         Boolean sight = null;
-        for (ResourceLocation id : ids) {
+        // IA-6 (bug 23): a fase atual do chefe favorece (e libera) os ataques dela, com o peso do JSON no empate.
+        Map<ResourceLocation, Integer> phase = phaseAttacks(kaiju);
+        List<ResourceLocation> all = new ArrayList<>(ids);
+        phase.keySet().stream().filter(id -> !all.contains(id)).forEach(all::add);
+        int phaseBonus = ServerConfig.AI_BOSS_PHASE_BONUS.get();
+        for (ResourceLocation id : all) {
             Optional<AbilityDef> found = KN8Data.ABILITY.get(id, false);
             if (found.isEmpty() || now < readyAt.getOrDefault(id, Long.MIN_VALUE)) {
                 continue;
@@ -92,10 +101,28 @@ final class KaijuAbilities {
             // IA-4: com o alvo longe, golpe a distancia ganha prioridade (teia da aranha, raio do Honju).
             KaijuAiDef ai = kaiju.aiDef();
             boolean far = ai.rangedPriority() > 0 && edge > ai.rangedBeyond() && isRanged(ability);
-            priorities.add(behavior.priority() + (far ? ai.rangedPriority() : 0));
+            Integer weight = phase.get(id);
+            priorities.add(behavior.priority() + (far ? ai.rangedPriority() : 0) + (weight != null ? phaseBonus : 0));
+            weights.add(weight != null ? weight : 1);
         }
-        int index = AbilitySelection.pick(priorities, kaiju.getRandom()::nextInt);
+        int index = AbilitySelection.pickWeighted(priorities, weights, kaiju.getRandom()::nextInt);
         return index < 0 ? Optional.empty() : Optional.of(candidates.get(index));
+    }
+
+    /** Ataques da fase atual do chefe (habilidade -> peso); vazio se nao for chefe. */
+    public static Map<ResourceLocation, Integer> phaseAttacks(KaijuEntity kaiju) {
+        BossState state = kaiju.bossState();
+        if (state == null) {
+            return Map.of();
+        }
+        return KN8Data.BOSS.get(state.id(), false)
+                .filter(def -> state.phase() >= 0 && state.phase() < def.phases().size())
+                .map(def -> {
+                    Map<ResourceLocation, Integer> attacks = new HashMap<>();
+                    def.phases().get(state.phase()).attacks()
+                            .forEach(attack -> attacks.merge(attack.ability(), attack.weight(), Integer::sum));
+                    return attacks;
+                }).orElse(Map.of());
     }
 
     // --- tipos ---------------------------------------------------------------------------------------------------
