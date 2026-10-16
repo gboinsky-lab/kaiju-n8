@@ -123,6 +123,11 @@ Fases dos chefes (IA-6) [SUPOSIÇÃO nos pesos]: **Honju** acima de 50% soco pes
 | `revengeBonus` / `revengeTicks` | 6 / 100 | kaiju que feriu o soldado nos últimos 5 s conta como 6 blocos mais perto |
 | `reloadRetreat` | 6 | recarregando, o atirador recua até a distância de manter + 6 |
 | `outOfAmmoWeapon` | `kn8:combat_knife` | arma branca de quem fica sem munição e não tem arma de apoio (Mina, Reno, Kafka) |
+| `landingMaxDrop` | 3 | MOV-1: dash, avanço de técnica, esquiva e saída de luta travada só com chão no destino até 3 blocos abaixo |
+| `landingMinFraction` | 0,5 | MOV-1: com parede no caminho, o deslocamento vale se chegar a pelo menos metade da distância |
+| `dashBlocksPerSpeed` | 5,0 | MOV-1: distância conferida do dash = velocidade do impulso × 5 blocos |
+| `stuckTicks` / `stuckMinMove` | 60 / 1,0 | MOV-1: soldado (comum e especial) que quer chegar ao alvo e anda menos de 1 bloco em 3 s está travado |
+| `unstuckStep` | 5,0 | MOV-1: travado, pula obstáculo de até 1,2 ou anda 5 blocos para um lado com chão (o outro lado, ou para trás se travar de novo no mesmo lugar); sem teleporte |
 
 **Destruição pelos ataques** (IA-2, Miguel 2026-10-15) [SUPOSIÇÃO nos números]:
 

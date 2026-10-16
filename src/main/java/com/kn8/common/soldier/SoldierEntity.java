@@ -64,6 +64,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.PartEntity;
 import software.bernie.geckolib.animatable.GeoEntity;
@@ -90,6 +91,8 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
     public static final String DEFAULT_LEVEL = "normal";
     /** Duelo de teste entre soldados ({@code /kn8 duel}): UUID do oponente nos dados persistentes. */
     public static final String DUEL_TAG = "kn8_duel";
+    /** Golpe de perto: quanto o ponto mirado entra na caixa do alvo (blocos). */
+    private static final double NEAREST_INSET = 0.15;
 
     private static final EntityDataAccessor<String> VARIANT =
             SynchedEntityData.defineId(SoldierEntity.class, EntityDataSerializers.STRING);
@@ -653,6 +656,14 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
         return !(other instanceof CarcassEntity) && super.canCollideWith(other);
     }
 
+    /** Ponto da caixa mais perto de {@code from}, um pouco para dentro (o raio precisa entrar na caixa). */
+    static Vec3 nearestInside(AABB box, Vec3 from) {
+        double inset = NEAREST_INSET;
+        return new Vec3(Mth.clamp(from.x, box.minX + inset, box.maxX - inset),
+                Mth.clamp(from.y, box.minY + inset, box.maxY - inset),
+                Mth.clamp(from.z, box.minZ + inset, box.maxZ - inset));
+    }
+
     /** Aliado: nunca mira em jogadores nem em outros soldados (salvo o oponente do duelo de teste). */
     @Override
     public boolean canAttack(LivingEntity target) {
@@ -766,9 +777,13 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
             return;
         }
         Vec3 eye = getEyePosition();
-        Vec3 aim = target.getBoundingBox().getCenter().subtract(eye);
-        double reach = currentUnarmed ? 2.5 : currentWeapon.reach();
         boolean firearm = currentWeapon != null && currentWeapon.style() == WeaponDef.Style.FIREARM;
+        // MOV-1 (achado no cenario "beco"): golpe de perto mira o ponto mais proximo da caixa do alvo. Mirando no
+        // centro, o centro de um kaiju de 5 m fica alem do alcance da espada/faca e todo golpe errava (inclusive do
+        // atirador que ficou sem municao e pegou a faca). Arma de fogo continua mirando no centro.
+        Vec3 aim = (firearm ? target.getBoundingBox().getCenter() : nearestInside(target.getBoundingBox(), eye))
+                .subtract(eye);
+        double reach = currentUnarmed ? 2.5 : currentWeapon.reach();
         ServerLevel level = (ServerLevel) level();
         if (firearm) {
             level.playSound(null, getX(), getEyeY(), getZ(), CombatService.shotSound(currentWeapon),

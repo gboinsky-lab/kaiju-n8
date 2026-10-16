@@ -37,6 +37,15 @@ public final class AiTuning {
                 describe(from), describe(to), reason);
     }
 
+    /** MOV-1: log de mobilidade (travado, esquiva/investida sem pouso), so com {@code [kaijuAi] debugLog}. */
+    public static void logMove(Mob mob, String event) {
+        if (!ServerConfig.AI_DEBUG_LOG.get()) {
+            return;
+        }
+        KN8Constants.LOGGER.info("[kn8 IA] {} #{} {} em {}", mob.getType().toShortString(), mob.getId(), event,
+                mob.blockPosition().toShortString());
+    }
+
     private static String describe(LivingEntity entity) {
         return entity == null ? "nenhum" : entity.getType().toShortString() + " #" + entity.getId();
     }

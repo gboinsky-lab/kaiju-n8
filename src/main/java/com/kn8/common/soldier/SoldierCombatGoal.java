@@ -26,7 +26,10 @@ final class SoldierCombatGoal extends Goal {
     private static final double SPREAD_RANGE = 8.0;
 
     private final SoldierEntity soldier;
+    private final StuckWatch stuck = new StuckWatch();
     private int repath;
+    /** MOV-1: o tick quis andar (ate o alvo, contornando ou recuando): conta para o travamento. */
+    private boolean wantsToMove;
 
     SoldierCombatGoal(SoldierEntity soldier) {
         this.soldier = soldier;
@@ -64,6 +67,13 @@ final class SoldierCombatGoal extends Goal {
             return;
         }
         soldier.getLookControl().setLookAt(target, 30.0F, 30.0F);
+        // MOV-1: saindo de um travamento, a navegacao e do StuckWatch ate chegar ao lado.
+        if (stuck.busy()) {
+            return;
+        }
+        if (stuck.tick(soldier, wantsToMove, target.position())) {
+            return;
+        }
         // Distancia ate a borda da hitbox do alvo (kaiju sao grandes).
         double edge = Math.sqrt(target.getBoundingBox().distanceToSqr(soldier.getEyePosition()));
         boolean sees = soldier.getSensing().hasLineOfSight(target);
@@ -75,7 +85,8 @@ final class SoldierCombatGoal extends Goal {
                 keep += ServerConfig.SOLDIER_RELOAD_RETREAT.get();
                 if (--repath <= 0) {
                     repath = REPATH_TICKS;
-                    if (edge < keep) {
+                    wantsToMove = edge < keep;
+                    if (wantsToMove) {
                         retreat(target, keep);
                     }
                 }
@@ -85,10 +96,13 @@ final class SoldierCombatGoal extends Goal {
                 repath = REPATH_TICKS;
                 if (edge > keep + DISTANCE_SLACK || !sees) {
                     soldier.getNavigation().moveTo(target, SPEED);
+                    wantsToMove = true;
                 } else if (edge < keep - DISTANCE_SLACK) {
                     retreat(target, keep);
+                    wantsToMove = true;
                 } else {
                     soldier.getNavigation().stop();
+                    wantsToMove = false;
                 }
             }
             if (sees && edge <= soldier.attackReach()) {
@@ -97,6 +111,7 @@ final class SoldierCombatGoal extends Goal {
             return;
         }
         if (edge > soldier.attackReach() * 0.9) {
+            wantsToMove = true;
             if (--repath <= 0) {
                 repath = REPATH_TICKS;
                 // IA-5: perto, cada um chega por um lado (sem empilhar no mesmo ponto); longe, o caminho ate o alvo.
@@ -108,6 +123,7 @@ final class SoldierCombatGoal extends Goal {
                 }
             }
         } else {
+            wantsToMove = false;
             soldier.getNavigation().stop();
             soldier.startAttack(target);
         }

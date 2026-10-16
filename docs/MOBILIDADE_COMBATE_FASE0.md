@@ -110,3 +110,21 @@ tempo parado, tiros bloqueados, dano duplicado = 0).
   de duelos e o medidor depois (sem mexer em vida/dano; se mudar, é [DECIDIR]).
 - Cobertura custa processamento: busca só a cada N ticks, em raio pequeno, só para atiradores em combate.
 - Separar mudança de IA de balanceamento: nenhuma etapa MOV mexe em número de dano/vida.
+
+## 6. MOV-1 feita (2026-10-16)
+
+- `core/soldier/LandingMath` (JUnit) e `common/soldier/MoveSafety`: pouso conferido no mundo (passos de 0,5, sobe 1
+  bloco, para na parede, queda até `landingMaxDrop`), direção de esquiva entre direita/esquerda/trás pela que tem chão
+  (`dodgeDirection`) e ponto em pé (`standable`).
+- `HoshinaEntity.dashSafe`: dash, `gapClose`, `dash_in`, contra-ataque (lados e avanço) e passo do Kasumi-uchi só
+  com pouso válido; esquiva sem espaço não sai (e espera a próxima reação).
+- `StuckWatch` em `SoldierCombatGoal` e `HoshinaCombatGoal` (comum e especial): travado por `stuckTicks` → pula
+  obstáculo baixo ou anda `unstuckStep` para um lado com chão; travado de novo no mesmo lugar → volta. O `unstick` do
+  especial também confere o chão dos dois lados.
+- **Achado no cenário `beco`:** soldado de espada/faca contra kaiju alto não acertava (o golpe mirava o centro da
+  caixa, fora do alcance) → mira no ponto mais perto da caixa do alvo (`SoldierEntity.nearestInside`). Armas de fogo
+  continuam no centro.
+- Log: `AiTuning.logMove` com `[kaijuAi] debugLog`.
+- Medidor: cenários novos `beco` e `degraus` (kaiju morto nos dois); `parede` 99 de 220 (faixa de antes), `corredor`,
+  `abrigo` e `grupo` sem regressão. GameTests 189/189 (4 novos em `MobilityGameTests`).
+- Visto em jogo com 2 clientes: `docs/img/mov1_pouso_e_golpe_de_perto.jpg`.

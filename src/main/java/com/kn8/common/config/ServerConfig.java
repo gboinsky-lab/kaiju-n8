@@ -230,6 +230,12 @@ public final class ServerConfig {
     public static final ModConfigSpec.IntValue SOLDIER_REVENGE_TICKS;
     public static final ModConfigSpec.DoubleValue SOLDIER_RELOAD_RETREAT;
     public static final ModConfigSpec.ConfigValue<String> SOLDIER_OUT_OF_AMMO_WEAPON;
+    public static final ModConfigSpec.IntValue SOLDIER_LANDING_MAX_DROP;
+    public static final ModConfigSpec.DoubleValue SOLDIER_LANDING_MIN_FRACTION;
+    public static final ModConfigSpec.DoubleValue SOLDIER_DASH_BLOCKS_PER_SPEED;
+    public static final ModConfigSpec.IntValue SOLDIER_STUCK_TICKS;
+    public static final ModConfigSpec.DoubleValue SOLDIER_STUCK_MIN_MOVE;
+    public static final ModConfigSpec.DoubleValue SOLDIER_UNSTUCK_STEP;
 
     // --- esquadroes (IA-5) ----------------------------------------------------------------------------------------
     public static final ModConfigSpec.DoubleValue SQUAD_FOLLOW_DISTANCE;
@@ -739,6 +745,18 @@ public final class ServerConfig {
         SOLDIER_OUT_OF_AMMO_WEAPON = BUILDER.comment("Melee weapon a shooter without a sidearm takes when its spare"
                 + " magazines run out (Mina, Reno, Kafka).").translation(PREFIX + "outOfAmmoWeapon")
                 .define("outOfAmmoWeapon", "kn8:combat_knife");
+        SOLDIER_LANDING_MAX_DROP = intValue("landingMaxDrop", "MOV-1: a dodge, dash or unstuck move only goes where"
+                + " the soldier lands with at most this many blocks of drop.", 3, 0, 16);
+        SOLDIER_LANDING_MIN_FRACTION = doubleValue("landingMinFraction", "MOV-1: a dodge or dash must cover at least"
+                + " this fraction of its distance before a wall (else it picks another direction or skips).", 0.5,
+                0.0, 1.0);
+        SOLDIER_DASH_BLOCKS_PER_SPEED = doubleValue("dashBlocksPerSpeed", "MOV-1: blocks a dash of speed 1 travels,"
+                + " used to check where it lands.", 5.0, 0.5, 20.0);
+        SOLDIER_STUCK_TICKS = intValue("stuckTicks", "MOV-1: a soldier trying to move that stays within stuckMinMove"
+                + " blocks for this long is stuck and steps aside.", 60, 10, 1200);
+        SOLDIER_STUCK_MIN_MOVE = doubleValue("stuckMinMove", "MOV-1: see stuckTicks.", 1.0, 0.1, 16.0);
+        SOLDIER_UNSTUCK_STEP = doubleValue("unstuckStep", "MOV-1: how far to the side a stuck soldier goes (blocks).",
+                5.0, 1.0, 32.0);
         BUILDER.pop();
 
         section("squad", "Squads (IA-5): the player's squad and the invasion defender squads.");

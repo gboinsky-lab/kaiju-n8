@@ -4,8 +4,11 @@ package com.kn8.common.soldier.special;
 import java.util.EnumSet;
 import java.util.Optional;
 
+import com.kn8.common.ai.AiTuning;
 import com.kn8.common.config.ServerConfig;
 import com.kn8.common.data.def.SpecialSoldierDef;
+import com.kn8.common.soldier.MoveSafety;
+import com.kn8.common.soldier.StuckWatch;
 
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -49,6 +52,8 @@ final class HoshinaCombatGoal extends Goal {
     private static final double SPREAD_RANGE = 8.0;
 
     private final HoshinaEntity hoshina;
+    /** MOV-1: travamento de movimento (a "luta travada" do unstick e outra coisa: perto e ninguem se fere). */
+    private final StuckWatch stuck = new StuckWatch();
     private int repath;
     private int stuckTicks;
     private int unstuckRun;
@@ -103,7 +108,15 @@ final class HoshinaCombatGoal extends Goal {
             wasUsingTechnique = true;
             return;
         }
+        if (stuck.busy()) {
+            return;
+        }
         if (unstick(target)) {
+            return;
+        }
+        // MOV-1: quer chegar ao alvo (corpo a corpo longe dele) e nao sai do lugar.
+        boolean wantsToMove = !hoshina.isShooter() && hoshina.edgeTo(target) > hoshina.attackReach() * 0.9;
+        if (stuck.tick(hoshina, wantsToMove, target.position())) {
             return;
         }
         if (tactics(target)) {
@@ -277,13 +290,23 @@ final class HoshinaCombatGoal extends Goal {
         }
         stuckTicks = 0;
         Vec3 from = hoshina.position().subtract(target.position());
-        double angle = Math.atan2(from.z, from.x) + Math.PI * 0.5 * orbitSide;
-        orbitSide = -orbitSide;
         double radius = UNSTUCK_STEP + target.getBbWidth() * 0.5;
-        Vec3 spot = target.position().add(Math.cos(angle) * radius, 0.0, Math.sin(angle) * radius);
         hoshina.getJumpControl().jump();
-        hoshina.getNavigation().moveTo(spot.x, target.getY(), spot.z, UNSTUCK_SPEED);
-        unstuckRun = UNSTUCK_RUN_TICKS;
-        return true;
+        // MOV-1: so para um ponto ao lado do alvo onde da para ficar em pe (chao, sem bloco no corpo); tenta os dois
+        // lados. Antes ia para a altura do alvo as cegas (podia ser o meio do ar ou dentro de um bloco).
+        for (int attempt = 0; attempt < 2; attempt++) {
+            double angle = Math.atan2(from.z, from.x) + Math.PI * 0.5 * orbitSide;
+            orbitSide = -orbitSide;
+            Vec3 wanted = target.position().add(Math.cos(angle) * radius, 0.0, Math.sin(angle) * radius);
+            Optional<Vec3> spot = MoveSafety.standable(hoshina, wanted);
+            if (spot.isPresent()) {
+                hoshina.getNavigation().moveTo(spot.get().x, spot.get().y, spot.get().z, UNSTUCK_SPEED);
+                AiTuning.logMove(hoshina, "luta travada, saindo para o lado");
+                unstuckRun = UNSTUCK_RUN_TICKS;
+                return true;
+            }
+        }
+        AiTuning.logMove(hoshina, "luta travada sem lugar para sair");
+        return false;
     }
 }

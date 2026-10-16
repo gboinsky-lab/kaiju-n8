@@ -10,6 +10,7 @@ import java.util.Optional;
 import org.jetbrains.annotations.Nullable;
 
 import com.kn8.KN8Constants;
+import com.kn8.common.ai.AiTuning;
 import com.kn8.common.anim.Locomotion;
 import com.kn8.common.attribute.PowerService;
 import com.kn8.common.combat.CombatService;
@@ -25,6 +26,7 @@ import com.kn8.common.destruction.DestructionService;
 import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.registry.KN8Attachments;
 import com.kn8.common.registry.KN8Sounds;
+import com.kn8.common.soldier.MoveSafety;
 import com.kn8.common.soldier.SoldierEntity;
 import com.kn8.common.soldier.SoldierTargetGoal;
 import com.kn8.common.soldier.SquadMoveGoal;
@@ -393,7 +395,7 @@ public class HoshinaEntity extends SoldierEntity {
         getNavigation().stop();
         lookAt(target, 360.0F, 90.0F);
         if (technique.dashIn() > 0) {
-            dash(target.position().subtract(position()), technique.dashIn());
+            dashSafe(target.position().subtract(position()), technique.dashIn(), "avanco da tecnica " + id);
         }
         triggerAnim("action", animatedTechniques().contains(id) ? id : "attack");
         level().playSound(null, getX(), getEyeY(), getZ(), KN8Sounds.SWORD_SWING.get(), SoundSource.NEUTRAL,
@@ -553,7 +555,10 @@ public class HoshinaEntity extends SoldierEntity {
             // Kasumi-uchi: o segundo corte distrai; um passo para o lado e o terceiro vem forte.
             Vec3 toTarget = target.position().subtract(position());
             Vec3 side = new Vec3(-toTarget.z, 0, toTarget.x);
-            dash(getRandom().nextBoolean() ? side : side.scale(-1), SIDESTEP_SPEED);
+            Vec3 first = getRandom().nextBoolean() ? side : side.scale(-1);
+            if (!dashSafe(first, SIDESTEP_SPEED, "passo lateral")) {
+                dashSafe(first.scale(-1), SIDESTEP_SPEED, "passo lateral");
+            }
         }
     }
 
@@ -609,6 +614,19 @@ public class HoshinaEntity extends SoldierEntity {
         }
         setDeltaMovement(flat.normalize().scale(speed).add(0, DASH_LIFT, 0));
         hasImpulse = true;
+    }
+
+    /**
+     * MOV-1: impulso so se o pouso for valido (sem parede logo a frente, com chao ate a queda maxima); senao nao sai
+     * do lugar. Verdadeiro se saiu.
+     */
+    private boolean dashSafe(Vec3 direction, double speed, String what) {
+        if (MoveSafety.landing(this, direction, MoveSafety.dashDistance(speed)).isEmpty()) {
+            AiTuning.logMove(this, what + " sem pouso valido");
+            return false;
+        }
+        dash(direction, speed);
+        return true;
     }
 
     // --- reacoes -----------------------------------------------------------------------------------------------
@@ -671,9 +689,16 @@ public class HoshinaEntity extends SoldierEntity {
     }
 
     private void dodge(KaijuEntity kaiju, SpecialSoldierDef.Dash def, long now) {
-        Vec3 away = position().subtract(kaiju.position());
-        Vec3 side = new Vec3(-away.z, 0, away.x).scale(getRandom().nextBoolean() ? 1 : -1);
-        dash(side.normalize().add(new Vec3(away.x, 0, away.z).normalize().scale(0.6)), def.speed());
+        // MOV-1: o lado sorteado, o outro e, por ultimo, para tras; so para onde ha pouso (antes: lado sorteado as
+        // cegas, contra parede ou para dentro de um buraco).
+        Optional<Vec3> dir = MoveSafety.dodgeDirection(this, position().subtract(kaiju.position()),
+                getRandom().nextBoolean(), MoveSafety.dashDistance(def.speed()));
+        if (dir.isEmpty()) {
+            AiTuning.logMove(this, "esquiva sem espaco");
+            dashReadyAt = now + def.reactTicks() + 1;
+            return;
+        }
+        dash(dir.get(), def.speed());
         dashReadyAt = now + scaledCooldown(def.cooldownTicks());
         invulnerableUntil = now + def.invulnerableTicks();
         dodges++;
@@ -689,7 +714,9 @@ public class HoshinaEntity extends SoldierEntity {
                 || !onGround()) {
             return false;
         }
-        dash(target.position().subtract(position()), def.get().speed());
+        if (!dashSafe(target.position().subtract(position()), def.get().speed(), "investida")) {
+            return false;
+        }
         dashReadyAt = now + scaledCooldown(def.get().cooldownTicks());
         triggerAnim("action", "dash");
         level().playSound(null, getX(), getY(), getZ(), KN8Sounds.DASH.get(), SoundSource.NEUTRAL, 0.7F, 1.2F);
@@ -701,8 +728,12 @@ public class HoshinaEntity extends SoldierEntity {
         technique = null;
         techniqueId = null;
         Vec3 toEnemy = enemy.position().subtract(position());
+        Vec3 forward = new Vec3(toEnemy.x, 0, toEnemy.z).normalize();
         Vec3 side = new Vec3(-toEnemy.z, 0, toEnemy.x).normalize().scale(getRandom().nextBoolean() ? 1 : -1);
-        dash(side.add(new Vec3(toEnemy.x, 0, toEnemy.z).normalize().scale(0.8)), def.dashSpeed());
+        // MOV-1: passa pelo lado sorteado, pelo outro ou fica (o contra-ataque sai mesmo assim).
+        if (!dashSafe(side.add(forward.scale(0.8)), def.dashSpeed(), "contra-ataque")) {
+            dashSafe(side.scale(-1).add(forward.scale(0.8)), def.dashSpeed(), "contra-ataque (outro lado)");
+        }
         counterReadyAt = now + def.cooldownTicks();
         invulnerableUntil = now + def.invulnerableTicks();
         counterStrikeAt = now + def.strikeDelayTicks();
@@ -722,7 +753,7 @@ public class HoshinaEntity extends SoldierEntity {
         lookAt(target, 360.0F, 90.0F);
         float multiplier = profile().map(def -> def.counter().multiplier()).orElse(1.0F);
         float lunge = profile().map(def -> def.counter().dashSpeed()).orElse(1.0F);
-        dash(target.position().subtract(position()), lunge);
+        dashSafe(target.position().subtract(position()), lunge, "estocada do contra-ataque");
         strike(target, multiplier, 0.0F, weapon.get(), COUNTER_REACH_SLACK);
     }
 

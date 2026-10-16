@@ -71,6 +71,15 @@ SCEN = {
                 ('k3','kn8:primigenius',4,18,'','B')]),
  'separacao': ([], [('h','kn8:hoshina',-2,0,'','A'), ('i','kn8:kikoru',0,0,'','A'), ('n','kn8:narumi',2,0,'','A'),
                     ('s','kn8:soldier',0,-2,'{kn8_variant:"rifle"}','A'), ('k','kn8:primigenius_honju',0,18,'','B')]),
+ # MOV-1: beco sem saida virado para o kaiju (parado, sem IA): os soldados de perto precisam sair pelos fundos e
+ # contornar; degraus de 1 e 2 blocos no caminho.
+ 'beco': ([(-3,0,3,3,3,3,'minecraft:bedrock'),(-3,0,-6,-3,3,3,'minecraft:bedrock'),(3,0,-6,3,3,3,'minecraft:bedrock')],
+          [('s1','kn8:soldier',-1,0,'{kn8_variant:"sword",kn8_power_level:"high"}','A'),
+           ('s2','kn8:soldier',1,0,'{kn8_variant:"sword",kn8_power_level:"high"}','A'),
+           ('k','kn8:primigenius',0,14,'{NoAI:1b}','B')]),
+ 'degraus': ([(-6,0,4,6,0,6,'minecraft:stone'),(-6,0,7,6,1,9,'minecraft:stone'),(-6,0,10,6,0,11,'minecraft:stone')],
+             [('s1','kn8:soldier',-1,0,'{kn8_variant:"sword",kn8_power_level:"high"}','A'),
+              ('h','kn8:hoshina',1,0,'','A'), ('k','kn8:primigenius',0,16,'{NoAI:1b}','B')]),
  'pilares': ([(x,0,z,x+1,6,z+1,'minecraft:bedrock') for x in (-8,-2,4) for z in (8,14,20)],
              [('m','kn8:mina',0,0,'','A'), ('k','kn8:primigenius_honju',0,28,'','B')]),
 }

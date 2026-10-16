@@ -773,3 +773,16 @@ Fichas e fontes: `docs/FICHAS_0_8_A.md`. Servidor dedicado + 2 clientes, mundo p
 | 54.6 | `/summon kn8:kaiju_no13` perto de soldados | Humanoide branco de **6 m** com braços/pernas vermelhos; rápido (investida e salto), agarra pelo pescoço (o alvo fica quase parado 2 s), sequência de socos e soco pesado |
 | 54.7 | Kaiju No. 8 contra o No. 13 | O No. 8 vence com folga (na obra ele o derruba com um soco) |
 | 54.8 | Mundo novo, Base Marítima de Ariake | Na guarnição, além do Narumi, aparece o Isao; no `ariake_assault` o Isao defende e o No. 13 pode vir na última onda |
+
+## 55. Navegação confiável dos soldados (MOV-1)
+
+Servidor dedicado + 2 clientes, mundo plano. Para ver os motivos no log do servidor: `[kaijuAi] debugLog = true`
+(linhas `[kn8 IA] ... sem pouso valido`, `esquiva sem espaco`, `travado ...`).
+
+| # | Passo | Esperado |
+|---|---|---|
+| 55.1 | Plataforma de pedra de 5 de altura; Hoshina na borda e um Primigenius Honju em cima | O Hoshina não se joga da plataforma no dash, na esquiva nem no avanço das técnicas (pode descer andando); com o kaiju atrás da parede da plataforma, o avanço é recusado no log |
+| 55.2 | Corredor de 1 bloco de largura no alto (queda dos dois lados), Hoshina lutando | A esquiva escolhe o lado com chão; sem nenhum, ele fica e o log diz "esquiva sem espaco" |
+| 55.3 | Beco em U de bedrock com 2 soldados de espada e um Primigenius parado (`NoAI`) no fundo | Os soldados chegam e **acertam** o kaiju (antes paravam a ~4 blocos sem dano: o golpe mirava o centro do corpo alto); kaiju perde vida |
+| 55.4 | Soldado comum preso atrás de um muro de 2 tentando chegar ao kaiju | Em ~3 s ele sai para um lado com chão (ou volta) e tenta de novo; nunca teleporta |
+| 55.5 | Degraus de pedra de 1 bloco entre soldado/Hoshina e o kaiju | Sobem e lutam normalmente |
