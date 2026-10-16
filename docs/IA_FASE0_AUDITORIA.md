@@ -174,6 +174,22 @@ Ordenados por gravidade. Cada item foi conferido no código (os de gravidade alt
 - **Pressão do No. 10**: já veio na IA-4 (`chase_speed` 1,2 e janela curta depois do golpe pesado).
 - Dificuldade mudando a janela de reação: não feito ([DECIDIR] se o Miguel quiser por dificuldade do mundo).
 
+### Situação depois da IA-7 (2026-10-16)
+
+- **Medido antes de mexer** (`tools/ai/carga_ia.py` + Java Flight Recorder no servidor dedicado, 40 kaiju e 40
+  soldados lutando sem morrer): ~9–10 ms/tick; **53% do tempo das entidades é movimento e colisão vanilla** (hitbox
+  grande dos kaiju contra blocos) e a IA do mod inteira (goals, reações, alcance) era **8,8%** das amostras do tick.
+- **Cortes:** `approachReach` uma vez por tick (era ~2%); vizinhos do `KaijuCombatGoal` e lista de kaiju das reações
+  dos especiais a cada `[kaijuAi] scanIntervalTicks` (eram todo tick); esquiva do No. 9 a cada 2 ticks; busca de
+  carcaças da ressurreição em massa só quando o resultado é usado (era todo tick, na área inteira da invasão);
+  escolha de alvo 4x mais espaçada longe de todo jogador (`farFromPlayers`), com alvo morto reavaliando na hora.
+  Depois: IA do mod **6,4%** das amostras; ms/tick dentro da variação (o vanilla domina).
+- **Log de depuração** opcional (`[kaijuAi] debugLog`): cada troca de alvo com o motivo (`AiTuning.logTarget`).
+- **Janela de reação pela dificuldade** (decisão do Miguel): preparo dos golpes pesados × 1,25 / 1,0 / 0,85.
+- **Regressão (§15.4) com um jogador perto:** `grupo`, `cerco`, `separacao`, `alto_preso`, `abrigo`, `narumi`, `no8`
+  como antes; `parede` na faixa da IA-5 (84–102 de 220 em ~30 s, 3 rodadas).
+- Fica de fora: colisão vanilla dos kaiju grandes (é o custo maior, mas mexer nela seria mixin ou física própria).
+
 ## 5. Fora da IA (registrado, não mexido)
 
 - **Balanceamento:** Anti-Giant da Mina (×30) mata um Honju de 360 com um tiro (820). O piso de 6 m pega qualquer

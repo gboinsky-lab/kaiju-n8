@@ -104,6 +104,10 @@ impedia o kaiju de chegar perto de um grupo de soldados).
 | `telegraphIntervalTicks` / `telegraphPoints` | 4 / 28 | IA-6: um pulso do aviso a cada 4 ticks, 28 partículas por pulso |
 | `bossPhaseBonus` | 3 | IA-6: os ataques da fase atual do chefe (`boss/*.json`) ganham +3 de prioridade; o peso do JSON decide o empate; ataque listado que a espécie não tem é liberado |
 | `adaptationMemory` | 6 | IA-6: a análise do No. 9 lembra no máximo 6 tipos de golpe (esquece o mais antigo); tipo sem marcas sai da memória |
+| `heavyWindupEasy` / `heavyWindupNormal` / `heavyWindupHard` | 1,25 / 1,0 / 0,85 | IA-7 (Miguel 2026-10-16): preparo dos golpes pesados de kaiju pela dificuldade do mundo (Fácil e Pacífico / Normal / Difícil); pisão de 20 ticks vira 25 / 20 / 17; o aviso continua aparecendo |
+| `scanIntervalTicks` | 5 | IA-7: buscas de vizinhos da IA (reações dos especiais, kaiju se espalhando) refeitas a cada 5 ticks |
+| `farFromPlayers` / `farRetargetFactor` | 96 / 4 | IA-7: sem jogador a 96 blocos, a escolha de alvo de kaiju e soldados fica 4x mais espaçada (alvo morto reavalia na hora) |
+| `debugLog` | false | IA-7: com true, cada troca de alvo vai para o log do servidor com o motivo |
 
 Fases dos chefes (IA-6) [SUPOSIÇÃO nos pesos]: **Honju** acima de 50% soco pesado 2, pisão 3, mordida 1; abaixo, investida 3, raio 3, pisão 2. **Revivido** soco 2 / pisão 3 → investida 2, raio 3, pisão 2 → investida 3, raio 3, rabada 1. Tecedeira e Honju do exame sem mudança.
 

@@ -68,4 +68,12 @@ class AbilitySelectionTest {
         assertEquals(1, AbilitySelection.pickWeighted(List.of(1, 8, 2), List.of(50, 1, 50), total -> 0));
         assertEquals(-1, AbilitySelection.pickWeighted(List.of(), List.of(), total -> 0));
     }
+
+    @Test
+    void heavyWindupFollowsTheDifficulty() {
+        assertEquals(17, AbilitySelection.scaledWindup(20, 0.85));
+        assertEquals(25, AbilitySelection.scaledWindup(20, 1.25));
+        assertEquals(1, AbilitySelection.scaledWindup(1, 0.5));
+        assertEquals(0, AbilitySelection.scaledWindup(0, 0.85));
+    }
 }

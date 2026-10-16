@@ -31,6 +31,7 @@ import com.kn8.core.KN8Ids;
 import com.kn8.core.combat.ActionTimeline;
 import com.kn8.core.destruction.DestructionMath;
 import com.kn8.core.kaiju.AbilityGeometry;
+import com.kn8.core.kaiju.AbilitySelection;
 import com.kn8.core.kaiju.KaijuBrain;
 import com.kn8.core.kaiju.KaijuState;
 import com.kn8.core.kaiju.KaijuStats;
@@ -180,6 +181,11 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
     private boolean rageApplied;
     /** IA-4: a ultima habilidade comecada era pesada (Honju fica parado depois dela: janela de reacao). */
     private boolean lastAbilityHeavy;
+    /** IA-7: preparo da habilidade em andamento (o do JSON; nos golpes pesados, ajustado pela dificuldade). */
+    private int currentWindup;
+    /** IA-7: approachReach do tick (o mesmo valor e pedido varias vezes por tick). */
+    private long cachedReachTick = Long.MIN_VALUE;
+    private double cachedReach;
     private final Set<UUID> chargeHits = new HashSet<>();
     /** Verdadeiro so durante a aplicacao de dano de uma habilidade "heavy" (lido pelo bloqueio do jogador). */
     private boolean dealingHeavyHit;
@@ -504,8 +510,8 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
         if (!isUsingAbility() || currentAbility == null) {
             return Optional.empty();
         }
-        return KN8Data.ABILITY.get(currentAbility, false).map(ability -> (int) (abilityTimeline.startTick()
-                + ability.windupTicks() - level().getGameTime())).filter(ticks -> ticks >= 0);
+        long ticks = abilityTimeline.startTick() + currentWindup - level().getGameTime();
+        return ticks >= 0 ? Optional.of((int) ticks) : Optional.empty();
     }
 
     /** 0.6-D: a habilidade em andamento e "heavy" (atravessa o bloqueio; o Hoshina responde com Kaeshi-uchi)? */
@@ -576,11 +582,14 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
             return false;
         }
         AbilityDef ability = found.get();
-        int duration = ability.windupTicks() + Math.max(1, ability.activeTicks());
-        if (!abilityTimeline.tryStart(now, id.toString(), duration, ability.windupTicks())) {
+        int windup = windupFor(ability);
+        int duration = windup + Math.max(1, ability.activeTicks());
+        if (!abilityTimeline.tryStart(now, id.toString(), duration, windup)) {
             return false;
         }
         currentAbility = id;
+        currentWindup = windup;
+        cachedReachTick = Long.MIN_VALUE;
         abilityTarget = target;
         lastAbilityHeavy = ability.heavy();
         // 0.6: enfurecido (rage do JSON da especie), as recargas encurtam.
@@ -597,6 +606,23 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
             }
         });
         return true;
+    }
+
+    /**
+     * IA-7 (decisao do Miguel, 2026-10-16: "dificuldades maiores podem reduzir a janela de reacao"): o preparo dos
+     * golpes pesados vezes {@code [kaijuAi] heavyWindupEasy/Normal/Hard} pela dificuldade do mundo; os outros golpes
+     * ficam com o preparo do JSON (a animacao segue o tempo dele).
+     */
+    int windupFor(AbilityDef ability) {
+        if (!ability.heavy() || !ServerConfig.SPEC.isLoaded()) {
+            return ability.windupTicks();
+        }
+        double multiplier = switch (level().getDifficulty()) {
+            case PEACEFUL, EASY -> ServerConfig.AI_WINDUP_EASY.get();
+            case NORMAL -> ServerConfig.AI_WINDUP_NORMAL.get();
+            case HARD -> ServerConfig.AI_WINDUP_HARD.get();
+        };
+        return AbilitySelection.scaledWindup(ability.windupTicks(), multiplier);
     }
 
     /** Um tick do servidor: cancela se atordoado e resolve o impacto no tick exato do JSON. */
@@ -617,11 +643,10 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
             } else if (chargeDirection != null) {
                 tickCharge();
             } else {
-                long left = abilityTimeline.startTick() + KN8Data.ABILITY.get(currentAbility, false)
-                        .map(AbilityDef::windupTicks).orElse(0) - now;
+                long left = abilityTimeline.startTick() + currentWindup - now;
                 if (left > 0) {
                     KN8Data.ABILITY.get(currentAbility, false).ifPresent(def ->
-                            KaijuTelegraph.pulse(this, def, abilityTarget, (int) left));
+                            KaijuTelegraph.pulse(this, def, abilityTarget, (int) left, currentWindup));
                 }
             }
             return;
@@ -927,6 +952,17 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
      */
     double approachReach() {
         long now = level().getGameTime();
+        // IA-7: medido no perfil (~2% do tick do servidor com 40 kaiju): o goal de combate e o estado pedem o mesmo
+        // valor varias vezes no tick; guarda ate o proximo tick ou ate uma habilidade comecar.
+        if (cachedReachTick == now) {
+            return cachedReach;
+        }
+        cachedReachTick = now;
+        cachedReach = computeApproachReach(now);
+        return cachedReach;
+    }
+
+    private double computeApproachReach(long now) {
         List<AbilityDef> melee = def().map(KaijuDef::abilities).orElse(List.of()).stream()
                 .flatMap(id -> KN8Data.ABILITY.get(id, false).filter(ability -> !KaijuAbilities.isRanged(ability))
                         .filter(ability -> now >= abilityReadyAt.getOrDefault(id, Long.MIN_VALUE)).stream())

@@ -210,6 +210,13 @@ public final class ServerConfig {
     public static final ModConfigSpec.IntValue AI_TELEGRAPH_POINTS;
     public static final ModConfigSpec.IntValue AI_BOSS_PHASE_BONUS;
     public static final ModConfigSpec.IntValue AI_ADAPTATION_MEMORY;
+    public static final ModConfigSpec.DoubleValue AI_WINDUP_EASY;
+    public static final ModConfigSpec.DoubleValue AI_WINDUP_NORMAL;
+    public static final ModConfigSpec.DoubleValue AI_WINDUP_HARD;
+    public static final ModConfigSpec.IntValue AI_SCAN_INTERVAL;
+    public static final ModConfigSpec.DoubleValue AI_FAR_FROM_PLAYERS;
+    public static final ModConfigSpec.IntValue AI_FAR_RETARGET_FACTOR;
+    public static final ModConfigSpec.BooleanValue AI_DEBUG_LOG;
     public static final ModConfigSpec.IntValue AI_COMMAND_TICKS;
 
     // --- IA dos soldados (IA-1B): deteccao, funcoes, municao -------------------------------------------------------
@@ -687,6 +694,21 @@ public final class ServerConfig {
                 + " phase (boss JSON); attacks listed there but not in the species list are unlocked.", 3, 0, 100);
         AI_ADAPTATION_MEMORY = intValue("adaptationMemory", "Attack kinds a numbered kaiju remembers for its"
                 + " adaptation (oldest forgotten first).", 6, 1, 64);
+        AI_WINDUP_EASY = doubleValue("heavyWindupEasy", "Windup (reaction window) of heavy kaiju attacks on Easy and"
+                + " Peaceful, as a multiple of the JSON windup.", 1.25, 0.5, 3.0);
+        AI_WINDUP_NORMAL = doubleValue("heavyWindupNormal", "Windup of heavy kaiju attacks on Normal.", 1.0, 0.5,
+                3.0);
+        AI_WINDUP_HARD = doubleValue("heavyWindupHard", "Windup of heavy kaiju attacks on Hard (shorter window, the"
+                + " warning still shows).", 0.85, 0.5, 3.0);
+        AI_SCAN_INTERVAL = intValue("scanIntervalTicks", "IA-7: neighbour searches of the AI (special soldiers"
+                + " reading kaiju attacks, kaiju spreading around a target) are refreshed every this many ticks.", 5, 1,
+                40);
+        AI_FAR_FROM_PLAYERS = doubleValue("farFromPlayers", "IA-7: kaiju and soldiers with no player within this"
+                + " many blocks pick targets less often.", 96.0, 16.0, 512.0);
+        AI_FAR_RETARGET_FACTOR = intValue("farRetargetFactor", "IA-7: target choice interval multiplier when far from"
+                + " every player.", 4, 1, 20);
+        AI_DEBUG_LOG = booleanValue("debugLog", "IA-7: log AI decisions (target changes and why) to the server log."
+                + " Off by default.", false);
         BUILDER.pop();
 
         section("soldierAi", "Soldier AI (IA-1B): detection, roles, ammunition.");

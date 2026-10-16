@@ -69,6 +69,14 @@ public final class AbilitySelection {
     }
 
     /**
+     * IA-7 (decisao do Miguel, 2026-10-16): preparo de golpe pesado pela dificuldade = preparo do JSON x
+     * {@code multiplier}, arredondado, no minimo 1 tick (o aviso nunca some).
+     */
+    public static int scaledWindup(int windup, double multiplier) {
+        return windup <= 0 ? windup : Math.max(1, (int) Math.round(windup * multiplier));
+    }
+
+    /**
      * IA-6: como {@link #pick}, mas o empate e sorteado pelo peso de cada uma ({@code weights}, &gt;= 1; fase de chefe:
      * {@code attacks[].weight} do {@code boss/*.json}). {@code random} recebe a soma dos pesos do empate.
      */

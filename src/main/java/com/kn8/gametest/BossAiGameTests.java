@@ -9,12 +9,16 @@ import com.kn8.common.boss.BossService;
 import com.kn8.common.kaiju.CarcassEntity;
 import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.numbered.No9Service;
+import com.kn8.common.registry.KN8Entities;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.animal.Cow;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.gametest.GameTestHolder;
@@ -76,5 +80,26 @@ public final class BossAiGameTests {
         No9Service.forget(memory, "new", 1060, 100, 6);
         helper.assertTrue(memory.containsKey("new"), "O tipo que esta chegando nunca e esquecido");
         helper.succeed();
+    }
+
+    /** IA-7 (decisao do Miguel): no Dificil o preparo do golpe pesado encurta (0,85 x 20 = 17 ticks). */
+    @GameTest(template = TEMPLATE, batch = "kn8_windup_hard", timeoutTicks = 40)
+    public static void hardDifficultyShortensHeavyWindup(GameTestHelper helper) {
+        Difficulty before = helper.getLevel().getDifficulty();
+        helper.getLevel().getServer().setDifficulty(Difficulty.HARD, true);
+        KaijuEntity honju = helper.spawn(KN8Entities.PRIMIGENIUS_HONJU.get(), new BlockPos(7, 1, 7));
+        honju.setNoAi(true);
+        Cow cow = helper.spawn(EntityType.COW, new BlockPos(7, 1, 12));
+        helper.runAfterDelay(2, () -> {
+            boolean started = honju.startAbility(KN8Constants.id("slam"), cow);
+            int ticks = honju.ticksToImpact().orElse(-1);
+            helper.getLevel().getServer().setDifficulty(before, true);
+            helper.assertTrue(started, "O pisao deveria comecar");
+            helper.assertTrue(ticks == 17, "No Dificil o pisao (20 ticks no JSON) deveria ter 17 de preparo, teve "
+                    + ticks);
+            honju.discard();
+            cow.discard();
+            helper.succeed();
+        });
     }
 }

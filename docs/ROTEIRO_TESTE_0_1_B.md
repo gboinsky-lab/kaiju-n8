@@ -719,3 +719,13 @@ Tecla nova: **C** (Parkour; troca em Opções > Controles > Kaiju No. 8). Númer
 | 50.4 | Leve o chefe abaixo de 50% | "Fase 2", ruge; passa a usar mais investida e raio |
 | 50.5 | Bata no No. 9 sempre com a mesma arma por ~30 s, depois troque | Com a mesma arma as faíscas cinzas aumentam e o dano cai (no máximo o teto do JSON, nunca imune); com a arma nova volta o dano cheio |
 | 50.6 | Servidor dedicado + 2 clientes | O segundo cliente vê os mesmos avisos |
+
+## 51. Dificuldade e desempenho da IA (IA-7)
+
+| # | Passo | Esperado |
+|---|---|---|
+| 51.1 | `/difficulty easy`, lute com um Primigenius Honju | O aviso do pisão dura mais (dá mais tempo para sair) |
+| 51.2 | `/difficulty hard` | O aviso continua aparecendo, mas o golpe chega mais rápido |
+| 51.3 | `debugLog = true` no `kn8-server.toml` (reiniciar), lute | O log do servidor mostra `[kn8 IA] <entidade> alvo X -> Y (motivo)` |
+| 51.4 | `python3 tools/ai/carga_ia.py 40 40 40` com o servidor ligado | Média abaixo de ~12 ms/tick nesta máquina de testes (80 entidades lutando) |
+| 51.5 | Invasão de nível 4–5 com 2 clientes | Sem travadas novas; os kaiju longe de todos continuam lutando (só trocam de alvo mais devagar) |

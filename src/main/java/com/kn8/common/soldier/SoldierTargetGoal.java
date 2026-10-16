@@ -6,6 +6,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.UUID;
 
+import com.kn8.common.ai.AiTuning;
 import com.kn8.common.config.ServerConfig;
 import com.kn8.common.data.def.KaijuClass;
 import com.kn8.common.data.def.SpecialSoldierDef;
@@ -53,10 +54,13 @@ public final class SoldierTargetGoal extends Goal {
     @Override
     public void tick() {
         long now = soldier.level().getGameTime();
-        if (now < nextEvaluation) {
+        // IA-7: alvo morto ou removido reavalia na hora (longe dos jogadores o intervalo e maior e o soldado ficava
+        // parado preso a um alvo morto).
+        LivingEntity held = soldier.getTarget();
+        if (now < nextEvaluation && (held == null || held.isAlive())) {
             return;
         }
-        nextEvaluation = now + ServerConfig.SOLDIER_RETARGET_TICKS.get();
+        nextEvaluation = now + AiTuning.retargetInterval(soldier, ServerConfig.SOLDIER_RETARGET_TICKS.get());
         if (soldier.squadOrder() == SquadRules.Order.RETREAT && soldier.squadLeader().isPresent()) {
             // IA-5: "recuar" larga a luta e volta para o lider (SquadMoveGoal).
             soldier.setTarget(null);
@@ -96,11 +100,14 @@ public final class SoldierTargetGoal extends Goal {
         int chosen = SoldierTargeting.choose(params, candidates, currentId);
         if (chosen >= 0) {
             if (found.get(chosen) != current) {
+                AiTuning.logTarget(soldier, current, found.get(chosen), found.get(chosen).getUUID().equals(assigned)
+                        ? "kaiju designado" : "melhor pontuacao entre " + found.size());
                 soldier.setTarget(found.get(chosen));
             }
         } else if (revenge && attacker.isAlive() && soldier.canAttack(attacker)) {
             // Sem kaiju por perto, revida quem o feriu (como o HurtByTargetGoal de antes: outro mob hostil).
             if (attacker != current) {
+                AiTuning.logTarget(soldier, current, attacker, "revide");
                 soldier.setTarget(attacker);
             }
         } else if (current != null && (current instanceof KaijuEntity || !current.isAlive())) {

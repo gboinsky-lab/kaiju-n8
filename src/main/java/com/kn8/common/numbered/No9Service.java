@@ -125,7 +125,8 @@ public final class No9Service {
      * lado. O No. 10, so de combate fisico, nao tem isso. Uma tentativa por tiro (sorteio com {@code chance}).
      */
     static void dodge(ServerLevel level, KaijuNo9Entity no9, NumberedDef.Dodge dodge, long now) {
-        if (now < no9.nextDodgeAt || no9.reviving != null || no9.isAbsorbing()) {
+        // IA-7: le os tiros a cada 2 ticks (so tiro lento conta: sobra tempo para saltar).
+        if (now < no9.nextDodgeAt || (now & 1L) == 1L || no9.reviving != null || no9.isAbsorbing()) {
             return;
         }
         Vec3 center = no9.getBoundingBox().getCenter();
@@ -513,6 +514,16 @@ public final class No9Service {
             return;
         }
         if (no9.getPersistentData().getBoolean(MASS_DONE_TAG)) {
+            return;
+        }
+        // IA-7 (auditoria, Parte 13): a busca na area inteira da invasao so quando o resultado e usado (pensar,
+        // particulas do gesto e fim do gesto); antes era todo tick.
+        boolean needed = no9.reviving == null ? no9.tickCount % THINK_INTERVAL == 0
+                : no9.tickCount % (PARTICLE_INTERVAL * 2) == 0 || now >= no9.reviveEndsAt;
+        if (!needed) {
+            if (no9.reviving != null) {
+                no9.getNavigation().stop();
+            }
             return;
         }
         List<CarcassEntity> carcasses = new ArrayList<>(level.getEntitiesOfClass(CarcassEntity.class,

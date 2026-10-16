@@ -6,6 +6,7 @@ import java.util.EnumSet;
 import java.util.List;
 
 import com.kn8.common.combat.WeaponIndex;
+import com.kn8.common.ai.AiTuning;
 import com.kn8.common.config.ServerConfig;
 import com.kn8.common.data.def.WeaponDef;
 import com.kn8.common.soldier.SoldierEntity;
@@ -55,10 +56,11 @@ final class KaijuTargetGoal extends Goal {
         if (current != null && valid(current, now)) {
             kaiju.aiMemory().see(current.position(), now);
         }
-        if (now < nextEvaluation || kaiju.isUsingAbility()) {
+        // IA-7: alvo morto ou removido reavalia na hora (longe dos jogadores o intervalo e maior).
+        if ((now < nextEvaluation && (current == null || current.isAlive())) || kaiju.isUsingAbility()) {
             return;
         }
-        nextEvaluation = now + ServerConfig.AI_RETARGET_TICKS.get();
+        nextEvaluation = now + AiTuning.retargetInterval(kaiju, ServerConfig.AI_RETARGET_TICKS.get());
         int memory = ServerConfig.AI_THREAT_MEMORY_TICKS.get();
         kaiju.aiMemory().prune(now, memory);
         if (current != null && kaiju.aiMemory().commanded(now) && valid(current, now)) {
@@ -86,6 +88,8 @@ final class KaijuTargetGoal extends Goal {
         int chosen = KaijuTargeting.choose(params, candidates, currentId);
         LivingEntity next = chosen < 0 ? null : found.get(chosen);
         if (next != current) {
+            AiTuning.logTarget(kaiju, current, next, next == null ? "ninguem percebido"
+                    : "melhor pontuacao entre " + found.size());
             kaiju.setTarget(next);
         }
     }

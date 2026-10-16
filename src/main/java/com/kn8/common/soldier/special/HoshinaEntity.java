@@ -62,7 +62,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib.animation.AnimatableManager;
 import software.bernie.geckolib.animation.AnimationController;
@@ -106,6 +105,9 @@ public class HoshinaEntity extends SoldierEntity {
     private static final double SIDESTEP_SPEED = 0.6;
     private static final double DASH_LIFT = 0.15;
     private static final double REACTION_SEARCH = 16.0;
+    /** IA-7: kaiju por perto para as reacoes (refeito a cada scanIntervalTicks). */
+    private List<KaijuEntity> reactionKaiju = List.of();
+    private long reactionScanAt;
     private static final float SWING_VOLUME = 0.8F;
     private static final float TICKS_PER_SECOND = 20.0F;
 
@@ -625,9 +627,15 @@ public class HoshinaEntity extends SoldierEntity {
             startCounter(getTarget(), counter, now);
             return;
         }
-        AABB area = getBoundingBox().inflate(REACTION_SEARCH);
-        for (KaijuEntity kaiju : level().getEntitiesOfClass(KaijuEntity.class, area, KaijuEntity::isAlive)) {
-            if (!threatens(kaiju)) {
+        // IA-7: a lista de kaiju por perto e refeita a cada [kaijuAi] scanIntervalTicks (antes, todo tick); o tempo
+        // ate o impacto de cada um continua lido todo tick (a reacao nao atrasa).
+        if (now >= reactionScanAt) {
+            reactionScanAt = now + ServerConfig.AI_SCAN_INTERVAL.get();
+            reactionKaiju = level().getEntitiesOfClass(KaijuEntity.class, getBoundingBox().inflate(REACTION_SEARCH),
+                    KaijuEntity::isAlive);
+        }
+        for (KaijuEntity kaiju : reactionKaiju) {
+            if (!kaiju.isAlive() || !threatens(kaiju)) {
                 continue;
             }
             int ticks = kaiju.ticksToImpact().orElse(Integer.MAX_VALUE);

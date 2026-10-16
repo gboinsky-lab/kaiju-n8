@@ -49,7 +49,7 @@ final class KaijuTelegraph {
     }
 
     /** Um pulso do aviso; {@code ticksLeft} ate o impacto. */
-    static void pulse(KaijuEntity kaiju, AbilityDef ability, LivingEntity target, int ticksLeft) {
+    static void pulse(KaijuEntity kaiju, AbilityDef ability, LivingEntity target, int ticksLeft, int windup) {
         if (!applies(ability) || !(kaiju.level() instanceof ServerLevel level)
                 || ticksLeft % ServerConfig.AI_TELEGRAPH_INTERVAL.get() != 0) {
             return;
@@ -94,7 +94,7 @@ final class KaijuTelegraph {
             default -> shape = TelegraphShapes.arc(kaiju.getX(), kaiju.getZ(),
                     kaiju.getBbWidth() * 0.5 + kaiju.reachOf(ability), facing, PUNCH_ARC, points);
         }
-        float[] rgb = TelegraphShapes.color(ticksLeft, ability.windupTicks());
+        float[] rgb = TelegraphShapes.color(ticksLeft, windup);
         DustParticleOptions dust = new DustParticleOptions(new Vector3f(rgb[0], rgb[1], rgb[2]), DUST_SIZE);
         for (double[] point : shape) {
             level.sendParticles(dust, point[0], y + GROUND_OFFSET, point[1], 1, 0.0, 0.0, 0.0, 0.0);

@@ -49,6 +49,8 @@ final class KaijuCombatGoal extends Goal {
     private long retreatUntil;
     private long retreatReadyAt;
     private int circleSide = 1;
+    private long neighbourCheckAt;
+    private boolean neighbour;
 
     KaijuCombatGoal(KaijuEntity kaiju, double speedModifier) {
         this.kaiju = kaiju;
@@ -190,13 +192,23 @@ final class KaijuCombatGoal extends Goal {
      * angulo deste kaiju (cada um chega por um lado, sem empilhar).
      */
     private double[] approachSpot(KaijuAiDef ai, LivingEntity target, double reach) {
-        if (ai.separationRadius() <= 0.0F || kaiju.level().getEntitiesOfClass(KaijuEntity.class,
-                kaiju.getBoundingBox().inflate(ai.separationRadius()), other -> other != kaiju && other.isAlive())
-                .isEmpty()) {
+        if (ai.separationRadius() <= 0.0F || !hasNeighbour(ai)) {
             return new double[] {target.getX(), target.getZ()};
         }
         double radius = Math.max(0.5, reach * 0.5) + (kaiju.getBbWidth() + target.getBbWidth()) * 0.5;
         return KaijuTactics.around(target.getX(), target.getZ(), KaijuTactics.spreadAngle(kaiju.getId()), radius);
+    }
+
+    /** IA-7: ha outro kaiju perto? Busca refeita a cada {@code [kaijuAi] scanIntervalTicks} (antes, todo tick). */
+    private boolean hasNeighbour(KaijuAiDef ai) {
+        long now = kaiju.level().getGameTime();
+        if (now >= neighbourCheckAt) {
+            neighbourCheckAt = now + ServerConfig.AI_SCAN_INTERVAL.get();
+            neighbour = !kaiju.level().getEntitiesOfClass(KaijuEntity.class,
+                    kaiju.getBoundingBox().inflate(ai.separationRadius()), other -> other != kaiju && other.isAlive())
+                    .isEmpty();
+        }
+        return neighbour;
     }
 
     private void moveTo(double[] spot, double y, double speed) {
