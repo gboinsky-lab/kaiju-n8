@@ -821,3 +821,16 @@ com ponto de tiro`, `cobertura perdida`).
 | 58.2 | Sem traje, cair de 25 blocos | Dano normal do vanilla (morre) |
 | 58.3 | `/summon` soldado e Hoshina a 20 blocos do chão | Caem sem perder vida |
 | 58.4 | `soldierNoFallDamage`/`kineticSuitNoFallDamage = false` no config | Volta o dano de queda |
+
+## 59. Combate dos soldados (MOV-4)
+
+Servidor dedicado + 2 clientes, mundo plano. Log com `[kaijuAi] debugLog = true`.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 59.1 | 3 soldados de espada (alto) colados num Primigenius Honju | Quando o anel/arco/linha do golpe pesado aparece no chão, os soldados saem andando dele (log "saindo da area do golpe pesado") e voltam a atacar depois; duram ~15 s e tiram ~250 de vida (com `avoidDanger = false`: ~3 s, a investida pega os três) |
+| 59.2 | Hoshina contra o Honju | Esquiva para fora da área real do golpe (de lado na investida, para fora do anel no pisão) |
+| 59.3 | Muro de bedrock entre o Hoshina e um golem colado | Nenhuma técnica sai e nenhum golpe passa pela parede |
+| 59.4 | Hoshina começa o Ran-uchi e o alvo morre no meio (`/kill`) | A técnica e a animação param na hora |
+| 59.5 | Dois soldados de rifle, um na frente do outro, contra um kaiju | O de trás não atira através do da frente: dá um passo para o lado e atira |
+| 59.6 | Hoshina contra uma Camponotus (cospe ácido) | Esquiva de lado de alguns jatos (pela chance de esquiva do perfil) |

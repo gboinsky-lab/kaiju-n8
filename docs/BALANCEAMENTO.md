@@ -139,6 +139,11 @@ Fases dos chefes (IA-6) [SUPOSIÇÃO nos pesos]: **Honju** acima de 50% soco pes
 | `coverMinThreatDistance` | 9 | MOV-3: kaiju a menos de 9 da cobertura → larga e volta a recuar (com 6 os soldados ficavam presos à cobertura e morriam antes) |
 | `coverHideTicks` | 20 | MOV-3: escondido por 1 s depois de o kaiju mirar um ataque nele |
 | `coverDangerRadius` | 4 | MOV-3: cobertura a menos de 4 de um kaiju preparando golpe pesado é largada |
+| `avoidDanger` | true | MOV-4: soldados saem andando da área do golpe pesado em preparo (a do aviso no chão) e os especiais esquivam para fora dela |
+| `dangerMargin` | 1,5 | MOV-4: folga em volta da área |
+| `dangerEscapeSpeed` | 1,5 | MOV-4: velocidade (multiplicador) saindo da área |
+| `allyLineSidestep` | 3 | MOV-4: atirador com aliado na frente do tiro segura o tiro e dá 3 blocos para o lado |
+| `projectileDodgeRange` | 12 | MOV-4: especiais olham os projéteis de kaiju a até 12 blocos e esquivam dos que vão acertar (pela `dodge_chance` do perfil) |
 | `[combat] soldierNoFallDamage` | true | Armadura cinética (Miguel, 2026-10-16): soldados comuns e especiais não tomam dano de queda |
 | `[combat] kineticSuitNoFallDamage` | true | Armadura cinética: jogador com traje da Força de Defesa no peito não toma dano de queda (sem traje, a queda fere como no vanilla) |
 

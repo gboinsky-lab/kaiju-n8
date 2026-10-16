@@ -173,3 +173,27 @@ tempo parado, tiros bloqueados, dano duplicado = 0).
   soldados ficavam na cobertura até a formiga chegar → 9. Regressão (`corredor`, `abrigo`, `grupo`, `parede`,
   `separacao`, `municao_alvo`) sem perda. GameTests 194/194.
 - Visto em jogo com 2 clientes: `docs/img/mov3_cobertura.jpg`.
+
+## 9. MOV-4 feita (2026-10-16)
+
+- `core/kaiju/DangerZone` (JUnit 5): disco (pisão, pouso do salto), setor (soco, varredura) e faixa (investida, tiro)
+  com `contains` e saída pelo caminho mais curto (de lado na faixa e perto da borda reta do setor).
+  `KaijuTelegraph.zone` monta a área com as mesmas medidas do aviso; `KaijuEntity.dangerZone()` só durante o preparo
+  de golpe pesado avisado.
+- `DangerAvoid`: soldado comum e especial saem andando da área (`exitSpot`: chão conferido, direção mais curta e
+  vizinhas); a esquiva do especial sai pela direção da área, e estar dentro dela conta como ameaça.
+- Golpe de perto dos especiais (técnica, contra-ataque, cauda do No. 10) só com caminho livre até o alvo
+  (`clearReach`); técnica corpo a corpo não é escolhida através de parede. O soldado comum já parava no bloco
+  (`MeleeRaycast`).
+- Técnica cortada (e a animação, `stopTriggeredAnim`) quando o alvo morre no meio.
+- Atirador comum (também na cobertura) não atira com aliado (soldado ou jogador) na linha: passo de 3 para o lado.
+- Especiais esquivam de projétil de kaiju que vai acertar em até `react_ticks` (ponto mais próximo da trajetória).
+- Medidor, cenário `pisao` (3 soldados de espada × Primigenius Honju): com a saída 4/4 rodadas de ~15 s e o Honju
+  perdendo 251–259; sem ela ~3 s e −43 (a investida pega os três). Duelos de referência (servidor dedicado, formas do
+  No. 9/No. 10 isoladas pelo datapack): Hoshina × No. 10 pequeno 5/5 (7–50% da vida; antes 4–45%), Hoshina × No. 10
+  gigante 0/5 (gigante com 46–67%), Narumi × No. 10 gigante 0/5 (20–48%; antes 18–55%) — sem mudança relevante.
+  **Kikoru × No. 9: 0/5 com e sem a saída da área** (meta 25%; no v1.2 era 5/10): a queda não vem da MOV-4 de sair
+  da área; causa não isolada (pode ser o golpe sem atravessar parede ou outra mudança desde o v1.2) [DECIDIR] no
+  perfil dela (MOV-5). GameTests 200/200.
+- Visto em jogo com 2 clientes: `docs/img/mov4_saindo_da_area_do_pisao.jpg` (anel do pisão no chão e o soldado na
+  borda de fora).
