@@ -123,7 +123,13 @@
     "damage_tolerance": 0.2,
     "safety_distance": 10.0,
     "heavy_vs_big": 1,
-    "dodge_chance": 0.9
+    "dodge_chance": 0.9,
+    "exploit_openings": 2,
+    "miss_cooldown_ticks": 40
+  },
+  "rhythm": {
+    "alternate_bonus": 1,
+    "press_regeneration": 2
   },
   "heavy_guard": {
     "factor": 0.5,

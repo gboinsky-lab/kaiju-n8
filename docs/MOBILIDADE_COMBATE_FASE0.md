@@ -225,3 +225,13 @@ tempo parado, tiros bloqueados, dano duplicado = 0).
 - Decisão de uso (plano, parte B): combo não começa se o alvo vai estar fora do alcance no primeiro golpe
   (`core/soldier/TechniqueMath`, JUnit); combo que não acerta nada soma `tactics.miss_cooldown_ticks` à recarga.
 - GameTests 205/205 (4 novos), duelos e jogo com 2 clientes em `docs/PERFIS_PERSONAGENS_MOV5.md`.
+
+## 12. MOV-5C feita (2026-10-17): perfil da Kikoru
+
+- Ficha da Kikoru e da Kikoru No. 4 em `docs/PERFIS_PERSONAGENS_MOV5.md`.
+- Bloco novo `rhythm` no `special_soldier` (`SpecialSoldierDef.Rhythm`): `alternate_bonus` (alternar técnica rápida e
+  pesada) e `press_regeneration` (alvo regenerando: técnica que acerta mais cedo e sem reposicionar;
+  `No9Service.regenerating`).
+- [DECIDIR] da MOV-4 resolvido: a Kikoru perdia para a regeneração do No. 9 (parava em 21–38%). Ritmo novo + `kaiju_damage`
+  0,64: 3/10 (meta 25%).
+- GameTests 207/207 (2 novos), duelos e jogo com 2 clientes na ficha.

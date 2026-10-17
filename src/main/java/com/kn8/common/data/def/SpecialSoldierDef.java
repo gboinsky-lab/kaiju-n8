@@ -54,6 +54,11 @@ public record SpecialSoldierDef(float health, float armor, float speed, float fo
         return growth.tactics();
     }
 
+    /** MOV-5C: ritmo das tecnicas (alternar rapida e pesada, pressionar quem regenera). */
+    public Rhythm rhythm() {
+        return growth.rhythm();
+    }
+
     /** IA-2: tecnicas com usos limitados por vida ({@code technique_uses}; Anti-Giant da Mina = 4 tiros). */
     public Map<String, Integer> techniqueUses() {
         return growth.techniqueUses();
@@ -92,7 +97,7 @@ public record SpecialSoldierDef(float health, float armor, float speed, float fo
     public record Growth(Escalation escalation, Optional<Numbers10> numbers10, Optional<Flight> flight,
             Optional<Transform> transform, Optional<Regeneration> regeneration, float height,
             Optional<Ranged> ranged, Optional<Heavy> heavy, Map<String, Integer> techniqueUses,
-            Optional<HeavyGuard> heavyGuard, Tactics tactics) {
+            Optional<HeavyGuard> heavyGuard, Tactics tactics, Rhythm rhythm) {
         public static final MapCodec<Growth> MAP_CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
                 Escalation.CODEC.optionalFieldOf("escalation", Escalation.NONE).forGetter(Growth::escalation),
                 Numbers10.CODEC.optionalFieldOf("numbers10").forGetter(Growth::numbers10),
@@ -105,8 +110,23 @@ public record SpecialSoldierDef(float health, float armor, float speed, float fo
                 Codec.unboundedMap(Codec.STRING, Codec.intRange(1, 1000)).optionalFieldOf("technique_uses", Map.of())
                         .forGetter(Growth::techniqueUses),
                 HeavyGuard.CODEC.optionalFieldOf("heavy_guard").forGetter(Growth::heavyGuard),
-                Tactics.CODEC.optionalFieldOf("tactics", Tactics.DEFAULT).forGetter(Growth::tactics)
+                Tactics.CODEC.optionalFieldOf("tactics", Tactics.DEFAULT).forGetter(Growth::tactics),
+                Rhythm.CODEC.optionalFieldOf("rhythm", Rhythm.NONE).forGetter(Growth::rhythm)
         ).apply(i, Growth::new));
+    }
+
+    /**
+     * MOV-5C (plano de mobilidade v3 §7, Kikoru: "alternar golpes rapidos e comprometidos"): {@code alternate_bonus}
+     * soma prioridade as tecnicas do tipo oposto ao da anterior (rapida depois de pesada e pesada depois de rapida,
+     * pela lista do bloco {@code heavy}); {@code press_regeneration} soma prioridade a tecnica que acerta mais cedo
+     * quando o alvo esta regenerando (No. 9, No. 10: a cura para logo depois de cada golpe) e o goal nao reposiciona.
+     */
+    public record Rhythm(int alternateBonus, int pressRegeneration) {
+        public static final Rhythm NONE = new Rhythm(0, 0);
+        public static final Codec<Rhythm> CODEC = RecordCodecBuilder.create(i -> i.group(
+                Codec.intRange(0, 100).optionalFieldOf("alternate_bonus", 0).forGetter(Rhythm::alternateBonus),
+                Codec.intRange(0, 100).optionalFieldOf("press_regeneration", 0).forGetter(Rhythm::pressRegeneration)
+        ).apply(i, Rhythm::new));
     }
 
     /**

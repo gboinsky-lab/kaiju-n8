@@ -858,3 +858,13 @@ Servidor dedicado + 2 clientes, mundo plano. Log com `[kaijuAi] debugLog = true`
 | 61.2 | Hoshina contra um kaiju que foge (`/effect give <kaiju> speed`) | Log "tecnica ... recusada: o alvo sai do alcance"; ele persegue em vez de cortar o ar |
 | 61.3 | Hoshina com o Release alto (luta longa) usando Yae-uchi | Os oito cortes saem um a um (som e partícula separados), nenhum some |
 | 61.4 | Mesmos duelos de antes | Vence o No. 10 pequeno, perde para o gigante (como antes) |
+
+## 62. Perfil da Kikoru (MOV-5C)
+
+Servidor dedicado + 2 clientes, mundo plano. Log com `[kaijuAi] debugLog = true`.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 62.1 | Kikoru contra um Primigenius | Golpes rápidos e pesados alternados (corte rápido depois do golpe no chão / giro pesado), Primigenius cai rápido |
+| 62.2 | Kikoru contra o No. 9 (datapack `kn8_duelo_isolado` ligado para ele não mudar de forma) | Abaixo de 50% o No. 9 solta partículas verdes (regenera); log "alvo regenerando: pressiona" e ela não se afasta; às vezes ela o leva a 15% (foge), na maioria perde |
+| 62.3 | Kikoru No. 4 contra o No. 9 | Voa, mergulha nos golpes e o leva a 15% |

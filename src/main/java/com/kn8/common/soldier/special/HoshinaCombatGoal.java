@@ -8,6 +8,7 @@ import com.kn8.common.ai.AiTuning;
 import com.kn8.common.config.ServerConfig;
 import com.kn8.common.data.def.SpecialSoldierDef;
 import com.kn8.common.kaiju.KaijuEntity;
+import com.kn8.common.numbered.No9Service;
 import com.kn8.common.soldier.DangerAvoid;
 import com.kn8.common.soldier.MoveSafety;
 import com.kn8.common.soldier.StuckWatch;
@@ -207,6 +208,12 @@ final class HoshinaCombatGoal extends Goal {
             // MOV-5B: guarda aberta do kaiju: pressiona em vez de reposicionar (a tecnica que mais tira tem bonus).
             repositionUntil = 0;
             AiTuning.logMove(hoshina, "brecha do kaiju: pressiona");
+        }
+        if (now < repositionUntil && hoshina.profile().map(def -> def.rhythm().pressRegeneration() > 0).orElse(false)
+                && No9Service.regenerating(target)) {
+            // MOV-5C: o kaiju regenera nas pausas (a cura espera alguns ticks depois de cada golpe): sem recuar.
+            repositionUntil = 0;
+            AiTuning.logMove(hoshina, "alvo regenerando: pressiona");
         }
         if (now < repositionUntil) {
             double distance = Math.max(tactics.preferredDistance(), hoshina.attackReach() * 0.8);

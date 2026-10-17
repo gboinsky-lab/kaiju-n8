@@ -200,7 +200,7 @@ Tamanho do esquadrão do jogador = `npc_squad_size` da patente (`rank/*.json`): 
 | Personagem | aggression | recuo (vida / distância) | preferência de golpe | esquiva | outros | guarda pesado |
 |---|---|---|---|---|---|---|
 | Hoshina / No. 10 | 0,6 / 0,65, passo lateral | 25% / 20% → 8 | rápido vs Yoju +2; brecha +3 (MOV-5B) | 1,0 | combo que erra tudo: +40 ticks na recarga (MOV-5B) | ½ dano, 120°, 2 s |
-| Kikoru / No. 4 | 0,85 / 0,9, passo lateral | 20% → 8 / 10 | pesado vs grande +1, rápido +1 | 0,9 | | ½ dano |
+| Kikoru / No. 4 | 0,85 / 0,9, passo lateral | 20% → 8 / 10 | pesado vs grande +1, rápido +1; brecha +2; alternar +1; regenerando +2 (MOV-5C) | 0,9 | combo que erra: +40 ticks | ½ dano |
 | Mina | 1,0 | 30% → 24 | pesado vs grande +2 | 0,6 | alvo grande 12, sem contra-ataque | — |
 | Reno / No. 6 | 1,0 | 30% / 25% → 18 | | 0,8 / 0,85 | protege aliado 10, sem contra-ataque | — |
 | Narumi / No. 1 | 0,75 / 0,8, passo lateral | 15% → 10 | pesado vs grande +1 | 1,0 | alvo grande 6 / 8 | ½ dano |
@@ -214,6 +214,11 @@ recarga dele. Para todos os especiais: no máximo um golpe de técnica por tick;
 quanto se afastou no último tick, vai estar fora do alcance (+1 de folga + 2,2 x `dash_in`) quando o primeiro golpe
 sair. Duelos depois (servidor dedicado, 5 cada): Hoshina × No. 10 pequeno 5/5 (27–51% da vida; antes 7–50%),
 × No. 10 gigante 0/5 (gigante com 42–71%; antes 46–67%), × Primigenius Honju 5/5 em 10–14 s com 99–100% da vida.
+
+MOV-5C (`rhythm` no `special_soldier`, Kikoru e Kikoru No. 4) [SUPOSIÇÃO]: depois de técnica pesada (lista `heavy`) a
+rápida ganha `alternate_bonus` 1 e vice-versa; com o alvo regenerando (No. 9/No. 10 na faixa de cura) a técnica que
+acerta mais cedo ganha `press_regeneration` 2 e ela não reposiciona. **Kikoru `kaiju_damage` 0,62 → 0,64** (Kikoru ×
+No. 9: 0/10 → 3/10, meta 25%; 0,68 dava 7/10). × No. 10 pequeno 0/5, × Primigenius Honju 3/3.
 
 **Quebra ao andar** (`[destruction] walk*`, 0.6): força 3 para Yoju, Honju e numerados (quebra frágil, normal e
 resistente: vidro, madeira, terra, pedra, tijolo, concreto), 4 para Daikaiju (também deepslate e ferro); um pedido a

@@ -6,7 +6,7 @@
   "knockback_resistance": 0.5,
   "release": 30,
   "max_release": 75,
-  "kaiju_damage": 0.62,
+  "kaiju_damage": 0.64,
   "aura": "kn8:kikoru_lightning",
   "weapon": "kn8:axe",
   "techniques": {
@@ -150,7 +150,13 @@
     "safety_distance": 8.0,
     "heavy_vs_big": 1,
     "fast_vs_small": 1,
-    "dodge_chance": 0.9
+    "dodge_chance": 0.9,
+    "exploit_openings": 2,
+    "miss_cooldown_ticks": 40
+  },
+  "rhythm": {
+    "alternate_bonus": 1,
+    "press_regeneration": 2
   },
   "heavy_guard": {
     "factor": 0.5,

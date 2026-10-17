@@ -27,6 +27,7 @@ import com.kn8.common.destruction.DestructionService;
 import com.kn8.common.invasion.InvasionService;
 import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.kaiju.KaijuProjectile;
+import com.kn8.common.numbered.No9Service;
 import com.kn8.common.registry.KN8Attachments;
 import com.kn8.common.registry.KN8Sounds;
 import com.kn8.common.soldier.DangerAvoid;
@@ -141,6 +142,9 @@ public class HoshinaEntity extends SoldierEntity {
     private SpecialSoldierDef.Technique technique;
     private long techniqueStart;
     private int nextHit;
+    /** MOV-5C: a ultima tecnica foi pesada (null = nenhuma ainda), para alternar rapida e pesada. */
+    @Nullable
+    private Boolean lastHeavy;
     /** MOV-5B: golpes da tecnica atual que acertaram. */
     private int landedHits;
     private LivingEntity techniqueTarget;
@@ -371,13 +375,20 @@ public class HoshinaEntity extends SoldierEntity {
         int opening = target instanceof KaijuEntity open && open.isOpen() ? def.get().tactics().exploitOpenings() : 0;
         double[] totals = valid.stream().mapToDouble(id -> totalHits(def.get().techniques().get(id))).toArray();
         double bestTotal = TechniqueMath.bestTotal(totals);
+        // MOV-5C: alvo regenerando: a tecnica que acerta mais cedo ganha o bonus press_regeneration.
+        SpecialSoldierDef.Rhythm rhythm = def.get().rhythm();
+        int press = rhythm.pressRegeneration() > 0 && No9Service.regenerating(target) ? rhythm.pressRegeneration() : 0;
+        int earliest = valid.stream().mapToInt(id -> def.get().techniques().get(id).hitTick(0)).min()
+                .orElse(Integer.MAX_VALUE);
         int best = Integer.MIN_VALUE;
         List<String> tied = new ArrayList<>();
         for (int i = 0; i < valid.size(); i++) {
             String id = valid.get(i);
             SpecialSoldierDef.Technique candidate = def.get().techniques().get(id);
             int priority = candidate.priority() + (big ? candidate.honjuPriority() : 0)
-                    + tacticsBonus(def.get(), id, big) + (totals[i] >= bestTotal ? opening : 0);
+                    + tacticsBonus(def.get(), id, big) + (totals[i] >= bestTotal ? opening : 0)
+                    + (candidate.hitTick(0) <= earliest ? press : 0)
+                    + (lastHeavy != null && isHeavy(def.get(), id) != lastHeavy ? rhythm.alternateBonus() : 0);
             if (priority > best) {
                 best = priority;
                 tied.clear();
@@ -388,6 +399,11 @@ public class HoshinaEntity extends SoldierEntity {
         }
         tied.sort(String::compareTo);
         return tied.isEmpty() ? Optional.empty() : Optional.of(tied.get(getRandom().nextInt(tied.size())));
+    }
+
+    /** MOV-5C: a tecnica esta na lista {@code heavy} do perfil (golpe comprometido). */
+    private static boolean isHeavy(SpecialSoldierDef def, String id) {
+        return def.heavy().map(value -> value.techniques().contains(id)).orElse(false);
     }
 
     /** Dano total da tecnica (soma dos multiplicadores dos golpes; corte a distancia = o golpe x os cortes). */
@@ -438,6 +454,7 @@ public class HoshinaEntity extends SoldierEntity {
         long now = level().getGameTime();
         technique = found.get();
         techniqueId = id;
+        lastHeavy = profile().map(def -> isHeavy(def, id)).orElse(false);
         techniqueStart = now;
         techniqueTarget = target;
         nextHit = 0;

@@ -7,8 +7,8 @@ habilidades da outra forma. Classificação de cada linha: **CÂNONE** (obra), *
 `docs/FICHAS_IA_PERSONAGENS.md` e `docs/MOBILIDADE_COMBATE_FASE0.md` §1 (o site oficial não abre nesta máquina:
 [DECIDIR] conferir).
 
-Uma etapa por personagem: **MOV-5A** Kafka ↔ Kaiju No. 8, **MOV-5B** Hoshina, depois Kikoru, Mina, Reno, Narumi e
-Isao.
+Uma etapa por personagem: **MOV-5A** Kafka ↔ Kaiju No. 8, **MOV-5B** Hoshina, **MOV-5C** Kikoru, depois Mina, Reno, Narumi
+e Isao.
 
 ## "Sem traje" = sem o traje kaiju (Miguel, 2026-10-17)
 
@@ -115,3 +115,39 @@ diferentes; por ora o No. 10 só por ovo/`/summon`).
 - Em jogo (servidor dedicado + 2 clientes, `docs/img/mov5b_hoshina_brecha.jpg`, log ligado): contra o Primigenius
   Honju o log mostra "brecha do kaiju: pressiona" depois do primeiro golpe pesado, o núcleo aparece exposto (Yae-uchi)
   e o Honju cai em menos de 16 s; o Hoshina sai da área do pisão.
+
+## Kikoru Shinomiya — traje padrão com o machado (`kikoru`) e com a arma numerada 4 (`kikoru_no4`) (MOV-5C)
+
+Plano v3 §7: "agressiva, talentosa e móvel, usando machado. Alternar golpes rápidos e comprometidos, explorar
+aberturas/flancos e esquivar de ataques pesados. Não ser invencível nem cancelar toda recuperação."
+
+| Item | `kikoru` (sem traje kaiju) | `kikoru_no4` (com traje kaiju) | Fonte |
+|---|---|---|---|
+| Estado do traje | Traje padrão, Release 30% até 75% | Arma/traje numerado 4: asas e voo, Release 40% até 90% | CÂNONE (Numbers 4 com voo) / ADAPTAÇÃO DO MOD (números) |
+| Atributos | Vida 390, armadura 18, velocidade 0,34, `kaiju_damage` **0,64** (era 0,62) | Vida 580, armadura 20, velocidade 0,44, `kaiju_damage` 0,5 | ADAPTAÇÃO DO MOD (v1.0/v1.2; 0,64 na MOV-5C) |
+| Arma | Machado de duas mãos (`kn8:axe`) | O mesmo | CÂNONE |
+| Técnicas | `axe_slash` (rápida), `heavy_swing`, `shockwave`, `dash_strike`, `ground_smash`, `guard_break` (pesadas: quebram blocos) | `high_speed_axe`, `air_combo`, `aerial_dash` (rápidas), `dive_strike`, `vertical_assault` (pesadas) | INFERÊNCIA (Biblioteca v22 §8) |
+| Defesa | Esquiva (dash 100 ticks), contra-ataque, aparar 15%, guarda contra pesado ½ | Igual, dash 70 ticks | ADAPTAÇÃO DO MOD |
+| Movimentação | Agressão 0,85, passo lateral, recua com 20% para 8 | Voo (paira 2,5 acima), agressão 0,9, recua com 20% para 10 | CÂNONE (voo) / INFERÊNCIA |
+| Alternar (MOV-5C) | Depois de técnica pesada a rápida ganha +1 e vice-versa (`rhythm.alternate_bonus`) | Igual | INFERÊNCIA (plano §7: "alternar golpes rápidos e comprometidos") |
+| Pressionar quem regenera (MOV-5C) | Com o kaiju regenerando (No. 9/No. 10 abaixo da faixa de cura) a técnica que acerta mais cedo ganha +2 e ela não reposiciona (`rhythm.press_regeneration`) | Igual | ADAPTAÇÃO DO MOD (a cura do No. 9 para logo depois de cada golpe) |
+| Brecha | +2 na técnica que mais tira com a guarda aberta (`exploit_openings`); combo que erra espera +40 | Igual | INFERÊNCIA ("explorar aberturas") |
+| A PESQUISAR | Flanqueio (o kaiju sempre gira para o alvo; sem efeito medido, não entrou) | — | A PESQUISAR |
+
+**Diferenças objetivas:** a No. 4 voa (paira acima do alvo e desce no golpe), tem mais vida e técnicas aéreas; a
+normal luta no chão e quebra blocos com mais técnicas pesadas.
+
+### Kikoru × No. 9 (o [DECIDIR] da MOV-4)
+
+Causa medida (log temporário de dano, 2 duelos): a Kikoru tirava ~2.000 de vida por duelo (o No. 9 tem 1.450), mas
+abaixo de 50% ele regenera 2,5–5%/s nas pausas entre os golpes dela e parava em 21–38%. Recebido por ela: garra 673,
+golpe comum 414, investida 186, Finger Gun 104. Com o ritmo novo: 1/10; com `kaiju_damage` 0,68: 7/10 (fio da navalha:
+a fuga a 15% conta como vitória); com **0,64: 3/10 (30%; meta 25%)**. × No. 10 pequeno 0/5 (era 0% no v1.2 também; a
+meta de 35% continua brigando com a do No. 9), × Primigenius Honju 3/3 com 95–98% da vida, Kikoru No. 4 × No. 9 5/5.
+
+### Testes (MOV-5C)
+
+- GameTests `KikoruProfileGameTests` (2; 207/207 duas vezes): depois do golpe no chão vem o corte rápido e depois do
+  rápido um pesado; No. 9 abaixo de 50% conta como regenerando.
+- Em jogo (servidor dedicado + 2 clientes, `docs/img/mov5c_kikoru_x_no9.jpg`, log ligado): Kikoru × No. 9 em
+  velocidade normal; "alvo regenerando: pressiona" no log; o No. 9 foge a 15% com a Kikoru viva (82 de 390).

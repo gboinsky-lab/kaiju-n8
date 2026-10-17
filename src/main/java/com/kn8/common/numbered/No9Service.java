@@ -374,6 +374,15 @@ public final class No9Service {
                 .map(weapon -> weapon.style() == WeaponDef.Style.FIREARM).orElse(false);
     }
 
+    /**
+     * MOV-5C: o kaiju esta numa faixa de vida em que regenera (No. 9 e formas, No. 10); quem luta de perto pressiona
+     * para a cura parar (ela espera {@code delay_after_hit_ticks} depois de cada golpe).
+     */
+    public static boolean regenerating(LivingEntity target) {
+        return target instanceof KaijuEntity kaiju && def(kaiju).map(def -> def.regeneration()
+                .rateAt(kaiju.getHealth() / kaiju.getMaxHealth()) > 0.0F).orElse(false);
+    }
+
     /** Tipo do golpe para a adaptacao: tipo de dano + projetil, arma na mao ou especie de quem bateu. */
     static String attackKind(DamageSource source) {
         String type = source.typeHolder().getRegisteredName();
