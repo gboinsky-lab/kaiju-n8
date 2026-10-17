@@ -150,6 +150,7 @@ final class KaijuCombatGoal extends Goal {
     private void afterAbility(KaijuAiDef ai, long now) {
         if (kaiju.lastAbilityWasHeavy() && ai.recoveryAfterHeavyTicks() > 0) {
             recoveryUntil = now + ai.recoveryAfterHeavyTicks();
+            kaiju.markOpening(recoveryUntil);
         } else if (ai.circleChance() > 0.0F && kaiju.getRandom().nextFloat() < ai.circleChance()) {
             circleUntil = now + ai.circleTicks();
             circleSide = kaiju.getRandom().nextBoolean() ? 1 : -1;

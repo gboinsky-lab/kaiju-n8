@@ -847,3 +847,14 @@ Servidor dedicado + 2 clientes, mundo plano. Log com `[kaijuAi] debugLog = true`
 | 60.4 | Kafka ja sem municao (faca na mao) antes de virar o No. 8 | Volta do No. 8 com a faca |
 | 60.5 | Invasao `honju_assault` com o Kafka entre os defensores (`/summon` com a marca nao serve: usar invasao que o chame ou pular) | O No. 8 continua no esquadrao e no posto do Kafka |
 | 60.6 | Salvar e sair com o No. 8 em campo, voltar | O No. 8 continua no esquadrao e, ao voltar a ser o Kafka, devolve a municao guardada |
+
+## 61. Perfil do Hoshina (MOV-5B)
+
+Servidor dedicado + 2 clientes, mundo plano. Log com `[kaijuAi] debugLog = true`.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 61.1 | Hoshina contra um Primigenius Honju | Depois do golpe pesado do Honju (janela parada), log "brecha do kaiju: pressiona" e logo uma técnica forte (Yae-uchi: núcleo exposto, "EXPOSED" na barra) |
+| 61.2 | Hoshina contra um kaiju que foge (`/effect give <kaiju> speed`) | Log "tecnica ... recusada: o alvo sai do alcance"; ele persegue em vez de cortar o ar |
+| 61.3 | Hoshina com o Release alto (luta longa) usando Yae-uchi | Os oito cortes saem um a um (som e partícula separados), nenhum some |
+| 61.4 | Mesmos duelos de antes | Vence o No. 10 pequeno, perde para o gigante (como antes) |

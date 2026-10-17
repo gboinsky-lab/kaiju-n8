@@ -38,6 +38,7 @@ import com.kn8.common.vfx.VfxService;
 import com.kn8.core.combat.CombatMath;
 import com.kn8.core.kaiju.DangerZone;
 import com.kn8.core.power.PowerMath;
+import com.kn8.core.soldier.TechniqueMath;
 
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -108,6 +109,13 @@ public class HoshinaEntity extends SoldierEntity {
     public static final List<String> ANIMATED = List.of("kuuchi", "kosa_uchi", "ran_uchi", "kasumi_uchi", "yae_uchi",
             "kaeshi_uchi", "dash", "parry", "juni_hitoe");
     private static final float REACH_SLACK = 1.0F;
+    /**
+     * MOV-5B: blocos andados por unidade de velocidade do {@code dash_in} (atrito do chao do vanilla, 0,6 x 0,91:
+     * v / (1 - 0,546) ~ 2,2 v).
+     */
+    private static final double DASH_IN_REACH = 2.2;
+    /** Log de tecnica recusada no maximo uma vez por segundo (a escolha roda a cada tick). */
+    private static final int LOG_EVERY_TICKS = 20;
     /** Kaeshi-uchi: o contra-golpe vem com um avanco (o dash lateral pode deixa-lo um pouco longe). */
     private static final float COUNTER_REACH_SLACK = 3.0F;
     private static final double SIDESTEP_SPEED = 0.6;
@@ -133,6 +141,8 @@ public class HoshinaEntity extends SoldierEntity {
     private SpecialSoldierDef.Technique technique;
     private long techniqueStart;
     private int nextHit;
+    /** MOV-5B: golpes da tecnica atual que acertaram. */
+    private int landedHits;
     private LivingEntity techniqueTarget;
     private long dashReadyAt;
     private long counterReadyAt;
@@ -332,8 +342,11 @@ public class HoshinaEntity extends SoldierEntity {
         boolean sees = getSensing().hasLineOfSight(target);
         // MOV-4: tecnica corpo a corpo so com caminho livre ate o alvo (antes saia atraves de parede).
         boolean reaches = sees || DangerAvoid.clearReach(this, target);
-        int best = Integer.MIN_VALUE;
-        List<String> tied = new ArrayList<>();
+        // MOV-5B: quanto o alvo se afasta por tick (para nao comecar um combo que o alvo ja vai ter deixado para tras).
+        Vec3 away = new Vec3(target.getX() - getX(), 0.0, target.getZ() - getZ());
+        Vec3 moved = new Vec3(target.getX() - target.xo, 0.0, target.getZ() - target.zo);
+        double recede = away.lengthSqr() < 1.0E-6 ? 0.0 : moved.dot(away.normalize());
+        List<String> valid = new ArrayList<>();
         for (Map.Entry<String, SpecialSoldierDef.Technique> entry : def.get().techniques().entrySet()) {
             SpecialSoldierDef.Technique candidate = entry.getValue();
             if ((candidate.requiresFullRelease() && !isFullRelease())
@@ -343,18 +356,45 @@ public class HoshinaEntity extends SoldierEntity {
                     || usesLeft(def.get(), entry.getKey()) == 0) {
                 continue;
             }
+            if (candidate.type() == SpecialSoldierDef.TechniqueType.COMBO && !TechniqueMath.stillInReach(
+                    TechniqueMath.predictedEdge(edge, recede, candidate.hitTick(0) / actionSpeed()),
+                    candidate.maxRange(), REACH_SLACK + candidate.dashIn() * DASH_IN_REACH)) {
+                if (now % LOG_EVERY_TICKS == 0) {
+                    AiTuning.logMove(this, "tecnica " + entry.getKey() + " recusada: o alvo sai do alcance");
+                }
+                continue;
+            }
+            valid.add(entry.getKey());
+        }
+        // MOV-5B: guarda aberta do kaiju (janela depois do golpe pesado, atordoado): a tecnica que mais tira ganha
+        // o bonus exploit_openings do perfil (Hoshina: explorar brechas).
+        int opening = target instanceof KaijuEntity open && open.isOpen() ? def.get().tactics().exploitOpenings() : 0;
+        double[] totals = valid.stream().mapToDouble(id -> totalHits(def.get().techniques().get(id))).toArray();
+        double bestTotal = TechniqueMath.bestTotal(totals);
+        int best = Integer.MIN_VALUE;
+        List<String> tied = new ArrayList<>();
+        for (int i = 0; i < valid.size(); i++) {
+            String id = valid.get(i);
+            SpecialSoldierDef.Technique candidate = def.get().techniques().get(id);
             int priority = candidate.priority() + (big ? candidate.honjuPriority() : 0)
-                    + tacticsBonus(def.get(), entry.getKey(), big);
+                    + tacticsBonus(def.get(), id, big) + (totals[i] >= bestTotal ? opening : 0);
             if (priority > best) {
                 best = priority;
                 tied.clear();
             }
             if (priority == best) {
-                tied.add(entry.getKey());
+                tied.add(id);
             }
         }
         tied.sort(String::compareTo);
         return tied.isEmpty() ? Optional.empty() : Optional.of(tied.get(getRandom().nextInt(tied.size())));
+    }
+
+    /** Dano total da tecnica (soma dos multiplicadores dos golpes; corte a distancia = o golpe x os cortes). */
+    private static double totalHits(SpecialSoldierDef.Technique technique) {
+        double sum = technique.hits().stream().mapToDouble(Float::doubleValue).sum();
+        return technique.type() == SpecialSoldierDef.TechniqueType.SLASH
+                ? technique.hits().get(0) * Math.max(1, technique.slash().count()) : sum;
     }
 
     /**
@@ -401,6 +441,7 @@ public class HoshinaEntity extends SoldierEntity {
         techniqueStart = now;
         techniqueTarget = target;
         nextHit = 0;
+        landedHits = 0;
         techniqueSpeed = actionSpeed();
         readyAt.put(id, now + CombatMath.faster(technique.durationTicks(), techniqueSpeed)
                 + scaledCooldown(technique.cooldownTicks()));
@@ -568,7 +609,9 @@ public class HoshinaEntity extends SoldierEntity {
         int count = technique.type() == SpecialSoldierDef.TechniqueType.SLASH ? 1 : technique.hits().size();
         if (target != null && target.isAlive()) {
             getLookControl().setLookAt(target, 60.0F, 60.0F);
-            while (nextHit < count && elapsed >= technique.hitTick(nextHit)) {
+            // MOV-5B (bug 11 da MOV-0): no maximo um golpe por tick, mesmo com o Release acelerando a tecnica; cada
+            // corte e um impacto separado.
+            if (nextHit < count && elapsed >= technique.hitTick(nextHit)) {
                 fireHit(target, nextHit, count);
                 nextHit++;
             }
@@ -582,11 +625,35 @@ public class HoshinaEntity extends SoldierEntity {
             techniqueTarget = null;
             return;
         }
-        if (elapsed >= technique.durationTicks()) {
+        if (elapsed >= technique.durationTicks() && nextHit >= count) {
+            missPenalty(now);
             technique = null;
             techniqueId = null;
             techniqueTarget = null;
         }
+    }
+
+    /**
+     * MOV-5B: combo que terminou sem acertar nenhum golpe (o alvo saiu do alcance ou ficou atras de parede): espera
+     * extra ({@code tactics.miss_cooldown_ticks}) antes de repetir a mesma tecnica; o goal reposiciona nesse tempo.
+     */
+    private void missPenalty(long now) {
+        int extra = profile().map(def -> def.tactics().missCooldownTicks()).orElse(0);
+        if (technique.type() != SpecialSoldierDef.TechniqueType.COMBO || landedHits > 0 || extra <= 0) {
+            return;
+        }
+        readyAt.put(techniqueId, Math.max(readyAt.getOrDefault(techniqueId, now), now) + extra);
+        AiTuning.logMove(this, "tecnica " + techniqueId + " errou todos os golpes: espera " + extra + " ticks");
+    }
+
+    /** Tick em que a tecnica fica pronta de novo (GameTests). */
+    public long techniqueReadyAt(String id) {
+        return readyAt.getOrDefault(id, 0L);
+    }
+
+    /** Golpes da tecnica atual que acertaram (GameTests). */
+    public int landedHits() {
+        return landedHits;
     }
 
     private void fireHit(LivingEntity target, int index, int count) {
@@ -607,8 +674,10 @@ public class HoshinaEntity extends SoldierEntity {
             return;
         }
         boolean last = index == count - 1;
-        strike(target, technique.hits().get(index), last ? technique.finalKnockback() : 0.0F, weapon.get(),
-                REACH_SLACK);
+        if (strike(target, technique.hits().get(index), last ? technique.finalKnockback() : 0.0F, weapon.get(),
+                REACH_SLACK)) {
+            landedHits++;
+        }
         if (last && technique.exposeCoreTicks() > 0 && target instanceof KaijuEntity kaiju) {
             // Yae-uchi: abre a guarda do kaiju (nucleo exposto) para os aliados aproveitarem.
             kaiju.exposeCore(technique.exposeCoreTicks());

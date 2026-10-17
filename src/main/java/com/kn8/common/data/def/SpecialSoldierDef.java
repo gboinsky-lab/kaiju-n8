@@ -142,9 +142,10 @@ public record SpecialSoldierDef(float health, float armor, float speed, float fo
      */
     public record Tactics(float aggression, float preferredDistance, boolean lateralStep, int repositionTicks,
             float damageTolerance, float safetyDistance, int retreatTicks, int retreatCooldownTicks, int heavyVsBig,
-            int fastVsSmall, float dodgeChance, boolean meleeCounter, float protectAlly, float bigTarget) {
+            int fastVsSmall, float dodgeChance, boolean meleeCounter, float protectAlly, float bigTarget,
+            int exploitOpenings, int missCooldownTicks) {
         public static final Tactics DEFAULT = new Tactics(1.0F, 0.0F, false, 20, 0.0F, 0.0F, 40, 200, 0, 0, 1.0F,
-                true, 0.0F, 0.0F);
+                true, 0.0F, 0.0F, 0, 0);
         public static final Codec<Tactics> CODEC = RecordCodecBuilder.create(i -> i.group(
                 Codec.floatRange(0.0F, 1.0F).optionalFieldOf("aggression", 1.0F).forGetter(Tactics::aggression),
                 Codec.floatRange(0.0F, 64.0F).optionalFieldOf("preferred_distance", 0.0F)
@@ -162,7 +163,11 @@ public record SpecialSoldierDef(float health, float armor, float speed, float fo
                 Codec.floatRange(0.0F, 1.0F).optionalFieldOf("dodge_chance", 1.0F).forGetter(Tactics::dodgeChance),
                 Codec.BOOL.optionalFieldOf("melee_counter", true).forGetter(Tactics::meleeCounter),
                 Codec.floatRange(0.0F, 128.0F).optionalFieldOf("protect_ally", 0.0F).forGetter(Tactics::protectAlly),
-                Codec.floatRange(0.0F, 128.0F).optionalFieldOf("big_target", 0.0F).forGetter(Tactics::bigTarget)
+                Codec.floatRange(0.0F, 128.0F).optionalFieldOf("big_target", 0.0F).forGetter(Tactics::bigTarget),
+                // MOV-5B: bonus de prioridade da tecnica que mais tira quando o kaiju abre a guarda (janela depois do
+                // golpe pesado, atordoado) e espera extra de um combo que nao acertou nenhum golpe.
+                Codec.intRange(0, 100).optionalFieldOf("exploit_openings", 0).forGetter(Tactics::exploitOpenings),
+                DefCodecs.TICKS.optionalFieldOf("miss_cooldown_ticks", 0).forGetter(Tactics::missCooldownTicks)
         ).apply(i, Tactics::new));
     }
 

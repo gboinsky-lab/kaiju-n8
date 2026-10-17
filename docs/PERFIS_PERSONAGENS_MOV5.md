@@ -7,7 +7,8 @@ habilidades da outra forma. Classificação de cada linha: **CÂNONE** (obra), *
 `docs/FICHAS_IA_PERSONAGENS.md` e `docs/MOBILIDADE_COMBATE_FASE0.md` §1 (o site oficial não abre nesta máquina:
 [DECIDIR] conferir).
 
-Uma etapa por personagem: **MOV-5A** Kafka ↔ Kaiju No. 8 (esta), depois Hoshina, Kikoru, Mina, Reno, Narumi e Isao.
+Uma etapa por personagem: **MOV-5A** Kafka ↔ Kaiju No. 8, **MOV-5B** Hoshina, depois Kikoru, Mina, Reno, Narumi e
+Isao.
 
 ## Sistema de troca de perfil (MOV-5A)
 
@@ -65,3 +66,37 @@ blocos com os pesados. Nenhuma técnica, reação ou número de um vale no outro
 - Em jogo (servidor dedicado + 2 clientes, `docs/img/mov5a_kafka_no8_troca_de_forma.jpg`): Kafka no esquadrão do Dev
   contra um Primigenius; com a vida baixa vira o No. 8, que segue o Dev, mata o Primigenius e, 15 s depois, volta a
   ser o Kafka ainda no esquadrão do Dev, com o rifle e a reserva gasta (114 balas, não 120: não encheu de novo).
+
+## Soshiro Hoshina — traje padrão com as duas espadas (`hoshina`) e com a arma numerada 10 (`hoshina_no10`) (MOV-5B)
+
+Plano v3 §7: "especialista em combate próximo e lâminas. Encurtar distância com controle, mover-se lateralmente para
+alinhar cortes, executar sequências rápidas com eventos de impacto separados, explorar brechas e reposicionar-se diante
+de golpes pesados. Não agir como atirador."
+
+| Item | `hoshina` | `hoshina_no10` | Fonte |
+|---|---|---|---|
+| Estado do traje | Traje de combate padrão, Release 40% até 92% (escalada) | Arma/traje numerado 10 (cauda), sincronização até 100%, Full Release | CÂNONE (traje padrão; No. 10 com cauda que ataca e sincronização difícil, ep. 22) / ADAPTAÇÃO DO MOD (números) |
+| Atributos | Vida 460, armadura 20, velocidade 0,3, `kaiju_damage` 1,0 | Vida 520, Release 50% até 100% | ADAPTAÇÃO DO MOD (Miguel, 2026-10-07/08) |
+| Arma | Duas espadas (`kn8:hoshina_sword`, uma em cada mão) | As mesmas + cauda (corta e defende sozinha) | CÂNONE |
+| Técnicas | Kuuchi, Kosa-uchi (cortes à distância), Ran-uchi, Kasumi-uchi, Yae-uchi (sequências de perto) | As mesmas + Juni-hitoe (só no Full Release) | CÂNONE (estilo Hoshina, anime/mangá e o jogo) / INFERÊNCIA (números) |
+| Defesa | Esquiva (dash 30 ticks), Kaeshi-uchi contra golpe pesado, aparar 35%, guarda contra pesado ½ | + guarda da cauda pelas costas | CÂNONE (contra-ataque, reflexos) / ADAPTAÇÃO DO MOD (números) |
+| Movimentação | Perto do alvo (3 blocos), passo lateral depois da técnica (agressão 0,6), recua com 25% para 8 | Agressão 0,65, recua com 20% | INFERÊNCIA |
+| Brecha (MOV-5B) | Guarda do kaiju aberta (janela depois do golpe pesado, atordoado): a técnica que mais tira +3 e pressiona em vez de reposicionar | Igual | INFERÊNCIA ("explora brechas" do plano; Hoshina lê o adversário na obra) |
+| Sequências (MOV-5B) | No máximo um golpe por tick (Release acelerando não junta cortes); combo não começa com o alvo saindo do alcance; combo que erra tudo espera +40 ticks | Igual | ADAPTAÇÃO DO MOD |
+| Porte do alvo | Rápido contra Yoju +2; Yae-uchi contra Honju +4 (abre o núcleo) | Igual | INFERÊNCIA (melhor contra kaiju pequenos e rápidos: CÂNONE) |
+| Não atirador | Sem bloco `ranged`; os cortes à distância (Kuuchi, Kosa-uchi) são técnicas de espada, não mantém distância | Igual | CÂNONE |
+| Sem traje | Não existe no mod: na obra ele luta de traje; [DECIDIR] se entra (bug 13 da MOV-0) | — | A PESQUISAR |
+
+**Diferenças objetivas:** o No. 10 tem a cauda (alvo próprio, guarda pelas costas), vai a 100% e libera o
+Juni-hitoe; o normal para em 92% e não tem guarda pelas costas. A troca entre os dois não acontece em luta (são NPCs
+diferentes; por ora o No. 10 só por ovo/`/summon`).
+
+### Testes (MOV-5B)
+
+- JUnit `TechniqueMathTest` (3). GameTests `HoshinaProfileGameTests` (4, todos 205/205): brecha escolhe o Yae-uchi
+  (fechada: Ran-uchi), alvo fugindo não recebe combo, Yae-uchi com o Release no máximo acerta os 8 golpes um por tick,
+  Kasumi-uchi que não acerta nada soma 40 ticks à recarga.
+- Duelos (servidor dedicado, 5 cada): × No. 10 pequeno 5/5, × gigante 0/5, × Primigenius Honju 5/5 em 10–14 s.
+- Em jogo (servidor dedicado + 2 clientes, `docs/img/mov5b_hoshina_brecha.jpg`, log ligado): contra o Primigenius
+  Honju o log mostra "brecha do kaiju: pressiona" depois do primeiro golpe pesado, o núcleo aparece exposto (Yae-uchi)
+  e o Honju cai em menos de 16 s; o Hoshina sai da área do pisão.

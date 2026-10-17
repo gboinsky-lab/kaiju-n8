@@ -199,13 +199,21 @@ Tamanho do esquadrão do jogador = `npc_squad_size` da patente (`rank/*.json`): 
 
 | Personagem | aggression | recuo (vida / distância) | preferência de golpe | esquiva | outros | guarda pesado |
 |---|---|---|---|---|---|---|
-| Hoshina / No. 10 | 0,6 / 0,65, passo lateral | 25% / 20% → 8 | rápido vs Yoju +2 | 1,0 | | ½ dano, 120°, 2 s |
+| Hoshina / No. 10 | 0,6 / 0,65, passo lateral | 25% / 20% → 8 | rápido vs Yoju +2; brecha +3 (MOV-5B) | 1,0 | combo que erra tudo: +40 ticks na recarga (MOV-5B) | ½ dano, 120°, 2 s |
 | Kikoru / No. 4 | 0,85 / 0,9, passo lateral | 20% → 8 / 10 | pesado vs grande +1, rápido +1 | 0,9 | | ½ dano |
 | Mina | 1,0 | 30% → 24 | pesado vs grande +2 | 0,6 | alvo grande 12, sem contra-ataque | — |
 | Reno / No. 6 | 1,0 | 30% / 25% → 18 | | 0,8 / 0,85 | protege aliado 10, sem contra-ataque | — |
 | Narumi / No. 1 | 0,75 / 0,8, passo lateral | 15% → 10 | pesado vs grande +1 | 1,0 | alvo grande 6 / 8 | ½ dano |
 | Kafka | 0,4 | 60% → 14 | | 0,7 | protege aliado 6, sem contra-ataque | — |
 | Kaiju No. 8 | 0,95 | — | pesado vs grande +2, rápido +1 | 0,5 | | ½ dano |
+
+MOV-5B (`tactics.exploit_openings`/`miss_cooldown_ticks`, só Hoshina e Hoshina No. 10 por ora) [SUPOSIÇÃO]: com a
+guarda do kaiju aberta (janela parada depois do golpe pesado do `kaiju_ai` ou atordoado), a técnica de maior dano
+total ganha +3 de prioridade e o Hoshina não reposiciona. Combo que termina sem acertar nenhum golpe soma 40 ticks à
+recarga dele. Para todos os especiais: no máximo um golpe de técnica por tick; combo não começa se o alvo, pelo
+quanto se afastou no último tick, vai estar fora do alcance (+1 de folga + 2,2 x `dash_in`) quando o primeiro golpe
+sair. Duelos depois (servidor dedicado, 5 cada): Hoshina × No. 10 pequeno 5/5 (27–51% da vida; antes 7–50%),
+× No. 10 gigante 0/5 (gigante com 42–71%; antes 46–67%), × Primigenius Honju 5/5 em 10–14 s com 99–100% da vida.
 
 **Quebra ao andar** (`[destruction] walk*`, 0.6): força 3 para Yoju, Honju e numerados (quebra frágil, normal e
 resistente: vidro, madeira, terra, pedra, tijolo, concreto), 4 para Daikaiju (também deepslate e ferro); um pedido a

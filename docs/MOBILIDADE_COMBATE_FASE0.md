@@ -212,3 +212,14 @@ tempo parado, tiros bloqueados, dano duplicado = 0).
 - Em jogo com 2 clientes (`docs/img/mov5a_kafka_no8_troca_de_forma.jpg`): Kafka no esquadrão do Dev vira o No. 8, que
   segue o Dev, mata o Primigenius e volta a ser o Kafka 20 s depois, no esquadrão, com 30 + 114 balas (a reserva que
   sobrou, não 120).
+
+## 11. MOV-5B feita (2026-10-17): perfil do Hoshina
+
+- Ficha do Hoshina e do Hoshina No. 10 em `docs/PERFIS_PERSONAGENS_MOV5.md`.
+- Brecha: `KaijuEntity.isOpen()` (janela parada depois do golpe pesado, marcada pelo `KaijuCombatGoal`, ou atordoado);
+  `tactics.exploit_openings` dá bonus à técnica de maior dano total e o goal pressiona em vez de reposicionar.
+- Bug 11 (parte das técnicas): no máximo um golpe por tick no `tickTechnique`; a técnica só termina depois de todos os
+  golpes.
+- Decisão de uso (plano, parte B): combo não começa se o alvo vai estar fora do alcance no primeiro golpe
+  (`core/soldier/TechniqueMath`, JUnit); combo que não acerta nada soma `tactics.miss_cooldown_ticks` à recarga.
+- GameTests 205/205 (4 novos), duelos e jogo com 2 clientes em `docs/PERFIS_PERSONAGENS_MOV5.md`.

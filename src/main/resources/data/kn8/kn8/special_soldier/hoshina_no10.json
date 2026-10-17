@@ -188,7 +188,9 @@
     "lateral_step": true,
     "damage_tolerance": 0.2,
     "safety_distance": 8.0,
-    "fast_vs_small": 2
+    "fast_vs_small": 2,
+    "exploit_openings": 3,
+    "miss_cooldown_ticks": 40
   },
   "heavy_guard": {
     "factor": 0.5,

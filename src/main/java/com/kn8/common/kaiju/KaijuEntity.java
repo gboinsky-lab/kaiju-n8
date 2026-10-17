@@ -391,6 +391,19 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
         return staggerTicks > 0;
     }
 
+    /** MOV-5B: ate quando o kaiju fica parado depois de um golpe pesado (janela do {@code kaiju_ai}). */
+    private long openUntil;
+
+    /** MOV-5B: marca a janela parada depois do golpe pesado ({@code KaijuCombatGoal}). */
+    public void markOpening(long until) {
+        openUntil = Math.max(openUntil, until);
+    }
+
+    /** MOV-5B: guarda aberta (janela depois do golpe pesado ou atordoado): brecha para quem luta de perto. */
+    public boolean isOpen() {
+        return staggerTicks > 0 || level().getGameTime() < openUntil;
+    }
+
     KaijuAiMemory aiMemory() {
         return aiMemory;
     }

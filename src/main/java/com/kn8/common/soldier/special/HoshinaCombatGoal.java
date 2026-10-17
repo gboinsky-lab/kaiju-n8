@@ -7,6 +7,7 @@ import java.util.Optional;
 import com.kn8.common.ai.AiTuning;
 import com.kn8.common.config.ServerConfig;
 import com.kn8.common.data.def.SpecialSoldierDef;
+import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.soldier.DangerAvoid;
 import com.kn8.common.soldier.MoveSafety;
 import com.kn8.common.soldier.StuckWatch;
@@ -200,6 +201,12 @@ final class HoshinaCombatGoal extends Goal {
                 }
             }
             return true;
+        }
+        if (now < repositionUntil && tactics.exploitOpenings() > 0 && target instanceof KaijuEntity open
+                && open.isOpen()) {
+            // MOV-5B: guarda aberta do kaiju: pressiona em vez de reposicionar (a tecnica que mais tira tem bonus).
+            repositionUntil = 0;
+            AiTuning.logMove(hoshina, "brecha do kaiju: pressiona");
         }
         if (now < repositionUntil) {
             double distance = Math.max(tactics.preferredDistance(), hoshina.attackReach() * 0.8);
