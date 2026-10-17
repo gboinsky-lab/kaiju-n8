@@ -10,6 +10,21 @@ habilidades da outra forma. Classificação de cada linha: **CÂNONE** (obra), *
 Uma etapa por personagem: **MOV-5A** Kafka ↔ Kaiju No. 8, **MOV-5B** Hoshina, depois Kikoru, Mina, Reno, Narumi e
 Isao.
 
+## "Sem traje" = sem o traje kaiju (Miguel, 2026-10-17)
+
+"Sem traje" nos perfis quer dizer **sem o traje/arma numerada (feita de kaiju)**, não sem o uniforme da Força de
+Defesa. Cada personagem com arma numerada tem os dois perfis:
+
+| Personagem | Sem traje kaiju | Com traje kaiju |
+|---|---|---|
+| Hoshina | `hoshina` (espadas, até 92%) | `hoshina_no10` (cauda, até 100%) |
+| Kikoru | `kikoru` (machado) | `kikoru_no4` (asas, voo) |
+| Reno | `reno` (rifle) | `reno_no6` (gelo) |
+| Narumi | `narumi` (baioneta) | `narumi_no1` (previsão) |
+| Isao | **falta**: perfil sem o Numbers 2 (v1.2: 520/20/0,29) na etapa dele | `isao` (Numbers 2) |
+| Mina | `mina` (canhão; não tem arma numerada) | — |
+| Kafka | `kafka` (humano) | `kaiju_no8` (transformação, não traje) |
+
 ## Sistema de troca de perfil (MOV-5A)
 
 | Passo do plano | Como ficou |
@@ -85,7 +100,7 @@ de golpes pesados. Não agir como atirador."
 | Sequências (MOV-5B) | No máximo um golpe por tick (Release acelerando não junta cortes); combo não começa com o alvo saindo do alcance; combo que erra tudo espera +40 ticks | Igual | ADAPTAÇÃO DO MOD |
 | Porte do alvo | Rápido contra Yoju +2; Yae-uchi contra Honju +4 (abre o núcleo) | Igual | INFERÊNCIA (melhor contra kaiju pequenos e rápidos: CÂNONE) |
 | Não atirador | Sem bloco `ranged`; os cortes à distância (Kuuchi, Kosa-uchi) são técnicas de espada, não mantém distância | Igual | CÂNONE |
-| Sem traje | Não existe no mod: na obra ele luta de traje; [DECIDIR] se entra (bug 13 da MOV-0) | — | A PESQUISAR |
+| Sem traje kaiju | É o próprio `hoshina`: traje padrão, sem a arma/traje numerado 10 (decisão do Miguel, 2026-10-17: "sem traje" = sem o traje kaiju) | — | Decisão do Miguel |
 
 **Diferenças objetivas:** o No. 10 tem a cauda (alvo próprio, guarda pelas costas), vai a 100% e libera o
 Juni-hitoe; o normal para em 92% e não tem guarda pelas costas. A troca entre os dois não acontece em luta (são NPCs

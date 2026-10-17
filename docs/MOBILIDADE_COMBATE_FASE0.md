@@ -84,7 +84,9 @@ Tudo isso fica INFERÊNCIA DE GAMEPLAY até alguém assistir às cenas.
     golpe por tick. Não é "dano repetido do mesmo evento", mas precisa de teste.
 12. **Log de IA:** só registra troca de alvo.
 13. **Perfis "sem traje":** não existem para nenhum personagem (o plano pede). Só faz sentido onde a obra mostra o
-    personagem lutando sem traje (Kafka humano já existe). **[DECIDIR]**.
+    personagem lutando sem traje (Kafka humano já existe). **Decidido (Miguel, 2026-10-17):** "sem traje" = sem o
+    traje kaiju (arma numerada); os pares já existem, falta só o Isao sem o Numbers 2 (tabela em
+    `docs/PERFIS_PERSONAGENS_MOV5.md`).
 
 ## 4. Plano proposto (uma etapa por vez, aprovação entre elas)
 
@@ -94,7 +96,7 @@ Tudo isso fica INFERÊNCIA DE GAMEPLAY até alguém assistir às cenas.
 | **MOV-2 Saltos** | pulo tático de NPC sobre obstáculo de 1–3 blocos e para plataforma alcançável, reaproveitando `ParkourProbe`/`ParkourMath` (altura medida, velocidade de lançamento, pouso conferido, anula se o pouso for inválido); animação sincronizada (`soldier.action.vault`) | goal novo `SoldierLeapGoal`, animações por script |
 | **MOV-3 Cobertura** | busca de cobertura limitada (amostra de blocos sólidos que cortam a visão do kaiju, pontuação pelo plano §5), atirador sai para atirar com visão e troca quando contornado/destruído; abandona cobertura dentro da área do aviso | `core/soldier/CoverScore` (JUnit), goal novo |
 | **MOV-4 Combate dos soldados** | sair da área do aviso (anel/arco/linha reais do `KaijuTelegraph`); visão também para golpes corpo a corpo e técnicas `combo` (sem acertar através de parede); revalidar alvo/alcance no início e cancelar técnica se o alvo morrer; reposicionar quando aliado bloqueia a linha; esquiva também de projéteis | `HoshinaEntity`, `KaijuTelegraph` (expor a forma), `SoldierCombatGoal` |
-| **MOV-5 Perfis de personagens** | um por vez (Hoshina, Kikoru, Mina, Kafka/No. 8; depois Reno, Narumi, Isao), ficha com fontes por forma, estado da troca de forma preservado; [DECIDIR] perfis "sem traje" | `special_soldier/*.json`, fichas |
+| **MOV-5 Perfis de personagens** | um por vez (Hoshina, Kikoru, Mina, Kafka/No. 8; depois Reno, Narumi, Isao), ficha com fontes por forma, estado da troca de forma preservado; "sem traje" = sem o traje kaiju (Miguel, 2026-10-17) | `special_soldier/*.json`, fichas |
 | **MOV-6 Kaiju** | golpes de kaiju com visão/bloqueio, pouso de salto validado, voo da Preondactyl desviando de obstáculos, contador de falhas por habilidade | `KaijuEntity`, `KaijuAbilities`, `PreondactylEntity` |
 | **MOV-7 Integração** | regressão (medidor + duelos + matriz), desempenho, multiplayer | — |
 
