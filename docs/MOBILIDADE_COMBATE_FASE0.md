@@ -235,3 +235,12 @@ tempo parado, tiros bloqueados, dano duplicado = 0).
 - [DECIDIR] da MOV-4 resolvido: a Kikoru perdia para a regeneração do No. 9 (parava em 21–38%). Ritmo novo + `kaiju_damage`
   0,64: 3/10 (meta 25%).
 - GameTests 207/207 (2 novos), duelos e jogo com 2 clientes na ficha.
+
+## 13. MOV-5D feita (2026-10-17): perfil da Mina
+
+- Ficha da Mina em `docs/PERFIS_PERSONAGENS_MOV5.md`.
+- Validação final do tiro (plano, "ciclo de vida"): `HoshinaEntity.shotInvalid` no disparo (linha de tiro, alcance) e
+  no preparo dos atiradores (`min_range`); `cancelTechnique` devolve o uso limitado e deixa a técnica pronta depois do
+  preparo. Vale para todo especial (Hoshina, Reno...).
+- `ranged.reserve_limited` (Mina): Anti-Giant guardado para alvo grande.
+- [DECIDIR] Mina × No. 9 (vence 80–100%, meta "perde"); cobertura de Mina/Reno: proposta continuar sem.

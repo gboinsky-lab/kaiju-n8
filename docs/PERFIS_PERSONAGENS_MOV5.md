@@ -7,8 +7,8 @@ habilidades da outra forma. Classificação de cada linha: **CÂNONE** (obra), *
 `docs/FICHAS_IA_PERSONAGENS.md` e `docs/MOBILIDADE_COMBATE_FASE0.md` §1 (o site oficial não abre nesta máquina:
 [DECIDIR] conferir).
 
-Uma etapa por personagem: **MOV-5A** Kafka ↔ Kaiju No. 8, **MOV-5B** Hoshina, **MOV-5C** Kikoru, depois Mina, Reno, Narumi
-e Isao.
+Uma etapa por personagem: **MOV-5A** Kafka ↔ Kaiju No. 8, **MOV-5B** Hoshina, **MOV-5C** Kikoru, **MOV-5D** Mina, depois Reno,
+Narumi e Isao.
 
 ## "Sem traje" = sem o traje kaiju (Miguel, 2026-10-17)
 
@@ -151,3 +151,37 @@ meta de 35% continua brigando com a do No. 9), × Primigenius Honju 3/3 com 95�
   rápido um pesado; No. 9 abaixo de 50% conta como regenerando.
 - Em jogo (servidor dedicado + 2 clientes, `docs/img/mov5c_kikoru_x_no9.jpg`, log ligado): Kikoru × No. 9 em
   velocidade normal; "alvo regenerando: pressiona" no log; o No. 9 foge a 15% com a Kikoru viva (82 de 390).
+
+## Mina Ashiro — traje padrão com o canhão (`mina`) (MOV-5D)
+
+Plano v3 §7: "combate de longo alcance. Encontrar linha de tiro, priorizar alvos grandes/designados, preparar
+disparos, reposicionar-se quando o alvo se aproxima e não entrar em corpo a corpo por padrão." Não tem arma numerada
+(só um perfil).
+
+| Item | `mina` | Fonte |
+|---|---|---|
+| Estado do traje | Traje padrão, Release 40% até 90% | CÂNONE / ADAPTAÇÃO DO MOD (números) |
+| Atributos | Vida 420, armadura 20, velocidade 0,3, `kaiju_damage` 0,6 | ADAPTAÇÃO DO MOD (v1.2 §12) |
+| Arma | Canhão (`kn8:mina_cannon`); sem munição, faca (IA-1B) | CÂNONE (canhão) / ADAPTAÇÃO DO MOD (faca) |
+| Técnicas | Tiro de precisão; tiro de canhão e canhão carregado (explodem); Anti-Giant (30x, 4 por vida) | CÂNONE (tiros de grande potência) / ADAPTAÇÃO DO MOD (números) |
+| Movimentação | Mantém 22 blocos, recua abaixo de 12, circula o alvo, persegue se ele foge (`ranged`) | INFERÊNCIA |
+| Alvo | Prioriza kaiju grande (`big_target` 12), pesado contra grande +2 | CÂNONE (comandante, alvos grandes) / INFERÊNCIA |
+| Validação do tiro (MOV-5D) | No disparo o tiro só sai com linha de tiro e o alvo ao alcance; no preparo, se o alvo chega mais perto que o alcance mínimo, ela cancela (o uso limitado volta, recarga = só o preparo) e recua | ADAPTAÇÃO DO MOD (plano v3, "validação final") |
+| Anti-Giant guardado (MOV-5D) | `ranged.reserve_limited`: os 4 tiros não saem contra Yoju (Honju, numerados, Daikaiju sim) | ADAPTAÇÃO DO MOD (decisão do Miguel "qualquer kaiju" mantida para os grandes) [SUPOSIÇÃO] |
+| Aliados | Os tiros e as explosões não ferem aliados (`SlashProjectile` poupa aliados): nada a mudar | — |
+| Corpo a corpo | Não usa contra-ataque de espada (`melee_counter` false); só com a faca sem munição | INFERÊNCIA |
+| Cobertura | Sem cobertura: luta mantendo distância e circulando ([DECIDIR] da MOV-3: proposta "fica assim") | [DECIDIR] |
+
+### Testes (MOV-5D)
+
+- GameTests `MinaProfileGameTests` (4; 211/211): Anti-Giant nunca escolhido contra Yoju (20 escolhas) e escolhido
+  contra o Honju; Anti-Giant com muro de bedrock posto no preparo é cancelado, o Honju não perde vida e os 4 usos
+  continuam; canhão carregado com o kaiju teletransportado para 3 blocos é cancelado com recarga curta.
+- Duelos (servidor dedicado, 5 cada, a 30 blocos): × No. 10 pequeno 5/5, × No. 10 gigante 4/5, × No. 9 4/5.
+  **[DECIDIR] Mina × No. 9:** a decisão de 2026-10-15 é que ela **perde** para o No. 9 (v1.2: 16%). Hoje ela vence (8/8
+  mesmo sem o cancelamento desta etapa): desde a IA-2 o Anti-Giant vale contra qualquer kaiju e um tiro dele leva o
+  No. 9 de 50–80% a 0. Opções: (a) o No. 9 não ser alvo do Anti-Giant (ele "lê tiros"), (b) a esquiva do No. 9 pegar o
+  Anti-Giant sempre (tiro lento e explosivo), (c) aceitar.
+- Em jogo (servidor dedicado + 2 clientes, `docs/img/mov5d_mina.jpg`, log ligado): contra o Primigenius Honju os tiros
+  saem de longe e ele cai; contra o Primigenius (Yoju, sem Anti-Giant) ele chega perto e três tiros são cancelados
+  ("cortada: alvo perto demais"); ela termina com 416 de 420.

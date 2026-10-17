@@ -868,3 +868,13 @@ Servidor dedicado + 2 clientes, mundo plano. Log com `[kaijuAi] debugLog = true`
 | 62.1 | Kikoru contra um Primigenius | Golpes rápidos e pesados alternados (corte rápido depois do golpe no chão / giro pesado), Primigenius cai rápido |
 | 62.2 | Kikoru contra o No. 9 (datapack `kn8_duelo_isolado` ligado para ele não mudar de forma) | Abaixo de 50% o No. 9 solta partículas verdes (regenera); log "alvo regenerando: pressiona" e ela não se afasta; às vezes ela o leva a 15% (foge), na maioria perde |
 | 62.3 | Kikoru No. 4 contra o No. 9 | Voa, mergulha nos golpes e o leva a 15% |
+
+## 63. Perfil da Mina (MOV-5D)
+
+Servidor dedicado + 2 clientes, mundo plano. Log com `[kaijuAi] debugLog = true`.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 63.1 | Mina contra um Primigenius (Yoju) | Nunca usa o Anti-Giant (tiro branco grande); recua quando ele chega; log "cortada: alvo perto demais" quando ele chega no meio do preparo |
+| 63.2 | Mina contra um Primigenius Honju | Usa o Anti-Giant (até 4 por vida) e os outros tiros de longe |
+| 63.3 | Muro de bedrock entre a Mina e o Honju durante o preparo de um tiro | Log "cortada: sem linha de tiro"; nenhum tiro explode no muro |

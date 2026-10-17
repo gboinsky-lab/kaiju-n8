@@ -227,7 +227,7 @@ public record SpecialSoldierDef(float health, float armor, float speed, float fo
      * distrai-lo; se o alvo se afasta, sai da distancia ou da linha de visao, persegue. Atira em movimento.
      */
     public record Ranged(float keepDistance, float retreatDistance, boolean orbit, int orbitSwitchTicks,
-            float retreatSpeed, float orbitSpeed, float chaseSpeed) {
+            float retreatSpeed, float orbitSpeed, float chaseSpeed, boolean reserveLimited) {
         public static final Codec<Ranged> CODEC = RecordCodecBuilder.create(i -> i.group(
                 Codec.floatRange(2.0F, 64.0F).optionalFieldOf("keep_distance", 16.0F).forGetter(Ranged::keepDistance),
                 Codec.floatRange(0.0F, 64.0F).optionalFieldOf("retreat_distance", 9.0F)
@@ -236,7 +236,10 @@ public record SpecialSoldierDef(float health, float armor, float speed, float fo
                 DefCodecs.TICKS.optionalFieldOf("orbit_switch_ticks", 80).forGetter(Ranged::orbitSwitchTicks),
                 Codec.floatRange(0.1F, 3.0F).optionalFieldOf("retreat_speed", 1.3F).forGetter(Ranged::retreatSpeed),
                 Codec.floatRange(0.1F, 3.0F).optionalFieldOf("orbit_speed", 1.15F).forGetter(Ranged::orbitSpeed),
-                Codec.floatRange(0.1F, 3.0F).optionalFieldOf("chase_speed", 1.3F).forGetter(Ranged::chaseSpeed)
+                Codec.floatRange(0.1F, 3.0F).optionalFieldOf("chase_speed", 1.3F).forGetter(Ranged::chaseSpeed),
+                // MOV-5D: tecnicas com usos limitados (technique_uses: Anti-Giant da Mina) guardadas para alvo grande
+                // (Honju, numerado, Daikaiju); contra Yoju ela usa as outras.
+                Codec.BOOL.optionalFieldOf("reserve_limited", false).forGetter(Ranged::reserveLimited)
         ).apply(i, Ranged::new));
     }
 

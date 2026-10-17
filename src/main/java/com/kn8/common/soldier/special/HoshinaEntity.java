@@ -360,6 +360,11 @@ public class HoshinaEntity extends SoldierEntity {
                     || usesLeft(def.get(), entry.getKey()) == 0) {
                 continue;
             }
+            if (!big && def.get().techniqueUses().containsKey(entry.getKey())
+                    && def.get().ranged().map(SpecialSoldierDef.Ranged::reserveLimited).orElse(false)) {
+                // MOV-5D: tiro de usos limitados (Anti-Giant) guardado para alvo grande.
+                continue;
+            }
             if (candidate.type() == SpecialSoldierDef.TechniqueType.COMBO && !TechniqueMath.stillInReach(
                     TechniqueMath.predictedEdge(edge, recede, candidate.hitTick(0) / actionSpeed()),
                     candidate.maxRange(), REACH_SLACK + candidate.dashIn() * DASH_IN_REACH)) {
@@ -626,6 +631,12 @@ public class HoshinaEntity extends SoldierEntity {
         int count = technique.type() == SpecialSoldierDef.TechniqueType.SLASH ? 1 : technique.hits().size();
         if (target != null && target.isAlive()) {
             getLookControl().setLookAt(target, 60.0F, 60.0F);
+            String invalid = nextHit == 0 && technique.type() == SpecialSoldierDef.TechniqueType.SLASH
+                    ? shotInvalid(target, elapsed >= technique.hitTick(0)) : null;
+            if (invalid != null) {
+                cancelTechnique(now, invalid);
+                return;
+            }
             // MOV-5B (bug 11 da MOV-0): no maximo um golpe por tick, mesmo com o Release acelerando a tecnica; cada
             // corte e um impacto separado.
             if (nextHit < count && elapsed >= technique.hitTick(nextHit)) {
@@ -635,11 +646,7 @@ public class HoshinaEntity extends SoldierEntity {
         } else if (nextHit < count) {
             // MOV-4: o alvo morreu (ou sumiu) no meio da tecnica: corta a tecnica e a animacao em vez de golpear o ar
             // ate o fim; o goal escolhe outro alvo.
-            AiTuning.logMove(this, "tecnica " + techniqueId + " cortada: alvo morto");
-            stopTriggeredAnim("action", animatedTechniques().contains(techniqueId) ? techniqueId : "attack");
-            technique = null;
-            techniqueId = null;
-            techniqueTarget = null;
+            cancelTechnique(now, "alvo morto");
             return;
         }
         if (elapsed >= technique.durationTicks() && nextHit >= count) {
@@ -648,6 +655,44 @@ public class HoshinaEntity extends SoldierEntity {
             techniqueId = null;
             techniqueTarget = null;
         }
+    }
+
+    /**
+     * MOV-5D (plano v3, ciclo de vida: "validacao final: alvo e espaco continuam validos"): o tiro da tecnica so sai
+     * com linha de tiro e o alvo ao alcance ({@code max_range} + folga) no tick do disparo; atirador ({@code ranged})
+     * tambem cancela no preparo se o alvo chegar mais perto que o {@code min_range}. Null = tiro valido.
+     */
+    @Nullable
+    private String shotInvalid(LivingEntity target, boolean firing) {
+        double edge = edgeTo(target);
+        if (profile().flatMap(SpecialSoldierDef::ranged).isPresent() && edge < technique.minRange()) {
+            return "alvo perto demais";
+        }
+        if (!firing) {
+            return null;
+        }
+        if (!getSensing().hasLineOfSight(target)) {
+            return "sem linha de tiro";
+        }
+        return edge > technique.maxRange() + REACH_SLACK ? "alvo fora do alcance" : null;
+    }
+
+    /**
+     * Corta a tecnica antes do primeiro golpe e da animacao. Antes do primeiro golpe nada foi gasto: o uso limitado
+     * volta e a tecnica fica pronta depois do preparo dela (pode tentar de novo de outra posicao).
+     */
+    private void cancelTechnique(long now, String reason) {
+        AiTuning.logMove(this, "tecnica " + techniqueId + " cortada: " + reason);
+        stopTriggeredAnim("action", animatedTechniques().contains(techniqueId) ? techniqueId : "attack");
+        if (nextHit == 0) {
+            if (profile().map(def -> def.techniqueUses().containsKey(techniqueId)).orElse(false)) {
+                techniqueUsed.computeIfPresent(techniqueId, (id, used) -> used > 1 ? used - 1 : null);
+            }
+            readyAt.put(techniqueId, now + technique.windupTicks());
+        }
+        technique = null;
+        techniqueId = null;
+        techniqueTarget = null;
     }
 
     /**

@@ -220,6 +220,11 @@ rápida ganha `alternate_bonus` 1 e vice-versa; com o alvo regenerando (No. 9/No
 acerta mais cedo ganha `press_regeneration` 2 e ela não reposiciona. **Kikoru `kaiju_damage` 0,62 → 0,64** (Kikoru ×
 No. 9: 0/10 → 3/10, meta 25%; 0,68 dava 7/10). × No. 10 pequeno 0/5, × Primigenius Honju 3/3.
 
+MOV-5D (Mina): `ranged.reserve_limited` true (Anti-Giant só contra alvo grande). Para todo especial: tiro de técnica
+conferido no disparo (linha de tiro e `max_range` + 1) e, nos atiradores, cancelado no preparo com o alvo mais perto
+que o `min_range` (uso limitado devolvido, recarga = preparo). Duelos: × No. 10 pequeno 5/5, gigante 4/5, No. 9 4/5
+([DECIDIR]: meta "perde"; já vencia antes desta etapa, pelo Anti-Giant liberado na IA-2).
+
 **Quebra ao andar** (`[destruction] walk*`, 0.6): força 3 para Yoju, Honju e numerados (quebra frágil, normal e
 resistente: vidro, madeira, terra, pedra, tijolo, concreto), 4 para Daikaiju (também deepslate e ferro); um pedido a
 cada 5 ticks no máximo. Força 0 desliga [SUPOSIÇÃO].
