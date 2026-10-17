@@ -196,6 +196,12 @@ public final class InvasionService {
         active(level).filter(invasion -> invasion.alive.remove(uuid)).ifPresent(invasion -> sync(level, invasion));
     }
 
+    /** MOV-5A: soldado que trocou de forma (Kafka <-> Kaiju No. 8) continua no mesmo esquadrao da invasao. */
+    public static void replaceDefender(ServerLevel level, UUID from, UUID to) {
+        active(level).ifPresent(invasion -> invasion.squads.forEach(
+                members -> members.replaceAll(member -> member.equals(from) ? to : member)));
+    }
+
     // --- ondas ---------------------------------------------------------------------------------------------------
 
     private static void startWave(ServerLevel level, Invasion invasion) {

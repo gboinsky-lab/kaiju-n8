@@ -834,3 +834,16 @@ Servidor dedicado + 2 clientes, mundo plano. Log com `[kaijuAi] debugLog = true`
 | 59.4 | Hoshina começa o Ran-uchi e o alvo morre no meio (`/kill`) | A técnica e a animação param na hora |
 | 59.5 | Dois soldados de rifle, um na frente do outro, contra um kaiju | O de trás não atira através do da frente: dá um passo para o lado e atira |
 | 59.6 | Hoshina contra uma Camponotus (cospe ácido) | Esquiva de lado de alguns jatos (pela chance de esquiva do perfil) |
+
+## 60. Troca de perfil: Kafka <-> Kaiju No. 8 (MOV-5A)
+
+Servidor dedicado + 2 clientes, mundo plano. Log com `[kaijuAi] debugLog = true`.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 60.1 | Recrutar o Kafka (Esquadrao, patente com vaga), ordem Seguir, soltar um Primigenius perto | O Kafka atira; quando cai abaixo de 50% vira o Kaiju No. 8 (explosao, fumaca, rugido); log "perfil ativo kn8:kaiju_no8 (antes kn8:kafka)" |
+| 60.2 | Aba Esquadrao do menu durante a luta | O No. 8 aparece no esquadrao do jogador (mesma vaga do Kafka) e segue as ordens (Ficar/Recuar/Atacar) |
+| 60.3 | Matar o kaiju e esperar 15 s | O No. 8 volta a ser o Kafka, ainda no esquadrao, com a mesma ordem e o rifle com a municao que tinha (nao enche de novo) |
+| 60.4 | Kafka ja sem municao (faca na mao) antes de virar o No. 8 | Volta do No. 8 com a faca |
+| 60.5 | Invasao `honju_assault` com o Kafka entre os defensores (`/summon` com a marca nao serve: usar invasao que o chame ou pular) | O No. 8 continua no esquadrao e no posto do Kafka |
+| 60.6 | Salvar e sair com o No. 8 em campo, voltar | O No. 8 continua no esquadrao e, ao voltar a ser o Kafka, devolve a municao guardada |

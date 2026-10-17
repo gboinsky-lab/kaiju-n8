@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -23,6 +24,7 @@ import com.kn8.common.data.def.SoldierDef;
 import com.kn8.common.data.def.SpecialSoldierDef;
 import com.kn8.common.data.def.WeaponDef;
 import com.kn8.common.destruction.DestructionService;
+import com.kn8.common.invasion.InvasionService;
 import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.kaiju.KaijuProjectile;
 import com.kn8.common.registry.KN8Attachments;
@@ -93,6 +95,7 @@ public class HoshinaEntity extends SoldierEntity {
      * cliente toca nessa velocidade).
      */
     private static final String TAG_TECHNIQUE_USES = "kn8_technique_uses";
+    private static final String TAG_FORM_MEMORY = "kn8_form_memory";
     private static final EntityDataAccessor<Float> ACTION_SPEED =
             SynchedEntityData.defineId(HoshinaEntity.class, EntityDataSerializers.FLOAT);
 
@@ -446,6 +449,8 @@ public class HoshinaEntity extends SoldierEntity {
 
     /** Ticks seguidos sem alvo (volta da forma Kaiju No. 8 para o Kafka). */
     private int idleTicks;
+    /** MOV-5A: arma e municao das outras formas, pelo id do tipo de entidade (salvo no mundo). */
+    private CompoundTag formMemory = new CompoundTag();
 
     /**
      * 0.7-F: regeneracao e troca de forma do perfil ({@code regeneration}/{@code transform}), no servidor. A troca
@@ -480,6 +485,11 @@ public class HoshinaEntity extends SoldierEntity {
         if (other instanceof Mob mob && getTarget() != null) {
             mob.setTarget(getTarget());
         }
+        if (other instanceof HoshinaEntity next) {
+            next.inheritForm(this);
+            InvasionService.replaceDefender(server, getUUID(), next.getUUID());
+            AiTuning.logMove(next, "perfil ativo " + next.activeProfileId() + " (antes " + activeProfileId() + ")");
+        }
         // Duelo de teste (/kn8 duel): a forma nova herda o oponente e o oponente passa a mirar nela.
         duelOpponent().ifPresent(foe -> {
             other.getPersistentData().putUUID(DUEL_TAG, foe);
@@ -492,6 +502,40 @@ public class HoshinaEntity extends SoldierEntity {
         server.sendParticles(ParticleTypes.LARGE_SMOKE, getX(), getY() + 1.0, getZ(), 30, 0.6, 1.0, 0.6, 0.05);
         server.playSound(null, getX(), getY(), getZ(), SoundEvents.RAVAGER_ROAR, SoundSource.NEUTRAL, 1.5F, 0.8F);
         discard();
+    }
+
+    /**
+     * MOV-5A (bug 10 da MOV-0): o que passa de uma forma para a outra. Passam o esquadrao (lider, ordem, posto, kaiju
+     * designado), os dados persistentes (invasao, duelo) e os usos de tecnica limitados. Nao passam tecnicas,
+     * atributos, arma nem escalada: cada forma luta so com o proprio perfil (nada herdado). A arma e a municao da forma
+     * que saiu ficam guardadas na memoria de formas e voltam quando ela voltar (o Kafka volta com os pentes que tinha,
+     * ou com a faca se ja tinha ficado sem municao). [SUPOSICAO] a escalada nao passa: o Kafka nao escala e o No. 8 so
+     * volta ao Kafka depois de um tempo sem alvo, quando a escalada ja teria caido.
+     */
+    protected void inheritForm(HoshinaEntity from) {
+        inheritSquadFrom(from);
+        techniqueUsed.putAll(from.techniqueUsed);
+        formMemory = from.formMemory.copy();
+        formMemory.put(formKey(from), from.weaponState());
+        String mine = formKey(this);
+        if (formMemory.contains(mine)) {
+            restoreWeaponState(formMemory.getCompound(mine));
+            formMemory.remove(mine);
+        }
+    }
+
+    /** Perfil em uso por esta forma (log da IA, GameTests). */
+    public ResourceLocation activeProfileId() {
+        return profileId();
+    }
+
+    /** Formas guardadas (GameTests): ids de tipo de entidade com arma e municao esperando a volta. */
+    public Set<String> storedForms() {
+        return formMemory.getAllKeys();
+    }
+
+    private static String formKey(Entity entity) {
+        return BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()).toString();
     }
 
     /** 0.6-F: comportamento extra por tick no servidor (a cauda do traje numerado 10). */
@@ -1029,6 +1073,7 @@ public class HoshinaEntity extends SoldierEntity {
         CompoundTag uses = new CompoundTag();
         techniqueUsed.forEach(uses::putInt);
         tag.put(TAG_TECHNIQUE_USES, uses);
+        tag.put(TAG_FORM_MEMORY, formMemory);
     }
 
     @Override
@@ -1039,5 +1084,6 @@ public class HoshinaEntity extends SoldierEntity {
         for (String key : uses.getAllKeys()) {
             techniqueUsed.put(key, uses.getInt(key));
         }
+        formMemory = tag.getCompound(TAG_FORM_MEMORY);
     }
 }

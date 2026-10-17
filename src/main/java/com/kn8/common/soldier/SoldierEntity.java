@@ -601,6 +601,38 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
     }
 
     /**
+     * MOV-5A (bug 10 da MOV-0): a forma nova (Kafka <-> Kaiju No. 8) fica no mesmo esquadrao, com a mesma ordem, o
+     * mesmo posto e o mesmo kaiju designado; os dados persistentes (invasao, duelo, guarnicao) vao junto.
+     */
+    public void inheritSquadFrom(SoldierEntity from) {
+        entityData.set(SQUAD_LEADER, from.squadLeader());
+        entityData.set(SQUAD_ORDER, from.entityData.get(SQUAD_ORDER));
+        squadPost = from.squadPost;
+        assignedKaiju = from.assignedKaiju;
+        getPersistentData().merge(from.getPersistentData().copy());
+    }
+
+    /** MOV-5A: estado da arma desta forma (itens nas maos e municao), guardado enquanto a outra forma luta. */
+    public CompoundTag weaponState() {
+        CompoundTag tag = new CompoundTag();
+        tag.put("main", getMainHandItem().saveOptional(registryAccess()));
+        tag.put("off", getOffhandItem().saveOptional(registryAccess()));
+        tag.putInt(TAG_ROUNDS, rounds);
+        tag.putInt(TAG_RESERVE, reserveRounds);
+        tag.putBoolean(TAG_OUT_OF_AMMO, outOfAmmo);
+        return tag;
+    }
+
+    /** MOV-5A: volta o estado da arma guardado por {@link #weaponState} (a faca de quem ficou sem municao tambem). */
+    public void restoreWeaponState(CompoundTag tag) {
+        setItemSlot(EquipmentSlot.MAINHAND, ItemStack.parseOptional(registryAccess(), tag.getCompound("main")));
+        setItemSlot(EquipmentSlot.OFFHAND, ItemStack.parseOptional(registryAccess(), tag.getCompound("off")));
+        rounds = tag.getInt(TAG_ROUNDS);
+        reserveRounds = tag.getInt(TAG_RESERVE);
+        outOfAmmo = tag.getBoolean(TAG_OUT_OF_AMMO);
+    }
+
+    /**
      * Ponto do esquadrao: o posto ("ficar" ou invasao) ou o lider (seguir, atacar, recuar). Null = soldado livre ou
      * lider fora do mundo.
      */

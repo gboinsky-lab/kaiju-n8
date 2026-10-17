@@ -197,3 +197,18 @@ tempo parado, tiros bloqueados, dano duplicado = 0).
   perfil dela (MOV-5). GameTests 200/200.
 - Visto em jogo com 2 clientes: `docs/img/mov4_saindo_da_area_do_pisao.jpg` (anel do pisão no chão e o soldado na
   borda de fora).
+
+## 10. MOV-5A feita (2026-10-17): troca de perfil Kafka ↔ Kaiju No. 8
+
+- Matriz de perfis e sistema de troca em `docs/PERFIS_PERSONAGENS_MOV5.md` (uma seção por personagem nas próximas
+  etapas).
+- Bug 10 corrigido: `HoshinaEntity.inheritForm` (na troca) passa líder, ordem, posto e kaiju designado do esquadrão,
+  dados persistentes (invasão, duelo), usos de técnica e o lugar no esquadrão da invasão
+  (`InvasionService.replaceDefender`); arma e munição da forma que saiu ficam na memória de formas (`kn8_form_memory`,
+  salva) e voltam com ela. Técnicas, atributos e escalada não passam (cada forma só com o próprio perfil).
+- Perfil ativo no log (`perfil ativo kn8:kaiju_no8 (antes kn8:kafka)`) e em `activeProfileId()`.
+- GameTest `formSwitchKeepsSquadAndAmmoWithoutSharingAbilities` (ida e volta: esquadrão, posto, kaiju designado,
+  marca da invasão, pente e reserva do Kafka, nenhuma técnica cruzada, No. 8 não atirador). GameTests 201/201.
+- Em jogo com 2 clientes (`docs/img/mov5a_kafka_no8_troca_de_forma.jpg`): Kafka no esquadrão do Dev vira o No. 8, que
+  segue o Dev, mata o Primigenius e volta a ser o Kafka 20 s depois, no esquadrão, com 30 + 114 balas (a reserva que
+  sobrou, não 120).
