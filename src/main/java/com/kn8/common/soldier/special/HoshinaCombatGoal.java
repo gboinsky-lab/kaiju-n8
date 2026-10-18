@@ -133,7 +133,8 @@ final class HoshinaCombatGoal extends Goal {
             hoshina.getNavigation().moveTo(evade.x, evade.y, evade.z, ServerConfig.SOLDIER_DANGER_ESCAPE_SPEED.get());
             // MOV-5E: atirador atira enquanto sai da area (antes parava de atirar a cada golpe pesado do kaiju).
             if (hoshina.isShooter() && hoshina.profile().flatMap(SpecialSoldierDef::ranged).isPresent()
-                    && hoshina.getSensing().hasLineOfSight(target) && hoshina.edgeTo(target) <= hoshina.attackReach()) {
+                    && hoshina.getSensing().hasLineOfSight(target)
+                    && hoshina.edgeTo(target) <= hoshina.attackReach()) {
                 hoshina.startAttack(target);
             }
             return;
