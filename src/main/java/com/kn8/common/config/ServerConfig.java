@@ -247,6 +247,7 @@ public final class ServerConfig {
     public static final ModConfigSpec.IntValue SOLDIER_COVER_CHECK_TICKS;
     public static final ModConfigSpec.DoubleValue SOLDIER_COVER_MIN_THREAT_DISTANCE;
     public static final ModConfigSpec.IntValue SOLDIER_COVER_HIDE_TICKS;
+    public static final ModConfigSpec.BooleanValue SOLDIER_SPECIAL_COVER;
     public static final ModConfigSpec.DoubleValue SOLDIER_COVER_DANGER_RADIUS;
     public static final ModConfigSpec.BooleanValue SOLDIER_AVOID_DANGER;
     public static final ModConfigSpec.DoubleValue SOLDIER_DANGER_MARGIN;
@@ -793,6 +794,9 @@ public final class ServerConfig {
                 + " the kaiju (edge) is useless: it walks there; the shooter falls back instead.", 9.0, 0.0, 64.0);
         SOLDIER_COVER_HIDE_TICKS = intValue("coverHideTicks", "MOV-3: time a shooter stays behind cover after the"
                 + " kaiju aimed at it, before peeking out again.", 20, 0, 400);
+        SOLDIER_SPECIAL_COVER = BUILDER.comment("MOV-5D: special shooters (Mina, Reno) adapt to the fight: cover"
+                + " against kaiju with ranged attacks and to reload, otherwise they keep fighting from range (retreat"
+                + " and orbit).").translation(PREFIX + "specialCover").define("specialCover", true);
         SOLDIER_COVER_DANGER_RADIUS = doubleValue("coverDangerRadius", "MOV-3: cover within this distance of a kaiju"
                 + " preparing a heavy attack (edge) is left.", 4.0, 0.0, 32.0);
         SOLDIER_AVOID_DANGER = BUILDER.comment("MOV-4: soldiers walk out of the area of a heavy kaiju attack being"

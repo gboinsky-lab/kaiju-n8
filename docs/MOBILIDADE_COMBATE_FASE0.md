@@ -243,4 +243,14 @@ tempo parado, tiros bloqueados, dano duplicado = 0).
   no preparo dos atiradores (`min_range`); `cancelTechnique` devolve o uso limitado e deixa a técnica pronta depois do
   preparo. Vale para todo especial (Hoshina, Reno...).
 - `ranged.reserve_limited` (Mina): Anti-Giant guardado para alvo grande.
-- [DECIDIR] Mina × No. 9 (vence 80–100%, meta "perde"); cobertura de Mina/Reno: proposta continuar sem.
+- Decidido (Miguel, 2026-10-18): Mina × No. 9, aceito que ela vença; cobertura de Mina/Reno adaptativa (§14).
+
+## 14. Cobertura adaptativa dos atiradores especiais (2026-10-18)
+
+- Miguel: "ela deve se ajustar de acordo com o combate". O `ShooterCover` (MOV-3) agora serve também o
+  `HoshinaCombatGoal`: com o alvo até `keep_distance` + 3; contra kaiju que atira só sob pressão
+  (`ranged.cover_health`) e sem janela para pressionar (alvo regenerando ou de guarda aberta); para recarregar, sempre;
+  escondido não começa técnica. Fora disso, recuo e órbita como antes. `[soldierAi] specialCover`.
+- Correção que vale também para o soldado comum: esconder-se do kaiju que mira dura até o impacto +
+  `coverHideTicks` (antes renovava na recuperação e, contra ataques em sequência, o atirador nunca saía).
+- Medidas: Mina × No. 9 4/10 e × No. 10 pequeno 4/10 (cobertura desligada: 6/10 e 6/10; diferença dentro do ruído de 10 duelos, com o chão refeito a cada duelo); Reno No. 6 × No. 9 0/3 com e sem cobertura (era 6/6 no v1.2: queda anterior a esta mudança, fica para a etapa do Reno); cena da formiga com muros e cena do Primigenius em `docs/img/mov5d_cobertura_adaptativa.jpg`.

@@ -11,6 +11,7 @@ import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.numbered.No9Service;
 import com.kn8.common.soldier.DangerAvoid;
 import com.kn8.common.soldier.MoveSafety;
+import com.kn8.common.soldier.ShooterCover;
 import com.kn8.common.soldier.StuckWatch;
 
 import net.minecraft.world.entity.LivingEntity;
@@ -59,6 +60,7 @@ final class HoshinaCombatGoal extends Goal {
     private final HoshinaEntity hoshina;
     /** MOV-1: travamento de movimento (a "luta travada" do unstick e outra coisa: perto e ninguem se fere). */
     private final StuckWatch stuck = new StuckWatch();
+    private final ShooterCover cover = new ShooterCover();
     /** MOV-4: saida da area de golpe pesado, conferida a cada DANGER_CHECK_TICKS. */
     private Vec3 evade;
     private int dangerCheck;
@@ -142,13 +144,30 @@ final class HoshinaCombatGoal extends Goal {
         if (tactics(target)) {
             return;
         }
+        // IA-1B: atirador sem municao (arma branca na mao) luta de perto como os outros.
+        Optional<SpecialSoldierDef.Ranged> ranged = hoshina.profile().flatMap(SpecialSoldierDef::ranged)
+                .filter(value -> hoshina.isShooter());
+        // MOV-5D (Miguel: "ela deve se ajustar de acordo com o combate"): cobertura so quando o combate pede: para
+        // recarregar e, contra kaiju que atira, so sob pressao (vida abaixo de cover_health) e sem uma janela para
+        // pressionar (alvo regenerando ou de guarda aberta: escondida ela daria tempo de cura ao No. 9). Escondida nao
+        // comeca tecnica. Fora disso luta de longe (recuo e orbita) como antes.
+        boolean covered = false;
+        if (ranged.isPresent() && ServerConfig.SOLDIER_SPECIAL_COVER.get()) {
+            covered = cover.tick(hoshina, target, hoshina.edgeTo(target),
+                    hoshina.getSensing().hasLineOfSight(target), hoshina.wantsCoverFrom(target));
+            if (covered && cover.hiding()) {
+                return;
+            }
+        } else {
+            cover.clear(hoshina);
+        }
         Optional<String> technique = hoshina.chooseTechnique(target);
         if (technique.isPresent() && hoshina.startTechnique(technique.get(), target)) {
             return;
         }
-        // IA-1B: atirador sem municao (arma branca na mao) luta de perto como os outros.
-        Optional<SpecialSoldierDef.Ranged> ranged = hoshina.profile().flatMap(SpecialSoldierDef::ranged)
-                .filter(value -> hoshina.isShooter());
+        if (covered) {
+            return;
+        }
         if (ranged.isPresent()) {
             rangedTick(target, ranged.get());
             return;

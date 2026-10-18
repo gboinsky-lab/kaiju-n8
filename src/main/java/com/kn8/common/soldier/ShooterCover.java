@@ -15,9 +15,10 @@ import net.minecraft.world.phys.Vec3;
  * o kaiju prepara um ataque contra ele (por {@code [soldierAi] coverHideTicks}) e para recarregar; contra qualquer
  * kaiju, recarrega atras de uma cobertura se houver. A cada {@code coverCheckTicks} confere se a cobertura ainda corta
  * a visao (kaiju contornou, bloco quebrado), se o kaiju chegou perto demais ou se o ponto ficou na area de um golpe
- * pesado; se nao, procura outra (sem cobertura, o goal volta a manter distancia como antes).
+ * pesado; se nao, procura outra (sem cobertura, o goal volta a manter distancia como antes). Desde a MOV-5D serve
+ * tambem os atiradores especiais (Mina, Reno), que fora desses casos lutam de longe recuando e orbitando.
  */
-final class ShooterCover {
+public final class ShooterCover {
 
     private static final double SPEED = 1.2;
     /** Chegou ao ponto (blocos, no plano). */
@@ -27,20 +28,35 @@ final class ShooterCover {
     private long nextCheck;
     private long hideUntil;
     private boolean moving;
+    private boolean hiding;
 
     /** O tick andou ate a cobertura ou o ponto de atirar (conta para o travamento). */
-    boolean moving() {
+    public boolean moving() {
         return moving;
+    }
+
+    /** O tick deixou o soldado escondido atras da cobertura (sem atirar). */
+    public boolean hiding() {
+        return hiding;
     }
 
     /**
      * Um tick do atirador: verdadeiro se a cobertura cuidou do movimento (e do tiro) neste tick; falso para o goal
      * seguir como antes.
      */
-    boolean tick(SoldierEntity soldier, LivingEntity target, double edge, boolean sees) {
+    public boolean tick(SoldierEntity soldier, LivingEntity target, double edge, boolean sees) {
+        return tick(soldier, target, edge, sees, true);
+    }
+
+    /**
+     * Como {@link #tick(SoldierEntity, LivingEntity, double, boolean)}; com {@code againstRanged} falso a cobertura
+     * so serve para recarregar (o atirador especial decide pelo andamento da luta se vale se esconder do kaiju).
+     */
+    public boolean tick(SoldierEntity soldier, LivingEntity target, double edge, boolean sees, boolean againstRanged) {
         moving = false;
+        hiding = false;
         boolean reloading = soldier.isReloading();
-        boolean ranged = target instanceof KaijuEntity kaiju && kaiju.hasRangedAttack();
+        boolean ranged = againstRanged && target instanceof KaijuEntity kaiju && kaiju.hasRangedAttack();
         if (!ServerConfig.SOLDIER_COVER.get() || (!ranged && !reloading)) {
             clear(soldier);
             return false;
@@ -75,11 +91,15 @@ final class ShooterCover {
         if (cover == null || (!reloading && cover.peek().isEmpty())) {
             return false;
         }
-        // O kaiju prepara um ataque contra este soldado: abaixa atras da cobertura.
+        // O kaiju prepara um ataque contra este soldado: abaixa atras da cobertura ate o impacto + coverHideTicks.
+        // MOV-5D: so no preparo (antes renovava enquanto o kaiju mirava, inclusive na recuperacao, e contra ataques
+        // em sequencia o atirador nunca saia para atirar).
         if (target instanceof KaijuEntity kaiju && kaiju.abilityTarget().orElse(null) == soldier) {
-            hideUntil = now + ServerConfig.SOLDIER_COVER_HIDE_TICKS.get();
+            kaiju.ticksToImpact().ifPresent(ticks -> hideUntil = now + ticks
+                    + ServerConfig.SOLDIER_COVER_HIDE_TICKS.get());
         }
         boolean hide = reloading || now < hideUntil || cover.peek().isEmpty();
+        hiding = hide;
         Vec3 goal = hide ? cover.spot() : cover.peek().get();
         if (Math.hypot(goal.x - soldier.getX(), goal.z - soldier.getZ()) > ARRIVED) {
             moving = true;
@@ -93,7 +113,7 @@ final class ShooterCover {
         return true;
     }
 
-    void clear(SoldierEntity soldier) {
+    public void clear(SoldierEntity soldier) {
         cover = null;
         soldier.setCoverSpot(null);
     }

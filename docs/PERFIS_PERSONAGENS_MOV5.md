@@ -170,7 +170,7 @@ disparos, reposicionar-se quando o alvo se aproxima e não entrar em corpo a cor
 | Anti-Giant guardado (MOV-5D) | `ranged.reserve_limited`: os 4 tiros não saem contra Yoju (Honju, numerados, Daikaiju sim) | ADAPTAÇÃO DO MOD (decisão do Miguel "qualquer kaiju" mantida para os grandes) [SUPOSIÇÃO] |
 | Aliados | Os tiros e as explosões não ferem aliados (`SlashProjectile` poupa aliados): nada a mudar | — |
 | Corpo a corpo | Não usa contra-ataque de espada (`melee_counter` false); só com a faca sem munição | INFERÊNCIA |
-| Cobertura | Sem cobertura: luta mantendo distância e circulando ([DECIDIR] da MOV-3: proposta "fica assim") | [DECIDIR] |
+| Cobertura (Miguel 2026-10-18: "ela deve se ajustar de acordo com o combate") | Adaptativa: com o alvo até `keep_distance` + 3, contra kaiju que atira só sob pressão (vida abaixo de `ranged.cover_health` 0,5) e sem janela para pressionar (alvo regenerando ou de guarda aberta); para recarregar, sempre. Escondida não começa técnica; sai para o ponto de tiro e troca quando a cobertura é contornada/quebrada. Fora disso: recuo e órbita | ADAPTAÇÃO DO MOD (decisão do Miguel) [SUPOSIÇÃO 0,5] |
 
 ### Testes (MOV-5D)
 
@@ -178,10 +178,21 @@ disparos, reposicionar-se quando o alvo se aproxima e não entrar em corpo a cor
   contra o Honju; Anti-Giant com muro de bedrock posto no preparo é cancelado, o Honju não perde vida e os 4 usos
   continuam; canhão carregado com o kaiju teletransportado para 3 blocos é cancelado com recarga curta.
 - Duelos (servidor dedicado, 5 cada, a 30 blocos): × No. 10 pequeno 5/5, × No. 10 gigante 4/5, × No. 9 4/5.
-  **[DECIDIR] Mina × No. 9:** a decisão de 2026-10-15 é que ela **perde** para o No. 9 (v1.2: 16%). Hoje ela vence (8/8
-  mesmo sem o cancelamento desta etapa): desde a IA-2 o Anti-Giant vale contra qualquer kaiju e um tiro dele leva o
-  No. 9 de 50–80% a 0. Opções: (a) o No. 9 não ser alvo do Anti-Giant (ele "lê tiros"), (b) a esquiva do No. 9 pegar o
-  Anti-Giant sempre (tiro lento e explosivo), (c) aceitar.
+  **Mina × No. 9 — decidido (Miguel, 2026-10-18): aceito que ela vença** (opção c). A meta "perde" de 2026-10-15 sai:
+  desde a IA-2 o Anti-Giant vale contra qualquer kaiju e um tiro dele leva o No. 9 de 50–80% a 0.
 - Em jogo (servidor dedicado + 2 clientes, `docs/img/mov5d_mina.jpg`, log ligado): contra o Primigenius Honju os tiros
   saem de longe e ele cai; contra o Primigenius (Yoju, sem Anti-Giant) ele chega perto e três tiros são cancelados
   ("cortada: alvo perto demais"); ela termina com 416 de 420.
+
+### Cobertura adaptativa (decisão do Miguel, 2026-10-18)
+
+- Vale para os atiradores especiais (`ranged`: Mina, Reno, Reno No. 6). `HoshinaEntity.wantsCoverFrom` decide se o
+  kaiju que atira justifica a cobertura; o `ShooterCover` (o mesmo do soldado comum, MOV-3) acha o muro, sai para o
+  ponto de tiro e troca quando ele é contornado ou quebrado. `keepDistance()` do especial passou a ser o do perfil.
+- Medido (servidor dedicado, chão refeito a cada duelo): cobertura **sempre** contra kaiju que atira: Mina × No. 9
+  0/5 (desligada 3/5; ela se escondia a cada mira do Finger Gun e o No. 9 regenerava). **Adaptativa:** Mina × No. 9 4/10 e × No. 10 pequeno 4/10 (cobertura desligada: 6/10 e 6/10; diferença dentro do ruído de 10 duelos, com o chão refeito a cada duelo); Reno No. 6 × No. 9 0/3 com e sem cobertura (era 6/6 no v1.2: queda anterior a esta mudança, fica para a etapa do Reno).
+- GameTests (`MinaProfileGameTests`, 213/213): com a vida cheia não se esconde da formiga; com 30% acha a cobertura
+  atrás do muro; contra o Primigenius (só de perto) não usa cobertura.
+- Em jogo (servidor dedicado + 2 clientes, `docs/img/mov5d_cobertura_adaptativa.jpg`): com 38% da vida contra a
+  formiga, cobertura atrás do muro, sai para atirar, troca quando a formiga quebra o muro e a mata sem perder vida;
+  contra o Primigenius nenhuma cobertura (luta de longe e o derruba).

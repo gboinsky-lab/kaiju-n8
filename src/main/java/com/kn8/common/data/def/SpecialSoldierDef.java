@@ -227,7 +227,7 @@ public record SpecialSoldierDef(float health, float armor, float speed, float fo
      * distrai-lo; se o alvo se afasta, sai da distancia ou da linha de visao, persegue. Atira em movimento.
      */
     public record Ranged(float keepDistance, float retreatDistance, boolean orbit, int orbitSwitchTicks,
-            float retreatSpeed, float orbitSpeed, float chaseSpeed, boolean reserveLimited) {
+            float retreatSpeed, float orbitSpeed, float chaseSpeed, boolean reserveLimited, float coverHealth) {
         public static final Codec<Ranged> CODEC = RecordCodecBuilder.create(i -> i.group(
                 Codec.floatRange(2.0F, 64.0F).optionalFieldOf("keep_distance", 16.0F).forGetter(Ranged::keepDistance),
                 Codec.floatRange(0.0F, 64.0F).optionalFieldOf("retreat_distance", 9.0F)
@@ -239,7 +239,10 @@ public record SpecialSoldierDef(float health, float armor, float speed, float fo
                 Codec.floatRange(0.1F, 3.0F).optionalFieldOf("chase_speed", 1.3F).forGetter(Ranged::chaseSpeed),
                 // MOV-5D: tecnicas com usos limitados (technique_uses: Anti-Giant da Mina) guardadas para alvo grande
                 // (Honju, numerado, Daikaiju); contra Yoju ela usa as outras.
-                Codec.BOOL.optionalFieldOf("reserve_limited", false).forGetter(Ranged::reserveLimited)
+                Codec.BOOL.optionalFieldOf("reserve_limited", false).forGetter(Ranged::reserveLimited),
+                // MOV-5D (Miguel: "ela deve se ajustar de acordo com o combate"): contra kaiju que atira so usa
+                // cobertura com a vida abaixo desta fracao (0 = nunca, 1 = sempre); para recarregar, sempre.
+                Codec.floatRange(0.0F, 1.0F).optionalFieldOf("cover_health", 0.5F).forGetter(Ranged::coverHealth)
         ).apply(i, Ranged::new));
     }
 

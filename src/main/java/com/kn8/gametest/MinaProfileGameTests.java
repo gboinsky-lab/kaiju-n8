@@ -3,6 +3,7 @@ package com.kn8.gametest;
 import com.kn8.KN8Constants;
 import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.registry.KN8Entities;
+import com.kn8.common.soldier.ShooterCover;
 import com.kn8.common.soldier.special.MinaEntity;
 
 import net.minecraft.core.BlockPos;
@@ -15,8 +16,9 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 /**
  * GameTests da MOV-5D (perfil da Mina, plano de mobilidade v3 §7 e "ciclo de vida" das habilidades): o Anti-Giant
  * (4 usos) fica guardado para alvo grande; tiro de tecnica sem linha de tiro no disparo e cancelado e o uso volta;
- * atiradora cancela o tiro se o alvo chega mais perto que o alcance minimo durante o preparo.
- */
+ * atiradora cancela o tiro se o alvo chega mais perto que o alcance minimo durante o preparo; cobertura adaptativa
+ * (Miguel: "ela deve se ajustar de acordo com o combate"): atras do muro contra kaiju que atira, sem cobertura contra
+ * kaiju so de perto. */
 @GameTestHolder(KN8Constants.MOD_ID)
 @PrefixGameTestTemplate(false)
 public final class MinaProfileGameTests {
@@ -121,6 +123,60 @@ public final class MinaProfileGameTests {
                     "Recarga curta depois do cancelamento: " + mina.techniqueReadyAt("charged_cannon"));
             yoju.discard();
             mina.discard();
+        });
+    }
+    /** Muro de pedra de 3 de altura entre o kaiju (parado) e a Mina, como no teste de cobertura da MOV-3. */
+    private static void wall(GameTestHelper helper) {
+        for (int x = 3; x <= 11; x++) {
+            for (int y = 1; y <= 3; y++) {
+                helper.setBlock(new BlockPos(x, y, 7), Blocks.STONE);
+            }
+        }
+    }
+
+    @GameTest(template = TEMPLATE, timeoutTicks = 60, batch = "kn8_mov5d_mina_e")
+    public static void minaTakesCoverUnderPressureAgainstAShooterKaiju(GameTestHelper helper) {
+        wall(helper);
+        KaijuEntity ant = helper.spawn(KN8Entities.CAMPONOTUS.get(), new BlockPos(7, 1, 2));
+        ant.setNoAi(true);
+        MinaEntity mina = helper.spawn(KN8Entities.MINA.get(), new BlockPos(7, 1, 11));
+        mina.setNoAi(true);
+        helper.runAfterDelay(SETTLE, () -> {
+            helper.assertTrue(ant.hasRangedAttack(), "A formiga deveria atirar acido");
+            helper.assertTrue(mina.keepDistance() == 22.0F, "Distancia do perfil: " + mina.keepDistance());
+            ShooterCover cover = new ShooterCover();
+            // Vida cheia: luta de longe (a cobertura so serve para recarregar).
+            helper.assertFalse(mina.wantsCoverFrom(ant), "Com a vida cheia nao deveria se esconder");
+            helper.assertFalse(cover.tick(mina, ant, mina.edgeTo(ant), mina.getSensing().hasLineOfSight(ant),
+                    mina.wantsCoverFrom(ant)), "Com a vida cheia a cobertura nao deveria agir");
+            // Sob pressao: atras do muro.
+            mina.setHealth(mina.getMaxHealth() * 0.3F);
+            helper.assertTrue(mina.wantsCoverFrom(ant), "Com 30% da vida deveria querer cobertura");
+            cover.tick(mina, ant, mina.edgeTo(ant), mina.getSensing().hasLineOfSight(ant), mina.wantsCoverFrom(ant));
+            helper.assertTrue(mina.coverSpot() != null, "Sob pressao contra kaiju que atira deveria achar cobertura");
+            ant.discard();
+            mina.discard();
+            helper.succeed();
+        });
+    }
+
+    @GameTest(template = TEMPLATE, timeoutTicks = 60, batch = "kn8_mov5d_mina_f")
+    public static void minaKitesAMeleeKaiju(GameTestHelper helper) {
+        wall(helper);
+        KaijuEntity yoju = helper.spawn(KN8Entities.PRIMIGENIUS.get(), new BlockPos(7, 1, 2));
+        yoju.setNoAi(true);
+        MinaEntity mina = helper.spawn(KN8Entities.MINA.get(), new BlockPos(7, 1, 11));
+        mina.setNoAi(true);
+        helper.runAfterDelay(SETTLE, () -> {
+            helper.assertFalse(yoju.hasRangedAttack(), "O Primigenius nao atira");
+            mina.setHealth(mina.getMaxHealth() * 0.3F);
+            boolean handled = new ShooterCover().tick(mina, yoju, mina.edgeTo(yoju),
+                    mina.getSensing().hasLineOfSight(yoju), mina.wantsCoverFrom(yoju));
+            helper.assertFalse(handled || mina.coverSpot() != null,
+                    "Contra kaiju so de perto, sem recarregar, a Mina luta de longe (sem cobertura)");
+            yoju.discard();
+            mina.discard();
+            helper.succeed();
         });
     }
 }

@@ -110,6 +110,8 @@ public class HoshinaEntity extends SoldierEntity {
     public static final List<String> ANIMATED = List.of("kuuchi", "kosa_uchi", "ran_uchi", "kasumi_uchi", "yae_uchi",
             "kaeshi_uchi", "dash", "parry", "juni_hitoe");
     private static final float REACH_SLACK = 1.0F;
+    /** Folga alem da distancia de manter em que a cobertura ainda vale (como a do goal de combate). */
+    private static final double COVER_RANGE_SLACK = 3.0;
     /**
      * MOV-5B: blocos andados por unidade de velocidade do {@code dash_in} (atrito do chao do vanilla, 0,6 x 0,91:
      * v / (1 - 0,546) ~ 2,2 v).
@@ -174,6 +176,27 @@ public class HoshinaEntity extends SoldierEntity {
     }
 
     // --- perfil ------------------------------------------------------------------------------------------------
+
+    /** Distancia de manter do perfil de atirador (a do soldado comum vem do soldier_1.json; o especial nao tem). */
+    @Override
+    public float keepDistance() {
+        return profile().flatMap(SpecialSoldierDef::ranged).map(SpecialSoldierDef.Ranged::keepDistance)
+                .orElseGet(super::keepDistance);
+    }
+
+    /**
+     * MOV-5D: atirador especial se esconde do kaiju que atira so sob pressao (vida abaixo de {@code cover_health}) e
+     * sem uma janela para pressionar (alvo regenerando ou de guarda aberta), com o alvo na faixa de combate (longe
+     * dela, persegue). Para recarregar a cobertura vale sempre.
+     */
+    public boolean wantsCoverFrom(LivingEntity target) {
+        Optional<SpecialSoldierDef.Ranged> ranged = profile().flatMap(SpecialSoldierDef::ranged);
+        if (ranged.isEmpty() || getHealth() >= getMaxHealth() * ranged.get().coverHealth()
+                || edgeTo(target) > ranged.get().keepDistance() + COVER_RANGE_SLACK) {
+            return false;
+        }
+        return !No9Service.regenerating(target) && !(target instanceof KaijuEntity kaiju && kaiju.isOpen());
+    }
 
     public Optional<SpecialSoldierDef> profile() {
         return KN8Data.SPECIAL_SOLDIER.get(profileId(), false);

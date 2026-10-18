@@ -223,7 +223,9 @@ No. 9: 0/10 → 3/10, meta 25%; 0,68 dava 7/10). × No. 10 pequeno 0/5, × Primi
 MOV-5D (Mina): `ranged.reserve_limited` true (Anti-Giant só contra alvo grande). Para todo especial: tiro de técnica
 conferido no disparo (linha de tiro e `max_range` + 1) e, nos atiradores, cancelado no preparo com o alvo mais perto
 que o `min_range` (uso limitado devolvido, recarga = preparo). Duelos: × No. 10 pequeno 5/5, gigante 4/5, No. 9 4/5
-([DECIDIR]: meta "perde"; já vencia antes desta etapa, pelo Anti-Giant liberado na IA-2).
+(meta "perde" retirada: **Miguel 2026-10-18 aceitou que ela vença**). Cobertura adaptativa (2026-10-18):
+`ranged.cover_health` 0,5 (Mina, Reno, Reno No. 6) [SUPOSIÇÃO], `[soldierAi] specialCover` true; duelos com o chão
+refeito a cada duelo: Mina × No. 9 4/10 e × No. 10 pequeno 4/10 (cobertura desligada: 6/10 e 6/10; diferença dentro do ruído de 10 duelos, com o chão refeito a cada duelo); Reno No. 6 × No. 9 0/3 com e sem cobertura (era 6/6 no v1.2: queda anterior a esta mudança, fica para a etapa do Reno).
 
 **Quebra ao andar** (`[destruction] walk*`, 0.6): força 3 para Yoju, Honju e numerados (quebra frágil, normal e
 resistente: vidro, madeira, terra, pedra, tijolo, concreto), 4 para Daikaiju (também deepslate e ferro); um pedido a

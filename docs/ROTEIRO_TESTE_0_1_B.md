@@ -878,3 +878,15 @@ Servidor dedicado + 2 clientes, mundo plano. Log com `[kaijuAi] debugLog = true`
 | 63.1 | Mina contra um Primigenius (Yoju) | Nunca usa o Anti-Giant (tiro branco grande); recua quando ele chega; log "cortada: alvo perto demais" quando ele chega no meio do preparo |
 | 63.2 | Mina contra um Primigenius Honju | Usa o Anti-Giant (até 4 por vida) e os outros tiros de longe |
 | 63.3 | Muro de bedrock entre a Mina e o Honju durante o preparo de um tiro | Log "cortada: sem linha de tiro"; nenhum tiro explode no muro |
+
+## 64. Cobertura adaptativa da Mina e do Reno (MOV-5D, decisões de 2026-10-18)
+
+Ligar `[kaijuAi] debugLog` para ver "cobertura em ..." no log do servidor.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 64.1 | Cinco muros de tijolo de 3 de altura; Mina com a vida cheia e uma Camponotus a 30 blocos | Ela vai atrás da formiga e atira de longe, sem cobertura (vida acima de 50%) |
+| 64.2 | O mesmo com a Mina em 160 de 420 (`/data merge entity ... {Health:160f}`) | Log "cobertura em ... com ponto de tiro"; ela fica atrás de um muro, sai para atirar, se abaixa enquanto a formiga prepara o ácido e volta a atirar; muro quebrado ou contornado: "cobertura perdida" e outra cobertura |
+| 64.3 | O mesmo com um Primigenius no lugar da formiga | Nenhuma cobertura (ele não atira): recua e circula atirando |
+| 64.4 | Mina contra o No. 9 algumas vezes | Ela pode vencer (decisão do Miguel); não fica parada escondida enquanto ele regenera |
+| 64.5 | Soldados comuns de rifle contra a formiga com os muros (como o §57) | Usam cobertura e saem para atirar entre um ácido e outro (não ficam escondidos o tempo todo) |
