@@ -129,11 +129,15 @@
     "safety_distance": 9.0,
     "heavy_vs_big": 3,
     "fast_vs_small": 1,
-    "protect_ally": 10.0
+    "protect_ally": 10.0,
+    "exploit_openings": 3
   },
   "heavy_guard": {
     "factor": 0.45,
     "front_arc_degrees": 140.0,
     "cooldown_ticks": 35
+  },
+  "rhythm": {
+    "press_regeneration": 2
   }
 }

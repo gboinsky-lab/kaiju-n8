@@ -236,6 +236,12 @@ MOV-5F (Narumi No. 1): `rhythm.read_windup` 3 e `[soldierAi] readWindupMargin` 2
 No. 9 5/5, × No. 10 pequeno 5/5, × No. 13 5/5, × No. 10 gigante 0/3 (gigante com 34–42%). [DECIDIR] Narumi
 `kaiju_damage` 1,3 maior que o do No. 1 (0,85).
 
+MOV-5G (Isao): **Isao sem o Numbers 2** `special_soldier/isao_base.json` (520/20/0,29 do v1.2; Release 40–85%,
+`kaiju_damage` 1,2, punhos `weapon/isao_fist.json` base 7, jab 0,6/0,6/0,7/0,9, cotovelada 1,4, direto pesado 2,2
+[SUPOSIÇÃO]); Isao e Isao sem o Numbers 2 com `exploit_openings` 3 e `press_regeneration` 2. Duelos: sem o Numbers 2 ×
+No. 10 pequeno 2/5 (meta 45%), × No. 9 5/5 por fuga (meta 30%), × Honju 3/3; com o Numbers 2 × No. 9 5/5, × No. 10
+pequeno 5/5, × No. 10 gigante 0/5 (meta 60%; [DECIDIR]: 4/5 na 0.8-A, dano até 1,5 não resolve).
+
 **Quebra ao andar** (`[destruction] walk*`, 0.6): força 3 para Yoju, Honju e numerados (quebra frágil, normal e
 resistente: vidro, madeira, terra, pedra, tijolo, concreto), 4 para Daikaiju (também deepslate e ferro); um pedido a
 cada 5 ticks no máximo. Força 0 desliga [SUPOSIÇÃO].

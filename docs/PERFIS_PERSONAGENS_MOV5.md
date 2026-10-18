@@ -8,7 +8,7 @@ habilidades da outra forma. Classificação de cada linha: **CÂNONE** (obra), *
 [DECIDIR] conferir).
 
 Uma etapa por personagem: **MOV-5A** Kafka ↔ Kaiju No. 8, **MOV-5B** Hoshina, **MOV-5C** Kikoru, **MOV-5D** Mina, **MOV-5E** Reno, **MOV-5F**
-Narumi, depois Isao.
+Narumi e **MOV-5G** Isao.
 
 ## "Sem traje" = sem o traje kaiju (Miguel, 2026-10-17)
 
@@ -21,7 +21,7 @@ Defesa. Cada personagem com arma numerada tem os dois perfis:
 | Kikoru | `kikoru` (machado) | `kikoru_no4` (asas, voo) |
 | Reno | `reno` (rifle) | `reno_no6` (gelo) |
 | Narumi | `narumi` (baioneta) | `narumi_no1` (previsão) |
-| Isao | **falta**: perfil sem o Numbers 2 (v1.2: 520/20/0,29) na etapa dele | `isao` (Numbers 2) |
+| Isao | `isao_base` (socos, MOV-5G; v1.2: 520/20/0,29) | `isao` (Numbers 2) |
 | Mina | `mina` (canhão; não tem arma numerada) | — |
 | Kafka | `kafka` (humano) | `kaiju_no8` (transformação, não traje) |
 
@@ -267,4 +267,34 @@ movimento do inimigo; fuzil com baioneta; o No. 11, de água, anula a previsão"
   de 24 s com o Narumi com 642 de 650; contra o No. 9, em 24 s: 6 técnicas escolhidas por acertar antes do impacto
   (contra-golpe previsto 3, estocadas, investida), uma segurada ("espera: o golpe do kaiju chega antes"), 4 vezes
   ficou para bater em vez de reposicionar; No. 9 em 565 de 1.450.
+
+## Isao Shinomiya — sem traje kaiju (`isao_base`) e Numbers 2 (`isao`) (MOV-5G)
+
+Fontes: `docs/FICHAS_0_8_A.md` (Isao: Diretor-Geral, 1,90 m, manoplas FS-1002 do Kaiju No. 2, "a força vem das pernas
+para os punhos"; Barrage Blast, Spiral Blast, Thunder Emperor quebra a guarda e expõe o núcleo).
+
+| Item | `isao_base` | `isao` | Fonte |
+|---|---|---|---|
+| Estado do traje | Traje padrão, Release 40% até 85% | Numbers 2, 50% até 96% | ADAPTAÇÃO DO MOD [SUPOSIÇÃO base] |
+| Atributos | Vida 520, armadura 20, velocidade 0,29, `kaiju_damage` 1,2 | Vida 700, armadura 20, velocidade 0,32, `kaiju_damage` 1,2 | v1.2 §12 / ADAPTAÇÃO DO MOD (1,2 do base [SUPOSIÇÃO]) |
+| Arma | Punhos (`kn8:isao_fist`, invisível) | Manoplas Numbers 2 (invisível; no modelo) | INFERÊNCIA (base) / CÂNONE |
+| Técnicas | Jab (4 socos), cotovelada com avanço, direto pesado (quebra blocos) | Barrage Blast, Spiral Blast, Force Blast, Thunder Emperor | INFERÊNCIA (base: sem as ondas) / CÂNONE + jogo |
+| Brecha (MOV-5G) | `exploit_openings` 3 | `exploit_openings` 3: o Thunder Emperor expõe o núcleo e o núcleo exposto conta como brecha (vale para todos) | CÂNONE (expõe o núcleo) / ADAPTAÇÃO DO MOD |
+| Pressão (MOV-5G) | `rhythm.press_regeneration` 2 | igual | INFERÊNCIA (lutou contra o No. 9, que regenera) |
+| Guarda | Metade do dano pesado, 120° | 45%, 140° | ADAPTAÇÃO DO MOD |
+| Absorção | Não é presa do No. 9 | Presa do No. 9 abaixo de 30% (vira o No. 9 com o Isao) | CÂNONE |
+| A PESQUISAR | O Isao lutando sem o Numbers 2 (não aparece na obra); modelo sem as manoplas [DECIDIR] | — | A PESQUISAR |
+
+### Testes (MOV-5G)
+
+- GameTests `IsaoProfileGameTests` (2; 220/220): o Isao sem o Numbers 2 nasce com 520 de vida, os punhos e nenhuma
+  técnica de onda; núcleo exposto conta como brecha.
+- Duelos (servidor dedicado, chão refeito a cada duelo): Isao sem o Numbers 2 com 1,2: × No. 10 pequeno 2/5 (meta
+  45%; com 1,0: 0/5), × No. 9 5/5 por fuga (meta 30%; a fuga a 15% conta como vitória: [DECIDIR] antigo da matriz),
+  × Primigenius Honju 3/3 em 11–15 s. Isao com o Numbers 2: × No. 9 5/5, × No. 10 pequeno 5/5, × No. 10 gigante 0/5
+  (meta 60%; era 4/5 na 0.8-A; sem o perfil novo também 0/5; com `kaiju_damage` 1,35 ou 1,5 só 1/5) [DECIDIR].
+  Hoshina × No. 10 pequeno 3/3 (núcleo exposto como brecha sem regressão).
+- Em jogo (servidor dedicado + 2 clientes, `docs/img/mov5g_isao.jpg`, log ligado): o Isao com o Numbers 2 derruba o
+  Primigenius Honju em menos de 24 s ("brecha do kaiju: pressiona" depois do Thunder Emperor) com 694 de 700; o Isao
+  sem o Numbers 2 derruba o Primigenius em menos de 24 s com 513 de 520.
 

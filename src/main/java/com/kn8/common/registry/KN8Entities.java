@@ -16,6 +16,7 @@ import com.kn8.common.numbered.KaijuNo9Entity;
 import com.kn8.common.soldier.SoldierEntity;
 import com.kn8.common.soldier.special.HoshinaEntity;
 import com.kn8.common.soldier.special.HoshinaNo10Entity;
+import com.kn8.common.soldier.special.IsaoBaseEntity;
 import com.kn8.common.soldier.special.IsaoEntity;
 import com.kn8.common.soldier.special.KikoruEntity;
 import com.kn8.common.soldier.special.KafkaEntity;
@@ -223,6 +224,13 @@ public final class KN8Entities {
                     .eyeHeight(1.62F)
                     .clientTrackingRange(KAIJU_TRACKING_RANGE_CHUNKS)
                     .build("isao"));
+    /** MOV-5G: Isao sem a arma numerada 2 (modelo do Isao; special_soldier/isao_base.json). */
+    public static final DeferredHolder<EntityType<?>, EntityType<IsaoBaseEntity>> ISAO_BASE = ENTITY_TYPES.register(
+            "isao_base", () -> EntityType.Builder.<IsaoBaseEntity>of(IsaoBaseEntity::new, MobCategory.CREATURE)
+                    .sized(0.7F, 1.85F)
+                    .eyeHeight(1.62F)
+                    .clientTrackingRange(KAIJU_TRACKING_RANGE_CHUNKS)
+                    .build("isao_base"));
 
     /** 0.6: projetil de habilidade de kaiju (raio de energia, teia, Finger Gun); so particulas no cliente. */
     public static final DeferredHolder<EntityType<?>, EntityType<KaijuProjectile>> KAIJU_PROJECTILE =
@@ -308,6 +316,9 @@ public final class KN8Entities {
         if (IsaoEntity.VARIANT_ISAO.equals(name)) {
             return Optional.of(ISAO.get());
         }
+        if (IsaoBaseEntity.VARIANT_BASE.equals(name)) {
+            return Optional.of(ISAO_BASE.get());
+        }
         return HoshinaEntity.VARIANT.equals(name) ? Optional.of(HOSHINA.get()) : Optional.empty();
     }
 
@@ -362,6 +373,7 @@ public final class KN8Entities {
         event.put(KAFKA.get(), SoldierEntity.createAttributes().build());
         event.put(KAIJU_NO8.get(), SoldierEntity.createAttributes().build());
         event.put(ISAO.get(), SoldierEntity.createAttributes().build());
+        event.put(ISAO_BASE.get(), SoldierEntity.createAttributes().build());
         event.put(TRAINING_DUMMY.get(), LivingEntity.createLivingAttributes().build());
         KAIJU.forEach(type -> event.put(type.get(), KaijuEntity.baseAttributes().build()));
     }

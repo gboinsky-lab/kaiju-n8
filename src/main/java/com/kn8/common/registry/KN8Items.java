@@ -53,6 +53,9 @@ public final class KN8Items {
     /** 0.8-A: manoplas Numbers 2 do Isao (item invisivel, as manoplas estao no modelo; weapon/numbers2_gauntlet). */
     public static final DeferredItem<WeaponItem> NUMBERS2_GAUNTLET =
             ITEMS.register("numbers2_gauntlet", () -> new WeaponItem(new Item.Properties()));
+    /** MOV-5G: punhos do Isao sem o Numbers 2 (item invisivel; weapon/isao_fist). */
+    public static final DeferredItem<WeaponItem> ISAO_FIST =
+            ITEMS.register("isao_fist", () -> new WeaponItem(new Item.Properties()));
 
     /**
      * 0.5.0-D2 (Miguel: sem municao infinita): pentes (guardam os tiros, carregados com a municao) e municao de
@@ -108,6 +111,10 @@ public final class KN8Items {
     /** 0.8-A: Isao Shinomiya (Numbers 2). */
     public static final DeferredItem<DeferredSpawnEggItem> ISAO_SPAWN_EGG = ITEMS.register("isao_spawn_egg",
             () -> new DeferredSpawnEggItem(KN8Entities.ISAO, 0x2A2A2A, 0xFFB347, new Item.Properties()));
+    /** MOV-5G: Isao Shinomiya sem o Numbers 2. */
+    public static final DeferredItem<DeferredSpawnEggItem> ISAO_BASE_SPAWN_EGG = ITEMS.register(
+            "isao_base_spawn_egg", () -> new DeferredSpawnEggItem(KN8Entities.ISAO_BASE, 0x2A2A2A, 0xC8C8C8,
+                    new Item.Properties()));
 
     /** 0.2 (Etapa 2): boneco de treino. */
     public static final DeferredItem<TrainingDummyItem> TRAINING_DUMMY = ITEMS.register("training_dummy",
@@ -164,6 +171,7 @@ public final class KN8Items {
                         output.accept(KAFKA_SPAWN_EGG.get());
                         output.accept(KAIJU_NO8_SPAWN_EGG.get());
                         output.accept(ISAO_SPAWN_EGG.get());
+                        output.accept(ISAO_BASE_SPAWN_EGG.get());
                         output.accept(TRAINING_DUMMY.get());
                         output.accept(DEFENSE_WORKBENCH.get());
                         output.accept(TRAINING_CONSOLE.get());

@@ -1,0 +1,109 @@
+{
+  "health": 520,
+  "armor": 20,
+  "speed": 0.29,
+  "follow_range": 56,
+  "knockback_resistance": 0.8,
+  "release": 40,
+  "max_release": 85,
+  "kaiju_damage": 1.2,
+  "aura": "kn8:defense_force",
+  "weapon": "kn8:isao_fist",
+  "height": 1.9,
+  "techniques": {
+    "jab_combo": {
+      "type": "combo",
+      "hits": [
+        0.6,
+        0.6,
+        0.7,
+        0.9
+      ],
+      "windup_ticks": 4,
+      "duration_ticks": 22,
+      "cooldown_ticks": 40,
+      "max_range": 3.0,
+      "priority": 1,
+      "hit_interval": 3
+    },
+    "elbow_strike": {
+      "type": "combo",
+      "hits": [
+        1.4
+      ],
+      "windup_ticks": 6,
+      "duration_ticks": 16,
+      "cooldown_ticks": 70,
+      "max_range": 3.0,
+      "priority": 2,
+      "dash_in": 0.8,
+      "final_knockback": 1.0
+    },
+    "heavy_straight": {
+      "type": "combo",
+      "hits": [
+        2.2
+      ],
+      "windup_ticks": 10,
+      "duration_ticks": 22,
+      "cooldown_ticks": 140,
+      "max_range": 3.4,
+      "priority": 3,
+      "dash_in": 1.0,
+      "final_knockback": 1.5,
+      "honju_priority": 2
+    }
+  },
+  "dash": {
+    "cooldown_ticks": 130,
+    "speed": 0.9,
+    "invulnerable_ticks": 6,
+    "react_ticks": 5,
+    "gap_close_distance": 8.0
+  },
+  "counter": {
+    "multiplier": 2.0,
+    "cooldown_ticks": 240,
+    "dash_speed": 0.8,
+    "invulnerable_ticks": 10,
+    "strike_delay_ticks": 8,
+    "react_ticks": 6
+  },
+  "parry": {
+    "chance": 0.15,
+    "damage_factor": 0.4,
+    "cooldown_ticks": 25,
+    "counter_window_ticks": 10
+  },
+  "escalation": {
+    "points_per_second": 2.0,
+    "max_points": 35,
+    "decay_per_second": 2.0,
+    "cooldown_reduction_at_max": 0.35
+  },
+  "heavy": {
+    "techniques": [
+      "heavy_straight"
+    ],
+    "power": 3,
+    "radius": 2.0
+  },
+  "tactics": {
+    "aggression": 0.8,
+    "preferred_distance": 3.0,
+    "damage_tolerance": 0.15,
+    "safety_distance": 9.0,
+    "heavy_vs_big": 3,
+    "fast_vs_small": 1,
+    "protect_ally": 10.0,
+    "exploit_openings": 3
+  },
+  "heavy_guard": {
+    "factor": 0.5,
+    "front_arc_degrees": 120.0,
+    "cooldown_ticks": 40
+  },
+  "rhythm": {
+    "press_regeneration": 2
+  }
+}

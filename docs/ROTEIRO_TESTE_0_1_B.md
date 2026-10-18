@@ -912,3 +912,14 @@ Ligar `[kaijuAi] debugLog`.
 | 66.2 | O mesmo, com o golpe do No. 9 já perto do impacto | O Narumi não começa técnica lenta (log "espera: o golpe do kaiju chega antes") e esquiva/contra-ataca |
 | 66.3 | Narumi (sem o traje kaiju) contra o No. 9 | Luta como antes, sem a previsão (nenhum log "previsao") |
 | 66.4 | Narumi No. 1 contra o Primigenius Honju | Derruba o Honju com pouco dano levado |
+
+## 67. Perfil do Isao (MOV-5G)
+
+Ligar `[kaijuAi] debugLog`.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 67.1 | Ovo "Isao Shinomiya" (sem o Numbers 2) no menu criativo, ou `/summon kn8:isao_base` | Isao com 520 de vida e aura azul padrão; luta só com socos, cotoveladas e o direto pesado (nenhuma onda de choque) |
+| 67.2 | Isao com o Numbers 2 contra o Primigenius Honju | Depois do Thunder Emperor (núcleo exposto) o log mostra "brecha do kaiju: pressiona" e ele emenda o Barrage Blast |
+| 67.3 | Hoshina contra um Primigenius com o núcleo exposto pelo gelo do Reno No. 6 | "brecha do kaiju: pressiona" no Hoshina |
+| 67.4 | No. 9 contra o Isao sem o Numbers 2 até ele cair abaixo de 30% | O No. 9 não o absorve (só o Isao com o Numbers 2 vira o No. 9 com o Isao) |

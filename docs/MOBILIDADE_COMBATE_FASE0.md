@@ -270,3 +270,11 @@ tempo parado, tiros bloqueados, dano duplicado = 0).
   prioridade; contra golpe mirado nele, a que acertaria depois não começa; sem reposicionar durante o preparo. Vale
   para qualquer perfil que tiver o bloco (hoje só o No. 1).
 
+## 17. MOV-5G feita (2026-10-18): perfil do Isao
+
+- Ficha do Isao e do Isao sem o Numbers 2 em `docs/PERFIS_PERSONAGENS_MOV5.md`; o perfil sem o traje kaiju que
+  faltava (`isao_base`, 520/20/0,29) existe agora, com entidade, ovo e variante próprios.
+- Núcleo exposto conta como brecha (`KaijuEntity.isOpen`): todo especial que explora brecha pressiona depois do
+  Thunder Emperor, do gelo do Reno ou do Juni-hitoe.
+- Com isso a MOV-5 fecha os perfis de todos os personagens (Kafka/No. 8, Hoshina, Kikoru, Mina, Reno, Narumi, Isao).
+

@@ -69,7 +69,7 @@ FAMILY = {"reno": "rifle", "mina": "cannon", "narumi": "spear", "reno_no6": "rif
 # rugido e solta a onda em leque; Spiral Blast e um soco para a frente que dispara a onda.
 FIST_WAVES = {"roar": "roar", "force_blast": "roar", "ground_smash": "ground_smash"}
 # Perfis que usam o modelo (e o arquivo de animacoes) de outra especie.
-SHARED = {"narumi": ["narumi_no1"]}
+SHARED = {"narumi": ["narumi_no1"], "isao": ["isao_base"]}
 # 0.7-D: tecnicas da Kikoru Numbers 4 -> animacao da Kikoru com os mesmos tempos (special_soldier/kikoru_no4.json).
 KIKORU_NO4_FROM = {"high_speed_axe": "axe_slash", "dive_strike": "dash_strike", "vertical_assault": "heavy_swing",
                    "air_combo": "axe_slash", "aerial_dash": "dash_strike"}

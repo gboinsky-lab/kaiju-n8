@@ -403,7 +403,8 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
 
     /** MOV-5B: guarda aberta (janela depois do golpe pesado ou atordoado): brecha para quem luta de perto. */
     public boolean isOpen() {
-        return staggerTicks > 0 || level().getGameTime() < openUntil || isParalyzed();
+        // MOV-5G (Isao: o Thunder Emperor quebra a guarda e expoe o nucleo): nucleo exposto tambem e brecha.
+        return staggerTicks > 0 || level().getGameTime() < openUntil || isParalyzed() || isCoreExposed();
     }
 
     /**
