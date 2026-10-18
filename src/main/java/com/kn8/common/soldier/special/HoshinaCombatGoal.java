@@ -240,6 +240,12 @@ final class HoshinaCombatGoal extends Goal {
             repositionUntil = 0;
             AiTuning.logMove(hoshina, "alvo regenerando: pressiona");
         }
+        if (now < repositionUntil && hoshina.profile().map(def -> def.rhythm().readWindup() > 0).orElse(false)
+                && target instanceof KaijuEntity reading && reading.ticksToImpact().isPresent()) {
+            // MOV-5F: o Narumi com o Numbers 1 ve o golpe vindo: fica para bater antes do impacto (ou esquivar).
+            repositionUntil = 0;
+            AiTuning.logMove(hoshina, "previsao: golpe do kaiju no preparo, fica para bater antes");
+        }
         if (now < repositionUntil) {
             double distance = Math.max(tactics.preferredDistance(), hoshina.attackReach() * 0.8);
             if (--repath <= 0) {

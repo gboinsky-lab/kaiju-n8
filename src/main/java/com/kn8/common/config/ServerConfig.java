@@ -249,6 +249,7 @@ public final class ServerConfig {
     public static final ModConfigSpec.DoubleValue SOLDIER_COVER_MIN_THREAT_DISTANCE;
     public static final ModConfigSpec.IntValue SOLDIER_COVER_HIDE_TICKS;
     public static final ModConfigSpec.BooleanValue SOLDIER_SPECIAL_COVER;
+    public static final ModConfigSpec.IntValue SOLDIER_READ_WINDUP_MARGIN;
     public static final ModConfigSpec.DoubleValue SOLDIER_COVER_DANGER_RADIUS;
     public static final ModConfigSpec.BooleanValue SOLDIER_AVOID_DANGER;
     public static final ModConfigSpec.DoubleValue SOLDIER_DANGER_MARGIN;
@@ -801,6 +802,9 @@ public final class ServerConfig {
         SOLDIER_SPECIAL_COVER = BUILDER.comment("MOV-5D: special shooters (Mina, Reno) adapt to the fight: cover"
                 + " against kaiju with ranged attacks and to reload, otherwise they keep fighting from range (retreat"
                 + " and orbit).").translation(PREFIX + "specialCover").define("specialCover", true);
+        SOLDIER_READ_WINDUP_MARGIN = intValue("readWindupMargin", "MOV-5F: a special soldier that reads the kaiju's"
+                + " windup (Narumi with Numbers 1) only starts a technique against it if the first hit lands at least"
+                + " this many ticks before the kaiju's impact.", 2, 0, 40);
         SOLDIER_COVER_DANGER_RADIUS = doubleValue("coverDangerRadius", "MOV-3: cover within this distance of a kaiju"
                 + " preparing a heavy attack (edge) is left.", 4.0, 0.0, 32.0);
         SOLDIER_AVOID_DANGER = BUILDER.comment("MOV-4: soldiers walk out of the area of a heavy kaiju attack being"

@@ -24,6 +24,16 @@ class TechniqueMathTest {
     }
 
     @Test
+    void readsTheWindupOnlyWhenTheHitComesFirst() {
+        // Contra-golpe no tick 3 contra um pisao que chega em 10: sai antes (com 2 de folga).
+        assertTrue(TechniqueMath.landsBefore(3, 1.0, 10, 2));
+        // Estocada no tick 9: o pisao chega antes.
+        assertFalse(TechniqueMath.landsBefore(9, 1.0, 10, 2));
+        // Com o Release a 1,5x o golpe do tick 9 sai no 6.
+        assertTrue(TechniqueMath.landsBefore(9, 1.5, 10, 2));
+    }
+
+    @Test
     void bestTotalPicksTheHardestHitter() {
         assertEquals(3.6, TechniqueMath.bestTotal(new double[] {2.5, 3.6, 1.3}), 1.0E-9);
         assertEquals(-1.0, TechniqueMath.bestTotal(new double[0]), 1.0E-9);

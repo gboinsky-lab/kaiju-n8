@@ -7,8 +7,8 @@ habilidades da outra forma. Classificação de cada linha: **CÂNONE** (obra), *
 `docs/FICHAS_IA_PERSONAGENS.md` e `docs/MOBILIDADE_COMBATE_FASE0.md` §1 (o site oficial não abre nesta máquina:
 [DECIDIR] conferir).
 
-Uma etapa por personagem: **MOV-5A** Kafka ↔ Kaiju No. 8, **MOV-5B** Hoshina, **MOV-5C** Kikoru, **MOV-5D** Mina, **MOV-5E** Reno, depois
-Narumi e Isao.
+Uma etapa por personagem: **MOV-5A** Kafka ↔ Kaiju No. 8, **MOV-5B** Hoshina, **MOV-5C** Kikoru, **MOV-5D** Mina, **MOV-5E** Reno, **MOV-5F**
+Narumi, depois Isao.
 
 ## "Sem traje" = sem o traje kaiju (Miguel, 2026-10-17)
 
@@ -237,3 +237,34 @@ no ep. 19, tiro no núcleo com o Iharu abrindo caminho no ep. 20).
 - Em jogo (servidor dedicado + 2 clientes, `docs/img/mov5e_reno.jpg`, log ligado): Reno No. 6 + Hoshina derrubam o
   Primigenius Honju em menos de 24 s ("brecha do kaiju: pressiona" no Hoshina); Reno No. 6 sozinho leva o No. 9 de
   1.450 a 778 em 24 s, saindo 16 vezes da área dos golpes, com 546 de 650.
+
+## Gen Narumi — sem traje kaiju (`narumi`) e Numbers 1 (`narumi_no1`) (MOV-5F)
+
+Fontes: `docs/FICHAS_IA_PERSONAGENS.md` (Narumi) e `docs/MOBILIDADE_COMBATE_FASE0.md` §1 ("retinas preveem o
+movimento do inimigo; fuzil com baioneta; o No. 11, de água, anula a previsão").
+
+| Item | `narumi` | `narumi_no1` | Fonte |
+|---|---|---|---|
+| Estado do traje | Traje padrão, Release 40% até 85% | Numbers 1, 50% até 100% | CÂNONE / ADAPTAÇÃO DO MOD (números) |
+| Atributos | Vida 480, armadura 20, velocidade 0,32, `kaiju_damage` 1,3 | Vida 650, armadura 20, velocidade 0,36, `kaiju_damage` 0,85 | ADAPTAÇÃO DO MOD (1,3: Miguel 2026-10-16, vence o No. 13) **[DECIDIR] o Narumi sem o traje tira mais por golpe que com o No. 1** |
+| Arma | Baioneta (estocadas, investida, tiro, varrida) | igual + golpe no ponto fraco (expõe o núcleo) e contra-golpe previsto | CÂNONE (baioneta que corta, estoca e atira) |
+| Movimentação | Pressiona e reposiciona (`aggression` 0,75, passo lateral, 4 blocos), recua com 15% | igual (`aggression` 0,8) | INFERÊNCIA |
+| **Previsão (MOV-5F)** | — | `rhythm.read_windup` 3: com o kaiju preparando um golpe, a técnica que acerta antes do impacto ganha o bônus; contra golpe mirado nele, a que só acertaria depois não começa (esquiva/contra-ataque); não reposiciona durante o preparo | CÂNONE (vê o movimento antes) / ADAPTAÇÃO DO MOD (números) [SUPOSIÇÃO] |
+| Reações | Esquiva, contra-ataque, aparar 15% | aparar 35%, contra-ataque com reação mais longa (10 ticks) | ADAPTAÇÃO DO MOD (0.7-D) |
+| Guarda | Contra golpe pesado: metade do dano, de frente | igual | ADAPTAÇÃO DO MOD (IA-3) |
+| Alvo | Prioriza alvo grande (6) | 8 | INFERÊNCIA |
+| A PESQUISAR | — | No. 11 (água) anulando a previsão: o kaiju não existe no mod | A PESQUISAR |
+
+### Testes (MOV-5F)
+
+- JUnit `TechniqueMathTest.readsTheWindupOnlyWhenTheHitComesFirst`. GameTests `NarumiProfileGameTests` (2; 218/218):
+  com o Primigenius no preparo do pisão contra ele, as 20 escolhas do No. 1 acertam antes do impacto; com o impacto a
+  3 ticks, nenhuma técnica começa.
+- Duelos (servidor dedicado, chão refeito a cada duelo): Narumi No. 1 × No. 9 5/5 (por fuga; Narumi com 63–80%), ×
+  No. 10 pequeno 5/5, × No. 13 5/5, × No. 10 gigante 0/3 (gigante com 34–42%; com `read_windup` 0: 41–66% e o Narumi
+  morre antes).
+- Em jogo (servidor dedicado + 2 clientes, `docs/img/mov5f_narumi.jpg`, log ligado): o Primigenius Honju cai em menos
+  de 24 s com o Narumi com 642 de 650; contra o No. 9, em 24 s: 6 técnicas escolhidas por acertar antes do impacto
+  (contra-golpe previsto 3, estocadas, investida), uma segurada ("espera: o golpe do kaiju chega antes"), 4 vezes
+  ficou para bater em vez de reposicionar; No. 9 em 565 de 1.450.
+

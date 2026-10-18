@@ -901,3 +901,14 @@ Ligar `[kaijuAi] debugLog`.
 | 65.2 | Reno No. 6 sozinho contra o No. 9 | Sai da área dos golpes pesados ("saindo da area do golpe pesado") sem parar de atirar; com o No. 9 abaixo da metade (regenerando) não recua para reposicionar; vence boa parte das vezes (meta 70%) |
 | 65.3 | Reno (sem traje kaiju) contra o No. 9 | Perde quase sempre (meta 12%) |
 | 65.4 | `/effect give @e[type=kn8:primigenius,limit=1] slowness 10 6` com o Hoshina lutando contra ele | Log "brecha do kaiju: pressiona" no Hoshina |
+
+## 66. Perfil do Narumi (MOV-5F)
+
+Ligar `[kaijuAi] debugLog`.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 66.1 | Narumi No. 1 contra o No. 9 | Quando o No. 9 prepara um golpe, o Narumi ataca antes do impacto (log "previsao: <tecnica> antes do impacto do kaiju"), quase sempre o contra-golpe previsto ou as estocadas |
+| 66.2 | O mesmo, com o golpe do No. 9 já perto do impacto | O Narumi não começa técnica lenta (log "espera: o golpe do kaiju chega antes") e esquiva/contra-ataca |
+| 66.3 | Narumi (sem o traje kaiju) contra o No. 9 | Luta como antes, sem a previsão (nenhum log "previsao") |
+| 66.4 | Narumi No. 1 contra o Primigenius Honju | Derruba o Honju com pouco dano levado |

@@ -145,5 +145,8 @@
     "factor": 0.5,
     "front_arc_degrees": 120.0,
     "cooldown_ticks": 40
+  },
+  "rhythm": {
+    "read_windup": 3
   }
 }

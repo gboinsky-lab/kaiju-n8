@@ -35,4 +35,13 @@ public final class TechniqueMath {
         }
         return best;
     }
+
+    /**
+     * MOV-5F (Narumi com o Numbers 1: le o movimento antes de acontecer): o primeiro golpe da tecnica, no tick
+     * {@code hitTick} do JSON dividido pela velocidade do Release ({@code speed}), sai antes do impacto do golpe que o
+     * kaiju esta preparando ({@code impactTicks} a partir de agora) com pelo menos {@code margin} ticks de sobra.
+     */
+    public static boolean landsBefore(int hitTick, double speed, int impactTicks, int margin) {
+        return Math.ceil(hitTick / Math.max(0.1, speed)) + margin <= impactTicks;
+    }
 }

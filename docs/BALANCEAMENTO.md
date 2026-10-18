@@ -232,6 +232,10 @@ MOV-5E (Reno): `[kaijuAi] paralyzedSlowLevel` 6 (Lentidão 6+ = brecha para os a
 [SUPOSIÇÃO]: × No. 9 1/6 → 5/8 (meta 70%; 0,85 dava 5/6). Reno × No. 9 0/3 (meta 12%), Hoshina + Reno × No. 10
 gigante 1/3.
 
+MOV-5F (Narumi No. 1): `rhythm.read_windup` 3 e `[soldierAi] readWindupMargin` 2 ticks [SUPOSIÇÃO]. Narumi No. 1 ×
+No. 9 5/5, × No. 10 pequeno 5/5, × No. 13 5/5, × No. 10 gigante 0/3 (gigante com 34–42%). [DECIDIR] Narumi
+`kaiju_damage` 1,3 maior que o do No. 1 (0,85).
+
 **Quebra ao andar** (`[destruction] walk*`, 0.6): força 3 para Yoju, Honju e numerados (quebra frágil, normal e
 resistente: vidro, madeira, terra, pedra, tijolo, concreto), 4 para Daikaiju (também deepslate e ferro); um pedido a
 cada 5 ticks no máximo. Força 0 desliga [SUPOSIÇÃO].

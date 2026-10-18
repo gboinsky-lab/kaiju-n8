@@ -262,3 +262,11 @@ tempo parado, tiros bloqueados, dano duplicado = 0).
   todos os especiais que exploram brecha e para a cobertura adaptativa (alvo paralisado: pressionar).
 - Atirador especial atira enquanto sai da área de um golpe pesado (MOV-4 deixava de atirar).
 - Reno No. 6 `kaiju_damage` 0,80 [SUPOSIÇÃO]; diagnóstico da queda de 9/10 na ficha.
+
+## 16. MOV-5F feita (2026-10-18): perfil do Narumi
+
+- Ficha do Narumi e do Narumi No. 1 em `docs/PERFIS_PERSONAGENS_MOV5.md`.
+- Previsão do Numbers 1 (`rhythm.read_windup`): com o kaiju no preparo, técnica que acerta antes do impacto tem
+  prioridade; contra golpe mirado nele, a que acertaria depois não começa; sem reposicionar durante o preparo. Vale
+  para qualquer perfil que tiver o bloco (hoje só o No. 1).
+

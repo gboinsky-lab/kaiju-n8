@@ -120,12 +120,16 @@ public record SpecialSoldierDef(float health, float armor, float speed, float fo
      * soma prioridade as tecnicas do tipo oposto ao da anterior (rapida depois de pesada e pesada depois de rapida,
      * pela lista do bloco {@code heavy}); {@code press_regeneration} soma prioridade a tecnica que acerta mais cedo
      * quando o alvo esta regenerando (No. 9, No. 10: a cura para logo depois de cada golpe) e o goal nao reposiciona.
+     * MOV-5F (Narumi com o Numbers 1, que preve o movimento): {@code read_windup} soma prioridade as tecnicas que
+     * acertam antes do impacto do golpe que o kaiju esta preparando; contra golpe mirado nele, a tecnica que so
+     * acertaria depois nao comeca (fica a esquiva/contra-ataque) e o goal nao reposiciona durante o preparo.
      */
-    public record Rhythm(int alternateBonus, int pressRegeneration) {
-        public static final Rhythm NONE = new Rhythm(0, 0);
+    public record Rhythm(int alternateBonus, int pressRegeneration, int readWindup) {
+        public static final Rhythm NONE = new Rhythm(0, 0, 0);
         public static final Codec<Rhythm> CODEC = RecordCodecBuilder.create(i -> i.group(
                 Codec.intRange(0, 100).optionalFieldOf("alternate_bonus", 0).forGetter(Rhythm::alternateBonus),
-                Codec.intRange(0, 100).optionalFieldOf("press_regeneration", 0).forGetter(Rhythm::pressRegeneration)
+                Codec.intRange(0, 100).optionalFieldOf("press_regeneration", 0).forGetter(Rhythm::pressRegeneration),
+                Codec.intRange(0, 100).optionalFieldOf("read_windup", 0).forGetter(Rhythm::readWindup)
         ).apply(i, Rhythm::new));
     }
 

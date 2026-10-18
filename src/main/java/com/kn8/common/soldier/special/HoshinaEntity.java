@@ -373,6 +373,13 @@ public class HoshinaEntity extends SoldierEntity {
         Vec3 away = new Vec3(target.getX() - getX(), 0.0, target.getZ() - getZ());
         Vec3 moved = new Vec3(target.getX() - target.xo, 0.0, target.getZ() - target.zo);
         double recede = away.lengthSqr() < 1.0E-6 ? 0.0 : moved.dot(away.normalize());
+        // MOV-5F (Numbers 1 do Narumi: preve o movimento): ticks ate o impacto do golpe que o kaiju prepara (-1 sem
+        // golpe ou sem a leitura no perfil) e se o golpe e contra este soldado.
+        SpecialSoldierDef.Rhythm rhythm = def.get().rhythm();
+        int impact = rhythm.readWindup() > 0 && target instanceof KaijuEntity reading
+                ? reading.ticksToImpact().orElse(-1) : -1;
+        boolean aimedAtMe = impact >= 0 && ((KaijuEntity) target).abilityTarget().orElse(null) == this;
+        int margin = ServerConfig.SOLDIER_READ_WINDUP_MARGIN.get();
         List<String> valid = new ArrayList<>();
         for (Map.Entry<String, SpecialSoldierDef.Technique> entry : def.get().techniques().entrySet()) {
             SpecialSoldierDef.Technique candidate = entry.getValue();
@@ -396,6 +403,13 @@ public class HoshinaEntity extends SoldierEntity {
                 }
                 continue;
             }
+            if (aimedAtMe && !TechniqueMath.landsBefore(candidate.hitTick(0), actionSpeed(), impact, margin)) {
+                // MOV-5F: o golpe do kaiju chega antes: nao entra nele (fica a esquiva/contra-ataque).
+                if (now % LOG_EVERY_TICKS == 0) {
+                    AiTuning.logMove(this, "tecnica " + entry.getKey() + " espera: o golpe do kaiju chega antes");
+                }
+                continue;
+            }
             valid.add(entry.getKey());
         }
         // MOV-5B: guarda aberta do kaiju (janela depois do golpe pesado, atordoado): a tecnica que mais tira ganha
@@ -404,7 +418,6 @@ public class HoshinaEntity extends SoldierEntity {
         double[] totals = valid.stream().mapToDouble(id -> totalHits(def.get().techniques().get(id))).toArray();
         double bestTotal = TechniqueMath.bestTotal(totals);
         // MOV-5C: alvo regenerando: a tecnica que acerta mais cedo ganha o bonus press_regeneration.
-        SpecialSoldierDef.Rhythm rhythm = def.get().rhythm();
         int press = rhythm.pressRegeneration() > 0 && No9Service.regenerating(target) ? rhythm.pressRegeneration() : 0;
         int earliest = valid.stream().mapToInt(id -> def.get().techniques().get(id).hitTick(0)).min()
                 .orElse(Integer.MAX_VALUE);
@@ -416,6 +429,8 @@ public class HoshinaEntity extends SoldierEntity {
             int priority = candidate.priority() + (big ? candidate.honjuPriority() : 0)
                     + tacticsBonus(def.get(), id, big) + (totals[i] >= bestTotal ? opening : 0)
                     + (candidate.hitTick(0) <= earliest ? press : 0)
+                    + (impact >= 0 && TechniqueMath.landsBefore(candidate.hitTick(0), actionSpeed(), impact, margin)
+                            ? rhythm.readWindup() : 0)
                     + (lastHeavy != null && isHeavy(def.get(), id) != lastHeavy ? rhythm.alternateBonus() : 0);
             if (priority > best) {
                 best = priority;
@@ -426,7 +441,12 @@ public class HoshinaEntity extends SoldierEntity {
             }
         }
         tied.sort(String::compareTo);
-        return tied.isEmpty() ? Optional.empty() : Optional.of(tied.get(getRandom().nextInt(tied.size())));
+        Optional<String> chosen = tied.isEmpty() ? Optional.empty()
+                : Optional.of(tied.get(getRandom().nextInt(tied.size())));
+        if (impact >= 0 && chosen.isPresent()) {
+            AiTuning.logMove(this, "previsao: " + chosen.get() + " antes do impacto do kaiju (" + impact + " ticks)");
+        }
+        return chosen;
     }
 
     /** MOV-5C: a tecnica esta na lista {@code heavy} do perfil (golpe comprometido). */
