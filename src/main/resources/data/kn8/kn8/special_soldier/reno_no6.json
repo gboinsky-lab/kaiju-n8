@@ -6,7 +6,7 @@
   "knockback_resistance": 0.5,
   "release": 50,
   "max_release": 100,
-  "kaiju_damage": 0.75,
+  "kaiju_damage": 0.8,
   "aura": "kn8:reno_no6_ice",
   "weapon": "kn8:rifle",
   "techniques": {
@@ -173,6 +173,10 @@
     "safety_distance": 18.0,
     "dodge_chance": 0.85,
     "melee_counter": false,
-    "protect_ally": 10.0
+    "protect_ally": 10.0,
+    "exploit_openings": 2
+  },
+  "rhythm": {
+    "press_regeneration": 2
   }
 }

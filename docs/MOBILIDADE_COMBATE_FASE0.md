@@ -254,3 +254,11 @@ tempo parado, tiros bloqueados, dano duplicado = 0).
 - Correção que vale também para o soldado comum: esconder-se do kaiju que mira dura até o impacto +
   `coverHideTicks` (antes renovava na recuperação e, contra ataques em sequência, o atirador nunca saía).
 - Medidas: Mina × No. 9 4/10 e × No. 10 pequeno 4/10 (cobertura desligada: 6/10 e 6/10; diferença dentro do ruído de 10 duelos, com o chão refeito a cada duelo); Reno No. 6 × No. 9 0/3 com e sem cobertura (era 6/6 no v1.2: queda anterior a esta mudança, fica para a etapa do Reno); cena da formiga com muros e cena do Primigenius em `docs/img/mov5d_cobertura_adaptativa.jpg`.
+
+## 15. MOV-5E feita (2026-10-18): perfil do Reno
+
+- Ficha do Reno e do Reno No. 6 em `docs/PERFIS_PERSONAGENS_MOV5.md`.
+- Kaiju paralisado (Lentidão no nível `[kaijuAi] paralyzedSlowLevel` ou acima) conta como brecha (`isOpen`): vale para
+  todos os especiais que exploram brecha e para a cobertura adaptativa (alvo paralisado: pressionar).
+- Atirador especial atira enquanto sai da área de um golpe pesado (MOV-4 deixava de atirar).
+- Reno No. 6 `kaiju_damage` 0,80 [SUPOSIÇÃO]; diagnóstico da queda de 9/10 na ficha.

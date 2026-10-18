@@ -155,6 +155,10 @@
     "safety_distance": 18.0,
     "dodge_chance": 0.8,
     "melee_counter": false,
-    "protect_ally": 10.0
+    "protect_ally": 10.0,
+    "exploit_openings": 2
+  },
+  "rhythm": {
+    "press_regeneration": 2
   }
 }

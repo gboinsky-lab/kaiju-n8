@@ -890,3 +890,14 @@ Ligar `[kaijuAi] debugLog` para ver "cobertura em ..." no log do servidor.
 | 64.3 | O mesmo com um Primigenius no lugar da formiga | Nenhuma cobertura (ele não atira): recua e circula atirando |
 | 64.4 | Mina contra o No. 9 algumas vezes | Ela pode vencer (decisão do Miguel); não fica parada escondida enquanto ele regenera |
 | 64.5 | Soldados comuns de rifle contra a formiga com os muros (como o §57) | Usam cobertura e saem para atirar entre um ácido e outro (não ficam escondidos o tempo todo) |
+
+## 65. Perfil do Reno (MOV-5E)
+
+Ligar `[kaijuAi] debugLog`.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 65.1 | Reno No. 6 + Hoshina contra um Primigenius Honju | O Reno congela (explosão congelante: o Honju quase para); o Hoshina mostra "brecha do kaiju: pressiona" e emenda técnicas no Honju congelado |
+| 65.2 | Reno No. 6 sozinho contra o No. 9 | Sai da área dos golpes pesados ("saindo da area do golpe pesado") sem parar de atirar; com o No. 9 abaixo da metade (regenerando) não recua para reposicionar; vence boa parte das vezes (meta 70%) |
+| 65.3 | Reno (sem traje kaiju) contra o No. 9 | Perde quase sempre (meta 12%) |
+| 65.4 | `/effect give @e[type=kn8:primigenius,limit=1] slowness 10 6` com o Hoshina lutando contra ele | Log "brecha do kaiju: pressiona" no Hoshina |

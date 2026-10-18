@@ -7,7 +7,7 @@ habilidades da outra forma. Classificação de cada linha: **CÂNONE** (obra), *
 `docs/FICHAS_IA_PERSONAGENS.md` e `docs/MOBILIDADE_COMBATE_FASE0.md` §1 (o site oficial não abre nesta máquina:
 [DECIDIR] conferir).
 
-Uma etapa por personagem: **MOV-5A** Kafka ↔ Kaiju No. 8, **MOV-5B** Hoshina, **MOV-5C** Kikoru, **MOV-5D** Mina, depois Reno,
+Uma etapa por personagem: **MOV-5A** Kafka ↔ Kaiju No. 8, **MOV-5B** Hoshina, **MOV-5C** Kikoru, **MOV-5D** Mina, **MOV-5E** Reno, depois
 Narumi e Isao.
 
 ## "Sem traje" = sem o traje kaiju (Miguel, 2026-10-17)
@@ -196,3 +196,44 @@ disparos, reposicionar-se quando o alvo se aproxima e não entrar em corpo a cor
 - Em jogo (servidor dedicado + 2 clientes, `docs/img/mov5d_cobertura_adaptativa.jpg`): com 38% da vida contra a
   formiga, cobertura atrás do muro, sai para atirar, troca quando a formiga quebra o muro e a mata sem perder vida;
   contra o Primigenius nenhuma cobertura (luta de longe e o derruba).
+
+## Reno Ichikawa — sem traje kaiju (`reno`) e Numbers 6 (`reno_no6`) (MOV-5E)
+
+Plano v3 §7 e papel do Miguel (2026-10-15): "forte principalmente com aliados: congela, paralisa e expõe pontos
+fracos". Fontes: `docs/FICHAS_IA_PERSONAGENS.md` (Reno) e `docs/MOBILIDADE_COMBATE_FASE0.md` §1 (gelo, barreira de gelo
+no ep. 19, tiro no núcleo com o Iharu abrindo caminho no ep. 20).
+
+| Item | `reno` | `reno_no6` | Fonte |
+|---|---|---|---|
+| Estado do traje | Traje padrão, Release 30% até 70% | Numbers 6 (gelo), 50% até 100% | CÂNONE / ADAPTAÇÃO DO MOD (números) |
+| Atributos | Vida 360, armadura 17, velocidade 0,31, `kaiju_damage` 0,5 | Vida 650, armadura 20, velocidade 0,36, `kaiju_damage` **0,80** (era 0,75) | ADAPTAÇÃO DO MOD (v1.2 §12; 0,80 [SUPOSIÇÃO] MOV-5E) |
+| Arma | Rifle; sem munição, faca | Rifle + gelo | CÂNONE |
+| Técnicas | Tiro de precisão, rajada, munição congelante (Lentidão III, expõe), supressão, coronhada | Lança de gelo, explosão congelante (paralisa: Lentidão VII, expõe 5 s, vulnerável ×1,4), campo de gelo, congelamento múltiplo, canhões auxiliares | CÂNONE (gelo) / ADAPTAÇÃO DO MOD (números) |
+| Movimentação | Atirador: mantém 16, recua abaixo de 9, circula; cobertura adaptativa (MOV-5D) | igual | INFERÊNCIA |
+| Apoio (MOV-5E) | Kaiju paralisado (Lentidão 6+) conta como **brecha** (`isOpen`): Hoshina/Kikoru pressionam com a técnica que mais tira; o atirador não se esconde de alvo paralisado | igual (a explosão congelante paralisa) | CÂNONE (congela para os aliados) / ADAPTAÇÃO DO MOD |
+| Pressão (MOV-5E) | `exploit_openings` 2, `rhythm.press_regeneration` 2 (alvo regenerando: técnica que acerta mais cedo e sem reposicionar) | igual | INFERÊNCIA |
+| Golpe pesado do kaiju (MOV-5E) | Sai da área **atirando** (antes parava de atirar ao sair) | igual | ADAPTAÇÃO DO MOD |
+| Aliados | Protege aliados (`protect_ally` 10), tiros poupam aliados | igual | INFERÊNCIA |
+| Corpo a corpo | Sem contra-ataque de espada | igual | INFERÊNCIA |
+| A PESQUISAR | Barreira de gelo (ep. 19) e tiro no núcleo com cobertura do aliado (ep. 20): sem mecânica ainda | — | A PESQUISAR |
+
+### Diagnóstico (Reno No. 6 × No. 9)
+
+- Hoje 0/4; calibrado em 9/10 em 2026-10-16. Bisseção (worktree com cópia do servidor de testes): antes da MOV-4 2/4,
+  no próprio commit da calibragem 1/4 → o 9/10 foi medido em outra condição de arena; não é regressão de código. A
+  MOV-4 piorou um pouco: o atirador parava de atirar enquanto saía da área do golpe pesado (`avoidDanger` desligado:
+  1/3).
+- Log temporário da adaptação do No. 9: todas as técnicas do Reno contam como o mesmo tipo de golpe (projétil) e ficam
+  na redução máxima de 40%; o No. 9 chega a ~410 de vida e volta a ~725 (50%) quando o Reno perde o ritmo.
+
+### Testes (MOV-5E)
+
+- GameTests `RenoProfileGameTests` (3; 216/216): Lentidão II não é brecha e Lentidão VII é (paralisado e aberto); a
+  explosão congelante do Reno No. 6 paralisa o kaiju; com 30% da vida ele quer cobertura contra a formiga, e com a
+  formiga paralisada não (pressiona).
+- Duelos (servidor dedicado, chão refeito a cada duelo): Reno No. 6 × No. 9 1/6 com o perfil e 0,75; **5/8 com 0,80**
+  (0,85: 5/6; meta v1.2 70%); Reno × No. 9 0/3 (meta 12%); Hoshina + Reno × No. 10 gigante 1/3 (o gigante fica com
+  18–20% nas derrotas; 2/3 em 2026-10-15).
+- Em jogo (servidor dedicado + 2 clientes, `docs/img/mov5e_reno.jpg`, log ligado): Reno No. 6 + Hoshina derrubam o
+  Primigenius Honju em menos de 24 s ("brecha do kaiju: pressiona" no Hoshina); Reno No. 6 sozinho leva o No. 9 de
+  1.450 a 778 em 24 s, saindo 16 vezes da área dos golpes, com 546 de 650.

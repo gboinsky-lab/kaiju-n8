@@ -227,6 +227,11 @@ que o `min_range` (uso limitado devolvido, recarga = preparo). Duelos: × No. 10
 `ranged.cover_health` 0,5 (Mina, Reno, Reno No. 6) [SUPOSIÇÃO], `[soldierAi] specialCover` true; duelos com o chão
 refeito a cada duelo: Mina × No. 9 4/10 e × No. 10 pequeno 4/10 (cobertura desligada: 6/10 e 6/10; diferença dentro do ruído de 10 duelos, com o chão refeito a cada duelo); Reno No. 6 × No. 9 0/3 com e sem cobertura (era 6/6 no v1.2: queda anterior a esta mudança, fica para a etapa do Reno).
 
+MOV-5E (Reno): `[kaijuAi] paralyzedSlowLevel` 6 (Lentidão 6+ = brecha para os aliados), Reno e Reno No. 6
+`exploit_openings` 2 e `rhythm.press_regeneration` 2 [SUPOSIÇÃO]. **Reno No. 6 `kaiju_damage` 0,75 → 0,80**
+[SUPOSIÇÃO]: × No. 9 1/6 → 5/8 (meta 70%; 0,85 dava 5/6). Reno × No. 9 0/3 (meta 12%), Hoshina + Reno × No. 10
+gigante 1/3.
+
 **Quebra ao andar** (`[destruction] walk*`, 0.6): força 3 para Yoju, Honju e numerados (quebra frágil, normal e
 resistente: vidro, madeira, terra, pedra, tijolo, concreto), 4 para Daikaiju (também deepslate e ferro); um pedido a
 cada 5 ticks no máximo. Força 0 desliga [SUPOSIÇÃO].
@@ -591,7 +596,7 @@ sobe mais rápido. A fuga do No. 9 só dá mérito a quem causou dano nele.
 | Personagem | Vida | Armadura | Velocidade | Release (teto) | `kaiju_damage` | Arma | Técnicas / extra |
 |---|---|---|---|---|---|---|---|
 | Kikoru + No. 4 (T7, aérea) | 580 | 20 | 0,44 | 40% (90%) | 0,5 | machado | voo (`flight`: 0,45 bloco/tick, paira 2,5 acima do alvo, desce nas técnicas); machado veloz 0,9/1,0 (22), mergulho 1,8 com avanço (50), ataque vertical 2,4 expõe o núcleo 60 ticks (90), combo aéreo 0,8/0,9 (40), dash aéreo 1,2 (70) |
-| Reno + No. 6 (T7, criocinese) | 650 | 20 | 0,36 | 50% (100%) | 0,75 | rifle | lança de gelo 2,6 + Lentidão II (50), explosão congelante 2,0 raio 3,5 + Lentidão IV 5 s (120), campo de gelo 8 × 0,8 em volta + Lentidão III (160), congelamento múltiplo 5 × 1,0 (140), canhões auxiliares 2 × 1,2 com explosão 1,5 (60) |
+| Reno + No. 6 (T7, criocinese) | 650 | 20 | 0,36 | 50% (100%) | 0,80 (MOV-5E; era 0,75) | rifle | lança de gelo 2,6 + Lentidão II (50), explosão congelante 2,0 raio 3,5 + Lentidão IV 5 s (120), campo de gelo 8 × 0,8 em volta + Lentidão III (160), congelamento múltiplo 5 × 1,0 (140), canhões auxiliares 2 × 1,2 com explosão 1,5 (60) |
 | Narumi + No. 1 (T7, previsão) | 650 | 20 | 0,36 | 50% (100%) | 0,85 | baioneta | as do Narumi + golpe no ponto fraco 2,0 expõe o núcleo 100 ticks (100) e contra-golpe previsto 1,6 com avanço (60); aparar 35% (era 15%) com janela de 16 ticks, contra-ataque com recarga 120 e reação 10 ticks, esquiva com reação 8 |
 
 **Kafka e Kaiju No. 8 (0.7-F)** (v1.2 seção 11; o resto [SUPOSIÇÃO]):

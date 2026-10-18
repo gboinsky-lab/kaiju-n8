@@ -214,6 +214,7 @@ public final class ServerConfig {
     public static final ModConfigSpec.IntValue AI_TELEGRAPH_POINTS;
     public static final ModConfigSpec.IntValue AI_BOSS_PHASE_BONUS;
     public static final ModConfigSpec.IntValue AI_ADAPTATION_MEMORY;
+    public static final ModConfigSpec.IntValue AI_PARALYZED_SLOW_LEVEL;
     public static final ModConfigSpec.DoubleValue AI_WINDUP_EASY;
     public static final ModConfigSpec.DoubleValue AI_WINDUP_NORMAL;
     public static final ModConfigSpec.DoubleValue AI_WINDUP_HARD;
@@ -728,6 +729,9 @@ public final class ServerConfig {
                 + " phase (boss JSON); attacks listed there but not in the species list are unlocked.", 3, 0, 100);
         AI_ADAPTATION_MEMORY = intValue("adaptationMemory", "Attack kinds a numbered kaiju remembers for its"
                 + " adaptation (oldest forgotten first).", 6, 1, 64);
+        AI_PARALYZED_SLOW_LEVEL = intValue("paralyzedSlowLevel", "MOV-5E: a kaiju slowed at this Slowness level or"
+                + " higher (Reno's freezing burst) counts as an opening for special soldiers to press. 0 disables.", 6,
+                0, 10);
         AI_WINDUP_EASY = doubleValue("heavyWindupEasy", "Windup (reaction window) of heavy kaiju attacks on Easy and"
                 + " Peaceful, as a multiple of the JSON windup.", 1.25, 0.5, 3.0);
         AI_WINDUP_NORMAL = doubleValue("heavyWindupNormal", "Windup of heavy kaiju attacks on Normal.", 1.0, 0.5,

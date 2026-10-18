@@ -52,6 +52,8 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
@@ -401,7 +403,17 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
 
     /** MOV-5B: guarda aberta (janela depois do golpe pesado ou atordoado): brecha para quem luta de perto. */
     public boolean isOpen() {
-        return staggerTicks > 0 || level().getGameTime() < openUntil;
+        return staggerTicks > 0 || level().getGameTime() < openUntil || isParalyzed();
+    }
+
+    /**
+     * MOV-5E (Reno: congela e paralisa para os aliados baterem): Lentidao no nivel {@code [kaijuAi]
+     * paralyzedSlowLevel} ou acima (explosao congelante) conta como brecha.
+     */
+    public boolean isParalyzed() {
+        int level = ServerConfig.AI_PARALYZED_SLOW_LEVEL.get();
+        MobEffectInstance slow = getEffect(MobEffects.MOVEMENT_SLOWDOWN);
+        return level > 0 && slow != null && slow.getAmplifier() + 1 >= level;
     }
 
     KaijuAiMemory aiMemory() {
