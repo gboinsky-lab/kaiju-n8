@@ -210,9 +210,14 @@ habilidade (forma).
 **Decidido (Miguel, 2026-10-22):** Narumi rosa; Isao amarelo/laranja; **Mina verde**; Hoshina continua violeta e, com
 o Numbers 10, raios saindo do traje em vermelho puxado para o roxo.
 
-**Ainda a definir (aparência na obra não confirmada; por ora segue a textura):**
-1. Thunder Emperor (golpe final das manoplas do Isao).
-2. Finger Gun do No. 9 (tiro do dedo) e a fuga do No. 9 (como ele some com 15%).
-3. Raio de energia do Preondactyl.
-4. Jato de ácido da formiga (Camponotus).
-5. Reviver do No. 9 (carcaça voltando).
+**Aparências decididas (Miguel, 2026-10-22):**
+1. **Thunder Emperor:** um soco muito forte que reúne toda a força do traje do Numbers 2 num golpe só: carga visível
+   nas manoplas (energia amarela/laranja se juntando no punho) e um impacto único e enorme (sem raio elétrico).
+2. **Finger Gun do No. 9:** tiros **cinza**, como balas em velocidade extrema: risco fino e reto, quase instantâneo,
+   com o estalo no impacto (vale para o Multi-Finger Gun das formas).
+3. **Fuga do No. 9:** ele **tenta se retirar** de algum jeito; se não conseguir, morre (mudança de jogo, não só visual:
+   ver a etapa proposta "Retirada do No. 9").
+4. **Raio do Preondactyl:** laranja/vermelho.
+5. **Ácido da formiga:** verde.
+
+**Ainda a definir:** reviver do No. 9 (carcaça voltando).
