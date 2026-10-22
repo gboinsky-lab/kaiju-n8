@@ -15,8 +15,9 @@ public final class VfxParticleType extends ParticleType<VfxParticleOptions> {
     private final StreamCodec<ByteBuf, VfxParticleOptions> streamCodec = VfxParticleOptions.streamCodec(this);
 
     public VfxParticleType() {
-        // Sem furar o limite de particulas do vanilla: o teto do efeito ja vem do VfxBudget.
-        super(false);
+        // VFX-2: ignora o limite do vanilla (particula comum so nasce a ate 32 blocos da camera): o efeito de um
+        // kaiju de 20 m precisa ser visto de longe. O teto vem do VfxBudget e a distancia do [fx] effectDistance.
+        super(true);
     }
 
     @Override

@@ -205,6 +205,18 @@ habilidade (forma).
 
 ---
 
+## Regra de tamanho (Miguel, 2026-10-22)
+
+"Os ataques devem seguir conforme o tamanho do personagem: um kaiju grande nao deve ter ataques pequenos ou com
+efeitos pequenos." Todas as receitas sao escritas para um corpo humano (1,8 m) e o jogo as aumenta pela altura de
+quem faz o efeito (VFX-2: tamanho x fator^0,75, alcance x fator^0,85, quantidade x fator^0,5; config `[fx]`).
+
+## Feito na VFX-2 (Kafka e Kaiju No. 8)
+
+Receitas em `vfx_profile/kaiju_no8.json` e `kafka.json`, pela ficha acima: transformação (as duas direções), socos,
+soco pesado, investida, contra-ataque, golpe no chão, rugido, regeneração, rastro do punho (marcas nas animações) e
+o tiro/soco do Kafka. Aura do No. 8 mais rente (`size` 1,0). [DECIDIR] Kafka sem aura até perto da transformação.
+
 ## Perfis no jogo (VFX-1)
 
 Cada ficha virou `data/kn8/kn8/vfx_profile/<id>.json` (`primary`/`secondary`/`accent`/`core` + `material`). Escolhas

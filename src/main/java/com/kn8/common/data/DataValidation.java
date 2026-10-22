@@ -268,7 +268,7 @@ public final class DataValidation {
             }
             Map<String, List<VfxProfileDef.Layer>> effects = new LinkedHashMap<>();
             def.effects().forEach((key, layers) -> effects.put(key, layers.stream().filter(layer -> {
-                boolean ok = shapes.contains(layer.shape()) && palette.resolve(layer.color()) >= 0
+                boolean ok = layer.generic() || shapes.contains(layer.shape()) && palette.resolve(layer.color()) >= 0
                         && VfxPatterns.Pattern.known(layer.pattern());
                 if (!ok) {
                     report.warning("vfx_profile " + id + ": camada invalida em " + key + " (" + layer.shape() + ", "

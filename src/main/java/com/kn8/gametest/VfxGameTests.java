@@ -102,6 +102,30 @@ public final class VfxGameTests {
         });
     }
 
+    /**
+     * VFX-2: Kafka e Kaiju No. 8 com efeitos proprios (ficha): transformacao, regeneracao, cada soco e as tecnicas
+     * a distancia do No. 8; o tiro e o soco do Kafka; nenhuma camada recusada na validacao.
+     */
+    @GameTest(template = TEMPLATE)
+    public static void kafkaAndNo8HaveTheirOwnEffects(GameTestHelper helper) {
+        VfxProfileDef no8 = KN8Data.VFX_PROFILE.server().get(KN8Constants.id("kaiju_no8"));
+        VfxProfileDef kafka = KN8Data.VFX_PROFILE.server().get(KN8Constants.id("kafka"));
+        helper.assertTrue(no8 != null && kafka != null, "Perfis do No. 8 e do Kafka");
+        for (String key : List.of("transform", "regenerate", "rush_combo", "heavy_punch", "dash_strike", "counter",
+                "ground_smash", "roar", "fist_trail", "slash")) {
+            helper.assertTrue(no8.recipe(key).map(layers -> !layers.isEmpty()).orElse(false),
+                    "No. 8 sem a receita " + key);
+        }
+        for (String key : List.of("transform", "weapon_fire", "punch_combo")) {
+            helper.assertTrue(kafka.recipe(key).map(layers -> !layers.isEmpty()).orElse(false),
+                    "Kafka sem a receita " + key);
+        }
+        // Socos do No. 8 sem arco de lamina (diretriz: silhueta curta e reta, nao a do corte).
+        helper.assertTrue(no8.recipe("rush_combo").orElseThrow().stream().noneMatch(layer -> layer.shape()
+                .equals("arc")), "Soco do No. 8 nao pode ter arco de corte");
+        helper.succeed();
+    }
+
     private static int accent(String id) {
         VfxProfileDef def = KN8Data.VFX_PROFILE.server().get(KN8Constants.id(id));
         return def == null ? 0 : def.palette().resolve("accent");

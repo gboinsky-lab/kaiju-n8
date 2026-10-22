@@ -33,6 +33,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
+import net.neoforged.neoforge.common.NeoForge;
 
 /**
  * Registro de efeitos visuais no cliente (Etapa D): cada id do {@link VfxService} vira particulas. Nada aqui decide
@@ -55,6 +56,7 @@ public final class VfxEffects {
     private static final float HIGH = 1.0F;
     private static final int CRACK_RAYS = 9;
     private static final float GENERIC_WITH_PROFILE = 0.5F;
+    private static final float GENERIC_SCALE_CAP = 4.0F;
     private static final double CRACK_STEP = 0.35;
 
     static {
@@ -70,6 +72,8 @@ public final class VfxEffects {
         EFFECTS.put(VfxService.ENERGY_CHARGE, VfxEffects::energyCharge);
         EFFECTS.put(VfxService.ENERGY_BURST, VfxEffects::energyBurst);
         EFFECTS.put(VfxService.WEB, VfxEffects::web);
+        EFFECTS.put(VfxService.TRANSFORM, VfxEffects::transform);
+        EFFECTS.put(VfxService.REGENERATE, VfxEffects::regenerate);
     }
 
     private VfxEffects() {
@@ -79,6 +83,8 @@ public final class VfxEffects {
     public static void install() {
         KN8ClientHooks.register(VfxS2C.TYPE, VfxEffects::onVfx);
         VfxKeyframes.install(VfxEffects::onKeyframe);
+        // VFX-2: camadas com atraso (sequencias como a transformacao do Kafka).
+        NeoForge.EVENT_BUS.addListener(KaijuVfx::tick);
     }
 
     /** VFX-1: particulas proprias do KaijuVFX (uma fabrica por silhueta). */
@@ -95,6 +101,8 @@ public final class VfxEffects {
                 VfxParticle.Kind.GLOW));
         event.registerSpriteSet(KN8Particles.SPORE.get(), sprites -> new VfxParticle.Provider(sprites,
                 VfxParticle.Kind.SPORE));
+        event.registerSpriteSet(KN8Particles.PULSE.get(), sprites -> new VfxParticle.Provider(sprites,
+                VfxParticle.Kind.PULSE));
     }
 
     /**
@@ -110,7 +118,8 @@ public final class VfxEffects {
             return;
         }
         KaijuVfx.profile(VfxService.profileOf(entity)).ifPresent(profile -> profile.recipe(effect).ifPresent(
-                recipe -> KaijuVfx.playRecipe(level, profile, recipe, at, forward(entity), 1.0F, KaijuVfx.budget())));
+                recipe -> KaijuVfx.playRecipe(level, profile, recipe, at, forward(entity), 1.0F,
+                        KaijuVfx.Body.of(entity.getBbHeight()), KaijuVfx.budget(), KaijuVfx.GenericEffect.NONE)));
     }
 
     /**
@@ -161,19 +170,26 @@ public final class VfxEffects {
         String key = payload.source().key().isEmpty() ? path : payload.source().key();
         Optional<List<VfxProfileDef.Layer>> recipe = profile.flatMap(def -> def.recipe(key).or(() -> def.recipe(path)));
         VfxBudget budget = KaijuVfx.budget();
+        // VFX-2: o efeito cresce com o corpo de quem o fez (kaiju grande, efeito grande).
+        KaijuVfx.Body body = KaijuVfx.Body.of(payload.source().height());
+        Effect effect = EFFECTS.get(payload.effect());
+        // Os efeitos comuns crescem pelo alcance, ate um teto (a quantidade deles tambem sobe com a intensidade).
+        float growth = Math.min(body.spread(), GENERIC_SCALE_CAP);
         if (recipe.isPresent()) {
             KaijuVfx.playRecipe(level, profile.get(), recipe.get(), payload.position(), payload.direction(),
-                    payload.intensity(), budget);
+                    payload.intensity(), body, budget, effect == null ? KaijuVfx.GenericEffect.NONE
+                            : intensity -> effect.play(level, payload.position(), payload.direction(),
+                                    intensity * growth, amount()));
             return;
         }
-        Effect effect = EFFECTS.get(payload.effect());
         if (effect != null) {
             // Com perfil, o generico (branco/cinza vanilla) fica pela metade: a cor e o material da especie mandam.
             float generic = profile.isPresent() ? GENERIC_WITH_PROFILE : 1.0F;
-            effect.play(level, payload.position(), payload.direction(), payload.intensity(), amount() * generic);
+            effect.play(level, payload.position(), payload.direction(), payload.intensity() * growth,
+                    amount() * generic);
         }
         profile.ifPresent(def -> PaletteLayers.play(level, payload.effect(), def, payload.position(),
-                payload.direction(), payload.intensity(), budget));
+                payload.direction(), payload.intensity(), body, budget));
     }
 
     static float amount() {
@@ -327,6 +343,17 @@ public final class VfxEffects {
         ItemParticleOption cobweb = new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.COBWEB));
         burst(level, cobweb, at, count(intensity * 1.5F, amount), 1.2, 0.15);
         burst(level, ParticleTypes.WHITE_ASH, at, count(intensity * 2.0F, amount), 1.5, 0.05);
+    }
+
+    /** VFX-2: troca de forma sem receita: estouro e coluna de fumaca (o que o servidor fazia antes). */
+    private static void transform(ClientLevel level, Vec3 at, Vec3 dir, float intensity, float amount) {
+        level.addParticle(ParticleTypes.EXPLOSION_EMITTER, at.x, at.y + 1.0, at.z, 0, 0, 0);
+        burst(level, ParticleTypes.LARGE_SMOKE, at.add(0, 1.0, 0), count(intensity * 2.5F, amount), 1.2, 0.08);
+    }
+
+    /** VFX-2: regeneracao sem receita: brilhos verdes em volta do corpo. */
+    private static void regenerate(ClientLevel level, Vec3 at, Vec3 dir, float intensity, float amount) {
+        burst(level, ParticleTypes.HAPPY_VILLAGER, at, count(intensity * 0.5F, amount), 1.2, 0.02);
     }
 
     /** Traje superaquecido: fumaca e pequenas chamas saindo do jogador. */

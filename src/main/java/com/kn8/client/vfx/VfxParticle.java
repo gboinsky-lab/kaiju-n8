@@ -25,7 +25,7 @@ public final class VfxParticle extends TextureSheetParticle {
 
     /** Comportamento por silhueta. */
     public enum Kind {
-        ARC, RING, SHARD, STREAK, GLOW, SPORE
+        ARC, RING, SHARD, STREAK, GLOW, SPORE, PULSE
     }
 
     private static final int FULL_BRIGHT = 0xF000F0;
@@ -62,7 +62,7 @@ public final class VfxParticle extends TextureSheetParticle {
             default -> 0.0F;
         };
         this.friction = switch (kind) {
-            case STREAK, ARC -> 0.8F;
+            case STREAK, ARC, PULSE -> 0.8F;
             case SPORE -> 0.94F;
             case RING -> 0.6F;
             default -> 0.9F;
@@ -91,6 +91,8 @@ public final class VfxParticle extends TextureSheetParticle {
         float life = Mth.clamp((age + partialTicks) / lifetime, 0.0F, 1.0F);
         return switch (kind) {
             case RING -> baseSize * (0.3F + 0.7F * life);
+            // Ar comprimido: abre rapido e quase nao cresce depois.
+            case PULSE -> baseSize * (0.2F + 0.8F * (float) Math.sqrt(life));
             case GLOW -> baseSize * (1.0F - 0.6F * life);
             case SPORE -> baseSize * (0.6F + 0.6F * life);
             case ARC -> baseSize * (0.8F + 0.4F * life);

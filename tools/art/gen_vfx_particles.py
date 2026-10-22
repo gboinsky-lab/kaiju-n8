@@ -134,6 +134,8 @@ def spore(seed):
 TEXTURES = {
     'arc': [('arc', arc)],
     'ring': [('ring', ring)],
+    # VFX-2: anel virado para a camera (ar comprimido); mesma textura do anel.
+    'pulse': [('ring', ring)],
     'streak': [('streak', streak)],
     'glow': [('glow', glow)],
     'shard': [('shard_%d' % i, shard(100 + i)) for i in range(3)],

@@ -41,6 +41,10 @@ public final class ClientConfig {
     public static final ModConfigSpec.IntValue MAX_PARTICLES_PER_EFFECT;
     public static final ModConfigSpec.IntValue EFFECT_DISTANCE;
     public static final ModConfigSpec.BooleanValue REDUCE_FLASHES;
+    public static final ModConfigSpec.DoubleValue REFERENCE_HEIGHT;
+    public static final ModConfigSpec.DoubleValue SCALE_SIZE_EXPONENT;
+    public static final ModConfigSpec.DoubleValue SCALE_SPREAD_EXPONENT;
+    public static final ModConfigSpec.DoubleValue SCALE_COUNT_EXPONENT;
     public static final ModConfigSpec.IntValue ANIMATION_MAX_CATCH_UP_TICKS;
     public static final ModConfigSpec.IntValue STANCE_FADE_TICKS;
     public static final ModConfigSpec.IntValue ATTACK_FADE_TICKS;
@@ -72,6 +76,21 @@ public final class ClientConfig {
         REDUCE_FLASHES = BUILDER.comment("Smaller, dimmer flashes without pure white (accessibility).")
                 .translation(PREFIX + "reduceFlashes")
                 .define("reduceFlashes", false);
+        // VFX-2 (Miguel: "um kaiju grande nao deve ter ataques pequenos ou com efeitos pequenos"): o efeito cresce
+        // com a altura de quem o faz, pela altura de referencia (um humano), com expoentes por grandeza.
+        REFERENCE_HEIGHT = BUILDER.comment("Body height (blocks) the kn8 effects are designed for; bigger bodies get"
+                        + " bigger effects.")
+                .translation(PREFIX + "referenceHeight")
+                .defineInRange("referenceHeight", 1.8, 0.5, 10.0);
+        SCALE_SIZE_EXPONENT = BUILDER.comment("How particle size grows with body size (body factor ^ exponent).")
+                .translation(PREFIX + "scaleSizeExponent")
+                .defineInRange("scaleSizeExponent", 0.75, 0.0, 1.5);
+        SCALE_SPREAD_EXPONENT = BUILDER.comment("How effect reach grows with body size (body factor ^ exponent).")
+                .translation(PREFIX + "scaleSpreadExponent")
+                .defineInRange("scaleSpreadExponent", 0.85, 0.0, 1.5);
+        SCALE_COUNT_EXPONENT = BUILDER.comment("How particle count grows with body size (body factor ^ exponent).")
+                .translation(PREFIX + "scaleCountExponent")
+                .defineInRange("scaleCountExponent", 0.5, 0.0, 1.5);
         ANIMATION_MAX_CATCH_UP_TICKS = BUILDER.comment("Player animations received late skip ahead by the delay, up"
                         + " to this many ticks, to stay in sync with the server (M9).")
                 .translation(PREFIX + "animationMaxCatchUpTicks")

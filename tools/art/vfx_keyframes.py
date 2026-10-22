@@ -22,6 +22,14 @@ MARCAS = {
         # Demonstracao da VFX-1: as presas brilham em amarelo no inicio da mordida (a receita fica no perfil).
         'trichonephila.action.bite': [(0.0, 'bite_windup', 'mouth')],
     },
+    # VFX-2: rastro curto e grosso do punho do No. 8 em cada soco (tempos = tick do golpe no JSON / 20).
+    'kaiju_no8': {
+        'kaiju_no8.action.rush_combo': [(0.2, 'fist_trail', 'item_right'), (0.4, 'fist_trail', 'item_left'),
+                                        (0.6, 'fist_trail', 'item_right'), (0.8, 'fist_trail', 'item_left')],
+        'kaiju_no8.action.heavy_punch': [(0.4, 'fist_trail', 'item_right')],
+        'kaiju_no8.action.dash_strike': [(0.25, 'fist_trail', 'item_right')],
+        'kaiju_no8.action.counter': [(0.4, 'fist_trail', 'item_right')],
+    },
 }
 
 

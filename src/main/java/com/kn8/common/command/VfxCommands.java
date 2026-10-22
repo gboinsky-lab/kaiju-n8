@@ -15,6 +15,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -46,6 +47,18 @@ final class VfxCommands {
                                                         "recipe"))))))));
     }
 
+    /**
+     * Altura do corpo para a previa (VFX-2: o efeito cresce com o corpo): kaiju pela altura da tabela de alturas,
+     * especial pela altura do perfil, senao a do tipo de entidade com o mesmo id; sem nada, a de referencia.
+     */
+    private static float heightOf(ResourceLocation profile) {
+        return KN8Data.KAIJU.get(profile, false).map(def -> def.dimensions().scaledHeight())
+                .or(() -> KN8Data.SPECIAL_SOLDIER.get(profile, false).map(def -> def.height())
+                        .filter(height -> height > 0.0F))
+                .orElseGet(() -> BuiltInRegistries.ENTITY_TYPE.getOptional(profile).map(type -> type.getHeight())
+                        .orElse(0.0F));
+    }
+
     private static int play(CommandContext<CommandSourceStack> ctx, float intensity, String recipe) {
         CommandSourceStack source = ctx.getSource();
         ResourceLocation effect = ResourceLocationArgument.getId(ctx, "effect");
@@ -53,7 +66,8 @@ final class VfxCommands {
         float yaw = source.getRotation().y;
         Vec3 forward = new Vec3(-Mth.sin(yaw * Mth.DEG_TO_RAD), 0, Mth.cos(yaw * Mth.DEG_TO_RAD));
         VfxService.play(source.getLevel(), effect, source.getPosition(), forward, intensity, 0.0F,
-                Optional.of(profile), recipe);
+                Optional.of(profile), recipe, KN8Data.VFX_PROFILE.get(profile, false).isPresent()
+                        ? heightOf(profile) : 0.0F);
         source.sendSuccess(() -> Component.translatable("kn8.command.vfx.play", effect.toString(),
                 profile.toString()), false);
         return 1;

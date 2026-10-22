@@ -977,3 +977,17 @@ Servidor dedicado + 2 clientes. Os efeitos agora usam a paleta e o material de q
 | 72.5 | Config do cliente: `[fx] particleLevel` LOW, depois `maxParticlesPerEffect` 8, depois `effectDistance` 16 e afastar-se 20 blocos | Menos partículas; quase nenhuma; nada desenhado longe (o tremor de câmera continua) |
 | 72.6 | `[fx] reduceFlashes` true e repetir 72.3 | Brilhos menores e sem branco puro |
 | 72.7 | Servidor: `[vfx] enabled` false e deixar um kaiju morder um soldado | Sem efeito nenhum; o dano é o mesmo |
+
+## 73. Kafka e Kaiju No. 8; efeito pelo tamanho do corpo (VFX-2)
+
+Servidor dedicado + 2 clientes.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 73.1 | Em lugar aberto, a 10 blocos um do outro: `/execute positioned ~ ~1 ~ run kn8 vfx play kn8:shockwave kn8:soldier 1`, depois com `kn8:primigenius`, `kn8:primigenius_honju` e `kn8:kaiju_no10_giant` | O anel cresce com o tamanho de cada um (o do No. 10 gigante ocupa vários blocos); dá para ver de longe |
+| 73.2 | `/summon kn8:primigenius_honju ~10 ~ ~`, `/summon kn8:kafka`, e `/data merge entity @e[type=kn8:kafka,limit=1] {Health:8f}` | O Kafka vira o No. 8: linhas ciano saindo do peito, coluna escura com faíscas ciano, anel ciano no chão e um pulso |
+| 73.3 | Olhar o No. 8 lutando | Socos com pulso de ar branco-ciano e lascas escuras (sem arco de lâmina); rastro ciano curto do punho; golpe no chão com fenda ciano em anel, pedras e poeira; rugido com anéis saindo da boca |
+| 73.4 | Deixar o No. 8 com menos de metade da vida | A cada segundo, pontos ciano entrando no corpo (regeneração) |
+| 73.5 | Matar o kaiju e esperar 15 s sem alvo | Volta ao Kafka: linhas ciano apagando e vapor |
+| 73.6 | Kafka atirando | Clarão curto amarelo-alaranjado e fumaça cinza no cano |
+| 73.7 | Config do cliente `[fx] scaleSizeExponent` 0 e repetir 73.1 | Todos os anéis do mesmo tamanho (a regra de tamanho desligada) |

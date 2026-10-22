@@ -40,6 +40,13 @@ public final class VfxService {
     /** 0.6: teia grudando no alvo. */
     public static final ResourceLocation WEB = KN8Constants.id("web");
 
+    /** VFX-2: tecnica de soldado especial (so desenha com a receita do perfil; sem receita, nada muda). */
+    public static final ResourceLocation TECHNIQUE = KN8Constants.id("technique");
+    /** VFX-2: troca de forma (Kafka <-> Kaiju No. 8); sem receita, fumaca e estouro. */
+    public static final ResourceLocation TRANSFORM = KN8Constants.id("transform");
+    /** VFX-2: regeneracao (pulso por segundo enquanto cura); sem receita, brilhos verdes. */
+    public static final ResourceLocation REGENERATE = KN8Constants.id("regenerate");
+
     /** Distancia em que os jogadores recebem o efeito. */
     public static final double RANGE = 64.0;
 
@@ -64,17 +71,18 @@ public final class VfxService {
         if (!ServerConfig.SPEC.isLoaded() || !ServerConfig.VFX_ENABLED.get()) {
             return;
         }
-        play(level, effect, position, direction, intensity, shake, profileOf(source), key);
+        play(level, effect, position, direction, intensity, shake, profileOf(source), key,
+                source == null ? 0.0F : source.getBbHeight());
     }
 
     /** Com o perfil visual dado direto (comando de previa, efeitos sem entidade). */
     public static void play(ServerLevel level, ResourceLocation effect, Vec3 position, Vec3 direction,
-            float intensity, float shake, Optional<ResourceLocation> profile, String key) {
+            float intensity, float shake, Optional<ResourceLocation> profile, String key, float height) {
         if (!ServerConfig.SPEC.isLoaded() || !ServerConfig.VFX_ENABLED.get()) {
             return;
         }
         PacketDistributor.sendToPlayersNear(level, null, position.x, position.y, position.z, RANGE,
-                new VfxS2C(effect, position, direction, intensity, shake, new VfxS2C.Source(profile, key)));
+                new VfxS2C(effect, position, direction, intensity, shake, new VfxS2C.Source(profile, key, height)));
     }
 
     public static void play(ServerLevel level, ResourceLocation effect, Vec3 position, Vec3 direction,

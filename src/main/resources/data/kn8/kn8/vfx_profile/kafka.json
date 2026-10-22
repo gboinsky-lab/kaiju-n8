@@ -5,5 +5,118 @@
     "accent": "#E3DCD6",
     "core": "#FFD27A"
   },
-  "material": "suit"
+  "material": "suit",
+  "effects": {
+    "weapon_fire": [
+      {
+        "shape": "glow",
+        "color": "core",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.22,
+        "speed": 0,
+        "spread": 0,
+        "lifetime": 2
+      },
+      {
+        "shape": "spore",
+        "color": "#6E6C66",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.25,
+        "speed": 0.03,
+        "spread": 0.1,
+        "lifetime": 14
+      }
+    ],
+    "impact": [
+      {
+        "shape": "spore",
+        "color": "#8A8378",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.25,
+        "speed": 0.06,
+        "spread": 0.2,
+        "lifetime": 10
+      },
+      {
+        "shape": "streak",
+        "color": "core",
+        "pattern": "burst",
+        "count": 2,
+        "size": 0.06,
+        "speed": 0.3,
+        "spread": 0.1,
+        "lifetime": 3
+      }
+    ],
+    "slash": [
+      {
+        "shape": "spore",
+        "color": "#8A8378",
+        "pattern": "burst",
+        "count": 5,
+        "size": 0.3,
+        "speed": 0.08,
+        "spread": 0.3,
+        "lifetime": 10
+      },
+      {
+        "shape": "pulse",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.35,
+        "speed": 0,
+        "spread": 0,
+        "lifetime": 3
+      }
+    ],
+    "transform": [
+      {
+        "shape": "glow",
+        "color": "#18E3E3",
+        "pattern": "burst",
+        "count": 10,
+        "size": 0.14,
+        "speed": 0.04,
+        "spread": 0.6,
+        "lifetime": 18,
+        "up": 1.0
+      },
+      {
+        "shape": "spore",
+        "color": "#9A9A9A",
+        "pattern": "rise",
+        "count": 14,
+        "size": 0.5,
+        "speed": 0.06,
+        "spread": 0.6,
+        "lifetime": 30
+      }
+    ],
+    "punch_combo": [
+      {
+        "shape": "spore",
+        "color": "#8A8378",
+        "pattern": "burst",
+        "count": 5,
+        "size": 0.3,
+        "speed": 0.08,
+        "spread": 0.3,
+        "lifetime": 10
+      },
+      {
+        "shape": "pulse",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.35,
+        "speed": 0,
+        "spread": 0,
+        "lifetime": 3
+      }
+    ]
+  }
 }

@@ -29,6 +29,8 @@ public final class KN8Particles {
     public static final DeferredHolder<ParticleType<?>, VfxParticleType> STREAK = register("streak");
     /** Ponto de energia que brilha (nucleo, carga, feixe). */
     public static final DeferredHolder<ParticleType<?>, VfxParticleType> GLOW = register("glow");
+    /** VFX-2: anel virado para a camera que cresce rapido (ar comprimido de um soco, onda de rugido). */
+    public static final DeferredHolder<ParticleType<?>, VfxParticleType> PULSE = register("pulse");
     /** Esporo/vapor lento (fungo, revivido, acido). */
     public static final DeferredHolder<ParticleType<?>, VfxParticleType> SPORE = register("spore");
 
@@ -41,6 +43,7 @@ public final class KN8Particles {
 
     /** Silhueta pelo nome do JSON ({@code arc}, {@code ring}...). */
     public static Map<String, DeferredHolder<ParticleType<?>, VfxParticleType>> shapes() {
-        return Map.of("arc", ARC, "ring", RING, "shard", SHARD, "streak", STREAK, "glow", GLOW, "spore", SPORE);
+        return Map.of("arc", ARC, "ring", RING, "shard", SHARD, "streak", STREAK, "glow", GLOW, "spore", SPORE,
+                "pulse", PULSE);
     }
 }

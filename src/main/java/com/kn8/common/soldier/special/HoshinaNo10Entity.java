@@ -129,7 +129,7 @@ public class HoshinaNo10Entity extends HoshinaEntity {
             return;
         }
         float slack = Math.max(0.0F, tail.reach() - weapon.get().reach());
-        if (strike(target.get(), tail.multiplier(), 0.0F, weapon.get(), slack)) {
+        if (strike(target.get(), tail.multiplier(), 0.0F, weapon.get(), slack, "tail")) {
             tailAttacks++;
         }
         triggerAnim("tail", "slash");

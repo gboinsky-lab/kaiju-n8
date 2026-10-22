@@ -21,13 +21,17 @@ import net.minecraft.world.phys.Vec3;
 public record VfxS2C(ResourceLocation effect, Vec3 position, Vec3 direction, float intensity, float shake,
         Source source) implements CustomPacketPayload {
 
-    /** Perfil visual de quem fez o efeito e chave da receita (vazia = id do efeito). */
-    public record Source(Optional<ResourceLocation> profile, String key) {
-        public static final Source NONE = new Source(Optional.empty(), "");
+    /**
+     * Perfil visual de quem fez o efeito, chave da receita (vazia = id do efeito) e altura do corpo em blocos (VFX-2,
+     * protocolo 21: o efeito cresce com o corpo; 0 = sem corpo, tamanho de referencia).
+     */
+    public record Source(Optional<ResourceLocation> profile, String key, float height) {
+        public static final Source NONE = new Source(Optional.empty(), "", 0.0F);
 
         static final StreamCodec<ByteBuf, Source> STREAM_CODEC = StreamCodec.composite(
                 ByteBufCodecs.optional(ResourceLocation.STREAM_CODEC), Source::profile,
                 ByteBufCodecs.stringUtf8(64), Source::key,
+                ByteBufCodecs.FLOAT, Source::height,
                 Source::new);
     }
 

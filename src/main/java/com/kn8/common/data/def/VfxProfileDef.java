@@ -27,6 +27,8 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
  */
 public record VfxProfileDef(Palette palette, String material, Map<String, List<Layer>> effects) {
 
+    public static final String GENERIC = "generic";
+
     public static final List<String> MATERIALS =
             List.of("flesh", "chitin", "fungus", "revived", "energy", "ice", "suit", "metal", "scales");
 
@@ -54,10 +56,13 @@ public record VfxProfileDef(Palette palette, String material, Map<String, List<L
      * Uma camada da receita: {@code shape} = particula ({@code arc}, {@code ring}, {@code shard}, {@code streak},
      * {@code glow}, {@code spore}); {@code pattern} = {@code burst}/{@code ring}/{@code line}/{@code arc}/
      * {@code converge}/{@code rise} ({@code VfxPatterns}); {@code count} antes da qualidade; {@code size} em blocos;
-     * {@code spread} = raio/comprimento do padrao; {@code forward}/{@code up} = deslocamento da origem.
+     * {@code spread} = raio/comprimento do padrao; {@code forward}/{@code up} = deslocamento da origem;
+     * {@code delay} = ticks depois do evento (sequencia: rachar, fumaca, onda). VFX-2: os numeros sao para um corpo
+     * da altura de referencia ({@code [fx] referenceHeight}, um humano) e crescem com o corpo de quem faz o efeito.
+     * {@code shape} {@code generic} toca o efeito comum do evento junto da receita.
      */
     public record Layer(String shape, String color, String pattern, int count, float size, float speed, float spread,
-            int lifetime, float forward, float up) {
+            int lifetime, float forward, float up, int delay) {
         public static final Codec<Layer> CODEC = RecordCodecBuilder.create(i -> i.group(
                 Codec.STRING.fieldOf("shape").forGetter(Layer::shape),
                 Codec.STRING.optionalFieldOf("color", "primary").forGetter(Layer::color),
@@ -68,8 +73,14 @@ public record VfxProfileDef(Palette palette, String material, Map<String, List<L
                 Codec.floatRange(0.0F, 32.0F).optionalFieldOf("spread", 1.0F).forGetter(Layer::spread),
                 Codec.intRange(1, 400).optionalFieldOf("lifetime", 10).forGetter(Layer::lifetime),
                 Codec.floatRange(-16.0F, 16.0F).optionalFieldOf("forward", 0.0F).forGetter(Layer::forward),
-                Codec.floatRange(-16.0F, 32.0F).optionalFieldOf("up", 0.0F).forGetter(Layer::up)
+                Codec.floatRange(-16.0F, 32.0F).optionalFieldOf("up", 0.0F).forGetter(Layer::up),
+                Codec.intRange(0, 200).optionalFieldOf("delay", 0).forGetter(Layer::delay)
         ).apply(i, Layer::new));
+
+        /** Camada que toca o efeito comum do evento ({@code size} = multiplicador da intensidade). */
+        public boolean generic() {
+            return GENERIC.equals(shape);
+        }
     }
 
     public static final Codec<VfxProfileDef> CODEC = RecordCodecBuilder.create(i -> i.group(

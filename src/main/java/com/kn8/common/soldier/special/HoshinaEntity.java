@@ -569,7 +569,12 @@ public class HoshinaEntity extends SoldierEntity {
             return;
         }
         def.get().regeneration().filter(regen -> now % 20 == 0 && getHealth() < getMaxHealth() * regen.healthBelow())
-                .ifPresent(regen -> heal(getMaxHealth() * regen.perSecond()));
+                .ifPresent(regen -> {
+                    heal(getMaxHealth() * regen.perSecond());
+                    // VFX-2: um pulso por segundo enquanto cura (No. 8: pontos ciano entrando no corpo).
+                    VfxService.play((ServerLevel) level(), VfxService.REGENERATE,
+                            position().add(0, getBbHeight() * 0.5, 0), Vec3.ZERO, 1.0F, 0.0F, this, "regenerate");
+                });
         idleTicks = getTarget() == null ? idleTicks + 1 : 0;
         def.get().transform().ifPresent(transform -> {
             boolean hurt = transform.healthBelow() > 0.0F && getHealth() < getMaxHealth() * transform.healthBelow();
@@ -605,8 +610,9 @@ public class HoshinaEntity extends SoldierEntity {
             }
         });
         server.addFreshEntity(other);
-        server.sendParticles(ParticleTypes.EXPLOSION_EMITTER, getX(), getY() + 1.0, getZ(), 1, 0, 0, 0, 0);
-        server.sendParticles(ParticleTypes.LARGE_SMOKE, getX(), getY() + 1.0, getZ(), 30, 0.6, 1.0, 0.6, 0.05);
+        // VFX-2: o efeito e da forma que surge (receita "transform" do perfil dela: Kafka -> No. 8 racha em ciano e
+        // fecha com o anel de choque; No. 8 -> Kafka apaga as linhas); sem receita, estouro e fumaca.
+        VfxService.play(server, VfxService.TRANSFORM, position(), getLookAngle(), 1.0F, 0.3F, other, "transform");
         server.playSound(null, getX(), getY(), getZ(), SoundEvents.RAVAGER_ROAR, SoundSource.NEUTRAL, 1.5F, 0.8F);
         discard();
     }
@@ -775,6 +781,10 @@ public class HoshinaEntity extends SoldierEntity {
             SlashProjectile.fire(this, aim, technique.slash(), base * technique.hits().get(0), kaijuDamageMultiplier(),
                     heavy.map(SpecialSoldierDef.Heavy::power).orElse(0),
                     heavy.map(SpecialSoldierDef.Heavy::radius).orElse(0.0F));
+            // VFX-2: a tecnica a distancia (golpe no chao, rugido) sai do corpo de quem a faz; so desenha se o perfil
+            // visual tiver receita para ela (o rastro do corte continua o do SlashProjectile).
+            VfxService.play((ServerLevel) level(), VfxService.TECHNIQUE, position(), aim, 1.0F, 0.0F, this,
+                    techniqueId == null ? "" : techniqueId);
             level().playSound(null, getX(), getEyeY(), getZ(), KN8Sounds.SWORD_HEAVY.get(), SoundSource.NEUTRAL,
                     SWING_VOLUME, 1.1F);
             return;
@@ -804,6 +814,16 @@ public class HoshinaEntity extends SoldierEntity {
      * avancam junto). Kaiju levam no corpo, com o {@code kaiju_damage} do perfil.
      */
     protected boolean strike(LivingEntity target, float multiplier, float knockback, WeaponDef weapon, float slack) {
+        return strike(target, multiplier, knockback, weapon, slack, technique != null && techniqueId != null
+                ? techniqueId : "");
+    }
+
+    /**
+     * VFX-2: {@code vfxKey} = receita do perfil visual para o golpe (tecnica, {@code counter}, {@code tail}); sem
+     * receita, o corte comum com a paleta do personagem.
+     */
+    protected boolean strike(LivingEntity target, float multiplier, float knockback, WeaponDef weapon, float slack,
+            String vfxKey) {
         // MOV-4: nada de acertar atraves de parede (antes media so a distancia).
         if (edgeTo(target) > weapon.reach() + slack || !DangerAvoid.clearReach(this, target)) {
             return false;
@@ -834,7 +854,7 @@ public class HoshinaEntity extends SoldierEntity {
         heavy.ifPresent(value -> DestructionService.request(level, target.position(),
                 new AbilityDef.Destruction(value.radius(), value.power(), false, 1.0F), this));
         Vec3 aim = target.getBoundingBox().getCenter().subtract(getEyePosition()).normalize();
-        VfxService.play(level, VfxService.SLASH, target.getBoundingBox().getCenter(), aim, 0.8F, 0.0F, this);
+        VfxService.play(level, VfxService.SLASH, target.getBoundingBox().getCenter(), aim, 0.8F, 0.0F, this, vfxKey);
         level.playSound(null, target.getX(), target.getY(), target.getZ(),
                 CombatService.weaponSound(weapon, "hit", SoundEvents.PLAYER_ATTACK_SWEEP), SoundSource.NEUTRAL,
                 SWING_VOLUME, 1.0F + getRandom().nextFloat() * 0.2F);
@@ -1050,7 +1070,7 @@ public class HoshinaEntity extends SoldierEntity {
         float multiplier = profile().map(def -> def.counter().multiplier()).orElse(1.0F);
         float lunge = profile().map(def -> def.counter().dashSpeed()).orElse(1.0F);
         dashSafe(target.position().subtract(position()), lunge, "estocada do contra-ataque");
-        strike(target, multiplier, 0.0F, weapon.get(), COUNTER_REACH_SLACK);
+        strike(target, multiplier, 0.0F, weapon.get(), COUNTER_REACH_SLACK, "counter");
     }
 
     /**
