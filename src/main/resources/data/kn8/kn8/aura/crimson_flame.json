@@ -3,5 +3,12 @@
   "secondary": "#FF9A6B",
   "style": "flame",
   "min_release": 40,
-  "size": 1.0
+  "size": 1.0,
+  "bolts": {
+    "color": "#FF5A40",
+    "core": "#FFE0C0",
+    "rate": 6,
+    "length": 0.4,
+    "width": 0.07
+  }
 }

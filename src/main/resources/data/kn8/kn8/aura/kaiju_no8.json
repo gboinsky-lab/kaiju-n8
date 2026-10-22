@@ -3,5 +3,13 @@
   "secondary": "#0A1A1A",
   "style": "flame",
   "min_release": 0,
-  "size": 1.0
+  "size": 1.0,
+  "bolts": {
+    "color": "#3FA8FF",
+    "core": "#E8FFFF",
+    "rate": 10,
+    "length": 0.55,
+    "crawl": 0.45,
+    "width": 0.08
+  }
 }

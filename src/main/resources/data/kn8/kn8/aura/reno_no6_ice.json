@@ -3,5 +3,12 @@
   "secondary": "#FFFFFF",
   "style": "sparks",
   "min_release": 30,
-  "size": 1.2
+  "size": 1.2,
+  "bolts": {
+    "color": "#8FD8FF",
+    "core": "#FFFFFF",
+    "rate": 7,
+    "length": 0.45,
+    "width": 0.065
+  }
 }

@@ -172,6 +172,23 @@ public final class KaijuVfx {
         }
     }
 
+    /**
+     * VFX-4A: um ponto de particula solto (raios da aura), com os claroes reduzidos do {@code [fx]}; devolve falso
+     * quando o teto acabou.
+     */
+    public static boolean point(ClientLevel level, VfxParticleType type, int color, float size, int lifetime, double x,
+            double y, double z, VfxBudget budget) {
+        if (budget.take(1, 1.0F) <= 0) {
+            return false;
+        }
+        if (ClientConfig.REDUCE_FLASHES.get()) {
+            size *= FLASH_SIZE;
+            color = capWhite(color);
+        }
+        level.addParticle(type.with(color, size, lifetime), x, y, z, 0, 0, 0);
+        return true;
+    }
+
     public static VfxParticleType shape(String name) {
         var holder = KN8Particles.shapes().get(name);
         return holder == null ? null : holder.get();

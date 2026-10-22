@@ -1,12 +1,17 @@
 // src/main/java/com/kn8/client/vfx/AuraRenderer.java
 package com.kn8.client.vfx;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.joml.Vector3f;
 
 import com.kn8.KN8Constants;
 import com.kn8.common.data.KN8Data;
 import com.kn8.common.data.def.AuraDef;
 import com.kn8.common.registry.KN8Attachments;
+import com.kn8.common.registry.KN8Particles;
+import com.kn8.core.vfx.VfxBudget;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -44,6 +49,9 @@ public final class AuraRenderer {
     private static final float DUST_SCALE = 0.9F;
     private static final float SPARK_SCALE = 0.45F;
     private static final double ARC_JITTER = 0.09;
+    /** VFX-4A: nos de cada raio e teto de pontos por entidade e por tick (diretriz §6). */
+    private static final int BOLT_SEGMENTS = 6;
+    private static final int BOLT_POINT_BUDGET = 260;
     /** A partir desta intensidade aparece o anel no chao. */
     private static final float RING_FROM = 0.7F;
 
@@ -89,6 +97,111 @@ public final class AuraRenderer {
             case FLAME -> flame(level, entity, aura, intensity, amount);
             case SPARKS -> sparks(level, entity, aura, intensity, amount);
         }
+        aura.bolts().ifPresent(bolts -> bolts(level, entity, bolts, intensity, amount));
+    }
+
+    // --- raios (VFX-4A) ------------------------------------------------------------------------------------------
+
+    /**
+     * Descargas saindo do corpo (Miguel: "sair raios igual no anime"): quantos por tick pela taxa do JSON, mais com o
+     * Release; cada um em zigue-zague para fora ou correndo rente ao corpo, com galhos e faisca na ponta.
+     */
+    private static void bolts(ClientLevel level, LivingEntity entity, AuraDef.Bolts bolts, float intensity,
+            float amount) {
+        RandomSource random = level.random;
+        double expected = bolts.rate() / 20.0 * (0.25 + 0.75 * intensity) * amount;
+        int count = (int) expected + (random.nextDouble() < expected - (int) expected ? 1 : 0);
+        if (count <= 0) {
+            return;
+        }
+        float body = KaijuVfx.Body.of(entity.getBbHeight()).size();
+        VfxBudget budget = new VfxBudget(BOLT_POINT_BUDGET);
+        for (int i = 0; i < count; i++) {
+            bolt(level, entity, bolts, body, random, budget);
+        }
+    }
+
+    private static void bolt(ClientLevel level, LivingEntity entity, AuraDef.Bolts bolts, float body,
+            RandomSource random, VfxBudget budget) {
+        double height = entity.getBbHeight();
+        double radius = entity.getBbWidth() * 0.5 * 0.9;
+        double angle = random.nextDouble() * Math.PI * 2;
+        double y = entity.getY() + height * (0.1 + random.nextDouble() * 0.85);
+        Vec3 start = new Vec3(entity.getX() + Math.cos(angle) * radius, y, entity.getZ() + Math.sin(angle) * radius);
+        List<Vec3> nodes = new ArrayList<>();
+        nodes.add(start);
+        if (random.nextFloat() < bolts.crawl()) {
+            // Correndo pelo corpo: as linhas do traje acendendo.
+            double turn = (0.5 + random.nextDouble() * 0.9) * (random.nextBoolean() ? 1 : -1);
+            double climb = (random.nextDouble() - 0.5) * height * 0.5;
+            for (int s = 1; s <= BOLT_SEGMENTS; s++) {
+                double t = s / (double) BOLT_SEGMENTS;
+                double a = angle + turn * t;
+                double r = radius * (1.02 + random.nextDouble() * 0.08);
+                nodes.add(new Vec3(entity.getX() + Math.cos(a) * r, y + climb * t + jitter(random) * body,
+                        entity.getZ() + Math.sin(a) * r));
+            }
+        } else {
+            double length = bolts.length() * height * (0.6 + random.nextDouble() * 0.6);
+            Vec3 out = new Vec3(Math.cos(angle), (random.nextDouble() - 0.35) * 0.9, Math.sin(angle)).normalize();
+            zigzag(nodes, start, out, length, BOLT_SEGMENTS, random);
+        }
+        draw(level, nodes, bolts, body, random, budget);
+        // Galhos: um pedaco curto saindo de um no do meio.
+        for (int n = 1; n < nodes.size() - 1; n++) {
+            if (random.nextFloat() < bolts.branches() / BOLT_SEGMENTS * 2.0F) {
+                List<Vec3> branch = new ArrayList<>();
+                branch.add(nodes.get(n));
+                Vec3 dir = nodes.get(n).subtract(nodes.get(n - 1)).normalize()
+                        .add(random.nextDouble() - 0.5, random.nextDouble() - 0.5, random.nextDouble() - 0.5)
+                        .normalize();
+                zigzag(branch, nodes.get(n), dir, nodes.get(n).distanceTo(start) * 0.5 + 0.2, 3, random);
+                draw(level, branch, bolts, body * 0.7F, random, budget);
+            }
+        }
+        Vec3 tip = nodes.get(nodes.size() - 1);
+        KaijuVfx.point(level, KN8Particles.GLOW.get(), bolts.core(), bolts.width() * 1.8F * body, 3, tip.x, tip.y,
+                tip.z, budget);
+    }
+
+    private static void zigzag(List<Vec3> nodes, Vec3 start, Vec3 dir, double length, int segments,
+            RandomSource random) {
+        Vec3 side = dir.cross(new Vec3(0, 1, 0));
+        if (side.lengthSqr() < 1.0E-4) {
+            side = new Vec3(1, 0, 0);
+        }
+        side = side.normalize();
+        Vec3 up = side.cross(dir).normalize();
+        double amplitude = length * 0.16;
+        for (int s = 1; s <= segments; s++) {
+            double t = s / (double) segments;
+            Vec3 base = start.add(dir.scale(length * t));
+            nodes.add(base.add(side.scale((random.nextDouble() - 0.5) * 2 * amplitude))
+                    .add(up.scale((random.nextDouble() - 0.5) * 2 * amplitude)));
+        }
+    }
+
+    /** Uma linha de pontos brilhantes entre os nos: fora na cor do raio, miolo claro. */
+    private static void draw(ClientLevel level, List<Vec3> nodes, AuraDef.Bolts bolts, float body, RandomSource random,
+            VfxBudget budget) {
+        float width = bolts.width() * body;
+        double step = Math.max(0.04, width * 0.9);
+        for (int n = 1; n < nodes.size(); n++) {
+            Vec3 from = nodes.get(n - 1);
+            Vec3 to = nodes.get(n);
+            int points = Math.max(1, (int) Math.ceil(from.distanceTo(to) / step));
+            for (int k = 0; k < points; k++) {
+                Vec3 p = from.lerp(to, k / (double) points);
+                if (!KaijuVfx.point(level, KN8Particles.GLOW.get(), bolts.color(), width, 2 + random.nextInt(2), p.x,
+                        p.y, p.z, budget)) {
+                    return;
+                }
+                if (k % 2 == 0) {
+                    KaijuVfx.point(level, KN8Particles.GLOW.get(), bolts.core(), width * 0.45F, 2, p.x, p.y, p.z,
+                            budget);
+                }
+            }
+        }
     }
 
     // --- estilos -----------------------------------------------------------------------------------------------
@@ -119,7 +232,8 @@ public final class AuraRenderer {
             Vec3 at = around(entity, aura, random, 1.0);
             level.addParticle(spark, at.x, at.y, at.z, 0, 0.05, 0);
         }
-        if (aura.style() == AuraDef.Style.SPARKS && random.nextFloat() < intensity * amount) {
+        // VFX-4A: com raios proprios, sem as faiscas brancas vanilla (cobriam os raios e eram iguais para todos).
+        if (aura.style() == AuraDef.Style.SPARKS && aura.bolts().isEmpty() && random.nextFloat() < intensity * amount) {
             Vec3 at = around(entity, aura, random, 0.9);
             level.addParticle(intensity > 0.75F ? ParticleTypes.END_ROD : ParticleTypes.ELECTRIC_SPARK, at.x, at.y,
                     at.z, 0, 0.03, 0);

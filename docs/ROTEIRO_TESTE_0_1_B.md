@@ -1005,3 +1005,14 @@ Servidor dedicado + 2 clientes.
 | 74.5 | Olhar o Hoshina com o Numbers 10 parado | Aura violeta com raios vermelho-arroxeados saindo do traje |
 | 74.6 | `/data merge entity @e[type=kn8:hoshina_no10,limit=1] {...}` ou deixar a luta chegar ao Full Release (100%) | Vapor vermelho fino e descargas saindo do traje |
 | 74.7 | `/summon kn8:kafka` | Aura cinza bem baixa (quase nada parado) |
+
+## 75. Auras com raios (VFX-4A)
+
+Servidor dedicado + 2 clientes, de noite para ver melhor.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 75.1 | Invocar os 12 especiais (`/summon kn8:hoshina`, `kn8:kikoru`, `kn8:mina`, ...) e `/kn8 aura release @e[type=kn8:<id>] 100` | Cada um com raios em zigue-zague saindo do corpo e correndo pelo traje, na cor dele: Hoshina violeta fino, No. 10 vermelho-arroxeado, Kikoru dourado com galhos, No. 4 ciano, Mina verde, Reno branco-azulado, No. 6 azul, Narumi rosa, Isao laranja, No. 8 azul |
+| 75.2 | `/kn8 aura release @e[type=kn8:hoshina] 45` e depois 100 | Poucos raios a 45%, muitos a 100% |
+| 75.3 | Vestir o Mk1, `/kn8 release set 80` e `/kn8 release active 80`; o outro jogador olha | Raios ciano em volta do jogador |
+| 75.4 | `/summon kn8:kafka` | Quase nada (aura cinza bem baixa); com a vida baixa, faíscas cinza pequenas |

@@ -103,3 +103,5 @@ sentido. Proposta de ordem:
 
 Pesquisa: as fontes abertas só descrevem os raios azuis do Kaiju No. 8 ao liberar poder; os trajes dos outros
 personagens seguem a referência do Miguel [A PESQUISAR o desenho de cada um no anime].
+
+**VFX-4A feita (2026-10-22):** as 14 auras com o bloco `bolts` (ver CLAUDE.md). Próxima: VFX-4B (Kikoru e Kikoru No. 4).

@@ -3,5 +3,13 @@
   "secondary": "#FFD0E8",
   "style": "lightning",
   "min_release": 35,
-  "size": 1.0
+  "size": 1.0,
+  "bolts": {
+    "color": "#FF8CC8",
+    "core": "#FFE6F2",
+    "rate": 6,
+    "length": 0.35,
+    "branches": 0.2,
+    "width": 0.055
+  }
 }

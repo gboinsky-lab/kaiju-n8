@@ -151,6 +151,21 @@ public final class VfxGameTests {
         helper.succeed();
     }
 
+    /**
+     * VFX-4A (Miguel: "sair raios igual no anime"): toda aura de traje e personagem tem raios, a do No. 8 azul/ciano
+     * e a da Mina verde.
+     */
+    @GameTest(template = TEMPLATE)
+    public static void everyAuraHasLightning(GameTestHelper helper) {
+        KN8Data.AURA.server().forEach((id, aura) -> helper.assertTrue(aura.bolts().isPresent(),
+                "Aura sem raios: " + id));
+        int no8 = KN8Data.AURA.server().get(KN8Constants.id("kaiju_no8")).bolts().orElseThrow().color();
+        helper.assertTrue(blue(no8) > red(no8), "Raios do No. 8 deveriam ser azuis");
+        int mina = KN8Data.AURA.server().get(KN8Constants.id("mina_command")).color();
+        helper.assertTrue(green(mina) > red(mina) && green(mina) > blue(mina), "Aura da Mina deveria ser verde");
+        helper.succeed();
+    }
+
     private static int accent(String id) {
         VfxProfileDef def = KN8Data.VFX_PROFILE.server().get(KN8Constants.id(id));
         return def == null ? 0 : def.palette().resolve("accent");

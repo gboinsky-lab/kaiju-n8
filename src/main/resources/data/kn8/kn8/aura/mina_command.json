@@ -1,7 +1,14 @@
 {
-  "color": "#FF9A3C",
-  "secondary": "#FFE2B0",
+  "color": "#3FCF5A",
+  "secondary": "#C8FFD0",
   "style": "sparks",
   "min_release": 35,
-  "size": 1.0
+  "size": 1.0,
+  "bolts": {
+    "color": "#6FFF8A",
+    "core": "#E8FFE8",
+    "rate": 6,
+    "length": 0.4,
+    "width": 0.07
+  }
 }
