@@ -1058,3 +1058,16 @@ Servidor dedicado + 2 clientes, de noite. Prévia: `/execute positioned ~ ~1.2 ~
 | 78.3 | `kn8:technique kn8:kikoru 1 shockwave` | Onda dourada e pedras saltando numa linha à frente |
 | 78.4 | `kn8:slash kn8:kikoru_no4 1 dive_strike/1` e `kn8:technique kn8:kikoru_no4 1 dive_strike_1_ground` | Arco dourado vertical com anel de ar ciano; no chão, anel ciano com borda dourada |
 | 78.5 | `/summon kn8:kikoru` e `kn8:kikoru_no4` perto de um `kn8:primigenius_honju` | Na luta, os golpes da Kikoru com arco dourado e, nos pesados, as rachaduras no chão; a No. 4 voando com traços ciano saindo das costas a cada batida das asas |
+
+## 79. Mina, Reno e Reno No. 6 (VFX-5)
+
+Servidor dedicado + 2 clientes, de noite. Prévia: `/execute positioned ~ ~ ~6 rotated 0 0 run kn8 vfx play kn8:technique <perfil> 1 <receita>` (para impacto/explosão: `~ ~1 ~6`).
+
+| # | Passo | Esperado |
+|---|---|---|
+| 79.1 | `kn8:mina` `cannon_shot` e `anti_giant_shot` | Clarão branco com anel verde na boca do canhão (altura do quadril), faíscas verdes, fumaça cinza grossa; no Anti-Giant, poeira e anel de poeira nos pés (recuo) |
+| 79.2 | `kn8:mina` `charged_cannon_charge` e `anti_giant_shot_charge` | Raios verdes convergindo para a boca do canhão, passando a brancos no fim, com o brilho crescendo; no Anti-Giant, anel verde no chão durante a carga inteira |
+| 79.3 | `kn8:mina` `cannon_shot_explosion` e `anti_giant_shot_explosion` | Clarão, anel de ar e onda verdes, raios verdes, faíscas e fumaça escura subindo; a do Anti-Giant bem maior |
+| 79.4 | `kn8:reno` `freeze_round_impact` e `kn8:reno_no6` `ice_spear_impact` | Anel de geada, lascas de gelo azul caindo, faíscas brancas e névoa clara |
+| 79.5 | `kn8:reno_no6` `freeze_burst_explosion` e `ice_field` | Explosão de estilhaços azuis com névoa e duas ondas (azul e azul-marinho); campo: onda azul de 6 blocos no chão, rachaduras de gelo com fio branco, cristais subindo e névoa baixa |
+| 79.6 | `/summon kn8:mina` a ~20 blocos de um `kn8:primigenius_honju`; depois `kn8:reno` e `kn8:reno_no6` | Tiros da Mina verdes com fumaça cinza atrás e explosão verde; tiros do Reno branco-azulados, lascas de gelo no kaiju e a barra com "EXPOSTO" depois da munição congelante |

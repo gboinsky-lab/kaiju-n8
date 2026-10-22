@@ -110,6 +110,7 @@ e perde fumaça, faíscas soltas e detritos. O tremor de câmera segue `[fx] cam
 | Proposta | clarão grande na boca do canhão com miolo branco e borda **verde**, **rastro de fumaça cinza grossa**, explosão com anel de choque verde e fumaça escura; `charged_cannon`/`anti_giant_shot`: carregamento com faíscas verdes convergindo para o cano (verde → branco), poeira nos pés no disparo (recuo), projétil espesso |
 | Origem | boca do canhão (o cano fica na horizontal na animação: ponto pelo osso `item_right`) |
 | Baixa qualidade | clarão, projétil e anel da explosão |
+| **Feito (VFX-5)** | `vfx_profile/mina.json`: boca do canhão no quadril (`forward` 1,3, `up` 1,0); `precision_shot`, `cannon_shot`, `charged_cannon`, `anti_giant_shot` = clarão branco, anel de ar verde, faíscas verdes, fumaça cinza (Anti-Giant: poeira e anel nos pés); `<técnica>_charge` (carregado e Anti-Giant) = raios verdes convergindo e brilho crescendo, brancos no último terço; `_trail` = fumaça cinza a cada tick atrás do tiro; `_explosion` = clarão, onda e anel verdes, raios, faíscas e fumaça escura (raio 2,5/3,5/4,5); tiros verdes no `special_soldier/mina.json` (`#C8FFC0`, `#3FCF5A`, `#7CFF8C`, `#E8FFE8`) |
 
 ### Reno Ichikawa (`reno`)
 
@@ -120,6 +121,7 @@ e perde fumaça, faíscas soltas e detritos. O tremor de câmera segue `[fx] cam
 | Hoje | aura azul-gelo `reno_frost`; tiros azul-claro |
 | Proposta | munição congelante do mod: rastro de bala branco-azulado com **cristais pequenos** caindo; impacto com lascas de gelo e névoa; `freeze_round`: geada no ponto atingido. Sem aura forte (Reno base) [SUPOSIÇÃO] |
 | Baixa qualidade | rastro e lascas |
+| **Feito (VFX-5)** | `vfx_profile/reno.json`: boca do rifle no ombro; `precision_shot`/`burst_fire` (clarão pequeno, faíscas azul-gelo, fumaça clara; impacto com lascas e névoa), `freeze_round` (rastro de cristais e névoa; impacto com anel de geada, lascas e névoa), `suppression` (cristais pequenos no rastro), `butt_strike/1` (anel e lascas). Aura sem mudança |
 
 ### Reno com o Numbers 6 (`reno_no6`)
 
@@ -129,6 +131,7 @@ e perde fumaça, faíscas soltas e detritos. O tremor de câmera segue `[fx] cam
 | Hoje | aura `reno_no6_ice` (azul-gelo); tiros azul-claro |
 | Proposta | **gelo** (CANON: criocinese): `ice_spear` = cristal longo e afiado com rastro de névoa; `freeze_burst` = estilhaços em esfera + névoa branca + geada no chão; `ice_field` = anel de geada se espalhando pelo chão com cristais pequenos; `multi_freeze` = vários rastros curtos; `auxiliary_cannons` = disparos menores azul-marinho. Diferente do Reno base pelo tamanho e pelo azul-marinho do traje na borda |
 | Baixa qualidade | cristal/estilhaços sem névoa |
+| **Feito (VFX-5)** | `vfx_profile/reno_no6.json`: `ice_spear` (carga com raios azuis convergindo, rastro de névoa e cristais, cabeça acesa do projétil espesso, impacto com anel branco e lascas), `freeze_burst` (carga, explosão de estilhaços azuis, névoa, ondas azul e azul-marinho, raios), `ice_field` (onda de 6 blocos, rachaduras de gelo com fio branco, cristais subindo, névoa baixa), `multi_freeze` (rastros curtos de cristal), `auxiliary_cannons` (clarão `#4A8FC0`, explosão pequena de gelo; tiros `#4A8FC0` no perfil) |
 
 ### Gen Narumi (`narumi`)
 

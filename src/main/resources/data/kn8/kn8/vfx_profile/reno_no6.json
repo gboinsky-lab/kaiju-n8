@@ -5,5 +5,569 @@
     "accent": "#8FD8FF",
     "core": "#F0FAFF"
   },
-  "material": "ice"
+  "material": "ice",
+  "effects": {
+    "ice_spear_charge": [
+      {
+        "shape": "bolt",
+        "color": "accent",
+        "pattern": "converge",
+        "count": 2,
+        "size": 0.04,
+        "speed": 0,
+        "spread": 1.0,
+        "lifetime": 5,
+        "delay": 0,
+        "forward": 0.9,
+        "up": 1.4
+      },
+      {
+        "shape": "bolt",
+        "color": "core",
+        "pattern": "converge",
+        "count": 2,
+        "size": 0.04,
+        "speed": 0,
+        "spread": 0.8,
+        "lifetime": 5,
+        "delay": 5,
+        "forward": 0.9,
+        "up": 1.4
+      }
+    ],
+    "ice_spear": [
+      {
+        "shape": "flash",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.4,
+        "speed": 0.0,
+        "spread": 0.4,
+        "lifetime": 3,
+        "forward": 0.9,
+        "up": 1.4
+      },
+      {
+        "shape": "pulse",
+        "color": "core",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.6,
+        "speed": 0,
+        "spread": 0.6,
+        "lifetime": 5,
+        "forward": 0.9,
+        "up": 1.4
+      },
+      {
+        "shape": "sparks",
+        "color": "accent",
+        "pattern": "line",
+        "count": 6,
+        "size": 0.06,
+        "speed": 0.6,
+        "spread": 1.4,
+        "lifetime": 5,
+        "forward": 0.9,
+        "up": 1.4
+      },
+      {
+        "shape": "smoke",
+        "color": "#DDEFF7",
+        "pattern": "burst",
+        "count": 2,
+        "size": 0.3,
+        "speed": 0.02,
+        "spread": 0.3,
+        "lifetime": 18,
+        "forward": 0.9,
+        "up": 1.4
+      }
+    ],
+    "ice_spear_trail": [
+      {
+        "shape": "smoke",
+        "color": "#DDEFF7",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.3,
+        "speed": 0.0,
+        "spread": 0.1,
+        "lifetime": 14,
+        "forward": -0.3
+      },
+      {
+        "shape": "shard",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.07,
+        "speed": 0.05,
+        "spread": 0.1,
+        "lifetime": 10
+      }
+    ],
+    "ice_spear_impact": [
+      {
+        "shape": "pulse",
+        "color": "core",
+        "pattern": "burst",
+        "count": 1,
+        "size": 1.0,
+        "speed": 0,
+        "spread": 1.0,
+        "lifetime": 7
+      },
+      {
+        "shape": "shard",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 8,
+        "size": 0.12,
+        "speed": 0.35,
+        "spread": 0.6,
+        "lifetime": 16
+      },
+      {
+        "shape": "sparks",
+        "color": "core",
+        "pattern": "burst",
+        "count": 6,
+        "size": 0.07,
+        "speed": 0.4,
+        "spread": 0.8,
+        "lifetime": 6
+      },
+      {
+        "shape": "smoke",
+        "color": "#DDEFF7",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.5,
+        "speed": 0.02,
+        "spread": 0.6,
+        "lifetime": 28
+      }
+    ],
+    "freeze_burst_charge": [
+      {
+        "shape": "bolt",
+        "color": "accent",
+        "pattern": "converge",
+        "count": 2,
+        "size": 0.04,
+        "speed": 0,
+        "spread": 1.2,
+        "lifetime": 5,
+        "delay": 0,
+        "forward": 0.9,
+        "up": 1.4
+      },
+      {
+        "shape": "bolt",
+        "color": "accent",
+        "pattern": "converge",
+        "count": 2,
+        "size": 0.04,
+        "speed": 0,
+        "spread": 1.2,
+        "lifetime": 5,
+        "delay": 6,
+        "forward": 0.9,
+        "up": 1.4
+      },
+      {
+        "shape": "bolt",
+        "color": "core",
+        "pattern": "converge",
+        "count": 3,
+        "size": 0.04,
+        "speed": 0,
+        "spread": 1.0,
+        "lifetime": 5,
+        "delay": 12,
+        "forward": 0.9,
+        "up": 1.4
+      }
+    ],
+    "freeze_burst": [
+      {
+        "shape": "flash",
+        "color": "core",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.6,
+        "speed": 0.0,
+        "spread": 0.6,
+        "lifetime": 3,
+        "forward": 0.9,
+        "up": 1.4
+      },
+      {
+        "shape": "pulse",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 1,
+        "size": 1.0,
+        "speed": 0,
+        "spread": 1.0,
+        "lifetime": 6,
+        "forward": 0.9,
+        "up": 1.4
+      },
+      {
+        "shape": "sparks",
+        "color": "accent",
+        "pattern": "line",
+        "count": 8,
+        "size": 0.07,
+        "speed": 0.6,
+        "spread": 1.6,
+        "lifetime": 5,
+        "forward": 0.9,
+        "up": 1.4
+      },
+      {
+        "shape": "smoke",
+        "color": "#DDEFF7",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.4,
+        "speed": 0.02,
+        "spread": 0.4,
+        "lifetime": 22,
+        "forward": 0.9,
+        "up": 1.4
+      }
+    ],
+    "freeze_burst_trail": [
+      {
+        "shape": "smoke",
+        "color": "#DDEFF7",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.4,
+        "speed": 0.0,
+        "spread": 0.15,
+        "lifetime": 16,
+        "forward": -0.3
+      },
+      {
+        "shape": "shard",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.08,
+        "speed": 0.05,
+        "spread": 0.15,
+        "lifetime": 10
+      }
+    ],
+    "freeze_burst_explosion": [
+      {
+        "shape": "flash",
+        "color": "core",
+        "pattern": "burst",
+        "count": 1,
+        "size": 2.0,
+        "speed": 0.0,
+        "spread": 2.0,
+        "lifetime": 4
+      },
+      {
+        "shape": "pulse",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 1,
+        "size": 2.4,
+        "speed": 0,
+        "spread": 2.4,
+        "lifetime": 8
+      },
+      {
+        "shape": "wave",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.45,
+        "speed": 0,
+        "spread": 3.5,
+        "lifetime": 16
+      },
+      {
+        "shape": "wave",
+        "color": "primary",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.3,
+        "speed": 0,
+        "spread": 2.4,
+        "lifetime": 20,
+        "delay": 3
+      },
+      {
+        "shape": "shard",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 16,
+        "size": 0.18,
+        "speed": 0.6,
+        "spread": 3.0,
+        "lifetime": 18
+      },
+      {
+        "shape": "bolt",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.05,
+        "speed": 0,
+        "spread": 3.0,
+        "lifetime": 6
+      },
+      {
+        "shape": "smoke",
+        "color": "#DDEFF7",
+        "pattern": "burst",
+        "count": 8,
+        "size": 1.2,
+        "speed": 0.02,
+        "spread": 2.5,
+        "lifetime": 40,
+        "delay": 2
+      }
+    ],
+    "ice_field": [
+      {
+        "shape": "wave",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.5,
+        "speed": 0,
+        "spread": 6.0,
+        "lifetime": 24,
+        "up": 0.0
+      },
+      {
+        "shape": "wave",
+        "color": "core",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.3,
+        "speed": 0,
+        "spread": 3.5,
+        "lifetime": 18,
+        "up": 0.0,
+        "delay": 4
+      },
+      {
+        "shape": "crack",
+        "color": "#3E6E8C",
+        "pattern": "burst",
+        "count": 10,
+        "size": 0.3,
+        "speed": 0,
+        "spread": 5.0,
+        "lifetime": 60,
+        "up": 0.0,
+        "edge": "core"
+      },
+      {
+        "shape": "sparks",
+        "color": "accent",
+        "pattern": "rise",
+        "count": 12,
+        "size": 0.07,
+        "speed": 0.3,
+        "spread": 4.0,
+        "lifetime": 10,
+        "up": 0.0
+      },
+      {
+        "shape": "smoke",
+        "color": "#DDEFF7",
+        "pattern": "burst",
+        "count": 6,
+        "size": 0.8,
+        "speed": 0.01,
+        "spread": 4.0,
+        "lifetime": 40,
+        "up": 0.1
+      }
+    ],
+    "multi_freeze": [
+      {
+        "shape": "flash",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.3,
+        "speed": 0.0,
+        "spread": 0.3,
+        "lifetime": 2,
+        "forward": 0.9,
+        "up": 1.4
+      },
+      {
+        "shape": "sparks",
+        "color": "core",
+        "pattern": "line",
+        "count": 6,
+        "size": 0.06,
+        "speed": 0.6,
+        "spread": 1.4,
+        "lifetime": 4,
+        "forward": 0.9,
+        "up": 1.4
+      },
+      {
+        "shape": "smoke",
+        "color": "#DDEFF7",
+        "pattern": "burst",
+        "count": 2,
+        "size": 0.3,
+        "speed": 0.02,
+        "spread": 0.3,
+        "lifetime": 16,
+        "forward": 0.9,
+        "up": 1.4
+      }
+    ],
+    "multi_freeze_trail": [
+      {
+        "shape": "shard",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.06,
+        "speed": 0.04,
+        "spread": 0.08,
+        "lifetime": 8
+      }
+    ],
+    "multi_freeze_impact": [
+      {
+        "shape": "pulse",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.6,
+        "speed": 0,
+        "spread": 0.6,
+        "lifetime": 6
+      },
+      {
+        "shape": "shard",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 5,
+        "size": 0.08,
+        "speed": 0.3,
+        "spread": 0.4,
+        "lifetime": 12
+      },
+      {
+        "shape": "smoke",
+        "color": "#DDEFF7",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.4,
+        "speed": 0.02,
+        "spread": 0.3,
+        "lifetime": 20
+      }
+    ],
+    "auxiliary_cannons": [
+      {
+        "shape": "flash",
+        "color": "#4A8FC0",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.45,
+        "speed": 0.0,
+        "spread": 0.45,
+        "lifetime": 2,
+        "forward": 0.9,
+        "up": 1.4
+      },
+      {
+        "shape": "sparks",
+        "color": "#4A8FC0",
+        "pattern": "line",
+        "count": 5,
+        "size": 0.07,
+        "speed": 0.6,
+        "spread": 1.2,
+        "lifetime": 4,
+        "forward": 0.9,
+        "up": 1.4
+      },
+      {
+        "shape": "smoke",
+        "color": "#7D8C94",
+        "pattern": "burst",
+        "count": 2,
+        "size": 0.35,
+        "speed": 0.02,
+        "spread": 0.4,
+        "lifetime": 20,
+        "forward": 0.9,
+        "up": 1.4
+      }
+    ],
+    "auxiliary_cannons_explosion": [
+      {
+        "shape": "flash",
+        "color": "core",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.9,
+        "speed": 0.0,
+        "spread": 0.9,
+        "lifetime": 3
+      },
+      {
+        "shape": "pulse",
+        "color": "#4A8FC0",
+        "pattern": "burst",
+        "count": 1,
+        "size": 1.2,
+        "speed": 0,
+        "spread": 1.2,
+        "lifetime": 6
+      },
+      {
+        "shape": "wave",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.3,
+        "speed": 0,
+        "spread": 1.5,
+        "lifetime": 12
+      },
+      {
+        "shape": "shard",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 8,
+        "size": 0.1,
+        "speed": 0.4,
+        "spread": 1.2,
+        "lifetime": 14
+      },
+      {
+        "shape": "smoke",
+        "color": "#DDEFF7",
+        "pattern": "burst",
+        "count": 4,
+        "size": 0.6,
+        "speed": 0.02,
+        "spread": 1.0,
+        "lifetime": 28
+      }
+    ]
+  }
 }

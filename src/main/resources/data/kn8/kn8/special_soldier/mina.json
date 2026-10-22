@@ -26,7 +26,7 @@
         "speed": 4.0,
         "range": 50.0,
         "width": 0.35,
-        "color": 16769184,
+        "color": 13172672,
         "bullet": true
       }
     },
@@ -46,7 +46,7 @@
         "speed": 2.5,
         "range": 44.0,
         "width": 0.6,
-        "color": 16757575,
+        "color": 4181850,
         "bullet": true,
         "explosion_radius": 2.5
       }
@@ -67,7 +67,7 @@
         "speed": 2.5,
         "range": 46.0,
         "width": 0.8,
-        "color": 16747546,
+        "color": 8191884,
         "bullet": true,
         "explosion_radius": 3.5
       },
@@ -89,7 +89,7 @@
         "speed": 2.5,
         "range": 60.0,
         "width": 1.0,
-        "color": 16777215,
+        "color": 15269864,
         "bullet": true,
         "explosion_radius": 4.5
       },

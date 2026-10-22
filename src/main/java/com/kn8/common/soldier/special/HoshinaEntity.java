@@ -517,6 +517,12 @@ public class HoshinaEntity extends SoldierEntity {
             dashSafe(target.position().subtract(position()), technique.dashIn(), "avanco da tecnica " + id);
         }
         triggerAnim("action", animatedTechniques().contains(id) ? id : "attack");
+        // VFX-5: carga no preparo (canhao da Mina, cristal do Reno No. 6): so com a receita "<tecnica>_charge"; as
+        // camadas dela usam o "delay" para acompanhar o preparo inteiro.
+        if (VfxService.hasRecipe(this, id + "_charge")) {
+            VfxService.play((ServerLevel) level(), VfxService.TECHNIQUE, position(),
+                    target.position().subtract(position()), 1.0F, 0.0F, this, id + "_charge");
+        }
         level().playSound(null, getX(), getEyeY(), getZ(), KN8Sounds.SWORD_SWING.get(), SoundSource.NEUTRAL,
                 SWING_VOLUME, 1.2F);
         return true;
@@ -780,7 +786,7 @@ public class HoshinaEntity extends SoldierEntity {
             Optional<SpecialSoldierDef.Heavy> heavy = heavyTechnique();
             SlashProjectile.fire(this, aim, technique.slash(), base * technique.hits().get(0), kaijuDamageMultiplier(),
                     heavy.map(SpecialSoldierDef.Heavy::power).orElse(0),
-                    heavy.map(SpecialSoldierDef.Heavy::radius).orElse(0.0F));
+                    heavy.map(SpecialSoldierDef.Heavy::radius).orElse(0.0F), techniqueId == null ? "" : techniqueId);
             // VFX-2: a tecnica a distancia (golpe no chao, rugido) sai do corpo de quem a faz; so desenha se o perfil
             // visual tiver receita para ela (o rastro do corte continua o do SlashProjectile).
             VfxService.play((ServerLevel) level(), VfxService.TECHNIQUE, position(), aim, 1.0F, 0.0F, this,

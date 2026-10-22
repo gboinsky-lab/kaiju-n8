@@ -2,6 +2,7 @@
 package com.kn8.common.combat;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -52,6 +53,12 @@ public class SlashProjectile extends Projectile {
     /** 0.7-C: rastro reto de bala no lugar do arco (tiros do Reno, da Mina e da baioneta do Narumi). */
     private static final EntityDataAccessor<Boolean> BULLET =
             SynchedEntityData.defineId(SlashProjectile.class, EntityDataSerializers.BOOLEAN);
+    /**
+     * VFX-5: receita do rastro ("perfil|tecnica_trail") que o cliente desenha atras do tiro a cada tick; vazio = so o
+     * risco/arco do renderer. So vai quando o perfil visual de quem atirou tem a receita.
+     */
+    private static final EntityDataAccessor<String> TRAIL =
+            SynchedEntityData.defineId(SlashProjectile.class, EntityDataSerializers.STRING);
     private static final double FORWARD_SPAWN = 0.8;
 
     private final Set<UUID> struck = new HashSet<>();
@@ -68,6 +75,10 @@ public class SlashProjectile extends Projectile {
     private int destructionPower;
     private float destructionRadius;
     private boolean destroyed;
+    /** VFX-5: tecnica que disparou o tiro (receitas "<tecnica>_impact"/"_explosion" do perfil de quem atirou). */
+    private String vfxKey = "";
+    /** VFX-5 (so no cliente): ultimo tick em que o rastro foi desenhado. */
+    private int trailTick = -1;
 
     public SlashProjectile(EntityType<? extends SlashProjectile> type, Level level) {
         super(type, level);
@@ -88,6 +99,17 @@ public class SlashProjectile extends Projectile {
      */
     public static int fire(LivingEntity owner, Vec3 direction, SlashSpec spec, float damage, float kaijuFactor,
             int destructionPower, float destructionRadius) {
+        return fire(owner, direction, spec, damage, kaijuFactor, destructionPower, destructionRadius, "");
+    }
+
+    /**
+     * VFX-5: com a tecnica ({@code vfxKey}) o tiro leva as receitas dela: rastro, impacto e explosao do perfil visual
+     * de quem atirou (Mina verde, gelo do Reno), no lugar dos efeitos comuns.
+     */
+    public static int fire(LivingEntity owner, Vec3 direction, SlashSpec spec, float damage, float kaijuFactor,
+            int destructionPower, float destructionRadius, String vfxKey) {
+        String trail = !vfxKey.isEmpty() && VfxService.hasRecipe(owner, vfxKey + "_trail")
+                ? VfxService.profileOf(owner).map(id -> id + "|" + vfxKey + "_trail").orElse("") : "";
         Vec3 dir = direction.normalize();
         float yaw = (float) Math.toDegrees(Math.atan2(-dir.x, dir.z));
         float pitch = (float) Math.toDegrees(-Math.asin(Mth.clamp(dir.y, -1.0, 1.0)));
@@ -111,6 +133,8 @@ public class SlashProjectile extends Projectile {
             slash.vulnerable = spec.vulnerable();
             slash.destructionPower = destructionPower;
             slash.destructionRadius = Math.max(destructionRadius, spec.explosionRadius());
+            slash.vfxKey = vfxKey;
+            slash.entityData.set(TRAIL, trail);
             slash.setPos(owner.getEyePosition().subtract(0, 0.3, 0).add(heading.scale(FORWARD_SPAWN)));
             slash.setDeltaMovement(heading.scale(spec.speed()));
             slash.setYRot(yaw + offset);
@@ -126,6 +150,7 @@ public class SlashProjectile extends Projectile {
         builder.define(ROLL, 0.0F);
         builder.define(WIDTH, 1.2F);
         builder.define(BULLET, false);
+        builder.define(TRAIL, "");
     }
 
     @Override
@@ -157,7 +182,7 @@ public class SlashProjectile extends Projectile {
                 explode(to);
                 return;
             }
-            VfxService.play((ServerLevel) level(), VfxService.IMPACT, to, motion, 0.6F, 0.0F, getOwner());
+            impact(to, motion);
             discard();
             return;
         }
@@ -178,7 +203,12 @@ public class SlashProjectile extends Projectile {
      */
     private void explode(Vec3 at) {
         ServerLevel server = (ServerLevel) level();
-        VfxService.play(server, VfxService.EXPLOSION, at, getDeltaMovement(), explosionRadius, 0.3F);
+        if (hasRecipe("_explosion")) {
+            VfxService.play(server, VfxService.TECHNIQUE, at, getDeltaMovement(), 1.0F, 0.3F, getOwner(),
+                    vfxKey + "_explosion");
+        } else {
+            VfxService.play(server, VfxService.EXPLOSION, at, getDeltaMovement(), explosionRadius, 0.3F);
+        }
         server.playSound(null, at.x, at.y, at.z, SoundEvents.GENERIC_EXPLODE, SoundSource.HOSTILE, 1.5F, 1.1F);
         destroyAt(at);
         if (getOwner() instanceof LivingEntity source) {
@@ -262,14 +292,49 @@ public class SlashProjectile extends Projectile {
             if (target.hurt(damageSource, amount)) {
                 slow(target);
                 Vec3 center = target.getBoundingBox().getCenter();
-                VfxService.play((ServerLevel) level(), VfxService.IMPACT, center, getDeltaMovement(), 0.6F, 0.0F,
-                        getOwner());
+                impact(center, getDeltaMovement());
                 if (first == null) {
                     first = center;
                 }
             }
         }
         return first;
+    }
+
+    /** VFX-5: impacto pela receita "<tecnica>_impact" de quem atirou (geada do gelo); sem ela, o comum. */
+    private void impact(Vec3 at, Vec3 motion) {
+        if (hasRecipe("_impact")) {
+            VfxService.play((ServerLevel) level(), VfxService.TECHNIQUE, at, motion, 1.0F, 0.0F, getOwner(),
+                    vfxKey + "_impact");
+        } else {
+            VfxService.play((ServerLevel) level(), VfxService.IMPACT, at, motion, 0.6F, 0.0F, getOwner());
+        }
+    }
+
+    private boolean hasRecipe(String suffix) {
+        return !vfxKey.isEmpty() && getOwner() != null && VfxService.hasRecipe(getOwner(), vfxKey + suffix);
+    }
+
+    /** VFX-5: receita do rastro: perfil e chave ("mina", "cannon_shot_trail"); vazio sem receita. */
+    public Optional<String[]> trail() {
+        String value = entityData.get(TRAIL);
+        int bar = value.indexOf('|');
+        return bar < 0 ? Optional.empty()
+                : Optional.of(new String[] {value.substring(0, bar), value.substring(bar + 1)});
+    }
+
+    /** VFX-5 (cliente): true uma vez por tick do projetil (o renderer desenha a cada quadro; o rastro, por tick). */
+    public boolean claimTrailTick() {
+        if (trailTick == tickCount) {
+            return false;
+        }
+        trailTick = tickCount;
+        return true;
+    }
+
+    /** Tecnica que disparou o tiro (GameTests). */
+    public String vfxKey() {
+        return vfxKey;
     }
 
     /** VFX-R2: o que o desenho do corte precisa no cliente (cor, inclinacao, largura, bala). */

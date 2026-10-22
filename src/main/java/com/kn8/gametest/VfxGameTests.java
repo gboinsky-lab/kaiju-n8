@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.kn8.KN8Constants;
+import com.kn8.common.combat.SlashProjectile;
 import com.kn8.common.config.ServerConfig;
 import com.kn8.common.data.KN8Data;
+import com.kn8.common.data.def.SlashSpec;
 import com.kn8.common.data.def.VfxProfileDef;
 import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.registry.KN8Entities;
@@ -22,6 +24,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.Cow;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
@@ -234,6 +237,52 @@ public final class VfxGameTests {
                     "Marca no chao do golpe pesado da Kikoru");
             helper.assertFalse(VfxService.hasRecipe(hoshinaEntity, "kosa_uchi_1_ground"),
                     "Sem receita, sem pacote do chao (Hoshina)");
+            helper.succeed();
+        });
+    }
+
+    /**
+     * VFX-5: a Mina carrega e explode em verde, o gelo do Reno/No. 6 tem rastro e impacto proprios; o tiro da tecnica
+     * leva a chave dela (rastro so com receita: o corte do Hoshina continua sem).
+     */
+    @GameTest(template = TEMPLATE)
+    public static void minaGreenCannonAndRenoIceTrail(GameTestHelper helper) {
+        VfxProfileDef mina = KN8Data.VFX_PROFILE.server().get(KN8Constants.id("mina"));
+        VfxProfileDef reno = KN8Data.VFX_PROFILE.server().get(KN8Constants.id("reno"));
+        VfxProfileDef no6 = KN8Data.VFX_PROFILE.server().get(KN8Constants.id("reno_no6"));
+        helper.assertTrue(mina != null && reno != null && no6 != null, "Perfis da Mina e do Reno");
+        for (String key : List.of("charged_cannon_charge", "anti_giant_shot_charge", "cannon_shot_trail",
+                "cannon_shot_explosion", "anti_giant_shot_explosion")) {
+            helper.assertTrue(mina.recipe(key).isPresent(), "Receita da Mina: " + key);
+        }
+        int blast = mina.palette().resolve(mina.recipe("cannon_shot_explosion").orElseThrow().stream()
+                .filter(layer -> "wave".equals(layer.shape())).findFirst().orElseThrow().color());
+        helper.assertTrue(green(blast) > red(blast) + 0.3F && green(blast) > blue(blast) + 0.2F,
+                "Anel da explosao verde: " + VfxColors.format(blast));
+        helper.assertTrue(reno.recipe("freeze_round_trail").isPresent() && reno.recipe("freeze_round_impact")
+                .isPresent(), "Rastro e impacto da municao congelante");
+        for (String key : List.of("ice_spear_trail", "freeze_burst_explosion", "ice_field")) {
+            helper.assertTrue(no6.recipe(key).isPresent(), "Receita do Reno No. 6: " + key);
+        }
+        int frost = no6.palette().resolve(no6.recipe("ice_spear_impact").orElseThrow().get(1).color());
+        helper.assertTrue(blue(frost) > red(frost) + 0.2F, "Gelo azul: " + VfxColors.format(frost));
+        HoshinaEntity minaEntity = helper.spawnWithNoFreeWill(KN8Entities.MINA.get(), new BlockPos(1, 2, 1));
+        HoshinaEntity hoshinaEntity = helper.spawnWithNoFreeWill(KN8Entities.HOSHINA.get(), new BlockPos(5, 2, 1));
+        helper.runAfterDelay(2, () -> {
+            SlashSpec cannon = new SlashSpec(1, 0.0F, 0.0F, 2.5F, 44.0F, 0.6F, 0x3FCF5A, true, 2.5F, 0, 1, 0, 1.0F,
+                    0.0F);
+            SlashProjectile.fire(minaEntity, new Vec3(0, 0, 1), cannon, 1.0F, 1.0F, 0, 0.0F, "cannon_shot");
+            SlashProjectile.fire(hoshinaEntity, new Vec3(0, 0, 1), cannon, 1.0F, 1.0F, 0, 0.0F, "kuuchi");
+            List<SlashProjectile> shots = helper.getLevel().getEntitiesOfClass(SlashProjectile.class,
+                    minaEntity.getBoundingBox().inflate(12.0));
+            SlashProjectile fromMina = shots.stream().filter(shot -> shot.getOwner() == minaEntity).findFirst()
+                    .orElseThrow();
+            SlashProjectile fromHoshina = shots.stream().filter(shot -> shot.getOwner() == hoshinaEntity)
+                    .findFirst().orElseThrow();
+            helper.assertTrue("cannon_shot".equals(fromMina.vfxKey()) && fromMina.trail()
+                    .map(trail -> trail[1].equals("cannon_shot_trail")).orElse(false), "Tiro da Mina com rastro");
+            helper.assertTrue(fromHoshina.trail().isEmpty(), "Corte do Hoshina sem receita de rastro");
+            shots.forEach(SlashProjectile::discard);
             helper.succeed();
         });
     }

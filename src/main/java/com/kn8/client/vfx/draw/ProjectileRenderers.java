@@ -1,20 +1,25 @@
 // src/main/java/com/kn8/client/vfx/draw/ProjectileRenderers.java
 package com.kn8.client.vfx.draw;
 
+import java.util.Optional;
+
 import org.joml.Matrix4f;
 
+import com.kn8.client.vfx.KaijuVfx;
 import com.kn8.common.combat.SlashProjectile;
 import com.kn8.common.kaiju.KaijuProjectile;
 import com.kn8.core.vfx.VfxColors;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 
 /**
@@ -33,6 +38,8 @@ public final class ProjectileRenderers {
     public static final class Slash extends EntityRenderer<SlashProjectile> {
         private static final int STEPS = 16;
         private static final float ARC_DEGREES = 70.0F;
+        /** VFX-5: bala a partir desta largura ganha a cabeca acesa. */
+        private static final float HEAVY_WIDTH = 0.6F;
 
         public Slash(EntityRendererProvider.Context context) {
             super(context);
@@ -49,6 +56,7 @@ public final class ProjectileRenderers {
             Vec3 camera = entityRenderDispatcher.camera.getPosition().subtract(entity.getPosition(partial));
             int color = entity.color();
             int light2 = VfxColors.shade(color, 0.6F);
+            trail(entity);
             if (entity.bullet()) {
                 double width = Math.max(0.08, Math.min(0.5, entity.width() * 0.5));
                 Vec3 tail = motion.scale(-1.5);
@@ -56,6 +64,11 @@ public final class ProjectileRenderers {
                 Drawn.ribbon(glow, m, tail, Vec3.ZERO, width * 0.2, width, camera, color, 0.0F, 1.0F);
                 Drawn.ribbon(glow, m, tail.scale(0.5), Vec3.ZERO, width * 0.1, width * 0.4, camera, light2, 0.0F,
                         1.0F);
+                if (entity.width() >= HEAVY_WIDTH) {
+                    // VFX-5: projetil espesso (canhao da Mina, cristal do Reno No. 6): cabeca acesa na frente.
+                    Drawn.disc(glow, m, Vec3.ZERO, entity.width() * 0.55, camera, color, 0.9F, 14);
+                    Drawn.disc(glow, m, Vec3.ZERO, entity.width() * 0.25, camera, light2, 1.0F, 10);
+                }
                 return;
             }
             Vec3 forward = motion.normalize();
@@ -86,6 +99,28 @@ public final class ProjectileRenderers {
                 Drawn.ribbon(glow, m, outer[i], outer[i + 1], width * 0.08, width * 0.08, camera, color, 1.0F, 1.0F);
                 Drawn.ribbon(glow, m, outer[i], outer[i + 1], width * 0.03, width * 0.03, camera, light2, 1.0F, 1.0F);
             }
+        }
+
+        /**
+         * VFX-5: rastro da tecnica (fumaca cinza do canhao, cristais e nevoa do gelo), uma vez por tick do projetil,
+         * pela receita do perfil de quem atirou, no tamanho do corpo dele.
+         */
+        private static void trail(SlashProjectile entity) {
+            if (!entity.claimTrailTick() || !(entity.level() instanceof ClientLevel level)) {
+                return;
+            }
+            entity.trail().ifPresent(trail -> {
+                Optional<ResourceLocation> id = Optional.ofNullable(ResourceLocation.tryParse(trail[0]));
+                Vec3 at = entity.position();
+                if (!KaijuVfx.inRange(at)) {
+                    return;
+                }
+                Entity owner = entity.getOwner();
+                KaijuVfx.Body body = KaijuVfx.Body.of(owner == null ? 1.8F : owner.getBbHeight());
+                KaijuVfx.profile(id).ifPresent(profile -> profile.recipe(trail[1]).ifPresent(layers ->
+                        KaijuVfx.playRecipe(level, profile, layers, at, entity.getDeltaMovement(), 1.0F, body,
+                                KaijuVfx.budget(), KaijuVfx.GenericEffect.NONE)));
+            });
         }
 
         @Override
