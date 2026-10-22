@@ -13665,6 +13665,12 @@
             ]
           }
         }
+      },
+      "particle_effects": {
+        "0.0": {
+          "effect": "wing_beat",
+          "locator": "back"
+        }
       }
     },
     "kikoru_no4.wings.fold": {

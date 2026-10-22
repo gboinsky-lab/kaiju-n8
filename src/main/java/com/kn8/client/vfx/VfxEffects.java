@@ -149,6 +149,9 @@ public final class VfxEffects {
         return switch (locator) {
             case "head", "mouth", "eyes" -> front.add(0, height * 0.85, 0);
             case "ground", "feet" -> front.add(0, 0.1, 0);
+            // VFX-4B: costas (asas da Kikoru No. 4).
+            case "back", "wings" -> entity.position().subtract(forward.scale(entity.getBbWidth() * 0.6))
+                    .add(0, height * 0.7, 0);
             case "item_left", "left_hand" -> front.add(side.scale(entity.getBbWidth() * 0.4)).add(0, height * 0.6, 0);
             case "item_right", "right_hand" ->
                     front.add(side.scale(-entity.getBbWidth() * 0.4)).add(0, height * 0.6, 0);

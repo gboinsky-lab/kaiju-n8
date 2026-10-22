@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import com.kn8.KN8Constants;
 import com.kn8.common.config.ServerConfig;
+import com.kn8.common.data.KN8Data;
 import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.soldier.SoldierEntity;
 import com.kn8.common.soldier.special.HoshinaEntity;
@@ -123,6 +124,15 @@ public final class VfxService {
             return Optional.of(KN8Constants.id("player"));
         }
         return Optional.empty();
+    }
+
+    /**
+     * VFX-4B: o perfil visual de {@code source} tem receita para {@code key}? Efeitos que so existem com receita (a
+     * marca do golpe no chao) so viram pacote quando ha o que desenhar.
+     */
+    public static boolean hasRecipe(Entity source, String key) {
+        return profileOf(source).map(id -> KN8Data.VFX_PROFILE.server().get(id))
+                .flatMap(def -> def.recipe(key)).isPresent();
     }
 
     /** VFX-R2: efeito sem dono com a chave dada (cor "#rrggbb", forma do aviso) e o tamanho de quem o causa. */

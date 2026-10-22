@@ -22,6 +22,10 @@ MARCAS = {
         # Demonstracao da VFX-1: as presas brilham em amarelo no inicio da mordida (a receita fica no perfil).
         'trichonephila.action.bite': [(0.0, 'bite_windup', 'mouth')],
     },
+    # VFX-4B: vento ciano saindo das costas a cada batida das asas da Kikoru No. 4 (controller "wings", so no ar).
+    'kikoru_no4': {
+        'kikoru_no4.wings.flap': [(0.0, 'wing_beat', 'back')],
+    },
     # VFX-2: rastro curto e grosso do punho do No. 8 em cada soco (tempos = tick do golpe no JSON / 20).
     'kaiju_no8': {
         'kaiju_no8.action.rush_combo': [(0.2, 'fist_trail', 'item_right'), (0.4, 'fist_trail', 'item_left'),

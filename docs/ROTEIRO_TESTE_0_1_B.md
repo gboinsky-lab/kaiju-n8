@@ -1046,3 +1046,15 @@ Servidor dedicado + 2 clientes, de noite.
 | 77.4 | `/summon kn8:primigenius_honju`, três `kn8:soldier` de rifle, `kn8:mina` e `kn8:hoshina` a ~12 blocos | Antes do pisão, a área no chão amarela que vai a laranja/vermelho; tiros como riscos amarelos; cortes do Hoshina voando em meia-lua violeta; explosão do canhão da Mina desenhada |
 | 77.5 | `/summon kn8:hoshina` e `/kn8 aura release @e[type=kn8:hoshina] 100` | Raios contínuos violeta saindo do corpo, labaredas subindo, anel no chão; nenhum pó colorido |
 | 77.6 | Kaiju andando, golpe no chão do machado, desmonte de carcaça | Continuam os pedacinhos de bloco/item do vanilla (meio-termo) |
+
+## 78. Kikoru e Kikoru No. 4 (VFX-4B)
+
+Servidor dedicado + 2 clientes, de noite. Prévia: `/execute positioned ~ ~1.2 ~4 run kn8 vfx play kn8:slash kn8:kikoru 1 <golpe>` (para o chão: `~ ~ ~4` e `kn8:technique`).
+
+| # | Passo | Esperado |
+|---|---|---|
+| 78.1 | `axe_slash/1` e `heavy_swing/1` | Arco largo e grosso dourado com fio claro (bem mais largo que o corte do Hoshina), raios dourados, lascas de pedra caindo, poeira |
+| 78.2 | `kn8:technique kn8:kikoru 1 heavy_swing_1_ground` e `ground_smash` | Rachaduras escuras com fio dourado, anel dourado no chão, coluna de poeira; no esmagamento, cratera maior e raios subindo |
+| 78.3 | `kn8:technique kn8:kikoru 1 shockwave` | Onda dourada e pedras saltando numa linha à frente |
+| 78.4 | `kn8:slash kn8:kikoru_no4 1 dive_strike/1` e `kn8:technique kn8:kikoru_no4 1 dive_strike_1_ground` | Arco dourado vertical com anel de ar ciano; no chão, anel ciano com borda dourada |
+| 78.5 | `/summon kn8:kikoru` e `kn8:kikoru_no4` perto de um `kn8:primigenius_honju` | Na luta, os golpes da Kikoru com arco dourado e, nos pesados, as rachaduras no chão; a No. 4 voando com traços ciano saindo das costas a cada batida das asas |

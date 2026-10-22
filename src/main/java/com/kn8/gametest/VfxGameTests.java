@@ -205,6 +205,39 @@ public final class VfxGameTests {
         helper.succeed();
     }
 
+    /**
+     * VFX-4B: a Kikoru tem golpes de machado proprios (arco largo dourado, nao a lamina fina do Hoshina), marca no
+     * chao so com receita e o vento das asas do Numbers 4 em ciano.
+     */
+    @GameTest(template = TEMPLATE)
+    public static void kikoruAxeIsWideGoldAndGroundHasRecipe(GameTestHelper helper) {
+        VfxProfileDef kikoru = KN8Data.VFX_PROFILE.server().get(KN8Constants.id("kikoru"));
+        VfxProfileDef hoshina = KN8Data.VFX_PROFILE.server().get(KN8Constants.id("hoshina"));
+        VfxProfileDef no4 = KN8Data.VFX_PROFILE.server().get(KN8Constants.id("kikoru_no4"));
+        helper.assertTrue(kikoru != null && hoshina != null && no4 != null, "Perfis da Kikoru e do Hoshina");
+        VfxProfileDef.Layer band = kikoru.recipe("axe_slash/1").orElseThrow().stream()
+                .filter(layer -> "band".equals(layer.shape())).findFirst().orElseThrow();
+        int gold = kikoru.palette().resolve(band.color());
+        helper.assertTrue(band.size() >= 0.6F && red(gold) > blue(gold) + 0.3F,
+                "Arco do machado largo e dourado: " + band.size() + " " + VfxColors.format(gold));
+        float hoshinaWidth = hoshina.recipe("kosa_uchi").orElseThrow().get(0).size();
+        helper.assertTrue(band.size() > hoshinaWidth * 3, "Machado bem mais grosso que a lamina do Hoshina");
+        for (String key : List.of("heavy_swing_1_ground", "shockwave", "ground_smash", "guard_break_1_ground")) {
+            helper.assertTrue(kikoru.recipe(key).isPresent(), "Receita da Kikoru: " + key);
+        }
+        int wind = no4.palette().resolve(no4.recipe("wing_beat").orElseThrow().get(0).color());
+        helper.assertTrue(blue(wind) > red(wind) + 0.3F, "Vento das asas ciano: " + VfxColors.format(wind));
+        HoshinaEntity kikoruEntity = helper.spawnWithNoFreeWill(KN8Entities.KIKORU.get(), new BlockPos(1, 2, 1));
+        HoshinaEntity hoshinaEntity = helper.spawnWithNoFreeWill(KN8Entities.HOSHINA.get(), new BlockPos(3, 2, 1));
+        helper.runAfterDelay(2, () -> {
+            helper.assertTrue(VfxService.hasRecipe(kikoruEntity, "heavy_swing_1_ground"),
+                    "Marca no chao do golpe pesado da Kikoru");
+            helper.assertFalse(VfxService.hasRecipe(hoshinaEntity, "kosa_uchi_1_ground"),
+                    "Sem receita, sem pacote do chao (Hoshina)");
+            helper.succeed();
+        });
+    }
+
     private static int accent(String id) {
         VfxProfileDef def = KN8Data.VFX_PROFILE.server().get(KN8Constants.id(id));
         return def == null ? 0 : def.palette().resolve("accent");

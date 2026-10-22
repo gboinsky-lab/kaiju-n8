@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import com.kn8.KN8Constants;
 import com.kn8.common.data.def.SpecialSoldierDef;
+import com.kn8.common.vfx.VfxKeyframes;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -73,8 +74,9 @@ public class KikoruNo4Entity extends KikoruEntity {
     protected void registerExtraControllers(AnimatableManager.ControllerRegistrar controllers) {
         RawAnimation flap = RawAnimation.begin().thenLoop(VARIANT_NO4 + ".wings.flap");
         RawAnimation fold = RawAnimation.begin().thenLoop(VARIANT_NO4 + ".wings.fold");
-        controllers.add(new AnimationController<>(this, "wings", 4, state ->
-                state.setAndContinue(onGround() ? fold : flap)));
+        // VFX-4B: as marcas da batida das asas (vento ciano) saem do controller das asas.
+        controllers.add(VfxKeyframes.attach(new AnimationController<>(this, "wings", 4, state ->
+                state.setAndContinue(onGround() ? fold : flap))));
     }
 
     @Override

@@ -86,6 +86,7 @@ e perde fumaça, faíscas soltas e detritos. O tremor de câmera segue `[fx] cam
 | `ground_smash` | cratera: rachaduras + coluna de poeira + anel dourado |
 | Origem | cabeça do machado (keyframe do item na animação) |
 | Baixa qualidade | arco do machado e anel do impacto |
+| **Feito (VFX-4B)** | `vfx_profile/kikoru.json`: `axe_slash/1-2` (arco dourado `#E8B830` com fio `#FFF6D0`, ±35°, largura 0,75, 9 ticks, raios dourados, lascas de pedra `#6E6450`, poeira `#8C8270`), `heavy_swing/1` (vertical, largura 1,0, clarão) + `heavy_swing_1_ground` (rachadura escura com fio dourado, anel dourado, meia-lua no chão, coluna de poeira), `dash_strike/1`, `guard_break/1` (+ `_ground`), `shockwave` (onda e pedras em linha até 8 blocos), `ground_smash` (cratera de 9 rachaduras, anel 4,5, coluna, raios subindo), `impact`, `counter` |
 
 ### Kikoru com o Numbers 4 (`kikoru_no4`)
 
@@ -96,6 +97,7 @@ e perde fumaça, faíscas soltas e detritos. O tremor de câmera segue `[fx] cam
 | Proposta | **vento** (voo é CANON): linhas de ar ciano saindo das asas a cada batida e atrás dela no voo (streaks finos e longos); `dive_strike`: cone de ar ao redor do corpo e, no impacto, anel ciano com borda dourada; `aerial_dash`: rastro de vento reto; os golpes do machado mantêm o dourado da Kikoru |
 | Origem | asas (`wing_left`/`wing_right`) e machado |
 | Baixa qualidade | rastro do voo e anel do mergulho |
+| **Feito (VFX-4B)** | `vfx_profile/kikoru_no4.json`: golpes do machado dourados com linhas de vento ciano (`high_speed_axe`, `air_combo`), `dive_strike/1` (vertical + anel de ar ciano) + `dive_strike_1_ground` (anel ciano com borda dourada, rachadura com fio ciano), `vertical_assault/1` (+ `_ground`), `aerial_dash/1` (rastro de vento de 4 blocos), `wing_beat` (traços ciano em anel saindo das costas a cada batida, marca na `kikoru_no4.wings.flap`) |
 
 ### Mina Ashiro (`mina`)
 
