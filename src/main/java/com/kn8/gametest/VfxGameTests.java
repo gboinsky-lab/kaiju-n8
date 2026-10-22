@@ -287,6 +287,38 @@ public final class VfxGameTests {
         });
     }
 
+    /**
+     * VFX-6: estocada do Narumi e linha reta (sem arco; so a varrida e arco), o Numbers 1 tem a previsao, o Thunder
+     * Emperor e um soco sem raio (Miguel) e o Isao sem o Numbers 2 nao tem onda de energia.
+     */
+    @GameTest(template = TEMPLATE)
+    public static void narumiThrustsAreLinesAndThunderEmperorHasNoBolt(GameTestHelper helper) {
+        VfxProfileDef narumi = KN8Data.VFX_PROFILE.server().get(KN8Constants.id("narumi"));
+        VfxProfileDef no1 = KN8Data.VFX_PROFILE.server().get(KN8Constants.id("narumi_no1"));
+        VfxProfileDef isao = KN8Data.VFX_PROFILE.server().get(KN8Constants.id("isao"));
+        VfxProfileDef base = KN8Data.VFX_PROFILE.server().get(KN8Constants.id("isao_base"));
+        helper.assertTrue(narumi != null && no1 != null && isao != null && base != null, "Perfis do Narumi e do Isao");
+        for (String key : List.of("thrust_combo/1", "thrust_combo/3", "lunge/1")) {
+            List<VfxProfileDef.Layer> layers = narumi.recipe(key).orElseThrow();
+            helper.assertTrue(layers.stream().anyMatch(layer -> "beam".equals(layer.shape()))
+                    && layers.stream().noneMatch(layer -> "band".equals(layer.shape())), "Estocada em linha: " + key);
+        }
+        helper.assertTrue(narumi.recipe("sweeping_slash/1").orElseThrow().stream()
+                .anyMatch(layer -> "band".equals(layer.shape())), "Varrida em arco");
+        helper.assertTrue(no1.recipe("foresight").isPresent() && narumi.recipe("foresight").isEmpty(),
+                "Previsao so no Numbers 1");
+        helper.assertTrue(isao.recipe("thunder_emperor/2").orElseThrow().stream()
+                .noneMatch(layer -> "bolt".equals(layer.shape())), "Thunder Emperor sem raio");
+        helper.assertTrue(isao.recipe("thunder_emperor_charge").isPresent(), "Carga do Thunder Emperor");
+        for (String key : List.of("jab_combo/1", "heavy_straight/1")) {
+            int color = base.palette().resolve(base.recipe(key).orElseThrow().get(0).color());
+            float spread = Math.max(red(color), Math.max(green(color), blue(color)))
+                    - Math.min(red(color), Math.min(green(color), blue(color)));
+            helper.assertTrue(spread < 0.2F, "Soco sem energia (sem cor saturada): " + key);
+        }
+        helper.succeed();
+    }
+
     private static int accent(String id) {
         VfxProfileDef def = KN8Data.VFX_PROFILE.server().get(KN8Constants.id(id));
         return def == null ? 0 : def.palette().resolve("accent");

@@ -140,3 +140,5 @@ bloco (passo, rachadura) e da carcaça no desmonte. Próximo: VFX-4B (Kikoru) a 
 VFX-4B feita (2026-10-22): Kikoru e Kikoru No. 4 (ver a ficha). Próxima: VFX-5.
 
 VFX-5 feita (2026-10-22): Mina, Reno e Reno No. 6 (ver as fichas); o tiro da técnica leva a chave dela (receitas `_charge`, `_trail`, `_impact`, `_explosion`). Próxima: VFX-6 (Narumi, Narumi No. 1, Isao).
+
+VFX-6 feita (2026-10-22): Narumi, Narumi No. 1, Isao e Isao sem o Numbers 2 (ver as fichas). Próxima: VFX-7 (formas do No. 9).

@@ -1071,3 +1071,17 @@ Servidor dedicado + 2 clientes, de noite. Prévia: `/execute positioned ~ ~ ~6 r
 | 79.4 | `kn8:reno` `freeze_round_impact` e `kn8:reno_no6` `ice_spear_impact` | Anel de geada, lascas de gelo azul caindo, faíscas brancas e névoa clara |
 | 79.5 | `kn8:reno_no6` `freeze_burst_explosion` e `ice_field` | Explosão de estilhaços azuis com névoa e duas ondas (azul e azul-marinho); campo: onda azul de 6 blocos no chão, rachaduras de gelo com fio branco, cristais subindo e névoa baixa |
 | 79.6 | `/summon kn8:mina` a ~20 blocos de um `kn8:primigenius_honju`; depois `kn8:reno` e `kn8:reno_no6` | Tiros da Mina verdes com fumaça cinza atrás e explosão verde; tiros do Reno branco-azulados, lascas de gelo no kaiju e a barra com "EXPOSTO" depois da munição congelante |
+
+## 80. Narumi, Narumi No. 1, Isao e Isao sem o Numbers 2 (VFX-6)
+
+Servidor dedicado + 2 clientes, de noite, câmera de lado. Prévia: `/execute positioned ~ ~1.2 ~4 rotated 0 0 run kn8 vfx play kn8:slash <perfil> 1 <golpe>` (chão e carga: `~ ~ ~4` e `kn8:technique`).
+
+| # | Passo | Esperado |
+|---|---|---|
+| 80.1 | `kn8:narumi` `thrust_combo/3` e `lunge/1` | Estocada = agulha reta rosa com miolo branco terminando no ponto do golpe (nada de arco), brilho na ponta; a investida mais longa com riscos atrás |
+| 80.2 | `kn8:narumi` `sweeping_slash/1` | O único arco do Narumi: faixa rosa com fio branco |
+| 80.3 | `kn8:narumi_no1` `predicted_counter/1`, `weak_point_thrust/1` e (`kn8:technique`, `~ ~1.6 ~4`) `foresight` | Rastro duplo (imagem prevista mais apagada, depois o golpe real); marca no ponto fraco com anéis; brilho pequeno nos olhos com anel rosa |
+| 80.4 | `/summon kn8:narumi_no1` perto de um `kn8:primigenius_honju`, com `[kaijuAi] debugLog` ligado | A cada "previsao: … antes do impacto" no log, anel nos olhos do Narumi e uma linha fina rosa no chão do kaiju até onde o golpe vai bater, até o impacto |
+| 80.5 | `kn8:isao` `barrage_blast/5`, `force_blast`, `spiral_blast_impact` | Anéis de ar laranja saindo do golpe com poeira; leque de ondas laranja e bege no chão; impacto em anel |
+| 80.6 | `kn8:isao` `thunder_emperor_charge`, `thunder_emperor/2` e `thunder_emperor_2_ground` | Carga laranja crescendo nos punhos; soco único com clarão enorme e três anéis (sem raio, decisão do Miguel); no chão onda dupla, rachaduras com fio laranja e coluna de poeira |
+| 80.7 | `kn8:isao_base` `heavy_straight/1` | Só impacto físico: anel de ar claro, lascas e poeira; nenhuma cor de energia |

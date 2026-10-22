@@ -446,8 +446,27 @@ public class HoshinaEntity extends SoldierEntity {
                 : Optional.of(tied.get(getRandom().nextInt(tied.size())));
         if (impact >= 0 && chosen.isPresent()) {
             AiTuning.logMove(this, "previsao: " + chosen.get() + " antes do impacto do kaiju (" + impact + " ticks)");
+            foresight((KaijuEntity) target, impact);
         }
         return chosen;
+    }
+
+    /**
+     * VFX-6 (Numbers 1: as retinas preveem o movimento): ao ler o golpe do kaiju, brilho nos olhos (receita
+     * "foresight") e uma linha fina no chao do kaiju ate onde o golpe vai bater, ate o impacto. So com a receita.
+     */
+    private void foresight(KaijuEntity kaiju, int impact) {
+        if (!(level() instanceof ServerLevel server) || !VfxService.hasRecipe(this, FORESIGHT)) {
+            return;
+        }
+        VfxService.play(server, VfxService.TECHNIQUE, getEyePosition(), kaiju.position().subtract(position()), 1.0F,
+                0.0F, this, FORESIGHT);
+        Entity hit = kaiju.abilityTarget().orElse(this);
+        int color = VfxService.profileOf(this).map(id -> KN8Data.VFX_PROFILE.server().get(id))
+                .map(def -> def.palette().resolve("accent")).orElse(FORESIGHT_COLOR);
+        VfxService.keyed(server, VfxService.TELEGRAPH, new Vec3(kaiju.getX(), hit.getY(), kaiju.getZ()),
+                new Vec3(hit.getX(), hit.getZ(), FORESIGHT_HALF_WIDTH), 0.0F,
+                String.format("lane#%06X@%d", color & 0xFFFFFF, impact), getBbHeight());
     }
 
     /** MOV-5C: a tecnica esta na lista {@code heavy} do perfil (golpe comprometido). */
@@ -527,6 +546,11 @@ public class HoshinaEntity extends SoldierEntity {
                 SWING_VOLUME, 1.2F);
         return true;
     }
+
+    /** VFX-6: receita da previsao do Numbers 1, meia largura da linha e cor sem perfil. */
+    private static final String FORESIGHT = "foresight";
+    private static final double FORESIGHT_HALF_WIDTH = 0.06;
+    private static final int FORESIGHT_COLOR = 0xFF8CC0;
 
     @Override
     public void tick() {

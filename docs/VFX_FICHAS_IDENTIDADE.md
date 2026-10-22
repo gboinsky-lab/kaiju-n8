@@ -142,6 +142,7 @@ e perde fumaça, faíscas soltas e detritos. O tremor de câmera segue `[fx] cam
 | Hoje | aura rosa `narumi_pink` [SUPOSIÇÃO antiga]; tiro rosa |
 | Proposta | **estocadas = linhas retas, curtas e finas** (silhueta de agulha, nada de arco), brilho no ponto da lâmina; `sweeping_slash` é o único arco; `bayonet_shot` = rastro fino e reto. Cor (Miguel, 2026-10-22): **rosa** (aura `narumi_pink` mantida) com miolo branco |
 | Baixa qualidade | as linhas das estocadas |
+| **Feito (VFX-6)** | `vfx_profile/narumi.json`: `thrust_combo/1-3`, `lunge/1`, `counter` = agulha reta (`beam` rosa largo + rosa fino + miolo branco, terminando no contato, 6-8 ticks) com brilho na ponta e lascas; `sweeping_slash/1` = o único arco (faixa rosa com fio branco); `bayonet_shot` clarão e faíscas rosa na boca, `_impact` faíscas |
 
 ### Narumi com o Numbers 1 (`narumi_no1`)
 
@@ -151,6 +152,7 @@ e perde fumaça, faíscas soltas e detritos. O tremor de câmera segue `[fx] cam
 | Proposta | previsão (CANON: as retinas preveem o movimento): **brilho nos olhos** quando lê um golpe do kaiju e uma **linha fina de previsão** do kaiju até o ponto onde vai bater, durante o preparo [SUPOSIÇÃO da forma]; `weak_point_thrust` = marca no núcleo do kaiju antes da estocada; `predicted_counter` = rastro duplo (a "imagem" prevista e o golpe real). Cor: a do Narumi com mais branco |
 | Origem | olhos (osso da cabeça) e ponta da baioneta |
 | Baixa qualidade | brilho nos olhos e a estocada |
+| **Feito (VFX-6)** | `vfx_profile/narumi_no1.json`: as agulhas do Narumi em rosa mais claro; `predicted_counter/1` = rastro duplo (imagem prevista em `secondary`, o golpe real 2 ticks depois); `weak_point_thrust/1` = agulha longa com anéis e clarão no ponto fraco; **`foresight`** (código: `HoshinaEntity.foresight`, junto do log "previsao") = clarão pequeno e anel rosa nos olhos + linha fina rosa no chão do kaiju até onde o golpe vai bater (aviso `lane` com a cor do destaque, até o impacto) |
 
 ### Isao Shinomiya com o Numbers 2 (`isao`)
 
@@ -161,12 +163,14 @@ e perde fumaça, faíscas soltas e detritos. O tremor de câmera segue `[fx] cam
 | Hoje | aura laranja `isao_numbers2` [SUPOSIÇÃO antiga]; ondas laranja `#FF9F40`/`#FFD480` |
 | Proposta | **ar e impacto**, não fogo: Barrage Blast = sequência de anéis curtos de ar comprimido saindo dos punhos; Spiral Blast = projétil com rastro em espiral; Force Blast = leque de ondas largas; **Thunder Emperor** = o nome pede raio: descarga branco-amarelada no último golpe e o núcleo exposto marcado [A PESQUISAR a aparência na obra]. Cor (Miguel, 2026-10-22): **amarelo/laranja** (aura `isao_numbers2` mantida), com o bege das manoplas na borda |
 | Baixa qualidade | anéis e a descarga final |
+| **Feito (VFX-6)** | `vfx_profile/isao.json`: `barrage_blast/1-5` anéis de ar laranja com miolo amarelo e poeira (o quinto maior); `spiral_blast` saída nos punhos, `_trail` anéis laranja e bege a cada tick (espiral de ar), `_impact` anel e poeira; `force_blast` anel nos punhos e leque de ondas laranja e bege no chão; **Thunder Emperor** (Miguel: soco único com toda a força, sem raio): `_charge` brilho laranja crescendo nos punhos no preparo, `/1` anel curto, `/2` clarão enorme e três anéis (amarelo, laranja, bege), `_2_ground` onda dupla, rachaduras com fio laranja e poeira |
 
 ### Isao sem o Numbers 2 (`isao_base`)
 
 | Item | Ficha |
 |---|---|
 | Proposta | socos sem energia: poeira e impacto físico; nenhuma onda. Usa o modelo do Isao (modelo próprio futuramente) |
+| **Feito (VFX-6)** | `vfx_profile/isao_base.json`: `jab_combo/1-4`, `elbow_strike/1`, `heavy_straight/1` (+ `_1_ground`) só físico: anel de ar claro, lascas bege e poeira; sem cor de energia |
 
 ### Soldado comum (`soldier`)
 
