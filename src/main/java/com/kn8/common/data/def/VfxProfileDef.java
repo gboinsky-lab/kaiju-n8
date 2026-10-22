@@ -59,10 +59,11 @@ public record VfxProfileDef(Palette palette, String material, Map<String, List<L
      * {@code spread} = raio/comprimento do padrao; {@code forward}/{@code up} = deslocamento da origem;
      * {@code delay} = ticks depois do evento (sequencia: rachar, fumaca, onda). VFX-2: os numeros sao para um corpo
      * da altura de referencia ({@code [fx] referenceHeight}, um humano) e crescem com o corpo de quem faz o efeito.
-     * {@code shape} {@code generic} toca o efeito comum do evento junto da receita.
+     * {@code shape} {@code generic} toca o efeito comum do evento junto da receita. VFX-3: {@code tilt} (graus) gira o
+     * plano do arco em volta da frente (X, diagonal, estrela).
      */
     public record Layer(String shape, String color, String pattern, int count, float size, float speed, float spread,
-            int lifetime, float forward, float up, int delay) {
+            int lifetime, float forward, float up, int delay, float tilt) {
         public static final Codec<Layer> CODEC = RecordCodecBuilder.create(i -> i.group(
                 Codec.STRING.fieldOf("shape").forGetter(Layer::shape),
                 Codec.STRING.optionalFieldOf("color", "primary").forGetter(Layer::color),
@@ -74,7 +75,8 @@ public record VfxProfileDef(Palette palette, String material, Map<String, List<L
                 Codec.intRange(1, 400).optionalFieldOf("lifetime", 10).forGetter(Layer::lifetime),
                 Codec.floatRange(-16.0F, 16.0F).optionalFieldOf("forward", 0.0F).forGetter(Layer::forward),
                 Codec.floatRange(-16.0F, 32.0F).optionalFieldOf("up", 0.0F).forGetter(Layer::up),
-                Codec.intRange(0, 200).optionalFieldOf("delay", 0).forGetter(Layer::delay)
+                Codec.intRange(0, 200).optionalFieldOf("delay", 0).forGetter(Layer::delay),
+                Codec.floatRange(-360.0F, 360.0F).optionalFieldOf("tilt", 0.0F).forGetter(Layer::tilt)
         ).apply(i, Layer::new));
 
         /** Camada que toca o efeito comum do evento ({@code size} = multiplicador da intensidade). */

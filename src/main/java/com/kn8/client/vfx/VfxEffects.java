@@ -168,7 +168,10 @@ public final class VfxEffects {
         Optional<VfxProfileDef> profile = KaijuVfx.profile(payload.source().profile());
         String path = payload.effect().getPath();
         String key = payload.source().key().isEmpty() ? path : payload.source().key();
-        Optional<List<VfxProfileDef.Layer>> recipe = profile.flatMap(def -> def.recipe(key).or(() -> def.recipe(path)));
+        // VFX-3: golpe a golpe ("yae_uchi/3"): a receita do golpe, senao a da tecnica, senao a do efeito.
+        String technique = key.contains("/") ? key.substring(0, key.indexOf('/')) : key;
+        Optional<List<VfxProfileDef.Layer>> recipe = profile.flatMap(def -> def.recipe(key)
+                .or(() -> def.recipe(technique)).or(() -> def.recipe(path)));
         VfxBudget budget = KaijuVfx.budget();
         // VFX-2: o efeito cresce com o corpo de quem o fez (kaiju grande, efeito grande).
         KaijuVfx.Body body = KaijuVfx.Body.of(payload.source().height());

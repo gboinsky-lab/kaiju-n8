@@ -126,6 +126,31 @@ public final class VfxGameTests {
         helper.succeed();
     }
 
+    /**
+     * VFX-3: cada forma do Hoshina com a propria silhueta (Yae-uchi = 8 arcos em estrela, Kosa-uchi em X), o
+     * Hoshina com o Numbers 10 com Juni-hitoe, cauda, guarda da cauda e Full Release; Kafka com a aura cinza.
+     */
+    @GameTest(template = TEMPLATE)
+    public static void hoshinaFormsHaveTheirOwnCuts(GameTestHelper helper) {
+        VfxProfileDef hoshina = KN8Data.VFX_PROFILE.server().get(KN8Constants.id("hoshina"));
+        VfxProfileDef no10 = KN8Data.VFX_PROFILE.server().get(KN8Constants.id("hoshina_no10"));
+        helper.assertTrue(hoshina != null && no10 != null, "Perfis do Hoshina");
+        java.util.Set<Float> star = new java.util.HashSet<>();
+        for (int i = 1; i <= 8; i++) {
+            star.add(hoshina.recipe("yae_uchi/" + i).orElseThrow().get(0).tilt());
+        }
+        helper.assertTrue(star.size() == 8, "Yae-uchi deveria ter 8 inclinacoes, tem " + star.size());
+        helper.assertTrue(hoshina.recipe("kosa_uchi").orElseThrow().stream().anyMatch(layer -> layer.tilt() > 0)
+                && hoshina.recipe("kosa_uchi").orElseThrow().stream().anyMatch(layer -> layer.tilt() < 0),
+                "Kosa-uchi deveria ser um X");
+        for (String key : List.of("juni_hitoe/1", "juni_hitoe/12", "tail", "tail_guard", "full_release")) {
+            helper.assertTrue(no10.recipe(key).isPresent(), "Hoshina No. 10 sem a receita " + key);
+        }
+        helper.assertTrue(KN8Data.SPECIAL_SOLDIER.server().get(KN8Constants.id("kafka")).aura()
+                .equals(KN8Constants.id("kafka_gray")), "Kafka com a aura cinza (Miguel, 2026-10-22)");
+        helper.succeed();
+    }
+
     private static int accent(String id) {
         VfxProfileDef def = KN8Data.VFX_PROFILE.server().get(KN8Constants.id(id));
         return def == null ? 0 : def.palette().resolve("accent");

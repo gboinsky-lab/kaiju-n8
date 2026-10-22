@@ -41,7 +41,7 @@ final class VfxCommands {
                                 .executes(ctx -> play(ctx, 1.0F, ""))
                                 .then(Commands.argument("intensity", FloatArgumentType.floatArg(0.1F, 10.0F))
                                         .executes(ctx -> play(ctx, FloatArgumentType.getFloat(ctx, "intensity"), ""))
-                                        .then(Commands.argument("recipe", StringArgumentType.word())
+                                        .then(Commands.argument("recipe", StringArgumentType.greedyString())
                                                 .executes(ctx -> play(ctx, FloatArgumentType.getFloat(ctx,
                                                         "intensity"), StringArgumentType.getString(ctx,
                                                         "recipe"))))))));

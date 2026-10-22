@@ -72,6 +72,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib.animation.AnimatableManager;
 import software.bernie.geckolib.animation.AnimationController;
@@ -790,8 +791,9 @@ public class HoshinaEntity extends SoldierEntity {
             return;
         }
         boolean last = index == count - 1;
+        // VFX-3: cada golpe com a propria receita ("yae_uchi/3"; sem ela, a da tecnica).
         if (strike(target, technique.hits().get(index), last ? technique.finalKnockback() : 0.0F, weapon.get(),
-                REACH_SLACK)) {
+                REACH_SLACK, techniqueId + "/" + (index + 1))) {
             landedHits++;
         }
         if (last && technique.exposeCoreTicks() > 0 && target instanceof KaijuEntity kaiju) {
@@ -854,7 +856,13 @@ public class HoshinaEntity extends SoldierEntity {
         heavy.ifPresent(value -> DestructionService.request(level, target.position(),
                 new AbilityDef.Destruction(value.radius(), value.power(), false, 1.0F), this));
         Vec3 aim = target.getBoundingBox().getCenter().subtract(getEyePosition()).normalize();
-        VfxService.play(level, VfxService.SLASH, target.getBoundingBox().getCenter(), aim, 0.8F, 0.0F, this, vfxKey);
+        // VFX-3: o corte sai na superficie do alvo voltada para quem golpeia (no centro de um kaiju de 8 m ficava
+        // escondido dentro do corpo).
+        Vec3 eye = getEyePosition();
+        AABB box = target.getBoundingBox();
+        Vec3 contact = new Vec3(Mth.clamp(eye.x, box.minX, box.maxX), Mth.clamp(eye.y, box.minY, box.maxY),
+                Mth.clamp(eye.z, box.minZ, box.maxZ));
+        VfxService.play(level, VfxService.SLASH, contact, aim, 0.8F, 0.0F, this, vfxKey);
         level.playSound(null, target.getX(), target.getY(), target.getZ(),
                 CombatService.weaponSound(weapon, "hit", SoundEvents.PLAYER_ATTACK_SWEEP), SoundSource.NEUTRAL,
                 SWING_VOLUME, 1.0F + getRandom().nextFloat() * 0.2F);

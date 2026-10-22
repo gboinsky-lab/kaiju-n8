@@ -124,7 +124,8 @@ public final class KaijuVfx {
                 int count = Math.round(layer.count() * intensity * body.count());
                 emit = () -> emit(level, type, color, VfxPatterns.Pattern.of(layer.pattern()), count,
                         layer.size() * size * body.size(), layer.speed() * Math.min(body.spread(), 3.0F),
-                        layer.spread() * intensity * body.spread(), layer.lifetime(), origin, flat, budget);
+                        layer.spread() * intensity * body.spread(), layer.lifetime(), origin, flat, layer.tilt(),
+                        budget);
             }
             if (layer.delay() <= 0) {
                 emit.run();
@@ -145,6 +146,13 @@ public final class KaijuVfx {
     /** Uma camada: {@code count} particulas pelo padrao, dentro do teto, na qualidade do cliente. */
     public static void emit(ClientLevel level, VfxParticleType type, int color, VfxPatterns.Pattern pattern, int count,
             float size, double speed, double spread, int lifetime, Vec3 at, Vec3 direction, VfxBudget budget) {
+        emit(level, type, color, pattern, count, size, speed, spread, lifetime, at, direction, 0.0, budget);
+    }
+
+    /** VFX-3: com o {@code tilt} do arco (graus em volta da frente). */
+    public static void emit(ClientLevel level, VfxParticleType type, int color, VfxPatterns.Pattern pattern, int count,
+            float size, double speed, double spread, int lifetime, Vec3 at, Vec3 direction, double tilt,
+            VfxBudget budget) {
         int granted = budget.take(count, VfxEffects.amount());
         if (granted <= 0) {
             return;
@@ -157,7 +165,7 @@ public final class KaijuVfx {
         }
         RandomSource random = level.random;
         for (int i = 0; i < granted; i++) {
-            double[] p = VfxPatterns.spawn(pattern, i, granted, direction.x, direction.z, spread, speed,
+            double[] p = VfxPatterns.spawn(pattern, i, granted, direction.x, direction.z, spread, speed, tilt,
                     random::nextDouble);
             level.addParticle(type.with(color, size, lifetime), at.x + p[0], at.y + p[1], at.z + p[2], p[3], p[4],
                     p[5]);

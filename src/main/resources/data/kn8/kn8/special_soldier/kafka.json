@@ -7,7 +7,7 @@
   "release": 0,
   "max_release": 10,
   "kaiju_damage": 0.3,
-  "aura": "kn8:defense_force",
+  "aura": "kn8:kafka_gray",
   "weapon": "kn8:rifle",
   "techniques": {
     "punch_combo": {

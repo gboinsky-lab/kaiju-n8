@@ -44,6 +44,15 @@ public final class VfxPatterns {
     /** Posicao (deslocamento do ponto) e velocidade de uma particula: {px, py, pz, vx, vy, vz}. */
     public static double[] spawn(Pattern pattern, int index, int count, double dirX, double dirZ, double spread,
             double speed, DoubleSupplier random) {
+        return spawn(pattern, index, count, dirX, dirZ, spread, speed, 0.0, random);
+    }
+
+    /**
+     * VFX-3: {@code tilt} (graus) gira o plano do arco em volta da frente: 0 = corte horizontal, 90 = vertical,
+     * +-40 = as diagonais de um X, passos de 22,5 = a estrela do Yae-uchi. So vale para {@code arc}.
+     */
+    public static double[] spawn(Pattern pattern, int index, int count, double dirX, double dirZ, double spread,
+            double speed, double tilt, DoubleSupplier random) {
         double flat = Math.sqrt(dirX * dirX + dirZ * dirZ);
         double fx = flat < 1.0E-6 ? 0.0 : dirX / flat;
         double fz = flat < 1.0E-6 ? 1.0 : dirZ / flat;
@@ -63,9 +72,14 @@ public final class VfxPatterns {
             case ARC -> {
                 // De -75 a +75 graus em volta da frente, no raio spread.
                 double angle = Math.toRadians(-75.0 + 150.0 * t);
-                double ax = fx * Math.cos(angle) - fz * Math.sin(angle);
-                double az = fz * Math.cos(angle) + fx * Math.sin(angle);
-                return new double[] {ax * spread, jitter(random, 0.15), az * spread, ax * speed * 0.3, 0.0,
+                // Lado = (-fz, 0, fx) girado em volta da frente pelo tilt, em direcao ao alto.
+                double roll = Math.toRadians(tilt);
+                double lateral = Math.sin(angle) * Math.cos(roll);
+                double ax = fx * Math.cos(angle) - fz * lateral;
+                double az = fz * Math.cos(angle) + fx * lateral;
+                double ay = Math.sin(angle) * Math.sin(roll);
+                double py = tilt == 0.0 ? jitter(random, 0.15) : ay * spread;
+                return new double[] {ax * spread, py, az * spread, ax * speed * 0.3, ay * speed * 0.3,
                         az * speed * 0.3};
             }
             case CONVERGE -> {

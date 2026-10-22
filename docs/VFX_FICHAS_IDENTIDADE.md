@@ -211,6 +211,15 @@ habilidade (forma).
 efeitos pequenos." Todas as receitas sao escritas para um corpo humano (1,8 m) e o jogo as aumenta pela altura de
 quem faz o efeito (VFX-2: tamanho x fator^0,75, alcance x fator^0,85, quantidade x fator^0,5; config `[fx]`).
 
+## Feito na VFX-3 (Hoshina e Hoshina No. 10)
+
+Receitas em `vfx_profile/hoshina.json` e `hoshina_no10.json`: um corte por golpe (`tecnica/n`), linha fina preta com
+fio violeta em cada inclinação da forma (Kuuchi, Kōsa-uchi, Ran-uchi, Kasumi-uchi, Yae-uchi, Kaeshi-uchi), contato
+com lascas violeta e traço branco; Jūni-hitoe com raios `#9A2A5A` e cruz final; cauda, guarda da cauda e Full Release
+vermelhos; aura do No. 10 `hoshina_no10_sync`. Kafka: aura `kafka_gray` (decisão do Miguel, 2026-10-22). Os cortes
+saem do ponto de contato no alvo (origem nas lâminas pelas marcas da animação: [SUPOSIÇÃO] fica para quando a
+posição do osso for lida).
+
 ## Feito na VFX-2 (Kafka e Kaiju No. 8)
 
 Receitas em `vfx_profile/kaiju_no8.json` e `kafka.json`, pela ficha acima: transformação (as duas direções), socos,

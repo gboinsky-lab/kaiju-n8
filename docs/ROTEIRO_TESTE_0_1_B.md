@@ -991,3 +991,17 @@ Servidor dedicado + 2 clientes.
 | 73.5 | Matar o kaiju e esperar 15 s sem alvo | Volta ao Kafka: linhas ciano apagando e vapor |
 | 73.6 | Kafka atirando | Clarão curto amarelo-alaranjado e fumaça cinza no cano |
 | 73.7 | Config do cliente `[fx] scaleSizeExponent` 0 e repetir 73.1 | Todos os anéis do mesmo tamanho (a regra de tamanho desligada) |
+
+## 74. Hoshina e Hoshina No. 10; aura do Kafka (VFX-3)
+
+Servidor dedicado + 2 clientes.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 74.1 | `/execute positioned ~ ~1.2 ~3 run kn8 vfx play kn8:slash kn8:hoshina yae_uchi/1` até `yae_uchi/8` em sequência | Oito arcos finos, pretos com borda violeta, em ângulos diferentes formando uma estrela |
+| 74.2 | `/execute positioned ~ ~ ~3 run kn8 vfx play kn8:technique kn8:hoshina 1 kosa_uchi` | Um X à frente |
+| 74.3 | `/execute positioned ~ ~1.2 ~3 run kn8 vfx play kn8:slash kn8:hoshina_no10 1 juni_hitoe/12` | Cruz grande com pulso violeta e raios vermelho-arroxeados |
+| 74.4 | `/summon kn8:hoshina_no10` e um `kn8:primigenius` a 6 blocos | Os cortes aparecem na frente do kaiju (não dentro dele); cada técnica com o seu desenho; a cauda corta com arco vermelho e faíscas |
+| 74.5 | Olhar o Hoshina com o Numbers 10 parado | Aura violeta com raios vermelho-arroxeados saindo do traje |
+| 74.6 | `/data merge entity @e[type=kn8:hoshina_no10,limit=1] {...}` ou deixar a luta chegar ao Full Release (100%) | Vapor vermelho fino e descargas saindo do traje |
+| 74.7 | `/summon kn8:kafka` | Aura cinza bem baixa (quase nada parado) |

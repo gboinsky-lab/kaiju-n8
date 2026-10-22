@@ -51,4 +51,14 @@ class VfxCoreTest {
         assertEquals(0xFFFFFF, VfxColors.shade(0x123456, 1.0F));
         assertEquals(0x000000, VfxColors.shade(0x123456, -1.0F));
     }
+
+    @Test
+    void tiltedArcLeavesTheGround() {
+        // Corte vertical (tilt 90): as pontas do arco ficam acima e abaixo do centro, sem desvio lateral.
+        double[] top = VfxPatterns.spawn(VfxPatterns.Pattern.ARC, 0, 3, 0, 1, 2.0, 0.0, 90.0, () -> 0.5);
+        double[] bottom = VfxPatterns.spawn(VfxPatterns.Pattern.ARC, 2, 3, 0, 1, 2.0, 0.0, 90.0, () -> 0.5);
+        org.junit.jupiter.api.Assertions.assertTrue(Math.abs(top[1]) > 1.5 && Math.abs(bottom[1]) > 1.5);
+        org.junit.jupiter.api.Assertions.assertTrue(top[1] * bottom[1] < 0);
+        org.junit.jupiter.api.Assertions.assertEquals(0.0, top[0], 1.0E-6);
+    }
 }

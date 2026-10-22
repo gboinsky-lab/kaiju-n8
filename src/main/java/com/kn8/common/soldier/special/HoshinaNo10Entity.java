@@ -11,8 +11,8 @@ import com.kn8.common.config.ServerConfig;
 import com.kn8.common.data.def.SpecialSoldierDef;
 import com.kn8.common.data.def.WeaponDef;
 import com.kn8.common.kaiju.KaijuEntity;
+import com.kn8.common.vfx.VfxService;
 
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -50,6 +50,7 @@ public class HoshinaNo10Entity extends HoshinaEntity {
     private static final double TAIL_SEARCH_MARGIN = 3.0;
     private static final double SIDE_COSINE = 0.5;
     private static final int FULL_RELEASE = 100;
+    private static final int FULL_RELEASE_VFX_TICKS = 10;
 
     private long tailReadyAt;
     private long guardReadyAt;
@@ -118,6 +119,12 @@ public class HoshinaNo10Entity extends HoshinaEntity {
 
     @Override
     protected void tickExtra(long now) {
+        // VFX-3: no Full Release o traje solta vapor vermelho fino e descargas vermelho-arroxeadas (receita
+        // "full_release" do perfil visual), um pulso a cada FULL_RELEASE_VFX_TICKS.
+        if (isFullRelease() && now % FULL_RELEASE_VFX_TICKS == 0 && level() instanceof ServerLevel server) {
+            VfxService.play(server, VfxService.TECHNIQUE, position(), getLookAngle(), 1.0F, 0.0F, this,
+                    "full_release");
+        }
         Optional<SpecialSoldierDef.Numbers10> n10 = numbers10();
         Optional<WeaponDef> weapon = weapon();
         if (n10.isEmpty() || weapon.isEmpty() || now < tailReadyAt) {
@@ -191,8 +198,9 @@ public class HoshinaNo10Entity extends HoshinaEntity {
                 triggerAnim("tail", "guard");
                 Vec3 at = position().add(source.getSourcePosition().subtract(position()).normalize())
                         .add(0, getBbHeight() * 0.6, 0);
-                ((ServerLevel) level()).sendParticles(ParticleTypes.CRIT, at.x, at.y, at.z, 14, 0.25, 0.25, 0.25,
-                        0.3);
+                // VFX-3: faisca vermelha no ponto guardado (receita "tail_guard"; sem ela, o impacto comum).
+                VfxService.play((ServerLevel) level(), VfxService.IMPACT, at,
+                        source.getSourcePosition().subtract(position()), 0.8F, 0.0F, this, "tail_guard");
                 level().playSound(null, getX(), getEyeY(), getZ(), SoundEvents.ANVIL_LAND, SoundSource.NEUTRAL, 0.6F,
                         1.6F);
             }
