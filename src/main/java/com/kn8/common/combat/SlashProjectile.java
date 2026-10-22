@@ -5,16 +5,13 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import org.joml.Vector3f;
-
 import com.kn8.common.data.def.AbilityDef;
 import com.kn8.common.data.def.SlashSpec;
 import com.kn8.common.destruction.DestructionService;
 import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.registry.KN8Entities;
+import com.kn8.common.vfx.VfxService;
 
-import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -41,8 +38,8 @@ import net.minecraft.world.phys.Vec3;
  * Aliados de quem cortou ficam de fora ({@link SpecialAttacks#isAlly}); kaiju levam no corpo, com o fator de dano
  * contra kaiju de quem cortou ({@code kaijuFactor}: soldado especial pelo JSON, jogador 1,0). Nao e salvo no mundo.
  *
- * <p>Cor, inclinacao e largura vao ao cliente como dados sincronizados; o arco do corte e desenhado la com
- * particulas (sem pacote por tick).</p>
+ * <p>Cor, inclinacao e largura vao ao cliente como dados sincronizados; o arco do corte e desenhado la
+ * ({@code SlashProjectileRenderer}, VFX-R2: forma desenhada, sem particulas; sem pacote por tick).</p>
  */
 public class SlashProjectile extends Projectile {
 
@@ -55,12 +52,6 @@ public class SlashProjectile extends Projectile {
     /** 0.7-C: rastro reto de bala no lugar do arco (tiros do Reno, da Mina e da baioneta do Narumi). */
     private static final EntityDataAccessor<Boolean> BULLET =
             SynchedEntityData.defineId(SlashProjectile.class, EntityDataSerializers.BOOLEAN);
-    /** Pontos do rastro de bala por tick (atras da ponta, ao longo do voo). */
-    private static final int BULLET_POINTS = 4;
-    /** Pontos do arco desenhados por tick e abertura do arco (graus para cada lado). */
-    private static final int ARC_POINTS = 9;
-    private static final float ARC_DEGREES = 70.0F;
-    private static final float DUST_SCALE = 1.1F;
     private static final double FORWARD_SPAWN = 0.8;
 
     private final Set<UUID> struck = new HashSet<>();
@@ -142,7 +133,6 @@ public class SlashProjectile extends Projectile {
         super.tick();
         Vec3 motion = getDeltaMovement();
         if (level().isClientSide()) {
-            drawArc(motion);
             setPos(position().add(motion));
             return;
         }
@@ -167,7 +157,7 @@ public class SlashProjectile extends Projectile {
                 explode(to);
                 return;
             }
-            ((ServerLevel) level()).sendParticles(ParticleTypes.CRIT, to.x, to.y, to.z, 8, 0.2, 0.2, 0.2, 0.2);
+            VfxService.play((ServerLevel) level(), VfxService.IMPACT, to, motion, 0.6F, 0.0F, getOwner());
             discard();
             return;
         }
@@ -188,9 +178,7 @@ public class SlashProjectile extends Projectile {
      */
     private void explode(Vec3 at) {
         ServerLevel server = (ServerLevel) level();
-        server.sendParticles(ParticleTypes.EXPLOSION_EMITTER, at.x, at.y, at.z, 1, 0, 0, 0, 0);
-        server.sendParticles(ParticleTypes.LARGE_SMOKE, at.x, at.y, at.z, 12, explosionRadius * 0.3,
-                explosionRadius * 0.3, explosionRadius * 0.3, 0.02);
+        VfxService.play(server, VfxService.EXPLOSION, at, getDeltaMovement(), explosionRadius, 0.3F);
         server.playSound(null, at.x, at.y, at.z, SoundEvents.GENERIC_EXPLODE, SoundSource.HOSTILE, 1.5F, 1.1F);
         destroyAt(at);
         if (getOwner() instanceof LivingEntity source) {
@@ -274,8 +262,8 @@ public class SlashProjectile extends Projectile {
             if (target.hurt(damageSource, amount)) {
                 slow(target);
                 Vec3 center = target.getBoundingBox().getCenter();
-                ((ServerLevel) level()).sendParticles(entityData.get(BULLET) ? ParticleTypes.CRIT
-                        : ParticleTypes.SWEEP_ATTACK, center.x, center.y, center.z, 1, 0, 0, 0, 0);
+                VfxService.play((ServerLevel) level(), VfxService.IMPACT, center, getDeltaMovement(), 0.6F, 0.0F,
+                        getOwner());
                 if (first == null) {
                     first = center;
                 }
@@ -284,50 +272,21 @@ public class SlashProjectile extends Projectile {
         return first;
     }
 
-    /** Arco do corte, perpendicular ao voo e inclinado por {@code roll} (cliente); bala: rastro reto. */
-    private void drawArc(Vec3 motion) {
-        if (motion.lengthSqr() < 1.0E-6) {
-            return;
-        }
-        if (entityData.get(BULLET)) {
-            drawBullet(motion);
-            return;
-        }
-        Vec3 forward = motion.normalize();
-        Vec3 right = forward.cross(new Vec3(0, 1, 0));
-        right = right.lengthSqr() < 1.0E-6 ? new Vec3(1, 0, 0) : right.normalize();
-        Vec3 up = right.cross(forward).normalize();
-        float roll = entityData.get(ROLL) * Mth.DEG_TO_RAD;
-        Vec3 side = right.scale(Mth.cos(roll)).add(up.scale(Mth.sin(roll)));
-        double width = entityData.get(WIDTH);
-        int color = entityData.get(COLOR);
-        DustParticleOptions dust = new DustParticleOptions(new Vector3f(((color >> 16) & 0xFF) / 255.0F,
-                ((color >> 8) & 0xFF) / 255.0F, (color & 0xFF) / 255.0F), DUST_SCALE);
-        for (int i = 0; i < ARC_POINTS; i++) {
-            float angle = (i / (float) (ARC_POINTS - 1) * 2.0F - 1.0F) * ARC_DEGREES * Mth.DEG_TO_RAD;
-            // Meia-lua: as pontas ficam um pouco para tras do centro.
-            Vec3 at = position().add(side.scale(Mth.sin(angle) * width))
-                    .add(forward.scale((Mth.cos(angle) - 1.0F) * width * 0.6));
-            level().addParticle(dust, at.x, at.y, at.z, 0, 0, 0);
-        }
-        if (tickCount % 2 == 0) {
-            level().addParticle(ParticleTypes.SWEEP_ATTACK, getX(), getY(), getZ(), 0, 0, 0);
-        }
+    /** VFX-R2: o que o desenho do corte precisa no cliente (cor, inclinacao, largura, bala). */
+    public int color() {
+        return entityData.get(COLOR);
     }
 
-    /** 0.7-C: rastro de bala (pontos na cor do tiro ao longo do ultimo trecho do voo e um pouco de fumaca). */
-    private void drawBullet(Vec3 motion) {
-        int color = entityData.get(COLOR);
-        float scale = Math.max(0.6F, Math.min(2.5F, entityData.get(WIDTH) * 2.0F));
-        DustParticleOptions dust = new DustParticleOptions(new Vector3f(((color >> 16) & 0xFF) / 255.0F,
-                ((color >> 8) & 0xFF) / 255.0F, (color & 0xFF) / 255.0F), scale);
-        for (int i = 0; i < BULLET_POINTS; i++) {
-            Vec3 at = position().subtract(motion.scale(i / (double) BULLET_POINTS));
-            level().addParticle(dust, at.x, at.y, at.z, 0, 0, 0);
-        }
-        if (tickCount % 2 == 0) {
-            level().addParticle(ParticleTypes.SMOKE, getX(), getY(), getZ(), 0, 0, 0);
-        }
+    public float roll() {
+        return entityData.get(ROLL);
+    }
+
+    public float width() {
+        return entityData.get(WIDTH);
+    }
+
+    public boolean bullet() {
+        return entityData.get(BULLET);
     }
 
     @Override

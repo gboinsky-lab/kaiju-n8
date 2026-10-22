@@ -35,9 +35,11 @@ public record VfxProfileDef(Palette palette, String material, Map<String, List<L
      * {@code band} faixa de corte ({@code spread} raio, {@code size} largura, {@code tilt}, miolo {@code color} e fio
      * {@code edge}); {@code wave} onda no chao; {@code pulse} anel de ar; {@code beam} feixe/tiro ({@code spread}
      * comprimento, {@code speed} = trecho que anda, 0 = linha inteira); {@code flash} clarao; {@code smoke} fumaca
-     * desenhada ({@code count} nuvens, {@code speed} subida).
+     * desenhada ({@code count} nuvens, {@code speed} subida). VFX-R2: {@code sparks} linhas de impacto, {@code crack}
+     * rachadura no chao ({@code edge} = fio de energia), {@code wisp} labaredas de energia.
      */
-    public static final List<String> DRAWN_SHAPES = List.of("bolt", "band", "wave", "pulse", "beam", "flash", "smoke");
+    public static final List<String> DRAWN_SHAPES = List.of("bolt", "band", "wave", "pulse", "beam", "flash", "smoke",
+            "sparks", "crack", "wisp");
 
     public static final List<String> MATERIALS =
             List.of("flesh", "chitin", "fungus", "revived", "energy", "ice", "suit", "metal", "scales");

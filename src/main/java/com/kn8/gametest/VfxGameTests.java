@@ -183,6 +183,28 @@ public final class VfxGameTests {
         helper.succeed();
     }
 
+    /**
+     * VFX-R2 (Miguel: nenhum efeito com particulas): toda camada de toda receita vira forma desenhada (formas novas,
+     * camada {@code generic} ou silhueta antiga traduzida por {@code DrawnFactory.fromParticle}).
+     */
+    @GameTest(template = TEMPLATE)
+    public static void everyRecipeLayerIsDrawn(GameTestHelper helper) {
+        List<String> legacy = List.of("arc", "ring", "shard", "streak", "glow", "spore", "pulse");
+        int layers = 0;
+        for (var entry : KN8Data.VFX_PROFILE.server().entrySet()) {
+            for (var recipe : entry.getValue().effects().entrySet()) {
+                for (VfxProfileDef.Layer layer : recipe.getValue()) {
+                    layers++;
+                    helper.assertTrue(layer.drawn() || layer.generic() || legacy.contains(layer.shape()),
+                            "Camada sem forma desenhada: " + entry.getKey() + " " + recipe.getKey() + " "
+                                    + layer.shape());
+                }
+            }
+        }
+        helper.assertTrue(layers > 100, "Receitas carregadas: " + layers);
+        helper.succeed();
+    }
+
     private static int accent(String id) {
         VfxProfileDef def = KN8Data.VFX_PROFILE.server().get(KN8Constants.id(id));
         return def == null ? 0 : def.palette().resolve("accent");

@@ -1033,3 +1033,16 @@ kn8:impact kn8:demo 1 <forma>` (para `wave` e `smoke`, `~ ~ ~4`).
 | 76.7 | `smoke` | Fumaça cinza desenhada subindo (discreta sobre chão escuro) |
 | 76.8 | Os dois jogadores olhando de lados diferentes | As mesmas formas para os dois; atrás de uma parede, somem |
 | 76.9 | Config do cliente `[fx] maxDrawnEffects` 0 | Nenhuma forma aparece |
+
+## 77. Tudo desenhado, sem partículas (VFX-R2)
+
+Servidor dedicado + 2 clientes, de noite.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 77.1 | `/execute positioned ~ ~1.2 ~4 run kn8 vfx play kn8:explosion kn8:soldier 3` | Clarão laranja, anel de ar, onda laranja no chão, linhas de fogo e fumaça escura desenhada subindo; nenhum ponto/floco solto |
+| 77.2 | Repetir com `kn8:impact`, `kn8:shockwave`, `kn8:parry`, `kn8:roar`, `kn8:transform`, `kn8:regenerate` | Anel e linhas de impacto; onda no chão; clarão dourado com faíscas; três anéis saindo para a frente; clarão, coluna de fumaça e onda; labaredas verdes entrando |
+| 77.3 | `/execute positioned ~ ~1.2 ~4 run kn8 vfx play kn8:slash kn8:hoshina 1 yae_uchi/3` e `kn8:technique kn8:hoshina 1 kosa_uchi` | Corte inclinado preto com o fio violeta; um X |
+| 77.4 | `/summon kn8:primigenius_honju`, três `kn8:soldier` de rifle, `kn8:mina` e `kn8:hoshina` a ~12 blocos | Antes do pisão, a área no chão amarela que vai a laranja/vermelho; tiros como riscos amarelos; cortes do Hoshina voando em meia-lua violeta; explosão do canhão da Mina desenhada |
+| 77.5 | `/summon kn8:hoshina` e `/kn8 aura release @e[type=kn8:hoshina] 100` | Raios contínuos violeta saindo do corpo, labaredas subindo, anel no chão; nenhum pó colorido |
+| 77.6 | Kaiju andando, golpe no chão do machado, desmonte de carcaça | Continuam os pedacinhos de bloco/item do vanilla (meio-termo) |

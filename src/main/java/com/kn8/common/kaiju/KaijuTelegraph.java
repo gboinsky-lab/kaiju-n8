@@ -1,17 +1,16 @@
 // src/main/java/com/kn8/common/kaiju/KaijuTelegraph.java
 package com.kn8.common.kaiju;
 
+import java.util.Locale;
 import java.util.Optional;
-
-import org.joml.Vector3f;
 
 import com.kn8.common.config.ServerConfig;
 import com.kn8.common.data.def.AbilityDef;
+import com.kn8.common.vfx.VfxService;
 import com.kn8.core.kaiju.AbilityGeometry;
 import com.kn8.core.kaiju.DangerZone;
 import com.kn8.core.kaiju.TelegraphShapes;
 
-import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -22,12 +21,11 @@ import net.minecraft.world.phys.Vec3;
  * Aviso de golpe pesado (IA-6, Parte 12 do plano de IA): durante o preparo de toda habilidade {@code heavy}, o
  * servidor marca no chao a area ameacada (pisao: anel no ponto do impacto; soco e varredura: arco a frente;
  * investida e tiro: linha ate o alvo; salto: anel onde o alvo esta), em pulsos de {@code [kaijuAi]
- * telegraphIntervalTicks}, amarelo no comeco e vermelho perto do impacto. Particulas comuns: todo cliente ve, sem
- * pacote novo. Um som grave sai no inicio do preparo.
+ * telegraphIntervalTicks}, amarelo no comeco e vermelho perto do impacto. VFX-R2: desenhado no cliente (um evento
+ * por pulso, sem particulas). Um som grave sai no inicio do preparo.
  */
 final class KaijuTelegraph {
 
-    private static final float DUST_SIZE = 1.6F;
     /** Altura dos pontos acima do pe do kaiju (sobre o chao). */
     private static final double GROUND_OFFSET = 0.15;
     /** Largura do arco do soco (radianos, 90 graus). */
@@ -96,56 +94,43 @@ final class KaijuTelegraph {
         }
     }
 
-    /** Um pulso do aviso; {@code ticksLeft} ate o impacto. */
+    /**
+     * Um pulso do aviso; {@code ticksLeft} ate o impacto. VFX-R2 (Miguel: sem particulas): a area do golpe vai ao
+     * cliente como um evento ({@code kn8:telegraph}) e e desenhada inteira no chao (preenchida de leve, borda forte),
+     * na cor do momento; cada pulso dura ate o seguinte.
+     */
     static void pulse(KaijuEntity kaiju, AbilityDef ability, LivingEntity target, int ticksLeft, int windup) {
-        if (!applies(ability) || !(kaiju.level() instanceof ServerLevel level)
-                || ticksLeft % ServerConfig.AI_TELEGRAPH_INTERVAL.get() != 0) {
+        int interval = ServerConfig.AI_TELEGRAPH_INTERVAL.get();
+        if (!applies(ability) || !(kaiju.level() instanceof ServerLevel level) || ticksLeft % interval != 0) {
             return;
         }
-        int points = ServerConfig.AI_TELEGRAPH_POINTS.get();
-        Vec3 forward = kaiju.bodyForward();
-        double facing = Math.atan2(forward.z, forward.x);
-        double[][] shape;
-        double y = kaiju.getY();
-        switch (ability.type().getPath()) {
-            case KaijuEntity.TYPE_AREA_MELEE -> {
-                Vec3 center = kaiju.position().add(forward.scale(AbilityGeometry.slamCenterForward(
-                        kaiju.getBbWidth())));
-                shape = TelegraphShapes.ring(center.x, center.z, ability.radius(), points);
-            }
-            case KaijuEntity.TYPE_CHARGE, KaijuAbilities.TYPE_PROJECTILE -> {
-                double length = ability.behavior().maxRange() >= 0 ? ability.behavior().maxRange() : DEFAULT_LINE;
-                Vec3 to = target != null ? new Vec3(target.getX() - kaiju.getX(), 0, target.getZ() - kaiju.getZ())
-                        : forward;
-                Vec3 dir = to.lengthSqr() < 1.0E-4 ? forward : to.normalize();
-                double start = kaiju.getBbWidth() * 0.5;
-                shape = TelegraphShapes.line(kaiju.getX() + dir.x * start, kaiju.getZ() + dir.z * start,
-                        kaiju.getX() + dir.x * (start + length), kaiju.getZ() + dir.z * (start + length), points);
-            }
-            case KaijuAbilities.TYPE_LEAP -> {
-                if (target == null) {
-                    return;
-                }
-                shape = TelegraphShapes.ring(target.getX(), target.getZ(), ability.radius() + LEAP_RING_EXTRA,
-                        points);
-                y = target.getY();
-            }
-            case KaijuAbilities.TYPE_SWEEP -> {
-                AbilityDef.Behavior behavior = ability.behavior();
-                double reach = kaiju.getBbWidth() * 0.5 + (behavior.maxRange() >= 0 ? behavior.maxRange()
-                        : kaiju.reachOf(ability));
-                // arc_center: graus a partir da frente, no sentido do yaw do Minecraft (o mesmo do inSector); no
-                // angulo atan2(z, x) o yaw so soma.
-                shape = TelegraphShapes.arc(kaiju.getX(), kaiju.getZ(), reach,
-                        facing + Math.toRadians(behavior.arcCenter()), Math.toRadians(behavior.arcDegrees()), points);
-            }
-            default -> shape = TelegraphShapes.arc(kaiju.getX(), kaiju.getZ(),
-                    kaiju.getBbWidth() * 0.5 + kaiju.reachOf(ability), facing, PUNCH_ARC, points);
+        Optional<DangerZone> found = zone(kaiju, ability, target);
+        if (found.isEmpty()) {
+            return;
         }
+        DangerZone zone = found.get();
+        double y = (KaijuAbilities.TYPE_LEAP.equals(ability.type().getPath()) && target != null ? target.getY()
+                : kaiju.getY()) + GROUND_OFFSET;
         float[] rgb = TelegraphShapes.color(ticksLeft, windup);
-        DustParticleOptions dust = new DustParticleOptions(new Vector3f(rgb[0], rgb[1], rgb[2]), DUST_SIZE);
-        for (double[] point : shape) {
-            level.sendParticles(dust, point[0], y + GROUND_OFFSET, point[1], 1, 0.0, 0.0, 0.0, 0.0);
+        String color = String.format(Locale.ROOT, "#%02x%02x%02x", Math.round(rgb[0] * 255), Math.round(rgb[1] * 255),
+                Math.round(rgb[2] * 255));
+        String kind;
+        Vec3 shape;
+        switch (zone.kind()) {
+            case SECTOR -> {
+                kind = "sector";
+                shape = new Vec3(zone.center(), zone.width(), 0.0);
+            }
+            case LANE -> {
+                kind = "lane";
+                shape = new Vec3(zone.x1(), zone.z1(), zone.halfWidth());
+            }
+            default -> {
+                kind = "disc";
+                shape = Vec3.ZERO;
+            }
         }
+        VfxService.keyed(level, VfxService.TELEGRAPH, new Vec3(zone.cx(), y, zone.cz()), shape,
+                (float) zone.radius(), kind + color + "@" + interval, 0.0F);
     }
 }

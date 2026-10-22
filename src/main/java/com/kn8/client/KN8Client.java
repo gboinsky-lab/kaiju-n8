@@ -1,6 +1,7 @@
 // src/main/java/com/kn8/client/KN8Client.java
 package com.kn8.client;
 
+import com.kn8.client.vfx.draw.ProjectileRenderers;
 import com.kn8.KN8Constants;
 import com.kn8.client.anim.PlayerAnimations;
 import com.kn8.client.attribute.ReleaseInput;
@@ -29,7 +30,6 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraft.client.renderer.entity.ArmorStandRenderer;
-import net.minecraft.client.renderer.entity.NoopRenderer;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
@@ -84,8 +84,8 @@ public final class KN8Client {
                 context -> new KaijuRenderer(context, KN8Entities.modelSpecies(type.getId()),
                         type.get().getWidth() / 2.0F)));
         event.registerEntityRenderer(KN8Entities.CARCASS.get(), CarcassRenderer::new);
-        event.registerEntityRenderer(KN8Entities.KAIJU_PROJECTILE.get(), NoopRenderer::new);
-        event.registerEntityRenderer(KN8Entities.SLASH_PROJECTILE.get(), NoopRenderer::new);
+        event.registerEntityRenderer(KN8Entities.KAIJU_PROJECTILE.get(), ProjectileRenderers.Kaiju::new);
+        event.registerEntityRenderer(KN8Entities.SLASH_PROJECTILE.get(), ProjectileRenderers.Slash::new);
         event.registerEntityRenderer(KN8Entities.SOLDIER.get(), SoldierRenderer::new);
         event.registerEntityRenderer(KN8Entities.HOSHINA.get(), context -> new SoldierRenderer<>(context, "hoshina"));
         event.registerEntityRenderer(KN8Entities.HOSHINA_NO10.get(),

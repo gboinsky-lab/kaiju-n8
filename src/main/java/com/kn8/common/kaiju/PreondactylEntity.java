@@ -10,10 +10,10 @@ import com.kn8.common.data.KN8Data;
 import com.kn8.common.data.def.AbilityDef;
 import com.kn8.common.data.def.FlyerDef;
 import com.kn8.common.destruction.DestructionService;
+import com.kn8.common.vfx.VfxService;
 import com.kn8.core.kaiju.FlightSteer;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -356,8 +356,10 @@ public class PreondactylEntity extends KaijuEntity {
     private void tickSelfDestruct(FlyerDef def, long now) {
         ServerLevel level = (ServerLevel) level();
         long left = selfDestructAt - now;
-        level.sendParticles(ParticleTypes.FLAME, getX(), getY() + getBbHeight() * 0.5, getZ(), 4,
-                getBbWidth() * 0.4, getBbHeight() * 0.3, getBbWidth() * 0.4, 0.02);
+        if (now % 4 == 0) {
+            VfxService.play(level, VfxService.OVERHEAT, position().add(0, getBbHeight() * 0.5 - 1.0, 0), Vec3.ZERO,
+                    1.0F, 0.0F);
+        }
         if (left > 0 && left % COUNTDOWN_STEP_TICKS == 0) {
             announce(Component.literal(String.valueOf(left / COUNTDOWN_STEP_TICKS)).withStyle(ChatFormatting.RED,
                     ChatFormatting.BOLD), true);
@@ -383,7 +385,7 @@ public class PreondactylEntity extends KaijuEntity {
             Vec3 push = target.position().subtract(center).normalize();
             target.knockback(2.0, -push.x, -push.z);
         }
-        level.sendParticles(ParticleTypes.EXPLOSION_EMITTER, center.x, center.y, center.z, 2, 1.0, 1.0, 1.0, 0.0);
+        VfxService.play(level, VfxService.EXPLOSION, center, Vec3.ZERO, (float) radius * 0.6F, 1.0F);
         level.playSound(null, blockPosition(), SoundEvents.GENERIC_EXPLODE.value(), SoundSource.HOSTILE, 6.0F, 0.7F);
         if (destruct.destructionRadius() > 0) {
             DestructionService.request(level, center, new AbilityDef.Destruction(destruct.destructionRadius(),

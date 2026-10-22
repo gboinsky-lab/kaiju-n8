@@ -130,3 +130,9 @@ arco de corte com miolo escuro e borda brilhante, `wave` anel no chão que cresc
 duas passadas; geometria pura em `core/vfx/DrawMath` (JUnit). As receitas do `vfx_profile` aceitam essas formas como
 `shape` (com `edge`, a cor da borda); a escala pelo corpo (VFX-2) vale igual. Teto `[fx] maxDrawnEffects` 400. Demo:
 `/kn8 vfx play kn8:impact kn8:demo 1 <forma>`. Os efeitos antigos ainda são partículas até a VFX-R2.
+
+VFX-R2 feita (2026-10-22): tudo o que era partícula é forma desenhada. As camadas antigas das receitas são traduzidas
+(`DrawnFactory.fromParticle`), os efeitos comuns, a aura, os projéteis (renderizadores próprios), o aviso do golpe
+pesado (área inteira no chão) e os efeitos que o servidor mandava como partícula (No. 9, No. 10, chefe, arena,
+Preondactyl, aparar, tiro do jogador) passam pelo `VfxService` e são desenhados. Ficam do vanilla só os pedaços de
+bloco (passo, rachadura) e da carcaça no desmonte. Próximo: VFX-4B (Kikoru) a VFX-10 já no formato desenhado.

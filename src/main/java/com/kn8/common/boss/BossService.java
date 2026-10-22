@@ -12,11 +12,11 @@ import com.kn8.common.data.def.BossDef;
 import com.kn8.common.data.def.MissionDef;
 import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.registry.KN8Sounds;
+import com.kn8.common.vfx.VfxService;
 import com.kn8.common.world.KaijuSpawner;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -35,6 +35,7 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * Chefes (0.2, Etapa 6, GDD secao 23): um kaiju dos dados com barra de chefe, fases por vida e invocacao de Yoju
@@ -111,8 +112,8 @@ public final class BossService {
             BossDef.Phase next = def.get().phases().get(phase);
             state.setInvulnerableUntil(level.getGameTime() + next.invulnTicks());
             level.playSound(null, kaiju.blockPosition(), KN8Sounds.KAIJU_ROAR.get(), SoundSource.HOSTILE, 5.0F, 0.6F);
-            level.sendParticles(ParticleTypes.SONIC_BOOM, kaiju.getX(), kaiju.getY() + kaiju.getBbHeight() * 0.6,
-                    kaiju.getZ(), 1, 0, 0, 0, 0);
+            VfxService.play(level, VfxService.ROAR, kaiju.position().add(0, kaiju.getBbHeight() * 0.6, 0),
+                    kaiju.getLookAngle(), 2.0F, 0.0F, kaiju);
             for (ServerPlayer player : bar.getPlayers()) {
                 player.displayClientMessage(Component.translatable("kn8.boss.phase", phase + 1)
                         .withStyle(ChatFormatting.RED), true);
@@ -140,8 +141,8 @@ public final class BossService {
                     SUMMON_SPREAD, level.random);
             KaijuSpawner.spawn(level, summon.species(), spot).ifPresent(minion -> {
                 minion.setTarget(boss.getTarget());
-                level.sendParticles(ParticleTypes.LARGE_SMOKE, minion.getX(), minion.getY() + 1, minion.getZ(), 30,
-                        1.0, 1.0, 1.0, 0.05);
+                VfxService.keyed(level, VfxService.SMOKE, minion.position().add(0, 1, 0), Vec3.ZERO,
+                        minion.getBbWidth() * 0.5F + 0.5F, "", 0.0F);
             });
         }
     }

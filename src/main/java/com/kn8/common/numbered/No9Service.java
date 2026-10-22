@@ -22,13 +22,12 @@ import com.kn8.common.kaiju.CarcassEntity;
 import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.registry.KN8Sounds;
 import com.kn8.common.soldier.SoldierEntity;
+import com.kn8.common.vfx.VfxService;
 import com.kn8.common.world.KaijuSpawner;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -42,7 +41,6 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Vector3f;
 
 /**
  * O que o Kaiju No. 9 faz alem de lutar (0.2, Etapa 8; numeros no {@code numbered/kaiju_no9.json}):
@@ -71,11 +69,8 @@ public final class No9Service {
     /** Verde-acido das costuras dos revividos (a "assinatura" do No. 9). */
     private static final int ABSORB_RETRY_TICKS = 100;
     private static final double ABSORB_PULL_SPEED = 0.35;
-    private static final DustParticleOptions TENDRIL = new DustParticleOptions(new Vector3f(0.55F, 0.02F, 0.05F),
-            1.3F);
-    private static final DustParticleOptions HARDEN = new DustParticleOptions(new Vector3f(0.12F, 0.12F, 0.14F),
-            1.6F);
-    private static final DustParticleOptions ACID = new DustParticleOptions(new Vector3f(0.45F, 1.0F, 0.2F), 1.4F);
+    /** VFX-R2: cor do verde-acido nos efeitos desenhados (chave "#rrggbb" do efeito). */
+    private static final String ACID = "#73FF33";
 
     private No9Service() {
     }
@@ -174,7 +169,7 @@ public final class No9Service {
             no9.setDeltaMovement(side.scale(dodge.leapSpeed()).add(0.0, 0.35, 0.0));
             no9.hurtMarked = true;
             no9.nextDodgeAt = now + dodge.cooldownTicks();
-            level.sendParticles(ParticleTypes.CLOUD, center.x, no9.getY() + 0.2, center.z, 8, 0.4, 0.1, 0.4, 0.05);
+            VfxService.play(level, VfxService.DUST, new Vec3(center.x, no9.getY(), center.z), Vec3.ZERO, 0.6F, 0.0F);
             return;
         }
     }
@@ -282,19 +277,14 @@ public final class No9Service {
             }
         }
         if (no9.tickCount % 2 == 0) {
-            int steps = Math.max(4, (int) (pull.length() * 3));
-            for (int i = 0; i <= steps; i++) {
-                Vec3 point = to.add(pull.scale(i / (double) steps));
-                level.sendParticles(TENDRIL, point.x, point.y, point.z, 1, 0.08, 0.08, 0.08, 0.0);
-            }
+            VfxService.keyed(level, VfxService.TENDRIL, to, pull, 1.0F, "", 0.0F);
         }
         if (now < no9.absorbEndsAt) {
             return;
         }
         no9.absorbing = null;
         InvasionService.release(level, prey.getUUID());
-        level.sendParticles(ParticleTypes.SQUID_INK, to.x, to.y, to.z, 60, prey.getBbWidth() * 0.4,
-                prey.getBbHeight() * 0.4, prey.getBbWidth() * 0.4, 0.05);
+        VfxService.keyed(level, VfxService.SMOKE, to, Vec3.ZERO, prey.getBbWidth() * 0.6F + 0.4F, "#1A1418", 0.0F);
         prey.discard();
         // Sem destruicao de blocos: a forma nova nasce de dentro do No. 9 (a explosao da troca e so visual).
         No10Service.transform(level, no9, new NumberedDef.Transform(rule.into(), 0, 0.0F, 1.0F, 0.0F,
@@ -314,15 +304,15 @@ public final class No9Service {
         NumberedDef.Hardening hardening = found.get();
         long now = level.getGameTime();
         if (now < no9.hardenedUntil) {
-            level.sendParticles(ParticleTypes.CRIT, no9.getX(), no9.getY() + no9.getBbHeight() * 0.6, no9.getZ(), 6,
-                    no9.getBbWidth() * 0.4, no9.getBbHeight() * 0.3, no9.getBbWidth() * 0.4, 0.1);
+            VfxService.play(level, VfxService.IMPACT, no9.position().add(0, no9.getBbHeight() * 0.6, 0), Vec3.ZERO,
+                    0.5F, 0.0F);
             return amount * (1.0F - hardening.reduction());
         }
         if (now >= no9.hardenReadyAt && no9.getRandom().nextFloat() < hardening.chance()) {
             no9.hardenedUntil = now + hardening.durationTicks();
             no9.hardenReadyAt = no9.hardenedUntil + hardening.cooldownTicks();
-            level.sendParticles(HARDEN, no9.getX(), no9.getY() + no9.getBbHeight() * 0.5, no9.getZ(), 40,
-                    no9.getBbWidth() * 0.5, no9.getBbHeight() * 0.4, no9.getBbWidth() * 0.5, 0.0);
+            VfxService.play(level, VfxService.HARDEN, no9.position().add(0, no9.getBbHeight() * 0.5, 0), Vec3.ZERO,
+                    Math.max(no9.getBbWidth(), no9.getBbHeight() * 0.6F), 0.0F);
             level.playSound(null, no9.blockPosition(), SoundEvents.ANVIL_LAND, SoundSource.HOSTILE, 1.0F, 0.5F);
         }
         return amount;
@@ -350,9 +340,8 @@ public final class No9Service {
         marks[1] = now;
         float reduction = adaptation.reductionFor((int) marks[0], isRanged(source));
         if (reduction > 0) {
-            level.sendParticles(ParticleTypes.SMOKE, no9.getX(), no9.getY() + no9.getBbHeight() * 0.6, no9.getZ(),
-                    (int) (reduction * 20), no9.getBbWidth() * 0.4, no9.getBbHeight() * 0.3, no9.getBbWidth() * 0.4,
-                    0.02);
+            VfxService.keyed(level, VfxService.SMOKE, no9.position().add(0, no9.getBbHeight() * 0.6, 0), Vec3.ZERO,
+                    no9.getBbWidth() * reduction, "#3A3A3A", 0.0F);
         }
         return amount * (1.0F - reduction);
     }
@@ -432,8 +421,8 @@ public final class No9Service {
         }
         kaiju.heal(kaiju.getMaxHealth() * rate / TICKS_PER_SECOND);
         if (kaiju.tickCount % REGEN_PARTICLE_INTERVAL == 0) {
-            level.sendParticles(ParticleTypes.HAPPY_VILLAGER, kaiju.getX(), kaiju.getY() + kaiju.getBbHeight() * 0.6,
-                    kaiju.getZ(), 6, kaiju.getBbWidth() * 0.5, kaiju.getBbHeight() * 0.3, kaiju.getBbWidth() * 0.5, 0.0);
+            VfxService.play(level, VfxService.REGENERATE, kaiju.position().add(0, kaiju.getBbHeight() * 0.6, 0),
+                    Vec3.ZERO, Math.max(1.0F, kaiju.getBbWidth() * 0.6F), 0.0F, kaiju);
         }
     }
 
@@ -473,12 +462,8 @@ public final class No9Service {
             // Fio verde das maos ate a carcaca.
             Vec3 from = no9.position().add(0, no9.getBbHeight() * 0.6, 0);
             Vec3 to = carcass.position().add(0, carcass.getBbHeight() * 0.5, 0);
-            for (int i = 0; i <= 8; i++) {
-                Vec3 point = from.lerp(to, i / 8.0);
-                level.sendParticles(ACID, point.x, point.y, point.z, 1, 0.05, 0.05, 0.05, 0.0);
-            }
-            level.sendParticles(ParticleTypes.SOUL, to.x, to.y, to.z, 4, carcass.getBbWidth() * 0.3, 0.4,
-                    carcass.getBbWidth() * 0.3, 0.02);
+            VfxService.keyed(level, VfxService.TENDRIL, from, to.subtract(from), 0.6F, ACID, 0.0F);
+            VfxService.keyed(level, VfxService.SMOKE, to, Vec3.ZERO, carcass.getBbWidth() * 0.3F, ACID, 0.0F);
         }
         if (now < no9.reviveEndsAt) {
             return;
@@ -515,8 +500,8 @@ public final class No9Service {
             if (no9.getTarget() != null) {
                 revived.setTarget(no9.getTarget());
             }
-            level.sendParticles(ACID, revived.getX(), revived.getY() + revived.getBbHeight() * 0.5, revived.getZ(),
-                    60, revived.getBbWidth() * 0.4, revived.getBbHeight() * 0.4, revived.getBbWidth() * 0.4, 0.0);
+            VfxService.keyed(level, VfxService.SMOKE, revived.position().add(0, revived.getBbHeight() * 0.5, 0),
+                    Vec3.ZERO, revived.getBbWidth() * 0.6F, ACID, 0.0F);
             level.playSound(null, pos, KN8Sounds.KAIJU_ROAR.get(), SoundSource.HOSTILE, 4.0F, 0.8F);
             if (announceEach) {
                 announce(level, no9, Component.translatable("kn8.no9.revived", revived.getDisplayName())
@@ -579,12 +564,10 @@ public final class No9Service {
         no9.getNavigation().stop();
         if (no9.tickCount % (PARTICLE_INTERVAL * 2) == 0) {
             for (CarcassEntity carcass : carcasses) {
-                level.sendParticles(ParticleTypes.SOUL, carcass.getX(), carcass.getY() + carcass.getBbHeight() * 0.5,
-                        carcass.getZ(), 3, carcass.getBbWidth() * 0.3, 0.4, carcass.getBbWidth() * 0.3, 0.02);
-                level.sendParticles(ACID, carcass.getX(), carcass.getY() + 0.3, carcass.getZ(), 4,
-                        carcass.getBbWidth() * 0.4, 0.1, carcass.getBbWidth() * 0.4, 0.0);
+                VfxService.keyed(level, VfxService.SMOKE, carcass.position().add(0, 0.3, 0), Vec3.ZERO,
+                        carcass.getBbWidth() * 0.3F, ACID, 0.0F);
             }
-            level.sendParticles(ACID, no9.getX(), no9.getY() + 1.4, no9.getZ(), 12, 0.6, 0.6, 0.6, 0.0);
+            VfxService.keyed(level, VfxService.SMOKE, no9.position().add(0, 1.4, 0), Vec3.ZERO, 0.6F, ACID, 0.0F);
         }
         if (now < no9.reviveEndsAt) {
             return;
@@ -646,9 +629,8 @@ public final class No9Service {
 
     private static void flee(ServerLevel level, KaijuNo9Entity no9, NumberedDef def) {
         no9.fled = true;
-        level.sendParticles(ParticleTypes.LARGE_SMOKE, no9.getX(), no9.getY() + 1.0, no9.getZ(), 40, 0.5, 1.0, 0.5,
-                0.05);
-        level.sendParticles(ACID, no9.getX(), no9.getY() + 1.0, no9.getZ(), 40, 0.4, 1.0, 0.4, 0.0);
+        VfxService.keyed(level, VfxService.SMOKE, no9.position().add(0, 1.0, 0), Vec3.ZERO, 1.0F, "", 0.0F);
+        VfxService.keyed(level, VfxService.SMOKE, no9.position().add(0, 1.0, 0), Vec3.ZERO, 0.7F, ACID, 0.0F);
         level.playSound(null, no9.blockPosition(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.HOSTILE, 2.0F, 0.5F);
         announce(level, no9, Component.translatable("kn8.no9.fled").withStyle(ChatFormatting.DARK_GREEN,
                 ChatFormatting.ITALIC));
@@ -771,8 +753,8 @@ public final class No9Service {
     }
 
     private static void smoke(ServerLevel level, KaijuNo9Entity no9, int count) {
-        level.sendParticles(ParticleTypes.LARGE_SMOKE, no9.getX(), no9.getY() + no9.getBbHeight() * 0.5, no9.getZ(),
-                count, no9.getBbWidth() * 0.5, no9.getBbHeight() * 0.4, no9.getBbWidth() * 0.5, 0.03);
+        VfxService.keyed(level, VfxService.SMOKE, no9.position().add(0, no9.getBbHeight() * 0.5, 0), Vec3.ZERO,
+                no9.getBbWidth() * 0.4F * Math.min(2.0F, count / 10.0F + 0.5F), "", 0.0F);
     }
 
     private static void announce(ServerLevel level, Entity source, Component message) {

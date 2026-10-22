@@ -3,15 +3,11 @@ package com.kn8.common.kaiju;
 
 import java.util.Optional;
 
-import org.joml.Vector3f;
-
 import com.kn8.common.data.KN8Data;
 import com.kn8.common.data.def.AbilityDef;
 import com.kn8.common.registry.KN8Entities;
 import com.kn8.common.vfx.AbilityEffects;
 
-import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -37,13 +33,12 @@ import net.minecraft.world.phys.Vec3;
  * efeitos da habilidade. Nao atinge kaiju, partes nem carcacas. Nao e salvo no mundo.
  *
  * <p>So o id da habilidade vai ao cliente (dado sincronizado): o rastro e desenhado la, na cor {@code color} do
- * JSON (o registro de habilidades e sincronizado).</p>
+ * JSON (o registro de habilidades e sincronizado; VFX-R2: {@code KaijuProjectileRenderer}, sem particulas).</p>
  */
 public class KaijuProjectile extends Projectile {
 
     private static final EntityDataAccessor<String> ABILITY =
             SynchedEntityData.defineId(KaijuProjectile.class, EntityDataSerializers.STRING);
-    private static final float TRAIL_SCALE = 1.4F;
     private static final double FORWARD_SPAWN = 0.6;
 
     private float damage;
@@ -90,7 +85,6 @@ public class KaijuProjectile extends Projectile {
         super.tick();
         Vec3 motion = getDeltaMovement();
         if (level().isClientSide()) {
-            trail(motion);
             setPos(position().add(motion));
             return;
         }
@@ -112,17 +106,9 @@ public class KaijuProjectile extends Projectile {
         }
     }
 
-    private void trail(Vec3 motion) {
-        int color = ability().map(def -> def.behavior().color()).orElse(0xFFFFFF);
-        DustParticleOptions dust = new DustParticleOptions(new Vector3f(((color >> 16) & 0xFF) / 255.0F,
-                ((color >> 8) & 0xFF) / 255.0F, (color & 0xFF) / 255.0F), TRAIL_SCALE);
-        for (int i = 0; i < 3; i++) {
-            Vec3 at = position().subtract(motion.scale(i / 3.0));
-            level().addParticle(dust, at.x, at.y, at.z, 0, 0, 0);
-        }
-        if (tickCount % 2 == 0) {
-            level().addParticle(ParticleTypes.END_ROD, getX(), getY(), getZ(), 0, 0, 0);
-        }
+    /** VFX-R2: cor do rastro (a {@code color} do JSON da habilidade), para o desenho no cliente. */
+    public int trailColor() {
+        return ability().map(def -> def.behavior().color()).orElse(0xFFFFFF);
     }
 
     @Override

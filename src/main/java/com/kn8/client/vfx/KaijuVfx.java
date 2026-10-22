@@ -11,7 +11,6 @@ import com.kn8.common.data.KN8Data;
 import com.kn8.common.data.def.VfxProfileDef;
 import com.kn8.client.vfx.draw.DrawnFactory;
 import com.kn8.common.registry.KN8Particles;
-import com.kn8.common.vfx.VfxParticleType;
 import com.kn8.core.vfx.VfxBudget;
 import com.kn8.core.vfx.VfxColors;
 import com.kn8.core.vfx.VfxPatterns;
@@ -20,7 +19,6 @@ import com.kn8.core.vfx.VfxScale;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 
@@ -130,9 +128,9 @@ public final class KaijuVfx {
                         layer.spread() * intensity * body.spread(), layer.lifetime(), origin, flat, layer.tilt(),
                         level.random);
             } else {
-                VfxParticleType type = shape(layer.shape());
+                String type = layer.shape();
                 int color = profile.palette().resolve(layer.color());
-                if (type == null || color < 0) {
+                if (!KN8Particles.shapes().containsKey(type) || color < 0) {
                     continue;
                 }
                 Vec3 origin = at.add(flat.scale(layer.forward() * body.spread())).add(0, layer.up() * body.spread(), 0);
@@ -150,6 +148,15 @@ public final class KaijuVfx {
         }
     }
 
+    /** VFX-R2: roda {@code emit} daqui a {@code ticks} ticks (sequencias dos efeitos comuns, como o rugido). */
+    public static void later(int ticks, Runnable emit) {
+        if (ticks <= 0) {
+            emit.run();
+        } else if (PENDING.size() < MAX_PENDING) {
+            PENDING.add(new Pending(emit, new int[] {ticks}));
+        }
+    }
+
     /** Efeito comum do evento, tocado por uma camada {@code generic} da receita. */
     @FunctionalInterface
     public interface GenericEffect {
@@ -158,55 +165,31 @@ public final class KaijuVfx {
         void play(float intensity);
     }
 
-    /** Uma camada: {@code count} particulas pelo padrao, dentro do teto, na qualidade do cliente. */
-    public static void emit(ClientLevel level, VfxParticleType type, int color, VfxPatterns.Pattern pattern, int count,
+    /**
+     * Uma camada: {@code count} pecas pelo padrao, dentro do teto, na qualidade do cliente. VFX-R2 (Miguel: nada de
+     * particulas): a silhueta antiga ({@code arc}, {@code ring}, {@code glow}...) vira forma desenhada
+     * ({@link DrawnFactory#fromParticle}).
+     */
+    public static void emit(ClientLevel level, String type, int color, VfxPatterns.Pattern pattern, int count,
             float size, double speed, double spread, int lifetime, Vec3 at, Vec3 direction, VfxBudget budget) {
         emit(level, type, color, pattern, count, size, speed, spread, lifetime, at, direction, 0.0, budget);
     }
 
     /** VFX-3: com o {@code tilt} do arco (graus em volta da frente). */
-    public static void emit(ClientLevel level, VfxParticleType type, int color, VfxPatterns.Pattern pattern, int count,
+    public static void emit(ClientLevel level, String type, int color, VfxPatterns.Pattern pattern, int count,
             float size, double speed, double spread, int lifetime, Vec3 at, Vec3 direction, double tilt,
             VfxBudget budget) {
         int granted = budget.take(count, VfxEffects.amount());
         if (granted <= 0) {
             return;
         }
-        boolean bright = type == KN8Particles.GLOW.get() || type == KN8Particles.ARC.get()
-                || type == KN8Particles.STREAK.get() || type == KN8Particles.PULSE.get();
+        boolean bright = "glow".equals(type) || "arc".equals(type) || "streak".equals(type) || "pulse".equals(type);
         if (bright && ClientConfig.REDUCE_FLASHES.get()) {
             size *= FLASH_SIZE;
             color = capWhite(color);
         }
-        RandomSource random = level.random;
-        for (int i = 0; i < granted; i++) {
-            double[] p = VfxPatterns.spawn(pattern, i, granted, direction.x, direction.z, spread, speed, tilt,
-                    random::nextDouble);
-            level.addParticle(type.with(color, size, lifetime), at.x + p[0], at.y + p[1], at.z + p[2], p[3], p[4],
-                    p[5]);
-        }
-    }
-
-    /**
-     * VFX-4A: um ponto de particula solto (raios da aura), com os claroes reduzidos do {@code [fx]}; devolve falso
-     * quando o teto acabou.
-     */
-    public static boolean point(ClientLevel level, VfxParticleType type, int color, float size, int lifetime, double x,
-            double y, double z, VfxBudget budget) {
-        if (budget.take(1, 1.0F) <= 0) {
-            return false;
-        }
-        if (ClientConfig.REDUCE_FLASHES.get()) {
-            size *= FLASH_SIZE;
-            color = capWhite(color);
-        }
-        level.addParticle(type.with(color, size, lifetime), x, y, z, 0, 0, 0);
-        return true;
-    }
-
-    public static VfxParticleType shape(String name) {
-        var holder = KN8Particles.shapes().get(name);
-        return holder == null ? null : holder.get();
+        DrawnFactory.fromParticle(type, color, pattern, granted, size, speed, spread, lifetime, at, direction, tilt,
+                level.random);
     }
 
     private static int capWhite(int rgb) {

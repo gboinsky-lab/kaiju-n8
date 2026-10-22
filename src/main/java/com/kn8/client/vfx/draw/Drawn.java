@@ -126,6 +126,15 @@ public abstract class Drawn {
         private final int color;
         private final int core;
 
+        /** VFX-R2: raio com os caminhos ja prontos (aura: raio correndo rente ao corpo). */
+        public Bolt(List<List<Vec3>> paths, double width, int color, int core, int lifetime) {
+            super(lifetime);
+            this.width = width;
+            this.color = color;
+            this.core = core;
+            this.paths.addAll(paths);
+        }
+
         public Bolt(Vec3 start, Vec3 dir, double length, double width, int color, int core, int lifetime,
                 float branches, RandomSource random) {
             super(lifetime);
@@ -221,10 +230,15 @@ public abstract class Drawn {
                 Vec3 out1 = vec(DrawMath.arcPoint(c, fx, fz, tilt, radius + w1 * 0.5, a1));
                 // A parte mais velha do corte (comeco) apaga antes.
                 float age0 = alpha * (0.45F + 0.55F * (float) u0);
-                if (shade) {
+                if (shade && core >= 0) {
                     quad(vc, m, in0, mid0, mid1, in1, core, age0 * 0.9F);
-                } else {
-                    quad(vc, m, mid0, out0, out1, mid1, edge, age0);
+                } else if (!shade && edge >= 0) {
+                    // Sem miolo (corte so de luz), o brilho ocupa a faixa inteira.
+                    if (core < 0) {
+                        quad(vc, m, in0, out0, out1, in1, edge, age0);
+                    } else {
+                        quad(vc, m, mid0, out0, out1, mid1, edge, age0);
+                    }
                 }
             }
         }
@@ -265,13 +279,20 @@ public abstract class Drawn {
         private final double radius;
         private final double width;
         private final int color;
+        /** VFX-R2: plano do anel (rugido saindo da boca); nulo = virado para a camera. */
+        private final Vec3 normal;
 
         public Pulse(Vec3 center, double radius, double width, int color, int lifetime) {
+            this(center, radius, width, color, lifetime, null);
+        }
+
+        public Pulse(Vec3 center, double radius, double width, int color, int lifetime, Vec3 normal) {
             super(lifetime);
             this.center = center;
             this.radius = radius;
             this.width = width;
             this.color = color;
+            this.normal = normal == null || normal.lengthSqr() < 1.0E-6 ? null : normal.normalize();
         }
 
         @Override
@@ -281,7 +302,7 @@ public abstract class Drawn {
             }
             float life = life(partial);
             double r = radius * (0.2 + 0.8 * Math.sqrt(life));
-            Vec3 view = camera.subtract(center).normalize();
+            Vec3 view = normal != null ? normal : camera.subtract(center).normalize();
             Vec3 right = view.cross(new Vec3(0, 1, 0));
             if (right.lengthSqr() < 1.0E-6) {
                 right = new Vec3(1, 0, 0);
@@ -369,6 +390,15 @@ public abstract class Drawn {
         private final double size;
         private final int color;
 
+        /** VFX-R2: nuvens em pontos e derivas dadas (padroes das receitas antigas). */
+        public Smoke(List<Vec3> puffs, List<Vec3> drift, double size, int color, int lifetime) {
+            super(lifetime);
+            this.size = size;
+            this.color = color;
+            this.puffs.addAll(puffs);
+            this.drift.addAll(drift);
+        }
+
         public Smoke(Vec3 center, int count, double spread, double size, double rise, int color, int lifetime,
                 RandomSource random) {
             super(lifetime);
@@ -394,6 +424,246 @@ public abstract class Drawn {
             for (int i = 0; i < puffs.size(); i++) {
                 Vec3 at = puffs.get(i).add(drift.get(i).scale(t));
                 disc(vc, m, at, size * (0.6 + 0.8 * life), camera, color, alpha, 12);
+            }
+        }
+    }
+
+    // --- VFX-R2 ---------------------------------------------------------------------------------------------------
+
+    /** Faixa deitada no plano horizontal entre dois pontos (rachadura, borda do aviso no chao). */
+    static void flatRibbon(VertexConsumer vc, Matrix4f m, Vec3 from, Vec3 to, double width, int rgb, float alpha) {
+        Vec3 dir = to.subtract(from);
+        Vec3 side = new Vec3(-dir.z, 0, dir.x);
+        if (side.lengthSqr() < 1.0E-9) {
+            return;
+        }
+        side = side.normalize().scale(width * 0.5);
+        quad(vc, m, from.add(side), from.subtract(side), to.subtract(side), to.add(side), rgb, alpha);
+    }
+
+    /**
+     * Linhas de impacto: tracos saindo de cada ponto na sua velocidade (faiscas, lascas, linhas de golpe de anime),
+     * com gravidade opcional; fora na cor e miolo claro, afinando para tras.
+     */
+    public static final class Sparks extends Drawn {
+        private final List<Vec3> starts;
+        private final List<Vec3> velocities;
+        private final double length;
+        private final double width;
+        private final double gravity;
+        private final int color;
+        private final int core;
+
+        public Sparks(List<Vec3> starts, List<Vec3> velocities, double length, double width, double gravity,
+                int color, int core, int lifetime) {
+            super(lifetime);
+            this.starts = new ArrayList<>(starts);
+            this.velocities = new ArrayList<>(velocities);
+            this.length = length;
+            this.width = width;
+            this.gravity = gravity;
+            this.color = color;
+            this.core = core;
+        }
+
+        @Override
+        void render(boolean shade, VertexConsumer vc, Matrix4f m, Vec3 camera, float partial) {
+            if (shade) {
+                return;
+            }
+            float life = life(partial);
+            float alpha = DrawMath.fade(life, 0.0F, 0.5F);
+            double t = age + partial;
+            for (int i = 0; i < starts.size(); i++) {
+                Vec3 v = velocities.get(i);
+                Vec3 head = starts.get(i).add(v.scale(t)).add(0, -0.5 * gravity * t * t, 0);
+                Vec3 now = v.add(0, -gravity * t, 0);
+                Vec3 dir = now.lengthSqr() < 1.0E-8 ? new Vec3(0, 1, 0) : now.normalize();
+                Vec3 tail = head.subtract(dir.scale(length * (1.0 - 0.5 * life)));
+                ribbon(vc, m, tail, head, width * 0.2, width, camera, color, 0.0F, alpha);
+                if (core >= 0) {
+                    ribbon(vc, m, tail, head, width * 0.05, width * 0.4, camera, core, 0.0F, alpha);
+                }
+            }
+        }
+    }
+
+    /**
+     * Rachadura no chao: tracos escuros em zigue-zague saindo do centro, crescendo no comeco, com um fio brilhante
+     * opcional por dentro (fenda de energia).
+     */
+    public static final class Crack extends Drawn {
+        private final List<List<Vec3>> paths = new ArrayList<>();
+        private final double width;
+        private final int dark;
+        private final int glow;
+
+        public Crack(Vec3 center, int rays, double length, double width, int dark, int glow, int lifetime,
+                RandomSource random) {
+            super(lifetime);
+            this.width = width;
+            this.dark = dark;
+            this.glow = glow;
+            for (int ray = 0; ray < rays; ray++) {
+                double angle = Math.PI * 2 * ray / rays + random.nextDouble() * 0.4;
+                List<Vec3> path = new ArrayList<>();
+                Vec3 at = center;
+                path.add(at);
+                int steps = 6;
+                for (int s = 0; s < steps; s++) {
+                    angle += (random.nextDouble() - 0.5) * 0.7;
+                    at = at.add(Math.cos(angle) * length / steps, 0, Math.sin(angle) * length / steps);
+                    path.add(at);
+                }
+                paths.add(path);
+            }
+        }
+
+        @Override
+        void render(boolean shade, VertexConsumer vc, Matrix4f m, Vec3 camera, float partial) {
+            float life = life(partial);
+            float alpha = DrawMath.fade(life, 0.0F, 0.4F);
+            double grow = Math.min(1.0, life / 0.25);
+            if (!shade && glow < 0) {
+                return;
+            }
+            for (List<Vec3> path : paths) {
+                int shown = (int) Math.ceil((path.size() - 1) * grow);
+                for (int i = 1; i <= shown; i++) {
+                    double w = width * (1.0 - (i - 1) / (double) path.size());
+                    if (shade) {
+                        flatRibbon(vc, m, path.get(i - 1), path.get(i), w, dark, alpha * 0.9F);
+                    } else {
+                        flatRibbon(vc, m, path.get(i - 1).add(0, 0.01, 0), path.get(i).add(0, 0.01, 0), w * 0.35,
+                                glow, alpha);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Labareda de energia: lingua que sobe (ou vai na direcao dada) ondulando e afinando (aura, vapor, regeneracao
+     * entrando no corpo com a direcao invertida).
+     */
+    public static final class Wisp extends Drawn {
+        private static final int SEGMENTS = 6;
+        private final Vec3 base;
+        private final Vec3 dir;
+        private final double length;
+        private final double width;
+        private final int color;
+        private final double phase;
+
+        public Wisp(Vec3 base, Vec3 dir, double length, double width, int color, int lifetime, double phase) {
+            super(lifetime);
+            this.base = base;
+            this.dir = dir.lengthSqr() < 1.0E-8 ? new Vec3(0, 1, 0) : dir.normalize();
+            this.length = length;
+            this.width = width;
+            this.color = color;
+            this.phase = phase;
+        }
+
+        @Override
+        void render(boolean shade, VertexConsumer vc, Matrix4f m, Vec3 camera, float partial) {
+            if (shade) {
+                return;
+            }
+            float life = life(partial);
+            float alpha = DrawMath.fade(life, 0.2F, 0.5F) * 0.8F;
+            double t = age + partial;
+            Vec3 side = dir.cross(new Vec3(0, 1, 0));
+            side = side.lengthSqr() < 1.0E-6 ? new Vec3(1, 0, 0) : side.normalize();
+            double reach = length * (0.4 + 0.6 * life);
+            Vec3 previous = base;
+            for (int s = 1; s <= SEGMENTS; s++) {
+                double u = s / (double) SEGMENTS;
+                double sway = Math.sin(phase + t * 0.35 + u * 3.0) * width * 0.8 * u;
+                Vec3 point = base.add(dir.scale(reach * u)).add(side.scale(sway));
+                double u0 = (s - 1) / (double) SEGMENTS;
+                ribbon(vc, m, previous, point, width * (1.0 - u0), width * (1.0 - u), camera, color,
+                        alpha * (float) (1.0 - u0 * 0.6), alpha * (float) (1.0 - u * 0.6));
+                previous = point;
+            }
+        }
+    }
+
+    /**
+     * Aviso do golpe pesado (IA-6, desenhado na VFX-R2): a area no chao, preenchida de leve e com a borda forte, na
+     * cor do momento (amarelo no comeco, vermelho perto do impacto).
+     */
+    public static final class Zone extends Drawn {
+        private static final int STEPS = 40;
+        private final int kind;
+        private final double cx;
+        private final double cz;
+        private final double y;
+        private final double radius;
+        private final double center;
+        private final double width;
+        private final double x1;
+        private final double z1;
+        private final double half;
+        private final int color;
+
+        /** {@code kind}: 0 disco, 1 setor, 2 faixa (os mesmos do {@code DangerZone}). */
+        public Zone(int kind, double cx, double cz, double y, double radius, double center, double width, double x1,
+                double z1, double half, int color, int lifetime) {
+            super(lifetime);
+            this.kind = kind;
+            this.cx = cx;
+            this.cz = cz;
+            this.y = y;
+            this.radius = radius;
+            this.center = center;
+            this.width = width;
+            this.x1 = x1;
+            this.z1 = z1;
+            this.half = half;
+            this.color = color;
+        }
+
+        @Override
+        void render(boolean shade, VertexConsumer vc, Matrix4f m, Vec3 camera, float partial) {
+            if (shade) {
+                return;
+            }
+            float alpha = DrawMath.fade(life(partial), 0.15F, 0.3F);
+            double edge = Math.max(0.12, radius * 0.03);
+            if (kind == 2) {
+                Vec3 a = new Vec3(cx, y, cz);
+                Vec3 b = new Vec3(x1, y, z1);
+                Vec3 dir = b.subtract(a);
+                Vec3 side = new Vec3(-dir.z, 0, dir.x);
+                if (side.lengthSqr() < 1.0E-9) {
+                    return;
+                }
+                side = side.normalize().scale(half);
+                quad(vc, m, a.add(side), a.subtract(side), b.subtract(side), b.add(side), color, alpha * 0.18F);
+                flatRibbon(vc, m, a.add(side), b.add(side), 0.15, color, alpha);
+                flatRibbon(vc, m, a.subtract(side), b.subtract(side), 0.15, color, alpha);
+                flatRibbon(vc, m, b.add(side), b.subtract(side), 0.15, color, alpha);
+                return;
+            }
+            double from = kind == 0 ? 0.0 : center - width * 0.5;
+            double span = kind == 0 ? Math.PI * 2 : width;
+            Vec3 c = new Vec3(cx, y, cz);
+            Vec3 previous = null;
+            for (int i = 0; i <= STEPS; i++) {
+                double a = from + span * i / STEPS;
+                Vec3 point = new Vec3(cx + Math.cos(a) * radius, y, cz + Math.sin(a) * radius);
+                if (previous != null) {
+                    quad(vc, m, c, c, point, previous, color, alpha * 0.18F);
+                    flatRibbon(vc, m, previous, point, edge, color, alpha);
+                }
+                previous = point;
+            }
+            if (kind == 1) {
+                flatRibbon(vc, m, c, new Vec3(cx + Math.cos(from) * radius, y, cz + Math.sin(from) * radius), edge,
+                        color, alpha);
+                flatRibbon(vc, m, c, new Vec3(cx + Math.cos(from + span) * radius, y,
+                        cz + Math.sin(from + span) * radius), edge, color, alpha);
             }
         }
     }

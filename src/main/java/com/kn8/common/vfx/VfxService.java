@@ -47,6 +47,21 @@ public final class VfxService {
     /** VFX-2: regeneracao (pulso por segundo enquanto cura); sem receita, brilhos verdes. */
     public static final ResourceLocation REGENERATE = KN8Constants.id("regenerate");
 
+    /** VFX-R2: rastro de tiro do jogador (de {@code position} ate {@code position + direction}). */
+    public static final ResourceLocation TRACER = KN8Constants.id("tracer");
+    /** VFX-R2: tentaculo/fio do No. 9 (de {@code position} ate {@code position + direction}; chave "#rrggbb" = cor). */
+    public static final ResourceLocation TENDRIL = KN8Constants.id("tendril");
+    /** VFX-R2: aviso do golpe pesado desenhado no chao (forma na chave, ver {@code KaijuTelegraph}). */
+    public static final ResourceLocation TELEGRAPH = KN8Constants.id("telegraph");
+    /** VFX-R2: explosao (clarao, fumaca e onda desenhados; intensidade = raio). */
+    public static final ResourceLocation EXPLOSION = KN8Constants.id("explosion");
+    /** VFX-R2: aparar/defender um golpe (choque de laminas). */
+    public static final ResourceLocation PARRY = KN8Constants.id("parry");
+    /** VFX-R2: pele endurecida do No. 9 (intensidade = largura do corpo). */
+    public static final ResourceLocation HARDEN = KN8Constants.id("harden");
+    /** VFX-R2: nuvem de fumaca desenhada (intensidade = tamanho; chave "#rrggbb" = cor). */
+    public static final ResourceLocation SMOKE = KN8Constants.id("smoke");
+
     /** Distancia em que os jogadores recebem o efeito. */
     public static final double RANGE = 64.0;
 
@@ -108,6 +123,12 @@ public final class VfxService {
             return Optional.of(KN8Constants.id("player"));
         }
         return Optional.empty();
+    }
+
+    /** VFX-R2: efeito sem dono com a chave dada (cor "#rrggbb", forma do aviso) e o tamanho de quem o causa. */
+    public static void keyed(ServerLevel level, ResourceLocation effect, Vec3 position, Vec3 direction,
+            float intensity, String key, float height) {
+        play(level, effect, position, direction, intensity, 0.0F, Optional.empty(), key, height);
     }
 
     public static void play(ServerLevel level, ResourceLocation effect, Vec3 position, float intensity) {

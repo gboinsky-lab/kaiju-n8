@@ -42,7 +42,6 @@ import com.kn8.core.kaiju.DangerZone;
 import com.kn8.core.power.PowerMath;
 import com.kn8.core.soldier.TechniqueMath;
 
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -1107,8 +1106,7 @@ public class HoshinaEntity extends SoldierEntity {
             triggerAnim("action", "parry");
             ServerLevel level = (ServerLevel) level();
             Vec3 at = getEyePosition().add(getLookAngle().scale(0.6));
-            level.sendParticles(ParticleTypes.CRIT, at.x, at.y, at.z, 12, 0.2, 0.2, 0.2, 0.3);
-            level.sendParticles(ParticleTypes.ELECTRIC_SPARK, at.x, at.y, at.z, 6, 0.15, 0.15, 0.15, 0.2);
+            VfxService.play(level, VfxService.PARRY, at, getLookAngle(), 1.0F, 0.0F, this);
             level.playSound(null, getX(), getEyeY(), getZ(), KN8Sounds.PARRY.get(), SoundSource.NEUTRAL, 1.0F,
                     1.1F);
         }
@@ -1138,7 +1136,7 @@ public class HoshinaEntity extends SoldierEntity {
         triggerAnim("action", "parry");
         ServerLevel level = (ServerLevel) level();
         Vec3 at = getEyePosition().add(getLookAngle().scale(0.6));
-        level.sendParticles(ParticleTypes.CRIT, at.x, at.y, at.z, 16, 0.25, 0.25, 0.25, 0.3);
+        VfxService.play(level, VfxService.PARRY, at, getLookAngle(), 1.3F, 0.0F, this);
         level.playSound(null, getX(), getEyeY(), getZ(), KN8Sounds.PARRY.get(), SoundSource.NEUTRAL, 1.0F, 0.8F);
         return amount * guard.get().factor();
     }

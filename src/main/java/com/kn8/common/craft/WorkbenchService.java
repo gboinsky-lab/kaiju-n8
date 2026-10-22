@@ -1,5 +1,6 @@
 package com.kn8.common.craft;
 
+import com.kn8.common.vfx.VfxService;
 import java.util.Optional;
 
 import com.kn8.common.career.CareerService;
@@ -9,13 +10,13 @@ import com.kn8.common.registry.KN8Blocks;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -57,8 +58,7 @@ public final class WorkbenchService {
                 .withStyle(ChatFormatting.GREEN), true);
         player.level().playSound(null, player.blockPosition(), SoundEvents.SMITHING_TABLE_USE, SoundSource.PLAYERS,
                 1.0F, 1.0F);
-        player.serverLevel().sendParticles(ParticleTypes.ELECTRIC_SPARK, player.getX(), player.getEyeY(),
-                player.getZ(), 12, 0.4, 0.3, 0.4, 0.05);
+        VfxService.play(player.serverLevel(), VfxService.SUIT_RELEASE, player.position(), Vec3.ZERO, 0.6F, 0.0F);
         return Result.OK;
     }
 

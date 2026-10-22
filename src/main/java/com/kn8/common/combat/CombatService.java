@@ -20,7 +20,6 @@ import com.kn8.core.power.BodyStat;
 import com.kn8.core.power.PowerMath;
 
 import net.minecraft.core.Holder;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -59,7 +58,6 @@ public final class CombatService {
     private static final float HIT_SOUND_VOLUME = 0.8F;
     private static final float SHOT_SOUND_VOLUME = 1.0F;
     private static final float SWING_SOUND_VOLUME = 0.7F;
-    private static final double TRACER_STEP = 1.5;
     private static final double MUZZLE_DISTANCE = 1.2;
 
     /**
@@ -420,14 +418,8 @@ public final class CombatService {
         if (!(player.level() instanceof ServerLevel level)) {
             return;
         }
-        Vec3 path = to.subtract(from);
-        double length = path.length();
-        Vec3 step = path.normalize().scale(TRACER_STEP);
-        Vec3 point = from.add(step);
-        for (double travelled = TRACER_STEP; travelled < length; travelled += TRACER_STEP) {
-            level.sendParticles(ParticleTypes.CRIT, point.x, point.y, point.z, 1, 0, 0, 0, 0);
-            point = point.add(step);
-        }
+        // VFX-R2: risco desenhado no cliente (antes, pontos de CRIT ao longo do caminho).
+        VfxService.keyed(level, VfxService.TRACER, from, to.subtract(from), 1.0F, "", 0.0F);
     }
 
     // --- bloqueio, parry e esquiva -----------------------------------------------------------------------------

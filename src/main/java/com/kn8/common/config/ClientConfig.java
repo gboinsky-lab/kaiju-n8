@@ -81,7 +81,7 @@ public final class ClientConfig {
         MAX_DRAWN_EFFECTS = BUILDER.comment("Maximum kn8 drawn effects (bolts, slashes, rings, beams) alive at once;"
                         + " 0 disables them.")
                 .translation(PREFIX + "maxDrawnEffects")
-                .defineInRange("maxDrawnEffects", 400, 0, 4000);
+                .defineInRange("maxDrawnEffects", 1500, 0, 6000);
         // VFX-2 (Miguel: "um kaiju grande nao deve ter ataques pequenos ou com efeitos pequenos"): o efeito cresce
         // com a altura de quem o faz, pela altura de referencia (um humano), com expoentes por grandeza.
         REFERENCE_HEIGHT = BUILDER.comment("Body height (blocks) the kn8 effects are designed for; bigger bodies get"

@@ -14,7 +14,6 @@ import com.kn8.common.vfx.VfxService;
 import com.kn8.common.world.KaijuSpawner;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -89,8 +88,8 @@ public final class No10Service {
         }
         markTransformed(giant);
         Vec3 at = no10.position();
-        level.sendParticles(ParticleTypes.EXPLOSION_EMITTER, at.x, at.y + 2.0, at.z, 3, 2.0, 2.0, 2.0, 0.0);
-        level.sendParticles(ParticleTypes.LARGE_SMOKE, at.x, at.y + 4.0, at.z, 80, 4.0, 6.0, 4.0, 0.05);
+        VfxService.play(level, VfxService.EXPLOSION, at.add(0, 2.0, 0), Vec3.ZERO, 4.0F, 0.0F);
+        VfxService.keyed(level, VfxService.SMOKE, at.add(0, 4.0, 0), Vec3.ZERO, 4.0F, "", giant.getBbHeight());
         VfxService.play(level, VfxService.SHOCKWAVE, at, Vec3.ZERO, 3.0F, 0.8F, giant);
         VfxService.play(level, VfxService.ROAR, at.add(0, giant.getBbHeight() * 0.8, 0), giant.getLookAngle(), 3.0F,
                 0.0F, giant);

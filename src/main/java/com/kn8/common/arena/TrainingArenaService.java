@@ -8,11 +8,11 @@ import java.util.Optional;
 import com.kn8.common.config.ServerConfig;
 import com.kn8.common.destruction.ProtectedAreas;
 import com.kn8.common.kaiju.KaijuEntity;
+import com.kn8.common.vfx.VfxService;
 import com.kn8.common.world.KaijuSpawner;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -23,6 +23,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * Arena de treino com kaiju de verdade (construcoes C2). O servidor decide tudo: o painel
@@ -159,8 +160,8 @@ public final class TrainingArenaService {
 
     /** Some com fumaca (fim do treino, ninguem treinando): nada de carcaca. */
     public static void vanish(ServerLevel level, KaijuEntity kaiju) {
-        level.sendParticles(ParticleTypes.CLOUD, kaiju.getX(), kaiju.getY() + kaiju.getBbHeight() / 2.0, kaiju.getZ(),
-                30, kaiju.getBbWidth() / 2.0, kaiju.getBbHeight() / 2.0, kaiju.getBbWidth() / 2.0, 0.02);
+        VfxService.keyed(level, VfxService.SMOKE, kaiju.position().add(0, kaiju.getBbHeight() / 2.0, 0), Vec3.ZERO,
+                kaiju.getBbWidth() * 0.6F, "#D8D8D8", 0.0F);
         kaiju.discard();
     }
 
