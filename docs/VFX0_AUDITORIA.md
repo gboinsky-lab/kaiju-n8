@@ -87,3 +87,19 @@ fichas por personagem estão em `docs/VFX_FICHAS_IDENTIDADE.md`.
 - **Limitações:** a origem das marcas de animação ainda é aproximada pela caixa do corpo (a posição real do osso
   entra na VFX-2); só uma receita de demonstração (presas da aranha); os efeitos de cada personagem/kaiju são das
   etapas VFX-2 a VFX-9. Testado em jogo: o mesmo impacto/onda/explosão em perfis diferentes, nos dois clientes.
+
+## 6. Raios em todos os efeitos e auras (Miguel, 2026-10-22)
+
+"Lembre de mudar todos os efeitos inclusive a aura dos trajes e personagens para sair raios e etc igual no anime."
+Vale para as etapas que faltam e para as já feitas: a aura de cada traje e personagem passa a soltar descargas/raios
+saindo do corpo (na cor dele, mais fortes com o Release, maiores com o corpo), e os golpes ganham raios onde fizer
+sentido. Proposta de ordem:
+
+| Etapa | Conteúdo |
+|---|---|
+| **VFX-4A Auras com raios (todos)** | aura nova por traje/personagem com descargas ramificadas saindo do corpo (raio que sai e volta ao corpo, faíscas nas pontas), linhas do traje acendendo com o Release; jogador e soldado (traje da Força de Defesa), Kaiju No. 8 (raios azuis/ciano, confirmados pela descrição de figura oficial), Hoshina, Hoshina No. 10, Kikoru, Kikoru No. 4, Mina, Reno, Reno No. 6, Narumi, Narumi No. 1, Isao; Kafka com faíscas cinza pequenas (decisão do Miguel) |
+| **VFX-4B Kikoru e Kikoru No. 4** | golpes do machado com raios dourados, onda no chão, cratera, vento das asas, mergulho |
+| VFX-5 a VFX-10 | como antes, cada golpe com os raios do personagem |
+
+Pesquisa: as fontes abertas só descrevem os raios azuis do Kaiju No. 8 ao liberar poder; os trajes dos outros
+personagens seguem a referência do Miguel [A PESQUISAR o desenho de cada um no anime].
