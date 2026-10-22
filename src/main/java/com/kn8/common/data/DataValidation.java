@@ -30,7 +30,10 @@ import com.kn8.common.data.def.SpecialSoldierDef;
 import com.kn8.common.data.def.SuitDef;
 import com.kn8.common.data.def.WeaponDef;
 import com.kn8.common.data.def.WeaponProfileDef;
+import com.kn8.common.data.def.VfxProfileDef;
 import com.kn8.common.data.def.WorkbenchRecipeDef;
+import com.kn8.common.registry.KN8Particles;
+import com.kn8.core.vfx.VfxPatterns;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -96,6 +99,7 @@ public final class DataValidation {
                 validateInvasions(KN8Data.INVASION.loaded(), kaiju.keySet(), bosses.keySet(), report), report);
         publish(KN8Data.SITE, validateSites(KN8Data.SITE.loaded(), invasions.keySet(), report), report);
         publish(KN8Data.LOCOMOTION, validateLocomotion(KN8Data.LOCOMOTION.loaded(), report), report);
+        publish(KN8Data.VFX_PROFILE, validateVfxProfiles(KN8Data.VFX_PROFILE.loaded(), report), report);
         // Patentes apontam para missoes de avaliacao, que so foram validadas agora: confere no fim (so aviso).
         ranks.forEach((id, rank) -> rank.promotionMission().filter(mission -> !missions.containsKey(mission))
                 .ifPresent(mission -> report.warning("rank " + id + ": promotion_mission inexistente " + mission)));
@@ -239,6 +243,40 @@ public final class DataValidation {
                 return;
             }
             valid.put(id, def);
+        });
+        return valid;
+    }
+
+    /**
+     * VFX-1: cor invalida da paleta derruba o perfil (o efeito volta ao generico); camada com forma, cor ou padrao
+     * desconhecido sai da receita (aviso). Material desconhecido vira {@code flesh} no cliente (aviso).
+     */
+    public static Map<ResourceLocation, VfxProfileDef> validateVfxProfiles(Map<ResourceLocation, VfxProfileDef> input,
+            DataReport report) {
+        Map<ResourceLocation, VfxProfileDef> valid = new LinkedHashMap<>();
+        Set<String> shapes = KN8Particles.shapes().keySet();
+        input.forEach((id, def) -> {
+            VfxProfileDef.Palette palette = def.palette();
+            for (String slot : List.of("primary", "secondary", "accent", "core")) {
+                if (palette.resolve(slot) < 0) {
+                    report.error("vfx_profile " + id + ": cor invalida em palette." + slot);
+                    return;
+                }
+            }
+            if (!VfxProfileDef.MATERIALS.contains(def.material())) {
+                report.warning("vfx_profile " + id + ": material desconhecido " + def.material());
+            }
+            Map<String, List<VfxProfileDef.Layer>> effects = new LinkedHashMap<>();
+            def.effects().forEach((key, layers) -> effects.put(key, layers.stream().filter(layer -> {
+                boolean ok = shapes.contains(layer.shape()) && palette.resolve(layer.color()) >= 0
+                        && VfxPatterns.Pattern.known(layer.pattern());
+                if (!ok) {
+                    report.warning("vfx_profile " + id + ": camada invalida em " + key + " (" + layer.shape() + ", "
+                            + layer.color() + ", " + layer.pattern() + ")");
+                }
+                return ok;
+            }).toList()));
+            valid.put(id, new VfxProfileDef(palette, def.material(), effects));
         });
         return valid;
     }

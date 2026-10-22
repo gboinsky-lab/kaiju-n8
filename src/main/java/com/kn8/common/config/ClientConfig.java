@@ -38,6 +38,9 @@ public final class ClientConfig {
     public static final ModConfigSpec.EnumValue<HudAnchor> HUD_ANCHOR;
     public static final ModConfigSpec.EnumValue<ParticleLevel> PARTICLE_LEVEL;
     public static final ModConfigSpec.DoubleValue CAMERA_SHAKE;
+    public static final ModConfigSpec.IntValue MAX_PARTICLES_PER_EFFECT;
+    public static final ModConfigSpec.IntValue EFFECT_DISTANCE;
+    public static final ModConfigSpec.BooleanValue REDUCE_FLASHES;
     public static final ModConfigSpec.IntValue ANIMATION_MAX_CATCH_UP_TICKS;
     public static final ModConfigSpec.IntValue STANCE_FADE_TICKS;
     public static final ModConfigSpec.IntValue ATTACK_FADE_TICKS;
@@ -59,6 +62,16 @@ public final class ClientConfig {
                 .defineEnum("particleLevel", ParticleLevel.MEDIUM);
         CAMERA_SHAKE = BUILDER.comment("Camera shake intensity (0 disables).").translation(PREFIX + "cameraShake")
                 .defineInRange("cameraShake", 1.0, 0.0, 1.0);
+        // VFX-1 (diretriz KaijuVFX §6): teto por efeito, distancia de desenho e claroes reduzidos.
+        MAX_PARTICLES_PER_EFFECT = BUILDER.comment("Maximum kn8 particles one effect may spawn (after particleLevel).")
+                .translation(PREFIX + "maxParticlesPerEffect")
+                .defineInRange("maxParticlesPerEffect", 200, 8, 2000);
+        EFFECT_DISTANCE = BUILDER.comment("kn8 effects farther than this many blocks from the camera are skipped.")
+                .translation(PREFIX + "effectDistance")
+                .defineInRange("effectDistance", 64, 16, 128);
+        REDUCE_FLASHES = BUILDER.comment("Smaller, dimmer flashes without pure white (accessibility).")
+                .translation(PREFIX + "reduceFlashes")
+                .define("reduceFlashes", false);
         ANIMATION_MAX_CATCH_UP_TICKS = BUILDER.comment("Player animations received late skip ahead by the delay, up"
                         + " to this many ticks, to stay in sync with the server (M9).")
                 .translation(PREFIX + "animationMaxCatchUpTicks")

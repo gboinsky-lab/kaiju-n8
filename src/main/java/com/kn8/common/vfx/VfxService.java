@@ -1,11 +1,19 @@
 // src/main/java/com/kn8/common/vfx/VfxService.java
 package com.kn8.common.vfx;
 
+import java.util.Optional;
+
 import com.kn8.KN8Constants;
 import com.kn8.common.config.ServerConfig;
+import com.kn8.common.kaiju.KaijuEntity;
+import com.kn8.common.soldier.SoldierEntity;
+import com.kn8.common.soldier.special.HoshinaEntity;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
 
@@ -45,6 +53,53 @@ public final class VfxService {
         }
         PacketDistributor.sendToPlayersNear(level, null, position.x, position.y, position.z, RANGE,
                 new VfxS2C(effect, position, direction, intensity, shake));
+    }
+
+    /**
+     * VFX-1: efeito de alguem ({@code source}): o cliente pinta com a paleta do perfil visual dele e, se o perfil
+     * tem receita para {@code key} (habilidade/tecnica; vazio = id do efeito), desenha a receita no lugar do generico.
+     */
+    public static void play(ServerLevel level, ResourceLocation effect, Vec3 position, Vec3 direction,
+            float intensity, float shake, Entity source, String key) {
+        if (!ServerConfig.SPEC.isLoaded() || !ServerConfig.VFX_ENABLED.get()) {
+            return;
+        }
+        play(level, effect, position, direction, intensity, shake, profileOf(source), key);
+    }
+
+    /** Com o perfil visual dado direto (comando de previa, efeitos sem entidade). */
+    public static void play(ServerLevel level, ResourceLocation effect, Vec3 position, Vec3 direction,
+            float intensity, float shake, Optional<ResourceLocation> profile, String key) {
+        if (!ServerConfig.SPEC.isLoaded() || !ServerConfig.VFX_ENABLED.get()) {
+            return;
+        }
+        PacketDistributor.sendToPlayersNear(level, null, position.x, position.y, position.z, RANGE,
+                new VfxS2C(effect, position, direction, intensity, shake, new VfxS2C.Source(profile, key)));
+    }
+
+    public static void play(ServerLevel level, ResourceLocation effect, Vec3 position, Vec3 direction,
+            float intensity, float shake, Entity source) {
+        play(level, effect, position, direction, intensity, shake, source, "");
+    }
+
+    /**
+     * Perfil visual de uma entidade: kaiju pela especie, soldado especial pelo perfil ativo (a forma muda o efeito),
+     * soldado comum {@code kn8:soldier}, jogador {@code kn8:player}; o resto, sem perfil.
+     */
+    public static Optional<ResourceLocation> profileOf(Entity source) {
+        if (source instanceof KaijuEntity kaiju) {
+            return Optional.of(kaiju.kaijuId());
+        }
+        if (source instanceof HoshinaEntity special) {
+            return Optional.of(special.activeProfileId());
+        }
+        if (source instanceof SoldierEntity) {
+            return Optional.of(BuiltInRegistries.ENTITY_TYPE.getKey(source.getType()));
+        }
+        if (source instanceof Player) {
+            return Optional.of(KN8Constants.id("player"));
+        }
+        return Optional.empty();
     }
 
     public static void play(ServerLevel level, ResourceLocation effect, Vec3 position, float intensity) {

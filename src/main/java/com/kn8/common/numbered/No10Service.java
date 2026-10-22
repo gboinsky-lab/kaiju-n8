@@ -91,9 +91,9 @@ public final class No10Service {
         Vec3 at = no10.position();
         level.sendParticles(ParticleTypes.EXPLOSION_EMITTER, at.x, at.y + 2.0, at.z, 3, 2.0, 2.0, 2.0, 0.0);
         level.sendParticles(ParticleTypes.LARGE_SMOKE, at.x, at.y + 4.0, at.z, 80, 4.0, 6.0, 4.0, 0.05);
-        VfxService.play(level, VfxService.SHOCKWAVE, at, Vec3.ZERO, 3.0F, 0.8F);
+        VfxService.play(level, VfxService.SHOCKWAVE, at, Vec3.ZERO, 3.0F, 0.8F, giant);
         VfxService.play(level, VfxService.ROAR, at.add(0, giant.getBbHeight() * 0.8, 0), giant.getLookAngle(), 3.0F,
-                0.0F);
+                0.0F, giant);
         level.playSound(null, no10.blockPosition(), KN8Sounds.KAIJU_ROAR.get(), SoundSource.HOSTILE, 8.0F, 0.4F);
         if (transform.destructionRadius() > 0) {
             DestructionService.request(level, at, new AbilityDef.Destruction(transform.destructionRadius(),

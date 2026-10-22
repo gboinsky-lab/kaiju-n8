@@ -1,0 +1,61 @@
+// src/main/java/com/kn8/common/command/VfxCommands.java
+package com.kn8.common.command;
+
+import java.util.Optional;
+
+import com.kn8.common.data.KN8Data;
+import com.kn8.common.vfx.VfxService;
+import com.mojang.brigadier.arguments.FloatArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.suggestion.SuggestionProvider;
+
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.commands.arguments.ResourceLocationArgument;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
+
+/**
+ * VFX-1 (operador): {@code /kn8 vfx play <efeito> <perfil> [intensidade] [receita]} toca um efeito na posicao de
+ * quem executa (use {@code execute positioned}), pintado com o perfil visual {@code vfx_profile/<perfil>}; serve para
+ * comparar a mesma habilidade em especies diferentes e conferir as receitas das proximas etapas sem esperar a luta.
+ */
+final class VfxCommands {
+
+    private static final SuggestionProvider<CommandSourceStack> PROFILES = (ctx, builder) ->
+            SharedSuggestionProvider.suggestResource(KN8Data.VFX_PROFILE.serverIds(), builder);
+
+    private VfxCommands() {
+    }
+
+    static LiteralArgumentBuilder<CommandSourceStack> vfx() {
+        return Commands.literal("vfx").then(Commands.literal("play")
+                .then(Commands.argument("effect", ResourceLocationArgument.id())
+                        .then(Commands.argument("profile", ResourceLocationArgument.id()).suggests(PROFILES)
+                                .executes(ctx -> play(ctx, 1.0F, ""))
+                                .then(Commands.argument("intensity", FloatArgumentType.floatArg(0.1F, 10.0F))
+                                        .executes(ctx -> play(ctx, FloatArgumentType.getFloat(ctx, "intensity"), ""))
+                                        .then(Commands.argument("recipe", StringArgumentType.word())
+                                                .executes(ctx -> play(ctx, FloatArgumentType.getFloat(ctx,
+                                                        "intensity"), StringArgumentType.getString(ctx,
+                                                        "recipe"))))))));
+    }
+
+    private static int play(CommandContext<CommandSourceStack> ctx, float intensity, String recipe) {
+        CommandSourceStack source = ctx.getSource();
+        ResourceLocation effect = ResourceLocationArgument.getId(ctx, "effect");
+        ResourceLocation profile = ResourceLocationArgument.getId(ctx, "profile");
+        float yaw = source.getRotation().y;
+        Vec3 forward = new Vec3(-Mth.sin(yaw * Mth.DEG_TO_RAD), 0, Mth.cos(yaw * Mth.DEG_TO_RAD));
+        VfxService.play(source.getLevel(), effect, source.getPosition(), forward, intensity, 0.0F,
+                Optional.of(profile), recipe);
+        source.sendSuccess(() -> Component.translatable("kn8.command.vfx.play", effect.toString(),
+                profile.toString()), false);
+        return 1;
+    }
+}

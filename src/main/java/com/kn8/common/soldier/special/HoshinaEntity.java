@@ -35,6 +35,7 @@ import com.kn8.common.soldier.MoveSafety;
 import com.kn8.common.soldier.SoldierEntity;
 import com.kn8.common.soldier.SoldierTargetGoal;
 import com.kn8.common.soldier.SquadMoveGoal;
+import com.kn8.common.vfx.VfxKeyframes;
 import com.kn8.common.vfx.VfxService;
 import com.kn8.core.combat.CombatMath;
 import com.kn8.core.kaiju.DangerZone;
@@ -833,7 +834,7 @@ public class HoshinaEntity extends SoldierEntity {
         heavy.ifPresent(value -> DestructionService.request(level, target.position(),
                 new AbilityDef.Destruction(value.radius(), value.power(), false, 1.0F), this));
         Vec3 aim = target.getBoundingBox().getCenter().subtract(getEyePosition()).normalize();
-        VfxService.play(level, VfxService.SLASH, target.getBoundingBox().getCenter(), aim, 0.8F, 0.0F);
+        VfxService.play(level, VfxService.SLASH, target.getBoundingBox().getCenter(), aim, 0.8F, 0.0F, this);
         level.playSound(null, target.getX(), target.getY(), target.getZ(),
                 CombatService.weaponSound(weapon, "hit", SoundEvents.PLAYER_ATTACK_SWEEP), SoundSource.NEUTRAL,
                 SWING_VOLUME, 1.0F + getRandom().nextFloat() * 0.2F);
@@ -1235,7 +1236,8 @@ public class HoshinaEntity extends SoldierEntity {
         for (String id : animatedTechniques()) {
             action.triggerableAnim(id, RawAnimation.begin().thenPlay(prefix + "action." + id));
         }
-        controllers.add(action);
+        // VFX-1: marcas de efeito das animacoes (particle_effects) no quadro certo, no cliente.
+        controllers.add(VfxKeyframes.attach(action));
         controllers.add(new AnimationController<>(this, "reaction", 0, state -> PlayState.STOP)
                 .triggerableAnim("hurt", RawAnimation.begin().thenPlay(prefix + "reaction.hurt")));
         registerExtraControllers(controllers);

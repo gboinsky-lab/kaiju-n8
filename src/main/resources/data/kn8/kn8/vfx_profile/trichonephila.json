@@ -1,0 +1,23 @@
+{
+  "palette": {
+    "primary": "#18181A",
+    "secondary": "#5D4E1F",
+    "accent": "#EFCE0D",
+    "core": "#FFF3A0"
+  },
+  "material": "chitin",
+  "effects": {
+    "bite_windup": [
+      {
+        "shape": "glow",
+        "color": "accent",
+        "pattern": "converge",
+        "count": 6,
+        "size": 0.18,
+        "speed": 0.06,
+        "spread": 0.9,
+        "lifetime": 8
+      }
+    ]
+  }
+}

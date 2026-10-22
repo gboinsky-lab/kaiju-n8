@@ -130,7 +130,7 @@ public final class SpecialAttacks {
         boolean first = true;
         for (AbilityDef.Vfx vfx : special.vfx()) {
             VfxService.play(level, vfx.effect(), center, direction, vfx.intensity(),
-                    first ? special.cameraShake() : 0.0F);
+                    first ? special.cameraShake() : 0.0F, source);
             first = false;
         }
         SoundEvent sound = special.sound()

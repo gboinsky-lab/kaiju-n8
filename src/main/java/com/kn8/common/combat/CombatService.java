@@ -354,7 +354,7 @@ public final class CombatService {
                     .orElse(eye.add(look.scale(weapon.reach()))));
             // 0.1-B: clarao e fumaca na boca do cano.
             VfxService.play((ServerLevel) player.level(), VfxService.WEAPON_FIRE, eye.add(look.scale(MUZZLE_DISTANCE)),
-                    look, 1.0F, 0.0F);
+                    look, 1.0F, 0.0F, player);
         }
         if (found.isEmpty()) {
             return;
@@ -379,7 +379,7 @@ public final class CombatService {
             // 0.1-B: impacto no alvo; corte da lamina (mais forte no pesado e no critico).
             Vec3 hitPoint = target.getBoundingBox().getCenter();
             VfxService.play((ServerLevel) player.level(), firearm ? VfxService.IMPACT : VfxService.SLASH, hitPoint,
-                    look, heavy || critical ? 1.5F : 0.8F, heavy ? 0.15F : 0.0F);
+                    look, heavy || critical ? 1.5F : 0.8F, heavy ? 0.15F : 0.0F, player);
             if (critical) {
                 state.criticalUntilTick = CombatState.NEVER;
                 reply(player, state.currentAction == null ? CombatAction.LIGHT : state.currentAction,

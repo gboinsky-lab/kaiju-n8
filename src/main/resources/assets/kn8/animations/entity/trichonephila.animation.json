@@ -481,6 +481,12 @@
             ]
           }
         }
+      },
+      "particle_effects": {
+        "0.0": {
+          "effect": "bite_windup",
+          "locator": "mouth"
+        }
       }
     },
     "trichonephila.action.attack": {

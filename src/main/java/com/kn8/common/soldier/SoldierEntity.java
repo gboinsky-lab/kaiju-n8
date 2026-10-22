@@ -843,7 +843,7 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
             level.playSound(null, getX(), getEyeY(), getZ(), CombatService.shotSound(currentWeapon),
                     SoundSource.HOSTILE, SHOT_VOLUME, 1.0F);
             VfxService.play(level, VfxService.WEAPON_FIRE, eye.add(aim.normalize().scale(MUZZLE_DISTANCE)),
-                    aim.normalize(), 1.0F, 0.0F);
+                    aim.normalize(), 1.0F, 0.0F, this);
         }
         Optional<Entity> hit = MeleeRaycast.findTarget(level, this, eye, aim, reach,
                 entity -> isDuelFoe(this, rootOf(entity))
@@ -863,7 +863,7 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
         }
         if (struck.hurt(damageSources().mobAttack(this), damage)) {
             VfxService.play(level, firearm ? VfxService.IMPACT : VfxService.SLASH, hit.get().getBoundingBox()
-                    .getCenter(), aim.normalize(), 0.8F, 0.0F);
+                    .getCenter(), aim.normalize(), 0.8F, 0.0F, this);
             if (!firearm && currentWeapon != null) {
                 level.playSound(null, hit.get().getX(), hit.get().getY(), hit.get().getZ(),
                         CombatService.weaponSound(currentWeapon, "hit", SoundEvents.PLAYER_ATTACK_SWEEP),

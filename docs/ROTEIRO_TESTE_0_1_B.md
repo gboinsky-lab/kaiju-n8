@@ -963,3 +963,17 @@ Ligar `[kaijuAi] debugLog`.
 | 71.2 | Ficar longe dele (mais de 24 blocos) ou sem vê-lo por 3 s | "O Kaiju No. 9 recuou... ele vai voltar." e ele some (quem lutou ganha o mérito da fuga) |
 | 71.3 | Persegui-lo e matá-lo durante a retirada | Ele morre de verdade: fica a carcaça |
 | 71.4 | Cercá-lo (muro de bedrock em volta, alguém sempre a vista) por 15 s | "O Kaiju No. 9 foi encurralado e vai lutar até o fim!" e ele volta a atacar até morrer (não tenta fugir de novo) |
+
+## 72. Base dos efeitos (VFX-1)
+
+Servidor dedicado + 2 clientes. Os efeitos agora usam a paleta e o material de quem os faz (`vfx_profile/<id>.json`).
+
+| # | Passo | Esperado |
+|---|---|---|
+| 72.1 | Em pé num lugar aberto: `/execute positioned ~3 ~1 ~ run kn8 vfx play kn8:impact kn8:trichonephila 1.5` e o mesmo com `kn8:primigenius`, `kn8:phaneroplasmodium`, `kn8:primigenius_resurrected`, `kn8:kaiju_larva`, `kn8:reno_no6` | Cada impacto com o seu material: lascas pretas e amarelas (aranha), poeira marrom (Primigenius), esporos bege/vermelhos subindo (cogumelo), vapor verde (ressurgido), brilho ciano (larva), cristais brancos e névoa azul (Reno No. 6); o outro jogador vê o mesmo |
+| 72.2 | `kn8 vfx play kn8:shockwave <perfil> 1.2` com `primigenius_honju`, `kaiju_no8`, `hoshina_no10` | Anel deitado no chão crescendo na cor de destaque (dourado, ciano, violeta) |
+| 72.3 | `kn8 vfx play kn8:energy_burst kn8:mina 1.2` | Anel e brilho verdes (cor da Mina) |
+| 72.4 | `/summon kn8:trichonephila ~ ~ ~5 {NoAI:1b}` e `/kn8 anim kaiju action action.bite` olhando a cabeça | Pequeno brilho amarelo perto da frente da aranha no início da mordida (marca da animação; a origem exata no osso vem na VFX-2) |
+| 72.5 | Config do cliente: `[fx] particleLevel` LOW, depois `maxParticlesPerEffect` 8, depois `effectDistance` 16 e afastar-se 20 blocos | Menos partículas; quase nenhuma; nada desenhado longe (o tremor de câmera continua) |
+| 72.6 | `[fx] reduceFlashes` true e repetir 72.3 | Brilhos menores e sem branco puro |
+| 72.7 | Servidor: `[vfx] enabled` false e deixar um kaiju morder um soldado | Sem efeito nenhum; o dano é o mesmo |

@@ -1,0 +1,51 @@
+#!/usr/bin/env python3
+"""VFX-1 (diretriz KaijuVFX §4): marcas de efeito nas animacoes GeckoLib.
+
+Grava o bloco "particle_effects" nas animacoes da tabela MARCAS. No jogo, o controller "action" de kaiju e soldados
+especiais entrega cada marca ao cliente (VfxKeyframes), que desenha a receita "effect" do perfil visual da entidade
+(data/kn8/kn8/vfx_profile/<id>.json) saindo do "locator" (head/mouth, ground, item_right, item_left, body).
+
+Rodar DEPOIS dos geradores que regravam as animacoes (build_*.py, gen_*_animations.py), porque eles nao conhecem as
+marcas:
+
+    python3 tools/art/vfx_keyframes.py
+"""
+import json
+import os
+
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+ANIM = os.path.join(ROOT, 'src/main/resources/assets/kn8/animations/entity')
+
+# arquivo (especie) -> animacao -> [(segundos, receita, origem)]
+MARCAS = {
+    'trichonephila': {
+        # Demonstracao da VFX-1: as presas brilham em amarelo no inicio da mordida (a receita fica no perfil).
+        'trichonephila.action.bite': [(0.0, 'bite_windup', 'mouth')],
+    },
+}
+
+
+def main():
+    for species, animations in MARCAS.items():
+        path = os.path.join(ANIM, species + '.animation.json')
+        with open(path, newline='') as f:
+            text = f.read()
+        crlf = '\r\n' in text
+        data = json.loads(text)
+        for name, marks in animations.items():
+            animation = data['animations'].get(name)
+            if animation is None:
+                print('sem a animacao', name, 'em', species)
+                continue
+            animation['particle_effects'] = {
+                '%s' % float(time): {'effect': effect, 'locator': locator} for time, effect, locator in marks}
+        out = json.dumps(data, indent=2) + '\n'
+        if crlf:
+            out = out.replace('\n', '\r\n')
+        with open(path, 'w', newline='') as f:
+            f.write(out)
+        print(species, sum(len(m) for m in animations.values()), 'marca(s)')
+
+
+if __name__ == '__main__':
+    main()

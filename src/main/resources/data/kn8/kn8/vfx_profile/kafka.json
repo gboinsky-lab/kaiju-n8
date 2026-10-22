@@ -1,0 +1,9 @@
+{
+  "palette": {
+    "primary": "#0C0C0B",
+    "secondary": "#51504C",
+    "accent": "#E3DCD6",
+    "core": "#FFD27A"
+  },
+  "material": "suit"
+}

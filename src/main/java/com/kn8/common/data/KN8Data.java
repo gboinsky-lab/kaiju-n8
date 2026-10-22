@@ -22,6 +22,7 @@ import com.kn8.common.data.def.SpecialSoldierDef;
 import com.kn8.common.data.def.SuitDef;
 import com.kn8.common.data.def.WeaponDef;
 import com.kn8.common.data.def.WeaponProfileDef;
+import com.kn8.common.data.def.VfxProfileDef;
 import com.kn8.common.data.def.WorkbenchRecipeDef;
 
 import net.minecraft.resources.ResourceLocation;
@@ -81,11 +82,18 @@ public final class KN8Data {
     /** C3: locais da obra (Ariake, Tachikawa, Shinagawa): nome, divisao, guarnicao e invasoes (so o servidor). */
     public static final DataRegistry<SiteDef> SITE = new DataRegistry<>("site", SiteDef.CODEC, false);
 
+    /**
+     * VFX-1: perfil visual (paleta, material e receitas de efeito) por kaiju, perfil de soldado especial ou
+     * {@code soldier}/{@code player}; o cliente desenha os efeitos com ele.
+     */
+    public static final DataRegistry<VfxProfileDef> VFX_PROFILE =
+            new DataRegistry<>("vfx_profile", VfxProfileDef.CODEC, true);
+
     /** Ordem = ordem de validacao (cada um so referencia os anteriores). */
     public static final List<DataRegistry<?>> ALL =
             List.of(RANK, ABILITY, DISMANTLE, KAIJU, BOSS, WEAPON_PROFILE, WEAPON, AURA, SUIT, MISSION, SOLDIER, WORKBENCH,
                     INVASION,
-                    NUMBERED, SPECIAL_SOLDIER, FLYER, LOCOMOTION, KAIJU_AI, SITE);
+                    NUMBERED, SPECIAL_SOLDIER, FLYER, LOCOMOTION, KAIJU_AI, SITE, VFX_PROFILE);
 
     private KN8Data() {
     }

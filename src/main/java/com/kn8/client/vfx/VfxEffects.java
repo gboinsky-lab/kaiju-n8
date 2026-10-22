@@ -2,12 +2,18 @@
 package com.kn8.client.vfx;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import com.kn8.common.config.ClientConfig;
+import com.kn8.common.data.def.VfxProfileDef;
 import com.kn8.common.network.KN8ClientHooks;
+import com.kn8.common.registry.KN8Particles;
+import com.kn8.common.vfx.VfxKeyframes;
 import com.kn8.common.vfx.VfxS2C;
 import com.kn8.common.vfx.VfxService;
+import com.kn8.core.vfx.VfxBudget;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -19,11 +25,14 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 
 /**
  * Registro de efeitos visuais no cliente (Etapa D): cada id do {@link VfxService} vira particulas. Nada aqui decide
@@ -45,6 +54,7 @@ public final class VfxEffects {
     private static final float MEDIUM = 0.7F;
     private static final float HIGH = 1.0F;
     private static final int CRACK_RAYS = 9;
+    private static final float GENERIC_WITH_PROFILE = 0.5F;
     private static final double CRACK_STEP = 0.35;
 
     static {
@@ -68,18 +78,102 @@ public final class VfxEffects {
     /** Chamado no setup do cliente. */
     public static void install() {
         KN8ClientHooks.register(VfxS2C.TYPE, VfxEffects::onVfx);
+        VfxKeyframes.install(VfxEffects::onKeyframe);
     }
 
-    private static void onVfx(VfxS2C payload) {
-        ClientLevel level = Minecraft.getInstance().level;
-        Effect effect = EFFECTS.get(payload.effect());
-        if (level == null || effect == null) {
+    /** VFX-1: particulas proprias do KaijuVFX (uma fabrica por silhueta). */
+    public static void registerProviders(RegisterParticleProvidersEvent event) {
+        event.registerSpriteSet(KN8Particles.ARC.get(), sprites -> new VfxParticle.Provider(sprites,
+                VfxParticle.Kind.ARC));
+        event.registerSpriteSet(KN8Particles.RING.get(), sprites -> new VfxParticle.Provider(sprites,
+                VfxParticle.Kind.RING));
+        event.registerSpriteSet(KN8Particles.SHARD.get(), sprites -> new VfxParticle.Provider(sprites,
+                VfxParticle.Kind.SHARD));
+        event.registerSpriteSet(KN8Particles.STREAK.get(), sprites -> new VfxParticle.Provider(sprites,
+                VfxParticle.Kind.STREAK));
+        event.registerSpriteSet(KN8Particles.GLOW.get(), sprites -> new VfxParticle.Provider(sprites,
+                VfxParticle.Kind.GLOW));
+        event.registerSpriteSet(KN8Particles.SPORE.get(), sprites -> new VfxParticle.Provider(sprites,
+                VfxParticle.Kind.SPORE));
+    }
+
+    /**
+     * VFX-1: marca {@code particle_effects} de uma animacao GeckoLib: a receita {@code effect} do perfil visual da
+     * entidade, saindo do {@code locator}. Sem receita, nada (a marca so vale para quem a tem).
+     */
+    private static void onKeyframe(Entity entity, String effect, String locator) {
+        if (!(entity.level() instanceof ClientLevel level)) {
             return;
         }
-        effect.play(level, payload.position(), payload.direction(), payload.intensity(), amount());
+        Vec3 at = locate(entity, locator);
+        if (!KaijuVfx.inRange(at)) {
+            return;
+        }
+        KaijuVfx.profile(VfxService.profileOf(entity)).ifPresent(profile -> profile.recipe(effect).ifPresent(
+                recipe -> KaijuVfx.playRecipe(level, profile, recipe, at, forward(entity), 1.0F, KaijuVfx.budget())));
+    }
+
+    /**
+     * Origem pela caixa do corpo [SUPOSICAO ate a VFX-2: a posicao real do osso vem depois]: cabeca/boca na frente
+     * no alto, pes na frente no chao, maos/arma na frente a meia altura (esquerda/direita para o lado).
+     */
+    static Vec3 locate(Entity entity, String locator) {
+        Vec3 forward = forward(entity);
+        Vec3 side = new Vec3(-forward.z, 0, forward.x);
+        Vec3 front = entity.position().add(forward.scale(entity.getBbWidth() * 0.5));
+        double height = entity.getBbHeight();
+        return switch (locator) {
+            case "head", "mouth", "eyes" -> front.add(0, height * 0.85, 0);
+            case "ground", "feet" -> front.add(0, 0.1, 0);
+            case "item_left", "left_hand" -> front.add(side.scale(entity.getBbWidth() * 0.4)).add(0, height * 0.6, 0);
+            case "item_right", "right_hand" ->
+                    front.add(side.scale(-entity.getBbWidth() * 0.4)).add(0, height * 0.6, 0);
+            default -> front.add(0, height * 0.6, 0);
+        };
+    }
+
+    private static Vec3 forward(Entity entity) {
+        float yaw = entity instanceof LivingEntity living ? living.yBodyRot : entity.getYRot();
+        return new Vec3(-Mth.sin(yaw * Mth.DEG_TO_RAD), 0, Mth.cos(yaw * Mth.DEG_TO_RAD));
+    }
+
+    /**
+     * VFX-1: com o perfil visual de quem fez o efeito, a receita da habilidade/tecnica (ou do proprio efeito)
+     * substitui o generico; sem receita, o generico continua e ganha uma camada com a paleta e o material da
+     * especie/personagem. Longe da camera ({@code [fx] effectDistance}) so o tremor.
+     */
+    private static void onVfx(VfxS2C payload) {
+        ClientLevel level = Minecraft.getInstance().level;
+        if (level == null) {
+            return;
+        }
+        if (KaijuVfx.inRange(payload.position())) {
+            draw(level, payload);
+        }
         if (payload.shake() > 0) {
             CameraShake.add(payload.shake(), payload.position());
         }
+    }
+
+    private static void draw(ClientLevel level, VfxS2C payload) {
+        Optional<VfxProfileDef> profile = KaijuVfx.profile(payload.source().profile());
+        String path = payload.effect().getPath();
+        String key = payload.source().key().isEmpty() ? path : payload.source().key();
+        Optional<List<VfxProfileDef.Layer>> recipe = profile.flatMap(def -> def.recipe(key).or(() -> def.recipe(path)));
+        VfxBudget budget = KaijuVfx.budget();
+        if (recipe.isPresent()) {
+            KaijuVfx.playRecipe(level, profile.get(), recipe.get(), payload.position(), payload.direction(),
+                    payload.intensity(), budget);
+            return;
+        }
+        Effect effect = EFFECTS.get(payload.effect());
+        if (effect != null) {
+            // Com perfil, o generico (branco/cinza vanilla) fica pela metade: a cor e o material da especie mandam.
+            float generic = profile.isPresent() ? GENERIC_WITH_PROFILE : 1.0F;
+            effect.play(level, payload.position(), payload.direction(), payload.intensity(), amount() * generic);
+        }
+        profile.ifPresent(def -> PaletteLayers.play(level, payload.effect(), def, payload.position(),
+                payload.direction(), payload.intensity(), budget));
     }
 
     static float amount() {

@@ -1,0 +1,9 @@
+{
+  "palette": {
+    "primary": "#842D1C",
+    "secondary": "#8D4E3F",
+    "accent": "#3AA8A9",
+    "core": "#C8FFFF"
+  },
+  "material": "scales"
+}

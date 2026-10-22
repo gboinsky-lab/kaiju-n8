@@ -1,6 +1,7 @@
 // src/main/java/com/kn8/common/vfx/AbilityEffects.java
 package com.kn8.common.vfx;
 
+import com.kn8.common.data.KN8Data;
 import com.kn8.common.data.def.AbilityDef;
 
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -29,10 +30,14 @@ public final class AbilityEffects {
         float yaw = source instanceof LivingEntity living ? living.yBodyRot
                 : source.getYRot();
         Vec3 forward = new Vec3(-Mth.sin(yaw * Mth.DEG_TO_RAD), 0, Mth.cos(yaw * Mth.DEG_TO_RAD));
+        // VFX-1: a chave da receita e o nome da habilidade ("bite", "slam"); so a primeira camada do JSON leva a
+        // receita, as outras ficam genericas (com a paleta da especie).
+        String key = KN8Data.ABILITY.server().entrySet().stream().filter(entry -> entry.getValue() == ability)
+                .map(entry -> entry.getKey().getPath()).findFirst().orElse("");
         boolean first = true;
         for (AbilityDef.Vfx vfx : ability.vfx()) {
             VfxService.play(level, vfx.effect(), where, forward, vfx.intensity(),
-                    first ? ability.cameraShake() : 0.0F);
+                    first ? ability.cameraShake() : 0.0F, source, first ? key : "");
             first = false;
         }
         ability.sound().flatMap(BuiltInRegistries.SOUND_EVENT::getOptional).ifPresent(sound ->

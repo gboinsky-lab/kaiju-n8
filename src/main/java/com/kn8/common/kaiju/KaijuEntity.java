@@ -24,6 +24,7 @@ import com.kn8.common.registry.KN8Entities;
 import com.kn8.common.registry.KN8Sounds;
 import com.kn8.common.soldier.SoldierEntity;
 import com.kn8.common.vfx.AbilityEffects;
+import com.kn8.common.vfx.VfxKeyframes;
 import com.kn8.common.vfx.VfxService;
 import com.kn8.common.data.def.AbilityDef;
 import com.kn8.core.kaiju.DangerZone;
@@ -675,7 +676,7 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
         // 0.6 (telegraph): o efeito de aviso ("particles" do JSON) sai no inicio do preparo, para dar tempo de reagir.
         ability.particles().ifPresent(effect -> {
             if (level() instanceof ServerLevel server) {
-                VfxService.play(server, effect, KaijuAbilities.mouth(this), bodyForward(), 1.0F, 0.0F);
+                VfxService.play(server, effect, KaijuAbilities.mouth(this), bodyForward(), 1.0F, 0.0F, this);
             }
         });
         return true;
@@ -785,7 +786,7 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
         addRageModifier(Attributes.ATTACK_DAMAGE, rage.get().damageMultiplier() - 1.0);
         addRageModifier(Attributes.MOVEMENT_SPEED, rage.get().speedMultiplier() - 1.0);
         if (level() instanceof ServerLevel server) {
-            VfxService.play(server, VfxService.ROAR, KaijuAbilities.mouth(this), bodyForward(), 1.5F, 0.4F);
+            VfxService.play(server, VfxService.ROAR, KaijuAbilities.mouth(this), bodyForward(), 1.5F, 0.4F, this);
             server.playSound(null, getX(), getY(), getZ(), KN8Sounds.KAIJU_ROAR.get(), SoundSource.HOSTILE, 3.0F,
                     0.8F);
         }
@@ -1569,7 +1570,8 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
                     ability.animation(), RawAnimation.begin().thenPlay(
                             animationSpecies() + "." + ability.animation())));
         }
-        controllers.add(action);
+        // VFX-1: marcas de efeito das animacoes (particle_effects) no quadro certo, no cliente.
+        controllers.add(VfxKeyframes.attach(action));
         controllers.add(new AnimationController<>(this, "reaction", 0, state -> PlayState.STOP)
                 .triggerableAnim("hurt", once("reaction", "hurt")));
         controllers.add(new AnimationController<>(this, "overlay", 0, state -> state.setAndContinue(breathe)));

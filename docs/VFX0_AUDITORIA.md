@@ -74,3 +74,16 @@ fichas por personagem estão em `docs/VFX_FICHAS_IDENTIDADE.md`.
 | **VFX-8 No. 10, No. 13, Preondactyl, larva** | Finger Cannon, cauda, crescimento, investida, raio, mergulho, autodestruição |
 | **VFX-9 Demais kaiju** | Primigenius (4), aranhas (2), formigas (2), cogumelos (2), Philinosoma, Diclonius |
 | **VFX-10 Regressão** | vários personagens ao mesmo tempo, FPS e memória com 2 clientes, níveis de qualidade, efeitos desligados com o dano igual |
+
+## 5. VFX-1 feita (2026-10-22)
+
+- `vfx_profile/<id>.json` para os 23 kaiju, os 13 perfis de soldado especial, `soldier` e `player` (paletas das
+  fichas; Mina verde `#3FCF5A`, Narumi rosa `#FF6FB0`, Isao laranja `#FFA62B`, Hoshina violeta `#8A4FC0`, Hoshina
+  No. 10 com miolo `#9A2A5A` para os raios [SUPOSIÇÃO o tom]).
+- Partículas próprias com textura (`tools/art/gen_vfx_particles.py`), evento com o perfil (protocolo 20), camada
+  da paleta e do material sobre os 12 efeitos genéricos, receitas por habilidade (substituem o genérico), marcas
+  `particle_effects` das animações (`tools/art/vfx_keyframes.py`), teto/distância/clarões no `[fx]`.
+- Comando de prévia `/kn8 vfx play <efeito> <perfil> [intensidade] [receita]`.
+- **Limitações:** a origem das marcas de animação ainda é aproximada pela caixa do corpo (a posição real do osso
+  entra na VFX-2); só uma receita de demonstração (presas da aranha); os efeitos de cada personagem/kaiju são das
+  etapas VFX-2 a VFX-9. Testado em jogo: o mesmo impacto/onda/explosão em perfis diferentes, nos dois clientes.

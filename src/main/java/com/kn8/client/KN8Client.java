@@ -61,6 +61,8 @@ public final class KN8Client {
         modEventBus.addListener(KN8Client::registerRenderers);
         // Etapa A/C: malhas do Meshy presas aos ossos (cache limpo no F3+T).
         modEventBus.addListener(MeshModels::registerReloadListener);
+        // VFX-1: particulas proprias do KaijuVFX.
+        modEventBus.addListener(VfxEffects::registerProviders);
         // 0.6-C: traje 3D da Forca de Defesa no jogador.
         modEventBus.addListener(SuitRendering::addLayers);
         // 0.1-B: pose de mira (dois bracos) ao segurar rifle/pistola.

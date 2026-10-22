@@ -205,6 +205,16 @@ habilidade (forma).
 
 ---
 
+## Perfis no jogo (VFX-1)
+
+Cada ficha virou `data/kn8/kn8/vfx_profile/<id>.json` (`primary`/`secondary`/`accent`/`core` + `material`). Escolhas
+desta etapa [SUPOSIÇÃO, a confirmar pelo Miguel]: Mina destaque `#3FCF5A` (verde), Narumi `#FF6FB0` (rosa), Narumi
+No. 1 `#FF8CC0` com miolo branco, Isao `#FFA62B` (laranja) e miolo `#FFE07A`, Hoshina e Hoshina No. 10 `#8A4FC0`
+(violeta) e miolo do No. 10 `#9A2A5A` (raios), Reno `#A8E4FF`/No. 6 `#8FD8FF` (gelo), Preondactyl `#E2551E`
+(raio laranja/vermelho), No. 9 `#9A9A9A` (Finger Gun cinza), soldado e jogador com o clarão do cano `#FFD27A`.
+Materiais: aranhas e formigas `chitin`, cogumelos `fungus`, ressurgido/revivido `revived`, larva e No. 8 `energy`,
+Reno `ice`, Philinosoma/Diclonius `scales`, soldados `suit`, o resto `flesh`.
+
 ## Decisões e incertezas
 
 **Decidido (Miguel, 2026-10-22):** Narumi rosa; Isao amarelo/laranja; **Mina verde**; Hoshina continua violeta e, com
