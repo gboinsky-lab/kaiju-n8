@@ -105,3 +105,16 @@ Pesquisa: as fontes abertas só descrevem os raios azuis do Kaiju No. 8 ao liber
 personagens seguem a referência do Miguel [A PESQUISAR o desenho de cada um no anime].
 
 **VFX-4A feita (2026-10-22):** as 14 auras com o bloco `bolts` (ver CLAUDE.md). Próxima: VFX-4B (Kikoru e Kikoru No. 4).
+
+## 7. Sem partículas: efeitos desenhados (Miguel, 2026-10-22)
+
+"Não quero que nenhum tenha partículas; quero que todos sejam mudados para efeitos especiais como raios ou aura."
+Todos os efeitos passam a ser formas desenhadas pelo cliente (sem pontos soltos), com tipos de render que o próprio
+Minecraft 1.21.1 tem (conferidos no jar): `lightning()` (o do raio vanilla: faixas coloridas brilhantes),
+`energySwirl` (o brilho do creeper carregado, desenhado por cima do modelo), `beaconBeam` (feixe), `eyes` (brilho).
+
+| Etapa | Conteúdo |
+|---|---|
+| **VFX-R1 Base desenhada** | renderizador próprio de efeitos (`client/vfx/draw`): raio contínuo ramificado, faixa de corte (arco sólido que some), anel/onda plana, feixe, pulso esférico, brilho no modelo; tudo com duração, cor da paleta, tamanho pelo corpo e teto por quadro; o evento de rede continua o mesmo |
+| **VFX-R2 Converter o que já existe** | auras (brilho no modelo + raios contínuos), cortes do Hoshina, socos/rugido/transformação do No. 8, impactos/ondas/explosões de todos os kaiju, aviso do golpe pesado, rastros de tiros e cortes (`SlashProjectile`, `KaijuProjectile`), regeneração |
+| VFX-4B a VFX-10 | já no formato desenhado |
