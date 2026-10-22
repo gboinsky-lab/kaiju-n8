@@ -946,3 +946,11 @@ Ligar `[kaijuAi] debugLog`.
 | 69.4 | Seis torres de bedrock de 24 blocos; dois soldados de rifle entre elas; `/summon kn8:preondactyl` no alto | O Preondactyl passa por cima e pelos lados das torres sem bater; o log mostra "voo desviando de obstaculo" e, quando o soldado está num vão estreito demais para o corpo, "mergulho sem caminho: volta a circular" (e ele usa o raio) |
 | 69.5 | Formiga (`/summon kn8:camponotus`) sob um teto de pedra baixo, soldado a ~10 blocos | Ela não salta (o arco bateria no teto); morde, varre ou cospe ácido |
 | 69.6 | Soldado no alto de um pilar de bedrock, fora do alcance da mordida, e uma aranha embaixo | Depois de 3 golpes no vazio o log mostra "habilidade ... falhou 3 vezes seguidas: descansa" e ela troca de ataque |
+
+## 70. Integração geral (MOV-7)
+
+| # | Passo | Esperado |
+|---|---|---|
+| 70.1 | Dois jogadores; `/kn8 invasion start kn8:honju_assault ~ ~ ~` e `/kn8 invasion next` | Alerta para os dois, defensores em esquadrões, as duas ondas e a vitória; o jogo segue liso (20 TPS) |
+| 70.2 | Durante a invasão, construir um muro de pedra entre um soldado e um kaiju | O soldado usa o muro como cobertura (atirador) ou contorna/pula; o kaiju quebra o muro antes de ferir |
+| 70.3 | `/neoforge tps` com 40 kaiju e 40 soldados lutando | Abaixo de ~15 ms por tick (medido 11–14 nesta máquina) |

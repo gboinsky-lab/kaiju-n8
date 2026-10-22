@@ -830,3 +830,9 @@ dano 26 → 34, armadura 12, fortitude 7. Habilidades: garra, `no13_flurry` (4 �
 
 Duelos depois da MOV-6 (fuga = empate): Hoshina × No. 10 pequeno 3/0/0, Isao × No. 10 gigante 2/0/1, Narumi No. 1 ×
 No. 13 3/0/0, Kikoru × No. 9 0/3/0 (fugas), Kaiju No. 8 × No. 9 preto 0/3/0 (fugas): sem regressão.
+
+## MOV-7 (2026-10-22): matriz com a fuga como empate
+
+29 confrontos × 5 duelos em `docs/MOV7_REGRESSAO.md` §3. Nenhum confronto mudou por causa da mobilidade. Com a fuga do
+No. 9 contando como empate, todos os duelos contra o No. 9 e as formas dele terminam em empate (fuga a 15%) ou derrota
+[DECIDIR metas].

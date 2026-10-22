@@ -303,3 +303,10 @@ tempo parado, tiros bloqueados, dano duplicado = 0).
   descansa `abilityFailRestTicks` 160 (`core/kaiju/AbilityFailures`).
 - Medidor: cenários novos `muro_kaiju` (sem a regra os dois soldados morrem através do muro de bedrock; com ela, 0 de
   dano) e `voo_torres` (3–14 batidas por luta sem o desvio; 0 com ele).
+
+## 20. MOV-7 feita (2026-10-22): integração e regressão
+
+Relatório completo em `docs/MOV7_REGRESSAO.md`: GameTests 224/224, os 31 cenários do medidor sem regressão, matriz de
+29 confrontos com a fuga contando como empate (nenhum piorou pela mobilidade; ninguém vence o No. 9 em duelo solo),
+desempenho (o mod pesa ~6% do tick; regras da MOV sem custo mensurável) e uma invasão inteira com 2 clientes a 20
+TPS. O plano de mobilidade (MOV-0 a MOV-7) está completo.
