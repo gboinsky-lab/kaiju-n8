@@ -862,8 +862,8 @@ public class HoshinaEntity extends SoldierEntity {
         Vec3 contact = new Vec3(Mth.clamp(eye.x, box.minX, box.maxX), Mth.clamp(eye.y, box.minY, box.maxY),
                 Mth.clamp(eye.z, box.minZ, box.maxZ));
         VfxService.play(level, VfxService.SLASH, contact, aim, 0.8F, 0.0F, this, vfxKey);
-        // VFX-4B: marca do golpe no chao, aos pes de quem golpeia na direcao do alvo (machado da Kikoru), so com receita
-        // "<tecnica>_<n>_ground" ("/" viraria a receita do golpe de novo).
+        // VFX-4B: marca do golpe no chao, aos pes de quem golpeia na direcao do alvo (machado da Kikoru), so com
+        // receita "<tecnica>_<n>_ground" ("/" viraria a receita do golpe de novo).
         String groundKey = vfxKey.replace('/', '_') + "_ground";
         if (VfxService.hasRecipe(this, groundKey)) {
             VfxService.play(level, VfxService.TECHNIQUE, new Vec3(contact.x, getY(), contact.z), aim, 1.0F, 0.0F, this,
