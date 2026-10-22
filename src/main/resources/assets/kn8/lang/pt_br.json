@@ -655,6 +655,8 @@
   "kn8.no9.reviving": "O Kaiju No. 9 está revivendo a carcaça de %s! Desmonte-a ou interrompa-o!",
   "kn8.no9.revived": "%s foi revivido pelo Kaiju No. 9!",
   "kn8.no9.fled": "O Kaiju No. 9 recuou... ele vai voltar.",
+  "kn8.no9.retreating": "O Kaiju No. 9 está recuando! Não deixe ele escapar!",
+  "kn8.no9.cornered": "O Kaiju No. 9 foi encurralado e vai lutar até o fim!",
   "kn8.no9.flee_merit": "Você fez o Kaiju No. 9 recuar: +%s mérito",
   "kn8.invasion.no9_resurrection": "Ressurreição do No. 9",
   "kn8.mission.revived_threat.name": "Ameaça Revivida",

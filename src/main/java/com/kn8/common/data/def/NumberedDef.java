@@ -22,7 +22,30 @@ public record NumberedDef(Map<ResourceLocation, ResourceLocation> revive, float 
         int reviveCooldownTicks, int maxRevivedAlive, float commandRadius, float fleeHealth, int fleeMerit,
         Map<ResourceLocation, ResourceLocation> reviveBoss, float massReviveRadius, int massReviveCastTicks,
         int massReviveIntervalTicks, Regeneration regeneration, Optional<Transform> transform, List<Absorb> absorb,
-        Optional<Hardening> hardening, Optional<Adaptation> adaptation, Optional<Dodge> dodge) {
+        Optional<Hardening> hardening, Optional<Adaptation> adaptation, Optional<Dodge> dodge,
+        Optional<Retreat> retreat) {
+
+    /**
+     * Retirada (Miguel, 2026-10-22: "ele deve tentar se retirar de algum jeito; caso nao consiga, ele morre"): com a
+     * vida em {@code flee_health} ele para de lutar e corre para longe de quem o ataca, a {@code speed} da velocidade,
+     * soltando fumaca a cada {@code smoke_interval_ticks}. Escapa (some, como a fuga antiga) quando fica
+     * {@code escape_ticks} seguidos longe de todos os inimigos (mais de {@code escape_distance}) ou fora da vista
+     * deles; morre se o matarem antes. Em {@code max_ticks} sem escapar, volta a lutar ate morrer (nao tenta de
+     * novo). {@code regenerate}: se regenera durante a retirada (padrao nao: gasta tudo para fugir). Sem o bloco, a
+     * fuga e instantanea (como antes).
+     */
+    public record Retreat(int maxTicks, float escapeDistance, int escapeTicks, float speed, int smokeIntervalTicks,
+            boolean regenerate) {
+        public static final Codec<Retreat> CODEC = RecordCodecBuilder.create(i -> i.group(
+                DefCodecs.TICKS.optionalFieldOf("max_ticks", 300).forGetter(Retreat::maxTicks),
+                Codec.floatRange(4.0F, 128.0F).optionalFieldOf("escape_distance", 24.0F)
+                        .forGetter(Retreat::escapeDistance),
+                DefCodecs.TICKS.optionalFieldOf("escape_ticks", 60).forGetter(Retreat::escapeTicks),
+                Codec.floatRange(0.5F, 4.0F).optionalFieldOf("speed", 1.4F).forGetter(Retreat::speed),
+                DefCodecs.TICKS.optionalFieldOf("smoke_interval_ticks", 20).forGetter(Retreat::smokeIntervalTicks),
+                Codec.BOOL.optionalFieldOf("regenerate", false).forGetter(Retreat::regenerate)
+        ).apply(i, Retreat::new));
+    }
 
     /**
      * Mudanca de forma (0.6-E, No. 10 pequeno -> gigante; Miguel: "depois de um tempo na batalha"): depois de
@@ -179,13 +202,15 @@ public record NumberedDef(Map<ResourceLocation, ResourceLocation> revive, float 
                     .forGetter(NumberedDef::regeneration),
             Transform.CODEC.optionalFieldOf("transform").forGetter(NumberedDef::transform),
             Absorb.CODEC.listOf().optionalFieldOf("absorb", List.of()).forGetter(NumberedDef::absorb),
-            // O RecordCodecBuilder aceita 16 campos: endurecimento, adaptacao e esquiva vao juntos em pares.
+            // O RecordCodecBuilder aceita 16 campos: endurecimento, adaptacao, esquiva e retirada vao juntos em pares.
             Codec.mapPair(Hardening.CODEC.optionalFieldOf("hardening"), Codec.mapPair(
-                    Adaptation.CODEC.optionalFieldOf("adaptation"), Dodge.CODEC.optionalFieldOf("dodge")))
-                    .forGetter(def -> Pair.of(def.hardening(), Pair.of(def.adaptation(), def.dodge())))
+                    Adaptation.CODEC.optionalFieldOf("adaptation"), Codec.mapPair(
+                            Dodge.CODEC.optionalFieldOf("dodge"), Retreat.CODEC.optionalFieldOf("retreat"))))
+                    .forGetter(def -> Pair.of(def.hardening(), Pair.of(def.adaptation(),
+                            Pair.of(def.dodge(), def.retreat()))))
     ).apply(i, (revive, reviveRadius, reviveCast, reviveCooldown, maxRevived, command, flee, fleeMerit, reviveBoss,
             massRadius, massCast, massInterval, regeneration, transform, absorb, defense) -> new NumberedDef(revive,
             reviveRadius, reviveCast, reviveCooldown, maxRevived, command, flee, fleeMerit, reviveBoss, massRadius,
             massCast, massInterval, regeneration, transform, absorb, defense.getFirst(), defense.getSecond().getFirst(),
-            defense.getSecond().getSecond())));
+            defense.getSecond().getSecond().getFirst(), defense.getSecond().getSecond().getSecond())));
 }

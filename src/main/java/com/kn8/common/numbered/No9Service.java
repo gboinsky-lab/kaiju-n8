@@ -21,6 +21,7 @@ import com.kn8.common.invasion.InvasionService;
 import com.kn8.common.kaiju.CarcassEntity;
 import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.registry.KN8Sounds;
+import com.kn8.common.soldier.SoldierEntity;
 import com.kn8.common.world.KaijuSpawner;
 
 import net.minecraft.ChatFormatting;
@@ -38,6 +39,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
@@ -64,6 +66,8 @@ public final class No9Service {
     private static final int PARTICLE_INTERVAL = 4;
     private static final double ANNOUNCE_RADIUS = 64.0;
     private static final double FLEE_REWARD_RADIUS = 48.0;
+    /** Retirada: o ponto de fuga fica este tanto alem da distancia de escape. */
+    private static final double RETREAT_EXTRA = 8.0;
     /** Verde-acido das costuras dos revividos (a "assinatura" do No. 9). */
     private static final int ABSORB_RETRY_TICKS = 100;
     private static final double ABSORB_PULL_SPEED = 0.35;
@@ -86,11 +90,19 @@ public final class No9Service {
             return;
         }
         NumberedDef def = found.get();
-        if (!no9.fled && no9.getHealth() <= no9.getMaxHealth() * def.fleeHealth()) {
-            flee(level, no9, def);
+        long now = level.getGameTime();
+        if (!no9.fled && !no9.isRetreating() && no9.getHealth() <= no9.getMaxHealth() * def.fleeHealth()) {
+            if (def.retreat().isEmpty()) {
+                flee(level, no9, def);
+                return;
+            }
+            startRetreat(level, no9, def.retreat().get(), now);
+        }
+        if (no9.isRetreating()) {
+            def.dodge().ifPresent(dodge -> dodge(level, no9, dodge, now));
+            tickRetreat(level, no9, def, now);
             return;
         }
-        long now = level.getGameTime();
         regenerate(level, no9, def.regeneration());
         def.dodge().ifPresent(dodge -> dodge(level, no9, dodge, now));
         if (tickForms(level, no9, def, now)) {
@@ -653,6 +665,114 @@ public final class No9Service {
         InvasionService.release(level, no9.getUUID());
         KN8Constants.LOGGER.info("[kn8] Kaiju No. 9 fugiu em {}", no9.blockPosition().toShortString());
         no9.discard();
+    }
+
+    // --- retirada (Miguel, 2026-10-22) ---------------------------------------------------------------------------
+
+    /**
+     * "Ele deve tentar se retirar de algum jeito; caso nao consiga, ele morre": em vez de sumir na hora, para de lutar
+     * e corre para longe de quem o ataca ({@code retreat} do numbered/<id>.json). O resto e o {@link #tickRetreat}.
+     */
+    private static void startRetreat(ServerLevel level, KaijuNo9Entity no9, NumberedDef.Retreat retreat, long now) {
+        no9.retreatUntil = now + retreat.maxTicks();
+        no9.retreatSafeTicks = 0;
+        no9.retreatSpot = null;
+        no9.setTarget(null);
+        no9.getNavigation().stop();
+        smoke(level, no9, 30);
+        level.playSound(null, no9.blockPosition(), SoundEvents.ENDERMAN_SCREAM, SoundSource.HOSTILE, 1.5F, 0.5F);
+        announce(level, no9, Component.translatable("kn8.no9.retreating").withStyle(ChatFormatting.DARK_GREEN,
+                ChatFormatting.ITALIC));
+        KN8Constants.LOGGER.info("[kn8] Kaiju No. 9 em retirada em {}", no9.blockPosition().toShortString());
+    }
+
+    /**
+     * Um tick da retirada: escapa (a fuga antiga: some e da o merito) depois de {@code escape_ticks} seguidos a salvo
+     * (todos os inimigos mais longe que {@code escape_distance}, ou nenhum o vendo e o mais perto alem da metade dela);
+     * sem escapar em {@code max_ticks}, volta a lutar ate morrer. Corre para o lado oposto dos inimigos, pula o que
+     * barra e solta fumaca. Morrer no caminho e a morte normal (carcaca).
+     */
+    private static void tickRetreat(ServerLevel level, KaijuNo9Entity no9, NumberedDef def, long now) {
+        Optional<NumberedDef.Retreat> found = def.retreat();
+        if (found.isEmpty()) {
+            no9.retreatUntil = -1;
+            return;
+        }
+        NumberedDef.Retreat retreat = found.get();
+        if (retreat.regenerate()) {
+            regenerate(level, no9, def.regeneration());
+        }
+        double escape = retreat.escapeDistance();
+        List<LivingEntity> enemies = level.getEntitiesOfClass(LivingEntity.class,
+                no9.getBoundingBox().inflate(escape * 2.0), enemy -> isRetreatEnemy(no9, enemy));
+        boolean safe = enemies.stream().allMatch(enemy -> enemy.distanceTo(no9) > escape)
+                || (enemies.stream().noneMatch(enemy -> enemy.hasLineOfSight(no9))
+                && enemies.stream().allMatch(enemy -> enemy.distanceTo(no9) > escape * 0.5));
+        no9.retreatSafeTicks = safe ? no9.retreatSafeTicks + 1 : 0;
+        if (no9.retreatSafeTicks >= retreat.escapeTicks()) {
+            no9.retreatUntil = -1;
+            flee(level, no9, def);
+            return;
+        }
+        if (now >= no9.retreatUntil) {
+            // Nao conseguiu: encurralado, luta ate morrer (nao tenta de novo).
+            no9.retreatUntil = -1;
+            no9.fled = true;
+            announce(level, no9, Component.translatable("kn8.no9.cornered").withStyle(ChatFormatting.DARK_RED,
+                    ChatFormatting.ITALIC));
+            KN8Constants.LOGGER.info("[kn8] Kaiju No. 9 encurralado em {}", no9.blockPosition().toShortString());
+            return;
+        }
+        if (no9.retreatSpot == null || now % THINK_INTERVAL == 0
+                || no9.position().distanceToSqr(no9.retreatSpot) < 4.0) {
+            no9.retreatSpot = retreatSpot(no9, enemies, escape);
+        }
+        Vec3 spot = no9.retreatSpot;
+        if (no9.isLarge()) {
+            no9.getMoveControl().setWantedPosition(spot.x, spot.y, spot.z, retreat.speed());
+        } else if (now % THINK_INTERVAL == 0 || no9.getNavigation().isDone()) {
+            no9.getNavigation().moveTo(spot.x, spot.y, spot.z, retreat.speed());
+        }
+        if (no9.horizontalCollision && no9.onGround()) {
+            no9.getJumpControl().jump();
+        }
+        if (now % retreat.smokeIntervalTicks() == 0) {
+            smoke(level, no9, 12);
+        }
+    }
+
+    /** Ponto de fuga: para o lado oposto dos inimigos (os mais perto pesam mais), alem da distancia de escape. */
+    private static Vec3 retreatSpot(KaijuNo9Entity no9, List<LivingEntity> enemies, double escape) {
+        Vec3 away = Vec3.ZERO;
+        for (LivingEntity enemy : enemies) {
+            Vec3 from = new Vec3(no9.getX() - enemy.getX(), 0, no9.getZ() - enemy.getZ());
+            double distance = Math.max(1.0, from.length());
+            away = away.add(from.scale(1.0 / (distance * distance)));
+        }
+        if (away.lengthSqr() < 1.0E-6) {
+            away = no9.getLookAngle().multiply(-1, 0, -1);
+        }
+        if (away.lengthSqr() < 1.0E-6) {
+            away = new Vec3(1, 0, 0);
+        }
+        Vec3 spot = no9.position().add(away.normalize().scale(escape + RETREAT_EXTRA));
+        return new Vec3(spot.x, no9.getY(), spot.z);
+    }
+
+    /** Quem caca o No. 9 na retirada: jogadores em jogo, soldados e quem o feriu. */
+    private static boolean isRetreatEnemy(KaijuNo9Entity no9, LivingEntity entity) {
+        if (!entity.isAlive() || entity == no9) {
+            return false;
+        }
+        if (entity instanceof Player player) {
+            return !player.isSpectator() && !player.isCreative();
+        }
+        return entity instanceof SoldierEntity || no9.attackers.contains(entity.getUUID());
+    }
+
+    private static void smoke(ServerLevel level, KaijuNo9Entity no9, int count) {
+        level.sendParticles(ParticleTypes.LARGE_SMOKE, no9.getX(), no9.getY() + no9.getBbHeight() * 0.5, no9.getZ(),
+                count, no9.getBbWidth() * 0.5, no9.getBbHeight() * 0.4, no9.getBbWidth() * 0.5, 0.03);
     }
 
     private static void announce(ServerLevel level, Entity source, Component message) {

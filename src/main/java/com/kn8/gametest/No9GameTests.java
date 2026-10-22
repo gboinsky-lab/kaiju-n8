@@ -112,9 +112,12 @@ public final class No9GameTests {
                     + revived.size());
             no9.setHealth(no9.getMaxHealth() * 0.1F);
         });
-        helper.runAfterDelay(120, () -> {
+        // Retirada (Miguel, 2026-10-22): com pouca vida ele corre; sem ninguem por perto escapa em escape_ticks (60).
+        helper.runAfterDelay(125, () -> helper.assertTrue(((KaijuNo9Entity) no9).isRetreating() && !no9.isRemoved(),
+                "Com 10% da vida o No. 9 deveria entrar em retirada (sem sumir na hora)"));
+        helper.runAfterDelay(190, () -> {
             helper.assertTrue(no9.isRemoved() && no9.getRemovalReason() == Entity.RemovalReason.DISCARDED,
-                    "Com 10% da vida o No. 9 deveria fugir (sumir sem morrer)");
+                    "Sem ninguem por perto o No. 9 deveria escapar da retirada (sumir sem morrer)");
             level.getEntitiesOfClass(Entity.class, area, entity -> entity instanceof KaijuEntity
                     || entity instanceof CarcassEntity).forEach(Entity::discard);
             helper.succeed();

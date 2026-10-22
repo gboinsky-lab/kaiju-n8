@@ -16,6 +16,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib.animation.AnimatableManager;
 import software.bernie.geckolib.animation.AnimationController;
 import software.bernie.geckolib.animation.PlayState;
@@ -35,6 +36,10 @@ public class KaijuNo9Entity extends KaijuEntity {
     long nextDodgeAt;
     int lastReadProjectile = -1;
     boolean fled;
+    /** Retirada (Miguel, 2026-10-22): ate quando tenta escapar (-1 = nao esta), ticks seguidos a salvo e o destino. */
+    long retreatUntil = -1;
+    int retreatSafeTicks;
+    Vec3 retreatSpot;
     final List<UUID> revived = new ArrayList<>();
     /** 0.3: carcacas na fila da ressurreicao em massa e o tick do proximo levante. */
     final List<UUID> massQueue = new ArrayList<>();
@@ -65,10 +70,15 @@ public class KaijuNo9Entity extends KaijuEntity {
         }
     }
 
-    /** Nao ataca no meio do gesto de reviver nem da absorcao. */
+    /** Nao ataca no meio do gesto de reviver, da absorcao nem da retirada. */
     @Override
     public boolean startAbility(ResourceLocation id, LivingEntity target) {
-        return reviving == null && absorbing == null && super.startAbility(id, target);
+        return reviving == null && absorbing == null && !isRetreating() && super.startAbility(id, target);
+    }
+
+    @Override
+    public boolean isRetreating() {
+        return retreatUntil >= 0;
     }
 
     /**

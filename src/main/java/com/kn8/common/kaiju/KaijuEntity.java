@@ -1041,6 +1041,14 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
         return failures.streak(id.toString());
     }
 
+    /**
+     * Em retirada (No. 9 com pouca vida, tentando escapar): os goals de alvo, combate e busca ficam parados e quem
+     * conduz o movimento e o servico do numerado.
+     */
+    public boolean isRetreating() {
+        return false;
+    }
+
     /** Tick em que a habilidade fica pronta de novo (recarga e descanso por falhas). */
     public long abilityReadyTick(ResourceLocation id) {
         return abilityReadyAt.getOrDefault(id, Long.MIN_VALUE);

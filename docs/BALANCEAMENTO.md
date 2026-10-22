@@ -836,3 +836,26 @@ No. 13 3/0/0, Kikoru × No. 9 0/3/0 (fugas), Kaiju No. 8 × No. 9 preto 0/3/0 (f
 29 confrontos × 5 duelos em `docs/MOV7_REGRESSAO.md` §3. Nenhum confronto mudou por causa da mobilidade. Com a fuga do
 No. 9 contando como empate, todos os duelos contra o No. 9 e as formas dele terminam em empate (fuga a 15%) ou derrota
 [DECIDIR metas].
+
+## Retirada do No. 9 (Miguel, 2026-10-22: "tenta se retirar; se não conseguir, morre")
+
+Bloco `retreat` no `numbered/<id>.json` das 6 formas do No. 9 [SUPOSIÇÃO nos números]: `max_ticks` 300 (15 s),
+`escape_distance` 24, `escape_ticks` 60 (3 s a salvo), `speed` 1,4, `smoke_interval_ticks` 20, `regenerate` false.
+Começa na vida do `flee_health` (15%; fusões 10%).
+
+Duelos (4 por confronto, V = matou, E = escapou, D = morreu):
+
+| Confronto | Antes (fuga instantânea) | Com a retirada |
+|---|---|---|
+| Hoshina × No. 9 | 0 / 5 / 0 | 2 / 2 / 0 |
+| Hoshina No. 10 × No. 9 | 0 / 5 / 0 | 1 / 3 / 0 |
+| Kaiju No. 8 × No. 9 | 0 / 5 / 0 | **4 / 0 / 0** |
+| Kikoru × No. 9 | 0 / 4 / 1 | 1 / 2 / 1 |
+| Narumi No. 1 × No. 9 | 0 / 5 / 0 | **4 / 0 / 0** |
+| Isao × No. 9 | 0 / 5 / 0 | 2 / 2 / 0 |
+| Reno No. 6 × No. 9 | 0 / 5 / 0 | 1 / 3 / 0 |
+| Mina × No. 9 (40 blocos) | 0 / 3 / 2 | 0 / 2 / 2 |
+| Hoshina No. 10 × No. 9 preto | 0 / 5 / 0 | 0 / 4 / 0 |
+| Kaiju No. 8 × No. 9 preto | 0 / 5 / 0 | 1 / 1 / 0 (2 por tempo, 5 min) |
+
+Ele foi encurralado (15 s sem escapar, volta a lutar) 9 vezes nesses 40 duelos.

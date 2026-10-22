@@ -61,7 +61,7 @@ final class KaijuCombatGoal extends Goal {
     @Override
     public boolean canUse() {
         LivingEntity target = kaiju.getTarget();
-        return target != null && target.isAlive();
+        return target != null && target.isAlive() && !kaiju.isRetreating();
     }
 
     @Override

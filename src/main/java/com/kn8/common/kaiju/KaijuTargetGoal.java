@@ -36,7 +36,7 @@ final class KaijuTargetGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        return ServerConfig.SPEC.isLoaded();
+        return ServerConfig.SPEC.isLoaded() && !kaiju.isRetreating();
     }
 
     @Override

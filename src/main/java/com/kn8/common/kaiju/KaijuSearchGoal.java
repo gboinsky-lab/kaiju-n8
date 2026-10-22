@@ -39,7 +39,7 @@ final class KaijuSearchGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        return spot().isPresent();
+        return !kaiju.isRetreating() && spot().isPresent();
     }
 
     @Override

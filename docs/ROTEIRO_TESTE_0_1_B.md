@@ -954,3 +954,12 @@ Ligar `[kaijuAi] debugLog`.
 | 70.1 | Dois jogadores; `/kn8 invasion start kn8:honju_assault ~ ~ ~` e `/kn8 invasion next` | Alerta para os dois, defensores em esquadrões, as duas ondas e a vitória; o jogo segue liso (20 TPS) |
 | 70.2 | Durante a invasão, construir um muro de pedra entre um soldado e um kaiju | O soldado usa o muro como cobertura (atirador) ou contorna/pula; o kaiju quebra o muro antes de ferir |
 | 70.3 | `/neoforge tps` com 40 kaiju e 40 soldados lutando | Abaixo de ~15 ms por tick (medido 11–14 nesta máquina) |
+
+## 71. Retirada do No. 9
+
+| # | Passo | Esperado |
+|---|---|---|
+| 71.1 | `/summon kn8:kaiju_no9_black` e `/summon kn8:kaiju_no8` perto; baixar a vida do No. 9 (`/data merge entity @e[type=kn8:kaiju_no9_black,limit=1] {Health:300f}`) | Aviso "O Kaiju No. 9 está recuando! Não deixe ele escapar!"; ele para de atacar e corre para longe soltando fumaça |
+| 71.2 | Ficar longe dele (mais de 24 blocos) ou sem vê-lo por 3 s | "O Kaiju No. 9 recuou... ele vai voltar." e ele some (quem lutou ganha o mérito da fuga) |
+| 71.3 | Persegui-lo e matá-lo durante a retirada | Ele morre de verdade: fica a carcaça |
+| 71.4 | Cercá-lo (muro de bedrock em volta, alguém sempre a vista) por 15 s | "O Kaiju No. 9 foi encurralado e vai lutar até o fim!" e ele volta a atacar até morrer (não tenta fugir de novo) |

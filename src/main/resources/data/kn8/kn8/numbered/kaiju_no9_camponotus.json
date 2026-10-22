@@ -53,5 +53,13 @@
     "chance": 0.4,
     "cooldown_ticks": 40,
     "leap_speed": 1.8
+  },
+  "retreat": {
+    "max_ticks": 300,
+    "escape_distance": 24.0,
+    "escape_ticks": 60,
+    "speed": 1.4,
+    "smoke_interval_ticks": 20,
+    "regenerate": false
   }
 }
