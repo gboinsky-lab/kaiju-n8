@@ -70,7 +70,8 @@ e perde fumaça, faíscas soltas e detritos. O tremor de câmera segue `[fx] cam
 |---|---|
 | Paleta (textura) | **vermelho-escuro do traje `#732D37`, `#893D46`, `#933B46`** (MODELO: o traje é do No. 10, vermelho), preto `#1B1516` |
 | Hoje | a mesma aura violeta do Hoshina e os mesmos cortes roxos |
-| Proposta | cortes do Hoshina com a **borda vermelho-escura do traje** no lugar de parte do violeta [DECIDIR: só vermelho, ou violeta + vermelho]; **cauda**: rastro vermelho com faíscas na ponta a cada golpe da cauda; guarda da cauda: faísca vermelha no ponto bloqueado; **Full Release**: o traje solta vapor vermelho fino; **Jūni-hitoe**: 12 arcos alternando violeta e vermelho, o 12º maior, terminando num corte em cruz que expõe o núcleo |
+| Cor (Miguel, 2026-10-22) | **continua violeta** (aura e cortes); **raios saindo do traje em vermelho puxado para o roxo** (ex.: `#9A2A5A`, entre o vermelho do traje e o violeta) [SUPOSIÇÃO o tom exato] |
+| Proposta | cortes violeta como os do Hoshina; **raios do traje**: descargas finas vermelho-arroxeadas saindo do corpo/traje (aura), mais fortes com a sincronização; **cauda**: rastro vermelho com faíscas na ponta a cada golpe da cauda; guarda da cauda: faísca vermelha no ponto bloqueado; **Full Release**: o traje solta vapor vermelho fino; **Jūni-hitoe**: 12 arcos violeta com raios vermelho-arroxeados, o 12º maior, terminando num corte em cruz que expõe o núcleo |
 | Baixa qualidade | arcos e rastro da cauda |
 
 ### Kikoru Shinomiya (`kikoru`)
@@ -103,7 +104,8 @@ e perde fumaça, faíscas soltas e detritos. O tremor de câmera segue `[fx] cam
 | Paleta (textura) | preto `#090908`, cinzas `#393B36`–`#D6D0CA`; **nenhuma cor saturada** (0%) |
 | Arma | canhão maior que ela (CANON) |
 | Hoje | aura laranja (`mina_command`, [SUPOSIÇÃO] antiga); tiros laranja/amarelo/branco com explosão |
-| Proposta | a cor vem do **disparo**, não dela: clarão grande branco-amarelado na boca do canhão, **rastro de fumaça cinza grossa**, explosão com anel de choque e fumaça escura; `charged_cannon`/`anti_giant_shot`: carregamento com faíscas convergindo para o cano (laranja → branco), poeira nos pés no disparo (recuo), projétil espesso. Aura: discreta, branca-acinzentada [DECIDIR: manter a laranja?] |
+| Cor (Miguel, 2026-10-22) | **verde** (aura e energia dos disparos); a aura laranja `mina_command` passa a verde na etapa dela |
+| Proposta | clarão grande na boca do canhão com miolo branco e borda **verde**, **rastro de fumaça cinza grossa**, explosão com anel de choque verde e fumaça escura; `charged_cannon`/`anti_giant_shot`: carregamento com faíscas verdes convergindo para o cano (verde → branco), poeira nos pés no disparo (recuo), projétil espesso |
 | Origem | boca do canhão (o cano fica na horizontal na animação: ponto pelo osso `item_right`) |
 | Baixa qualidade | clarão, projétil e anel da explosão |
 
@@ -133,7 +135,7 @@ e perde fumaça, faíscas soltas e detritos. O tremor de câmera segue `[fx] cam
 | Paleta (textura) | rosa-acinzentado `#9E7A83`, `#C2B2B1`, marrom `#685759`, preto; sem cor saturada |
 | Arma | baioneta longa (fuzil com lâmina, CANON) |
 | Hoje | aura rosa `narumi_pink` [SUPOSIÇÃO antiga]; tiro rosa |
-| Proposta | **estocadas = linhas retas, curtas e finas** (silhueta de agulha, nada de arco), brilho no ponto da lâmina; `sweeping_slash` é o único arco; `bayonet_shot` = rastro fino e reto. Cor: o rosa-acinzentado da textura com miolo branco [DECIDIR: a obra mostra o rosa? A PESQUISAR] |
+| Proposta | **estocadas = linhas retas, curtas e finas** (silhueta de agulha, nada de arco), brilho no ponto da lâmina; `sweeping_slash` é o único arco; `bayonet_shot` = rastro fino e reto. Cor (Miguel, 2026-10-22): **rosa** (aura `narumi_pink` mantida) com miolo branco |
 | Baixa qualidade | as linhas das estocadas |
 
 ### Narumi com o Numbers 1 (`narumi_no1`)
@@ -152,7 +154,7 @@ e perde fumaça, faíscas soltas e detritos. O tremor de câmera segue `[fx] cam
 | Paleta (textura) | bege `#C1BA9B`, `#DFDDD4`, preto `#0E0F0F`, cinzas; sem cor saturada |
 | Arma | manoplas do Numbers 2 (CANON) |
 | Hoje | aura laranja `isao_numbers2` [SUPOSIÇÃO antiga]; ondas laranja `#FF9F40`/`#FFD480` |
-| Proposta | **ar e impacto**, não fogo: Barrage Blast = sequência de anéis curtos de ar comprimido saindo dos punhos; Spiral Blast = projétil com rastro em espiral; Force Blast = leque de ondas largas; **Thunder Emperor** = o nome pede raio: descarga branco-amarelada no último golpe e o núcleo exposto marcado [A PESQUISAR a aparência na obra]. Cor base: bege/branco das manoplas com miolo amarelo [DECIDIR: manter o laranja?] |
+| Proposta | **ar e impacto**, não fogo: Barrage Blast = sequência de anéis curtos de ar comprimido saindo dos punhos; Spiral Blast = projétil com rastro em espiral; Force Blast = leque de ondas largas; **Thunder Emperor** = o nome pede raio: descarga branco-amarelada no último golpe e o núcleo exposto marcado [A PESQUISAR a aparência na obra]. Cor (Miguel, 2026-10-22): **amarelo/laranja** (aura `isao_numbers2` mantida), com o bege das manoplas na borda |
 | Baixa qualidade | anéis e a descarga final |
 
 ### Isao sem o Numbers 2 (`isao_base`)
@@ -203,12 +205,14 @@ habilidade (forma).
 
 ---
 
-## Incertezas para decidir
+## Decisões e incertezas
 
-1. **Cores que não estão nem na textura nem confirmadas na obra:** aura rosa do Narumi, laranja da Mina, laranja do
-   Isao, ciano do soldado. Proposta: a cor do efeito vem do que dispara (arma, técnica) e a aura fica discreta.
-2. **Hoshina No. 10:** cortes violeta (cabelo dele) ou vermelho-escuro (traje do No. 10)? Proposta: os dois, violeta
-   no corte e vermelho na cauda e no Full Release.
-3. **Thunder Emperor, Finger Gun do No. 9, raio do Preondactyl, ácido da formiga:** aparência na obra a pesquisar
-   (cena do anime/mangá); por ora pela textura.
-4. **Fuga e reviver do No. 9:** efeito ainda indefinido.
+**Decidido (Miguel, 2026-10-22):** Narumi rosa; Isao amarelo/laranja; **Mina verde**; Hoshina continua violeta e, com
+o Numbers 10, raios saindo do traje em vermelho puxado para o roxo.
+
+**Ainda a definir (aparência na obra não confirmada; por ora segue a textura):**
+1. Thunder Emperor (golpe final das manoplas do Isao).
+2. Finger Gun do No. 9 (tiro do dedo) e a fuga do No. 9 (como ele some com 15%).
+3. Raio de energia do Preondactyl.
+4. Jato de ácido da formiga (Camponotus).
+5. Reviver do No. 9 (carcaça voltando).
