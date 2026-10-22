@@ -923,3 +923,13 @@ Ligar `[kaijuAi] debugLog`.
 | 67.2 | Isao com o Numbers 2 contra o Primigenius Honju | Depois do Thunder Emperor (núcleo exposto) o log mostra "brecha do kaiju: pressiona" e ele emenda o Barrage Blast |
 | 67.3 | Hoshina contra um Primigenius com o núcleo exposto pelo gelo do Reno No. 6 | "brecha do kaiju: pressiona" no Hoshina |
 | 67.4 | No. 9 contra o Isao sem o Numbers 2 até ele cair abaixo de 30% | O No. 9 não o absorve (só o Isao com o Numbers 2 vira o No. 9 com o Isao) |
+
+## 68. Decisões de 2026-10-22 (fuga = empate, Isao, Narumi No. 1)
+
+| # | Passo | Esperado |
+|---|---|---|
+| 68.1 | `/summon kn8:isao` e `/summon kn8:kaiju_no10_giant` a ~18 blocos; olhar a barra do gigante | Depois do Thunder Emperor a barra mostra "EXPOSTO"; abaixo de 50% de vida o gigante só solta partículas verdes (regeneração) quando o núcleo **não** está exposto |
+| 68.2 | Repetir 68.1 algumas vezes | O Isao vence a maioria (medido 7/10), às vezes com pouca vida |
+| 68.3 | `[kaijuAi] exposedCoreStopsRegeneration = false` e repetir | O gigante volta a se curar com o núcleo exposto e o Isao quase sempre perde |
+| 68.4 | `/summon kn8:narumi_no1` e `/summon kn8:narumi`, cada um contra um No. 13 (`/summon kn8:kaiju_no13`) | O Narumi No. 1 vence mais rápido (~25 s) e com mais vida que o Narumi (~40 s) |
+| 68.5 | Qualquer especial contra o No. 9 até ele fugir a 15% | A fuga é empate (o No. 9 continua vivo); só conta vitória se ele morrer antes |

@@ -413,6 +413,11 @@ public final class No9Service {
         if (rate <= 0 || sinceHit < regeneration.delayAfterHitTicks()) {
             return;
         }
+        // Balanceamento v1.2 (regeneracao dinamica: "destruir o core interrompe a regeneracao avancada") e Miguel
+        // 2026-10-22 (o Isao deve ser dos mais fortes): com o nucleo exposto (Thunder Emperor, gelo do Reno) nao cura.
+        if (ServerConfig.AI_EXPOSED_CORE_STOPS_REGEN.get() && kaiju.isCoreExposed()) {
+            return;
+        }
         kaiju.heal(kaiju.getMaxHealth() * rate / TICKS_PER_SECOND);
         if (kaiju.tickCount % REGEN_PARTICLE_INTERVAL == 0) {
             level.sendParticles(ParticleTypes.HAPPY_VILLAGER, kaiju.getX(), kaiju.getY() + kaiju.getBbHeight() * 0.6,

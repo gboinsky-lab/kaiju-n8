@@ -278,3 +278,11 @@ tempo parado, tiros bloqueados, dano duplicado = 0).
   Thunder Emperor, do gelo do Reno ou do Juni-hitoe.
 - Com isso a MOV-5 fecha os perfis de todos os personagens (Kafka/No. 8, Hoshina, Kikoru, Mina, Reno, Narumi, Isao).
 
+
+## 18. Decisões do Miguel (2026-10-22)
+
+- Fuga do No. 9 conta como empate na matriz de duelos (antes vitória).
+- Isao entre os mais fortes: numerado com o núcleo exposto não regenera (`[kaijuAi] exposedCoreStopsRegeneration`,
+  regra de regeneração dinâmica do v1.2) e o Thunder Emperor expõe por 120 ticks: Isao × No. 10 gigante 0/5 → 7/10.
+- Narumi No. 1 mais forte que o Narumi: `kaiju_damage` 1,4 (era 0,85, abaixo do 1,3 do Narumi) e explora brechas.
+- Modelos próprios do Narumi No. 1 e do Isao sem o Numbers 2 ficam para depois. Próximas etapas: MOV-6 (kaiju) e MOV-7.

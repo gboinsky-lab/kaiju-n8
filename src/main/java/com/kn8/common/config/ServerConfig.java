@@ -215,6 +215,7 @@ public final class ServerConfig {
     public static final ModConfigSpec.IntValue AI_BOSS_PHASE_BONUS;
     public static final ModConfigSpec.IntValue AI_ADAPTATION_MEMORY;
     public static final ModConfigSpec.IntValue AI_PARALYZED_SLOW_LEVEL;
+    public static final ModConfigSpec.BooleanValue AI_EXPOSED_CORE_STOPS_REGEN;
     public static final ModConfigSpec.DoubleValue AI_WINDUP_EASY;
     public static final ModConfigSpec.DoubleValue AI_WINDUP_NORMAL;
     public static final ModConfigSpec.DoubleValue AI_WINDUP_HARD;
@@ -733,6 +734,10 @@ public final class ServerConfig {
         AI_PARALYZED_SLOW_LEVEL = intValue("paralyzedSlowLevel", "MOV-5E: a kaiju slowed at this Slowness level or"
                 + " higher (Reno's freezing burst) counts as an opening for special soldiers to press. 0 disables.", 6,
                 0, 10);
+        AI_EXPOSED_CORE_STOPS_REGEN = BUILDER.comment("Numbered kaiju (No. 9, No. 10 and forms) do not regenerate while"
+                + " the core is exposed (Thunder Emperor, Reno's ice, weak point thrust; Balance v1.2: exposing the core"
+                + " interrupts advanced regeneration).").translation(PREFIX + "exposedCoreStopsRegeneration")
+                .define("exposedCoreStopsRegeneration", true);
         AI_WINDUP_EASY = doubleValue("heavyWindupEasy", "Windup (reaction window) of heavy kaiju attacks on Easy and"
                 + " Peaceful, as a multiple of the JSON windup.", 1.25, 0.5, 3.0);
         AI_WINDUP_NORMAL = doubleValue("heavyWindupNormal", "Windup of heavy kaiju attacks on Normal.", 1.0, 0.5,

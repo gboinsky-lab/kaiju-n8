@@ -298,3 +298,18 @@ para os punhos"; Barrage Blast, Spiral Blast, Thunder Emperor quebra a guarda e 
   Primigenius Honju em menos de 24 s ("brecha do kaiju: pressiona" depois do Thunder Emperor) com 694 de 700; o Isao
   sem o Numbers 2 derruba o Primigenius em menos de 24 s com 513 de 520.
 
+
+## Decisões do Miguel (2026-10-22)
+
+- **Fuga = empate:** os resultados "por fuga" acima (Isao, Isao sem o Numbers 2, Narumi, Narumi No. 1, Kikoru, Reno
+  No. 6 contra o No. 9) passam a ser empates; só vence quem mata o No. 9 antes dos 15%.
+- **Isao (`isao`):** Thunder Emperor `expose_core_ticks` 60 → 120 [SUPOSIÇÃO] e, para todo numerado, núcleo exposto
+  corta a regeneração (CÂNONE do v1.2: "destruir o core interrompe a regeneração avançada"). Diagnóstico: log temporário
+  de dano mostrou o Isao tirando 5.944 por duelo do No. 10 gigante (4.600 de vida) e perdendo pela cura de até 92/s
+  abaixo de 50%. Medido (fuga = empate): × No. 10 gigante **7/10** (meta 60%; com 1,35 de dano e sem o Thunder
+  Emperor mais longo só 1/5).
+- **Narumi No. 1 (`narumi_no1`):** mais forte que o Narumi pelos ataques precisos e pela previsão: `kaiju_damage`
+  0,85 → 1,4 e `exploit_openings` 3 [SUPOSIÇÃO]. Medido (5 duelos): × No. 13 5/5 em ~25 s com 53–70% (Narumi 4/5 em
+  ~40 s com 26–45%); × No. 10 pequeno 5/5 em ~17 s com 57–78%; × No. 9 5 empates por fuga em ~16 s com 77–93% (Narumi:
+  em ~26 s com 56–79%); × No. 10 gigante 0/5 com o gigante a 1–16% (Narumi: 23–52%).
+- Modelos próprios do Narumi No. 1 e do Isao sem o Numbers 2: futuramente (A PESQUISAR acima fica para essa etapa).

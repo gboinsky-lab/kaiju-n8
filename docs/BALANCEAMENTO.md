@@ -794,3 +794,22 @@ dano 26 → 34, armadura 12, fortitude 7. Habilidades: garra, `no13_flurry` (4 �
 | Narumi × No. 13 | 0/5 com 0,52 (No. 13 com 45–56%); 3/5 com 1,1; **5/5 com 1,3** (Narumi com 3–49%) | Miguel 2026-10-16: o Narumi vence o No. 13 e fica mais forte no geral → `kaiju_damage` 1,3. Com 1,3: No. 9 5/5 (todas por fuga, Narumi com 62–96%), No. 10 pequeno 5/5 (4 viram a forma gigante perto de 50%: o script conta como fuga), No. 10 gigante 0/5 (gigante com 18–55%) |
 | Kaiju No. 8 × No. 9 com o Isao (8 m) | 0/5 (3 derrotas em 184–260 s, 2 empates de 300 s com o No. 8 a 18–31% e o kaiju a 45–50%) | meta 3%; os empates voltaram com o corpo maior [DECIDIR] |
 | Hoshina No. 10 × No. 9 com o Isao (8 m) | 0/5 (kaiju com 88–95%, 19–26 s) | meta 5% |
+
+## Decisões de 2026-10-22 (Miguel)
+
+- **Matriz:** fuga do No. 9 (15%) e fim do tempo = **empate** (antes a fuga contava como vitória).
+- **Regeneração dos numerados:** `[kaijuAi] exposedCoreStopsRegeneration` (padrão `true`): No. 9, No. 10 e formas não
+  regeneram com o núcleo exposto (v1.2, regeneração dinâmica).
+- **Isao com o Numbers 2:** Thunder Emperor `expose_core_ticks` 120 (era 60) [SUPOSIÇÃO]; `kaiju_damage` 1,2 mantido.
+- **Narumi No. 1:** `kaiju_damage` 1,4 (era 0,85) e `tactics.exploit_openings` 3 [SUPOSIÇÃO].
+
+| Confronto (fuga = empate) | V / E / D | Observação |
+|---|---|---|
+| Isao × No. 10 gigante | 7 / 0 / 3 de 10 | meta 60%; antes 0/5; vence com 2–44% |
+| Isao × No. 10 gigante, só o núcleo cortando a regeneração (Thunder 60) | 2 / 0 / 3 | com 1,35 de dano: 1/0/4 |
+| Narumi No. 1 × No. 13 | 5 / 0 / 0 | ~25 s, 53–70% de vida |
+| Narumi × No. 13 | 4 / 0 / 1 | ~40 s, 26–45% |
+| Narumi No. 1 × No. 10 pequeno | 5 / 0 / 0 | ~17 s, 57–78% |
+| Narumi No. 1 × No. 9 / Narumi × No. 9 | 0 / 5 / 0 e 0 / 5 / 0 | todos por fuga; No. 1 em ~16 s, Narumi em ~26 s |
+| Narumi No. 1 × No. 10 gigante / Narumi × gigante | 0 / 0 / 5 e 0 / 0 / 5 | gigante com 1–16% contra 23–52% |
+| Hoshina × No. 10 gigante / Hoshina No. 10 × gigante | 0 / 0 / 3 e 3 / 0 / 0 | papéis mantidos |

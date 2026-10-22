@@ -82,7 +82,7 @@
       "priority": 4,
       "hit_interval": 6,
       "dash_in": 1.2,
-      "expose_core_ticks": 60,
+      "expose_core_ticks": 120,
       "final_knockback": 2.5,
       "honju_priority": 3
     }

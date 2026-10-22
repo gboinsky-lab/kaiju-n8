@@ -59,4 +59,28 @@ public final class IsaoProfileGameTests {
             helper.succeed();
         });
     }
+
+    /**
+     * Miguel 2026-10-22 (o Isao deve ser dos mais fortes) e v1.2 (expor o nucleo interrompe a regeneracao avancada):
+     * o No. 9 nao se cura com o nucleo exposto e volta a se curar depois.
+     */
+    @GameTest(template = TEMPLATE, timeoutTicks = 160, batch = "kn8_mov5g_isao_c")
+    public static void exposedCoreStopsRegeneration(GameTestHelper helper) {
+        KaijuEntity no9 = helper.spawn(KN8Entities.KAIJU_NO9.get(), new BlockPos(7, 1, 7));
+        no9.setNoAi(true);
+        float[] start = new float[1];
+        helper.runAfterDelay(SETTLE, () -> {
+            no9.setHealth(no9.getMaxHealth() * 0.45F);
+            start[0] = no9.getHealth();
+            no9.exposeCore(60);
+        });
+        helper.runAfterDelay(SETTLE + 40, () -> helper.assertTrue(no9.getHealth() <= start[0] + 0.01F,
+                "Com o nucleo exposto nao deveria curar: " + start[0] + " -> " + no9.getHealth()));
+        helper.runAfterDelay(SETTLE + 100, () -> {
+            helper.assertTrue(no9.getHealth() > start[0] + 1.0F,
+                    "Sem o nucleo exposto volta a curar: " + start[0] + " -> " + no9.getHealth());
+            no9.discard();
+            helper.succeed();
+        });
+    }
 }
