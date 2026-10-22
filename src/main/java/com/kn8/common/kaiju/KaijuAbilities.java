@@ -14,11 +14,15 @@ import com.kn8.common.data.def.AbilityDef;
 import com.kn8.common.data.def.KaijuAiDef;
 import com.kn8.common.vfx.AbilityEffects;
 import com.kn8.core.kaiju.AbilitySelection;
+import com.kn8.core.kaiju.LeapArc;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 /**
@@ -42,6 +46,11 @@ final class KaijuAbilities {
     /** Folga no alcance dos golpes seguintes do combo (o alvo recua um pouco entre eles). */
     private static final double MULTI_HIT_REACH_TOLERANCE = 1.5;
     private static final float FULL_CIRCLE = 360.0F;
+    /** MOV-6: a caixa do kaiju no arco do salto encolhe nos lados (galho e beirada nao barram) e sobe um pouco. */
+    private static final double LEAP_SIDE_SHRINK = 0.25;
+    private static final double LEAP_LIFT = 0.2;
+    /** Ultimos ticks do arco nao conferidos: e a descida no pouso, ja coberta pelo teste do chao. */
+    private static final int LEAP_LANDING_TICKS = 3;
 
     private KaijuAbilities() {
     }
@@ -89,6 +98,10 @@ final class KaijuAbilities {
                     sight = kaiju.hasLineOfSight(target);
                 }
                 if (!sight) {
+                    continue;
+                }
+                if (TYPE_LEAP.equals(ability.type().getPath()) && !leapClear(kaiju, target)) {
+                    // MOV-6: salto so com o arco livre e chao no pouso.
                     continue;
                 }
             } else if (!kaiju.isInReach(target, max)) {
@@ -171,9 +184,11 @@ final class KaijuAbilities {
         // leque na horizontal por arc_degrees (360 = todos na mesma linha); cada tiro tem o dano inteiro.
         int shots = ability.behavior().hits();
         float fan = shots > 1 && ability.behavior().arcDegrees() < FULL_CIRCLE ? ability.behavior().arcDegrees() : 0;
+        // MOV-6: a rajada inteira conta como um uso no contador de falhas (KaijuProjectile.Volley).
+        KaijuProjectile.Volley volley = new KaijuProjectile.Volley(kaiju, id, shots);
         for (int i = 0; i < shots; i++) {
             float yaw = shots > 1 ? fan * (i / (float) (shots - 1) - 0.5F) : 0.0F;
-            KaijuProjectile.shoot(kaiju, id, ability, mouth, aim.yRot(yaw * Mth.DEG_TO_RAD), damage);
+            KaijuProjectile.shoot(kaiju, id, ability, mouth, aim.yRot(yaw * Mth.DEG_TO_RAD), damage).volley = volley;
         }
     }
 
@@ -185,17 +200,62 @@ final class KaijuAbilities {
 
     /** {@code kn8:leap}: pula numa parabola ate o alvo; o dano em area sai na aterrissagem ({@link #land}). */
     static void leap(KaijuEntity kaiju, LivingEntity target) {
+        kaiju.setDeltaMovement(leapVelocity(kaiju, target));
+        kaiju.hurtMarked = true;
+    }
+
+    /** Velocidade inicial do salto: cai com a borda da frente encostando no alvo (nao em cima do centro dele). */
+    private static Vec3 leapVelocity(KaijuEntity kaiju, LivingEntity target) {
         Vec3 to = target != null && target.isAlive() ? target.position()
                 : kaiju.position().add(kaiju.bodyForward().scale(6.0));
-        // Cai com a borda da frente encostando no alvo (nao em cima do centro dele).
         Vec3 flat = new Vec3(to.x - kaiju.getX(), 0, to.z - kaiju.getZ());
         double distance = Math.max(0.0, flat.length() - kaiju.getBbWidth() * 0.5);
         Vec3 dir = flat.lengthSqr() < 1.0E-4 ? kaiju.bodyForward() : flat.normalize();
         double speed = AbilitySelection.leapHorizontalSpeed(distance, LEAP_FLIGHT_TICKS, AIR_DRAG);
         double vy = AbilitySelection.leapVerticalSpeed(to.y - kaiju.getY(), LEAP_FLIGHT_TICKS, GRAVITY,
                 VERTICAL_DRAG);
-        kaiju.setDeltaMovement(dir.x * speed, Math.max(0.4, vy), dir.z * speed);
-        kaiju.hurtMarked = true;
+        return new Vec3(dir.x * speed, Math.max(0.4, vy), dir.z * speed);
+    }
+
+    /**
+     * MOV-6 (bug 3 da Fase 0: salto de kaiju sem conferir o pouso): o arco ate o alvo passa sem bater em teto ou
+     * parede (caixa do kaiju a cada tick, um pouco mais estreita) e ha chao que nao e lava ate
+     * {@code [kaijuAi] leapMaxDrop} abaixo do pe do alvo no ponto de pouso. Desligavel no config.
+     */
+    static boolean leapClear(KaijuEntity kaiju, LivingEntity target) {
+        if (!ServerConfig.SPEC.isLoaded() || !ServerConfig.AI_LEAP_CHECK_LANDING.get()) {
+            return true;
+        }
+        if (target == null || !target.isAlive()) {
+            return false;
+        }
+        Vec3 v = leapVelocity(kaiju, target);
+        double[][] arc = LeapArc.points(v.x, v.y, v.z, LEAP_FLIGHT_TICKS, GRAVITY, VERTICAL_DRAG, AIR_DRAG);
+        AABB body = kaiju.getBoundingBox();
+        double shrink = body.getXsize() * LEAP_SIDE_SHRINK;
+        AABB flying = new AABB(body.minX + shrink, body.minY + LEAP_LIFT, body.minZ + shrink,
+                body.maxX - shrink, body.maxY, body.maxZ - shrink);
+        for (int i = 0; i < arc.length - LEAP_LANDING_TICKS; i++) {
+            if (!kaiju.level().noCollision(kaiju, flying.move(arc[i][0], arc[i][1], arc[i][2]))) {
+                return false;
+            }
+        }
+        double[] end = arc[arc.length - 1];
+        Vec3 landing = kaiju.position().add(end[0], 0, end[2]);
+        int top = Mth.floor(target.getY() + 0.5);
+        int bottom = Mth.floor(target.getY() - ServerConfig.AI_LEAP_MAX_DROP.get());
+        BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(Mth.floor(landing.x), top, Mth.floor(landing.z));
+        for (int y = top; y >= bottom; y--) {
+            pos.setY(y);
+            if (kaiju.level().getFluidState(pos).is(FluidTags.LAVA)) {
+                return false;
+            }
+            if (!kaiju.level().getBlockState(pos).getCollisionShape(kaiju.level(), pos).isEmpty()
+                    || kaiju.level().getFluidState(pos).is(FluidTags.WATER)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /** Aterrissagem do salto: golpe em area (raio = {@code radius}) em volta do kaiju. */

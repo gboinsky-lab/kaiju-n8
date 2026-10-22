@@ -1,12 +1,16 @@
 // src/main/java/com/kn8/common/kaiju/PreondactylEntity.java
 package com.kn8.common.kaiju;
 
+import java.util.List;
 import java.util.Optional;
 
+import com.kn8.common.ai.AiTuning;
+import com.kn8.common.config.ServerConfig;
 import com.kn8.common.data.KN8Data;
 import com.kn8.common.data.def.AbilityDef;
 import com.kn8.common.data.def.FlyerDef;
 import com.kn8.common.destruction.DestructionService;
+import com.kn8.core.kaiju.FlightSteer;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
@@ -80,6 +84,16 @@ public class PreondactylEntity extends KaijuEntity {
     private long phaseEndsAt;
     private int idleTicks;
     private long selfDestructAt = -1;
+    /** MOV-6: desvio de voo em uso (null = reto ate o destino) e quando confere o caminho de novo. */
+    private Vec3 detour;
+    private long nextSteerAt;
+    /** Caixa encolhida nas contas do caminho: encostar numa quina nao conta como bater. */
+    private static final double STEER_DEFLATE = 0.2;
+    /** Passo das amostras da caixa ao longo do caminho (blocos). */
+    private static final double STEER_SAMPLE = 1.0;
+    /** Chegou perto do ponto de desvio: volta a mirar o destino. */
+    private static final double DETOUR_REACHED = 2.0;
+    private static final int BUMP_LOG_TICKS = 10;
 
     public PreondactylEntity(EntityType<? extends KaijuEntity> type, Level level) {
         super(type, level);
@@ -150,6 +164,10 @@ public class PreondactylEntity extends KaijuEntity {
         }
         def.selfDestruct().filter(destruct -> getHealth() < getMaxHealth() * destruct.healthBelow())
                 .ifPresent(destruct -> startSelfDestruct(destruct, now));
+        if (isFlying() && horizontalCollision && tickCount % BUMP_LOG_TICKS == 0) {
+            // MOV-6: batida em predio/morro no voo (log de mobilidade; medida do desvio).
+            AiTuning.logMove(this, "voo bateu em obstaculo");
+        }
         LivingEntity target = getTarget();
         if (target != null && target.isAlive()) {
             idleTicks = 0;
@@ -175,7 +193,7 @@ public class PreondactylEntity extends KaijuEntity {
                 double x = target.getX() + Math.cos(circleAngle) * def.circleRadius();
                 double z = target.getZ() + Math.sin(circleAngle) * def.circleRadius();
                 double y = Math.max(target.getY() + def.cruiseHeight(), groundY(x, z) + MIN_GROUND_CLEARANCE);
-                moveControl.setWantedPosition(x, y, z, 1.0);
+                flyTo(x, y, z, 1.0);
                 tryAttack(target);
                 if (now >= nextDiveAt) {
                     if (hasReadyMeleeAbility()) {
@@ -189,10 +207,18 @@ public class PreondactylEntity extends KaijuEntity {
             }
             case DIVE -> {
                 // IA-4 (bug #18): desce ate o pe do alvo; mirando o meio dele, ficava alto demais para o golpe.
-                moveControl.setWantedPosition(target.getX(), target.getY(), target.getZ(), def.diveSpeed());
+                flyTo(target.getX(), target.getY(), target.getZ(), def.diveSpeed());
                 boolean close = edgeDistance(target) <= meleeReach() + DIVE_REACH_SLACK
                         && Math.abs(target.getY() - getY()) <= getBbHeight() + DIVE_REACH_SLACK;
-                if ((close && tryAttack(target)) || now >= phaseEndsAt) {
+                if (detour != null && !close) {
+                    // MOV-6: sem caminho reto ate o alvo (entre predios mais estreitos que o corpo): o mergulho
+                    // nao passa; volta a circular (o raio continua) e tenta de novo mais tarde.
+                    AiTuning.logMove(this, "mergulho sem caminho: volta a circular");
+                    detour = null;
+                    phase = Phase.CLIMB;
+                    phaseEndsAt = now + CLIMB_TICKS;
+                    nextDiveAt = now + DIVE_RETRY_TICKS;
+                } else if ((close && tryAttack(target)) || now >= phaseEndsAt) {
                     phase = Phase.CLIMB;
                     phaseEndsAt = now + CLIMB_TICKS;
                     nextDiveAt = now + def.diveCooldownTicks();
@@ -200,7 +226,7 @@ public class PreondactylEntity extends KaijuEntity {
             }
             case CLIMB -> {
                 Vec3 away = position().subtract(target.position()).multiply(1, 0, 1).normalize().scale(4.0);
-                moveControl.setWantedPosition(getX() + away.x, getY() + CLIMB_HEIGHT, getZ() + away.z, 1.0);
+                flyTo(getX() + away.x, getY() + CLIMB_HEIGHT, getZ() + away.z, 1.0);
                 if (now >= phaseEndsAt) {
                     phase = Phase.CIRCLE;
                 }
@@ -219,6 +245,68 @@ public class PreondactylEntity extends KaijuEntity {
         if (onGround()) {
             setFlying(false);
         }
+    }
+
+    /**
+     * MOV-6 (plano de mobilidade: "voo desviando de obstaculos"): voa ate o ponto, mas se a reta ate ele (ate
+     * {@code [kaijuAi] flightLookahead} a frente) bate num predio ou morro, vai por um desvio livre: por cima, por
+     * cima pelos lados ou contornando ({@link FlightSteer}). Confere a cada {@code flightSteerIntervalTicks}.
+     */
+    private void flyTo(double x, double y, double z, double speed) {
+        if (!ServerConfig.SPEC.isLoaded() || !ServerConfig.AI_FLIGHT_STEER.get()) {
+            moveControl.setWantedPosition(x, y, z, speed);
+            return;
+        }
+        Vec3 goal = new Vec3(x, y, z);
+        long now = level().getGameTime();
+        if (detour != null && position().distanceTo(detour) < DETOUR_REACHED) {
+            detour = null;
+            nextSteerAt = now;
+        }
+        if (now >= nextSteerAt) {
+            nextSteerAt = now + ServerConfig.AI_FLIGHT_STEER_INTERVAL.get();
+            double ahead = ServerConfig.AI_FLIGHT_LOOKAHEAD.get() + getBbWidth() * 0.5;
+            Vec3 toGoal = goal.subtract(position());
+            Vec3 check = toGoal.length() > ahead ? position().add(toGoal.normalize().scale(ahead)) : goal;
+            if (pathClear(position(), check)) {
+                detour = null;
+            } else {
+                Vec3 previous = detour;
+                detour = chooseDetour(toGoal, ahead);
+                if (detour != null && previous == null) {
+                    AiTuning.logMove(this, "voo desviando de obstaculo");
+                }
+            }
+        }
+        Vec3 to = detour != null ? detour : goal;
+        moveControl.setWantedPosition(to.x, to.y, to.z, speed);
+    }
+
+    /** Primeiro desvio com caminho livre (o reto ja falhou); nenhum livre: segue reto (quebra o que bater). */
+    private Vec3 chooseDetour(Vec3 toGoal, double ahead) {
+        List<double[]> candidates = FlightSteer.candidates(toGoal.x, toGoal.y, toGoal.z, ahead,
+                ServerConfig.AI_FLIGHT_CLIMB.get() + getBbHeight() * 0.5);
+        for (int i = 1; i < candidates.size(); i++) {
+            double[] c = candidates.get(i);
+            Vec3 point = position().add(c[0], c[1], c[2]);
+            if (pathClear(position(), point)) {
+                return point;
+            }
+        }
+        return null;
+    }
+
+    /** A caixa do corpo (um pouco menor) passa sem bater em bloco de {@code from} ate {@code to}? */
+    private boolean pathClear(Vec3 from, Vec3 to) {
+        Vec3 delta = to.subtract(from);
+        int samples = Math.max(1, Mth.ceil(delta.length() / STEER_SAMPLE));
+        AABB box = getBoundingBox().deflate(STEER_DEFLATE).move(from.subtract(position()));
+        for (int i = 1; i <= samples; i++) {
+            if (!level().noCollision(this, box.move(delta.scale(i / (double) samples)))) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private void hover() {

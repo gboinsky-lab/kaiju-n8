@@ -49,8 +49,8 @@ SCEN = {
  'preondactyl': ([], [('s1','kn8:soldier',-3,0,'{kn8_variant:"rifle",kn8_power_level:"high"}','A'),
                       ('s2','kn8:soldier',3,0,'{kn8_variant:"rifle",kn8_power_level:"high"}','A'),
                       ('k','kn8:preondactyl',0,20,'','B')]),
- 'municao': ([], [('s1','kn8:soldier',-3,0,'{kn8_variant:"rifle",kn8_power_level:"elite"}','A'),
-                  ('s2','kn8:soldier',3,0,'{kn8_variant:"pistol",kn8_power_level:"elite"}','A'),
+ 'municao': ([], [('s1','kn8:soldier',-3,0,'{kn8_variant:"rifle",kn8_power_level:"normal"}','A'),
+                  ('s2','kn8:soldier',3,0,'{kn8_variant:"pistol",kn8_power_level:"normal"}','A'),
                   ('r','kn8:reno',0,-2,'','A'),
                   ('k','kn8:primigenius_honju',0,22,'','B')]),
  'municao_alvo': ([], [('s1','kn8:soldier',-3,0,'{kn8_variant:"rifle"}','A'),
@@ -64,8 +64,8 @@ SCEN = {
  'no8': ([], [('n','kn8:kaiju_no8',0,0,'','A'), ('k','kn8:primigenius_honju',0,18,'','B')]),
  'reno_cobre': ([], [('s','kn8:soldier',0,4,'{kn8_variant:"rifle"}','A'), ('r','kn8:reno',0,-8,'','A'),
                      ('k1','kn8:primigenius',-14,16,'','B'), ('k2','kn8:primigenius',2,10,'','B')]),
- 'cerco': ([], [('s1','kn8:soldier',-3,0,'{kn8_variant:"rifle",kn8_power_level:"elite"}','A'),
-                ('s2','kn8:soldier',3,0,'{kn8_variant:"rifle",kn8_power_level:"elite"}','A'),
+ 'cerco': ([], [('s1','kn8:soldier',-3,0,'{kn8_variant:"rifle",kn8_power_level:"normal"}','A'),
+                ('s2','kn8:soldier',3,0,'{kn8_variant:"rifle",kn8_power_level:"normal"}','A'),
                 ('h','kn8:hoshina',0,-2,'','A'),
                 ('k1','kn8:primigenius',-4,18,'','B'), ('k2','kn8:primigenius',0,20,'','B'),
                 ('k3','kn8:primigenius',4,18,'','B')]),
@@ -104,6 +104,17 @@ SCEN = {
                 ('s2','kn8:soldier',0,0,'{kn8_variant:"sword",kn8_power_level:"high"}','A'),
                 ('s3','kn8:soldier',2,0,'{kn8_variant:"sword",kn8_power_level:"high"}','A'),
                 ('k','kn8:primigenius_honju',0,10,'','B')]),
+ # MOV-6: soldados parados atras de um muro de bedrock (o kaiju nao quebra); o pisao/varrida do Honju alcancava
+ # pela distancia e feria atraves do muro.
+ 'muro_kaiju': ([(-8,0,4,8,7,4,'minecraft:bedrock')],
+                [('s1','kn8:soldier',-2,2,'{kn8_variant:"rifle",kn8_power_level:"elite",NoAI:1b}','A'),
+                 ('s2','kn8:soldier',2,2,'{kn8_variant:"rifle",kn8_power_level:"elite",NoAI:1b}','A'),
+                 ('k','kn8:primigenius_honju',0,12,'','B')]),
+ # MOV-6: Preondactyl contra atiradores entre torres altas (voo batendo nos predios).
+ 'voo_torres': ([(x,0,z,x+2,24,z+2,'minecraft:bedrock') for x in (-16,6) for z in (-8,6,20)],
+                [('s1','kn8:soldier',-1,0,'{kn8_variant:"rifle",kn8_power_level:"normal"}','A'),
+                 ('s2','kn8:soldier',1,9,'{kn8_variant:"rifle",kn8_power_level:"normal"}','A'),
+                 ('k','kn8:preondactyl',0,22,'','B',6)]),
  'pilares': ([(x,0,z,x+1,6,z+1,'minecraft:bedrock') for x in (-8,-2,4) for z in (8,14,20)],
              [('m','kn8:mina',0,0,'','A'), ('k','kn8:primigenius_honju',0,28,'','B')]),
 }
@@ -120,8 +131,10 @@ time.sleep(0.5)
 rcon(f'kill @e[type=kn8:carcass,x={X0-60},y=-70,z={Z0-60},dx=120,dy=60,dz=120]')
 for qx in (-40, 1):
     for qz in (-40, 1):
-        r=rcon(f'fill {X0+qx} {Y} {Z0+qz} {X0+qx+40} {Y+10} {Z0+qz+40} air')
-        assert 'Too many' not in r, r
+        # MOV-6: torres de 24 (voo_torres): limpa ate Y+26 em duas camadas (limite do /fill).
+        for y0, y1 in ((Y, Y+12), (Y+13, Y+26)):
+            r=rcon(f'fill {X0+qx} {y0} {Z0+qz} {X0+qx+40} {y1} {Z0+qz+40} air')
+            assert 'Too many' not in r, r
 rcon(f'fill {X0-40} {Y-1} {Z0-40} {X0+40} {Y-1} {Z0+40} stone')
 for b in blocks:
     x0,y0,z0,x1,y1,z1,blk=b; rcon(f'fill {P(x0,z0,y0)} {P(x1,z1,y1)} {blk}')

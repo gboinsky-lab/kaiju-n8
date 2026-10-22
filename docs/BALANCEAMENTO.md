@@ -813,3 +813,20 @@ dano 26 → 34, armadura 12, fortitude 7. Habilidades: garra, `no13_flurry` (4 �
 | Narumi No. 1 × No. 9 / Narumi × No. 9 | 0 / 5 / 0 e 0 / 5 / 0 | todos por fuga; No. 1 em ~16 s, Narumi em ~26 s |
 | Narumi No. 1 × No. 10 gigante / Narumi × gigante | 0 / 0 / 5 e 0 / 0 / 5 | gigante com 1–16% contra 23–52% |
 | Hoshina × No. 10 gigante / Hoshina No. 10 × gigante | 0 / 0 / 3 e 3 / 0 / 0 | papéis mantidos |
+
+## MOV-6 (kaiju, 2026-10-22) [SUPOSIÇÃO nos números]
+
+| Config `[kaijuAi]` | Padrão | O que faz |
+|---|---|---|
+| `strikeNeedsClearPath` | true | Golpe de perto/área do kaiju só fere sem bloco no caminho |
+| `abilityFailLimit` | 3 | Falhas seguidas até a habilidade descansar (0 desliga) |
+| `abilityFailRestTicks` | 160 | Recarga extra do descanso |
+| `leapCheckLanding` | true | Salto só com arco livre e chão no pouso |
+| `leapMaxDrop` | 8 | Chão do pouso até tantos blocos abaixo do pé do alvo |
+| `flightSteer` | true | Voadores desviam de prédios e morros |
+| `flightLookahead` | 8 | Alcance da conferência do caminho (+ meia largura do corpo) |
+| `flightClimb` | 6 | Quanto sobe para passar por cima (+ meia altura) |
+| `flightSteerIntervalTicks` | 5 | Intervalo entre as conferências |
+
+Duelos depois da MOV-6 (fuga = empate): Hoshina × No. 10 pequeno 3/0/0, Isao × No. 10 gigante 2/0/1, Narumi No. 1 ×
+No. 13 3/0/0, Kikoru × No. 9 0/3/0 (fugas), Kaiju No. 8 × No. 9 preto 0/3/0 (fugas): sem regressão.

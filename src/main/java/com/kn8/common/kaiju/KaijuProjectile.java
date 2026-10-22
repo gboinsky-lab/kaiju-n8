@@ -50,6 +50,10 @@ public class KaijuProjectile extends Projectile {
     /** IA-2 (bug da Fase 0): o projetil guarda o "heavy" da habilidade (o bloqueio comum nao segura). */
     private boolean heavy;
     private double travelled;
+    /** MOV-6: rajada a que este tiro pertence (contador de falhas do kaiju), se feriu alguem e se ja avisou. */
+    Volley volley;
+    private boolean hitSomeone;
+    private boolean reported;
 
     public KaijuProjectile(EntityType<? extends KaijuProjectile> type, Level level) {
         super(type, level);
@@ -103,6 +107,7 @@ public class KaijuProjectile extends Projectile {
         setPos(position().add(motion));
         travelled += motion.length();
         if (travelled > ability.get().behavior().projectileRange()) {
+            report(false, false);
             discard();
         }
     }
@@ -156,6 +161,7 @@ public class KaijuProjectile extends Projectile {
                 AbilityEffects.play(getOwner(), def, where);
             }
         });
+        report(hitSomeone, result.getType() == HitResult.Type.BLOCK);
         discard();
     }
 
@@ -188,10 +194,44 @@ public class KaijuProjectile extends Projectile {
         target.invulnerableTime = 0;
         boolean hurt = target.hurt(damageSources().mobProjectile(this,
                 owner instanceof LivingEntity living ? living : null), damage);
+        hitSomeone |= hurt;
         if (hurt && ability.behavior().slowTicks() > 0) {
             // Teia: lentidao (que tambem corta a corrida) pelo tempo do JSON.
             target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, ability.behavior().slowTicks(),
                     ability.behavior().slowLevel()));
+        }
+    }
+
+    private void report(boolean hit, boolean blocked) {
+        if (volley != null && !reported) {
+            reported = true;
+            volley.done(hit, blocked);
+        }
+    }
+
+    /**
+     * MOV-6: os tiros de uma rajada (Multi-Finger Gun sai com varios); quando todos acabam, o kaiju conta um uso:
+     * acertou alguem, bateu em bloco (cobertura: nao conta) ou foi no vazio (falha).
+     */
+    static final class Volley {
+        private final KaijuEntity owner;
+        private final ResourceLocation ability;
+        private int left;
+        private boolean landed;
+        private boolean blocked;
+
+        Volley(KaijuEntity owner, ResourceLocation ability, int shots) {
+            this.owner = owner;
+            this.ability = ability;
+            this.left = Math.max(1, shots);
+        }
+
+        void done(boolean hit, boolean block) {
+            landed |= hit;
+            blocked |= block;
+            if (--left == 0 && owner.isAlive()) {
+                owner.recordAbilityResult(ability, landed, blocked);
+            }
         }
     }
 

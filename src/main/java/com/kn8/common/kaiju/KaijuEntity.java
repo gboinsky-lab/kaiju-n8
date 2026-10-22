@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import com.kn8.KN8Constants;
+import com.kn8.common.ai.AiTuning;
 import com.kn8.common.anim.Locomotion;
 import com.kn8.common.arena.TrainingArenaService;
 import com.kn8.common.boss.BossService;
@@ -31,6 +32,7 @@ import com.kn8.common.data.def.KaijuDef;
 import com.kn8.core.KN8Ids;
 import com.kn8.core.combat.ActionTimeline;
 import com.kn8.core.destruction.DestructionMath;
+import com.kn8.core.kaiju.AbilityFailures;
 import com.kn8.core.kaiju.AbilityGeometry;
 import com.kn8.core.kaiju.AbilitySelection;
 import com.kn8.core.kaiju.KaijuBrain;
@@ -72,7 +74,10 @@ import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.PartEntity;
 import software.bernie.geckolib.animatable.GeoEntity;
@@ -181,6 +186,14 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
     /** 0.6: salto em andamento (dano na aterrissagem) e quando comecou. */
     private ResourceLocation leapAbility;
     private long leapStartTick;
+    /**
+     * MOV-6: uso de habilidade ainda sem resultado (o golpe, o ultimo do combo, a aterrissagem ou a investida), se
+     * feriu alguem e se foi barrado por parede; e as falhas seguidas de cada habilidade.
+     */
+    private ResourceLocation pendingUse;
+    private boolean pendingLanded;
+    private boolean pendingBlocked;
+    private final AbilityFailures failures = new AbilityFailures();
     /** 0.6: furia ja ativada (rage do JSON; nao volta). */
     private boolean enraged;
     /** IA-4 (bug #22 da auditoria): furia salva no mundo; os modificadores voltam no primeiro tick depois de carregar. */
@@ -616,7 +629,7 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
         Optional<KaijuDef> def = def();
         List<ResourceLocation> abilities = def.map(KaijuDef::abilities).orElse(List.of());
         if (abilities.isEmpty()) {
-            if (now >= nextBasicAttackTick && inMeleeReach(target)) {
+            if (now >= nextBasicAttackTick && inMeleeReach(target) && strikeClear(target)) {
                 nextBasicAttackTick = now + ServerConfig.BASIC_ATTACK_INTERVAL_TICKS.get();
                 return doHurtTarget(target);
             }
@@ -640,8 +653,15 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
         if (!abilityTimeline.tryStart(now, id.toString(), duration, windup)) {
             return false;
         }
+        finishUse();
         currentAbility = id;
         currentWindup = windup;
+        if (!KaijuAbilities.TYPE_PROJECTILE.equals(ability.type().getPath())) {
+            // Projeteis contam pelo voo deles (KaijuProjectile.Volley); o resto, pelo golpe.
+            pendingUse = id;
+            pendingLanded = false;
+            pendingBlocked = false;
+        }
         cachedReachTick = Long.MIN_VALUE;
         abilityTarget = target;
         lastAbilityHeavy = ability.heavy();
@@ -725,12 +745,17 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
                 multiHitsLeft--;
                 nextMultiHitTick = now + ability.get().behavior().hitInterval();
             }
+            if (multiHitsLeft == 0 && !isUsingAbility()) {
+                finishUse();
+            }
         }
         if (leapAbility != null && now - leapStartTick > LEAP_MIN_AIR_TICKS && (onGround() || isInWater())) {
             KN8Data.ABILITY.get(leapAbility, false).ifPresent(ability -> KaijuAbilities.land(this, ability));
             leapAbility = null;
+            finishUse();
         } else if (leapAbility != null && now - leapStartTick > LEAP_MAX_TICKS) {
             leapAbility = null;
+            finishUse();
         }
     }
 
@@ -781,6 +806,9 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
     }
 
     private void endAbility() {
+        if (leapAbility == null && multiHitsLeft <= 0) {
+            finishUse();
+        }
         currentAbility = null;
         abilityTarget = null;
         chargeDirection = null;
@@ -807,9 +835,15 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
             }
             case KaijuAbilities.TYPE_PROJECTILE -> KaijuAbilities.fire(this, id, ability, abilityTarget);
             case KaijuAbilities.TYPE_LEAP -> {
-                KaijuAbilities.leap(this, abilityTarget);
-                leapAbility = id;
-                leapStartTick = level().getGameTime();
+                if (KaijuAbilities.leapClear(this, abilityTarget)) {
+                    KaijuAbilities.leap(this, abilityTarget);
+                    leapAbility = id;
+                    leapStartTick = level().getGameTime();
+                } else {
+                    // MOV-6: o alvo mudou de lugar no preparo e o pouso ficou ruim (teto, parede, vazio): nao salta.
+                    pendingBlocked = true;
+                    AiTuning.logMove(this, "salto " + id + " cancelado: sem pouso");
+                }
             }
             case KaijuAbilities.TYPE_MULTI_HIT -> {
                 KaijuAbilities.multiHit(this, ability, abilityTarget);
@@ -929,7 +963,12 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
      * Dano de habilidade: {@code ATTACK_DAMAGE * damage_multiplier}. Habilidades "heavy" ficam marcadas durante a
      * aplicacao (o bloqueio comum do jogador nao segura; so parry ou esquiva). Empurrao opcional na direcao dada.
      */
-    void dealAbilityDamage(LivingEntity target, AbilityDef ability, Vec3 push) {
+    boolean dealAbilityDamage(LivingEntity target, AbilityDef ability, Vec3 push) {
+        if (!strikeClear(target)) {
+            // MOV-6: parede entre o corpo e o alvo segura o golpe (o golpe quebra a parede: o proximo passa).
+            pendingBlocked = true;
+            return false;
+        }
         float damage = (float) (getAttributeValue(Attributes.ATTACK_DAMAGE) * ability.damageMultiplier());
         dealingHeavyHit = ability.heavy();
         boolean hurt;
@@ -942,6 +981,74 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
             Vec3 away = push.normalize();
             target.knockback(ServerConfig.ABILITY_KNOCKBACK.get(), -away.x, -away.z);
         }
+        pendingLanded |= hurt;
+        return hurt;
+    }
+
+    /**
+     * MOV-6 (bug 1 da Fase 0: golpes de kaiju atravessavam parede): ha linha livre de bloco entre o corpo do kaiju e
+     * o alvo? Confere dos olhos, do centro do corpo e do ponto da caixa do kaiju mais perto do alvo ate o ponto do alvo
+     * mais perto e o centro dele (kaiju grande: a perna encostada no soldado tambem vale). Desligavel no config.
+     */
+    public boolean strikeClear(LivingEntity target) {
+        if (!ServerConfig.SPEC.isLoaded() || !ServerConfig.AI_STRIKE_NEEDS_CLEAR_PATH.get()) {
+            return true;
+        }
+        AABB box = target.getBoundingBox();
+        Vec3 aim = box.getCenter();
+        Vec3 near = SoldierEntity.nearestInside(getBoundingBox(), aim);
+        for (Vec3 from : new Vec3[] {near, getEyePosition(), getBoundingBox().getCenter()}) {
+            if (clearLine(from, SoldierEntity.nearestInside(box, from)) || clearLine(from, aim)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean clearLine(Vec3 from, Vec3 to) {
+        return level().clip(new ClipContext(from, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this))
+                .getType() == HitResult.Type.MISS;
+    }
+
+    /**
+     * MOV-6: fecha o uso pendente. Feriu alguem: zera as falhas; barrado por parede: nao conta; senao, mais uma
+     * falha e, no limite ({@code [kaijuAi] abilityFailLimit}), a habilidade descansa {@code abilityFailRestTicks}.
+     */
+    private void finishUse() {
+        ResourceLocation id = pendingUse;
+        pendingUse = null;
+        if (id == null) {
+            return;
+        }
+        recordAbilityResult(id, pendingLanded, pendingBlocked);
+    }
+
+    /** Resultado de um uso (golpe ou rajada de projeteis, que avisa pelo {@link KaijuProjectile}). */
+    void recordAbilityResult(ResourceLocation id, boolean landed, boolean blocked) {
+        if (!ServerConfig.SPEC.isLoaded() || (blocked && !landed)) {
+            return;
+        }
+        int limit = ServerConfig.AI_ABILITY_FAIL_LIMIT.get();
+        if (failures.record(id.toString(), !landed, limit)) {
+            long rest = level().getGameTime() + ServerConfig.AI_ABILITY_FAIL_REST_TICKS.get();
+            abilityReadyAt.merge(id, rest, Math::max);
+            AiTuning.logMove(this, "habilidade " + id + " falhou " + limit + " vezes seguidas: descansa");
+        }
+    }
+
+    /** Falhas seguidas da habilidade (testes e log). */
+    public int failureStreak(ResourceLocation id) {
+        return failures.streak(id.toString());
+    }
+
+    /** Tick em que a habilidade fica pronta de novo (recarga e descanso por falhas). */
+    public long abilityReadyTick(ResourceLocation id) {
+        return abilityReadyAt.getOrDefault(id, Long.MIN_VALUE);
+    }
+
+    /** MOV-6: o salto ate o alvo tem arco livre e chao no pouso? */
+    public boolean canLeapAt(LivingEntity target) {
+        return KaijuAbilities.leapClear(this, target);
     }
 
     /** Durante a aplicacao de dano de uma habilidade "heavy"? (o bloqueio comum nao segura esse golpe). */

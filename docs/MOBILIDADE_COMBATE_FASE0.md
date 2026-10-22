@@ -286,3 +286,20 @@ tempo parado, tiros bloqueados, dano duplicado = 0).
   regra de regeneração dinâmica do v1.2) e o Thunder Emperor expõe por 120 ticks: Isao × No. 10 gigante 0/5 → 7/10.
 - Narumi No. 1 mais forte que o Narumi: `kaiju_damage` 1,4 (era 0,85, abaixo do 1,3 do Narumi) e explora brechas.
 - Modelos próprios do Narumi No. 1 e do Isao sem o Numbers 2 ficam para depois. Próximas etapas: MOV-6 (kaiju) e MOV-7.
+
+## 19. MOV-6 feita (2026-10-22): kaiju
+
+- **Golpe com caminho livre** (bug 1, lado do kaiju): mordida, pisão, varrida, investida, combo e aterrissagem do
+  salto só ferem quem não tem bloco entre o corpo do kaiju e ele (`KaijuEntity.strikeClear`: olhos, centro e ponto da
+  caixa mais perto do alvo). O golpe continua quebrando a parede (IA-2): o seguinte passa. Projéteis já paravam em
+  bloco. `[kaijuAi] strikeNeedsClearPath`.
+- **Salto com arco e pouso conferidos** (bug 3, kaiju): `kn8:leap` só é escolhido (e só sai no fim do preparo) com o
+  arco livre de teto e parede e chão que não é lava até `leapMaxDrop` abaixo do pé do alvo (`core/kaiju/LeapArc`).
+- **Voo desviando** (Preondactyl e larva): a reta até o destino é varrida com a caixa do corpo; se bate, vai por um
+  desvio livre (por cima, por cima pelos lados, contornando: `core/kaiju/FlightSteer`); sem caminho no mergulho, volta
+  a circular e usa o raio. `flightSteer`, `flightLookahead`, `flightClimb`, `flightSteerIntervalTicks`.
+- **Contador de falhas por habilidade** (bug 8, kaiju): uso que não fere ninguém conta falha; barrado por parede não
+  conta; rajada de projéteis conta uma vez (`KaijuProjectile.Volley`). Com `abilityFailLimit` 3 seguidas, a habilidade
+  descansa `abilityFailRestTicks` 160 (`core/kaiju/AbilityFailures`).
+- Medidor: cenários novos `muro_kaiju` (sem a regra os dois soldados morrem através do muro de bedrock; com ela, 0 de
+  dano) e `voo_torres` (3–14 batidas por luta sem o desvio; 0 com ele).

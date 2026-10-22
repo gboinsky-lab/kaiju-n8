@@ -933,3 +933,16 @@ Ligar `[kaijuAi] debugLog`.
 | 68.3 | `[kaijuAi] exposedCoreStopsRegeneration = false` e repetir | O gigante volta a se curar com o núcleo exposto e o Isao quase sempre perde |
 | 68.4 | `/summon kn8:narumi_no1` e `/summon kn8:narumi`, cada um contra um No. 13 (`/summon kn8:kaiju_no13`) | O Narumi No. 1 vence mais rápido (~25 s) e com mais vida que o Narumi (~40 s) |
 | 68.5 | Qualquer especial contra o No. 9 até ele fugir a 15% | A fuga é empate (o No. 9 continua vivo); só conta vitória se ele morrer antes |
+
+## 69. Kaiju: golpe com caminho livre, salto, voo e falhas (MOV-6)
+
+Ligar `[kaijuAi] debugLog`.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 69.1 | Muro de bedrock de 8 de altura; dois soldados parados (`NoAI`) colados do outro lado; `/summon kn8:primigenius_honju` a ~12 blocos | O Honju encosta no muro e ataca, mas nenhum soldado perde vida |
+| 69.2 | Repetir 69.1 com o muro de tijolo de pedra | Os golpes quebram o muro e, depois de aberto, ferem os soldados |
+| 69.3 | Repetir 69.1 com `[kaijuAi] strikeNeedsClearPath = false` (reiniciar o servidor) | O pisão/varrida fere os soldados através do muro (como era antes) |
+| 69.4 | Seis torres de bedrock de 24 blocos; dois soldados de rifle entre elas; `/summon kn8:preondactyl` no alto | O Preondactyl passa por cima e pelos lados das torres sem bater; o log mostra "voo desviando de obstaculo" e, quando o soldado está num vão estreito demais para o corpo, "mergulho sem caminho: volta a circular" (e ele usa o raio) |
+| 69.5 | Formiga (`/summon kn8:camponotus`) sob um teto de pedra baixo, soldado a ~10 blocos | Ela não salta (o arco bateria no teto); morde, varre ou cospe ácido |
+| 69.6 | Soldado no alto de um pilar de bedrock, fora do alcance da mordida, e uma aranha embaixo | Depois de 3 golpes no vazio o log mostra "habilidade ... falhou 3 vezes seguidas: descansa" e ela troca de ataque |

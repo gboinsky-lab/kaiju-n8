@@ -216,6 +216,15 @@ public final class ServerConfig {
     public static final ModConfigSpec.IntValue AI_ADAPTATION_MEMORY;
     public static final ModConfigSpec.IntValue AI_PARALYZED_SLOW_LEVEL;
     public static final ModConfigSpec.BooleanValue AI_EXPOSED_CORE_STOPS_REGEN;
+    public static final ModConfigSpec.BooleanValue AI_STRIKE_NEEDS_CLEAR_PATH;
+    public static final ModConfigSpec.IntValue AI_ABILITY_FAIL_LIMIT;
+    public static final ModConfigSpec.IntValue AI_ABILITY_FAIL_REST_TICKS;
+    public static final ModConfigSpec.BooleanValue AI_LEAP_CHECK_LANDING;
+    public static final ModConfigSpec.DoubleValue AI_LEAP_MAX_DROP;
+    public static final ModConfigSpec.BooleanValue AI_FLIGHT_STEER;
+    public static final ModConfigSpec.DoubleValue AI_FLIGHT_LOOKAHEAD;
+    public static final ModConfigSpec.DoubleValue AI_FLIGHT_CLIMB;
+    public static final ModConfigSpec.IntValue AI_FLIGHT_STEER_INTERVAL;
     public static final ModConfigSpec.DoubleValue AI_WINDUP_EASY;
     public static final ModConfigSpec.DoubleValue AI_WINDUP_NORMAL;
     public static final ModConfigSpec.DoubleValue AI_WINDUP_HARD;
@@ -738,6 +747,25 @@ public final class ServerConfig {
                 + " the core is exposed (Thunder Emperor, Reno's ice, weak point thrust; Balance v1.2: exposing the core"
                 + " interrupts advanced regeneration).").translation(PREFIX + "exposedCoreStopsRegeneration")
                 .define("exposedCoreStopsRegeneration", true);
+        AI_STRIKE_NEEDS_CLEAR_PATH = booleanValue("strikeNeedsClearPath", "MOV-6: kaiju melee, sweep, slam, charge,"
+                + " combo and leap landing only hurt targets with no block between them and the kaiju body (the blow"
+                + " still breaks the wall, so the next one gets through).", true);
+        AI_ABILITY_FAIL_LIMIT = intValue("abilityFailLimit", "MOV-6: after this many uses in a row that hurt nobody"
+                + " (blocked by a wall does not count) a kaiju ability rests. 0 disables.", 3, 0, 20);
+        AI_ABILITY_FAIL_REST_TICKS = intValue("abilityFailRestTicks", "MOV-6: extra cooldown of an ability that"
+                + " failed abilityFailLimit times in a row.", 160, 0, 2400);
+        AI_LEAP_CHECK_LANDING = booleanValue("leapCheckLanding", "MOV-6: a kaiju only leaps when the arc has no"
+                + " ceiling or wall in the way and there is ground (not lava) under the landing spot.", true);
+        AI_LEAP_MAX_DROP = doubleValue("leapMaxDrop", "MOV-6: the ground under the leap landing must be at most this"
+                + " many blocks below the target's feet.", 8.0, 1.0, 64.0);
+        AI_FLIGHT_STEER = booleanValue("flightSteer", "MOV-6: flying kaiju (Preondactyl, larva) check the straight"
+                + " path to where they fly and go over or around buildings and hills.", true);
+        AI_FLIGHT_LOOKAHEAD = doubleValue("flightLookahead", "MOV-6: how far ahead (blocks, plus half the body"
+                + " width) flying kaiju check the path.", 8.0, 2.0, 48.0);
+        AI_FLIGHT_CLIMB = doubleValue("flightClimb", "MOV-6: how much a flying kaiju climbs to get over an"
+                + " obstacle.", 6.0, 1.0, 32.0);
+        AI_FLIGHT_STEER_INTERVAL = intValue("flightSteerIntervalTicks", "MOV-6: ticks between path checks of a"
+                + " flying kaiju (the detour is kept in between).", 5, 1, 40);
         AI_WINDUP_EASY = doubleValue("heavyWindupEasy", "Windup (reaction window) of heavy kaiju attacks on Easy and"
                 + " Peaceful, as a multiple of the JSON windup.", 1.25, 0.5, 3.0);
         AI_WINDUP_NORMAL = doubleValue("heavyWindupNormal", "Windup of heavy kaiju attacks on Normal.", 1.0, 0.5,
