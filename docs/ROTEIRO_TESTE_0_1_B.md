@@ -1085,3 +1085,17 @@ Servidor dedicado + 2 clientes, de noite, câmera de lado. Prévia: `/execute po
 | 80.5 | `kn8:isao` `barrage_blast/5`, `force_blast`, `spiral_blast_impact` | Anéis de ar laranja saindo do golpe com poeira; leque de ondas laranja e bege no chão; impacto em anel |
 | 80.6 | `kn8:isao` `thunder_emperor_charge`, `thunder_emperor/2` e `thunder_emperor_2_ground` | Carga laranja crescendo nos punhos; soco único com clarão enorme e três anéis (sem raio, decisão do Miguel); no chão onda dupla, rachaduras com fio laranja e coluna de poeira |
 | 80.7 | `kn8:isao_base` `heavy_straight/1` | Só impacto físico: anel de ar claro, lascas e poeira; nenhuma cor de energia |
+
+## 81. Kaiju No. 9 e formas (VFX-7)
+
+Servidor dedicado + 2 clientes, de noite. Prévia: `/execute positioned ~ ~1.2 ~6 rotated 0 0 run kn8 vfx play kn8:technique <forma> 1 <receita>` (chão: `~ ~ ~6`). Na prévia o tamanho é o de referência; na luta cresce com o corpo.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 81.1 | `kn8:kaiju_no9` `finger_gun` e `finger_gun_muzzle`; luta do No. 9 contra soldados | Finger Gun cinza (decisão do Miguel): risco cinza do tiro, estalo branco no impacto e clarão pequeno na saída; o Multi-Finger Gun da forma preta também cinza |
+| 81.2 | `kn8:kaiju_no9` `harden`, `adapt`, `escape` | Pele endurecida: anel e faíscas na paleta da forma; adaptação: anel e labaredas; fuga: fumaça escura subindo com onda e clarão |
+| 81.3 | `kn8:kaiju_no9_black` `no9_black_blade_arm` e `no9_black_spike_burst` | Braço-lâmina: arco escuro com fio vermelho; espinhos: rachaduras escuras com fio vermelho, espinhos vermelhos subindo e onda |
+| 81.4 | `kn8:kaiju_no9_fusion` `no9_fusion_hybrid_beam_muzzle` e `no9_fusion_hybrid_beam` | Carga com raios vermelhos convergindo e clarão; impacto com ondas vermelha e bege (a faixa do No. 9), raios e fumaça |
+| 81.5 | `kn8:kaiju_no9_camponotus` `no9_ant_acid_spray` e `no9_ant_mandible_rush` | Ácido vermelho-alaranjado em nuvem com anel; mandíbulas em X âmbar |
+| 81.6 | `kn8:kaiju_no9_isao` `no9_isao_thunder_emperor` e `no9_isao_force_blast` | As ondas do Isao em preto e vermelho; o Thunder Emperor dele sem raio, com clarão, três anéis e rachaduras no chão |
+| 81.7 | `/summon kn8:kaiju_no9_fusion` perto de `kn8:isao` e dois `kn8:soldier` | Na luta, tudo no tamanho do corpo de 5 m: raios vermelhos da carga, explosões vermelhas, ondas no chão; tentáculos da absorção na cor de destaque da forma |

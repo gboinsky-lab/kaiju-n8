@@ -276,15 +276,18 @@ public final class No9Service {
                 mob.hurtMarked = true;
             }
         }
-        if (no9.tickCount % 2 == 0) {
-            VfxService.keyed(level, VfxService.TENDRIL, to, pull, 1.0F, "", 0.0F);
+        if (no9.tickCount % 2 == 0 && !form(level, no9, "absorb", to, pull)) {
+            VfxService.keyed(level, VfxService.TENDRIL, to, pull, 1.0F, accentKey(no9), 0.0F);
         }
         if (now < no9.absorbEndsAt) {
             return;
         }
         no9.absorbing = null;
         InvasionService.release(level, prey.getUUID());
-        VfxService.keyed(level, VfxService.SMOKE, to, Vec3.ZERO, prey.getBbWidth() * 0.6F + 0.4F, "#1A1418", 0.0F);
+        if (!form(level, no9, "absorb_end", to, pull)) {
+            VfxService.keyed(level, VfxService.SMOKE, to, Vec3.ZERO, prey.getBbWidth() * 0.6F + 0.4F, "#1A1418",
+                    0.0F);
+        }
         prey.discard();
         // Sem destruicao de blocos: a forma nova nasce de dentro do No. 9 (a explosao da troca e so visual).
         No10Service.transform(level, no9, new NumberedDef.Transform(rule.into(), 0, 0.0F, 1.0F, 0.0F,
@@ -304,15 +307,20 @@ public final class No9Service {
         NumberedDef.Hardening hardening = found.get();
         long now = level.getGameTime();
         if (now < no9.hardenedUntil) {
-            VfxService.play(level, VfxService.IMPACT, no9.position().add(0, no9.getBbHeight() * 0.6, 0), Vec3.ZERO,
-                    0.5F, 0.0F);
+            Vec3 at = no9.position().add(0, no9.getBbHeight() * 0.6, 0);
+            if (!form(level, no9, "harden_hit", at, Vec3.ZERO)) {
+                VfxService.play(level, VfxService.IMPACT, at, Vec3.ZERO, 0.5F, 0.0F);
+            }
             return amount * (1.0F - hardening.reduction());
         }
         if (now >= no9.hardenReadyAt && no9.getRandom().nextFloat() < hardening.chance()) {
             no9.hardenedUntil = now + hardening.durationTicks();
             no9.hardenReadyAt = no9.hardenedUntil + hardening.cooldownTicks();
-            VfxService.play(level, VfxService.HARDEN, no9.position().add(0, no9.getBbHeight() * 0.5, 0), Vec3.ZERO,
-                    Math.max(no9.getBbWidth(), no9.getBbHeight() * 0.6F), 0.0F);
+            Vec3 at = no9.position().add(0, no9.getBbHeight() * 0.5, 0);
+            if (!form(level, no9, "harden", at, Vec3.ZERO)) {
+                VfxService.play(level, VfxService.HARDEN, at, Vec3.ZERO,
+                        Math.max(no9.getBbWidth(), no9.getBbHeight() * 0.6F), 0.0F);
+            }
             level.playSound(null, no9.blockPosition(), SoundEvents.ANVIL_LAND, SoundSource.HOSTILE, 1.0F, 0.5F);
         }
         return amount;
@@ -339,7 +347,8 @@ public final class No9Service {
         marks[0]++;
         marks[1] = now;
         float reduction = adaptation.reductionFor((int) marks[0], isRanged(source));
-        if (reduction > 0) {
+        if (reduction > 0 && !form(level, no9, "adapt", no9.position().add(0, no9.getBbHeight() * 0.6, 0),
+                Vec3.ZERO)) {
             VfxService.keyed(level, VfxService.SMOKE, no9.position().add(0, no9.getBbHeight() * 0.6, 0), Vec3.ZERO,
                     no9.getBbWidth() * reduction, "#3A3A3A", 0.0F);
         }
@@ -629,8 +638,10 @@ public final class No9Service {
 
     private static void flee(ServerLevel level, KaijuNo9Entity no9, NumberedDef def) {
         no9.fled = true;
-        VfxService.keyed(level, VfxService.SMOKE, no9.position().add(0, 1.0, 0), Vec3.ZERO, 1.0F, "", 0.0F);
-        VfxService.keyed(level, VfxService.SMOKE, no9.position().add(0, 1.0, 0), Vec3.ZERO, 0.7F, ACID, 0.0F);
+        if (!form(level, no9, "escape", no9.position(), Vec3.ZERO)) {
+            VfxService.keyed(level, VfxService.SMOKE, no9.position().add(0, 1.0, 0), Vec3.ZERO, 1.0F, "", 0.0F);
+            VfxService.keyed(level, VfxService.SMOKE, no9.position().add(0, 1.0, 0), Vec3.ZERO, 0.7F, ACID, 0.0F);
+        }
         level.playSound(null, no9.blockPosition(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.HOSTILE, 2.0F, 0.5F);
         announce(level, no9, Component.translatable("kn8.no9.fled").withStyle(ChatFormatting.DARK_GREEN,
                 ChatFormatting.ITALIC));
@@ -753,8 +764,29 @@ public final class No9Service {
     }
 
     private static void smoke(ServerLevel level, KaijuNo9Entity no9, int count) {
+        if (form(level, no9, "retreat", no9.position(), no9.getDeltaMovement())) {
+            return;
+        }
         VfxService.keyed(level, VfxService.SMOKE, no9.position().add(0, no9.getBbHeight() * 0.5, 0), Vec3.ZERO,
                 no9.getBbWidth() * 0.4F * Math.min(2.0F, count / 10.0F + 0.5F), "", 0.0F);
+    }
+
+    /** VFX-7: tentaculos da absorcao na cor de destaque da forma (preta: vermelho-escuro; fusao: vermelho). */
+    private static String accentKey(KaijuEntity kaiju) {
+        return VfxService.profileOf(kaiju).map(id -> KN8Data.VFX_PROFILE.server().get(id))
+                .map(def -> String.format("#%06X", def.palette().resolve("accent") & 0xFFFFFF)).orElse("");
+    }
+
+    /**
+     * VFX-7: efeito proprio da forma (receita {@code key} no perfil visual dela: preta, fusao, formiga, com o Isao);
+     * devolve false sem receita, e quem chamou toca o efeito comum.
+     */
+    private static boolean form(ServerLevel level, KaijuEntity kaiju, String key, Vec3 at, Vec3 direction) {
+        if (!VfxService.hasRecipe(kaiju, key)) {
+            return false;
+        }
+        VfxService.play(level, VfxService.TECHNIQUE, at, direction, 1.0F, 0.0F, kaiju, key);
+        return true;
     }
 
     private static void announce(ServerLevel level, Entity source, Component message) {

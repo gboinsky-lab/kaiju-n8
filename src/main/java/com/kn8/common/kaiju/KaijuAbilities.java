@@ -13,11 +13,13 @@ import com.kn8.common.data.KN8Data;
 import com.kn8.common.data.def.AbilityDef;
 import com.kn8.common.data.def.KaijuAiDef;
 import com.kn8.common.vfx.AbilityEffects;
+import com.kn8.common.vfx.VfxService;
 import com.kn8.core.kaiju.AbilitySelection;
 import com.kn8.core.kaiju.LeapArc;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
@@ -189,6 +191,12 @@ final class KaijuAbilities {
         for (int i = 0; i < shots; i++) {
             float yaw = shots > 1 ? fan * (i / (float) (shots - 1) - 0.5F) : 0.0F;
             KaijuProjectile.shoot(kaiju, id, ability, mouth, aim.yRot(yaw * Mth.DEG_TO_RAD), damage).volley = volley;
+        }
+        // VFX-7: clarao na saida do tiro pela receita "<habilidade>_muzzle" da especie (Finger Gun do No. 9), so
+        // quando ela existe (o impacto continua pelos "vfx" do JSON).
+        String muzzle = id.getPath() + "_muzzle";
+        if (kaiju.level() instanceof ServerLevel server && VfxService.hasRecipe(kaiju, muzzle)) {
+            VfxService.play(server, VfxService.TECHNIQUE, mouth, aim, 1.0F, 0.0F, kaiju, muzzle);
         }
     }
 

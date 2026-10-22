@@ -260,4 +260,17 @@ o Numbers 10, raios saindo do traje em vermelho puxado para o roxo.
 4. **Raio do Preondactyl:** laranja/vermelho.
 5. **Ácido da formiga:** verde.
 
-**Ainda a definir:** reviver do No. 9 (carcaça voltando).
+## Feito na VFX-7 (No. 9 e formas)
+
+Receitas em `vfx_profile/kaiju_no9*.json` (6 perfis): **Finger Gun cinza** (`finger_gun`, `no9_black_multi_finger_gun`:
+estalo branco e anel cinza no impacto; a cor do tiro nos JSON das habilidades passou a `#B8B8B8`) com clarão na saída
+(`<habilidade>_muzzle`, gancho novo em `KaijuAbilities.fire` que vale para qualquer kaiju); eventos do No. 9 na paleta
+de cada forma (`harden`, `harden_hit`, `adapt`, `regenerate`, `retreat`, `escape`, `absorb_end`; no lugar do efeito
+comum quando a forma tem a receita); tentáculos da absorção na cor de destaque da forma. Forma preta: braço-lâmina com
+fio vermelho, tentáculo, espinhos (rachaduras e espinhos vermelhos subindo), voo curto. Fusão (e gigante): Finger
+Cannon e Multi-Finger Cannon vermelhos, **raio híbrido** com a faixa bege (`core`) e carga de raios vermelhos, socos,
+esmagamento, cauda. Formiga: mordida e mandíbulas âmbar em X, ácido na cor do No. 9 (vermelho-alaranjado), salto e
+investida. Com o Isao: as ondas das manoplas em preto e vermelho e o Thunder Emperor sem raio (como o do Isao).
+[SUPOSIÇÃO] tamanhos e tempos.
+
+**Ainda a definir:** reviver do No. 9 (carcaça voltando): continua o fio e a fumaça verdes de antes.

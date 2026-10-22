@@ -319,6 +319,41 @@ public final class VfxGameTests {
         helper.succeed();
     }
 
+    /**
+     * VFX-7: Finger Gun cinza (Miguel) em todas as formas que o usam, eventos do No. 9 (pele, adaptacao, regeneracao,
+     * retirada, fuga, absorcao) com receita propria em cada forma, raio hibrido com a faixa bege e o Thunder Emperor
+     * da forma com o Isao sem raio.
+     */
+    @GameTest(template = TEMPLATE)
+    public static void no9FormsHaveOwnEffectsAndGrayFingerGun(GameTestHelper helper) {
+        for (String form : List.of("kaiju_no9", "kaiju_no9_black", "kaiju_no9_fusion", "kaiju_no9_fusion_giant",
+                "kaiju_no9_camponotus", "kaiju_no9_isao")) {
+            VfxProfileDef def = KN8Data.VFX_PROFILE.server().get(KN8Constants.id(form));
+            helper.assertTrue(def != null, "Perfil " + form);
+            for (String key : List.of("harden", "harden_hit", "adapt", "regenerate", "retreat", "escape",
+                    "absorb_end")) {
+                helper.assertTrue(def.recipe(key).isPresent(), "Evento do No. 9 em " + form + ": " + key);
+            }
+            def.recipe("finger_gun").ifPresent(layers -> {
+                int color = def.palette().resolve(layers.get(1).color());
+                helper.assertTrue(Math.abs(red(color) - blue(color)) < 0.05F && red(color) > 0.5F,
+                        "Finger Gun cinza em " + form + ": " + VfxColors.format(color));
+            });
+        }
+        VfxProfileDef fusion = KN8Data.VFX_PROFILE.server().get(KN8Constants.id("kaiju_no9_fusion"));
+        helper.assertTrue(fusion.recipe("no9_fusion_hybrid_beam").orElseThrow().stream()
+                .anyMatch(layer -> "core".equals(layer.color())), "Raio hibrido com a faixa bege");
+        VfxProfileDef isao = KN8Data.VFX_PROFILE.server().get(KN8Constants.id("kaiju_no9_isao"));
+        helper.assertTrue(isao.recipe("no9_isao_thunder_emperor").orElseThrow().stream()
+                .noneMatch(layer -> "bolt".equals(layer.shape())), "Thunder Emperor do No. 9 sem raio");
+        KaijuEntity no9 = helper.spawnWithNoFreeWill(KN8Entities.KAIJU_NO9.get(), new BlockPos(3, 2, 3));
+        helper.runAfterDelay(2, () -> {
+            helper.assertTrue(VfxService.hasRecipe(no9, "finger_gun_muzzle"), "Clarao na saida do Finger Gun");
+            no9.discard();
+            helper.succeed();
+        });
+    }
+
     private static int accent(String id) {
         VfxProfileDef def = KN8Data.VFX_PROFILE.server().get(KN8Constants.id(id));
         return def == null ? 0 : def.palette().resolve("accent");

@@ -142,3 +142,5 @@ VFX-4B feita (2026-10-22): Kikoru e Kikoru No. 4 (ver a ficha). Próxima: VFX-5.
 VFX-5 feita (2026-10-22): Mina, Reno e Reno No. 6 (ver as fichas); o tiro da técnica leva a chave dela (receitas `_charge`, `_trail`, `_impact`, `_explosion`). Próxima: VFX-6 (Narumi, Narumi No. 1, Isao).
 
 VFX-6 feita (2026-10-22): Narumi, Narumi No. 1, Isao e Isao sem o Numbers 2 (ver as fichas). Próxima: VFX-7 (formas do No. 9).
+
+VFX-7 feita (2026-10-22): No. 9 e as 5 formas (ver as fichas). Próxima: VFX-8 (No. 10, No. 13, Preondactyl, larva).
