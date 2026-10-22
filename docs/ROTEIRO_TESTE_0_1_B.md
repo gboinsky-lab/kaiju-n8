@@ -1099,3 +1099,15 @@ Servidor dedicado + 2 clientes, de noite. Prévia: `/execute positioned ~ ~1.2 ~
 | 81.5 | `kn8:kaiju_no9_camponotus` `no9_ant_acid_spray` e `no9_ant_mandible_rush` | Ácido vermelho-alaranjado em nuvem com anel; mandíbulas em X âmbar |
 | 81.6 | `kn8:kaiju_no9_isao` `no9_isao_thunder_emperor` e `no9_isao_force_blast` | As ondas do Isao em preto e vermelho; o Thunder Emperor dele sem raio, com clarão, três anéis e rachaduras no chão |
 | 81.7 | `/summon kn8:kaiju_no9_fusion` perto de `kn8:isao` e dois `kn8:soldier` | Na luta, tudo no tamanho do corpo de 5 m: raios vermelhos da carga, explosões vermelhas, ondas no chão; tentáculos da absorção na cor de destaque da forma |
+
+## 82. No. 10, No. 13, Preondactyl e larva (VFX-8)
+
+Servidor dedicado + 2 clientes, de noite. Prévia: `/execute positioned ~ ~1 ~6 rotated 0 0 run kn8 vfx play kn8:technique <espécie> 1 <receita>` (chão: `~ ~ ~6`). Para a forma gigante e a autodestruição: `/datapack disable "file/kn8_duelo_isolado"` se estiver ligado.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 82.1 | `kn8:kaiju_no10_small` `energy_charge` e `no10_finger_cannon` | Carga com raios vermelhos convergindo e brilho; impacto vermelho com onda, raios, faíscas e fumaça escura |
+| 82.2 | `kn8:kaiju_no10_giant` `grow`; luta do No. 10 pequeno com a vida abaixo de 50% | Ao virar gigante: labaredas, vapor e raios vermelhos subindo, onda no chão, além da explosão de sempre; tudo no tamanho do corpo de 24 m |
+| 82.3 | `kn8:preondactyl` `preondactyl_energy_beam`, `self_destruct`; luta | Raio laranja/vermelho (decisão do Miguel) com impacto laranja; autodestruição com clarão enorme, anéis, raios e fumaça escura; carga da autodestruição com pulsos laranja e raios entrando |
+| 82.4 | `kn8:kaiju_no13` `no13_throat_grab`, `no13_pounce`; luta | Agarrão com estalo branco e anel vermelho; salto com onda e rachaduras de fio vermelho; na investida, riscos curtos atrás do corpo |
+| 82.5 | `kn8:kaiju_larva` `preondactyl_dive_strike` | Anel e pulso ciano pequenos (o corpo de 0,5 m deixa o efeito pequeno) |

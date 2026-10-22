@@ -144,3 +144,5 @@ VFX-5 feita (2026-10-22): Mina, Reno e Reno No. 6 (ver as fichas); o tiro da té
 VFX-6 feita (2026-10-22): Narumi, Narumi No. 1, Isao e Isao sem o Numbers 2 (ver as fichas). Próxima: VFX-7 (formas do No. 9).
 
 VFX-7 feita (2026-10-22): No. 9 e as 5 formas (ver as fichas). Próxima: VFX-8 (No. 10, No. 13, Preondactyl, larva).
+
+VFX-8 feita (2026-10-22): No. 10, No. 13, Preondactyl e larva (ver as fichas). Próxima: VFX-9 (outros kaiju).

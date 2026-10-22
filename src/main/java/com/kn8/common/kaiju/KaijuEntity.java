@@ -946,6 +946,12 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
         }
         double speed = ServerConfig.CHARGE_SPEED.get();
         setDeltaMovement(chargeDirection.x * speed, getDeltaMovement().y, chargeDirection.z * speed);
+        // VFX-8: rastro da investida pela receita "<habilidade>_trail" da especie (No. 13: rastros atras do corpo).
+        if (tickCount % 2 == 0 && level() instanceof ServerLevel server
+                && VfxService.hasRecipe(this, currentAbility.getPath() + "_trail")) {
+            VfxService.play(server, VfxService.TECHNIQUE, position().add(0, getBbHeight() * 0.5, 0), chargeDirection,
+                    1.0F, 0.0F, this, currentAbility.getPath() + "_trail");
+        }
         // 0.1-B: a investida atravessa o que a forca dela quebra (faixa logo a frente do corpo).
         attackDestruction(ability.get()).ifPresent(destruction -> DestructionService.requestFront(this,
                 destruction.power(), destruction.radius()));

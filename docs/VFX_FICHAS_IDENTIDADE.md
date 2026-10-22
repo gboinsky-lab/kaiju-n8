@@ -274,3 +274,14 @@ investida. Com o Isao: as ondas das manoplas em preto e vermelho e o Thunder Emp
 [SUPOSIÇÃO] tamanhos e tempos.
 
 **Ainda a definir:** reviver do No. 9 (carcaça voltando): continua o fio e a fumaça verdes de antes.
+
+## Feito na VFX-8 (No. 10, No. 13, Preondactyl e larva)
+
+Receitas em `vfx_profile/kaiju_no10_small|giant.json`, `kaiju_no13.json`, `preondactyl.json`, `kaiju_larva.json`.
+**No. 10:** carga do Finger Cannon (`energy_charge`, o aviso do JSON) com raios vermelhos, impacto vermelho com onda e
+fumaça, socos, esmagamento, cauda; **virar gigante** = receita `grow` da forma que surge (código: `No10Service.transform`):
+labaredas, vapor e raios vermelhos subindo. **Preondactyl:** raio laranja/vermelho (decisão do Miguel; cor do tiro
+`#FF6A2A` no JSON), carga e impacto laranja, mergulho com anel e rachaduras, **autodestruição** com carga
+(`self_destruct_charge`) e explosão próprias (código: `PreondactylEntity`). **No. 13:** agarrão com estalo, socos,
+salto e **rastro da investida** (`<habilidade>_trail`, gancho genérico no `KaijuEntity.tickCharge`). **Larva:** anel e
+pulso ciano. [SUPOSIÇÃO] tamanhos e tempos.

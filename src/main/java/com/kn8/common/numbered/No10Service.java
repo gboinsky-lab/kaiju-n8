@@ -91,6 +91,10 @@ public final class No10Service {
         VfxService.play(level, VfxService.EXPLOSION, at.add(0, 2.0, 0), Vec3.ZERO, 4.0F, 0.0F);
         VfxService.keyed(level, VfxService.SMOKE, at.add(0, 4.0, 0), Vec3.ZERO, 4.0F, "", giant.getBbHeight());
         VfxService.play(level, VfxService.SHOCKWAVE, at, Vec3.ZERO, 3.0F, 0.8F, giant);
+        // VFX-8: a forma que surge cresce com o efeito dela (No. 10 gigante: vapor vermelho), so com a receita "grow".
+        if (VfxService.hasRecipe(giant, "grow")) {
+            VfxService.play(level, VfxService.TECHNIQUE, at, giant.getLookAngle(), 1.0F, 0.0F, giant, "grow");
+        }
         VfxService.play(level, VfxService.ROAR, at.add(0, giant.getBbHeight() * 0.8, 0), giant.getLookAngle(), 3.0F,
                 0.0F, giant);
         level.playSound(null, no10.blockPosition(), KN8Sounds.KAIJU_ROAR.get(), SoundSource.HOSTILE, 8.0F, 0.4F);

@@ -354,6 +354,32 @@ public final class VfxGameTests {
         });
     }
 
+    /**
+     * VFX-8: raio do Preondactyl laranja/vermelho (Miguel), autodestruicao e carga proprias, No. 10 gigante com o
+     * crescimento, rastro da investida do No. 13 e a larva com efeito proprio.
+     */
+    @GameTest(template = TEMPLATE)
+    public static void no10No13PreondactylAndLarvaHaveOwnEffects(GameTestHelper helper) {
+        VfxProfileDef preon = KN8Data.VFX_PROFILE.server().get(KN8Constants.id("preondactyl"));
+        VfxProfileDef giant = KN8Data.VFX_PROFILE.server().get(KN8Constants.id("kaiju_no10_giant"));
+        VfxProfileDef small = KN8Data.VFX_PROFILE.server().get(KN8Constants.id("kaiju_no10_small"));
+        VfxProfileDef no13 = KN8Data.VFX_PROFILE.server().get(KN8Constants.id("kaiju_no13"));
+        VfxProfileDef larva = KN8Data.VFX_PROFILE.server().get(KN8Constants.id("kaiju_larva"));
+        for (String key : List.of("energy_charge", "preondactyl_energy_beam", "preondactyl_energy_beam_muzzle",
+                "self_destruct_charge", "self_destruct", "preondactyl_dive_strike")) {
+            helper.assertTrue(preon.recipe(key).isPresent(), "Receita do Preondactyl: " + key);
+        }
+        int beam = KN8Data.ABILITY.server().get(KN8Constants.id("preondactyl_energy_beam")).behavior().color();
+        helper.assertTrue(red(beam) > 0.8F && blue(beam) < 0.3F, "Raio laranja/vermelho: " + VfxColors.format(beam));
+        helper.assertTrue(giant.recipe("grow").isPresent() && small.recipe("grow").isEmpty(),
+                "So a forma gigante cresce com efeito proprio");
+        helper.assertTrue(giant.recipe("no10g_finger_cannon").isPresent()
+                && small.recipe("no10_finger_cannon").isPresent(), "Finger Cannon das duas formas");
+        helper.assertTrue(no13.recipe("no13_sprint_trail").isPresent(), "Rastro da investida do No. 13");
+        helper.assertTrue(larva.recipe("bite").isPresent(), "Larva com efeito proprio");
+        helper.succeed();
+    }
+
     private static int accent(String id) {
         VfxProfileDef def = KN8Data.VFX_PROFILE.server().get(KN8Constants.id(id));
         return def == null ? 0 : def.palette().resolve("accent");

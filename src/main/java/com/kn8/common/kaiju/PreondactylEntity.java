@@ -353,12 +353,21 @@ public class PreondactylEntity extends KaijuEntity {
                 ChatFormatting.BOLD), false);
     }
 
+    /** VFX-8: receitas da autodestruicao no perfil visual da especie. */
+    private static final String SELF_DESTRUCT_CHARGE = "self_destruct_charge";
+    private static final String SELF_DESTRUCT = "self_destruct";
+
     private void tickSelfDestruct(FlyerDef def, long now) {
         ServerLevel level = (ServerLevel) level();
         long left = selfDestructAt - now;
         if (now % 4 == 0) {
-            VfxService.play(level, VfxService.OVERHEAT, position().add(0, getBbHeight() * 0.5 - 1.0, 0), Vec3.ZERO,
-                    1.0F, 0.0F);
+            // VFX-8: carga da autodestruicao pela receita da especie ("self_destruct_charge"), senao o calor comum.
+            Vec3 core = position().add(0, getBbHeight() * 0.5 - 1.0, 0);
+            if (VfxService.hasRecipe(this, SELF_DESTRUCT_CHARGE)) {
+                VfxService.play(level, VfxService.TECHNIQUE, core, Vec3.ZERO, 1.0F, 0.0F, this, SELF_DESTRUCT_CHARGE);
+            } else {
+                VfxService.play(level, VfxService.OVERHEAT, core, Vec3.ZERO, 1.0F, 0.0F);
+            }
         }
         if (left > 0 && left % COUNTDOWN_STEP_TICKS == 0) {
             announce(Component.literal(String.valueOf(left / COUNTDOWN_STEP_TICKS)).withStyle(ChatFormatting.RED,
@@ -385,7 +394,11 @@ public class PreondactylEntity extends KaijuEntity {
             Vec3 push = target.position().subtract(center).normalize();
             target.knockback(2.0, -push.x, -push.z);
         }
-        VfxService.play(level, VfxService.EXPLOSION, center, Vec3.ZERO, (float) radius * 0.6F, 1.0F);
+        if (VfxService.hasRecipe(this, SELF_DESTRUCT)) {
+            VfxService.play(level, VfxService.TECHNIQUE, center, Vec3.ZERO, 1.0F, 1.0F, this, SELF_DESTRUCT);
+        } else {
+            VfxService.play(level, VfxService.EXPLOSION, center, Vec3.ZERO, (float) radius * 0.6F, 1.0F);
+        }
         level.playSound(null, blockPosition(), SoundEvents.GENERIC_EXPLODE.value(), SoundSource.HOSTILE, 6.0F, 0.7F);
         if (destruct.destructionRadius() > 0) {
             DestructionService.request(level, center, new AbilityDef.Destruction(destruct.destructionRadius(),
