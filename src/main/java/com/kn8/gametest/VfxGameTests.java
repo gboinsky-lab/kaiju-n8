@@ -166,6 +166,23 @@ public final class VfxGameTests {
         helper.succeed();
     }
 
+    /**
+     * VFX-R1 (Miguel: sem particulas): as formas desenhadas (raio, faixa, onda, pulso, feixe, clarao, fumaca)
+     * passam pela validacao sem perder camada (perfil de previa {@code kn8:demo}).
+     */
+    @GameTest(template = TEMPLATE)
+    public static void drawnShapesAreAccepted(GameTestHelper helper) {
+        VfxProfileDef demo = KN8Data.VFX_PROFILE.server().get(KN8Constants.id("demo"));
+        helper.assertTrue(demo != null, "Perfil de previa kn8:demo");
+        for (String shape : VfxProfileDef.DRAWN_SHAPES) {
+            boolean used = demo.effects().values().stream().flatMap(List::stream)
+                    .anyMatch(layer -> layer.shape().equals(shape) && layer.drawn());
+            helper.assertTrue(used, "Forma desenhada recusada ou sem previa: " + shape);
+        }
+        helper.assertTrue(demo.recipe("band_x").orElseThrow().size() == 2, "As duas faixas do X");
+        helper.succeed();
+    }
+
     private static int accent(String id) {
         VfxProfileDef def = KN8Data.VFX_PROFILE.server().get(KN8Constants.id(id));
         return def == null ? 0 : def.palette().resolve("accent");

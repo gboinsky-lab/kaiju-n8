@@ -118,3 +118,15 @@ Minecraft 1.21.1 tem (conferidos no jar): `lightning()` (o do raio vanilla: faix
 | **VFX-R1 Base desenhada** | renderizador próprio de efeitos (`client/vfx/draw`): raio contínuo ramificado, faixa de corte (arco sólido que some), anel/onda plana, feixe, pulso esférico, brilho no modelo; tudo com duração, cor da paleta, tamanho pelo corpo e teto por quadro; o evento de rede continua o mesmo |
 | **VFX-R2 Converter o que já existe** | auras (brilho no modelo + raios contínuos), cortes do Hoshina, socos/rugido/transformação do No. 8, impactos/ondas/explosões de todos os kaiju, aviso do golpe pesado, rastros de tiros e cortes (`SlashProjectile`, `KaijuProjectile`), regeneração |
 | VFX-4B a VFX-10 | já no formato desenhado |
+
+**Meio-termo (Miguel, 2026-10-22: "faça um meio termo então"):** tudo o que é efeito vira forma desenhada, inclusive
+fumaça e clarão de explosão (desenhados na VFX-R2); só os pedaços de bloco da destruição continuam como partículas
+vanilla (são o bloco caindo, não um efeito).
+
+**Progresso:** VFX-R1 feita (2026-10-22): `client/vfx/draw` (`Drawn` com as formas `bolt` raio ramificado, `band`
+arco de corte com miolo escuro e borda brilhante, `wave` anel no chão que cresce, `pulse` anel virado para a câmera,
+`beam` feixe/tiro em movimento, `flash` clarão, `smoke` fumaça desenhada), tipos de render `KN8RenderTypes.GLOW`
+(shader e mistura do raio vanilla, soma ao fundo) e `SHADE` (transparência comum), desenho depois das partículas em
+duas passadas; geometria pura em `core/vfx/DrawMath` (JUnit). As receitas do `vfx_profile` aceitam essas formas como
+`shape` (com `edge`, a cor da borda); a escala pelo corpo (VFX-2) vale igual. Teto `[fx] maxDrawnEffects` 400. Demo:
+`/kn8 vfx play kn8:impact kn8:demo 1 <forma>`. Os efeitos antigos ainda são partículas até a VFX-R2.

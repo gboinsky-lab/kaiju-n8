@@ -9,6 +9,7 @@ import java.util.Optional;
 import com.kn8.common.config.ClientConfig;
 import com.kn8.common.data.KN8Data;
 import com.kn8.common.data.def.VfxProfileDef;
+import com.kn8.client.vfx.draw.DrawnFactory;
 import com.kn8.common.registry.KN8Particles;
 import com.kn8.common.vfx.VfxParticleType;
 import com.kn8.core.vfx.VfxBudget;
@@ -114,6 +115,20 @@ public final class KaijuVfx {
             Runnable emit;
             if (layer.generic()) {
                 emit = () -> generic.play(intensity * layer.size());
+            } else if (layer.drawn()) {
+                // VFX-R1: forma desenhada (sem particulas).
+                int color = profile.palette().resolve(layer.color());
+                if (color < 0) {
+                    continue;
+                }
+                int edge = layer.edge().isEmpty() ? profile.palette().resolve("accent")
+                        : profile.palette().resolve(layer.edge());
+                Vec3 origin = at.add(flat.scale(layer.forward() * body.spread())).add(0, layer.up() * body.spread(), 0);
+                int count = Math.max(1, Math.round(layer.count() * intensity * Math.min(body.count(), 2.0F)));
+                emit = () -> DrawnFactory.spawn(layer.shape(), color, edge, VfxPatterns.Pattern.of(layer.pattern()),
+                        count, layer.size() * size * body.size(), layer.speed() * body.spread(),
+                        layer.spread() * intensity * body.spread(), layer.lifetime(), origin, flat, layer.tilt(),
+                        level.random);
             } else {
                 VfxParticleType type = shape(layer.shape());
                 int color = profile.palette().resolve(layer.color());

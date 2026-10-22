@@ -64,6 +64,7 @@
   "kn8.configuration.maxParticlesPerEffect": "Max particles per effect",
   "kn8.configuration.effectDistance": "Effect distance",
   "kn8.configuration.reduceFlashes": "Reduce flashes",
+  "kn8.configuration.maxDrawnEffects": "Max drawn effects",
   "kn8.configuration.referenceHeight": "Effect reference height",
   "kn8.configuration.scaleSizeExponent": "Effect size by body size",
   "kn8.configuration.scaleSpreadExponent": "Effect reach by body size",

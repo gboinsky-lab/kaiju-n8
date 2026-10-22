@@ -64,6 +64,7 @@
   "kn8.configuration.maxParticlesPerEffect": "Máximo de partículas por efeito",
   "kn8.configuration.effectDistance": "Distância dos efeitos",
   "kn8.configuration.reduceFlashes": "Reduzir clarões",
+  "kn8.configuration.maxDrawnEffects": "Máximo de efeitos desenhados",
   "kn8.configuration.referenceHeight": "Altura de referência dos efeitos",
   "kn8.configuration.scaleSizeExponent": "Tamanho do efeito pelo corpo",
   "kn8.configuration.scaleSpreadExponent": "Alcance do efeito pelo corpo",

@@ -29,6 +29,16 @@ public record VfxProfileDef(Palette palette, String material, Map<String, List<L
 
     public static final String GENERIC = "generic";
 
+    /**
+     * VFX-R1 (Miguel: "nao quero que nenhum tenha particulas"): formas desenhadas. {@code bolt} raio continuo
+     * ({@code count} raios, {@code spread} comprimento, {@code size} espessura, {@code pattern} a direcao);
+     * {@code band} faixa de corte ({@code spread} raio, {@code size} largura, {@code tilt}, miolo {@code color} e fio
+     * {@code edge}); {@code wave} onda no chao; {@code pulse} anel de ar; {@code beam} feixe/tiro ({@code spread}
+     * comprimento, {@code speed} = trecho que anda, 0 = linha inteira); {@code flash} clarao; {@code smoke} fumaca
+     * desenhada ({@code count} nuvens, {@code speed} subida).
+     */
+    public static final List<String> DRAWN_SHAPES = List.of("bolt", "band", "wave", "pulse", "beam", "flash", "smoke");
+
     public static final List<String> MATERIALS =
             List.of("flesh", "chitin", "fungus", "revived", "energy", "ice", "suit", "metal", "scales");
 
@@ -60,10 +70,11 @@ public record VfxProfileDef(Palette palette, String material, Map<String, List<L
      * {@code delay} = ticks depois do evento (sequencia: rachar, fumaca, onda). VFX-2: os numeros sao para um corpo
      * da altura de referencia ({@code [fx] referenceHeight}, um humano) e crescem com o corpo de quem faz o efeito.
      * {@code shape} {@code generic} toca o efeito comum do evento junto da receita. VFX-3: {@code tilt} (graus) gira o
-     * plano do arco em volta da frente (X, diagonal, estrela).
+     * plano do arco em volta da frente (X, diagonal, estrela). VFX-R1: {@code edge} = cor do fio da faixa de corte
+     * (vazio = a do {@code accent}).
      */
     public record Layer(String shape, String color, String pattern, int count, float size, float speed, float spread,
-            int lifetime, float forward, float up, int delay, float tilt) {
+            int lifetime, float forward, float up, int delay, float tilt, String edge) {
         public static final Codec<Layer> CODEC = RecordCodecBuilder.create(i -> i.group(
                 Codec.STRING.fieldOf("shape").forGetter(Layer::shape),
                 Codec.STRING.optionalFieldOf("color", "primary").forGetter(Layer::color),
@@ -76,8 +87,14 @@ public record VfxProfileDef(Palette palette, String material, Map<String, List<L
                 Codec.floatRange(-16.0F, 16.0F).optionalFieldOf("forward", 0.0F).forGetter(Layer::forward),
                 Codec.floatRange(-16.0F, 32.0F).optionalFieldOf("up", 0.0F).forGetter(Layer::up),
                 Codec.intRange(0, 200).optionalFieldOf("delay", 0).forGetter(Layer::delay),
-                Codec.floatRange(-360.0F, 360.0F).optionalFieldOf("tilt", 0.0F).forGetter(Layer::tilt)
+                Codec.floatRange(-360.0F, 360.0F).optionalFieldOf("tilt", 0.0F).forGetter(Layer::tilt),
+                Codec.STRING.optionalFieldOf("edge", "").forGetter(Layer::edge)
         ).apply(i, Layer::new));
+
+        /** VFX-R1: forma desenhada (raio, faixa de corte, onda, pulso, feixe, clarao, fumaca), sem particulas. */
+        public boolean drawn() {
+            return DRAWN_SHAPES.contains(shape);
+        }
 
         /** Camada que toca o efeito comum do evento ({@code size} = multiplicador da intensidade). */
         public boolean generic() {

@@ -1,0 +1,138 @@
+{
+  "palette": {
+    "primary": "#1E1C20",
+    "secondary": "#3A3A3A",
+    "accent": "#8A4FC0",
+    "core": "#FFFFFF"
+  },
+  "material": "energy",
+  "effects": {
+    "bolt": [
+      {
+        "shape": "bolt",
+        "color": "#3FA8FF",
+        "pattern": "burst",
+        "count": 6,
+        "size": 0.08,
+        "speed": 0.0,
+        "spread": 1.8,
+        "lifetime": 6
+      }
+    ],
+    "band": [
+      {
+        "shape": "band",
+        "color": "#1E1C20",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.45,
+        "speed": 0.0,
+        "spread": 1.6,
+        "lifetime": 8,
+        "forward": -0.9,
+        "edge": "#B070FF"
+      }
+    ],
+    "band_x": [
+      {
+        "shape": "band",
+        "color": "#1E1C20",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.45,
+        "speed": 0.0,
+        "spread": 1.6,
+        "lifetime": 8,
+        "forward": -0.9,
+        "tilt": 40,
+        "edge": "#B070FF"
+      },
+      {
+        "shape": "band",
+        "color": "#1E1C20",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.45,
+        "speed": 0.0,
+        "spread": 1.6,
+        "lifetime": 8,
+        "forward": -0.9,
+        "tilt": -40,
+        "edge": "#B070FF",
+        "delay": 2
+      }
+    ],
+    "wave": [
+      {
+        "shape": "wave",
+        "color": "#F2C94C",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.5,
+        "speed": 0.0,
+        "spread": 4.0,
+        "lifetime": 16
+      }
+    ],
+    "pulse": [
+      {
+        "shape": "pulse",
+        "color": "#E8FFFF",
+        "pattern": "burst",
+        "count": 1,
+        "size": 1.2,
+        "speed": 0.0,
+        "spread": 1.0,
+        "lifetime": 7
+      }
+    ],
+    "beam": [
+      {
+        "shape": "beam",
+        "color": "#9A9A9A",
+        "pattern": "line",
+        "count": 1,
+        "size": 0.08,
+        "speed": 1.5,
+        "spread": 14.0,
+        "lifetime": 6
+      }
+    ],
+    "ray": [
+      {
+        "shape": "beam",
+        "color": "#E2551E",
+        "pattern": "line",
+        "count": 1,
+        "size": 0.7,
+        "speed": 0.0,
+        "spread": 12.0,
+        "lifetime": 14
+      }
+    ],
+    "flash": [
+      {
+        "shape": "flash",
+        "color": "#FFE8A8",
+        "pattern": "burst",
+        "count": 1,
+        "size": 1.6,
+        "speed": 0.0,
+        "spread": 1.0,
+        "lifetime": 6
+      }
+    ],
+    "smoke": [
+      {
+        "shape": "smoke",
+        "color": "#5A5A5A",
+        "pattern": "burst",
+        "count": 10,
+        "size": 0.8,
+        "speed": 0.06,
+        "spread": 1.2,
+        "lifetime": 40
+      }
+    ]
+  }
+}

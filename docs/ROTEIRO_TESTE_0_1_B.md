@@ -1016,3 +1016,20 @@ Servidor dedicado + 2 clientes, de noite para ver melhor.
 | 75.2 | `/kn8 aura release @e[type=kn8:hoshina] 45` e depois 100 | Poucos raios a 45%, muitos a 100% |
 | 75.3 | Vestir o Mk1, `/kn8 release set 80` e `/kn8 release active 80`; o outro jogador olha | Raios ciano em volta do jogador |
 | 75.4 | `/summon kn8:kafka` | Quase nada (aura cinza bem baixa); com a vida baixa, faíscas cinza pequenas |
+
+## 76. Efeitos desenhados, sem partículas (VFX-R1)
+
+Servidor dedicado + 2 clientes, de noite. Comando: `/execute positioned ~ ~1.2 ~4 rotated 90 0 run kn8 vfx play
+kn8:impact kn8:demo 1 <forma>` (para `wave` e `smoke`, `~ ~ ~4`).
+
+| # | Passo | Esperado |
+|---|---|---|
+| 76.1 | `bolt` | Raio azul em zigue-zague com galhos, piscando, ~0,5 s |
+| 76.2 | `band` e `band_x` | Arco de corte fino (miolo escuro, borda violeta) que se abre e some; `band_x` = dois arcos em X |
+| 76.3 | `wave` | Anel dourado no chão que cresce e some |
+| 76.4 | `pulse` | Anel branco virado para quem olha, crescendo |
+| 76.5 | `beam` e `ray` | `beam`: risco cinza rápido (tiro); `ray`: feixe laranja largo que dura um pouco |
+| 76.6 | `flash` | Clarão amarelo redondo, curto |
+| 76.7 | `smoke` | Fumaça cinza desenhada subindo (discreta sobre chão escuro) |
+| 76.8 | Os dois jogadores olhando de lados diferentes | As mesmas formas para os dois; atrás de uma parede, somem |
+| 76.9 | Config do cliente `[fx] maxDrawnEffects` 0 | Nenhuma forma aparece |
