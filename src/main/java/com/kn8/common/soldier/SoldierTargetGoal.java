@@ -6,6 +6,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.UUID;
 
+import com.kn8.common.evacuation.CivilianEntity;
 import com.kn8.common.ai.AiTuning;
 import com.kn8.common.config.ServerConfig;
 import com.kn8.common.data.def.KaijuClass;
@@ -144,7 +145,8 @@ public final class SoldierTargetGoal extends Goal {
     /** IA-3 (protecao de aliados): o alvo do kaiju e outro soldado ou um jogador. */
     private boolean threatensAlly(KaijuEntity kaiju) {
         LivingEntity target = kaiju.getTarget();
-        return target != null && target != soldier && (target instanceof SoldierEntity || target instanceof Player);
+        return target != null && target != soldier && (target instanceof SoldierEntity || target instanceof Player
+                || target instanceof CivilianEntity);
     }
 
     /** O alvo do kaiju e outro soldado recarregando (a cobertura e a funcao de quem esta livre). */

@@ -37,13 +37,15 @@ public final class RegionService {
 
     /** Prefixo da causa quando e uma invasao (sem ele, a causa e o id do kaiju). */
     public static final String INVASION_CAUSE = "!";
+    /** PM-10A: prefixo da causa quando e uma evacuacao (id da missao). */
+    public static final String EVACUATION_CAUSE = "+";
 
     private RegionService() {
     }
 
     public static RegionAlertMath.Params params() {
         return new RegionAlertMath.Params(ServerConfig.REGION_ALERT_TICKS.get(), ServerConfig.REGION_COMBAT_TICKS
-                .get(), ServerConfig.REGION_RECOVERY_TICKS.get());
+                .get(), ServerConfig.REGION_RECOVERY_TICKS.get(), ServerConfig.EVAC_REGION_TICKS.get());
     }
 
     private static String key(SiteService.Hit hit) {
@@ -72,11 +74,14 @@ public final class RegionService {
         if (after.equals(before)) {
             return;
         }
-        boolean raised = after.state().ordinal() > before.state().ordinal() && after.state() != State.RECOVERY;
+        boolean raised = after.state().rank() > before.state().rank() && after.state() != State.RECOVERY;
         region.set(after, raised || region.cause().isEmpty() ? cause : region.cause());
         data.setDirty();
         if (after.state() != before.state()) {
             changed(level, region, before.state());
+        } else if (after.state() != State.EVACUATION) {
+            // Prazo renovado: a faixa de quem esta no local recebe o tempo novo (sem aviso no chat).
+            send(level, region);
         }
     }
 
@@ -183,6 +188,7 @@ public final class RegionService {
                 case COMBAT -> ChatFormatting.RED;
                 case ALERT -> ChatFormatting.YELLOW;
                 case RECOVERY -> ChatFormatting.AQUA;
+                case EVACUATION -> ChatFormatting.GOLD;
                 case NORMAL -> ChatFormatting.GREEN;
             };
             player.sendSystemMessage(Component.translatable("kn8.region.changed", SiteService.name(region.site()),
@@ -191,12 +197,26 @@ public final class RegionService {
         }
     }
 
+    private static void send(ServerLevel level, RegionAlerts.Region region) {
+        BoundingBox box = region.box().inflatedBy(ServerConfig.REGION_NOTIFY_MARGIN.get());
+        RegionAlertS2C payload = payload(region);
+        for (ServerPlayer player : level.players()) {
+            if (box.isInside(player.blockPosition())) {
+                PacketDistributor.sendToPlayer(player, payload);
+            }
+        }
+    }
+
     /** Nome da causa: invasao (com o prefixo) ou kaiju (entidade); serve tambem ao cliente. */
     public static Component causeName(String cause) {
         boolean invasion = cause.startsWith(INVASION_CAUSE);
-        ResourceLocation id = ResourceLocation.tryParse(invasion ? cause.substring(1) : cause);
+        boolean evacuation = cause.startsWith(EVACUATION_CAUSE);
+        ResourceLocation id = ResourceLocation.tryParse(invasion || evacuation ? cause.substring(1) : cause);
         if (id == null || cause.isEmpty()) {
             return Component.translatable("kn8.region.cause.unknown");
+        }
+        if (evacuation) {
+            return Component.translatable("kn8.mission." + id.getPath() + ".name");
         }
         return invasion ? Component.translatable("kn8.invasion." + id.getPath())
                 : Component.translatable("entity." + id.getNamespace() + "." + id.getPath());

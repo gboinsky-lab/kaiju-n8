@@ -9,6 +9,7 @@ import com.kn8.common.combat.WeaponIndex;
 import com.kn8.common.ai.AiTuning;
 import com.kn8.common.config.ServerConfig;
 import com.kn8.common.data.def.WeaponDef;
+import com.kn8.common.evacuation.CivilianEntity;
 import com.kn8.common.soldier.SoldierEntity;
 import com.kn8.core.kaiju.KaijuTargeting;
 
@@ -102,7 +103,8 @@ final class KaijuTargetGoal extends Goal {
 
     private static boolean isEnemy(LivingEntity entity) {
         return entity instanceof SoldierEntity || entity instanceof Player player && !player.isCreative()
-                && !player.isSpectator();
+                && !player.isSpectator()
+                || entity instanceof CivilianEntity && ServerConfig.EVAC_KAIJU_TARGET_CIVILIANS.get();
     }
 
     /** Funcao do inimigo: atirador (soldado ou jogador com arma de fogo na mao). */

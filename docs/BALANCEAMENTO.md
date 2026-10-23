@@ -1100,3 +1100,29 @@ Núcleo da Base na bancada (Oficial): 8 ferro, 2 fragmentos de núcleo, 4 redsto
 | `meritPerClue` | 2 | Mérito por pista investigada pela primeira vez (por qualquer jogador) |
 
 Rastreador de Kaiju na bancada (livre): 3 ferro, 1 bússola, 2 redstone.
+
+## PM-10A: evacuação com civis (2026-10-23) [SUPOSIÇÃO todos os números]
+
+`[evacuation]` no `kn8-server.toml`:
+
+| Chave | Valor | O quê |
+|---|---|---|
+| `regionTicks` | 200 | O local fica em EVACUAÇÃO 10 s depois do último segundo de uma evacuação nele (renovado a cada segundo) |
+| `spawnMin` / `spawnMax` | 10 / 18 | Distância dos civis ao jogador quando a missão começa |
+| `extractionMin` / `extractionMax` | 28 / 44 | Distância do ponto de extração aos civis |
+| `extractionRadius` | 4 | Civil a até 4 blocos do ponto é evacuado (também o raio da zona verde) |
+| `followRange` | 12 | Civil segue o jogador ou soldado mais perto até essa distância |
+| `selfWalkRadius` | 16 | Perto do ponto o civil vai sozinho |
+| `threatDistance` | 18 | O kaiju da missão surge a essa distância dos civis |
+| `panicDistance` | 8 | Civil foge de kaiju mais perto que isso |
+| `markIntervalTicks` | 40 | Zona de extração redesenhada no chão |
+| `kaijuTargetCivilians` | true | Kaiju atacam civis como a soldados |
+
+Civil: 20 de vida, velocidade 0,3 (jogadores e soldados não o ferem).
+
+| Missão | Patente | Civis (+ folga) | Perdas permitidas | Ameaça | Prazo | Recompensa |
+|---|---|---|---|---|---|---|
+| `evacuation_district` | Candidato | 4 (+1) | 1 | Primigenius | 8 min | 90 mérito, 150 XP de treino |
+| `evacuation_honju` | Oficial Sênior | 6 (+2) | 2 | Primigenius Honju | 10 min | 220 mérito, 300 XP, resfriador |
+
+Civis perdidos contam na nota da missão como aliados perdidos.

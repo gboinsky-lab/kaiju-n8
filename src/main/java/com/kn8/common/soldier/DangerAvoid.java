@@ -2,6 +2,7 @@ package com.kn8.common.soldier;
 
 import java.util.Optional;
 
+import com.kn8.common.evacuation.CivilianEntity;
 import com.kn8.common.config.ServerConfig;
 import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.core.kaiju.DangerZone;
@@ -92,7 +93,8 @@ public final class DangerAvoid {
         double length = eye.distanceTo(aim);
         AABB around = new AABB(eye, aim).inflate(ALLY_INFLATE);
         for (LivingEntity other : shooter.level().getEntitiesOfClass(LivingEntity.class, around,
-                e -> e != shooter && e != target && e.isAlive() && (e instanceof SoldierEntity || e instanceof Player))) {
+                e -> e != shooter && e != target && e.isAlive() && (e instanceof SoldierEntity || e instanceof Player
+                        || e instanceof CivilianEntity))) {
             if (other instanceof Player player && player.isSpectator()) {
                 continue;
             }

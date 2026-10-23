@@ -83,6 +83,8 @@ public final class KN8Items {
     public static final DeferredItem<DeferredSpawnEggItem> DEFENSE_OFFICER_SPAWN_EGG = ITEMS.register(
             "defense_officer_spawn_egg", () -> new DeferredSpawnEggItem(KN8Entities.DEFENSE_OFFICER, 0x1C1F1A,
                     0xE8C547, new Item.Properties()));
+    public static final DeferredItem<DeferredSpawnEggItem> CIVILIAN_SPAWN_EGG = ITEMS.register("civilian_spawn_egg",
+            () -> new DeferredSpawnEggItem(KN8Entities.CIVILIAN, 0x6B8FB5, 0xE0B080, new Item.Properties()));
     public static final DeferredItem<DeferredSpawnEggItem> HOSHINA_SPAWN_EGG = ITEMS.register("hoshina_spawn_egg",
             () -> new DeferredSpawnEggItem(KN8Entities.HOSHINA, 0x1A1A22, 0x9B59D0, new Item.Properties()));
     public static final DeferredItem<DeferredSpawnEggItem> HOSHINA_NO10_SPAWN_EGG = ITEMS.register(
@@ -174,6 +176,7 @@ public final class KN8Items {
                         output.accept(INTACT_CORE.get());
                         output.accept(SOLDIER_SPAWN_EGG.get());
                         output.accept(DEFENSE_OFFICER_SPAWN_EGG.get());
+                        output.accept(CIVILIAN_SPAWN_EGG.get());
                         output.accept(HOSHINA_SPAWN_EGG.get());
                         output.accept(HOSHINA_NO10_SPAWN_EGG.get());
                         output.accept(KIKORU_SPAWN_EGG.get());

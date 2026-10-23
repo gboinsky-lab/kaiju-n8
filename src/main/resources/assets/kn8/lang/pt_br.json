@@ -1148,5 +1148,20 @@
   "kn8.trail.dir.s": "indo para o sul",
   "kn8.trail.dir.sw": "indo para o sudoeste",
   "kn8.trail.dir.w": "indo para o oeste",
-  "kn8.trail.dir.nw": "indo para o noroeste"
+  "kn8.trail.dir.nw": "indo para o noroeste",
+  "entity.kn8.civilian": "Civil",
+  "item.kn8.civilian_spawn_egg": "Ovo Gerador de Civil",
+  "kn8.region.state.evacuation": "EVACUAÇÃO",
+  "kn8.mission.objective.evacuate": "Objetivo: leve %2$s civis ao ponto de extração marcado na HUD (eles seguem quem estiver perto)",
+  "kn8.menu.objective.evacuate": "Evacuar %s civis",
+  "kn8.evacuation.threat": "Ameaça na área: %s. Proteja os civis!",
+  "kn8.evacuation.briefing": "%s civis precisam de escolta; podem ser perdidos no máximo %s. A zona verde é o ponto de extração.",
+  "kn8.evacuation.saved": "Civil evacuado (%s/%s)",
+  "kn8.evacuation.lost": "Civil perdido (%s de %s permitidos)",
+  "kn8.mission.failed.civilians": "Missão fracassada (civis demais perdidos): %s",
+  "kn8.mission.eval.civilians": " · civis evacuados %s, perdidos %s",
+  "kn8.mission.evacuation_district.name": "Evacuação do Bairro",
+  "kn8.mission.evacuation_district.desc": "Um Primigenius se aproxima de um bairro com moradores. Leve os civis até o ponto de extração antes que ele chegue.",
+  "kn8.mission.evacuation_honju.name": "Evacuação sob Honju",
+  "kn8.mission.evacuation_honju.desc": "Um Primigenius Honju cerca um grupo de civis. Abra caminho e leve todos à zona de extração."
 }

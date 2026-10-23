@@ -600,6 +600,9 @@ public final class DataValidation {
             case REACH_AREA -> objective.marker().isPresent()
                     || error(report, label + ": precisa de marker");
             case PATROL -> true;
+            // PM-10A: a ameaca e opcional; se houver, precisa ser um kaiju.
+            case EVACUATE -> objective.target().map(kaiju::contains).orElse(true)
+                    || error(report, label + ": target (ameaca) precisa ser um kaiju existente");
             // Invasoes sao validadas depois das missoes: aqui basta o arquivo ter carregado.
             case DEFEND_INVASION -> objective.target().filter(KN8Data.INVASION.loaded()::containsKey).isPresent()
                     || error(report, label + ": target precisa ser uma invasao existente");

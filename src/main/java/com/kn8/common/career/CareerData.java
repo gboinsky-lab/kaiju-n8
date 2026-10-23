@@ -53,7 +53,9 @@ public final class CareerData {
                 Codec.INT.optionalFieldOf("hits", 0).forGetter(s -> s.hits),
                 Codec.FLOAT.optionalFieldOf("dealt", 0.0F).forGetter(s -> s.damageDealt),
                 Codec.FLOAT.optionalFieldOf("taken", 0.0F).forGetter(s -> s.damageTaken),
-                Codec.INT.optionalFieldOf("allies_lost", 0).forGetter(s -> s.alliesLost)
+                Codec.INT.optionalFieldOf("allies_lost", 0).forGetter(s -> s.alliesLost),
+                Codec.INT.optionalFieldOf("civilians_saved", 0).forGetter(s -> s.civiliansSaved),
+                Codec.INT.optionalFieldOf("civilians_lost", 0).forGetter(s -> s.civiliansLost)
         ).apply(i, MissionStats::new));
 
         public int shots;
@@ -61,16 +63,22 @@ public final class CareerData {
         public float damageDealt;
         public float damageTaken;
         public int alliesLost;
+        /** PM-10A: civis evacuados e perdidos (missao de evacuacao). */
+        public int civiliansSaved;
+        public int civiliansLost;
 
         public MissionStats() {
         }
 
-        private MissionStats(int shots, int hits, float damageDealt, float damageTaken, int alliesLost) {
+        private MissionStats(int shots, int hits, float damageDealt, float damageTaken, int alliesLost,
+                int civiliansSaved, int civiliansLost) {
             this.shots = shots;
             this.hits = hits;
             this.damageDealt = damageDealt;
             this.damageTaken = damageTaken;
             this.alliesLost = alliesLost;
+            this.civiliansSaved = civiliansSaved;
+            this.civiliansLost = civiliansLost;
         }
     }
 

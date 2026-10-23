@@ -54,6 +54,7 @@ public final class ClientRegion {
             case COMBAT -> 0xFFFF3B3B;
             case ALERT -> 0xFFFFC233;
             case RECOVERY -> 0xFF35C8FF;
+            case EVACUATION -> 0xFFFF8A1F;
             case NORMAL -> 0xFF4CD964;
         };
     }
@@ -71,10 +72,14 @@ public final class ClientRegion {
         if (value == State.NORMAL) {
             return text;
         }
+        Component full = Component.empty().append(text).append(": ").append(RegionService.causeName(current.cause()));
+        // Evacuacao dura enquanto a missao durar (sem contagem).
+        if (value == State.EVACUATION) {
+            return full;
+        }
         long left = Math.max(0, current.until() - gameTime);
         long seconds = (left + 19) / 20;
-        return Component.empty().append(text).append(": ").append(RegionService.causeName(current.cause()))
-                .append(String.format(java.util.Locale.ROOT, " (%d:%02d)", seconds / 60, seconds % 60));
+        return full.copy().append(String.format(java.util.Locale.ROOT, " (%d:%02d)", seconds / 60, seconds % 60));
     }
 
     private static void render(GuiGraphics g, DeltaTracker delta) {

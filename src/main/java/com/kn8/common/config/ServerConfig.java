@@ -328,6 +328,19 @@ public final class ServerConfig {
     public static final ModConfigSpec.IntValue REGION_RECOVERY_TICKS;
     public static final ModConfigSpec.IntValue REGION_NOTIFY_MARGIN;
     public static final ModConfigSpec.BooleanValue REGION_CLOSE_SERVICES;
+    // [evacuation] PM-10A
+    public static final ModConfigSpec.IntValue EVAC_REGION_TICKS;
+    public static final ModConfigSpec.DoubleValue EVAC_SPAWN_MIN;
+    public static final ModConfigSpec.DoubleValue EVAC_SPAWN_MAX;
+    public static final ModConfigSpec.DoubleValue EVAC_EXTRACTION_MIN;
+    public static final ModConfigSpec.DoubleValue EVAC_EXTRACTION_MAX;
+    public static final ModConfigSpec.DoubleValue EVAC_EXTRACTION_RADIUS;
+    public static final ModConfigSpec.DoubleValue EVAC_FOLLOW_RANGE;
+    public static final ModConfigSpec.DoubleValue EVAC_SELF_WALK_RADIUS;
+    public static final ModConfigSpec.DoubleValue EVAC_THREAT_DISTANCE;
+    public static final ModConfigSpec.DoubleValue EVAC_PANIC_DISTANCE;
+    public static final ModConfigSpec.IntValue EVAC_MARK_INTERVAL_TICKS;
+    public static final ModConfigSpec.BooleanValue EVAC_KAIJU_TARGET_CIVILIANS;
 
     // --- combat (M10, GDD secoes 7 e 12) ---------------------------------------------------------------------------
     public static final ModConfigSpec.DoubleValue LIGHT_STAMINA_COST;
@@ -1015,6 +1028,33 @@ public final class ServerConfig {
                 + " state changes.", 32, 0, 256);
         REGION_CLOSE_SERVICES = booleanValue("closeServicesInCombat", "During combat the squad station, research"
                 + " terminals and exam acceptance of the place are closed.", true);
+        BUILDER.pop();
+
+        section("evacuation", "PM-10A evacuation missions: civilians to lead to an extraction point.");
+        EVAC_REGION_TICKS = intValue("regionTicks", "A place stays in evacuation this long after the last second of an"
+                + " evacuation mission in it (refreshed every second while it lasts).", 200, 20, 72000);
+        EVAC_SPAWN_MIN = doubleValue("spawnMin", "Civilians appear at least this far from the player (blocks).", 10.0,
+                2.0, 128.0);
+        EVAC_SPAWN_MAX = doubleValue("spawnMax", "Civilians appear at most this far from the player (blocks).", 18.0,
+                2.0, 128.0);
+        EVAC_EXTRACTION_MIN = doubleValue("extractionMin", "The extraction point is at least this far from the"
+                + " civilians (blocks).", 28.0, 4.0, 256.0);
+        EVAC_EXTRACTION_MAX = doubleValue("extractionMax", "The extraction point is at most this far from the"
+                + " civilians (blocks).", 44.0, 4.0, 256.0);
+        EVAC_EXTRACTION_RADIUS = doubleValue("extractionRadius", "A civilian this close to the extraction point is"
+                + " evacuated (blocks).", 4.0, 1.0, 32.0);
+        EVAC_FOLLOW_RANGE = doubleValue("followRange", "Civilians follow a player or soldier this close (blocks).",
+                12.0, 2.0, 64.0);
+        EVAC_SELF_WALK_RADIUS = doubleValue("selfWalkRadius", "This close to the extraction point civilians walk to it"
+                + " alone (blocks).", 16.0, 0.0, 128.0);
+        EVAC_THREAT_DISTANCE = doubleValue("threatDistance", "The threat kaiju of the mission appears this far from"
+                + " the civilians (blocks).", 18.0, 4.0, 128.0);
+        EVAC_PANIC_DISTANCE = doubleValue("panicDistance", "Civilians run from kaiju this close (blocks).", 8.0, 0.0,
+                64.0);
+        EVAC_MARK_INTERVAL_TICKS = intValue("markIntervalTicks", "How often the extraction zone is drawn on the"
+                + " ground.", 40, 10, 1200);
+        EVAC_KAIJU_TARGET_CIVILIANS = booleanValue("kaijuTargetCivilians", "Kaiju attack civilians like soldiers"
+                + " (the evacuation needs protecting).", true);
         BUILDER.pop();
 
         section("sites", "Places from the series (C3): Ariake, Tachikawa base and city, Shinagawa.");

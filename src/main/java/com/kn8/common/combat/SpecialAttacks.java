@@ -3,6 +3,7 @@ package com.kn8.common.combat;
 
 import java.util.List;
 
+import com.kn8.common.evacuation.CivilianEntity;
 import com.kn8.common.config.ServerConfig;
 import com.kn8.common.data.def.AbilityDef;
 import com.kn8.common.data.def.KaijuClass;
@@ -225,7 +226,7 @@ public final class SpecialAttacks {
         if (SoldierEntity.isDuelFoe(source, target)) {
             return false;
         }
-        if (target instanceof ArmorStand || target instanceof SoldierEntity) {
+        if (target instanceof ArmorStand || target instanceof SoldierEntity || target instanceof CivilianEntity) {
             return true;
         }
         if (target instanceof Player) {

@@ -1334,3 +1334,19 @@ Servidor dedicado + 2 clientes num mundo normal com um local da obra (`/locate s
 | 97.7 | Usar o Rastreador de novo | Mesmo rastro, sem mérito novo |
 | 97.8 | Esperar 10 min | As pistas somem ("Nenhuma pista de kaiju...") |
 | 97.9 | Invasão (`/kn8 invasion start ...`) com o centro no local | COMBATE enquanto ela dura; ao terminar, RECUPERAÇÃO; nesse meio tempo a invasão natural não sorteia outra do local |
+
+## 98. Evacuação com civis (PM-10A)
+
+Servidor dedicado + 2 clientes. Para ver o estado de EVACUAÇÃO na faixa, aceitar a missão dentro de um local da obra
+(Shinagawa, como no §97); fora deles a missão funciona igual, só sem a faixa.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 98.1 | Menu M → Missões → "Evacuação do Bairro" (ou `/kn8 mission accept kn8:evacuation_district`) | Chat: objetivo, "5 civis precisam de escolta; podem ser perdidos no máximo 1", "Ameaça na área: Primigenius"; 5 civis a 10-18 blocos; disco verde no chão no ponto de extração (marcado na HUD) |
+| 98.2 | Chegar perto dos civis e andar até o ponto | Eles seguem quem estiver até 12 blocos (jogador ou soldado); sem ninguém perto ficam parados |
+| 98.3 | Dentro de um local da obra | Faixa laranja "EVACUAÇÃO" e linha igual na aba Alertas; se o kaiju lutar ali, a faixa vira COMBATE e volta a EVACUAÇÃO depois |
+| 98.4 | Levar os civis até perto do ponto | A 16 blocos eles vão sozinhos; a 4 blocos somem com fumaça verde e aparece "Civil evacuado (n/4)" |
+| 98.5 | Deixar o Primigenius pegar um civil | "Civil perdido (1 de 1 permitidos)"; com a segunda perda "Missão fracassada (civis demais perdidos)" e os civis que sobraram somem |
+| 98.6 | Golpear um civil (jogador) | Nada acontece (fogo amigo não fere) |
+| 98.7 | Concluir com 4 evacuados | Recompensa, avaliação com "civis evacuados 4, perdidos N"; o civil de folga some |
+| 98.8 | Sair e voltar ao mundo no meio da missão | Os mesmos civis no lugar, sem civis novos |

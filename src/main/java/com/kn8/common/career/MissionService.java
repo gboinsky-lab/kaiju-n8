@@ -16,6 +16,7 @@ import com.kn8.common.data.KN8Data;
 import com.kn8.common.invasion.InvasionService;
 import com.kn8.common.data.def.MissionDef;
 import com.kn8.common.destruction.ProtectedAreas;
+import com.kn8.common.evacuation.EvacuationService;
 import com.kn8.common.registry.KN8Sounds;
 import com.kn8.common.site.RegionService;
 import com.kn8.common.soldier.SquadService;
@@ -156,7 +157,7 @@ public final class MissionService {
         if (removed == null) {
             return false;
         }
-        endExam(player, id, removed);
+        cleanup(player, id, removed);
         player.sendSystemMessage(Component.translatable("kn8.mission.abandoned", name(id))
                 .withStyle(ChatFormatting.GRAY));
         CareerService.changed(player);
@@ -185,6 +186,57 @@ public final class MissionService {
         forEachActive(player, stats -> stats.damageTaken += amount);
     }
 
+    // --- evacuacao (PM-10A) ---------------------------------------------------------------------------------------
+
+    public static boolean isActive(ServerPlayer player, ResourceLocation id) {
+        return CareerService.data(player).active().containsKey(id);
+    }
+
+    /** A evacuacao e o objetivo atual da missao (o civil que chega ao ponto conta). */
+    public static boolean evacuating(ServerPlayer player, ResourceLocation id) {
+        CareerData.MissionProgress progress = CareerService.data(player).active().get(id);
+        Optional<MissionDef> def = KN8Data.MISSION.get(id, false);
+        if (progress == null || def.isEmpty()) {
+            return false;
+        }
+        int index = currentObjective(def.get(), progress);
+        return index >= 0 && def.get().objectives().get(index).type() == MissionDef.ObjectiveType.EVACUATE;
+    }
+
+    /** Civil chegou ao ponto de extracao: conta se a evacuacao e o objetivo atual da missao dele. */
+    public static boolean onCivilianEvacuated(ServerPlayer player, ResourceLocation id) {
+        if (!evacuating(player, id)) {
+            return false;
+        }
+        CareerData.MissionProgress progress = CareerService.data(player).active().get(id);
+        MissionDef def = KN8Data.MISSION.get(id, false).orElseThrow();
+        int index = currentObjective(def, progress);
+        progress.stats().civiliansSaved++;
+        int total = def.objectives().get(index).count();
+        EvacuationService.announce(player, "kn8.evacuation.saved", progress.progress().get(index) + 1, total);
+        advance(player, id, def, progress, index);
+        return true;
+    }
+
+    /** Civil da missao morreu: perda; acima de {@code max_losses} a missao fracassa. */
+    public static void onCivilianLost(ServerPlayer player, ResourceLocation id) {
+        CareerData.MissionProgress progress = CareerService.data(player).active().get(id);
+        Optional<MissionDef> def = KN8Data.MISSION.get(id, false);
+        if (progress == null || def.isEmpty()) {
+            return;
+        }
+        int index = currentObjective(def.get(), progress);
+        if (index < 0 || def.get().objectives().get(index).type() != MissionDef.ObjectiveType.EVACUATE) {
+            return;
+        }
+        progress.stats().civiliansLost++;
+        int allowed = def.get().objectives().get(index).maxLosses();
+        EvacuationService.announce(player, "kn8.evacuation.lost", progress.stats().civiliansLost, allowed);
+        if (progress.stats().civiliansLost > allowed) {
+            fail(player, id, "civilians");
+        }
+    }
+
     /** Soldado do esquadrao do jogador morreu. */
     public static void onAllyLost(ServerPlayer player) {
         forEachActive(player, stats -> stats.alliesLost++);
@@ -202,7 +254,7 @@ public final class MissionService {
         CareerData.MissionStats s = progress.stats();
         long ticks = Math.max(0, player.level().getGameTime() - progress.acceptedTick());
         MissionGrader.Stats stats = new MissionGrader.Stats(s.shots, s.hits, s.damageDealt, s.damageTaken,
-                player.getMaxHealth(), s.alliesLost, ticks);
+                player.getMaxHealth(), s.alliesLost + s.civiliansLost, ticks);
         return MissionGrader.grade(stats, requirements(def), gradeParams());
     }
 
@@ -283,6 +335,8 @@ public final class MissionService {
                     && !point.equals(CareerView.NO_POINT)
                     && horizontalDistance(player, point) <= ServerConfig.MISSION_REACH_RADIUS.get()) {
                 advance(player, entry.getKey(), def.get(), entry.getValue(), index);
+            } else if (type == MissionDef.ObjectiveType.EVACUATE && !point.equals(CareerView.NO_POINT)) {
+                EvacuationService.missionTick(player, entry.getKey(), point);
             }
         }
     }
@@ -361,6 +415,8 @@ public final class MissionService {
                 setPoint(progress, index, InvasionService.active(level).map(value -> value.center()).orElse(area));
             }
             case PATROL -> setPoint(progress, index, patrolPoint(player, progress));
+            case EVACUATE -> setPoint(progress, index, EvacuationService.start(player, id, objective,
+                    progress.progress().get(index), center));
         }
         player.sendSystemMessage(Component.translatable("kn8.mission.objective." + objective.type()
                 .getSerializedName(), objective.target().map(MissionService::targetName)
@@ -371,7 +427,7 @@ public final class MissionService {
     private static void complete(ServerPlayer player, ResourceLocation id, MissionDef def) {
         CareerData data = CareerService.data(player);
         CareerData.MissionProgress progress = data.active().remove(id);
-        endExam(player, id, progress);
+        cleanup(player, id, progress);
         MissionGrader.Result result = evaluate(player, def, progress);
         if (def.grading().isPresent() && !result.passed()) {
             failExam(player, id, def, progress, result);
@@ -456,6 +512,10 @@ public final class MissionService {
         Component line = Component.translatable("kn8.mission.eval.stats", clock(ticks),
                 Math.round(s.damageDealt), oneDecimal(s.damageTaken),
                 Math.round(100 * s.damageTaken / Math.max(1.0F, player.getMaxHealth())), s.alliesLost);
+        if (s.civiliansSaved + s.civiliansLost > 0) {
+            line = line.copy().append(Component.translatable("kn8.mission.eval.civilians", s.civiliansSaved,
+                    s.civiliansLost));
+        }
         if (s.shots > 0) {
             line = line.copy().append(Component.translatable("kn8.mission.eval.accuracy",
                     Math.round(100.0 * s.hits / s.shots), s.hits, s.shots));
@@ -532,7 +592,7 @@ public final class MissionService {
     private static void fail(ServerPlayer player, ResourceLocation id, String reason) {
         CareerData.MissionProgress removed = CareerService.data(player).active().remove(id);
         if (removed != null) {
-            endExam(player, id, removed);
+            cleanup(player, id, removed);
         }
         player.sendSystemMessage(Component.translatable("kn8.mission.failed." + reason, name(id))
                 .withStyle(ChatFormatting.RED));
@@ -543,13 +603,17 @@ public final class MissionService {
 
     // --- auxiliares ----------------------------------------------------------------------------------------------
 
-    /** Fim da prova (qualquer motivo): somem os kaiju dela e a area volta a poder ser quebrada. */
-    private static void endExam(ServerPlayer player, ResourceLocation id, CareerData.MissionProgress progress) {
+    /**
+     * Fim da missao (qualquer motivo): somem os civis da evacuacao (PM-10A) e, na prova, os kaiju dela e a area
+     * volta a poder ser quebrada.
+     */
+    private static void cleanup(ServerPlayer player, ResourceLocation id, CareerData.MissionProgress progress) {
         progress.origin().ifPresent(origin -> {
             ExamTargets.clear(player.serverLevel(), player.getUUID(), id, origin,
                     ServerConfig.EXAM_LEAVE_DISTANCE.get() + 32);
             ProtectedAreas.get(player.serverLevel()).remove(ExamTargets.areaName(player.getUUID(), id));
         });
+        EvacuationService.clear(player, id);
     }
 
     /** Ponto de patrulha: em campo longe do jogador; na prova, perto de onde ela foi aceita. */

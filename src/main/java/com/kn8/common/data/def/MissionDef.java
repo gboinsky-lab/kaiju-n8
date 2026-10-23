@@ -88,7 +88,13 @@ public record MissionDef(Category category, Optional<ResourceLocation> giver, Re
         /** Visitar {@code count} pontos de patrulha. */
         PATROL("patrol"),
         /** 0.2 (Etapa 7): vencer a invasao {@code target} (registry invasion), que comeca perto do jogador. */
-        DEFEND_INVASION("defend_invasion");
+        DEFEND_INVASION("defend_invasion"),
+        /**
+         * PM-10A: levar {@code count} civis ao ponto de extracao. Surgem {@code count + max_losses} civis perto do
+         * jogador; {@code target} (opcional) e o kaiju que ameaca a evacuacao. Mais perdas que {@code max_losses}
+         * fracassam a missao.
+         */
+        EVACUATE("evacuate");
 
         public static final Codec<ObjectiveType> CODEC = StringRepresentable.fromEnum(ObjectiveType::values);
 
@@ -104,14 +110,16 @@ public record MissionDef(Category category, Optional<ResourceLocation> giver, Re
         }
     }
 
+    /** {@code max_losses} (PM-10A, so {@code evacuate}): civis que podem morrer sem fracassar a missao. */
     public record Objective(ObjectiveType type, Optional<ResourceLocation> target, int count,
-            Optional<String> marker, Optional<ResourceLocation> structure) {
+            Optional<String> marker, Optional<ResourceLocation> structure, int maxLosses) {
         public static final Codec<Objective> CODEC = RecordCodecBuilder.create(i -> i.group(
                 ObjectiveType.CODEC.fieldOf("type").forGetter(Objective::type),
                 ResourceLocation.CODEC.optionalFieldOf("target").forGetter(Objective::target),
                 Codec.intRange(1, 10_000).optionalFieldOf("count", 1).forGetter(Objective::count),
                 Codec.STRING.optionalFieldOf("marker").forGetter(Objective::marker),
-                ResourceLocation.CODEC.optionalFieldOf("structure").forGetter(Objective::structure)
+                ResourceLocation.CODEC.optionalFieldOf("structure").forGetter(Objective::structure),
+                Codec.intRange(0, 64).optionalFieldOf("max_losses", 0).forGetter(Objective::maxLosses)
         ).apply(i, Objective::new));
     }
 

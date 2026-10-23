@@ -1,0 +1,27 @@
+{
+  "category": "rescue",
+  "giver": "kn8:officer",
+  "requires": {
+    "rank": "kn8:oficial_senior"
+  },
+  "objectives": [
+    {
+      "type": "evacuate",
+      "target": "kn8:primigenius_honju",
+      "count": 6,
+      "max_losses": 2
+    }
+  ],
+  "fail": {
+    "time_ticks": 12000
+  },
+  "rewards": {
+    "merit": 220,
+    "training_xp": 300,
+    "items": [
+      "kn8:suit_coolant"
+    ]
+  },
+  "repeatable": true,
+  "cooldown_ticks": 24000
+}

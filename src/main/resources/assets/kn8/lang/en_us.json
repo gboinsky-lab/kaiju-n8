@@ -1148,5 +1148,20 @@
   "kn8.trail.dir.s": "heading south",
   "kn8.trail.dir.sw": "heading southwest",
   "kn8.trail.dir.w": "heading west",
-  "kn8.trail.dir.nw": "heading northwest"
+  "kn8.trail.dir.nw": "heading northwest",
+  "entity.kn8.civilian": "Civilian",
+  "item.kn8.civilian_spawn_egg": "Civilian Spawn Egg",
+  "kn8.region.state.evacuation": "EVACUATION",
+  "kn8.mission.objective.evacuate": "Objective: lead %2$s civilians to the extraction point marked on the HUD (they follow whoever is close)",
+  "kn8.menu.objective.evacuate": "Evacuate %s civilians",
+  "kn8.evacuation.threat": "Threat in the area: %s. Protect the civilians!",
+  "kn8.evacuation.briefing": "%s civilians need an escort; at most %s may be lost. The green zone is the extraction point.",
+  "kn8.evacuation.saved": "Civilian evacuated (%s/%s)",
+  "kn8.evacuation.lost": "Civilian lost (%s of %s allowed)",
+  "kn8.mission.failed.civilians": "Mission failed (too many civilians lost): %s",
+  "kn8.mission.eval.civilians": " · civilians evacuated %s, lost %s",
+  "kn8.mission.evacuation_district.name": "District Evacuation",
+  "kn8.mission.evacuation_district.desc": "A Primigenius is closing in on a neighborhood with residents. Lead the civilians to the extraction point before it arrives.",
+  "kn8.mission.evacuation_honju.name": "Evacuation Under Honju",
+  "kn8.mission.evacuation_honju.desc": "A Primigenius Honju has a group of civilians cornered. Clear a path and bring everyone to the extraction zone."
 }
