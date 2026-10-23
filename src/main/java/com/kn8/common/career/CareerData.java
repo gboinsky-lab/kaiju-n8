@@ -258,7 +258,7 @@ public final class CareerData {
     }
 
     /** Copia das missoes ativas, em ordem estavel (para a visao do cliente). */
-    List<Map.Entry<ResourceLocation, MissionProgress>> activeSorted() {
+    public List<Map.Entry<ResourceLocation, MissionProgress>> activeSorted() {
         List<Map.Entry<ResourceLocation, MissionProgress>> list = new ArrayList<>(active.entrySet());
         list.sort(Map.Entry.comparingByKey());
         return list;

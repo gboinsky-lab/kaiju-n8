@@ -1126,3 +1126,17 @@ Civil: 20 de vida, velocidade 0,3 (jogadores e soldados não o ferem).
 | `evacuation_honju` | Oficial Sênior | 6 (+2) | 2 | Primigenius Honju | 10 min | 220 mérito, 300 XP, resfriador |
 
 Civis perdidos contam na nota da missão como aliados perdidos.
+
+## PM-10B: apoio militar pelo Rádio de Campo (2026-10-23) [SUPOSIÇÃO todos os números]
+
+`[support]` no `kn8-server.toml`. Só durante uma missão de campo (provas não contam) ou dentro da área de uma invasão;
+usos contados por operação (missão aceita ou invasão começada de novo = usos novos); a espera vale entre operações.
+
+| Tamanho | Apoio | Patente | Usos por operação | Espera | Efeito |
+|---|---|---|---|---|---|
+| Pequeno | Reconhecimento | Candidato | 2 | 30 s | Kaiju a até 48 blocos do ponto brilham por 20 s (vistos através das paredes) e vão ao chat com distância e vida; sem kaiju nada é gasto |
+| Médio | Suprimentos | Oficial | 1 | 2 min | Depois de 3 s, caixa no ponto com 60 balas de rifle, 30 de pistola e 1 resfriador; Regeneração II por 10 s para jogadores, soldados e civis a até 8 blocos |
+| Grande | Bombardeio | Oficial Sênior | 1 | 5 min | Área vermelha de 6 blocos marcada no chão por 5 s; depois 8% da vida máxima de cada kaiju dentro (no máximo 150), sem ferir aliados nem quebrar blocos |
+
+Outros: alcance da mira `callRange` 64 blocos, intervalo mínimo entre chamadas `callGapTicks` 20. Rádio de Campo na
+bancada (livre): 4 ferro, 4 redstone, 2 cobre.

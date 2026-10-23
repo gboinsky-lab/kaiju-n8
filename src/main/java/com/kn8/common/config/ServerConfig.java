@@ -341,6 +341,28 @@ public final class ServerConfig {
     public static final ModConfigSpec.DoubleValue EVAC_PANIC_DISTANCE;
     public static final ModConfigSpec.IntValue EVAC_MARK_INTERVAL_TICKS;
     public static final ModConfigSpec.BooleanValue EVAC_KAIJU_TARGET_CIVILIANS;
+    // [support] PM-10B
+    public static final ModConfigSpec.DoubleValue SUPPORT_CALL_RANGE;
+    public static final ModConfigSpec.IntValue SUPPORT_CALL_GAP_TICKS;
+    public static final ModConfigSpec.ConfigValue<String> SUPPORT_RECON_RANK;
+    public static final ModConfigSpec.IntValue SUPPORT_RECON_USES;
+    public static final ModConfigSpec.IntValue SUPPORT_RECON_COOLDOWN;
+    public static final ModConfigSpec.DoubleValue SUPPORT_RECON_RADIUS;
+    public static final ModConfigSpec.IntValue SUPPORT_RECON_MARK_TICKS;
+    public static final ModConfigSpec.ConfigValue<String> SUPPORT_SUPPLY_RANK;
+    public static final ModConfigSpec.IntValue SUPPORT_SUPPLY_USES;
+    public static final ModConfigSpec.IntValue SUPPORT_SUPPLY_COOLDOWN;
+    public static final ModConfigSpec.IntValue SUPPORT_SUPPLY_DELAY;
+    public static final ModConfigSpec.DoubleValue SUPPORT_SUPPLY_RADIUS;
+    public static final ModConfigSpec.IntValue SUPPORT_SUPPLY_HEAL_TICKS;
+    public static final ModConfigSpec.ConfigValue<List<? extends String>> SUPPORT_SUPPLY_ITEMS;
+    public static final ModConfigSpec.ConfigValue<String> SUPPORT_STRIKE_RANK;
+    public static final ModConfigSpec.IntValue SUPPORT_STRIKE_USES;
+    public static final ModConfigSpec.IntValue SUPPORT_STRIKE_COOLDOWN;
+    public static final ModConfigSpec.IntValue SUPPORT_STRIKE_DELAY;
+    public static final ModConfigSpec.DoubleValue SUPPORT_STRIKE_RADIUS;
+    public static final ModConfigSpec.DoubleValue SUPPORT_STRIKE_FRACTION;
+    public static final ModConfigSpec.DoubleValue SUPPORT_STRIKE_MAX_DAMAGE;
 
     // --- combat (M10, GDD secoes 7 e 12) ---------------------------------------------------------------------------
     public static final ModConfigSpec.DoubleValue LIGHT_STAMINA_COST;
@@ -1055,6 +1077,44 @@ public final class ServerConfig {
                 + " ground.", 40, 10, 1200);
         EVAC_KAIJU_TARGET_CIVILIANS = booleanValue("kaijuTargetCivilians", "Kaiju attack civilians like soldiers"
                 + " (the evacuation needs protecting).", true);
+        BUILDER.pop();
+
+        section("support", "PM-10B military support called with the field radio, only during a field mission or an"
+                + " invasion: small = recon, medium = supply drop, large = limited strike.");
+        SUPPORT_CALL_RANGE = doubleValue("callRange", "The radio marks the block the player looks at up to this far.",
+                64.0, 4.0, 256.0);
+        SUPPORT_CALL_GAP_TICKS = intValue("callGapTicks", "Minimum ticks between two radio uses (any support).", 20, 0,
+                1200);
+        SUPPORT_RECON_RANK = BUILDER.comment("Rank needed for recon (small).").translation(PREFIX + "reconRank")
+                .define("reconRank", "kn8:candidato");
+        SUPPORT_RECON_USES = intValue("reconUses", "Recon calls per operation.", 2, 0, 100);
+        SUPPORT_RECON_COOLDOWN = intValue("reconCooldownTicks", "Wait between recon calls.", 600, 0, 72000);
+        SUPPORT_RECON_RADIUS = doubleValue("reconRadius", "Kaiju this close to the marked point are spotted.", 48.0,
+                4.0, 256.0);
+        SUPPORT_RECON_MARK_TICKS = intValue("reconMarkTicks", "Spotted kaiju glow this long.", 400, 20, 12000);
+        SUPPORT_SUPPLY_RANK = BUILDER.comment("Rank needed for the supply drop (medium).").translation(PREFIX
+                + "supplyRank").define("supplyRank", "kn8:oficial");
+        SUPPORT_SUPPLY_USES = intValue("supplyUses", "Supply drops per operation.", 1, 0, 100);
+        SUPPORT_SUPPLY_COOLDOWN = intValue("supplyCooldownTicks", "Wait between supply drops.", 2400, 0, 72000);
+        SUPPORT_SUPPLY_DELAY = intValue("supplyDelayTicks", "The drop lands this many ticks after the call.", 60, 0,
+                1200);
+        SUPPORT_SUPPLY_RADIUS = doubleValue("supplyRadius", "Players, soldiers and civilians this close to the drop"
+                + " recover health.", 8.0, 1.0, 64.0);
+        SUPPORT_SUPPLY_HEAL_TICKS = intValue("supplyHealTicks", "Regeneration II length from the drop.", 200, 0, 2400);
+        SUPPORT_SUPPLY_ITEMS = BUILDER.comment("Items in the drop as id*count.").translation(PREFIX + "supplyItems")
+                .defineList("supplyItems", List.of("kn8:rifle_ammo*60", "kn8:pistol_ammo*30", "kn8:suit_coolant*1"),
+                        () -> "kn8:rifle_ammo*60", value -> value instanceof String);
+        SUPPORT_STRIKE_RANK = BUILDER.comment("Rank needed for the strike (large).").translation(PREFIX
+                + "strikeRank").define("strikeRank", "kn8:oficial_senior");
+        SUPPORT_STRIKE_USES = intValue("strikeUses", "Strikes per operation.", 1, 0, 100);
+        SUPPORT_STRIKE_COOLDOWN = intValue("strikeCooldownTicks", "Wait between strikes.", 6000, 0, 72000);
+        SUPPORT_STRIKE_DELAY = intValue("strikeDelayTicks", "The strike lands this many ticks after the call (the"
+                + " area is marked on the ground meanwhile).", 100, 20, 1200);
+        SUPPORT_STRIKE_RADIUS = doubleValue("strikeRadius", "Kaiju this close to the marked point are hit.", 6.0, 1.0,
+                32.0);
+        SUPPORT_STRIKE_FRACTION = doubleValue("strikeHealthFraction", "Damage as a fraction of each kaiju's maximum"
+                + " health (never solves a fight on its own).", 0.08, 0.0, 1.0);
+        SUPPORT_STRIKE_MAX_DAMAGE = doubleValue("strikeMaxDamage", "Damage cap per kaiju.", 150.0, 0.0, 100000.0);
         BUILDER.pop();
 
         section("sites", "Places from the series (C3): Ariake, Tachikawa base and city, Shinagawa.");

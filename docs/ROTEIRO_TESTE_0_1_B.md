@@ -1350,3 +1350,20 @@ Servidor dedicado + 2 clientes. Para ver o estado de EVACUAÇÃO na faixa, aceit
 | 98.6 | Golpear um civil (jogador) | Nada acontece (fogo amigo não fere) |
 | 98.7 | Concluir com 4 evacuados | Recompensa, avaliação com "civis evacuados 4, perdidos N"; o civil de folga some |
 | 98.8 | Sair e voltar ao mundo no meio da missão | Os mesmos civis no lugar, sem civis novos |
+
+## 99. Apoio militar (PM-10B)
+
+Servidor dedicado + 2 clientes. Rádio de Campo na bancada (ou `/give @s kn8:field_radio`). Botão direito chama o apoio
+selecionado no bloco olhado; Shift + botão direito troca entre Reconhecimento, Suprimentos e Bombardeio (a barra mostra
+os usos e a espera).
+
+| # | Passo | Esperado |
+|---|---|---|
+| 99.1 | Usar o rádio sem missão nem invasão | "Apoio só durante uma missão de campo ou uma invasão"; nada gasto |
+| 99.2 | Aceitar uma missão de campo (ex.: Patrulha) e chamar Reconhecimento num lugar sem kaiju | "nenhum kaiju na área (nada foi gasto)" |
+| 99.3 | Reconhecimento perto de um kaiju | Chat "Contato: Primigenius a N blocos (X% de vida)"; o kaiju brilha (visto pelo outro jogador também); disco azul no chão |
+| 99.4 | Suprimentos perto de um soldado ferido | Disco verde; 3 s depois caem munição e resfriador; o soldado ganha Regeneração |
+| 99.5 | Bombardeio no kaiju (Oficial Sênior) | Disco vermelho por 5 s; explosão; kaiju perde até 8% da vida; aliados na área intactos; "Bombardeio concluído: 1 kaiju atingido(s)" |
+| 99.6 | Chamar de novo o mesmo apoio | "Este apoio já foi usado nesta operação" ou a espera; nada é gasto |
+| 99.7 | Patente baixa pedindo bombardeio | "Patente insuficiente para este apoio" |
+| 99.8 | Dentro da área de uma invasão (`/kn8 invasion start ...`) | O rádio funciona sem missão |

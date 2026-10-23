@@ -64,6 +64,10 @@ public final class Invasion {
         return def;
     }
 
+    public long startTick() {
+        return startTick;
+    }
+
     public BlockPos center() {
         return center;
     }

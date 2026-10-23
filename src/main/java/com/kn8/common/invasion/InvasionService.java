@@ -352,7 +352,8 @@ public final class InvasionService {
 
     // --- jogadores, barra e fim ----------------------------------------------------------------------------------
 
-    private static boolean inArea(Player player, Invasion invasion) {
+    /** O jogador esta dentro da area da invasao (apoio militar, PM-10B). */
+    public static boolean inArea(Player player, Invasion invasion) {
         double dx = player.getX() - (invasion.center.getX() + 0.5);
         double dz = player.getZ() - (invasion.center.getZ() + 0.5);
         double radius = invasion.def.radius();
