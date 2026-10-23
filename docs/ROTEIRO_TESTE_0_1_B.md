@@ -1241,7 +1241,7 @@ Servidor dedicado + 2 clientes. `/kn8 career rank <patente>` (ou o mérito) para
 
 | # | Passo | Esperado |
 |---|---|---|
-| 92.1 | Menu (M) → Missões como Oficial | A "Prova de Tiro" mostra a linha "Prova: precisão 35% (15 tiros) dano ≤ 100% nota C+"; Perfil mostra "Precisão (tiros em kaiju)" com "-" |
+| 92.1 | Menu (M) → Missões como Oficial | A "Prova de Tiro" mostra a linha "Prova: precisão 35% (15 tiros) dano ≤ 100% nota C+"; Perfil mostra "Precisão" com "-" |
 | 92.2 | Aceitar a Prova de Tiro | No chat: "Requisitos da prova:" com precisão (mínimo de tiros), dano recebido, tempo ideal (só na nota) e nota mínima |
 | 92.3 | Abater os 3 Primigenius errando muito (atirar no ar) | Título "Prova reprovada", resumo com nota, tempo, dano causado/recebido, aliados perdidos e "precisão X% (acertos/tiros)", linha ✘ da precisão, "Sem recompensa. Você pode tentar de novo em 10 min.", uma dica; a missão volta como "em espera" |
 | 92.4 | Depois da espera, de novo com boa pontaria | "PROVA APROVADA", recompensa uma vez só, "Nota X" ao lado do nome no menu; com mérito ≥ 500 a promoção a Oficial Sênior sai na hora; a missão não pode ser repetida |

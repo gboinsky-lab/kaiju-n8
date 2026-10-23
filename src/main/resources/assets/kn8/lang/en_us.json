@@ -1010,5 +1010,5 @@
   "kn8.menu.missions.exam.allies": "losses ≤ %s",
   "kn8.menu.missions.exam.squad": "squad %s+",
   "kn8.menu.missions.exam.grade": "grade %s+",
-  "kn8.menu.profile.accuracy": "Accuracy (shots at kaiju)"
+  "kn8.menu.profile.accuracy": "Accuracy"
 }
