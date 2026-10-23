@@ -1,0 +1,62 @@
+# Plano Mestre de Ideias — PM-0: auditoria do projeto
+
+Documento de origem: `docs/PLANO_MESTRE_IDEIAS_KAIJU_N8_REBORN.md` (Miguel, 2026-10-23). Esta etapa só lê o código e
+os dados; nenhum sistema mudou. Classificação pedida na Parte I §2: **EXISTENTE**, **PARCIAL**, **AUSENTE** ou
+**QUEBRADO**, com arquivos e evidência. Nenhum sistema foi achado **QUEBRADO** (GameTests 241/241 na VFX-10).
+
+Regra do documento respeitada desde já: a **dissecação** é o desmonte que já existe (`CarcassEntity`,
+`core/dismantle/DismantleMath`, `data/kn8/kn8/dismantle/*.json`, missão `first_dismantle`); nada novo de coleta de
+restos será criado, só ampliações dele.
+
+## 1. Classificação
+
+| # | Sistema | Estado | Evidência (arquivos) | O que falta |
+|---|---|---|---|---|
+| 1 | Funções próprias por arma | **PARCIAL** | `weapon/*.json` (`style` blade/heavy/firearm, `actions` light/heavy, `combo`, `special`, `sounds`, `profile`), `weapon_profile/*.json` (mãos, postura, saque, recarga, coice), `CombatService`, `SpecialAttacks`, `WeaponHandling`, `ActionTimeline` (impacto único, servidor) | Espada e faca sem especial; rifle/pistola só `light` (sem ataque alternativo); `mina_cannon` e `narumi_bayonet` para o jogador [SUPOSIÇÃO desde a 0.7-C]. A base central já existe (definição por JSON); falta preencher, não criar |
+| 2 | Esquiva perfeita e contra-ataque | **PARCIAL** | `CombatService.dodge` (invulnerabilidade fixa `DODGE_INVULNERABLE_TICKS`, stamina), `isParry`/`parry` (janela por Release, crítico pós-parry `CRITICAL_WINDOW_TICKS`, atordoa Yoju), `combat.heavyIgnoresBlock` | Não há esquiva **perfeita**: a esquiva é igual com ou sem golpe chegando. Falta: janela de acerto no início da esquiva medida contra o `ticksToImpact` do kaiju que mira o jogador, contra-ataque uma vez por golpe, feedback desenhado |
+| 3 | IA que aprende padrões do jogador | **PARCIAL** | `No9Service` `adaptation` (golpe repetido do mesmo tipo tira menos, `ranged_factor`, memória `adaptationMemory`), `dodge` do No. 9 contra tiro explosivo, `KaijuAiMemory` (ameaça por quem feriu, inalcançável), `KaijuTargeting` (inteligente prioriza atirador) | A adaptação hoje é **redução de dano**, não mudança de comportamento. Falta: sinais de hábito (distância preferida do jogador, esquivas repetidas, mesmo ataque em sequência) com resposta tática (aproximar, recuar, trocar de ataque), só em perfis táticos (`intelligence` >= 4) |
+| 4 | Ferimentos persistentes | **PARCIAL** | `KaijuPart` (partes nomeadas com `multiplier`: cabeça, tronco, núcleo, pernas, no `kaiju/*.json`), núcleo exposto (`core.health_fraction`, `exposed_on`), atordoado (`KaijuStaggerGoal`), lentidão/paralisia (`isParalyzed`), fúria (`rage`) | Nenhum estado de ferimento por parte. A base (partes com nome) existe; falta acumular dano por parte com limiar e efeito definido (perna → velocidade; braço/garra → bloqueia um ataque), com teto e sem acumular sem fim |
+| 5 | Adaptação ao terreno por espécie | **PARCIAL** | `KaijuEntity.breakWhileWalking`/`sinkFromBuilding` (todos), `[destruction] walkPower*` por categoria, `ProtectedAreas`, `mobGriefing`, voo do Preondactyl e da larva (`FlightSteer`), salto conferido (`LeapArc`), desistência de alvo inalcançável (IA-1A), `breakOutTowards` | As capacidades são **por categoria** (Yoju/Honju/Daikaiju), não por espécie: todo kaiju quebra blocos do mesmo jeito; ninguém nada nem escava de propósito. Falta um perfil de capacidades no `kaiju_ai/*.json` (quebrar ou contornar, preferir rota aberta, água) |
+| 6 | Hierarquia e papéis entre kaiju | **PARCIAL** | Comando do No. 9/No. 10 (`KaijuEntity.command`, `commandTicks`), alerta do bando da aranha, `KaijuTactics.spreadAngle` (chegam por ângulos diferentes), círculo e recuo dos Yoju (IA-4), invocação do chefe | Não há papéis (líder, agressor, perseguidor, apoio à distância, distração) nem limite de atacantes ao mesmo tempo; com o líder morto nada muda. Coordenação é adaptação de gameplay (não canon), exceto o comando do No. 9/No. 10 |
+| 7 | Chefes com fases distintas | **PARCIAL** | `BossService`/`BossState`, `boss/*.json` (`phases` por `until_health`, `invuln_ticks`, lista de ataques com peso), `[kaijuAi] bossPhaseBonus`, fase só avança (IA-6), invocação, arena, recompensa | A fase só muda **quais ataques são favorecidos**. Falta mudança concreta por fase: ritmo, distância preferida, mobilidade, vulnerabilidade (núcleo exposto na transição), aviso de transição; confirmar o estado da fase depois de recarregar o mundo |
+| 8 | Companheiros com funções táticas | **PARCIAL** | `SquadService`, `SquadCommandC2S` (Seguir/Ficar/Atacar/Recuar), `SquadMoveGoal`, coleira, tamanho pela patente (`npc_squad_size`), atirador × combate de perto, cobertura (MOV-3), munição real (`AmmoMath`) | Funções são implícitas pela arma. Falta: ordem "atacar alvo designado" (o alvo que o jogador olha) e "proteger área"; funções explícitas (suporte/reconhecimento) só com equipamento que as sustente |
+| 9 | Provas de promoção | **PARCIAL** | `rank/*.json` (`merit_required`, `promotion_mission`), `CareerService`, missão `exam` (área, 3 abates, chefe `exam_honju`, prazo, falha na morte, `promote_to`) | Só a patente Oficial tem prova; as outras sobem só por mérito. Métricas medidas hoje: abates, chefe, área, tempo, morte, dano por invasão. **Precisão não é registrada** (não usar sem antes medir) |
+| 10 | Base com instalações funcionais | **PARCIAL** | Bancada (`DefenseWorkbenchBlock`, receitas por patente), boneco de treino, painel da arena (`kn8:training_console`), bases e locais (C1–C3) com guarnição | Missões são aceitas só pelo menu (o `giver` do JSON não tem NPC); não há instalação de pesquisa nem de preparação de esquadrão. Base modular: ausente |
+| 11 | Equipamentos numerados: compatibilidade e domínio | **PARCIAL** | Espada do Hoshina para o jogador (bancada, Vice-Capitão, só com o par: `DENIED_NEEDS_DUAL`), traje obrigatório para o Release, limite pessoal (talento + XP), trajes `training_suit`/`mk1`/`mk1_reinforced` | O jogador não tem arma/traje numerado de verdade (Numbers 1/2/4/6/10 são só dos NPCs). Sem afinidade/domínio. **[DECIDIR]** quais numerados o jogador pode ter |
+| 12 | Avaliação pós-missão | **AUSENTE** (base PARCIAL) | `MissionService.complete` (recompensa única por conclusão, mérito, XP, itens, promoção), recompensa da invasão por contribuição | Não há nota nem resumo; não se registram dano recebido, aliados salvos ou recursos gastos por missão |
+| 13 | Cidades com níveis de alerta | **PARCIAL** | `InvasionService` (uma por dimensão, nível 1–6, barra, sirene), `SiteService` (locais com nome, guarnição e invasão natural), `SiteData` | Não há estado por região (normal/alerta/evacuação/combate) nem retorno ao normal por região; a invasão é o único estado. Começar por regiões dos locais C3 |
+| 14 | Evacuação e zonas de perigo | **AUSENTE** | Não há civis no mod (nenhuma entidade civil); o aviso de golpe pesado (`DangerZone`) é só de combate | **[DECIDIR]** civis (entidade nova, modelo?) ou objetivo de extração sem civis |
+| 15 | Apoio militar solicitado | **AUSENTE** | Nenhum rádio, ataque aéreo, suprimento ou extração; não há veículos | **[DECIDIR]** quais apoios e como aparecem (sem helicóptero: representação simples) |
+| 16 | Rastro dinâmico de destruição | **PARCIAL** | `DestructionService`, `DestructionLog` (registro limitado do que quebrou, para restauração `/kn8 destruction restore`), pedaços desenhados `kn8:debris` | Não há pistas nem investigação: o registro serve só para restaurar. Falta pista resumida (posição, kaiju, hora) com limite e expiração, ligada à invasão/missão |
+
+## 2. Ordem proposta (uma etapa por vez)
+
+A Parte V do documento é seguida, mas a auditoria muda a ordem em dois pontos: a base de combate já é central (JSON +
+`ActionTimeline`), então a PM-1 só preenche lacunas; e as Partes IV (civis, apoio) dependem de decisões.
+
+| Etapa | Conteúdo | Depende de | Riscos |
+|---|---|---|---|
+| **PM-1** | Esquiva perfeita (janela contra o golpe que mira o jogador, contra-ataque uma vez por golpe, efeito desenhado) + lacunas de arma: especial da espada e da faca, ataque alternativo das armas de fogo (tiro preciso/rajada) | — | Duplicar invulnerabilidade com o parry; latência (decisão no servidor pelo tick do impacto) |
+| **PM-2** | Ferimentos por parte (limiar de dano por parte → estado: perna lenta, cabeça atordoa mais, braço sem um ataque), com teto, efeito desenhado e salvo no kaiju | `KaijuPart` | Estado acumulando; espécies sem a parte (aranha, voadores) |
+| **PM-3** | IA que lê hábitos (só `intelligence` >= 4: No. 9, formas, No. 10, No. 13): distância preferida, esquivas e ataque repetido → resposta tática com ataques que a espécie já tem; memória curta | PM-1 (esquiva medida) | Conflito com o `KaijuCombatGoal`; oscilar entre estados |
+| **PM-4** | Capacidades de terreno por espécie (`kaiju_ai/*.json`: quebrar ou contornar, força própria, água) + papéis em grupo (líder, agressor, apoio à distância) e limite de atacantes ao mesmo tempo | IA-4 | Mudar o resultado dos cenários do medidor (refazer a regressão) |
+| **PM-5** | Chefes: mudança concreta por fase (ritmo, distância, núcleo exposto na transição, aviso), fase salva | IA-6, PM-2 | Recompensa dupla na transição |
+| **PM-6** | Esquadrões: "atacar alvo designado" e "proteger área"; funções explícitas | IA-5 | Ordens conflitantes com a coleira |
+| **PM-7** | Provas de promoção por patente (missões de exame com métricas reais) + avaliação pós-missão (nota e resumo uma vez por missão) | MissionService | Saves antigos (patente já obtida continua) |
+| **PM-8** | Instalações da base (oficial de missões em NPC, sala de preparação do esquadrão) | PM-6, PM-7 | Duplicar o menu |
+| **PM-9** | Alerta por região nos locais C3 + rastro de destruição como pistas | SiteService, DestructionLog | Varredura por tick (usar eventos) |
+| **PM-10** | Evacuação e apoio militar | **[DECIDIR]** civis e apoios | Assets que não existem |
+| **PM-11** | Equipamentos numerados do jogador (compatibilidade e domínio) | **[DECIDIR]** | Desequilibrar armas atuais |
+
+Cada etapa segue o padrão do projeto: JSON/config, GameTests, servidor dedicado + 2 clientes, roteiro, CLAUDE.md,
+commit e pacote; relatório com TESTADO / NÃO TESTADO / BLOQUEADO (Parte VII).
+
+## 3. Decisões que dependem do Miguel
+
+- **[DECIDIR] Civis (sistema 14):** criar uma entidade civil (precisa de modelo; o soldado sem arma serve de
+  provisório?) ou evacuação sem civis (levar sobreviventes = itens/marcadores até um ponto)?
+- **[DECIDIR] Apoio militar (sistema 15):** quais (reconhecimento que marca kaiju, bombardeio limitado, suprimentos,
+  extração) e por qual meio (item rádio com recarga, só durante missão/invasão)?
+- **[DECIDIR] Numerados do jogador (sistema 11):** o jogador pode usar armas numeradas além da espada do Hoshina? Quais
+  e com que requisito (patente, missão, afinidade)?
+- **[DECIDIR] Precisão nas provas (sistema 9):** registrar tiros dados/acertados do jogador para usar nas provas?
