@@ -408,6 +408,32 @@ public final class VfxGameTests {
         helper.succeed();
     }
 
+    /** VFX-10: toda habilidade de kaiju e toda tecnica de especial tem a propria receita (nenhuma cai no generico). */
+    @GameTest(template = TEMPLATE)
+    public static void everyAbilityAndTechniqueHasARecipe(GameTestHelper helper) {
+        List<String> missing = new ArrayList<>();
+        KN8Data.KAIJU.server().forEach((id, kaiju) -> {
+            VfxProfileDef def = KN8Data.VFX_PROFILE.server().get(id);
+            for (ResourceLocation ability : kaiju.abilities()) {
+                if (def == null || !def.effects().containsKey(ability.getPath())) {
+                    missing.add(id.getPath() + ":" + ability.getPath());
+                }
+            }
+        });
+        KN8Data.SPECIAL_SOLDIER.server().forEach((id, soldier) -> {
+            VfxProfileDef def = KN8Data.VFX_PROFILE.server().get(id);
+            for (String technique : soldier.techniques().keySet()) {
+                boolean found = def != null && def.effects().keySet().stream()
+                        .anyMatch(key -> key.equals(technique) || key.startsWith(technique + "/"));
+                if (!found) {
+                    missing.add(id.getPath() + ":" + technique);
+                }
+            }
+        });
+        helper.assertTrue(missing.isEmpty(), "Sem receita: " + missing);
+        helper.succeed();
+    }
+
     private static int accent(String id) {
         VfxProfileDef def = KN8Data.VFX_PROFILE.server().get(KN8Constants.id(id));
         return def == null ? 0 : def.palette().resolve("accent");

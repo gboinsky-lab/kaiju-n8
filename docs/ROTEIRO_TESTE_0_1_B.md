@@ -1139,3 +1139,15 @@ Servidor dedicado + 2 clientes. Prévia: `/execute positioned ~ ~ ~6 run kn8 vfx
 | 84.7 | `kn8:phaneroplasmodium` `phaneroplasmodium_spore_shot`; `kn8:myxogasterocarp` `myxogasterocarp_spore_bomb` | Nuvem de esporos clara; bomba com clarão, nuvens vermelhas e fumaça |
 | 84.8 | Luta: `kn8:diclonius` contra Mina e dois soldados | Placas acendendo na carga, sopro vermelho em linha até o alvo, nos dois clientes |
 | 84.9 | Luta: `kn8:primigenius_honju` contra Hoshina e soldados; `kn8:camponotus` contra Kikoru | Pisão e investida com efeitos do tamanho do corpo; ácido verde quando a formiga atira |
+
+## 85. Regressão dos efeitos (VFX-10)
+
+Servidor dedicado + 2 clientes. Nos dois clientes, em `config/kn8-client.toml`, `[fx] perfLog = true` (o log do cliente
+mostra a cada 5 s `[kn8 perf] fps=... drawn=... drawnPeak=... drawMs=... memMb=...`).
+
+| # | Passo | Esperado |
+|---|---|---|
+| 85.1 | Batalha grande: os 13 especiais, 6 `kn8:soldier` e 6 kaiju grandes (Primigenius Honju, Diclonius, No. 10 pequeno, Myxogasterocarp, Tecedeira, Philinosoma) lutando a ~20 blocos dos dois jogadores | Auras, cortes, tiros, ondas e avisos de todos nos dois clientes; nenhum erro no log; `memMb` sobe e desce (sem crescer sempre) |
+| 85.2 | Repetir com `maxDrawnEffects = 0` | Nenhum efeito desenhado; a luta e o dano continuam iguais (o servidor não muda nada) |
+| 85.3 | `particleLevel` `LOW`, `MEDIUM`, `HIGH` com muitos efeitos ao mesmo tempo (ex.: vários `/kn8 vfx play kn8:technique kn8:kikoru 1 ground_smash` seguidos) | `drawnPeak` no máximo 35%, 70% e 100% de `maxDrawnEffects`; FPS maior no LOW |
+| 85.4 | `reduceFlashes = true` e uma explosão da Mina | Clarões menores e sem branco puro |

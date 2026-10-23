@@ -8,6 +8,7 @@ import java.util.List;
 import org.joml.Matrix4f;
 
 import com.kn8.KN8Constants;
+import com.kn8.client.vfx.VfxEffects;
 import com.kn8.common.config.ClientConfig;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -24,18 +25,23 @@ import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 /**
  * VFX-R1: lista dos efeitos desenhados vivos no cliente. Envelhece no tick, desenha depois das particulas do vanilla
  * (para ficar por cima da fumaca e dos blocos transparentes) e esvazia ao sair do mundo. O teto de efeitos vivos e o
- * {@code [fx] maxDrawnEffects} (o mais velho sai primeiro).
+ * {@code [fx] maxDrawnEffects} vezes o fator do {@code particleLevel} (o mais velho sai primeiro).
  */
 @EventBusSubscriber(modid = KN8Constants.MOD_ID, value = Dist.CLIENT)
 public final class DrawnRenderer {
 
     private static final List<Drawn> ACTIVE = new ArrayList<>();
+    /** Nanossegundos gastos desenhando desde a ultima leitura (VFX-10, log de desempenho). */
+    private static long drawNanos;
+    private static int drawFrames;
 
     private DrawnRenderer() {
     }
 
     public static void add(Drawn drawn) {
-        int max = ClientConfig.MAX_DRAWN_EFFECTS.get();
+        // VFX-10: o custo vem do numero de efeitos vivos, nao da quantidade dentro de cada um (medido: LOW e HIGH
+        // custavam o mesmo no teto); por isso o nivel de qualidade tambem escala o teto.
+        int max = Math.round(ClientConfig.MAX_DRAWN_EFFECTS.get() * VfxEffects.amount());
         if (max <= 0) {
             return;
         }
@@ -48,6 +54,14 @@ public final class DrawnRenderer {
     /** Efeitos vivos (diagnostico e testes de carga). */
     public static int active() {
         return ACTIVE.size();
+    }
+
+    /** Tempo medio de desenho por quadro (ms) desde a ultima chamada, e zera a conta. */
+    public static double takeDrawMillisPerFrame() {
+        double millis = drawFrames == 0 ? 0 : drawNanos / 1.0e6 / drawFrames;
+        drawNanos = 0;
+        drawFrames = 0;
+        return millis;
     }
 
     @SubscribeEvent
@@ -72,6 +86,7 @@ public final class DrawnRenderer {
         if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_PARTICLES || ACTIVE.isEmpty()) {
             return;
         }
+        long start = System.nanoTime();
         Vec3 camera = event.getCamera().getPosition();
         float partial = event.getPartialTick().getGameTimeDeltaPartialTick(false);
         PoseStack pose = event.getPoseStack();
@@ -91,5 +106,7 @@ public final class DrawnRenderer {
         }
         buffers.endBatch(KN8RenderTypes.GLOW);
         pose.popPose();
+        drawNanos += System.nanoTime() - start;
+        drawFrames++;
     }
 }

@@ -150,3 +150,15 @@ VFX-8 feita (2026-10-22): No. 10, No. 13, Preondactyl e larva (ver as fichas). P
 Decisões de 2026-10-23 (Miguel): reviver do No. 9 fica como está; **nada mais fica vanilla** (pedaços de bloco da destruição, poeira dos passos e pedaços do desmonte viraram `kn8:debris` desenhado); jogador com aura sorteada (`aura/player_*.json`). Tamanhos e tempos: o Miguel manda depois.
 
 VFX-9 feita (2026-10-23): Primigenius, Philinosoma, Diclonius, formigas, aranhas e cogumelos (ver as fichas). Próxima: VFX-10 (regressão geral).
+
+VFX-10 feita (2026-10-23): regressão geral (`docs/img/vfx10_regressao.jpg`), medida com o log `[fx] perfLog` (novo) nos dois clientes, servidor dedicado, renderização por software (Xvfb, llvmpipe):
+
+| Cena | Resultado |
+|---|---|
+| Batalha: 13 especiais + 6 soldados × 6 kaiju grandes, 40 s | ~5 FPS com efeitos desligados, no teto 400 e no teto 1500 (o gargalo são os modelos); efeitos vivos no pico ~290; desenho deles 0,5–2,5 ms por quadro; servidor 4–10 ms/tick igual nos três casos; memória 330–770 MB em dente de serra (sem crescer) |
+| Estresse só de efeitos (49 pontos tocando 8 receitas pesadas a cada 0,25 s), 30 s | sem efeitos 24 FPS; teto 400: 400 vivos, ~10 ms, 18 FPS; teto 1500: até 1.470 vivos, ~29 ms, 10 FPS (~25 µs por efeito por quadro) |
+| Nível de qualidade no teto 1500 (antes da correção) | LOW 27 ms e HIGH 28 ms: o `particleLevel` só cortava a quantidade dentro de cada forma, e o custo vem do número de formas vivas |
+| Depois da correção (teto × fator do nível) | LOW 525 vivos, ~12 ms, 16–17 FPS; MEDIUM 1.050, ~23 ms, 13 FPS; HIGH 1.500, ~29 ms, 10 FPS |
+| Cobertura | 137/137 habilidades de kaiju e 59/59 técnicas de especial com receita própria (GameTest `everyAbilityAndTechniqueHasARecipe`); nenhuma chamada de partícula vanilla no código do mod |
+
+Os arquivos de config já criados guardam o teto antigo (os dois clientes de teste estavam com 400; o padrão é 1500 desde a VFX-R2). Dano com os efeitos desligados: o GameTest da VFX-1 continua passando (os efeitos são só do cliente). Fim do plano VFX; o que falta são os tamanhos e tempos que o Miguel vai mandar.

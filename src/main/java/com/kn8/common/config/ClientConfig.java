@@ -42,6 +42,7 @@ public final class ClientConfig {
     public static final ModConfigSpec.IntValue EFFECT_DISTANCE;
     public static final ModConfigSpec.BooleanValue REDUCE_FLASHES;
     public static final ModConfigSpec.IntValue MAX_DRAWN_EFFECTS;
+    public static final ModConfigSpec.BooleanValue PERF_LOG;
     public static final ModConfigSpec.DoubleValue REFERENCE_HEIGHT;
     public static final ModConfigSpec.DoubleValue SCALE_SIZE_EXPONENT;
     public static final ModConfigSpec.DoubleValue SCALE_SPREAD_EXPONENT;
@@ -78,10 +79,15 @@ public final class ClientConfig {
                 .translation(PREFIX + "reduceFlashes")
                 .define("reduceFlashes", false);
         // VFX-R1 (Miguel: efeitos desenhados, sem particulas): teto de efeitos vivos ao mesmo tempo.
-        MAX_DRAWN_EFFECTS = BUILDER.comment("Maximum kn8 drawn effects (bolts, slashes, rings, beams) alive at once;"
-                        + " 0 disables them.")
+        MAX_DRAWN_EFFECTS = BUILDER.comment("Maximum kn8 drawn effects (bolts, slashes, rings, beams) alive at once,"
+                        + " times the particleLevel factor (LOW 35%, MEDIUM 70%, HIGH 100%); 0 disables them.")
                 .translation(PREFIX + "maxDrawnEffects")
                 .defineInRange("maxDrawnEffects", 1500, 0, 6000);
+        // VFX-10 (regressao): FPS, efeitos vivos, tempo de desenho e memoria no log a cada 5 s, para medir carga.
+        PERF_LOG = BUILDER.comment("Log FPS, live drawn effects, their draw time and memory every 5 s (for load"
+                        + " tests).")
+                .translation(PREFIX + "perfLog")
+                .define("perfLog", false);
         // VFX-2 (Miguel: "um kaiju grande nao deve ter ataques pequenos ou com efeitos pequenos"): o efeito cresce
         // com a altura de quem o faz, pela altura de referencia (um humano), com expoentes por grandeza.
         REFERENCE_HEIGHT = BUILDER.comment("Body height (blocks) the kn8 effects are designed for; bigger bodies get"

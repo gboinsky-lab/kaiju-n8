@@ -221,7 +221,8 @@ public final class VfxEffects {
                 payload.direction(), payload.intensity(), body, budget));
     }
 
-    static float amount() {
+    /** Fator do {@code [fx] particleLevel} (quantidade dentro de cada efeito e, desde a VFX-10, teto de vivos). */
+    public static float amount() {
         return switch (ClientConfig.PARTICLE_LEVEL.get()) {
             case LOW -> LOW;
             case MEDIUM -> MEDIUM;
