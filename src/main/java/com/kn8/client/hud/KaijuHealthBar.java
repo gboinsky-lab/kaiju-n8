@@ -1,6 +1,7 @@
 // src/main/java/com/kn8/client/hud/KaijuHealthBar.java
 package com.kn8.client.hud;
 
+import java.util.List;
 import java.util.Locale;
 
 import com.kn8.KN8Constants;
@@ -15,6 +16,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.phys.EntityHitResult;
@@ -52,6 +54,7 @@ public final class KaijuHealthBar {
     private static final int COLOR_HEALTH_LIGHT = 0x40FFFFFF;
     private static final int COLOR_CORE = 0xFFFF9800;
     private static final int COLOR_CORE_EXPOSED = 0xFFFFE082;
+    private static final int COLOR_WOUNDED = 0xFFFF7A4A;
     private static final int COLOR_TEXT = 0xFFE3E8EE;
     private static final int COLOR_SUBTEXT = 0xFF9FB3C8;
 
@@ -138,6 +141,19 @@ public final class KaijuHealthBar {
                 Component tag = Component.translatable("kn8.hud.kaiju.exposed");
                 graphics.drawString(font, tag, x + WIDTH - font.width(tag), coreY + CORE_HEIGHT + 1, color, true);
             }
+        }
+        // PM-2: partes feridas (estado do servidor), na linha do "EXPOSTO", do lado esquerdo.
+        List<String> wounded = kaiju.syncedWoundedParts();
+        if (!wounded.isEmpty()) {
+            MutableComponent names = Component.empty();
+            for (int i = 0; i < wounded.size(); i++) {
+                if (i > 0) {
+                    names.append(", ");
+                }
+                names.append(Component.translatable("kn8.part." + wounded.get(i)));
+            }
+            graphics.drawString(font, Component.translatable("kn8.hud.kaiju.wounded", names), x,
+                    barY + BAR_HEIGHT + 2 + CORE_HEIGHT + 1, COLOR_WOUNDED, true);
         }
     }
 

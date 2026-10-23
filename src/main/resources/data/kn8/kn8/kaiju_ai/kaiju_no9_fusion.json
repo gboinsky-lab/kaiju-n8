@@ -1,5 +1,28 @@
 {
   "recovery_after_heavy_ticks": 10,
   "chase_speed": 1.1,
-  "look_speed": 20.0
+  "look_speed": 20.0,
+  "wounds": {
+    "max_active": 2,
+    "parts": [
+      {
+        "part": "legs",
+        "threshold": 0.12,
+        "duration_ticks": 200,
+        "speed_multiplier": 0.75,
+        "disables": [
+          "kn8:charge",
+          "kn8:leap"
+        ],
+        "damage_taken": 1.2
+      },
+      {
+        "part": "head",
+        "threshold": 0.1,
+        "duration_ticks": 200,
+        "stagger_ticks": 20,
+        "stagger_multiplier": 1.3
+      }
+    ]
+  }
 }

@@ -39,11 +39,14 @@ import com.kn8.core.kaiju.AbilitySelection;
 import com.kn8.core.kaiju.KaijuBrain;
 import com.kn8.core.kaiju.KaijuState;
 import com.kn8.core.kaiju.KaijuStats;
+import com.kn8.core.kaiju.KaijuWounds;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -122,6 +125,9 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
             SynchedEntityData.defineId(KaijuEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Boolean> CORE_EXPOSED =
             SynchedEntityData.defineId(KaijuEntity.class, EntityDataSerializers.BOOLEAN);
+    /** PM-2: partes feridas (um bit por indice da parte; a barra de vida mostra os nomes). */
+    private static final EntityDataAccessor<Integer> WOUNDED =
+            SynchedEntityData.defineId(KaijuEntity.class, EntityDataSerializers.INT);
 
     // Atributos base so valem ate o JSON ser aplicado (primeiro tick no servidor).
     private static final double BASE_HEALTH = 20.0;
@@ -148,6 +154,11 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
     private static final int LEAP_MAX_TICKS = 80;
     private static final int RAGE_CHECK_TICKS = 10;
     private static final ResourceLocation RAGE_MODIFIER = KN8Constants.id("kaiju_rage");
+    private static final ResourceLocation WOUND_MODIFIER = KN8Constants.id("kaiju_wound");
+    private static final String TAG_WOUNDS = "kn8_wounds";
+    private static final float WOUND_OPEN_DEBRIS = 10.0F;
+    private static final float WOUND_BLEED_DEBRIS = 2.0F;
+    private static final String WOUND_DEFAULT_COLOR = "#7A2A2A";
     /** Folga no alcance no tick de impacto: o alvo pode ter dado um passo durante o preparo. */
     private static final double IMPACT_REACH_TOLERANCE = 1.25;
 
@@ -158,6 +169,10 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
     private final KaijuPart[] parts;
     private int appliedVersion = -1;
     private int staggerTicks;
+    /** PM-2: dano acumulado e ferimentos por parte (servidor); salvo no mundo. */
+    private final KaijuWounds wounds = new KaijuWounds();
+    /** Ferimentos carregados do mundo: os modificadores voltam no primeiro tick. */
+    private boolean woundsDirty;
     /** IA-1A: ameaca, alvos inalcancaveis, ultima posicao conhecida e alvo comandado (so no servidor). */
     private final KaijuAiMemory aiMemory = new KaijuAiMemory();
     /** Escala do empurrao do golpe em andamento (so dentro do hurt; 1 fora dele). */
@@ -398,9 +413,11 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
         return level().getGameTime() < coreExposedUntil;
     }
 
-    /** Atordoamento (fraquezas e golpes pesados nos proximos modulos; hoje so por comando). */
+    /** Atordoamento (parry, golpe pesado, especial, comando). PM-2: cabeca ferida atordoa mais. */
     public void stagger(int ticks) {
-        staggerTicks = Math.max(staggerTicks, ticks);
+        float factor = KaijuWounds.staggerMultiplier(activeWounds().stream()
+                .map(KaijuAiDef.Wound::staggerMultiplier).toList());
+        staggerTicks = Math.max(staggerTicks, Math.round(ticks * factor));
     }
 
     public boolean isStaggered() {
@@ -464,6 +481,7 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
         super.defineSynchedData(builder);
         builder.define(CORE_FRACTION, -1.0F);
         builder.define(CORE_EXPOSED, false);
+        builder.define(WOUNDED, 0);
         builder.define(STATE, KaijuState.IDLE.ordinal());
     }
 
@@ -494,6 +512,7 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
             if (staggerTicks > 0) {
                 staggerTicks--;
             }
+            tickWounds();
             tickAbility();
             breakWhileWalking();
             checkRage();
@@ -1415,7 +1434,12 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
         if (part.isCore() && isCoreExposed()) {
             scaled *= ServerConfig.CORE_EXPOSED_MULTIPLIER.get().floatValue();
         }
+        if (!part.isCore() && wounds.isWounded(part.partName(), level().getGameTime())) {
+            // PM-2: parte ferida = ponto fraco aberto (damage_taken do ferimento).
+            scaled *= aiDef().wounds().of(part.partName()).map(KaijuAiDef.Wound::damageTaken).orElse(1.0F);
+        }
         scaled = capPlayerHit(source, scaled);
+        float healthBefore = getHealth();
         float coreBefore = coreHealth;
         boolean coreDestroyed = false;
         if (part.isCore() && coreHealth >= 0) {
@@ -1428,12 +1452,125 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
             coreHealth = coreBefore;
             return false;
         }
+        woundHit(part, healthBefore - getHealth());
         if (coreDestroyed && isAlive()) {
             KN8Constants.LOGGER.debug("[kn8] Nucleo de {} destruido: morte garantida.", kaijuId());
             setHealth(0.0F);
             die(source);
         }
         return true;
+    }
+
+    // --- PM-2: ferimentos por parte --------------------------------------------------------------------------
+
+    /** Dano que a parte levou de fato (depois da armadura): soma no ferimento dela e abre quando passa do limiar. */
+    private void woundHit(KaijuPart part, float damage) {
+        if (part.isCore() || !isAlive() || damage <= 0.0F || !ServerConfig.AI_WOUNDS.get()) {
+            return;
+        }
+        KaijuAiDef.Wounds def = aiDef().wounds();
+        Optional<KaijuAiDef.Wound> wound = def.of(part.partName());
+        if (wound.isEmpty() || !wounds.hit(part.partName(), damage, getMaxHealth(), wound.get().threshold(),
+                wound.get().durationTicks(), def.maxActive(), level().getGameTime())) {
+            return;
+        }
+        if (wound.get().staggerTicks() > 0) {
+            staggerTicks = Math.max(staggerTicks, wound.get().staggerTicks());
+        }
+        refreshWounds();
+        woundEffect(part, true);
+        AiTuning.logMove(this, "ferimento: " + part.partName() + " (" + wounds.wounded(level().getGameTime()) + ")");
+    }
+
+    private void tickWounds() {
+        long now = level().getGameTime();
+        List<String> healed = wounds.expire(now);
+        if (woundsDirty || !healed.isEmpty()) {
+            woundsDirty = false;
+            refreshWounds();
+            healed.forEach(part -> AiTuning.logMove(this, "ferimento sarou: " + part));
+        }
+        int bleed = ServerConfig.AI_WOUND_BLEED_INTERVAL.get();
+        if (bleed > 0 && tickCount % bleed == 0 && entityData.get(WOUNDED) != 0) {
+            for (KaijuPart part : parts) {
+                if (wounds.isWounded(part.partName(), now)) {
+                    woundEffect(part, false);
+                }
+            }
+        }
+    }
+
+    /** Barra (bits das partes) e velocidade: o ferimento mais forte vale, sem somar. */
+    private void refreshWounds() {
+        long now = level().getGameTime();
+        int mask = 0;
+        for (int i = 0; i < parts.length && i < Integer.SIZE; i++) {
+            if (wounds.isWounded(parts[i].partName(), now)) {
+                mask |= 1 << i;
+            }
+        }
+        entityData.set(WOUNDED, mask);
+        float speed = KaijuWounds.speedMultiplier(activeWounds().stream()
+                .map(KaijuAiDef.Wound::speedMultiplier).toList());
+        AttributeInstance instance = getAttribute(Attributes.MOVEMENT_SPEED);
+        if (instance != null) {
+            instance.removeModifier(WOUND_MODIFIER);
+            if (speed < 1.0F) {
+                instance.addTransientModifier(new AttributeModifier(WOUND_MODIFIER, speed - 1.0,
+                        AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
+            }
+        }
+    }
+
+    /** Ferimentos abertos agora, com o que cada um faz (servidor). */
+    public List<KaijuAiDef.Wound> activeWounds() {
+        if (level().isClientSide()) {
+            return List.of();
+        }
+        KaijuAiDef.Wounds def = aiDef().wounds();
+        return wounds.wounded(level().getGameTime()).stream().map(def::of).flatMap(Optional::stream).toList();
+    }
+
+    /** Partes feridas agora (servidor). */
+    public Set<String> woundedParts() {
+        return wounds.wounded(level().getGameTime());
+    }
+
+    /** Cliente e servidor: nomes das partes feridas pelo dado sincronizado (barra de vida). */
+    public List<String> syncedWoundedParts() {
+        int mask = entityData.get(WOUNDED);
+        List<String> names = new java.util.ArrayList<>();
+        for (int i = 0; i < parts.length && i < Integer.SIZE; i++) {
+            if ((mask & (1 << i)) != 0) {
+                names.add(parts[i].partName());
+            }
+        }
+        return names;
+    }
+
+    /** A habilidade esta bloqueada por algum ferimento (perna sem salto, cauda sem rabada...)? */
+    public boolean woundBlocks(ResourceLocation id, AbilityDef ability) {
+        for (KaijuAiDef.Wound wound : activeWounds()) {
+            if (wound.blocks(id.toString(), ability.type().toString())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /** Pedacos desenhados caindo da parte na cor do corpo (kn8:debris): muitos ao abrir, poucos enquanto dura. */
+    private void woundEffect(KaijuPart part, boolean open) {
+        if (!(level() instanceof ServerLevel server)) {
+            return;
+        }
+        String color = Optional.ofNullable(KN8Data.VFX_PROFILE.server().get(kaijuId()))
+                .map(profile -> profile.palette().primary()).orElse(WOUND_DEFAULT_COLOR);
+        Vec3 at = part.getBoundingBox().getCenter();
+        VfxService.keyed(server, VfxService.DEBRIS, at, Vec3.ZERO, open ? WOUND_OPEN_DEBRIS : WOUND_BLEED_DEBRIS,
+                color, getBbHeight());
+        if (open) {
+            server.playSound(null, at.x, at.y, at.z, KN8Sounds.KAIJU_HURT.get(), SoundSource.HOSTILE, 2.0F, 0.6F);
+        }
     }
 
     private boolean applyDamage(DamageSource source, float amount) {
@@ -1524,6 +1661,25 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
         super.addAdditionalSaveData(tag);
         tag.putFloat(TAG_CORE_HEALTH, coreHealth);
         tag.putBoolean(TAG_ENRAGED, enraged);
+        // PM-2: ferimentos do encontro (tempo restante, nao o tick do mundo) e o dano ja acumulado em cada parte.
+        ListTag woundTags = new ListTag();
+        long now = level().getGameTime();
+        for (KaijuPart part : parts) {
+            String name = part.partName();
+            long until = wounds.until(name);
+            float piled = wounds.accumulated(name);
+            if (until > now || piled > 0.0F) {
+                CompoundTag entry = new CompoundTag();
+                entry.putString("part", name);
+                entry.putFloat("damage", piled);
+                // Sem ferimento aberto o "until" e Long.MIN_VALUE: subtrair estouraria para um numero enorme.
+                entry.putLong("left", until > now ? until - now : 0L);
+                woundTags.add(entry);
+            }
+        }
+        if (!woundTags.isEmpty()) {
+            tag.put(TAG_WOUNDS, woundTags);
+        }
         if (bossState != null) {
             tag.putString(TAG_BOSS, bossState.id().toString());
             tag.putInt(TAG_BOSS_PHASE, bossState.phase());
@@ -1538,6 +1694,14 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
         }
         enraged = tag.getBoolean(TAG_ENRAGED);
         rageApplied = false;
+        wounds.clear();
+        long now = level().getGameTime();
+        for (Tag entry : tag.getList(TAG_WOUNDS, Tag.TAG_COMPOUND)) {
+            CompoundTag wound = (CompoundTag) entry;
+            long left = wound.getLong("left");
+            wounds.restore(wound.getString("part"), wound.getFloat("damage"), left > 0 ? now + left : Long.MIN_VALUE);
+        }
+        woundsDirty = true;
         if (tag.contains(TAG_BOSS)) {
             ResourceLocation boss = ResourceLocation.tryParse(tag.getString(TAG_BOSS));
             if (boss != null) {

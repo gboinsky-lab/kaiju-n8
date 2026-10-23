@@ -2,5 +2,38 @@
   "recovery_after_heavy_ticks": 16,
   "look_speed": 14.0,
   "ranged_beyond": 6.0,
-  "ranged_priority": 2
+  "ranged_priority": 2,
+  "wounds": {
+    "max_active": 2,
+    "parts": [
+      {
+        "part": "head",
+        "threshold": 0.12,
+        "duration_ticks": 300,
+        "stagger_ticks": 30,
+        "stagger_multiplier": 1.5,
+        "disables": [
+          "kn8:bite"
+        ]
+      },
+      {
+        "part": "cephalothorax",
+        "threshold": 0.12,
+        "duration_ticks": 400,
+        "speed_multiplier": 0.7,
+        "disables": [
+          "kn8:leap"
+        ]
+      },
+      {
+        "part": "abdomen",
+        "threshold": 0.12,
+        "duration_ticks": 400,
+        "disables": [
+          "kn8:web_shot",
+          "kn8:web_burst"
+        ]
+      }
+    ]
+  }
 }

@@ -872,3 +872,30 @@ Ele foi encurralado (15 s sem escapar, volta a lutar) 9 vezes nesses 40 duelos.
 | Faca: Sequência de Cortes (`flurry`) | 4 cortes de ×0,9 a cada 3 ticks até 2,6 blocos, stamina 20, calor 2, recarga 5 s | `weapon/combat_knife.json`, `[combat] flurryHits`/`flurryIntervalTicks` |
 | Rifle: tiro preciso (clique direito) | ×2,2, 24 ticks (impacto no 6), 1 bala, conta como golpe pesado (teto de 15%) | `weapon/rifle.json` `actions.heavy` |
 | Pistola: tiro preciso | ×1,7, 14 ticks (impacto no 4), 1 bala | `weapon/pistol.json` `actions.heavy` |
+
+## PM-2: ferimentos por parte (2026-10-23) [SUPOSIÇÃO todos os números]
+
+Dano que a parte levou de fato (depois da armadura) soma no ferimento dela; passando de `threshold` x vida máxima, a
+parte fica ferida por `duration_ticks`. Ferida, não acumula (o efeito não cresce) e, ao sarar, a conta recomeça.
+No máximo 2 partes feridas ao mesmo tempo (`max_active`); com o teto cheio o dano fica parado no limiar. O núcleo
+não fere (tem o sistema dele). Números no `kaiju_ai/<id>.json` (`wounds`); `[kaijuAi] wounds` liga/desliga e
+`woundBleedIntervalTicks` 40 é o intervalo das lascas desenhadas.
+
+| Espécies | Parte | Limiar | Dura | Efeito |
+|---|---|---|---|---|
+| Primigenius (4), Philinosoma, Diclonius | pernas | 12% | 20 s | velocidade ×0,7, sem investida/salto, parte leva ×1,2 |
+| Primigenius (4), Philinosoma, Diclonius | cabeça | 10% | 15 s | atordoa 1,5 s ao abrir, atordoamentos ×1,5; Honju/revivido/Philinosoma/Diclonius sem mordida e sem o tiro/sopro da boca |
+| Philinosoma, Diclonius | cauda | 10% | 20 s | sem rabada |
+| Trichonephila, Trichonephila Honju | cefalotórax (onde saem as patas) | 12% | 20 s | velocidade ×0,7, sem salto |
+| Trichonephila, Trichonephila Honju | abdômen (fiandeiras) | 12% | 20 s | sem teia |
+| Trichonephila Honju | cabeça | 12% | 15 s | atordoa, sem mordida (na aranha comum a cabeça é o núcleo) |
+| Camponotus e revivida | tórax / abdômen | 12% | 20 s | tórax: ×0,7 e sem salto; abdômen (glândula de ácido): sem o jato de ácido |
+| Phaneroplasmodium | pernas | 12% | 20 s | ×0,7 (o chapéu é o núcleo) |
+| Myxogasterocarp | chapéu / raízes | 12% | 20 s | chapéu: atordoa 1 s e sem a bomba de esporos; raízes: ×0,7 |
+| No. 9 e formas, No. 10 (as duas), No. 13 | pernas | 12% | 10 s (regeneram) | ×0,75, sem investida/salto, parte leva ×1,2 |
+| No. 9 e formas, No. 10 (as duas), No. 13 | cabeça | 10% | 10 s | atordoa 1 s, atordoamentos ×1,3 |
+| No. 9 com a formiga | cabeça / tórax / abdômen | 10-12% | 10 s | cabeça: sem mordida e Mandible Rush; tórax: ×0,75, sem bote e Ant Rush; abdômen: sem o ácido |
+| Preondactyl, larva | — | — | — | sem partes: sem ferimento |
+
+Sem parte de braço nos modelos atuais: "braço ferido tira um ataque" fica para quando houver a parte (a cauda e o
+abdômen fazem esse papel onde existem).

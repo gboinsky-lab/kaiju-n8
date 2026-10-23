@@ -3,5 +3,28 @@
   "circle_distance": 4.0,
   "circle_ticks": 30,
   "ranged_beyond": 8.0,
-  "ranged_priority": 1
+  "ranged_priority": 1,
+  "wounds": {
+    "max_active": 2,
+    "parts": [
+      {
+        "part": "legs",
+        "threshold": 0.12,
+        "duration_ticks": 200,
+        "speed_multiplier": 0.75,
+        "disables": [
+          "kn8:charge",
+          "kn8:leap"
+        ],
+        "damage_taken": 1.2
+      },
+      {
+        "part": "head",
+        "threshold": 0.1,
+        "duration_ticks": 200,
+        "stagger_ticks": 20,
+        "stagger_multiplier": 1.3
+      }
+    ]
+  }
 }

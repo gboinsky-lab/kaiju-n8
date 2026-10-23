@@ -2,5 +2,32 @@
   "recovery_after_heavy_ticks": 20,
   "look_speed": 12.0,
   "ranged_beyond": 8.0,
-  "ranged_priority": 1
+  "ranged_priority": 1,
+  "wounds": {
+    "max_active": 2,
+    "parts": [
+      {
+        "part": "legs",
+        "threshold": 0.12,
+        "duration_ticks": 400,
+        "speed_multiplier": 0.7,
+        "disables": [
+          "kn8:charge",
+          "kn8:leap"
+        ],
+        "damage_taken": 1.2
+      },
+      {
+        "part": "head",
+        "threshold": 0.1,
+        "duration_ticks": 300,
+        "stagger_ticks": 30,
+        "stagger_multiplier": 1.5,
+        "disables": [
+          "kn8:bite",
+          "kn8:energy_blast"
+        ]
+      }
+    ]
+  }
 }

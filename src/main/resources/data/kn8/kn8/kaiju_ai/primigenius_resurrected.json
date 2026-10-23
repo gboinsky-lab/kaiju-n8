@@ -5,5 +5,28 @@
   "separation_radius": 6.0,
   "retreat_health": 0.15,
   "retreat_distance": 10.0,
-  "retreat_ticks": 40
+  "retreat_ticks": 40,
+  "wounds": {
+    "max_active": 2,
+    "parts": [
+      {
+        "part": "legs",
+        "threshold": 0.12,
+        "duration_ticks": 400,
+        "speed_multiplier": 0.7,
+        "disables": [
+          "kn8:charge",
+          "kn8:leap"
+        ],
+        "damage_taken": 1.2
+      },
+      {
+        "part": "head",
+        "threshold": 0.1,
+        "duration_ticks": 300,
+        "stagger_ticks": 30,
+        "stagger_multiplier": 1.5
+      }
+    ]
+  }
 }

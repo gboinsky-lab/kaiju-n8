@@ -232,6 +232,8 @@ public final class ServerConfig {
     public static final ModConfigSpec.DoubleValue AI_FAR_FROM_PLAYERS;
     public static final ModConfigSpec.IntValue AI_FAR_RETARGET_FACTOR;
     public static final ModConfigSpec.BooleanValue AI_DEBUG_LOG;
+    public static final ModConfigSpec.BooleanValue AI_WOUNDS;
+    public static final ModConfigSpec.IntValue AI_WOUND_BLEED_INTERVAL;
     public static final ModConfigSpec.IntValue AI_COMMAND_TICKS;
 
     // --- IA dos soldados (IA-1B): deteccao, funcoes, municao -------------------------------------------------------
@@ -788,6 +790,10 @@ public final class ServerConfig {
                 + " every player.", 4, 1, 20);
         AI_DEBUG_LOG = booleanValue("debugLog", "IA-7: log AI decisions (target changes and why) to the server log."
                 + " Off by default.", false);
+        AI_WOUNDS = booleanValue("wounds", "PM-2: damage piled up on a kaiju body part (kaiju_ai JSON, wounds) wounds"
+                + " it for a while: slower legs, longer stuns from the head, some attacks off.", true);
+        AI_WOUND_BLEED_INTERVAL = intValue("woundBleedIntervalTicks", "PM-2: ticks between the drawn bits falling from"
+                + " a wounded part. 0 = only when the wound opens.", 40, 0, 1200);
         BUILDER.pop();
 
         section("soldierAi", "Soldier AI (IA-1B): detection, roles, ammunition.");

@@ -87,6 +87,10 @@ final class KaijuAbilities {
                 continue;
             }
             AbilityDef ability = found.get();
+            if (kaiju.woundBlocks(id, ability)) {
+                // PM-2: parte ferida tira a habilidade dela (perna sem salto/investida, cauda sem rabada...).
+                continue;
+            }
             AbilityDef.Behavior behavior = ability.behavior();
             if (health > behavior.healthBelow()) {
                 continue;

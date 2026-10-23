@@ -1,4 +1,24 @@
 {
   "recovery_after_heavy_ticks": 24,
-  "look_speed": 10.0
+  "look_speed": 10.0,
+  "wounds": {
+    "max_active": 2,
+    "parts": [
+      {
+        "part": "cap",
+        "threshold": 0.12,
+        "duration_ticks": 400,
+        "stagger_ticks": 20,
+        "disables": [
+          "kn8:myxogasterocarp_spore_bomb"
+        ]
+      },
+      {
+        "part": "roots",
+        "threshold": 0.12,
+        "duration_ticks": 400,
+        "speed_multiplier": 0.7
+      }
+    ]
+  }
 }

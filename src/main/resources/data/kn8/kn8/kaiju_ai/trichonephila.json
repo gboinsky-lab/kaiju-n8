@@ -7,5 +7,27 @@
   "retreat_distance": 10.0,
   "retreat_ticks": 40,
   "ranged_beyond": 6.0,
-  "ranged_priority": 2
+  "ranged_priority": 2,
+  "wounds": {
+    "max_active": 2,
+    "parts": [
+      {
+        "part": "cephalothorax",
+        "threshold": 0.12,
+        "duration_ticks": 400,
+        "speed_multiplier": 0.7,
+        "disables": [
+          "kn8:leap"
+        ]
+      },
+      {
+        "part": "abdomen",
+        "threshold": 0.12,
+        "duration_ticks": 400,
+        "disables": [
+          "kn8:web_shot"
+        ]
+      }
+    ]
+  }
 }

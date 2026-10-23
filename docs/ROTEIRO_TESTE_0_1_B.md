@@ -1163,3 +1163,18 @@ Servidor dedicado + 2 clientes. Jogador de Mk1 com Resistência; o outro jogador
 | 86.3 | Rifle com balas, golem a ~6 blocos; clique esquerdo, depois clique direito | Tiro comum (−5) e tiro preciso mais lento (−11), cada um gastando uma bala; a pistola faz o mesmo com o tiro preciso dela |
 | 86.4 | Espada na mão, `kn8:primigenius` atacando; apertar **Z** (esquiva) bem no momento do golpe | Às vezes "ESQUIVA PERFEITA!" em dourado na HUD, som agudo de parry e um anel ciano; o golpe seguinte sai crítico; o Primigenius fica atordoado; esquivar cedo ou tarde demais só esquiva |
 | 86.5 | Apertar **Z** várias vezes seguidas | A stamina cai (cada esquiva gasta 20, a perfeita devolve 12); sem stamina, "Sem stamina" e nada de esquiva |
+
+## 87. Ferimentos por parte dos kaiju (PM-2)
+
+Servidor dedicado + 2 clientes (um em pt_br, outro em en_us). Jogador de Mk1 com Resistência e espada; o outro
+assistindo de lado. Ligar `[kaijuAi] debugLog` para ver no log do servidor quando o ferimento abre e sara.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 87.1 | `kn8:primigenius` com `NoAI` de frente; 3-4 golpes de espada nas pernas | Na barra do kaiju, "FERIDO: Pernas" / "WOUNDED: Legs" em laranja nos dois clientes; lascas desenhadas na cor do corpo saindo da perna e um gemido grave; no log `ferimento: legs` |
+| 87.2 | `/attribute @e[type=kn8:primigenius,limit=1] minecraft:generic.movement_speed get` logo depois | Velocidade ~70% da base (0,23 → ~0,16); golpear mais a perna ferida não baixa mais |
+| 87.3 | Esperar 20 s | "FERIDO" some da barra, a velocidade volta e o log diz `ferimento sarou: legs`; com a perna ferida o kaiju não usa a investida |
+| 87.4 | Golpes fortes na cabeça (golpe pesado ou carregado) | "FERIDO: Cabeça", o kaiju fica parado 1,5 s; enquanto a cabeça está ferida, aparar/esquiva perfeita o atordoam 50% mais tempo |
+| 87.5 | Golpes no peito (núcleo) | Nenhum ferimento: o núcleo tem o sistema dele (barra laranja, EXPOSTO) |
+| 87.6 | `kn8:trichonephila` com golpes no abdômen | "FERIDO: Abdômen" e ela para de atirar teia enquanto dura; Preondactyl e larva (sem partes) nunca ficam feridos |
+| 87.7 | Ferir a perna, sair do mundo e voltar em menos de 20 s | O kaiju volta ainda ferido (lento, "FERIDO" na barra) e sara no tempo que faltava |

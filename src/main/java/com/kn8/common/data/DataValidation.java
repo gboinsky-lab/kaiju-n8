@@ -89,7 +89,7 @@ public final class DataValidation {
                 report);
         publish(KN8Data.SOLDIER, validateSoldiers(KN8Data.SOLDIER.loaded(), report), report);
         publish(KN8Data.FLYER, validateFlyers(KN8Data.FLYER.loaded(), kaiju.keySet(), report), report);
-        publish(KN8Data.KAIJU_AI, validateKaijuAi(KN8Data.KAIJU_AI.loaded(), kaiju.keySet(), report), report);
+        publish(KN8Data.KAIJU_AI, validateKaijuAi(KN8Data.KAIJU_AI.loaded(), kaiju, report), report);
         publish(KN8Data.SPECIAL_SOLDIER, validateSpecialSoldiers(KN8Data.SPECIAL_SOLDIER.loaded(), auras.keySet(),
                 report), report);
         publish(KN8Data.WORKBENCH, validateWorkbench(KN8Data.WORKBENCH.loaded(), report), report);
@@ -284,13 +284,19 @@ public final class DataValidation {
 
     /** IA-4: o id do perfil tatico precisa ser um kaiju existente. */
     public static Map<ResourceLocation, KaijuAiDef> validateKaijuAi(Map<ResourceLocation, KaijuAiDef> input,
-            Set<ResourceLocation> kaiju, DataReport report) {
+            Map<ResourceLocation, KaijuDef> kaiju, DataReport report) {
         Map<ResourceLocation, KaijuAiDef> valid = new LinkedHashMap<>();
         input.forEach((id, def) -> {
-            if (!kaiju.contains(id)) {
+            if (!kaiju.containsKey(id)) {
                 report.error("kaiju_ai " + id + ": o id precisa ser um kaiju existente");
                 return;
             }
+            // PM-2: ferimento so em parte que a especie tem (e nao no nucleo, que tem o sistema dele). So aviso: as
+            // outras partes continuam valendo.
+            Set<String> parts = new HashSet<>();
+            kaiju.get(id).parts().stream().filter(part -> !part.core()).forEach(part -> parts.add(part.name()));
+            def.wounds().parts().stream().filter(wound -> !parts.contains(wound.part())).forEach(wound ->
+                    report.warning("kaiju_ai " + id + ": ferimento em parte inexistente ou nucleo " + wound.part()));
             valid.put(id, def);
         });
         return valid;
