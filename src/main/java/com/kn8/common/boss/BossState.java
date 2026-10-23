@@ -20,6 +20,8 @@ public final class BossState {
     private long invulnerableUntil = Long.MIN_VALUE;
     private final Set<UUID> participants = new HashSet<>();
     private ServerBossEvent bar;
+    /** PM-5: fase cujos modificadores ja estao no kaiju (-1 = nenhuma; volta a -1 ao carregar o mundo). */
+    private int appliedPhase = -1;
 
     public BossState(ResourceLocation id, int phase) {
         this.id = id;
@@ -34,8 +36,16 @@ public final class BossState {
         return phase;
     }
 
-    void setPhase(int value) {
+    public void setPhase(int value) {
         phase = value;
+    }
+
+    int appliedPhase() {
+        return appliedPhase;
+    }
+
+    void setAppliedPhase(int value) {
+        appliedPhase = value;
     }
 
     public boolean isInvulnerable(long now) {

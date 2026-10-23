@@ -534,7 +534,8 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
             checkRage();
             updateState();
             syncCoreForClients();
-            if (bossState != null) {
+            // PM-5: o super.tick() ja pode ter removido o chefe morto (tickDeath): sem tick de chefe depois disso.
+            if (bossState != null && isAlive() && !isRemoved()) {
                 BossService.tick(this, bossState);
             }
         }
@@ -704,6 +705,8 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
         // 0.6: enfurecido (rage do JSON da especie), as recargas encurtam.
         double cooldown = ability.cooldownTicks() * (enraged ? def().flatMap(KaijuDef::rage)
                 .map(KaijuDef.Rage::cooldownMultiplier).orElse(1.0F) : 1.0F);
+        // PM-5: a fase do chefe muda o ritmo (cooldown_multiplier da fase atual do boss/*.json).
+        cooldown *= BossService.cooldownMultiplier(this);
         abilityReadyAt.put(id, now + duration + Math.round(cooldown));
         triggerAnim("action", ability.animation());
         // IA-6: golpe pesado avisa com som e marca a area ameacada durante o preparo (KaijuTelegraph).
@@ -1349,6 +1352,14 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
                                 .orElse(false));
     }
 
+    /** PM-5: alguma habilidade a distancia pronta (fora da recarga)? */
+    boolean hasReadyRangedAbility() {
+        long now = level().getGameTime();
+        return def().map(KaijuDef::abilities).orElse(List.of()).stream()
+                .anyMatch(id -> now >= abilityReadyAt.getOrDefault(id, Long.MIN_VALUE)
+                        && KN8Data.ABILITY.get(id, false).map(KaijuAbilities::isRanged).orElse(false));
+    }
+
     /** A ultima habilidade comecada era pesada? */
     boolean lastAbilityWasHeavy() {
         return lastAbilityHeavy;
@@ -1920,7 +1931,14 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
         woundsDirty = true;
         if (tag.contains(TAG_BOSS)) {
             ResourceLocation boss = ResourceLocation.tryParse(tag.getString(TAG_BOSS));
-            if (boss != null) {
+            if (boss != null && bossState != null && bossState.id().equals(boss)) {
+                // PM-5 (bug): /data merge recarrega o NBT do chefe vivo; um BossState novo deixava a barra antiga
+                // (com os jogadores) orfa na tela para sempre.
+                bossState.setPhase(tag.getInt(TAG_BOSS_PHASE));
+            } else if (boss != null) {
+                if (bossState != null) {
+                    bossState.clearBar();
+                }
                 bossState = new BossState(boss, tag.getInt(TAG_BOSS_PHASE));
             }
         }

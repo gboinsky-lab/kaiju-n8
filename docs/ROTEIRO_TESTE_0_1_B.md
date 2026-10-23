@@ -1206,3 +1206,17 @@ exceto o comando do No. 9/No. 10.
 | 89.4 | Matar o Honju (`/kill`) no meio | Log "lider morto: retreat": os Primigenius e a formiga se afastam ~4 s e voltam; o ressurgido (`primigenius_resurrected`) fica mais forte e rápido 10 s (rugido) |
 | 89.5 | Honju com alvo e um Primigenius parado sem alvo a até 24 blocos | O Primigenius recebe o alvo do Honju (log "alvo do lider"); a 40 blocos não |
 | 89.6 | Honju/revivido/gigantes atravessando um lago | Andam pela água como chão (os Yoju contornam a água) |
+
+## 90. Chefes: mudança concreta por fase (PM-5)
+
+Servidor dedicado + 2 clientes em **criativo ou sobrevivência** (espectador não entra na barra do chefe nem recebe o
+aviso: o vanilla não conta espectador), `[kaijuAi] debugLog` ligado.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 90.1 | `/kn8 boss spawn kn8:honju` e lutar (ou soldados/Kikoru) até a vida passar de 50% | Rugido, aviso vermelho na barra de ação "Fase 2: o Honju fica mais rápido e carrega o raio de longe! Núcleo exposto!" (en_us no outro cliente); log "fase do chefe: 2 (velocidade x1.2, recargas x0.75, distancia 10.0, nucleo exposto 40 ticks)"; Primigenius invocados |
+| 90.2 | Logo depois da troca | 2 s invulnerável e então 2 s de núcleo exposto ("EXPOSTO" na barra do kaiju) |
+| 90.3 | Continuar a luta na fase 2 | Com o raio pronto o Honju segura ~10 blocos (log "fase do chefe: segura 10.0 blocos com tiro pronto") e atira; com o raio em recarga avança como antes; anda mais rápido e ataca com mais frequência |
+| 90.4 | `/kn8 boss spawn kn8:revived_honju`, levar a 60% e depois a 30% | Duas trocas com avisos próprios; na última ("enlouquece") fica ainda mais rápido e não segura distância |
+| 90.5 | Salvar e sair com o chefe na fase 2, voltar | Continua na fase 2 com a velocidade da fase, sem novo aviso, sem nova invocação, sem nova janela do núcleo |
+| 90.6 | Matar o chefe (também depois de `/data merge` nele) | Uma única barra na tela, que some na morte; mérito e loot só na derrota (nada na troca de fase) |

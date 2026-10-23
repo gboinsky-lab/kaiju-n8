@@ -39,7 +39,12 @@
           "ability": "kn8:slam",
           "weight": 2
         }
-      ]
+      ],
+      "speed_multiplier": 1.2,
+      "cooldown_multiplier": 0.75,
+      "preferred_distance": 10,
+      "expose_core_ticks": 40,
+      "message": "kn8.boss.honju.phase"
     }
   ],
   "summon": {

@@ -4,6 +4,7 @@ package com.kn8.common.kaiju;
 import java.util.EnumSet;
 
 import com.kn8.common.ai.AiTuning;
+import com.kn8.common.boss.BossService;
 import com.kn8.common.config.ServerConfig;
 import com.kn8.common.data.def.KaijuAiDef;
 import com.kn8.core.kaiju.KaijuTactics;
@@ -57,6 +58,7 @@ final class KaijuCombatGoal extends Goal {
     private boolean neighbour;
     /** PM-4: limite de atacantes, refeito a cada scanIntervalTicks. */
     private long turnCheckAt;
+    private boolean bossHolding;
     private boolean waitingTurn;
 
     KaijuCombatGoal(KaijuEntity kaiju, double speedModifier) {
@@ -218,10 +220,22 @@ final class KaijuCombatGoal extends Goal {
      */
     private boolean groupRole(KaijuAiDef ai, LivingEntity target, double edge, double reach, long now) {
         KaijuAiDef.Group group = ai.group();
-        if (group.support() && kaiju.hasRangedAttack()) {
-            int move = KaijuTactics.supportMove(edge, group.supportDistance(), SUPPORT_BAND);
+        // PM-5: chefe numa fase com preferred_distance segura essa distancia enquanto tem tiro pronto; sem tiro
+        // pronto, avanca como sempre (nao fica parado esperando a recarga).
+        double bossHold = BossService.preferredDistance(kaiju);
+        boolean support = group.support() && kaiju.hasRangedAttack();
+        boolean bossRanged = !support && bossHold > 0 && kaiju.hasReadyRangedAbility();
+        if (bossRanged != bossHolding) {
+            bossHolding = bossRanged;
+            if (bossRanged) {
+                AiTuning.logMove(kaiju, "fase do chefe: segura " + bossHold + " blocos com tiro pronto");
+            }
+        }
+        if (support || bossRanged) {
+            double hold = support ? group.supportDistance() : bossHold;
+            int move = KaijuTactics.supportMove(edge, hold, SUPPORT_BAND);
             if (move < 0) {
-                moveAway(target, group.supportDistance());
+                moveAway(target, hold);
             } else if (move == 0) {
                 kaiju.getNavigation().stop();
                 kaiju.getMoveControl().setWantedPosition(kaiju.getX(), kaiju.getY(), kaiju.getZ(), 0.0);

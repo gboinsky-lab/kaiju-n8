@@ -12,12 +12,15 @@ import com.kn8.common.numbered.No9Service;
 import com.kn8.common.registry.KN8Entities;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.Cow;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.phys.AABB;
@@ -34,6 +37,7 @@ public final class BossAiGameTests {
 
     private static final String TEMPLATE = "empty_15x12x15";
     private static final ResourceLocation HONJU_BOSS = KN8Constants.id("honju");
+    private static final ResourceLocation PHASE_SPEED = KN8Constants.id("boss_phase_speed");
 
     private BossAiGameTests() {
     }
@@ -56,6 +60,61 @@ public final class BossAiGameTests {
                     && !second.containsKey(KN8Constants.id("heavy_punch")),
                     "Fase 2 deveria favorecer o raio e a investida: " + second);
             AABB area = new AABB(pos).inflate(48.0);
+            helper.getLevel().getEntitiesOfClass(Entity.class, area, entity -> entity instanceof KaijuEntity
+                    || entity instanceof CarcassEntity).forEach(Entity::discard);
+            helper.getLevel().getGameRules().getRule(GameRules.RULE_MOBGRIEFING).set(true,
+                    helper.getLevel().getServer());
+            helper.succeed();
+        });
+    }
+
+    /**
+     * PM-5: a troca de fase muda o chefe de verdade (velocidade, recargas, distancia, nucleo exposto) e, salva no
+     * mundo, volta na mesma fase com os mesmos modificadores, sem repetir a troca (aviso, invocacao).
+     */
+    @GameTest(template = TEMPLATE, batch = "kn8_boss_phase_change", timeoutTicks = 100)
+    public static void bossPhaseChangesRhythmAndSurvivesReload(GameTestHelper helper) {
+        helper.getLevel().getGameRules().getRule(GameRules.RULE_MOBGRIEFING).set(false, helper.getLevel().getServer());
+        BlockPos pos = helper.absolutePos(new BlockPos(7, 1, 7));
+        KaijuEntity boss = BossService.spawn(helper.getLevel(), HONJU_BOSS, pos).orElseThrow();
+        boss.setNoAi(true);
+        helper.runAfterDelay(3, () -> {
+            helper.assertTrue(boss.getAttribute(Attributes.MOVEMENT_SPEED).getModifier(PHASE_SPEED) == null,
+                    "Na fase 1 o chefe nao deveria ter o bonus de velocidade");
+            helper.assertTrue(BossService.cooldownMultiplier(boss) == 1.0F
+                    && BossService.preferredDistance(boss) == 0.0F, "Fase 1 sem mudanca de ritmo nem distancia");
+            boss.setHealth(boss.getMaxHealth() * 0.4F);
+            BossService.tick(boss, boss.bossState());
+            AttributeModifier speed = boss.getAttribute(Attributes.MOVEMENT_SPEED).getModifier(PHASE_SPEED);
+            helper.assertTrue(boss.bossState().phase() == 1, "Abaixo de 50% o chefe deveria estar na fase 2");
+            helper.assertTrue(speed != null && Math.abs(speed.amount() - 0.2) < 1.0E-4,
+                    "Fase 2 deveria dar +20% de velocidade: " + speed);
+            helper.assertTrue(Math.abs(BossService.cooldownMultiplier(boss) - 0.75F) < 1.0E-4,
+                    "Fase 2 deveria encurtar as recargas para 0,75");
+            helper.assertTrue(BossService.preferredDistance(boss) == 10.0F, "Fase 2 deveria segurar 10 blocos");
+            helper.assertTrue(boss.isCoreExposed(), "Na troca de fase o nucleo deveria ficar exposto");
+        });
+        helper.runAfterDelay(6, () -> {
+            AABB area = new AABB(pos).inflate(80.0);
+            int minions = helper.getLevel().getEntitiesOfClass(KaijuEntity.class, area, k -> k != boss).size();
+            CompoundTag tag = boss.saveWithoutId(new CompoundTag());
+            tag.remove("UUID");
+            KaijuEntity copy = (KaijuEntity) boss.getType().create(helper.getLevel());
+            copy.load(tag);
+            copy.setNoAi(true);
+            copy.setPos(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
+            boss.discard();
+            helper.getLevel().addFreshEntity(copy);
+            BossService.tick(copy, copy.bossState());
+            int after = helper.getLevel().getEntitiesOfClass(KaijuEntity.class, area, k -> k != copy
+                    && !k.isRemoved()).size();
+            helper.assertTrue(copy.bossState() != null && copy.bossState().phase() == 1,
+                    "Depois de carregar o chefe deveria continuar na fase 2");
+            helper.assertTrue(copy.getAttribute(Attributes.MOVEMENT_SPEED).getModifier(PHASE_SPEED) != null,
+                    "Depois de carregar o bonus de velocidade da fase deveria voltar");
+            helper.assertTrue(after == minions, "Carregar nao deveria repetir a troca (invocou " + (after - minions)
+                    + ")");
+            helper.assertTrue(!copy.isCoreExposed(), "Carregar nao deveria abrir de novo a janela do nucleo");
             helper.getLevel().getEntitiesOfClass(Entity.class, area, entity -> entity instanceof KaijuEntity
                     || entity instanceof CarcassEntity).forEach(Entity::discard);
             helper.getLevel().getGameRules().getRule(GameRules.RULE_MOBGRIEFING).set(true,

@@ -42,12 +42,27 @@ public record BossDef(ResourceLocation kaiju, Optional<Double> playerScaling, Op
         ).apply(i, Attack::new));
     }
 
-    /** Fase ativa enquanto a vida estiver acima de {@code until_health} (fracao de 0 a 1). */
-    public record Phase(float untilHealth, int invulnTicks, List<Attack> attacks) {
+    /**
+     * Fase ativa enquanto a vida estiver acima de {@code until_health} (fracao de 0 a 1). PM-5 (Plano Mestre, secao
+     * 7): cada fase muda algo concreto: {@code speed_multiplier} (mobilidade), {@code cooldown_multiplier} (ritmo:
+     * recarga dos ataques), {@code preferred_distance} (blocos entre as bordas; 0 = vai no alvo; so com golpe a
+     * distancia), {@code expose_core_ticks} (nucleo exposto logo depois da troca: janela para quem luta) e
+     * {@code message} (chave do aviso da troca; sem ela, o aviso comum).
+     */
+    public record Phase(float untilHealth, int invulnTicks, List<Attack> attacks, float speedMultiplier,
+            float cooldownMultiplier, float preferredDistance, int exposeCoreTicks, Optional<String> message) {
         public static final Codec<Phase> CODEC = RecordCodecBuilder.create(i -> i.group(
                 Codec.floatRange(0.0F, 1.0F).fieldOf("until_health").forGetter(Phase::untilHealth),
                 DefCodecs.TICKS.optionalFieldOf("invuln_ticks", 20).forGetter(Phase::invulnTicks),
-                Attack.CODEC.listOf().fieldOf("attacks").forGetter(Phase::attacks)
+                Attack.CODEC.listOf().fieldOf("attacks").forGetter(Phase::attacks),
+                Codec.floatRange(0.2F, 4.0F).optionalFieldOf("speed_multiplier", 1.0F)
+                        .forGetter(Phase::speedMultiplier),
+                Codec.floatRange(0.1F, 4.0F).optionalFieldOf("cooldown_multiplier", 1.0F)
+                        .forGetter(Phase::cooldownMultiplier),
+                Codec.floatRange(0.0F, 48.0F).optionalFieldOf("preferred_distance", 0.0F)
+                        .forGetter(Phase::preferredDistance),
+                DefCodecs.TICKS.optionalFieldOf("expose_core_ticks", 0).forGetter(Phase::exposeCoreTicks),
+                Codec.STRING.optionalFieldOf("message").forGetter(Phase::message)
         ).apply(i, Phase::new));
     }
 

@@ -941,3 +941,23 @@ listava). `[kaijuAi] habits` liga/desliga.
 Fúria do líder morto = Força I + Velocidade I ocultas (sem partículas). "Colado no alvo" = até o alcance + 1 bloco,
 recontado a cada `[kaijuAi] scanIntervalTicks`; dois kaiju podem entrar no mesmo intervalo (visto: 4 colados uma vez).
 O apoio só vale para quem tem golpe a distância; perto demais (2 blocos dentro da distância) se afasta.
+
+## PM-5: mudança concreta por fase dos chefes (2026-10-23) [SUPOSIÇÃO todos os números]
+
+`boss/<id>.json`, campos novos em cada fase: `speed_multiplier` (velocidade de andar, modificador `kn8:boss_phase_speed`),
+`cooldown_multiplier` (recargas das habilidades), `preferred_distance` (com golpe a distância pronto, segura essa
+distância; 0 = não), `expose_core_ticks` (núcleo exposto depois da invulnerabilidade da troca) e `message` (aviso).
+
+| Chefe | Fase | Velocidade | Recargas | Distância | Núcleo exposto |
+|---|---|---|---|---|---|
+| Honju (`honju`) | 1 (até 50%) | x1,0 | x1,0 | — | — |
+| | 2 | x1,2 | x0,75 | 10 | 40 ticks |
+| Honju revivido | 1 (até 60%) | x1,0 | x1,0 | — | — |
+| | 2 (até 30%) | x1,15 | x0,85 | 10 | 30 ticks |
+| | 3 | x1,3 | x0,65 | — | 40 ticks |
+| Tecedeira (`trichonephila_honju`) | 1 (até 50%) | x1,0 | x1,0 | — | — |
+| | 2 | x1,25 | x0,7 | — | 40 ticks |
+| Honju do exame | fase única | x1,0 | x1,0 | — | — |
+
+Primeira versão com 80 ticks de núcleo exposto: com a Mina na luta o Honju chefe morria em ~3 s depois da troca (o
+Anti-Giant no núcleo); 40 ticks deixam a janela sem acabar a luta. A recompensa continua só na derrota.

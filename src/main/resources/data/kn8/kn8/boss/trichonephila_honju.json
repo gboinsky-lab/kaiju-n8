@@ -35,7 +35,11 @@
           "ability": "kn8:leap",
           "weight": 2
         }
-      ]
+      ],
+      "speed_multiplier": 1.25,
+      "cooldown_multiplier": 0.7,
+      "expose_core_ticks": 40,
+      "message": "kn8.boss.trichonephila_honju.phase"
     }
   ],
   "summon": {

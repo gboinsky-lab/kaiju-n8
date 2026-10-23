@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import com.kn8.KN8Constants;
+import com.kn8.common.ai.AiTuning;
 import com.kn8.common.career.CareerService;
 import com.kn8.common.career.MissionService;
 import com.kn8.common.data.KN8Data;
@@ -46,6 +47,7 @@ import net.minecraft.world.phys.Vec3;
 public final class BossService {
 
     private static final ResourceLocation HEALTH_MODIFIER = KN8Constants.id("boss_health");
+    private static final ResourceLocation PHASE_SPEED_MODIFIER = KN8Constants.id("boss_phase_speed");
     private static final int BAR_UPDATE_INTERVAL = 10;
     private static final int SUMMON_SPREAD = 10;
 
@@ -114,11 +116,58 @@ public final class BossService {
             level.playSound(null, kaiju.blockPosition(), KN8Sounds.KAIJU_ROAR.get(), SoundSource.HOSTILE, 5.0F, 0.6F);
             VfxService.play(level, VfxService.ROAR, kaiju.position().add(0, kaiju.getBbHeight() * 0.6, 0),
                     kaiju.getLookAngle(), 2.0F, 0.0F, kaiju);
+            // PM-5: logo depois da troca o nucleo fica exposto (janela para quem luta), contado a partir do fim da
+            // invulnerabilidade da troca.
+            if (next.exposeCoreTicks() > 0) {
+                kaiju.exposeCore(next.invulnTicks() + next.exposeCoreTicks());
+            }
+            AiTuning.logMove(kaiju, "fase do chefe: " + (phase + 1) + " (velocidade x" + next.speedMultiplier()
+                    + ", recargas x" + next.cooldownMultiplier() + ", distancia " + next.preferredDistance()
+                    + ", nucleo exposto " + next.exposeCoreTicks() + " ticks)");
+            Component message = next.message().map(key -> Component.translatable(key, phase + 1))
+                    .orElseGet(() -> Component.translatable("kn8.boss.phase", phase + 1));
             for (ServerPlayer player : bar.getPlayers()) {
-                player.displayClientMessage(Component.translatable("kn8.boss.phase", phase + 1)
-                        .withStyle(ChatFormatting.RED), true);
+                player.displayClientMessage(message.copy().withStyle(ChatFormatting.RED), true);
             }
             def.get().summon().ifPresent(summon -> summonMinions(level, kaiju, summon));
+        }
+        if (state.appliedPhase() != state.phase()) {
+            // Modificadores da fase (tambem depois de carregar o mundo, sem repetir aviso, invocacao nem janela).
+            state.setAppliedPhase(state.phase());
+            phase(kaiju).ifPresent(current -> applyPhaseSpeed(kaiju, current.speedMultiplier()));
+        }
+    }
+
+    /** PM-5: fase atual do chefe (vazio para kaiju comum). */
+    public static Optional<BossDef.Phase> phase(KaijuEntity kaiju) {
+        BossState state = kaiju.bossState();
+        if (state == null) {
+            return Optional.empty();
+        }
+        return KN8Data.BOSS.get(state.id(), false)
+                .filter(def -> state.phase() >= 0 && state.phase() < def.phases().size())
+                .map(def -> def.phases().get(state.phase()));
+    }
+
+    /** Recarga dos ataques na fase atual (ritmo). */
+    public static float cooldownMultiplier(KaijuEntity kaiju) {
+        return phase(kaiju).map(BossDef.Phase::cooldownMultiplier).orElse(1.0F);
+    }
+
+    /** Distancia que a fase atual prefere (0 = vai no alvo). */
+    public static float preferredDistance(KaijuEntity kaiju) {
+        return phase(kaiju).map(BossDef.Phase::preferredDistance).orElse(0.0F);
+    }
+
+    private static void applyPhaseSpeed(KaijuEntity kaiju, float multiplier) {
+        AttributeInstance speed = kaiju.getAttribute(Attributes.MOVEMENT_SPEED);
+        if (speed == null) {
+            return;
+        }
+        speed.removeModifier(PHASE_SPEED_MODIFIER);
+        if (multiplier != 1.0F) {
+            speed.addTransientModifier(new AttributeModifier(PHASE_SPEED_MODIFIER, multiplier - 1.0,
+                    AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
         }
     }
 
