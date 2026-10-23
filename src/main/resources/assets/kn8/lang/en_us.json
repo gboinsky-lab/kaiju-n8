@@ -290,6 +290,7 @@
   "kn8.configuration.farRetargetFactor": "Far retarget factor",
   "kn8.configuration.debugLog": "AI debug log",
   "kn8.configuration.wounds": "Kaiju wounds by body part",
+  "kn8.configuration.habits": "Smart kaiju read habits",
   "kn8.configuration.woundBleedIntervalTicks": "Wound bleed interval (ticks)",
   "kn8.configuration.sinkHeight": "Sink height (blocks)",
   "kn8.configuration.separationRadius": "Separation radius",

@@ -1178,3 +1178,17 @@ assistindo de lado. Ligar `[kaijuAi] debugLog` para ver no log do servidor quand
 | 87.5 | Golpes no peito (núcleo) | Nenhum ferimento: o núcleo tem o sistema dele (barra laranja, EXPOSTO) |
 | 87.6 | `kn8:trichonephila` com golpes no abdômen | "FERIDO: Abdômen" e ela para de atirar teia enquanto dura; Preondactyl e larva (sem partes) nunca ficam feridos |
 | 87.7 | Ferir a perna, sair do mundo e voltar em menos de 20 s | O kaiju volta ainda ferido (lento, "FERIDO" na barra) e sara no tempo que faltava |
+
+## 88. Kaiju inteligentes leem hábitos (PM-3)
+
+Servidor dedicado + 2 clientes, `[kaijuAi] debugLog` ligado (o log do servidor diz "habito do alvo: ..."). Só o
+No. 9, as formas dele e o No. 10 (inteligência 4+) leem hábitos; o resto luta como antes.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 88.1 | `kn8:kaiju_no10_small` contra `kn8:mina` (luta de longe) por ~45 s | No log, `keeps_distance` em ~8 s: rosnado grave e o No. 10 persegue mais rápido, preferindo investida/salto/tiro; depois `repeats` (os tiros iguais) e `evades` (golpes dele que não pegam) |
+| 88.2 | Contar o tempo entre duas leituras no log | Pelo menos ~13 s (5 s de resposta + 8 s de espera): ele não fica trocando de jeito a todo tick |
+| 88.3 | Jogador de Mk1 com espada colado no No. 10, só golpes leves seguidos | `repeats` e depois `stays_close`: o No. 10 abre 4-5 blocos e usa golpe de área/tiro; voltar a variar (pesado, recuar) não reabre a mesma leitura até repetir o hábito |
+| 88.4 | `kn8:primigenius` contra a Mina | Nenhum "habito do alvo" no log (não é inteligente) |
+| 88.5 | Trocar de alvo / ficar 10 s longe do combate | A memória zera: a leitura começa do zero com o alvo novo |
+| 88.6 | A Mina sozinha contra o No. 10 pequeno | A luta continua ganhável (no teste ela o deixou com 334 de 1.650 em 45 s) |

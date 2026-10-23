@@ -233,6 +233,7 @@ public final class ServerConfig {
     public static final ModConfigSpec.IntValue AI_FAR_RETARGET_FACTOR;
     public static final ModConfigSpec.BooleanValue AI_DEBUG_LOG;
     public static final ModConfigSpec.BooleanValue AI_WOUNDS;
+    public static final ModConfigSpec.BooleanValue AI_HABITS;
     public static final ModConfigSpec.IntValue AI_WOUND_BLEED_INTERVAL;
     public static final ModConfigSpec.IntValue AI_COMMAND_TICKS;
 
@@ -792,6 +793,9 @@ public final class ServerConfig {
                 + " Off by default.", false);
         AI_WOUNDS = booleanValue("wounds", "PM-2: damage piled up on a kaiju body part (kaiju_ai JSON, wounds) wounds"
                 + " it for a while: slower legs, longer stuns from the head, some attacks off.", true);
+        AI_HABITS = booleanValue("habits", "PM-3: smart kaiju (smartIntelligence) read the habits of their target (keeps"
+                + " distance, stays close, dodges, repeats one attack) and answer with their own attacks (kaiju_ai"
+                + " JSON, habits).", true);
         AI_WOUND_BLEED_INTERVAL = intValue("woundBleedIntervalTicks", "PM-2: ticks between the drawn bits falling from"
                 + " a wounded part. 0 = only when the wound opens.", 40, 0, 1200);
         BUILDER.pop();

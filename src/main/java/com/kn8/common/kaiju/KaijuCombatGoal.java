@@ -128,7 +128,7 @@ final class KaijuCombatGoal extends Goal {
         if (checkProgress(target, edge)) {
             return;
         }
-        double speed = speedModifier * ai.chaseSpeed();
+        double speed = speedModifier * ai.chaseSpeed() * kaiju.habitSpeed();
         double[] spot = approachSpot(ai, target, reach);
         if (edge > reach && (kaiju.isLarge() || edge <= reach + DIRECT_APPROACH_DISTANCE)) {
             // Perto, ou kaiju grande (a navegacao vanilla falha com mobs largos): anda direto ate o alvo. O que for
@@ -163,6 +163,17 @@ final class KaijuCombatGoal extends Goal {
             // Janela de reacao: parado, sem golpe.
             kaiju.getNavigation().stop();
             kaiju.getMoveControl().setWantedPosition(kaiju.getX(), kaiju.getY(), kaiju.getZ(), 0.0);
+            return true;
+        }
+        double backOff = kaiju.habitBackOff();
+        if (backOff > 0.0 && kaiju.edgeDistance(target) < backOff) {
+            // PM-3: alvo que fica colado: abre distancia no comeco da resposta (depois os golpes de area/a distancia).
+            double dx = kaiju.getX() - target.getX();
+            double dz = kaiju.getZ() - target.getZ();
+            double len = Math.max(0.01, Math.sqrt(dx * dx + dz * dz));
+            double away = backOff + (kaiju.getBbWidth() + target.getBbWidth()) * 0.5;
+            moveTo(new double[] {target.getX() + dx / len * away, target.getZ() + dz / len * away}, target.getY(),
+                    speedModifier * 1.2);
             return true;
         }
         if (ai.retreatHealth() > 0.0F && now >= retreatReadyAt

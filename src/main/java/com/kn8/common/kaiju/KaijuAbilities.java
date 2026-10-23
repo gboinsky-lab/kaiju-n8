@@ -121,7 +121,9 @@ final class KaijuAbilities {
             KaijuAiDef ai = kaiju.aiDef();
             boolean far = ai.rangedPriority() > 0 && edge > ai.rangedBeyond() && isRanged(ability);
             Integer weight = phase.get(id);
-            priorities.add(behavior.priority() + (far ? ai.rangedPriority() : 0) + (weight != null ? phaseBonus : 0));
+            // PM-3: resposta ao habito do alvo (kaiju inteligente) favorece os ataques dela.
+            priorities.add(behavior.priority() + (far ? ai.rangedPriority() : 0) + (weight != null ? phaseBonus : 0)
+                    + kaiju.habitPriority(id, ability));
             weights.add(weight != null ? weight : 1);
         }
         int index = AbilitySelection.pickWeighted(priorities, weights, kaiju.getRandom()::nextInt);

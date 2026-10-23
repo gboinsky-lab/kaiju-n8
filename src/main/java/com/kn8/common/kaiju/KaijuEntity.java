@@ -39,7 +39,9 @@ import com.kn8.core.kaiju.AbilitySelection;
 import com.kn8.core.kaiju.KaijuBrain;
 import com.kn8.core.kaiju.KaijuState;
 import com.kn8.core.kaiju.KaijuStats;
+import com.kn8.core.kaiju.HabitReader;
 import com.kn8.core.kaiju.KaijuWounds;
+import com.kn8.common.numbered.No9Service;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.BlockPos;
@@ -173,6 +175,12 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
     private final KaijuWounds wounds = new KaijuWounds();
     /** Ferimentos carregados do mundo: os modificadores voltam no primeiro tick. */
     private boolean woundsDirty;
+    /** PM-3: habitos do alvo atual (so kaiju inteligente; memoria curta, nao salva). */
+    private final HabitReader habits = new HabitReader();
+    private UUID habitTarget;
+    private long lastCombatTick = Long.MIN_VALUE;
+    private long backOffUntil = Long.MIN_VALUE;
+    private float backOffDistance;
     /** IA-1A: ameaca, alvos inalcancaveis, ultima posicao conhecida e alvo comandado (so no servidor). */
     private final KaijuAiMemory aiMemory = new KaijuAiMemory();
     /** Escala do empurrao do golpe em andamento (so dentro do hurt; 1 fora dele). */
@@ -513,6 +521,7 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
                 staggerTicks--;
             }
             tickWounds();
+            tickHabits();
             tickAbility();
             breakWhileWalking();
             checkRage();
@@ -1054,6 +1063,7 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
         if (!ServerConfig.SPEC.isLoaded() || (blocked && !landed)) {
             return;
         }
+        habitAttackResult(landed);
         int limit = ServerConfig.AI_ABILITY_FAIL_LIMIT.get();
         if (failures.record(id.toString(), !landed, limit)) {
             long rest = level().getGameTime() + ServerConfig.AI_ABILITY_FAIL_REST_TICKS.get();
@@ -1461,6 +1471,112 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
         return true;
     }
 
+    // --- PM-3: habitos do alvo -------------------------------------------------------------------------------
+
+    /** Perfil de habitos (kaiju_ai) so para o kaiju inteligente: os outros lutam sem adaptacao. */
+    private Optional<KaijuAiDef.Habits> habitsDef() {
+        if (!ServerConfig.SPEC.isLoaded() || !ServerConfig.AI_HABITS.get() || !isSmart()) {
+            return Optional.empty();
+        }
+        return aiDef().habits();
+    }
+
+    private static HabitReader.Params params(KaijuAiDef.Habits def) {
+        return new HabitReader.Params(def.windowTicks(), def.farDistance(), def.closeDistance(), def.share(),
+                def.minSamples(), def.evadeCount(), def.repeatCount(), def.responseTicks(), def.cooldownTicks());
+    }
+
+    /** Amostra a distancia do alvo, esquece fora do combate ou com alvo novo e decide a resposta. */
+    private void tickHabits() {
+        Optional<KaijuAiDef.Habits> found = habitsDef();
+        if (found.isEmpty()) {
+            return;
+        }
+        KaijuAiDef.Habits def = found.get();
+        long now = level().getGameTime();
+        LivingEntity target = getTarget();
+        if (target == null || !target.isAlive()) {
+            if (habitTarget != null && now - lastCombatTick > def.forgetTicks()) {
+                habits.reset();
+                habitTarget = null;
+            }
+            return;
+        }
+        lastCombatTick = now;
+        if (!target.getUUID().equals(habitTarget)) {
+            // Alvo novo: os habitos eram do outro.
+            habits.reset();
+            habitTarget = target.getUUID();
+        }
+        HabitReader.Params params = params(def);
+        if (tickCount % def.sampleTicks() == 0) {
+            habits.sampleDistance(now, edgeDistance(target), params);
+        }
+        habits.update(now, params).ifPresent(habit -> {
+            Optional<KaijuAiDef.Response> response = def.responses().of(habit.key());
+            AiTuning.logMove(this, "habito do alvo: " + habit.key()
+                    + response.map(r -> " -> resposta" + (r.backOff() > 0 ? " (recua " + r.backOff() + ")" : "")
+                            + (r.prefer().isEmpty() ? "" : " " + r.prefer())).orElse(" (sem resposta)"));
+            if (response.isEmpty()) {
+                return;
+            }
+            if (response.get().backOff() > 0.0F) {
+                backOffUntil = now + response.get().backOffTicks();
+                backOffDistance = response.get().backOff();
+            }
+            // Leitura do jogador: um rosnado grave quando o kaiju muda de jeito.
+            level().playSound(null, getX(), getY(), getZ(), KN8Sounds.KAIJU_AMBIENT.get(), SoundSource.HOSTILE,
+                    1.5F, 0.7F);
+        });
+    }
+
+    private void habitAttackResult(boolean landed) {
+        Optional<KaijuAiDef.Habits> def = habitsDef();
+        LivingEntity target = getTarget();
+        if (def.isPresent() && target != null && abilityTarget == target) {
+            habits.attackResult(level().getGameTime(), landed, params(def.get()));
+        }
+    }
+
+    private void habitHitBy(LivingEntity attacker, DamageSource source, long now) {
+        Optional<KaijuAiDef.Habits> def = habitsDef();
+        if (def.isPresent() && attacker == getTarget()) {
+            String kind = CombatService.isHeavyHit(source) ? "heavy"
+                    : No9Service.isRanged(source) ? "ranged" : "melee";
+            habits.hitBy(now, kind, params(def.get()));
+        }
+    }
+
+    /** Resposta ao habito lido agora (vazio = luta normal). */
+    public Optional<KaijuAiDef.Response> habitResponse() {
+        Optional<KaijuAiDef.Habits> def = habitsDef();
+        if (def.isEmpty()) {
+            return Optional.empty();
+        }
+        return habits.active(level().getGameTime()).flatMap(habit -> def.get().responses().of(habit.key()));
+    }
+
+    /** Habito lido agora (log, testes). */
+    public Optional<String> activeHabit() {
+        return habitsDef().flatMap(def -> habits.active(level().getGameTime())).map(HabitReader.Habit::key);
+    }
+
+    /** Prioridade extra da habilidade pela resposta ao habito. */
+    int habitPriority(ResourceLocation id, AbilityDef ability) {
+        return habitResponse().filter(response -> response.prefers(id.toString(), ability.type().toString()))
+                .map(KaijuAiDef.Response::priority).orElse(0);
+    }
+
+    /** Multiplicador da perseguicao pela resposta (alvo que fica longe: aproxima mais rapido). */
+    double habitSpeed() {
+        return habitResponse().map(KaijuAiDef.Response::speed).orElse(1.0F);
+    }
+
+    /** Recuo do comeco da resposta (alvo colado): distancia a abrir, ou 0. */
+    double habitBackOff() {
+        return level().getGameTime() < backOffUntil ? backOffDistance : 0.0;
+    }
+
     // --- PM-2: ferimentos por parte --------------------------------------------------------------------------
 
     /** Dano que a parte levou de fato (depois da armadura): soma no ferimento dela e abre quando passa do limiar. */
@@ -1618,6 +1734,7 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
         long now = level().getGameTime();
         int memory = ServerConfig.AI_THREAT_MEMORY_TICKS.get();
         aiMemory.hurtBy(attacker.getUUID(), amount, now, memory);
+        habitHitBy(attacker, source, now);
         if (getTarget() == null) {
             aiMemory.see(attacker.position(), now);
         }

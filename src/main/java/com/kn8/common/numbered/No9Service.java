@@ -374,7 +374,7 @@ public final class No9Service {
     }
 
     /** Tiro ou projetil (o No. 9 le mais rapido): veio por outra entidade ou de quem segura arma de fogo. */
-    static boolean isRanged(DamageSource source) {
+    public static boolean isRanged(DamageSource source) {
         Entity direct = source.getDirectEntity();
         Entity attacker = source.getEntity();
         if (direct != null && direct != attacker) {

@@ -290,6 +290,7 @@
   "kn8.configuration.farRetargetFactor": "Fator da escolha de alvo longe",
   "kn8.configuration.debugLog": "Log de depuração da IA",
   "kn8.configuration.wounds": "Ferimentos dos kaiju por parte",
+  "kn8.configuration.habits": "Kaiju inteligentes leem hábitos",
   "kn8.configuration.woundBleedIntervalTicks": "Intervalo do sangramento do ferimento (ticks)",
   "kn8.configuration.sinkHeight": "Altura para descer de construções (blocos)",
   "kn8.configuration.separationRadius": "Raio de separação",

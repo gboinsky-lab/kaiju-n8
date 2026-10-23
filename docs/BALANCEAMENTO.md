@@ -899,3 +899,21 @@ não fere (tem o sistema dele). Números no `kaiju_ai/<id>.json` (`wounds`); `[k
 
 Sem parte de braço nos modelos atuais: "braço ferido tira um ataque" fica para quando houver a parte (a cauda e o
 abdômen fazem esse papel onde existem).
+
+## PM-3: leitura de hábitos dos kaiju inteligentes (2026-10-23) [SUPOSIÇÃO todos os números]
+
+Só kaiju com `intelligence` ≥ `[kaijuAi] smartIntelligence` 4 e bloco `habits` no `kaiju_ai/<id>.json`: No. 9 e
+as 5 formas, No. 10 pequeno e gigante. O No. 13 tem inteligência 3 no JSON e fica de fora (o audit do Plano Mestre o
+listava). `[kaijuAi] habits` liga/desliga.
+
+| Item | Valor |
+|---|---|
+| Janela da memória | 200 ticks (10 s); sem alvo 200 ticks = esquece; alvo novo = esquece |
+| Distância | amostra a cada 10 ticks; "fica longe" ≥ 10 blocos entre bordas, "fica colado" ≤ 2,5, em 70% de no mínimo 8 amostras |
+| Esquiva | 3 golpes do kaiju no alvo que não pegam na janela (barrado por parede não conta) |
+| Repetição | 4 acertos seguidos do alvo do mesmo tipo (leve, pesado, a distância) |
+| Resposta | 100 ticks; depois espera 160 antes de ler de novo; o sinal usado é apagado |
+| Fica longe | +3 de prioridade a investida, salto e tiro; perseguição ×1,3 |
+| Fica colado | recua 5 blocos por até 30 ticks; +3 a golpe de área, varrida e tiro |
+| Esquiva | +3 a golpe de área, varrida, sequência e tiro (mais difíceis de esquivar) |
+| Repete | recua 4 blocos por até 20 ticks; +2 a golpe de área e varrida (quebra o ritmo) |
