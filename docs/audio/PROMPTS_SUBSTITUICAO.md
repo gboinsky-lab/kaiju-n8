@@ -21,6 +21,16 @@ Os sons novos de `ELEVENLABS_PROMPTS.md` (alarmes por classe, etapas de carga/vo
 
 Todos os prompts terminam com "no music, no voice, no speech".
 
+### Nome dos arquivos enviados (Miguel, 2026-10-23)
+
+A letra na frente diz o grupo; depois vem o nome da coluna "Arquivos" sem a pasta:
+
+| Letra | Grupo | Exemplo | Vai para |
+|---|---|---|---|
+| `a_` | kaiju | `a_kaiju_roar_1.wav` | `sounds/kaiju/kaiju_roar_1.ogg` |
+| `b_` | armas | `b_rifle_shot_2.wav` | `sounds/weapon/rifle_shot_2.ogg` |
+| `c_` | traje, carcaça e alerta | `c_dash_1.wav`, `c_dismantle_3.wav`, `c_siren_1.wav` | `sounds/suit/`, `sounds/carcass/`, `sounds/alert/` |
+
 > **Atenção:** vários eventos servem a mais de uma coisa no jogo (veja "Onde toca"). Por exemplo, o
 > `kaiju.bite` também toca no jato de ácido e na teia, e o `weapon.axe_*` também nos socos do No. 8 e do Isao.
 > O prompt foi escrito para soar bem no uso principal sem ficar errado nos outros. Separar cada um no som certo
