@@ -1,6 +1,7 @@
 package com.kn8.client.menu;
 
 import java.util.List;
+import java.util.Locale;
 
 import com.kn8.common.data.def.RankDef;
 import com.kn8.common.soldier.SoldierEntity;
@@ -22,7 +23,8 @@ final class SquadTab implements MenuTab {
 
     private static final double RADIUS = 48.0;
     private static final int ROW_HEIGHT = 30;
-    private static final String[] ORDERS = {"follow", "stay", "attack", "retreat"};
+    /** Na ordem de {@link com.kn8.core.soldier.SquadRules.Order} (o indice vai no pacote). PM-6: focar e guarda. */
+    private static final String[] ORDERS = {"follow", "stay", "attack", "retreat", "focus", "guard"};
 
     private List<SoldierEntity> soldiers = List.of();
     private int selected;
@@ -176,8 +178,10 @@ final class SquadTab implements MenuTab {
                 : soldier.getMainHandItem().getHoverName();
         MenuStyle.small(g, font, Component.literal(font.plainSubstrByWidth(Component.translatable(
                 "kn8.menu.squad.weapon", weapon).getString(), textW)), tx, y + 13, MenuStyle.TEXT_DIM);
+        // PM-6: funcao explicita (assalto ou atirador, pelo equipamento) ao lado do nivel.
         MenuStyle.small(g, font, Component.literal(font.plainSubstrByWidth(Component.translatable(
-                "kn8.menu.squad.level", Component.translatable("kn8.menu.squad.level." + soldier.powerLevel()))
+                "kn8.menu.squad.level_role", Component.translatable("kn8.menu.squad.level." + soldier.powerLevel()),
+                Component.translatable("kn8.menu.squad.role." + soldier.squadRole().name().toLowerCase(Locale.ROOT)))
                 .getString(), textW)), tx, y + 20, MenuStyle.TEXT_ACCENT);
         float health = soldier.getHealth() / Math.max(1.0F, soldier.getMaxHealth());
         MenuStyle.small(g, font, Component.literal(Math.round(soldier.getHealth()) + " / "

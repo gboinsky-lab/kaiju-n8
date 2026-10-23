@@ -961,3 +961,13 @@ distância; 0 = não), `expose_core_ticks` (núcleo exposto depois da invulnerab
 
 Primeira versão com 80 ticks de núcleo exposto: com a Mina na luta o Honju chefe morria em ~3 s depois da troca (o
 Anti-Giant no núcleo); 40 ticks deixam a janela sem acabar a luta. A recompensa continua só na derrota.
+
+## PM-6: ordens do esquadrão (2026-10-23) [SUPOSIÇÃO todos os números]
+
+`[squad]` no `kn8-server.toml`.
+
+| Chave | Valor | O quê |
+|---|---|---|
+| `focusRange` | 64 | Até onde o "focar" acha o kaiju mirado (blocos) |
+| `focusConeDegrees` | 12 | Ângulo da mira até o ponto da caixa do kaiju mais perto dela (0 = só com a mira passando pela caixa) |
+| `protectRadius` | 16 | Raio da área da "guarda"; anel do atirador 0,25 x raio (4), do assalto 0,5 x raio (8) |

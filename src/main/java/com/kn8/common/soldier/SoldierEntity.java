@@ -111,6 +111,7 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
     private static final String TAG_SQUAD_LEADER = "kn8_squad_leader";
     private static final String TAG_SQUAD_ORDER = "kn8_squad_order";
     private static final String TAG_SQUAD_POST = "kn8_squad_post";
+    private static final String TAG_SQUAD_FOCUS = "kn8_squad_focus";
     /** Chaves que o vanilla grava em todo mob salvo (Mob / LivingEntity). */
     private static final String TAG_HAND_ITEMS = "HandItems";
     private static final String TAG_ATTRIBUTES = "attributes";
@@ -570,15 +571,39 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
         entityData.set(SQUAD_LEADER, Optional.empty());
         entityData.set(SQUAD_ORDER, SquadRules.Order.FOLLOW.ordinal());
         squadPost = null;
+        assignedKaiju = null;
     }
 
-    /** "Ficar" guarda o ponto onde o soldado esta; "recuar" larga o alvo na hora. */
+    /**
+     * "Ficar" guarda o ponto onde o soldado esta; "recuar" larga o alvo na hora. PM-6: o ponto da guarda e o kaiju do
+     * "focar" vem de quem deu a ordem ({@link SquadService}); qualquer outra ordem do lider tira o kaiju designado.
+     */
     public void setSquadOrder(SquadRules.Order order) {
         entityData.set(SQUAD_ORDER, order.ordinal());
         squadPost = order == SquadRules.Order.STAY ? blockPosition() : null;
+        if (order != SquadRules.Order.FOCUS && squadLeader().isPresent()) {
+            assignedKaiju = null;
+        }
         if (order == SquadRules.Order.RETREAT) {
             setTarget(null);
         }
+    }
+
+    /**
+     * PM-6: funcao pelo equipamento (arma de fogo em qualquer mao = atirador: a faca de apoio na mao nao muda a funcao).
+     * Serve o cliente (menu) e o servidor (anel da guarda).
+     */
+    public SquadRules.Role squadRole() {
+        boolean client = level().isClientSide();
+        boolean gun = isShooter() || WeaponIndex.find(getOffhandItem(), client)
+                .map(weapon -> weapon.style() == WeaponDef.Style.FIREARM).orElse(false);
+        return gun ? SquadRules.Role.SHOOTER : SquadRules.Role.ASSAULT;
+    }
+
+    /** Raio em volta do ponto do esquadrao em que luta: a area da guarda (PM-6) ou a coleira comum. */
+    public double leashRange() {
+        return squadOrder() == SquadRules.Order.GUARD ? ServerConfig.SQUAD_PROTECT_RADIUS.get()
+                : ServerConfig.SQUAD_LEASH_RANGE.get();
     }
 
     /** Posto de um esquadrao de invasao (sem lider). */
@@ -674,9 +699,13 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
         return SquadRules.spreadOffset(getId(), SPREAD_RADIANS);
     }
 
-    /** Com coleira: so luta perto do ponto do esquadrao ({@code [squad] leashRange}); "atacar" caca livre. */
+    /**
+     * Com coleira: so luta perto do ponto do esquadrao ({@link #leashRange}); "atacar" caca livre e "focar" (PM-6) vai
+     * ao kaiju designado onde ele estiver.
+     */
     public boolean isLeashed() {
-        return squadOrder() != SquadRules.Order.ATTACK && squadHome() != null;
+        SquadRules.Order order = squadOrder();
+        return order != SquadRules.Order.ATTACK && order != SquadRules.Order.FOCUS && squadHome() != null;
     }
 
     /**
@@ -892,6 +921,10 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
         if (squadPost != null) {
             tag.putLong(TAG_SQUAD_POST, squadPost.asLong());
         }
+        // PM-6: o kaiju do "focar" do jogador volta com o mundo (o da invasao nao: a invasao nao e salva).
+        if (assignedKaiju != null && squadOrder() == SquadRules.Order.FOCUS && squadLeader().isPresent()) {
+            tag.putUUID(TAG_SQUAD_FOCUS, assignedKaiju);
+        }
     }
 
     @Override
@@ -914,6 +947,9 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
         }
         entityData.set(SQUAD_ORDER, tag.getInt(TAG_SQUAD_ORDER));
         squadPost = tag.contains(TAG_SQUAD_POST) ? BlockPos.of(tag.getLong(TAG_SQUAD_POST)) : null;
+        if (tag.hasUUID(TAG_SQUAD_FOCUS)) {
+            assignedKaiju = tag.getUUID(TAG_SQUAD_FOCUS);
+        }
         // "/summon kn8:soldier ~ ~ ~ {kn8_variant:...}" nao chama finalizeSpawn: sem itens/atributos salvos (soldado
         // novo, nao carregado do mundo), aplica aqui a arma da variante e os atributos do nivel.
         if (!level().isClientSide()) {

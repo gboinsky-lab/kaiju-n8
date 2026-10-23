@@ -19,11 +19,28 @@ public final class SquadRules {
         /** Caca livremente (alcance de deteccao inteiro). */
         ATTACK,
         /** Para de lutar e volta para o lider. */
-        RETREAT;
+        RETREAT,
+        /** PM-6: todos no kaiju que o lider mirou ate ele cair; depois voltam a seguir. */
+        FOCUS,
+        /** PM-6: protegem a area em volta do ponto da ordem; atacam o kaiju mais dentro dela. */
+        GUARD;
 
         public static Order byIndex(int index) {
             Order[] values = values();
             return index >= 0 && index < values.length ? values[index] : FOLLOW;
+        }
+    }
+
+    /**
+     * PM-6: funcao do membro, pelo equipamento (arma de fogo = atirador, o resto = assalto). Na guarda o atirador fica
+     * no anel de dentro e o assalto no de fora, entre o kaiju e o centro.
+     */
+    public enum Role {
+        ASSAULT, SHOOTER;
+
+        /** Raio do anel de guarda desta funcao, como fracao do raio da area. */
+        public double guardRing() {
+            return this == SHOOTER ? 0.25 : 0.5;
         }
     }
 
@@ -54,6 +71,25 @@ public final class SquadRules {
             return Recruit.SPECIAL_RANK;
         }
         return Recruit.OK;
+    }
+
+    /**
+     * PM-6: kaiju designado pela mira do lider. {@code angles}: angulo (graus) entre a mira e cada kaiju (0 se a mira
+     * passa pela caixa dele); {@code distances}: distancia ate ele. Vale o menor angulo dentro de {@code maxAngle};
+     * empate (ate 1 grau) fica com o mais perto. -1 = nenhum na mira.
+     */
+    public static int pickFocus(double[] angles, double[] distances, double maxAngle) {
+        int best = -1;
+        for (int i = 0; i < angles.length; i++) {
+            if (angles[i] > maxAngle) {
+                continue;
+            }
+            if (best < 0 || angles[i] < angles[best] - 1.0
+                    || (Math.abs(angles[i] - angles[best]) <= 1.0 && distances[i] < distances[best])) {
+                best = i;
+            }
+        }
+        return best;
     }
 
     /** Divide {@code count} defensores em esquadroes de ate {@code size} (o ultimo pode ficar menor). */

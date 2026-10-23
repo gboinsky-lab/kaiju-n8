@@ -1220,3 +1220,17 @@ aviso: o vanilla não conta espectador), `[kaijuAi] debugLog` ligado.
 | 90.4 | `/kn8 boss spawn kn8:revived_honju`, levar a 60% e depois a 30% | Duas trocas com avisos próprios; na última ("enlouquece") fica ainda mais rápido e não segura distância |
 | 90.5 | Salvar e sair com o chefe na fase 2, voltar | Continua na fase 2 com a velocidade da fase, sem novo aviso, sem nova invocação, sem nova janela do núcleo |
 | 90.6 | Matar o chefe (também depois de `/data merge` nele) | Uma única barra na tela, que some na morte; mérito e loot só na derrota (nada na troca de fase) |
+
+## 91. Esquadrões: focar, guarda e funções (PM-6)
+
+Servidor dedicado + 2 clientes, `[kaijuAi] debugLog` ligado, jogador com patente que comanda esquadrão (ou criativo).
+
+| # | Passo | Esperado |
+|---|---|---|
+| 91.1 | Menu (M) → Esquadrão com soldados de rifle, Hoshina e Kikoru por perto | Cada linha mostra "Nível: ... · Assalto" ou "· Atirador" (rifle = atirador, mesmo com a faca de apoio na mão); 6 ordens: Seguir, Ficar, Atacar, Recuar, Focar, Guarda |
+| 91.2 | Recrutar 4 e dar **Guarda** | Aviso "4 soldados protegendo a área (raio 16)"; sem kaiju, atiradores a ~4 blocos de onde você estava e assalto a ~8, cada um num ângulo |
+| 91.3 | Um Primigenius a ~12 blocos do centro e outro parado a ~30 | Todos lutam com o de dentro (log "melhor pontuacao entre 1": o de fora nem conta); depois voltam ao anel |
+| 91.4 | Com um kaiju perto do esquadrão, mirar outro a ~24 blocos e dar **Focar** | Log "designado pelo lider"; todos largam o de perto e vão no mirado, mesmo fora da coleira |
+| 91.5 | Derrubar o designado | Aviso verde "Alvo designado abatido: o esquadrão volta a seguir"; log "alvo designado caiu"; voltam a lutar com o de perto |
+| 91.6 | **Focar** mirando o céu | Aviso vermelho "Mire em um kaiju para designar o alvo"; a ordem não muda |
+| 91.7 | Salvar e sair com o esquadrão focado, voltar | Continua focado no mesmo kaiju |

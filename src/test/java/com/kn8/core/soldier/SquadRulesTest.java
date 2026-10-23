@@ -54,6 +54,24 @@ class SquadRulesTest {
     }
 
     @Test
+    void focusPicksTheKaijuUnderTheAim() {
+        // Mira passando pela caixa (0 grau) vence o que esta perto mas fora da mira.
+        assertEquals(1, SquadRules.pickFocus(new double[] {6, 0, 3}, new double[] {5, 40, 10}, 12));
+        // Empate de angulo: o mais perto.
+        assertEquals(2, SquadRules.pickFocus(new double[] {4, 9, 4.5}, new double[] {30, 5, 12}, 12));
+        // Nenhum dentro do cone: nenhum alvo (a ordem nao muda).
+        assertEquals(-1, SquadRules.pickFocus(new double[] {20, 30}, new double[] {5, 5}, 12));
+    }
+
+    @Test
+    void shootersGuardInsideTheAssaultRing() {
+        assertTrue(SquadRules.Role.SHOOTER.guardRing() < SquadRules.Role.ASSAULT.guardRing());
+        // Ordens novas no fim: os indices antigos (salvos no mundo) nao mudam.
+        assertEquals(SquadRules.Order.RETREAT, SquadRules.Order.byIndex(3));
+        assertEquals(SquadRules.Order.GUARD, SquadRules.Order.byIndex(5));
+    }
+
+    @Test
     void spreadOffsetStaysInsideTheLimit() {
         double max = Math.PI / 4;
         double first = SquadRules.spreadOffset(100, max);

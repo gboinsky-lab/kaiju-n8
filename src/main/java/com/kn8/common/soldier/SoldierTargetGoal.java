@@ -74,9 +74,26 @@ public final class SoldierTargetGoal extends Goal {
             soldier.setTarget(null);
             return;
         }
+        if (soldier.squadOrder() == SquadRules.Order.FOCUS && soldier.squadLeader().isPresent()
+                && soldier.level() instanceof ServerLevel server) {
+            // PM-6: "focar" so no kaiju designado pelo lider; caido ou fora do mundo, o esquadrao volta a seguir.
+            Entity focus = soldier.assignedKaiju() == null ? null : server.getEntity(soldier.assignedKaiju());
+            if (focus instanceof KaijuEntity kaiju && kaiju.isAlive()) {
+                if (kaiju != held) {
+                    AiTuning.logTarget(soldier, held, kaiju, "alvo designado pelo lider");
+                    soldier.setTarget(kaiju);
+                }
+                return;
+            }
+            AiTuning.logMove(soldier, "alvo designado caiu: volta a seguir");
+            SquadService.focusEnded(soldier);
+            soldier.setTarget(null);
+        }
         // IA-5: seguindo ou no posto, so luta perto do lider/posto; o kaiju designado (invasao) conta sempre.
         Vec3 home = soldier.isLeashed() ? soldier.squadHome() : null;
-        double leash = ServerConfig.SQUAD_LEASH_RANGE.get();
+        double leash = soldier.leashRange();
+        // PM-6: na guarda vale quem esta mais dentro da area (distancia ao centro), nao o mais perto do soldado.
+        boolean guard = home != null && soldier.squadOrder() == SquadRules.Order.GUARD;
         UUID assigned = soldier.assignedKaiju();
         double range = ServerConfig.SOLDIER_DETECTION_RANGE.get();
         SpecialSoldierDef.Tactics tactics = soldier instanceof HoshinaEntity special
@@ -100,7 +117,8 @@ public final class SoldierTargetGoal extends Goal {
             if (kaiju == current) {
                 currentId = i;
             }
-            candidates.add(new SoldierTargeting.Candidate(i, soldier.distanceTo(kaiju),
+            double distance = guard ? Math.sqrt(kaiju.getBoundingBox().distanceToSqr(home)) : soldier.distanceTo(kaiju);
+            candidates.add(new SoldierTargeting.Candidate(i, distance,
                     threatensReloadingAlly(kaiju), revenge && attacker == kaiju, threatensAlly(kaiju),
                     kaiju.def().map(def -> def.kaijuClass() != KaijuClass.YOJU).orElse(false),
                     kaiju.getUUID().equals(assigned)));

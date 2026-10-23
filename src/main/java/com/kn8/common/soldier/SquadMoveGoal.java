@@ -23,6 +23,8 @@ public final class SquadMoveGoal extends Goal {
     private static final int REPATH_TICKS = 10;
     /** Raio do ponto de cada membro em volta do posto (blocos). */
     private static final double POST_SPREAD = 1.5;
+    /** PM-6: na guarda, volta ao ponto do anel quando passa desta distancia dele (blocos). */
+    private static final double GUARD_SPOT_SLACK = 2.5;
 
     private final SoldierEntity soldier;
     private int repath;
@@ -63,18 +65,40 @@ public final class SquadMoveGoal extends Goal {
         if (home == null) {
             return;
         }
-        boolean post = soldier.squadPost() != null;
-        double radius = post ? POST_SPREAD : ServerConfig.SQUAD_FOLLOW_DISTANCE.get() * 0.4;
-        double[] spot = KaijuTactics.around(home.x, home.z, KaijuTactics.spreadAngle(soldier.getId()), radius);
+        double[] spot = spot(home);
         double speed = soldier.squadOrder() == SquadRules.Order.RETREAT ? RETREAT_SPEED : SPEED;
         soldier.getNavigation().moveTo(spot[0], home.y, spot[1], speed);
     }
 
-    /** Mais longe do ponto do esquadrao que a distancia de seguir (lider) ou o raio de guarda (posto) x fator. */
+    /**
+     * Ponto deste membro (x, z) em volta do lider ou do posto. PM-6: na guarda, num anel pela funcao (atirador mais
+     * perto do centro, assalto mais para fora), cada um num angulo proprio: a area fica cercada, nao amontoada.
+     */
+    private double[] spot(Vec3 home) {
+        double radius;
+        if (soldier.squadOrder() == SquadRules.Order.GUARD) {
+            radius = ServerConfig.SQUAD_PROTECT_RADIUS.get() * soldier.squadRole().guardRing();
+        } else {
+            radius = soldier.squadPost() != null ? POST_SPREAD : ServerConfig.SQUAD_FOLLOW_DISTANCE.get() * 0.4;
+        }
+        return KaijuTactics.around(home.x, home.z, KaijuTactics.spreadAngle(soldier.getId()), radius);
+    }
+
+    /**
+     * Mais longe do ponto do esquadrao que a distancia de seguir (lider) ou o raio de guarda (posto) x fator; na
+     * guarda (PM-6), longe do proprio ponto no anel.
+     */
     private boolean tooFar(double factor) {
         Vec3 home = soldier.squadHome();
         if (home == null) {
             return false;
+        }
+        if (soldier.squadOrder() == SquadRules.Order.GUARD) {
+            double[] spot = spot(home);
+            double dx = soldier.getX() - spot[0];
+            double dz = soldier.getZ() - spot[1];
+            double limit = GUARD_SPOT_SLACK * factor;
+            return dx * dx + dz * dz > limit * limit;
         }
         double limit = (soldier.squadPost() != null ? ServerConfig.SQUAD_GUARD_RADIUS.get()
                 : ServerConfig.SQUAD_FOLLOW_DISTANCE.get()) * factor;

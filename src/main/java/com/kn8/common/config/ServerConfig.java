@@ -280,6 +280,9 @@ public final class ServerConfig {
     public static final ModConfigSpec.DoubleValue SQUAD_INVASION_POST_DISTANCE;
     public static final ModConfigSpec.DoubleValue SQUAD_ASSIGNED_BONUS;
     public static final ModConfigSpec.DoubleValue SQUAD_SEPARATION;
+    public static final ModConfigSpec.DoubleValue SQUAD_FOCUS_RANGE;
+    public static final ModConfigSpec.DoubleValue SQUAD_FOCUS_CONE;
+    public static final ModConfigSpec.DoubleValue SQUAD_PROTECT_RADIUS;
 
     // --- sites (construcoes C3: Ariake, Tachikawa, Shinagawa) -------------------------------------------------------
     public static final ModConfigSpec.IntValue SITE_CHECK_TICKS;
@@ -889,6 +892,12 @@ public final class ServerConfig {
                 + " many blocks closer when its members choose a target.", 16.0, 0.0, 128.0);
         SQUAD_SEPARATION = doubleValue("separationRadius", "Soldiers with another ally this close (blocks) reach the"
                 + " kaiju from their own angle instead of all walking to the same spot.", 4.0, 0.0, 32.0);
+        SQUAD_FOCUS_RANGE = doubleValue("focusRange", "PM-6 \"focus\": the leader designates the kaiju they aim at"
+                + " within this many blocks.", 64.0, 8.0, 256.0);
+        SQUAD_FOCUS_CONE = doubleValue("focusConeDegrees", "PM-6 \"focus\": a kaiju counts as aimed at within this"
+                + " many degrees of the crosshair (0 = only when the aim crosses its box).", 12.0, 0.0, 45.0);
+        SQUAD_PROTECT_RADIUS = doubleValue("protectRadius", "PM-6 \"guard\": radius of the area around the point of"
+                + " the order; members fight only kaiju inside it, the one deepest inside first.", 16.0, 4.0, 64.0);
         BUILDER.pop();
 
         section("sites", "Places from the series (C3): Ariake, Tachikawa base and city, Shinagawa.");
