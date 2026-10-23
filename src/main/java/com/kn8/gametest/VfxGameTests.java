@@ -380,6 +380,34 @@ public final class VfxGameTests {
         helper.succeed();
     }
 
+    /**
+     * VFX-9: os outros kaiju com receitas proprias para os golpes de cada um; acido da formiga verde (Miguel), sopro
+     * do Diclonius vermelho, versoes revividas com vapor e cada tiro com a saida propria.
+     */
+    @GameTest(template = TEMPLATE)
+    public static void otherKaijuHaveOwnEffects(GameTestHelper helper) {
+        List<String> species = List.of("trichonephila", "trichonephila_honju", "primigenius",
+                "primigenius_resurrected", "primigenius_honju", "primigenius_revived", "philinosoma", "diclonius",
+                "camponotus", "camponotus_reborn", "phaneroplasmodium", "myxogasterocarp");
+        for (String id : species) {
+            VfxProfileDef def = KN8Data.VFX_PROFILE.server().get(KN8Constants.id(id));
+            helper.assertTrue(def != null && def.effects().size() >= 6, "Receitas de " + id);
+        }
+        int acid = KN8Data.ABILITY.server().get(KN8Constants.id("camponotus_acid_spray")).behavior().color();
+        helper.assertTrue(green(acid) > red(acid) + 0.2F && green(acid) > blue(acid) + 0.4F,
+                "Acido da formiga verde: " + VfxColors.format(acid));
+        int breath = KN8Data.ABILITY.server().get(KN8Constants.id("diclonius_atomic_breath")).behavior().color();
+        helper.assertTrue(red(breath) > blue(breath) + 0.4F,
+                "Sopro do Diclonius vermelho: " + VfxColors.format(breath));
+        for (String id : List.of("primigenius_resurrected", "primigenius_revived")) {
+            helper.assertTrue(KN8Data.VFX_PROFILE.server().get(KN8Constants.id(id)).recipe("slam").orElseThrow()
+                    .stream().anyMatch(layer -> "wisp".equals(layer.shape())), "Vapor de revivido em " + id);
+        }
+        helper.assertTrue(KN8Data.VFX_PROFILE.server().get(KN8Constants.id("primigenius_honju"))
+                .recipe("energy_blast_muzzle").isPresent(), "Saida do raio do Honju");
+        helper.succeed();
+    }
+
     private static int accent(String id) {
         VfxProfileDef def = KN8Data.VFX_PROFILE.server().get(KN8Constants.id(id));
         return def == null ? 0 : def.palette().resolve("accent");

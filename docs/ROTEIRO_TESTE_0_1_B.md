@@ -1123,3 +1123,19 @@ Servidor dedicado + 2 clientes.
 | 83.3 | `/execute positioned ~ ~1 ~4 run kn8 vfx play kn8:debris kn8:soldier 6 #8C8C8C` | Lascas cinza desenhadas voando e caindo, com um pouco de poeira; nenhuma partícula de bloco do Minecraft |
 | 83.4 | Muro de tijolos de pedra entre um `kn8:primigenius_honju` e um `kn8:soldier`; Honju andando | Blocos quebram sem as partículas de bloco do Minecraft (som de quebra continua); pedaços desenhados na cor do bloco; a cada passo do Honju, poeira desenhada na cor do chão |
 | 83.5 | Desmontar uma carcaça (segurar o botão direito) | A cada etapa, pedaços desenhados na cor do corpo do kaiju, sem partícula de item |
+
+## 84. Outros kaiju (VFX-9)
+
+Servidor dedicado + 2 clientes. Prévia: `/execute positioned ~ ~ ~6 run kn8 vfx play kn8:technique kn8:<espécie> 1 <receita>`.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 84.1 | Prévia `kn8:primigenius_honju` `slam` e `kn8:primigenius_revived` `slam` | Onda no chão, rachaduras e lascas na cor do corpo; no revivido, vapor subindo junto |
+| 84.2 | `kn8:primigenius_honju` `energy_charge` e `energy_blast`; `kn8:primigenius_revived` `energy_blast_revived` | Carga com raios na cor do Honju e explosão com anel e fumaça; o revivido na paleta roxa |
+| 84.3 | `kn8:philinosoma` `philinosoma_spine_shot` | Espinhos azuis em leque (traços), estalo no impacto |
+| 84.4 | `kn8:diclonius` `energy_charge` e `diclonius_atomic_breath` | As placas das costas acendem em sequência com raios rosa/vermelhos; sopro vermelho (`#FF3B55`) com explosão e ondas vermelha e azul |
+| 84.5 | `kn8:camponotus` e `kn8:camponotus_reborn` `<espécie>_acid_spray` | Ácido verde na formiga e ciano na revivida (nuvem e anel no chão) |
+| 84.6 | `kn8:trichonephila_honju` `web_burst`; `kn8:trichonephila` `multi_leg` | Explosão de teia com anel branco e fios; golpes das patas com traços amarelos |
+| 84.7 | `kn8:phaneroplasmodium` `phaneroplasmodium_spore_shot`; `kn8:myxogasterocarp` `myxogasterocarp_spore_bomb` | Nuvem de esporos clara; bomba com clarão, nuvens vermelhas e fumaça |
+| 84.8 | Luta: `kn8:diclonius` contra Mina e dois soldados | Placas acendendo na carga, sopro vermelho em linha até o alvo, nos dois clientes |
+| 84.9 | Luta: `kn8:primigenius_honju` contra Hoshina e soldados; `kn8:camponotus` contra Kikoru | Pisão e investida com efeitos do tamanho do corpo; ácido verde quando a formiga atira |

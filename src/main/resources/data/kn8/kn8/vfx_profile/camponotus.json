@@ -5,5 +5,186 @@
     "accent": "#C33917",
     "core": "#D3A42F"
   },
-  "material": "chitin"
+  "material": "chitin",
+  "effects": {
+    "bite": [
+      {
+        "shape": "band",
+        "color": "primary",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.25,
+        "speed": 0,
+        "spread": 1.0,
+        "lifetime": 8,
+        "forward": -0.6,
+        "tilt": 90,
+        "edge": "accent"
+      },
+      {
+        "shape": "shard",
+        "color": "#3A2420",
+        "pattern": "burst",
+        "count": 4,
+        "size": 0.08,
+        "speed": 0.3,
+        "spread": 0.4,
+        "lifetime": 12
+      }
+    ],
+    "leg_stab": [
+      {
+        "shape": "sparks",
+        "color": "accent",
+        "pattern": "line",
+        "count": 4,
+        "size": 0.06,
+        "speed": 0.6,
+        "spread": 0.6,
+        "lifetime": 5
+      },
+      {
+        "shape": "shard",
+        "color": "#3A2420",
+        "pattern": "burst",
+        "count": 4,
+        "size": 0.08,
+        "speed": 0.3,
+        "spread": 0.4,
+        "lifetime": 12
+      },
+      {
+        "shape": "pulse",
+        "color": "primary",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.4,
+        "speed": 0,
+        "spread": 0.4,
+        "lifetime": 4
+      }
+    ],
+    "leg_swipe": [
+      {
+        "shape": "band",
+        "color": "primary",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.3,
+        "speed": 0,
+        "spread": 1.8,
+        "lifetime": 9,
+        "forward": -1.2,
+        "tilt": 10,
+        "edge": "accent"
+      },
+      {
+        "shape": "smoke",
+        "color": "#8C8270",
+        "pattern": "burst",
+        "count": 2,
+        "size": 0.4,
+        "speed": 0.03,
+        "spread": 0.6,
+        "lifetime": 16
+      },
+      {
+        "shape": "shard",
+        "color": "#3A2420",
+        "pattern": "burst",
+        "count": 4,
+        "size": 0.08,
+        "speed": 0.3,
+        "spread": 0.6,
+        "lifetime": 12
+      }
+    ],
+    "leap": [
+      {
+        "shape": "wave",
+        "color": "primary",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.35,
+        "speed": 0,
+        "spread": 2.0,
+        "lifetime": 12
+      },
+      {
+        "shape": "smoke",
+        "color": "#8C8270",
+        "pattern": "burst",
+        "count": 4,
+        "size": 0.5,
+        "speed": 0.03,
+        "spread": 1.2,
+        "lifetime": 22
+      },
+      {
+        "shape": "crack",
+        "color": "#2A2018",
+        "pattern": "burst",
+        "count": 5,
+        "size": 0.25,
+        "speed": 0,
+        "spread": 1.6,
+        "lifetime": 32,
+        "edge": "accent"
+      }
+    ],
+    "camponotus_acid_spray": [
+      {
+        "shape": "smoke",
+        "color": "#7FE03A",
+        "pattern": "burst",
+        "count": 4,
+        "size": 0.5,
+        "speed": 0.02,
+        "spread": 0.7,
+        "lifetime": 28
+      },
+      {
+        "shape": "sparks",
+        "color": "#C8FF6A",
+        "pattern": "burst",
+        "count": 5,
+        "size": 0.06,
+        "speed": 0.3,
+        "spread": 0.5,
+        "lifetime": 6
+      },
+      {
+        "shape": "wave",
+        "color": "#7FE03A",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.3,
+        "speed": 0,
+        "spread": 1.2,
+        "lifetime": 16
+      }
+    ],
+    "camponotus_acid_spray_muzzle": [
+      {
+        "shape": "smoke",
+        "color": "#7FE03A",
+        "pattern": "burst",
+        "count": 2,
+        "size": 0.3,
+        "speed": 0.02,
+        "spread": 0.3,
+        "lifetime": 14
+      },
+      {
+        "shape": "pulse",
+        "color": "#7FE03A",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.3,
+        "speed": 0,
+        "spread": 0.3,
+        "lifetime": 4
+      }
+    ]
+  }
 }

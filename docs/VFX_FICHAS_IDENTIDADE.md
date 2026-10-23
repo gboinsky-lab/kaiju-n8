@@ -285,3 +285,15 @@ labaredas, vapor e raios vermelhos subindo. **Preondactyl:** raio laranja/vermel
 (`self_destruct_charge`) e explosão próprias (código: `PreondactylEntity`). **No. 13:** agarrão com estalo, socos,
 salto e **rastro da investida** (`<habilidade>_trail`, gancho genérico no `KaijuEntity.tickCharge`). **Larva:** anel e
 pulso ciano. [SUPOSIÇÃO] tamanhos e tempos.
+
+## Feito na VFX-9 (outros kaiju)
+
+Só dados nas receitas de 12 perfis (nenhum código novo; ganchos das etapas anteriores: `_muzzle`, `_trail`,
+`energy_charge`). **Primigenius (4):** casco, soco pesado, mordida, rabada, pisão (onda, rachaduras, lascas na cor do
+corpo) e investida com rastro; ressurgido e revivido com vapor subindo; Honju e revivido com a carga do raio de energia
+(raios na cor de cada um), saída e explosão. **Philinosoma:** espinhos azuis em leque. **Diclonius:** as placas das
+costas acendem em sequência na carga e o **sopro passa a vermelho** (`#FF3B55` no JSON; era azul) [SUPOSIÇÃO cor pela
+textura, placas vermelhas/azuis]. **Formigas:** mordida, patas, salto e **ácido verde** (decisão do Miguel; `#7FE03A`
+no JSON) na formiga, ciano na revivida. **Aranhas:** mordida, estocada, varrida e várias patas com traços amarelos,
+teia branca; Tecedeira com a explosão de teia. **Cogumelos:** nuvem de esporos clara, bomba de esporos com clarão e
+nuvens vermelhas. [SUPOSIÇÃO] tamanhos e tempos (o Miguel manda depois).

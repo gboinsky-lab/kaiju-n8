@@ -5,5 +5,165 @@
     "accent": "#9A1415",
     "core": "#F4E2D0"
   },
-  "material": "fungus"
+  "material": "fungus",
+  "effects": {
+    "bite": [
+      {
+        "shape": "band",
+        "color": "primary",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.25,
+        "speed": 0,
+        "spread": 1.0,
+        "lifetime": 8,
+        "forward": -0.6,
+        "tilt": 90,
+        "edge": "accent"
+      },
+      {
+        "shape": "shard",
+        "color": "#A08975",
+        "pattern": "burst",
+        "count": 4,
+        "size": 0.08,
+        "speed": 0.3,
+        "spread": 0.4,
+        "lifetime": 12
+      }
+    ],
+    "leg_stab": [
+      {
+        "shape": "sparks",
+        "color": "accent",
+        "pattern": "line",
+        "count": 4,
+        "size": 0.06,
+        "speed": 0.6,
+        "spread": 0.6,
+        "lifetime": 5
+      },
+      {
+        "shape": "shard",
+        "color": "#A08975",
+        "pattern": "burst",
+        "count": 4,
+        "size": 0.08,
+        "speed": 0.3,
+        "spread": 0.4,
+        "lifetime": 12
+      },
+      {
+        "shape": "pulse",
+        "color": "primary",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.4,
+        "speed": 0,
+        "spread": 0.4,
+        "lifetime": 4
+      }
+    ],
+    "leg_swipe": [
+      {
+        "shape": "band",
+        "color": "primary",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.3,
+        "speed": 0,
+        "spread": 1.8,
+        "lifetime": 9,
+        "forward": -1.2,
+        "tilt": 10,
+        "edge": "accent"
+      },
+      {
+        "shape": "smoke",
+        "color": "#8C8270",
+        "pattern": "burst",
+        "count": 2,
+        "size": 0.4,
+        "speed": 0.03,
+        "spread": 0.6,
+        "lifetime": 16
+      },
+      {
+        "shape": "shard",
+        "color": "#A08975",
+        "pattern": "burst",
+        "count": 4,
+        "size": 0.08,
+        "speed": 0.3,
+        "spread": 0.6,
+        "lifetime": 12
+      }
+    ],
+    "multi_leg": [
+      {
+        "shape": "sparks",
+        "color": "accent",
+        "pattern": "line",
+        "count": 3,
+        "size": 0.06,
+        "speed": 0.6,
+        "spread": 0.5,
+        "lifetime": 4
+      },
+      {
+        "shape": "shard",
+        "color": "#A08975",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.07,
+        "speed": 0.3,
+        "spread": 0.4,
+        "lifetime": 10
+      }
+    ],
+    "phaneroplasmodium_spore_shot": [
+      {
+        "shape": "smoke",
+        "color": "#C9A890",
+        "pattern": "burst",
+        "count": 6,
+        "size": 0.6,
+        "speed": 0.01,
+        "spread": 1.0,
+        "lifetime": 40
+      },
+      {
+        "shape": "smoke",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 2,
+        "size": 0.3,
+        "speed": 0.01,
+        "spread": 0.6,
+        "lifetime": 30
+      },
+      {
+        "shape": "sparks",
+        "color": "secondary",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.05,
+        "speed": 0.15,
+        "spread": 0.4,
+        "lifetime": 8
+      }
+    ],
+    "phaneroplasmodium_spore_shot_muzzle": [
+      {
+        "shape": "smoke",
+        "color": "#C9A890",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.35,
+        "speed": 0.01,
+        "spread": 0.4,
+        "lifetime": 24
+      }
+    ]
+  }
 }

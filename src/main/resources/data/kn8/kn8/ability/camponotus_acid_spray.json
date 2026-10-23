@@ -18,7 +18,7 @@
     "max_range": 14,
     "projectile_speed": 1.0,
     "projectile_range": 18,
-    "color": "#B6FF3A",
+    "color": "#7FE03A",
     "slow_ticks": 60,
     "slow_level": 1
   }

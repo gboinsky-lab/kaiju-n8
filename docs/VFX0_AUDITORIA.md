@@ -148,3 +148,5 @@ VFX-7 feita (2026-10-22): No. 9 e as 5 formas (ver as fichas). Próxima: VFX-8 (
 VFX-8 feita (2026-10-22): No. 10, No. 13, Preondactyl e larva (ver as fichas). Próxima: VFX-9 (outros kaiju).
 
 Decisões de 2026-10-23 (Miguel): reviver do No. 9 fica como está; **nada mais fica vanilla** (pedaços de bloco da destruição, poeira dos passos e pedaços do desmonte viraram `kn8:debris` desenhado); jogador com aura sorteada (`aura/player_*.json`). Tamanhos e tempos: o Miguel manda depois.
+
+VFX-9 feita (2026-10-23): Primigenius, Philinosoma, Diclonius, formigas, aranhas e cogumelos (ver as fichas). Próxima: VFX-10 (regressão geral).
