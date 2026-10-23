@@ -62,6 +62,11 @@ public final class VfxService {
     public static final ResourceLocation HARDEN = KN8Constants.id("harden");
     /** VFX-R2: nuvem de fumaca desenhada (intensidade = tamanho; chave "#rrggbb" = cor). */
     public static final ResourceLocation SMOKE = KN8Constants.id("smoke");
+    /**
+     * Decisao do Miguel (2026-10-23): pedacos de bloco desenhados no lugar das particulas vanilla (destruicao, passo
+     * dos grandes, desmonte da carcaca); intensidade = quantidade, chave "#rrggbb" = cor do bloco.
+     */
+    public static final ResourceLocation DEBRIS = KN8Constants.id("debris");
 
     /** Distancia em que os jogadores recebem o efeito. */
     public static final double RANGE = 64.0;

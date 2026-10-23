@@ -1111,3 +1111,15 @@ Servidor dedicado + 2 clientes, de noite. Prévia: `/execute positioned ~ ~1 ~6 
 | 82.3 | `kn8:preondactyl` `preondactyl_energy_beam`, `self_destruct`; luta | Raio laranja/vermelho (decisão do Miguel) com impacto laranja; autodestruição com clarão enorme, anéis, raios e fumaça escura; carga da autodestruição com pulsos laranja e raios entrando |
 | 82.4 | `kn8:kaiju_no13` `no13_throat_grab`, `no13_pounce`; luta | Agarrão com estalo branco e anel vermelho; salto com onda e rachaduras de fio vermelho; na investida, riscos curtos atrás do corpo |
 | 82.5 | `kn8:kaiju_larva` `preondactyl_dive_strike` | Anel e pulso ciano pequenos (o corpo de 0,5 m deixa o efeito pequeno) |
+
+## 83. Decisões de 2026-10-23: aura sorteada do jogador e pedaços desenhados
+
+Servidor dedicado + 2 clientes.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 83.1 | Os dois jogadores com `kn8:mk1` no peito e `/kn8 release cap 100`, `/kn8 release set 80`, `/kn8 release active 80`; um olhando para o outro | Cada jogador com uma aura sorteada (cores diferentes na maioria das vezes), com raios na cor dela; `/data get entity <jogador> neoforge:attachments."kn8:player_aura"` mostra a sorteada |
+| 83.2 | Morrer e renascer; sair e entrar de novo | A aura sorteada continua a mesma |
+| 83.3 | `/execute positioned ~ ~1 ~4 run kn8 vfx play kn8:debris kn8:soldier 6 #8C8C8C` | Lascas cinza desenhadas voando e caindo, com um pouco de poeira; nenhuma partícula de bloco do Minecraft |
+| 83.4 | Muro de tijolos de pedra entre um `kn8:primigenius_honju` e um `kn8:soldier`; Honju andando | Blocos quebram sem as partículas de bloco do Minecraft (som de quebra continua); pedaços desenhados na cor do bloco; a cada passo do Honju, poeira desenhada na cor do chão |
+| 83.5 | Desmontar uma carcaça (segurar o botão direito) | A cada etapa, pedaços desenhados na cor do corpo do kaiju, sem partícula de item |

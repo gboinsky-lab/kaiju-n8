@@ -5,7 +5,9 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.kn8.KN8Constants;
 import com.kn8.common.config.ServerConfig;
@@ -13,18 +15,23 @@ import com.kn8.common.data.def.AbilityDef;
 import com.kn8.common.data.def.KaijuClass;
 import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.server.KN8Server;
+import com.kn8.common.vfx.VfxService;
 import com.kn8.core.destruction.DestructionMath;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -59,6 +66,9 @@ public final class DestructionService {
      */
     public record Job(Deque<BlockPos> positions, int power, boolean fromMob, boolean blockEntities) {
     }
+
+    /** Lado (em potencia de 2) da celula que junta os pedacos desenhados de um tick: 1 << 3 = 8 blocos. */
+    private static final int DEBRIS_CELL = 3;
 
     private DestructionService() {
     }
@@ -230,6 +240,7 @@ public final class DestructionService {
         int budget = ServerConfig.DESTRUCTION_BLOCKS_PER_TICK.get();
         ProtectedAreas protectedAreas = ProtectedAreas.get(level);
         DestructionLog log = DestructionLog.get(level);
+        Map<Long, int[]> debris = new HashMap<>();
         while (budget > 0 && !jobs.isEmpty()) {
             Job job = jobs.peekFirst();
             BlockPos pos = job.positions().pollFirst();
@@ -237,15 +248,49 @@ public final class DestructionService {
                 jobs.pollFirst();
                 continue;
             }
-            if (breakIfAllowed(level, pos, job.power(), job.blockEntities(), protectedAreas, log)) {
+            if (breakIfAllowed(level, pos, job.power(), job.blockEntities(), protectedAreas, log, debris)) {
                 budget--;
             }
         }
+        sendDebris(level, debris);
         tickRestore(level, services, log);
     }
 
+    /**
+     * Decisao do Miguel (2026-10-23: sem particulas, nem os pedacos de bloco): quebra como o {@code destroyBlock} do
+     * vanilla (solta os itens, som de quebrar, evento de jogo), mas sem as particulas de bloco; os pedacos sao
+     * desenhados no cliente ({@code kn8:debris}), um evento por celula de {@link #DEBRIS_CELL} blocos por tick.
+     */
+    private static void breakBlock(ServerLevel level, BlockPos pos, BlockState state, boolean drop,
+            Map<Long, int[]> debris) {
+        if (drop) {
+            Block.dropResources(state, level, pos, state.hasBlockEntity() ? level.getBlockEntity(pos) : null);
+        }
+        level.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+        level.gameEvent(GameEvent.BLOCK_DESTROY, pos, GameEvent.Context.of(null, state));
+        SoundType sound = state.getSoundType(level, pos, null);
+        level.playSound(null, pos, sound.getBreakSound(), SoundSource.BLOCKS, (sound.getVolume() + 1.0F) / 2.0F,
+                sound.getPitch() * 0.8F);
+        long cell = BlockPos.asLong(pos.getX() >> DEBRIS_CELL, pos.getY() >> DEBRIS_CELL, pos.getZ() >> DEBRIS_CELL);
+        int[] entry = debris.computeIfAbsent(cell, key -> new int[] {0, 0, 0, 0, state.getMapColor(level, pos).col});
+        entry[0]++;
+        entry[1] += pos.getX();
+        entry[2] += pos.getY();
+        entry[3] += pos.getZ();
+    }
+
+    /** Um {@code kn8:debris} por celula: no meio dos blocos quebrados, com a cor do primeiro e a quantidade. */
+    private static void sendDebris(ServerLevel level, Map<Long, int[]> debris) {
+        for (int[] entry : debris.values()) {
+            int n = entry[0];
+            Vec3 at = new Vec3(entry[1] / (double) n + 0.5, entry[2] / (double) n + 0.5, entry[3] / (double) n + 0.5);
+            VfxService.keyed(level, VfxService.DEBRIS, at, Vec3.ZERO, n, String.format("#%06X",
+                    entry[4] & 0xFFFFFF), 0.0F);
+        }
+    }
+
     private static boolean breakIfAllowed(ServerLevel level, BlockPos pos, int power, boolean blockEntities,
-            ProtectedAreas protectedAreas, DestructionLog log) {
+            ProtectedAreas protectedAreas, DestructionLog log, Map<Long, int[]> debris) {
         if (!level.isLoaded(pos) || protectedAreas.isProtected(pos)) {
             return false;
         }
@@ -260,14 +305,14 @@ public final class DestructionService {
             if (!DestructionMath.canBreak(power, DestructionMath.tierFromHardness(state.getDestroySpeed(level, pos)))) {
                 return false;
             }
-            level.destroyBlock(pos, true);
+            breakBlock(level, pos, state, true, debris);
             return true;
         }
         if (!DestructionMath.canBreak(power, tierOf(level, pos, state))) {
             return false;
         }
         log.record(pos, state, ServerConfig.DESTRUCTION_LOG_LIMIT.get());
-        level.destroyBlock(pos, ServerConfig.DESTRUCTION_DROP_ITEMS.get());
+        breakBlock(level, pos, state, ServerConfig.DESTRUCTION_DROP_ITEMS.get(), debris);
         return true;
     }
 

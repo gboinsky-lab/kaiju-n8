@@ -1,9 +1,12 @@
 // src/main/java/com/kn8/common/attribute/PowerService.java
 package com.kn8.common.attribute;
 
+import java.util.List;
+
 import com.kn8.KN8Constants;
 import com.kn8.common.combat.CombatService;
 import com.kn8.common.config.ServerConfig;
+import com.kn8.common.data.KN8Data;
 import com.kn8.common.craft.SuitEvents;
 import com.kn8.common.data.def.SuitDef;
 import com.kn8.common.network.NetworkSync;
@@ -195,12 +198,37 @@ public final class PowerService {
         changed(player);
     }
 
-    /** 0.5: aura de poder do jogador: a do comando, senao a do traje vestido, senao a padrao. */
+    /**
+     * 0.5: aura de poder do jogador: a do comando, senao a do traje vestido, senao a sorteada para ele (decisao do
+     * Miguel, 2026-10-23), senao a padrao.
+     */
     public static ResourceLocation auraOf(ServerPlayer player) {
         return player.getData(KN8Attachments.AURA_OVERRIDE)
                 .or(() -> SuitEvents.worn(player).flatMap(SuitDef::aura))
-                .orElse(KN8Attachments.DEFAULT_AURA);
+                .orElseGet(() -> playerAura(player));
     }
+
+    /**
+     * Aura sorteada do jogador: uma das {@code aura/player_*.json}, escolhida na primeira vez e guardada; sorteia de
+     * novo so se a guardada deixar de existir nos dados. Sem nenhuma, a padrao.
+     */
+    public static ResourceLocation playerAura(ServerPlayer player) {
+        List<ResourceLocation> pool = KN8Data.AURA.server().keySet().stream()
+                .filter(id -> id.getPath().startsWith(PLAYER_AURA_PREFIX)).sorted().toList();
+        ResourceLocation saved = ResourceLocation.tryParse(player.getData(KN8Attachments.PLAYER_AURA));
+        if (saved != null && pool.contains(saved)) {
+            return saved;
+        }
+        if (pool.isEmpty()) {
+            return KN8Attachments.DEFAULT_AURA;
+        }
+        ResourceLocation chosen = pool.get(player.getRandom().nextInt(pool.size()));
+        player.setData(KN8Attachments.PLAYER_AURA, chosen.toString());
+        return chosen;
+    }
+
+    /** Prefixo das auras que podem ser sorteadas para o jogador. */
+    private static final String PLAYER_AURA_PREFIX = "player_";
 
     public static HeatStage heatStage(ServerPlayer player) {
         return PowerMath.heatStage(data(player).heat(), params());

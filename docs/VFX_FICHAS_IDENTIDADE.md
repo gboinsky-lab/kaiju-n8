@@ -273,7 +273,7 @@ esmagamento, cauda. Formiga: mordida e mandíbulas âmbar em X, ácido na cor do
 investida. Com o Isao: as ondas das manoplas em preto e vermelho e o Thunder Emperor sem raio (como o do Isao).
 [SUPOSIÇÃO] tamanhos e tempos.
 
-**Ainda a definir:** reviver do No. 9 (carcaça voltando): continua o fio e a fumaça verdes de antes.
+**Decidido (Miguel, 2026-10-23):** reviver do No. 9 segue com o método atual (fio e fumaça verdes desenhados).
 
 ## Feito na VFX-8 (No. 10, No. 13, Preondactyl e larva)
 

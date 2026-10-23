@@ -94,6 +94,16 @@ public final class KN8Attachments {
                     .sync(ResourceLocation.STREAM_CODEC)
                     .build());
 
+    /**
+     * Decisao do Miguel (2026-10-23): "o jogador vai ter uma aura aleatoria". Sorteada uma vez entre as auras
+     * {@code aura/player_*.json} e guardada no jogador (salva, mantida na morte); vazio = ainda nao sorteada.
+     */
+    public static final Supplier<AttachmentType<String>> PLAYER_AURA = ATTACHMENT_TYPES.register("player_aura",
+            () -> AttachmentType.builder(() -> "")
+                    .serialize(Codec.STRING)
+                    .copyOnDeath()
+                    .build());
+
     /** 0.5: aura forcada por comando ({@code /kn8 aura}), por cima da do traje. So no servidor, nunca salva. */
     public static final Supplier<AttachmentType<Optional<ResourceLocation>>> AURA_OVERRIDE =
             ATTACHMENT_TYPES.register("aura_override", () -> AttachmentType.<Optional<ResourceLocation>>builder(

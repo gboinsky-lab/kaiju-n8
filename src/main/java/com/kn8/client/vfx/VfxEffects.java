@@ -24,8 +24,6 @@ import com.kn8.core.vfx.VfxPatterns.Pattern;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.BlockParticleOption;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -89,7 +87,12 @@ public final class VfxEffects {
         RAW.put(VfxService.TENDRIL, VfxEffects::tendril);
         RAW.put(VfxService.TELEGRAPH, VfxEffects::telegraph);
         RAW.put(VfxService.SMOKE, VfxEffects::smoke);
+        RAW.put(VfxService.DEBRIS, VfxEffects::debris);
     }
+
+    /** Cor das lascas sem cor de bloco e teto de lascas por evento. */
+    private static final int DEBRIS_COLOR = 0x8C8270;
+    private static final int DEBRIS_MAX_CHUNKS = 18;
 
     private VfxEffects() {
     }
@@ -343,12 +346,11 @@ public final class VfxEffects {
         int rays = Math.max(5, Math.round(CRACK_RAYS * amount));
         DrawnRenderer.add(new Drawn.Crack(new Vec3(at.x, Math.floor(at.y - 0.5) + 1.02, at.z), rays, intensity,
                 0.35, CRACK_DARK, -1, 50, random));
-        BlockParticleOption debris = new BlockParticleOption(ParticleTypes.BLOCK, ground);
-        for (int i = 0; i < count(intensity * 0.6F, amount); i++) {
-            level.addParticle(debris, at.x + (random.nextDouble() - 0.5) * 1.5, at.y + 0.3,
-                    at.z + (random.nextDouble() - 0.5) * 1.5, (random.nextDouble() - 0.5) * 0.6,
-                    random.nextDouble() * 0.6, (random.nextDouble() - 0.5) * 0.6);
-        }
+        // Decisao do Miguel (2026-10-23): as pedrinhas do bloco tambem desenhadas, na cor do chao.
+        int stone = ground.getMapColor(level, below).col;
+        DrawnFactory.fromParticle("shard", stone == 0 ? DEBRIS_COLOR : stone, Pattern.BURST,
+                Math.min(DEBRIS_MAX_CHUNKS, count(intensity * 0.6F, amount)), 0.12F, 0.35, 0.9, 20, at.add(0, 0.3, 0),
+                horizontal(dir), 0.0, random);
     }
 
     /** 0.6: carga do raio de energia: raios vindo de uma esfera ate o ponto (a boca) e um brilho crescendo. */
@@ -491,6 +493,24 @@ public final class VfxEffects {
         Vec3 d = payload.direction();
         DrawnRenderer.add(new Drawn.Zone(kind, p.x, p.z, p.y, payload.intensity(), d.x, d.y, d.x, d.y, d.z,
                 keyColor(payload, 0xFFD000), life));
+    }
+
+    /**
+     * Pedacos de bloco desenhados (decisao do Miguel, 2026-10-23: nem os pedacos ficam vanilla): lascas na cor do
+     * bloco caindo com gravidade e um pouco de poeira; a intensidade e quantos blocos quebraram ali.
+     */
+    private static void debris(ClientLevel level, VfxS2C payload) {
+        RandomSource random = random(level);
+        int color = keyColor(payload, DEBRIS_COLOR);
+        float blocks = Math.max(0.3F, payload.intensity());
+        float amount = amount();
+        int chunks = Math.min(DEBRIS_MAX_CHUNKS, Math.max(2, Math.round((2 + blocks * 1.5F) * amount)));
+        double spread = 0.4 + 0.25 * Math.sqrt(blocks);
+        DrawnFactory.fromParticle("shard", color, Pattern.BURST, chunks, 0.11F, 0.3, spread, 18, payload.position(),
+                horizontal(payload.direction()), 0.0, random);
+        int puffs = Math.max(1, Math.min(6, Math.round(blocks * 0.5F * amount)));
+        DrawnRenderer.add(new Drawn.Smoke(payload.position(), puffs, spread, 0.3 + 0.1 * Math.sqrt(blocks), 0.02,
+                VfxColors.shade(color, 0.25F), 24, random));
     }
 
     /** VFX-R2: fumaca desenhada (fuga, sumico, invocacao): nuvens subindo na cor da chave. */

@@ -6,17 +6,17 @@ import java.util.function.Function;
 
 import com.kn8.common.data.KN8Data;
 import com.kn8.common.data.def.LocomotionDef;
+import com.kn8.common.vfx.VfxService;
 import com.kn8.core.anim.LocomotionMath;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.particles.BlockParticleOption;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 
 import software.bernie.geckolib.animatable.GeoAnimatable;
 import software.bernie.geckolib.animation.AnimationController;
@@ -71,15 +71,20 @@ public final class Locomotion {
                 .orElse(vanilla);
     }
 
-    /** Poeira do chao a cada passo dos grandes (o passo do vanilla so roda no servidor). */
+    /**
+     * Poeira do chao a cada passo dos grandes (o passo do vanilla so roda no servidor). Decisao do Miguel
+     * (2026-10-23): desenhada ({@code kn8:debris} na cor do bloco, no tamanho do corpo), sem particula de bloco.
+     */
     public static void stepDust(Entity entity, ResourceLocation id, BlockPos pos, BlockState state) {
         if (!(entity.level() instanceof ServerLevel level) || state.isAir()) {
             return;
         }
-        profile(entity, id).filter(def -> def.stepDust() > 0).ifPresent(def -> {
-            double spread = entity.getBbWidth() * 0.4;
-            level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, state), entity.getX(),
-                    pos.getY() + 1.05, entity.getZ(), def.stepDust(), spread, 0.1, spread, 0.15);
-        });
+        profile(entity, id).filter(def -> def.stepDust() > 0).ifPresent(def -> VfxService.keyed(level,
+                VfxService.DEBRIS, new Vec3(entity.getX(), pos.getY() + 1.05, entity.getZ()), Vec3.ZERO,
+                def.stepDust() * STEP_DEBRIS_PER_DUST, String.format("#%06X", state.getMapColor(level, pos).col
+                        & 0xFFFFFF), entity.getBbHeight()));
     }
+
+    /** Quantos "blocos" de pedacos por particula de poeira do JSON (o {@code step_dust} era em particulas). */
+    private static final float STEP_DEBRIS_PER_DUST = 0.25F;
 }

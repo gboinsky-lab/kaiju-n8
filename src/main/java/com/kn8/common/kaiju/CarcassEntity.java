@@ -13,10 +13,9 @@ import com.kn8.common.data.def.DismantleDef;
 import com.kn8.common.data.def.KaijuDef;
 import com.kn8.common.registry.KN8Entities;
 import com.kn8.common.registry.KN8Sounds;
+import com.kn8.common.vfx.VfxService;
 import com.kn8.core.dismantle.DismantleMath;
 
-import net.minecraft.core.particles.ItemParticleOption;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -41,6 +40,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animation.AnimatableManager;
@@ -66,6 +66,9 @@ public class CarcassEntity extends Entity implements GeoEntity {
     private static final double GRAVITY = 0.04;
     private static final double FRICTION = 0.6;
     private static final int PARTICLES_PER_STEP = 12;
+    /** Pedacos desenhados por "particula" antiga e cor sem perfil visual da especie. */
+    private static final float DEBRIS_PER_PARTICLE = 0.4F;
+    private static final int CARCASS_DEBRIS_COLOR = 0x7A4A3A;
 
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
     private boolean coreDestroyed;
@@ -232,9 +235,13 @@ public class CarcassEntity extends Entity implements GeoEntity {
             }
         }
         if (!particleItem.isEmpty()) {
-            level.sendParticles(new ItemParticleOption(ParticleTypes.ITEM, particleItem), getX(),
-                    getY() + getBbHeight() * 0.5, getZ(), PARTICLES_PER_STEP, getBbWidth() * 0.3, 0.3,
-                    getBbWidth() * 0.3, 0.05);
+            // Decisao do Miguel (2026-10-23): pedacos desenhados na cor do corpo da especie (perfil visual), sem
+            // particula de item.
+            int color = KN8Data.VFX_PROFILE.get(species(), false).map(def -> def.palette().resolve("primary"))
+                    .orElse(CARCASS_DEBRIS_COLOR);
+            VfxService.keyed(level, VfxService.DEBRIS, new Vec3(getX(), getY() + getBbHeight() * 0.5, getZ()),
+                    Vec3.ZERO, PARTICLES_PER_STEP * DEBRIS_PER_PARTICLE, String.format("#%06X", color & 0xFFFFFF),
+                    getBbHeight());
         }
         level.playSound(null, blockPosition(), KN8Sounds.DISMANTLE.get(), SoundSource.NEUTRAL, 1.0F, 1.0F);
         if (player instanceof ServerPlayer serverPlayer) {

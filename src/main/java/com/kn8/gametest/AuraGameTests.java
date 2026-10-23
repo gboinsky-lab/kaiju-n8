@@ -14,6 +14,7 @@ import com.mojang.authlib.GameProfile;
 
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.util.FakePlayer;
@@ -63,11 +64,17 @@ public final class AuraGameTests {
         helper.assertTrue(KN8Data.AURA.get(KN8Constants.id("violet_lightning"), false).isPresent(),
                 "aura/violet_lightning.json deveria carregar");
         player.setData(KN8Attachments.AURA_OVERRIDE, Optional.empty());
-        helper.assertTrue(PowerService.auraOf(player).equals(KN8Attachments.DEFAULT_AURA),
-                "Sem traje e sem comando a aura deveria ser a padrao");
+        // Decisao do Miguel (2026-10-23): sem traje e sem comando, a aura sorteada do jogador (uma player_*), fixa.
+        player.setData(KN8Attachments.PLAYER_AURA, "");
+        ResourceLocation drawn = PowerService.auraOf(player);
+        helper.assertTrue(drawn.getPath().startsWith("player_") && KN8Data.AURA.get(drawn, false).isPresent(),
+                "Sem traje e sem comando a aura deveria ser uma das sorteaveis: " + drawn);
+        helper.assertTrue(PowerService.auraOf(player).equals(drawn), "A aura sorteada deveria ficar a mesma");
+        long pool = KN8Data.AURA.server().keySet().stream().filter(id -> id.getPath().startsWith("player_")).count();
+        helper.assertTrue(pool >= 8, "Deveria haver varias auras para sortear, ha " + pool);
         player.setData(KN8Attachments.AURA_OVERRIDE, Optional.of(KN8Constants.id("violet_lightning")));
         helper.assertTrue(PowerService.auraOf(player).equals(KN8Constants.id("violet_lightning")),
-                "A aura do comando deveria valer por cima da padrao");
+                "A aura do comando deveria valer por cima da sorteada");
         player.setData(KN8Attachments.AURA_OVERRIDE, Optional.empty());
         helper.succeed();
     }
