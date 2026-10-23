@@ -21,5 +21,10 @@
         "damage_taken": 1.2
       }
     ]
+  },
+  "group": {
+    "role": "support",
+    "support_distance": 8.0,
+    "max_attackers": 3
   }
 }

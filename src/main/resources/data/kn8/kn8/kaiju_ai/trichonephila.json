@@ -29,5 +29,15 @@
         ]
       }
     ]
+  },
+  "terrain": {
+    "breaks": false,
+    "stuck_break_ticks": 60
+  },
+  "group": {
+    "role": "flanker",
+    "max_attackers": 3,
+    "leader_loss": "rage",
+    "leader_loss_ticks": 160
   }
 }

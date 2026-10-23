@@ -1192,3 +1192,17 @@ No. 9, as formas dele e o No. 10 (inteligência 4+) leem hábitos; o resto luta 
 | 88.4 | `kn8:primigenius` contra a Mina | Nenhum "habito do alvo" no log (não é inteligente) |
 | 88.5 | Trocar de alvo / ficar 10 s longe do combate | A memória zera: a leitura começa do zero com o alvo novo |
 | 88.6 | A Mina sozinha contra o No. 10 pequeno | A luta continua ganhável (no teste ela o deixou com 334 de 1.650 em 45 s) |
+
+## 89. Terreno por espécie e papéis em grupo (PM-4)
+
+Servidor dedicado + 2 clientes, `[kaijuAi] debugLog` ligado. Coordenação entre kaiju é mecânica de jogo (não canon),
+exceto o comando do No. 9/No. 10.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 89.1 | Muro de tijolo de pedra 15 x 6 com passagem numa ponta; `kn8:trichonephila` de um lado e um soldado com Resistência do outro | A aranha contorna/passa sem derrubar o muro (no teste 4-11 de 90 tijolos, dos golpes); só depois de 3 s batendo sem sair do lugar o log diz "contorno travado ... quebra a frente" |
+| 89.2 | O mesmo com `kn8:primigenius` | Ele abre o muro (no teste 42 de 90) |
+| 89.3 | Honju + 5 Primigenius + 1 formiga contra um Hoshina com Resistência | No máximo 3 Primigenius colados nele; os outros circulam em volta (log "espera a vez") e entram quando abre vaga; a formiga fica a ~7 blocos atirando ácido |
+| 89.4 | Matar o Honju (`/kill`) no meio | Log "lider morto: retreat": os Primigenius e a formiga se afastam ~4 s e voltam; o ressurgido (`primigenius_resurrected`) fica mais forte e rápido 10 s (rugido) |
+| 89.5 | Honju com alvo e um Primigenius parado sem alvo a até 24 blocos | O Primigenius recebe o alvo do Honju (log "alvo do lider"); a 40 blocos não |
+| 89.6 | Honju/revivido/gigantes atravessando um lago | Andam pela água como chão (os Yoju contornam a água) |

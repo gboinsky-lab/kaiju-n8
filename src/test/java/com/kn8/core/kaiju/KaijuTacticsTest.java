@@ -26,4 +26,22 @@ class KaijuTacticsTest {
         double[] q = KaijuTactics.orbit(0, 0, 5, 0, 5, Math.PI / 2, -1);
         assertEquals(-5.0, q[1], 1e-9);
     }
+
+    @Test
+    void flankerGoesBehindAndAttackersWaitTheirTurn() {
+        // Yaw 0 olha para +z: atras = -z.
+        double[] behind = KaijuTactics.around(0, 0, KaijuTactics.behindAngle(0.0F), 4);
+        assertEquals(0.0, behind[0], 1e-9);
+        assertEquals(-4.0, behind[1], 1e-9);
+        // Yaw 90 olha para -x: atras = +x.
+        double[] side = KaijuTactics.around(0, 0, KaijuTactics.behindAngle(90.0F), 4);
+        assertEquals(4.0, side[0], 1e-9);
+        assertTrue(KaijuTactics.mustWait(3, false, 3), "3 colados e limite 3: espera");
+        assertTrue(!KaijuTactics.mustWait(3, true, 3), "quem ja esta colado nao espera");
+        assertTrue(!KaijuTactics.mustWait(2, false, 3), "ainda ha vaga");
+        assertTrue(!KaijuTactics.mustWait(9, false, 0), "0 = sem limite");
+        assertEquals(-1, KaijuTactics.supportMove(3.0, 8.0, 2.0));
+        assertEquals(0, KaijuTactics.supportMove(7.0, 8.0, 2.0));
+        assertEquals(1, KaijuTactics.supportMove(12.0, 8.0, 2.0));
+    }
 }

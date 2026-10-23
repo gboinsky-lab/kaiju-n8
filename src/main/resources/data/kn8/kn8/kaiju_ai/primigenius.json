@@ -28,5 +28,11 @@
         "stagger_multiplier": 1.5
       }
     ]
+  },
+  "group": {
+    "role": "aggressor",
+    "max_attackers": 3,
+    "leader_loss": "retreat",
+    "leader_loss_ticks": 80
   }
 }

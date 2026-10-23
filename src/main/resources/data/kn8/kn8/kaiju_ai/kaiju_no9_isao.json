@@ -78,5 +78,9 @@
         "back_off_ticks": 20
       }
     }
+  },
+  "group": {
+    "role": "aggressor",
+    "leader": true
   }
 }

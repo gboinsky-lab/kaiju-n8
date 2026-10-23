@@ -29,5 +29,12 @@
         ]
       }
     ]
+  },
+  "group": {
+    "role": "support",
+    "support_distance": 7.0,
+    "max_attackers": 3,
+    "leader_loss": "retreat",
+    "leader_loss_ticks": 80
   }
 }

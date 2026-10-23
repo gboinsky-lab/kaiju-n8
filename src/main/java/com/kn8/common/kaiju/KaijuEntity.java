@@ -81,6 +81,7 @@ import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
@@ -195,6 +196,11 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
     private long nextSinkTick;
     /** Ate quando quebra o que ocupa o corpo (forma nova nascida no lugar). */
     private long clearBodyUntil;
+    /** PM-4: ticks seguidos batendo em bloco tentando andar (plano B de quem contorna). */
+    private int blockedTicks;
+    /** PM-4: lider do grupo morto, reacao "retreat": se afasta do alvo ate este tick. */
+    private long scatterUntil = Long.MIN_VALUE;
+    private float appliedWaterMalus = Float.NaN;
     private final ActionTimeline abilityTimeline = new ActionTimeline();
     private final Map<ResourceLocation, Long> abilityReadyAt = new HashMap<>();
     private ResourceLocation currentAbility;
@@ -522,6 +528,7 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
             }
             tickWounds();
             tickHabits();
+            tickGroup();
             tickAbility();
             breakWhileWalking();
             checkRage();
@@ -1124,7 +1131,7 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
      * 0.6 vale para qualquer tamanho e tambem fora do combate ({@link #breakWhileWalking}).
      */
     public void clearPathIfBlocked() {
-        if (!level().isClientSide() && horizontalCollision) {
+        if (!level().isClientSide() && horizontalCollision && mayBreakTerrain()) {
             DestructionService.requestPathClear(this, false);
         }
     }
@@ -1146,7 +1153,8 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
             }
         }
         boolean tryingToMove = getNavigation().isInProgress() || getMoveControl().hasWanted() || getTarget() != null;
-        if (horizontalCollision && tryingToMove) {
+        blockedTicks = horizontalCollision && tryingToMove ? blockedTicks + 1 : 0;
+        if (horizontalCollision && tryingToMove && mayBreakTerrain()) {
             DestructionService.requestPathClear(this, false);
         }
         sinkFromBuilding();
@@ -1190,6 +1198,96 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
         if (getY() - target.getY() >= ServerConfig.SINK_HEIGHT.get() && DestructionService.standsOnBuilt(this)) {
             DestructionService.requestBelow(this, power);
         }
+    }
+
+    /**
+     * PM-4: quebra ao andar? A especie que contorna ({@code terrain.breaks} false: aranhas) so quebra depois de
+     * {@code stuck_break_ticks} batendo sem sair do lugar (plano B: nunca fica presa para sempre).
+     */
+    public boolean mayBreakTerrain() {
+        KaijuAiDef.Terrain terrain = aiDef().terrain();
+        if (terrain.breaks()) {
+            return true;
+        }
+        if (blockedTicks == terrain.stuckBreakTicks()) {
+            AiTuning.logMove(this, "contorno travado ha " + blockedTicks + " ticks: quebra a frente");
+        }
+        return blockedTicks >= terrain.stuckBreakTicks();
+    }
+
+    /** PM-4: custo da agua no caminho pela especie (so muda quando o perfil muda). */
+    private void applyTerrain() {
+        float malus = aiDef().terrain().waterMalus();
+        if (malus == appliedWaterMalus) {
+            return;
+        }
+        appliedWaterMalus = malus;
+        // -1 = o padrao do vanilla para mob em terra (8).
+        setPathfindingMalus(PathType.WATER, malus < 0.0F ? 8.0F : malus);
+    }
+
+    // --- PM-4: grupo -----------------------------------------------------------------------------------------
+
+    /**
+     * Lider com alvo: quem esta sem alvo a {@code group_radius} recebe o mesmo alvo (pelo comando, que expira); so a
+     * cada {@code [kaijuAi] scanIntervalTicks} e so na regiao do lider.
+     */
+    private void tickGroup() {
+        if (tickCount % 200 == 0 || Float.isNaN(appliedWaterMalus)) {
+            applyTerrain();
+        }
+        KaijuAiDef.Group group = aiDef().group();
+        LivingEntity target = getTarget();
+        if (!group.leader() || target == null || !target.isAlive() || isRetreating()
+                || tickCount % ServerConfig.AI_SCAN_INTERVAL.get() != 0) {
+            return;
+        }
+        for (KaijuEntity follower : level().getEntitiesOfClass(KaijuEntity.class,
+                getBoundingBox().inflate(group.groupRadius()), other -> other != this && other.isAlive()
+                        && other.getTarget() == null && !other.isRetreating() && !other.aiDef().group().leader())) {
+            follower.command(target);
+            AiTuning.logTarget(follower, null, target, "alvo do lider " + kaijuId().getPath());
+        }
+    }
+
+    /** O lider deste grupo morreu: reacao do perfil ({@code leader_loss}). */
+    private void notifyLeaderLoss() {
+        KaijuAiDef.Group group = aiDef().group();
+        if (!group.leader() || !(level() instanceof ServerLevel server)) {
+            return;
+        }
+        for (KaijuEntity follower : level().getEntitiesOfClass(KaijuEntity.class,
+                getBoundingBox().inflate(group.groupRadius()), other -> other != this && other.isAlive())) {
+            follower.leaderLost(server);
+        }
+    }
+
+    private void leaderLost(ServerLevel server) {
+        KaijuAiDef.Group group = aiDef().group();
+        int ticks = group.leaderLossTicks();
+        switch (group.leaderLoss()) {
+            case "rage" -> {
+                // Efeitos sem particulas (ocultos): nada de particula vanilla no mod.
+                addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, ticks, 0, false, false));
+                addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, ticks, 0, false, false));
+                server.playSound(null, getX(), getY(), getZ(), KN8Sounds.KAIJU_ROAR.get(), SoundSource.HOSTILE, 2.0F,
+                        1.1F);
+            }
+            case "retreat" -> {
+                scatterUntil = level().getGameTime() + ticks;
+                server.playSound(null, getX(), getY(), getZ(), KN8Sounds.KAIJU_AMBIENT.get(), SoundSource.HOSTILE,
+                        1.5F, 1.3F);
+            }
+            default -> {
+                return;
+            }
+        }
+        AiTuning.logMove(this, "lider morto: " + group.leaderLoss());
+    }
+
+    /** PM-4: lider morto e reacao "retreat": se afasta do alvo. */
+    public boolean scattering() {
+        return level().getGameTime() < scatterUntil;
     }
 
     /** Forma nova nascida no lugar (KaijuSpawner): quebra o que ocupa o corpo pelos proximos {@code ticks}. */
@@ -1769,6 +1867,7 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
             TrainingArenaService.vanish((ServerLevel) level(), this);
             return;
         }
+        notifyLeaderLoss();
         CarcassEntity.from(this).ifPresent(level()::addFreshEntity);
         remove(RemovalReason.KILLED);
     }

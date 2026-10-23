@@ -35,5 +35,13 @@
         ]
       }
     ]
+  },
+  "terrain": {
+    "breaks": false,
+    "stuck_break_ticks": 80
+  },
+  "group": {
+    "role": "aggressor",
+    "leader": true
   }
 }

@@ -201,11 +201,14 @@ public final class DestructionService {
     /** Forca de quebra da categoria do kaiju ({@code destruction.walkPower*}); serve tambem aos ataques (IA-2). */
     public static int walkPower(KaijuEntity kaiju) {
         KaijuClass kaijuClass = kaiju.def().map(def -> def.kaijuClass()).orElse(KaijuClass.YOJU);
-        return switch (kaijuClass) {
+        int power = switch (kaijuClass) {
             case YOJU -> ServerConfig.PATH_POWER_YOJU.get();
             case HONJU, NUMBERED -> ServerConfig.PATH_POWER_HONJU.get();
             case DAIKAIJU -> ServerConfig.PATH_POWER_DAIKAIJU.get();
         };
+        // PM-4: forca propria da especie (kaiju_ai, terrain.break_power); a da categoria em 0 no config desliga tudo.
+        int own = kaiju.aiDef().terrain().breakPower();
+        return power > 0 && own >= 0 ? own : power;
     }
 
     private static boolean allowed(ServerLevel level, Entity source) {

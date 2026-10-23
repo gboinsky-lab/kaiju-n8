@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Optional;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 /**
@@ -35,10 +37,89 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 public record KaijuAiDef(float circleChance, float circleDistance, int circleTicks, float separationRadius,
         float retreatHealth, float retreatDistance, int retreatTicks, int retreatCooldownTicks,
         int recoveryAfterHeavyTicks, float chaseSpeed, float lookSpeed, float rangedBeyond, int rangedPriority,
-        Wounds wounds, Optional<Habits> habits) {
+        Wounds wounds, Optional<Habits> habits, Ecology ecology) {
 
     public static final KaijuAiDef DEFAULT = new KaijuAiDef(0.0F, 3.0F, 30, 0.0F, 0.0F, 10.0F, 40, 300, 0, 1.0F,
-            30.0F, 0.0F, 0, Wounds.NONE, Optional.empty());
+            30.0F, 0.0F, 0, Wounds.NONE, Optional.empty(), Ecology.NONE);
+
+    /** PM-4: capacidades de terreno da especie. */
+    public Terrain terrain() {
+        return ecology.terrain();
+    }
+
+    /** PM-4: papel em grupo. */
+    public Group group() {
+        return ecology.group();
+    }
+
+    /**
+     * PM-4: blocos {@code terrain} e {@code group} do mesmo JSON (o codec do perfil ja tinha 15 campos: os dois entram
+     * por um MapCodec achatado, sem mudar o formato do arquivo).
+     */
+    public record Ecology(Terrain terrain, Group group) {
+
+        public static final Ecology NONE = new Ecology(Terrain.DEFAULT, Group.DEFAULT);
+
+        public static final MapCodec<Ecology> MAP_CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
+                Terrain.CODEC.optionalFieldOf("terrain", Terrain.DEFAULT).forGetter(Ecology::terrain),
+                Group.CODEC.optionalFieldOf("group", Group.DEFAULT).forGetter(Ecology::group)
+        ).apply(i, Ecology::new));
+    }
+
+    /**
+     * PM-4 (Plano Mestre, secao 5): {@code breaks} false = contorna construcoes pelo caminho e so quebra quando fica
+     * {@code stuck_break_ticks} batendo sem sair do lugar (plano B); {@code break_power} = forca propria de 0 a 4 no
+     * lugar da categoria (-1 = a da categoria; com a da categoria 0 no config, nao quebra); {@code water_malus} =
+     * custo da agua no caminho (-1 = o do vanilla, 8; 0 = atravessa a agua como chao).
+     */
+    public record Terrain(boolean breaks, int breakPower, int stuckBreakTicks, float waterMalus) {
+
+        public static final Terrain DEFAULT = new Terrain(true, -1, 60, -1.0F);
+
+        public static final Codec<Terrain> CODEC = RecordCodecBuilder.create(i -> i.group(
+                Codec.BOOL.optionalFieldOf("breaks", true).forGetter(Terrain::breaks),
+                Codec.intRange(-1, 4).optionalFieldOf("break_power", -1).forGetter(Terrain::breakPower),
+                DefCodecs.TICKS.optionalFieldOf("stuck_break_ticks", 60).forGetter(Terrain::stuckBreakTicks),
+                Codec.floatRange(-1.0F, 32.0F).optionalFieldOf("water_malus", -1.0F).forGetter(Terrain::waterMalus)
+        ).apply(i, Terrain::new));
+    }
+
+    /**
+     * PM-4 (Plano Mestre, secao 6; coordenacao e mecanica de jogo, nao canon): {@code role} {@code aggressor} (vai no
+     * alvo), {@code support} (fica a {@code support_distance} e usa o golpe a distancia que tem) ou {@code flanker}
+     * (chega por tras do alvo); {@code max_attackers} = quantos kaiju podem estar colados no mesmo alvo antes deste
+     * esperar em volta (0 = sem limite); {@code leader} = da o alvo a quem esta sem alvo a {@code group_radius}; com o
+     * lider morto, quem estava perto reage por {@code leader_loss} ({@code none}, {@code rage}: mais forte e rapido
+     * por {@code leader_loss_ticks}; {@code retreat}: se afasta por esse tempo).
+     */
+    public record Group(String role, boolean leader, int maxAttackers, float supportDistance, float groupRadius,
+            String leaderLoss, int leaderLossTicks) {
+
+        public static final Group DEFAULT = new Group("aggressor", false, 0, 8.0F, 24.0F, "none", 100);
+
+        public static final Codec<Group> CODEC = RecordCodecBuilder.create(i -> i.group(
+                Codec.STRING.validate(r -> r.equals("aggressor") || r.equals("support") || r.equals("flanker")
+                        ? DataResult.success(r) : DataResult.error(() -> "role invalido: " + r))
+                        .optionalFieldOf("role", "aggressor").forGetter(Group::role),
+                Codec.BOOL.optionalFieldOf("leader", false).forGetter(Group::leader),
+                Codec.intRange(0, 32).optionalFieldOf("max_attackers", 0).forGetter(Group::maxAttackers),
+                Codec.floatRange(2.0F, 48.0F).optionalFieldOf("support_distance", 8.0F)
+                        .forGetter(Group::supportDistance),
+                Codec.floatRange(4.0F, 96.0F).optionalFieldOf("group_radius", 24.0F).forGetter(Group::groupRadius),
+                Codec.STRING.validate(r -> r.equals("none") || r.equals("rage") || r.equals("retreat")
+                        ? DataResult.success(r) : DataResult.error(() -> "leader_loss invalido: " + r))
+                        .optionalFieldOf("leader_loss", "none").forGetter(Group::leaderLoss),
+                DefCodecs.TICKS.optionalFieldOf("leader_loss_ticks", 100).forGetter(Group::leaderLossTicks)
+        ).apply(i, Group::new));
+
+        public boolean support() {
+            return "support".equals(role);
+        }
+
+        public boolean flanker() {
+            return "flanker".equals(role);
+        }
+    }
 
     /**
      * PM-2 (Plano Mestre, secao 4): ferimentos por parte. So partes que a especie tem (nome igual ao {@code parts} do
@@ -181,6 +262,7 @@ public record KaijuAiDef(float circleChance, float circleDistance, int circleTic
             Codec.floatRange(0.0F, 128.0F).optionalFieldOf("ranged_beyond", 0.0F).forGetter(KaijuAiDef::rangedBeyond),
             Codec.intRange(0, 100).optionalFieldOf("ranged_priority", 0).forGetter(KaijuAiDef::rangedPriority),
             Wounds.CODEC.optionalFieldOf("wounds", Wounds.NONE).forGetter(KaijuAiDef::wounds),
-            Habits.CODEC.optionalFieldOf("habits").forGetter(KaijuAiDef::habits)
+            Habits.CODEC.optionalFieldOf("habits").forGetter(KaijuAiDef::habits),
+            Ecology.MAP_CODEC.forGetter(KaijuAiDef::ecology)
     ).apply(i, KaijuAiDef::new));
 }

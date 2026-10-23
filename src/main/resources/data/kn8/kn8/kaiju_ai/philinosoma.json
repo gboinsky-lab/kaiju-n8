@@ -36,5 +36,11 @@
         ]
       }
     ]
+  },
+  "terrain": {
+    "water_malus": 0.0
+  },
+  "group": {
+    "role": "aggressor"
   }
 }

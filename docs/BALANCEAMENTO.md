@@ -917,3 +917,27 @@ listava). `[kaijuAi] habits` liga/desliga.
 | Fica colado | recua 5 blocos por até 30 ticks; +3 a golpe de área, varrida e tiro |
 | Esquiva | +3 a golpe de área, varrida, sequência e tiro (mais difíceis de esquivar) |
 | Repete | recua 4 blocos por até 20 ticks; +2 a golpe de área e varrida (quebra o ritmo) |
+
+## PM-4: terreno por espécie e papéis em grupo (2026-10-23) [SUPOSIÇÃO todos os números]
+
+`kaiju_ai/<id>.json`, blocos `terrain` e `group`.
+
+| Espécie | Terreno | Grupo |
+|---|---|---|
+| Primigenius | quebra (força da categoria, 3) | agressor, máx. 3 no alvo; líder morto: recua 4 s |
+| Primigenius ressurgido | quebra | flanco (chega por trás), máx. 3; líder morto: fúria 10 s |
+| Primigenius Honju, revivido | força própria 4, atravessa água | agressor, **líder** (dá o alvo a quem está sem a até 24 blocos) |
+| Trichonephila | **contorna** (quebra só travada 3 s) | flanco, máx. 3; líder morto: fúria 8 s |
+| Trichonephila Honju | contorna (travada 4 s) | agressor, líder |
+| Camponotus | quebra | apoio a 7 blocos (ácido), máx. 3; líder morto: recua 4 s |
+| Camponotus revivida | quebra | apoio a 7, máx. 3; líder morto: fúria 8 s |
+| Phaneroplasmodium | quebra | apoio a 8 (esporos), máx. 3 |
+| Myxogasterocarp | atravessa água | apoio a 10 (bomba de esporos), líder |
+| Philinosoma | atravessa água | agressor |
+| Diclonius | atravessa água | apoio a 10 (sopro) |
+| No. 9 e formas, No. 10 | gigantes e formiga-No. 9 atravessam água | agressor, líder |
+| No. 13 | quebra | flanco |
+
+Fúria do líder morto = Força I + Velocidade I ocultas (sem partículas). "Colado no alvo" = até o alcance + 1 bloco,
+recontado a cada `[kaijuAi] scanIntervalTicks`; dois kaiju podem entrar no mesmo intervalo (visto: 4 colados uma vez).
+O apoio só vale para quem tem golpe a distância; perto demais (2 blocos dentro da distância) se afasta.

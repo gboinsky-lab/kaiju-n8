@@ -3,6 +3,7 @@ package com.kn8.common.kaiju;
 
 import java.util.EnumSet;
 
+import com.kn8.common.ai.AiTuning;
 import com.kn8.common.config.ServerConfig;
 import com.kn8.common.data.def.KaijuAiDef;
 import com.kn8.core.kaiju.KaijuTactics;
@@ -34,6 +35,9 @@ final class KaijuCombatGoal extends Goal {
     private static final double DIRECT_APPROACH_DISTANCE = 3.0;
     /** IA-4: passo do giro em volta do alvo ao circular (radianos, ~35 graus). */
     private static final double CIRCLE_STEP = 0.6;
+    /** PM-4: folga (blocos) para contar um kaiju como colado no alvo; faixa de distancia do apoio. */
+    private static final double ENGAGED_SLACK = 1.0;
+    private static final double SUPPORT_BAND = 2.0;
 
     private final KaijuEntity kaiju;
     private final double speedModifier;
@@ -51,6 +55,9 @@ final class KaijuCombatGoal extends Goal {
     private int circleSide = 1;
     private long neighbourCheckAt;
     private boolean neighbour;
+    /** PM-4: limite de atacantes, refeito a cada scanIntervalTicks. */
+    private long turnCheckAt;
+    private boolean waitingTurn;
 
     KaijuCombatGoal(KaijuEntity kaiju, double speedModifier) {
         this.kaiju = kaiju;
@@ -128,9 +135,14 @@ final class KaijuCombatGoal extends Goal {
         if (checkProgress(target, edge)) {
             return;
         }
+        if (groupRole(ai, target, edge, reach, now)) {
+            return;
+        }
         double speed = speedModifier * ai.chaseSpeed() * kaiju.habitSpeed();
         double[] spot = approachSpot(ai, target, reach);
-        if (edge > reach && (kaiju.isLarge() || edge <= reach + DIRECT_APPROACH_DISTANCE)) {
+        // PM-4: quem contorna (terrain.breaks false) segue o caminho; so os que quebram vao direto de longe.
+        boolean direct = kaiju.isLarge() && ai.terrain().breaks();
+        if (edge > reach && (direct || edge <= reach + DIRECT_APPROACH_DISTANCE)) {
             // Perto, ou kaiju grande (a navegacao vanilla falha com mobs largos): anda direto ate o alvo. O que for
             // fragil no caminho e quebrado pelo DestructionService (Parte 3), se a destruicao estiver ligada.
             kaiju.getNavigation().stop();
@@ -165,15 +177,15 @@ final class KaijuCombatGoal extends Goal {
             kaiju.getMoveControl().setWantedPosition(kaiju.getX(), kaiju.getY(), kaiju.getZ(), 0.0);
             return true;
         }
+        if (kaiju.scattering()) {
+            // PM-4: lider morto e reacao "retreat": abre distancia por um tempo (depois volta a lutar).
+            moveAway(target, ai.retreatDistance());
+            return true;
+        }
         double backOff = kaiju.habitBackOff();
         if (backOff > 0.0 && kaiju.edgeDistance(target) < backOff) {
             // PM-3: alvo que fica colado: abre distancia no comeco da resposta (depois os golpes de area/a distancia).
-            double dx = kaiju.getX() - target.getX();
-            double dz = kaiju.getZ() - target.getZ();
-            double len = Math.max(0.01, Math.sqrt(dx * dx + dz * dz));
-            double away = backOff + (kaiju.getBbWidth() + target.getBbWidth()) * 0.5;
-            moveTo(new double[] {target.getX() + dx / len * away, target.getZ() + dz / len * away}, target.getY(),
-                    speedModifier * 1.2);
+            moveAway(target, backOff);
             return true;
         }
         if (ai.retreatHealth() > 0.0F && now >= retreatReadyAt
@@ -200,10 +212,78 @@ final class KaijuCombatGoal extends Goal {
     }
 
     /**
+     * PM-4: papel em grupo. Apoio a distancia (so quem tem golpe a distancia) fica a {@code support_distance} e
+     * atira; com o limite de atacantes cheio, quem nao esta colado espera circulando em volta (sem golpe de perto).
+     * Devolve true se o tick ja foi usado.
+     */
+    private boolean groupRole(KaijuAiDef ai, LivingEntity target, double edge, double reach, long now) {
+        KaijuAiDef.Group group = ai.group();
+        if (group.support() && kaiju.hasRangedAttack()) {
+            int move = KaijuTactics.supportMove(edge, group.supportDistance(), SUPPORT_BAND);
+            if (move < 0) {
+                moveAway(target, group.supportDistance());
+            } else if (move == 0) {
+                kaiju.getNavigation().stop();
+                kaiju.getMoveControl().setWantedPosition(kaiju.getX(), kaiju.getY(), kaiju.getZ(), 0.0);
+            }
+            if (move <= 0) {
+                kaiju.tryAttack(target);
+                return true;
+            }
+            return false;
+        }
+        if (group.maxAttackers() <= 0) {
+            return false;
+        }
+        boolean engaged = edge <= reach + ENGAGED_SLACK;
+        if (now >= turnCheckAt) {
+            turnCheckAt = now + ServerConfig.AI_SCAN_INTERVAL.get();
+            int others = 0;
+            for (KaijuEntity other : kaiju.level().getEntitiesOfClass(KaijuEntity.class,
+                    target.getBoundingBox().inflate(group.groupRadius()), o -> o != kaiju && o.isAlive()
+                            && o.getTarget() == target)) {
+                if (other.edgeDistance(target) <= other.approachReach() + ENGAGED_SLACK) {
+                    others++;
+                }
+            }
+            boolean wait = KaijuTactics.mustWait(others, engaged, group.maxAttackers());
+            if (wait && !waitingTurn) {
+                AiTuning.logMove(kaiju, "espera a vez: " + others + " ja no alvo");
+            }
+            waitingTurn = wait;
+        }
+        if (!waitingTurn || engaged) {
+            return false;
+        }
+        double radius = reach + ai.circleDistance() + (kaiju.getBbWidth() + target.getBbWidth()) * 0.5;
+        double[] spot = KaijuTactics.orbit(target.getX(), target.getZ(), kaiju.getX(), kaiju.getZ(), radius,
+                CIRCLE_STEP * 0.5, circleSide);
+        moveTo(spot, target.getY(), speedModifier);
+        kaiju.tryAttack(target);
+        return true;
+    }
+
+    /** Anda para longe do alvo ate {@code distance} blocos entre as bordas. */
+    private void moveAway(LivingEntity target, double distance) {
+        double dx = kaiju.getX() - target.getX();
+        double dz = kaiju.getZ() - target.getZ();
+        double len = Math.max(0.01, Math.sqrt(dx * dx + dz * dz));
+        double away = distance + (kaiju.getBbWidth() + target.getBbWidth()) * 0.5;
+        moveTo(new double[] {target.getX() + dx / len * away, target.getZ() + dz / len * away}, target.getY(),
+                speedModifier * 1.2);
+    }
+
+    /**
      * Ponto de chegada: o alvo; com outro kaiju a {@code separation_radius} (grupo), um ponto em volta do alvo no
      * angulo deste kaiju (cada um chega por um lado, sem empilhar).
      */
     private double[] approachSpot(KaijuAiDef ai, LivingEntity target, double reach) {
+        if (ai.group().flanker() && kaiju.edgeDistance(target) > reach + DIRECT_APPROACH_DISTANCE) {
+            // PM-4 (flanco): de longe, vai para tras do alvo; perto, entra no alvo.
+            double radius = Math.max(0.5, reach * 0.5) + (kaiju.getBbWidth() + target.getBbWidth()) * 0.5;
+            return KaijuTactics.around(target.getX(), target.getZ(), KaijuTactics.behindAngle(target.getYRot()),
+                    radius);
+        }
         if (ai.separationRadius() <= 0.0F || !hasNeighbour(ai)) {
             return new double[] {target.getX(), target.getZ()};
         }

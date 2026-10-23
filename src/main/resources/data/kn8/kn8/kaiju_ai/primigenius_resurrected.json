@@ -28,5 +28,11 @@
         "stagger_multiplier": 1.5
       }
     ]
+  },
+  "group": {
+    "role": "flanker",
+    "max_attackers": 3,
+    "leader_loss": "rage",
+    "leader_loss_ticks": 200
   }
 }

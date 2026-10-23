@@ -29,5 +29,13 @@
         ]
       }
     ]
+  },
+  "terrain": {
+    "break_power": 4,
+    "water_malus": 0.0
+  },
+  "group": {
+    "role": "aggressor",
+    "leader": true
   }
 }

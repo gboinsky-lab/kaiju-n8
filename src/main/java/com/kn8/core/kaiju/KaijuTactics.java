@@ -33,4 +33,32 @@ public final class KaijuTactics {
         double angle = Math.atan2(fromZ - targetZ, fromX - targetX) + step * side;
         return around(targetX, targetZ, angle, radius);
     }
+
+    /**
+     * PM-4 (flanco): angulo, em volta do alvo, do ponto atras dele. {@code targetYawDegrees} e o yaw do Minecraft
+     * (olhar = (-sen, cos)); atras = o oposto do olhar.
+     */
+    public static double behindAngle(float targetYawDegrees) {
+        double yaw = Math.toRadians(targetYawDegrees);
+        return Math.atan2(-Math.cos(yaw), Math.sin(yaw));
+    }
+
+    /**
+     * PM-4 (limite de atacantes): espera a vez quem ainda nao esta colado no alvo quando ja ha {@code maxAttackers}
+     * outros colados; 0 = sem limite. Quem ja esta colado nunca espera (nao larga o golpe no meio).
+     */
+    public static boolean mustWait(int engagedOthers, boolean selfEngaged, int maxAttackers) {
+        return maxAttackers > 0 && !selfEngaged && engagedOthers >= maxAttackers;
+    }
+
+    /**
+     * PM-4 (apoio a distancia): -1 = se afasta (alvo mais perto que {@code keep - band}), 0 = fica onde esta,
+     * 1 = se aproxima (alvo alem de {@code keep}).
+     */
+    public static int supportMove(double edge, double keep, double band) {
+        if (edge < keep - band) {
+            return -1;
+        }
+        return edge > keep ? 1 : 0;
+    }
 }
