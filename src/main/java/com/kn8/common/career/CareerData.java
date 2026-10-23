@@ -28,17 +28,18 @@ public final class CareerData {
      * nela para a avaliacao (missao salva antes da PM-7 comeca com tudo zerado).
      */
     public record MissionProgress(List<Integer> progress, long acceptedTick, List<BlockPos> points,
-            MissionStats stats) {
+            MissionStats stats, Optional<BlockPos> origin) {
         public static final Codec<MissionProgress> CODEC = RecordCodecBuilder.create(i -> i.group(
                 Codec.INT.listOf().fieldOf("progress").forGetter(MissionProgress::progress),
                 Codec.LONG.optionalFieldOf("accepted", 0L).forGetter(MissionProgress::acceptedTick),
                 BlockPos.CODEC.listOf().optionalFieldOf("points", List.of()).forGetter(MissionProgress::points),
-                MissionStats.CODEC.optionalFieldOf("stats").forGetter(p -> Optional.of(p.stats()))
-        ).apply(i, (progress, accepted, points, stats) -> new MissionProgress(progress, accepted, points,
-                stats.orElseGet(MissionStats::new))));
+                MissionStats.CODEC.optionalFieldOf("stats").forGetter(p -> Optional.of(p.stats())),
+                BlockPos.CODEC.optionalFieldOf("origin").forGetter(MissionProgress::origin)
+        ).apply(i, (progress, accepted, points, stats, origin) -> new MissionProgress(progress, accepted, points,
+                stats.orElseGet(MissionStats::new), origin)));
 
         public MissionProgress(List<Integer> progress, long acceptedTick, List<BlockPos> points) {
-            this(progress, acceptedTick, points, new MissionStats());
+            this(progress, acceptedTick, points, new MissionStats(), Optional.empty());
         }
     }
 
@@ -129,7 +130,8 @@ public final class CareerData {
         this.bestGrades.putAll(bestGrades);
         // O Codec devolve listas imutaveis: o progresso e alterado no lugar.
         active.forEach((id, progress) -> this.active.put(id, new MissionProgress(new ArrayList<>(progress.progress()),
-                progress.acceptedTick(), new ArrayList<>(progress.points()), progress.stats())));
+                progress.acceptedTick(), new ArrayList<>(progress.points()), progress.stats(),
+                progress.origin())));
         this.completed.addAll(completed);
         this.cooldownUntil.putAll(cooldowns);
     }

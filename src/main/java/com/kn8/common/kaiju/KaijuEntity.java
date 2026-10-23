@@ -16,6 +16,7 @@ import com.kn8.common.anim.Locomotion;
 import com.kn8.common.arena.TrainingArenaService;
 import com.kn8.common.boss.BossService;
 import com.kn8.common.boss.BossState;
+import com.kn8.common.career.ExamTargets;
 import com.kn8.common.combat.CombatService;
 import com.kn8.common.config.ServerConfig;
 import com.kn8.common.data.KN8Data;
@@ -1874,7 +1875,8 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
             return;
         }
         // Construcoes C2: kaiju da arena de treino some em fumaca, sem carcaca (nem desmonte, nem material).
-        if (TrainingArenaService.isTraining(this)) {
+        // PM-8B: kaiju de prova (curso dentro da base) tambem nao deixa carcaca.
+        if (TrainingArenaService.isTraining(this) || ExamTargets.isExam(this)) {
             TrainingArenaService.vanish((ServerLevel) level(), this);
             return;
         }

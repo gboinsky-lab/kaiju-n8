@@ -1010,3 +1010,30 @@ Provas (`grading` no `mission/<id>.json`; patente = `promotion_mission` do `rank
 Estação: cura até a vida máxima, tira só os efeitos ruins, completa a reserva até `npc.spare_magazines` pentes do
 perfil da arma de fogo (rifle 4 x 30 = 120, pistola 4 x pente) cobrando **1 item de munição por bala** do inventário
 do jogador (criativo não paga). Receita na bancada: 6 ferro, 2 estimulantes, 1 pente de rifle (Oficial Sênior).
+
+## PM-8B: provas (cursos) dentro da base (2026-10-23) [SUPOSIÇÃO todos os números]
+
+`[career]` no `kn8-server.toml`:
+
+| Chave | Valor | O quê |
+|---|---|---|
+| `examOfficerRange` | 8 | A prova só é aceita com o Oficial de Provas a até essa distância |
+| `examAreaMinDistance` / `examAreaMaxDistance` | 6 / 14 | Kaiju e pontos da prova surgem nessa faixa de onde ela foi aceita (dentro da base) |
+| `examLeaveDistance` | 64 | Passar disso (na horizontal) do lugar da prova reprova ("você saiu da base") |
+| `examProtectRadius` | 40 | Área protegida (sem quebrar blocos) em volta do lugar da prova enquanto ela dura |
+
+XP do corpo por prova (`rewards.body_xp` do `mission/*.json`):
+
+| Prova | Força | Velocidade | Resistência | Agilidade | Outros |
+|---|---|---|---|---|---|
+| Curso de Agilidade (`course_agility`) | | 80 | | 120 | patrulha de 5 pontos, 2 min, repete a cada 10 min |
+| Curso de Força (`course_strength`) | 160 | | 40 | | 2 Primigenius, 5 min, repete a cada 10 min |
+| Curso de Resistência (`course_endurance`) | 40 | | 160 | | 1 Primigenius ressurgido, 5 min, repete a cada 10 min |
+| Exame de Admissão (`exam`) | 150 | | 100 | | |
+| Prova de Tiro (`exam_marksman`) | | 100 | | 150 | |
+| Prova de Esquadrão (`exam_squad`) | | 150 | 200 | | |
+| Prova de Comando (`exam_command`) | 250 | | 250 | | |
+| Prova de Capitão (`exam_captain`) | 300 | 200 | 300 | 200 | |
+
+Kaiju de prova não dão mérito nem contam no total de abates da carreira (para a prova não virar farm); o chefe da
+prova ainda dá o mérito do `boss/*.json` [SUPOSIÇÃO].

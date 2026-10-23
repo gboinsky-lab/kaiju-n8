@@ -1025,5 +1025,22 @@
   "kn8.station.no_squad": "No soldier of your squad within %s blocks of the station",
   "kn8.station.done": "Squad prepared: %s soldier(s), %s healed, %s rounds restocked",
   "kn8.station.short": "%s rounds were missing: bring ammo in your inventory",
-  "kn8.menu.missions.board": "Board: %s"
+  "kn8.menu.missions.board": "Board: %s",
+  "kn8.body.strength": "Strength",
+  "kn8.body.speed": "Speed",
+  "kn8.body.resistance": "Resistance",
+  "kn8.body.agility": "Agility",
+  "kn8.mission_category.exam": "EXAM",
+  "kn8.mission.refused.needs_exam_officer": "Exams only with the Exam Officer of a base",
+  "kn8.mission.failed.left": "Exam cancelled (you left the base): %s",
+  "kn8.mission.exam_area": "The exam takes place here at the base: do not go farther than %s blocks.",
+  "kn8.mission.body_xp": "Body: +%s XP in %s",
+  "kn8.menu.missions.body_xp": "+%s %s",
+  "kn8.menu.missions.exam_only_officer": "Accept with the Exam Officer",
+  "kn8.mission.course_agility.name": "Agility Course",
+  "kn8.mission.course_agility.desc": "Run through the 5 marked points inside the base as fast as you can.",
+  "kn8.mission.course_strength.name": "Strength Course",
+  "kn8.mission.course_strength.desc": "Take down 2 training Primigenius inside the base.",
+  "kn8.mission.course_endurance.name": "Endurance Course",
+  "kn8.mission.course_endurance.desc": "Withstand and take down a resurrected Primigenius inside the base."
 }

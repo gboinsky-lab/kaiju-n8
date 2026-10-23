@@ -1,5 +1,5 @@
 {
-  "category": "story",
+  "category": "exam",
   "giver": "kn8:exam_officer",
   "requires": {
     "rank": "kn8:vice_capitao"
@@ -15,7 +15,13 @@
   },
   "rewards": {
     "merit": 2000,
-    "training_xp": 1500
+    "training_xp": 1500,
+    "body_xp": {
+      "strength": 300,
+      "resistance": 300,
+      "agility": 200,
+      "speed": 200
+    }
   },
   "grading": {
     "max_allies_lost": 2,

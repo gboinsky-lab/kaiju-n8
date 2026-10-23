@@ -1025,5 +1025,22 @@
   "kn8.station.no_squad": "Nenhum soldado do seu esquadrão a até %s blocos da estação",
   "kn8.station.done": "Esquadrão preparado: %s soldado(s), %s curado(s), %s balas repostas",
   "kn8.station.short": "Faltaram %s balas: traga munição no inventário",
-  "kn8.menu.missions.board": "Quadro: %s"
+  "kn8.menu.missions.board": "Quadro: %s",
+  "kn8.body.strength": "Força",
+  "kn8.body.speed": "Velocidade",
+  "kn8.body.resistance": "Resistência",
+  "kn8.body.agility": "Agilidade",
+  "kn8.mission_category.exam": "PROVA",
+  "kn8.mission.refused.needs_exam_officer": "Provas só com o Oficial de Provas de uma base",
+  "kn8.mission.failed.left": "Prova cancelada (você saiu da base): %s",
+  "kn8.mission.exam_area": "A prova acontece aqui na base: não se afaste mais de %s blocos.",
+  "kn8.mission.body_xp": "Corpo: +%s de XP em %s",
+  "kn8.menu.missions.body_xp": "+%s %s",
+  "kn8.menu.missions.exam_only_officer": "Aceite com o Oficial de Provas",
+  "kn8.mission.course_agility.name": "Curso de Agilidade",
+  "kn8.mission.course_agility.desc": "Corra pelos 5 pontos marcados dentro da base o mais rápido que puder.",
+  "kn8.mission.course_strength.name": "Curso de Força",
+  "kn8.mission.course_strength.desc": "Derrube 2 Primigenius de treino dentro da base.",
+  "kn8.mission.course_endurance.name": "Curso de Resistência",
+  "kn8.mission.course_endurance.desc": "Aguente e derrube um Primigenius ressurgido dentro da base."
 }

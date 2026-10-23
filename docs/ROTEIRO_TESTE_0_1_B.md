@@ -1267,3 +1267,19 @@ Servidor dedicado + 2 clientes. Base gerada com `/place structure kn8:defense_ba
 | 93.8 | Sem munição suficiente | Repõe o que dá e avisa "Faltaram N balas" |
 | 93.9 | Soldados a mais de 16 blocos, ou sem esquadrão | "Nenhum soldado do seu esquadrão a até 16 blocos da estação" |
 | 93.10 | Bancada como Oficial Sênior | A Estação de Preparação aparece em Treino (6 ferro, 2 estimulantes, 1 pente de rifle) |
+
+## 94. Provas (cursos) dentro da base, diferentes das missões (PM-8B)
+
+Servidor dedicado + 2 clientes. Base gerada com `/place structure kn8:defense_base` (ou Ariake/Tachikawa).
+
+| # | Passo | Esperado |
+|---|---|---|
+| 94.1 | Menu (M) → Missões, longe do Oficial de Provas | As provas (etiqueta verde "PROVA") aparecem com o "Aceitar" apagado; passando o mouse: "Aceite com o Oficial de Provas" |
+| 94.2 | Botão direito no Oficial de Provas | "Quadro: Oficial de Provas" com os cursos (Agilidade, Força, Resistência) e as provas de patente; recompensa mostra "+N Força/Velocidade/Resistência/Agilidade" |
+| 94.3 | Aceitar o Curso de Força | Chat verde "A prova acontece aqui na base: não se afaste mais de 64 blocos"; 2 Primigenius surgem a 6-14 blocos, dentro da base |
+| 94.4 | Lutar com eles dentro da base | Golpes não quebram os prédios da base (área protegida durante a prova) |
+| 94.5 | Abatê-los | Sem carcaça (somem em fumaça); sem mérito de abate; "Corpo: +160 XP em Força", "+40 XP em Resistência", avaliação e "PROVA APROVADA" |
+| 94.6 | Aceitar outra prova e correr para mais de 64 blocos | "Prova cancelada (você saiu da base)"; os kaiju da prova somem; a base volta a poder ser quebrada |
+| 94.7 | Abater um kaiju fora da base com uma prova ativa | Não conta para a prova |
+| 94.8 | Missões do Oficial de Missões (Defesa da Cidade, horda...) | Continuam em campo (em volta do jogador ou invasão), aceitas também pelo menu |
+| 94.9 | O outro cliente fazendo um curso ao mesmo tempo | Cada um só vê contar os próprios kaiju |

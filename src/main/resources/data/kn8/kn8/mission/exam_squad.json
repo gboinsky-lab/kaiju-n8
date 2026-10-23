@@ -1,5 +1,5 @@
 {
-  "category": "story",
+  "category": "exam",
   "giver": "kn8:exam_officer",
   "requires": {
     "rank": "kn8:oficial_senior"
@@ -17,7 +17,11 @@
   },
   "rewards": {
     "merit": 300,
-    "training_xp": 400
+    "training_xp": 400,
+    "body_xp": {
+      "resistance": 200,
+      "speed": 150
+    }
   },
   "grading": {
     "max_allies_lost": 0,

@@ -1,5 +1,5 @@
 {
-  "category": "story",
+  "category": "exam",
   "giver": "kn8:exam_officer",
   "requires": {
     "rank": "kn8:lider_pelotao"
@@ -16,7 +16,11 @@
   },
   "rewards": {
     "merit": 800,
-    "training_xp": 800
+    "training_xp": 800,
+    "body_xp": {
+      "strength": 250,
+      "resistance": 250
+    }
   },
   "grading": {
     "max_allies_lost": 1,

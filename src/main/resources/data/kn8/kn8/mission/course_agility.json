@@ -1,0 +1,29 @@
+{
+  "category": "exam",
+  "giver": "kn8:exam_officer",
+  "requires": {
+    "rank": "kn8:candidato"
+  },
+  "objectives": [
+    {
+      "type": "patrol",
+      "count": 5
+    }
+  ],
+  "fail": {
+    "time_ticks": 2400
+  },
+  "rewards": {
+    "training_xp": 40,
+    "body_xp": {
+      "agility": 120,
+      "speed": 80
+    }
+  },
+  "grading": {
+    "par_ticks": 900,
+    "min_grade": "d"
+  },
+  "repeatable": true,
+  "cooldown_ticks": 12000
+}

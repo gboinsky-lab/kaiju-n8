@@ -456,7 +456,8 @@ public final class InvasionService {
         MissionDef.Rewards base = invasion.def.rewards();
         int merit = (int) Math.round(base.merit() * factor);
         int xp = (int) Math.round(base.trainingXp() * factor);
-        MissionDef.Rewards rewards = new MissionDef.Rewards(merit, base.promoteTo(), base.items(), xp);
+        MissionDef.Rewards rewards = new MissionDef.Rewards(merit, base.promoteTo(), base.items(), xp,
+                base.bodyXp());
         for (ResourceLocation itemId : rewards.items()) {
             ItemStack stack = new ItemStack(BuiltInRegistries.ITEM.get(itemId));
             if (!player.getInventory().add(stack)) {

@@ -63,6 +63,11 @@ public final class ServerConfig {
     public static final ModConfigSpec.IntValue GRADE_MIN_SHOTS;
     public static final ModConfigSpec.DoubleValue GRADE_MERIT_BONUS_S;
     public static final ModConfigSpec.DoubleValue GRADE_MERIT_BONUS_A;
+    public static final ModConfigSpec.DoubleValue EXAM_OFFICER_RANGE;
+    public static final ModConfigSpec.DoubleValue EXAM_AREA_MIN;
+    public static final ModConfigSpec.DoubleValue EXAM_AREA_MAX;
+    public static final ModConfigSpec.DoubleValue EXAM_LEAVE_DISTANCE;
+    public static final ModConfigSpec.IntValue EXAM_PROTECT_RADIUS;
     public static final ModConfigSpec.DoubleValue MISSION_AREA_MIN;
     public static final ModConfigSpec.DoubleValue MISSION_AREA_MAX;
     public static final ModConfigSpec.DoubleValue MISSION_PATROL_MIN;
@@ -479,6 +484,17 @@ public final class ServerConfig {
         GRADE_MERIT_BONUS_S = doubleValue("gradeMeritBonusS", "Extra merit (fraction of the reward) for grade S.",
                 0.2, 0.0, 10.0);
         GRADE_MERIT_BONUS_A = doubleValue("gradeMeritBonusA", "Extra merit for grade A.", 0.1, 0.0, 10.0);
+        // PM-8B: provas acontecem dentro da base, aceitas com o Oficial de Provas perto.
+        EXAM_OFFICER_RANGE = doubleValue("examOfficerRange", "An exam can only be accepted this close to an Exam"
+                + " Officer.", 8.0, 1.0, 64.0);
+        EXAM_AREA_MIN = doubleValue("examAreaMinDistance", "Minimum distance of exam targets and points from where"
+                + " the exam was accepted.", 6.0, 2.0, 64.0);
+        EXAM_AREA_MAX = doubleValue("examAreaMaxDistance", "Maximum distance of exam targets and points.", 14.0, 2.0,
+                128.0);
+        EXAM_LEAVE_DISTANCE = doubleValue("examLeaveDistance", "Going farther than this from where the exam was"
+                + " accepted fails it.", 64.0, 8.0, 512.0);
+        EXAM_PROTECT_RADIUS = intValue("examProtectRadius", "Blocks around the exam spot that kaiju cannot break"
+                + " while the exam runs.", 40, 0, 256);
         BUILDER.pop();
 
         section("mission", "Missions (0.2): where targets and points appear around the player.");

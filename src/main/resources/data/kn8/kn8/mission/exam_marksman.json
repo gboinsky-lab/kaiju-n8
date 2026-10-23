@@ -1,5 +1,5 @@
 {
-  "category": "story",
+  "category": "exam",
   "giver": "kn8:exam_officer",
   "requires": {
     "rank": "kn8:oficial"
@@ -17,7 +17,11 @@
   },
   "rewards": {
     "merit": 150,
-    "training_xp": 200
+    "training_xp": 200,
+    "body_xp": {
+      "agility": 150,
+      "speed": 100
+    }
   },
   "grading": {
     "min_accuracy": 0.35,

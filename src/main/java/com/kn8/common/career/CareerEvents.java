@@ -1,5 +1,8 @@
 package com.kn8.common.career;
 
+import java.util.Optional;
+import java.util.UUID;
+
 import com.kn8.KN8Constants;
 import com.kn8.common.arena.TrainingArenaService;
 import com.kn8.common.attribute.PowerService;
@@ -79,6 +82,19 @@ public final class CareerEvents {
         if (event.getEntity() instanceof KaijuEntity kaiju && !kaiju.level().isClientSide()) {
             // Kaiju da arena de treino nao conta: sem merito, missao ou chefe.
             if (TrainingArenaService.isTraining(kaiju)) {
+                return;
+            }
+            // PM-8B: kaiju de prova conta so para a prova do dono (quem quer que o derrube), sem merito de abate.
+            if (ExamTargets.isExam(kaiju)) {
+                UUID owner = ExamTargets.owner(kaiju);
+                if (owner != null && kaiju.level().getServer() != null
+                        && kaiju.level().getServer().getPlayerList().getPlayer(owner) instanceof ServerPlayer player) {
+                    MissionService.onExamKill(player, kaiju.kaijuId(), kaiju.bossState() == null
+                            ? Optional.empty() : Optional.of(kaiju.bossState().id()));
+                }
+                if (kaiju.bossState() != null) {
+                    BossService.onDefeated(kaiju, kaiju.bossState(), event.getSource());
+                }
                 return;
             }
             if (event.getSource().getEntity() instanceof ServerPlayer player) {

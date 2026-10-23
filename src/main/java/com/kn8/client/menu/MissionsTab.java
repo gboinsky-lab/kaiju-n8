@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.kn8.common.base.DefenseOfficerEntity;
 import com.kn8.common.career.CareerView;
 import com.kn8.common.career.MissionActionC2S;
 import com.kn8.common.data.KN8Data;
@@ -183,6 +184,16 @@ final class MissionsTab implements MenuTab {
                     rewardsX, ry, MenuStyle.ACCENT);
             ry += 7;
         }
+        // PM-8B: XP do corpo das provas e cursos.
+        for (Map.Entry<String, Double> body : rewards.bodyXp().entrySet()) {
+            if (ry > y + CARD_HEIGHT - 22) {
+                break;
+            }
+            MenuStyle.small(g, font, Component.translatable("kn8.menu.missions.body_xp",
+                    Math.round(body.getValue()), Component.translatable("kn8.body." + body.getKey())), rewardsX, ry,
+                    MenuStyle.GREEN);
+            ry += 7;
+        }
         int ix = rewardsX;
         for (ResourceLocation item : rewards.items()) {
             MenuStyle.item(g, new ItemStack(BuiltInRegistries.ITEM.get(item)), ix, ry, 10);
@@ -201,6 +212,11 @@ final class MissionsTab implements MenuTab {
                     MenuStyle.GREEN);
         } else {
             Optional<Component> blocked = blockedReason(mission);
+            // PM-8B: prova so pelo quadro do Oficial de Provas (o servidor confere a distancia ao oficial).
+            if (blocked.isEmpty() && mission.category() == MissionDef.Category.EXAM
+                    && !DefenseOfficerEntity.EXAM_OFFICER.equals(giver)) {
+                blocked = Optional.of(Component.translatable("kn8.menu.missions.exam_only_officer"));
+            }
             MenuStyle.button(g, font, Component.translatable("kn8.menu.missions.accept"), bx, by, bw, 12,
                     blocked.isEmpty(), hovered, MenuStyle.RED);
             if (blocked.isEmpty()) {
@@ -258,6 +274,7 @@ final class MissionsTab implements MenuTab {
     private static int categoryColor(MissionDef.Category category) {
         return switch (category) {
             case STORY, BOSS -> MenuStyle.ACCENT;
+            case EXAM -> MenuStyle.GREEN;
             case DEFENSE, EMERGENCY, EXTERMINATION -> MenuStyle.RED;
             case PATROL, INVESTIGATION, ESCORT, RESCUE -> MenuStyle.ORANGE;
             case DISMANTLE -> MenuStyle.YELLOW;

@@ -2,6 +2,7 @@
 package com.kn8.common.data.def;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import com.mojang.serialization.Codec;
@@ -53,7 +54,12 @@ public record MissionDef(Category category, Optional<ResourceLocation> giver, Re
         ESCORT("escort"),
         BOSS("boss"),
         EMERGENCY("emergency"),
-        DISMANTLE("dismantle");
+        DISMANTLE("dismantle"),
+        /**
+         * PM-8B (Miguel: "prova acontece dentro da base e serve como um curso ou para fortificar o corpo"): aceita so
+         * com o Oficial de Provas perto, alvos dentro da base, sem merito por abate; da XP do corpo.
+         */
+        EXAM("exam");
 
         public static final Codec<Category> CODEC = StringRepresentable.fromEnum(Category::values);
 
@@ -125,15 +131,20 @@ public record MissionDef(Category category, Optional<ResourceLocation> giver, Re
         ).apply(i, Fail::new));
     }
 
-    /** {@code training_xp} (0.2): XP de treino de Release dado ao concluir. */
+    /**
+     * {@code training_xp} (0.2): XP de treino de Release dado ao concluir. {@code body_xp} (PM-8B): XP dos atributos
+     * do corpo por chave ({@code strength}, {@code speed}, {@code resistance}, {@code agility}).
+     */
     public record Rewards(int merit, Optional<ResourceLocation> promoteTo, List<ResourceLocation> items,
-            int trainingXp) {
-        public static final Rewards NONE = new Rewards(0, Optional.empty(), List.of(), 0);
+            int trainingXp, Map<String, Double> bodyXp) {
+        public static final Rewards NONE = new Rewards(0, Optional.empty(), List.of(), 0, Map.of());
         public static final Codec<Rewards> CODEC = RecordCodecBuilder.create(i -> i.group(
                 Codec.intRange(0, 1_000_000).optionalFieldOf("merit", 0).forGetter(Rewards::merit),
                 ResourceLocation.CODEC.optionalFieldOf("promote_to").forGetter(Rewards::promoteTo),
                 DefCodecs.IDS.optionalFieldOf("items", List.of()).forGetter(Rewards::items),
-                Codec.intRange(0, 1_000_000).optionalFieldOf("training_xp", 0).forGetter(Rewards::trainingXp)
+                Codec.intRange(0, 1_000_000).optionalFieldOf("training_xp", 0).forGetter(Rewards::trainingXp),
+                Codec.unboundedMap(Codec.STRING, Codec.doubleRange(0.0, 1_000_000.0)).optionalFieldOf("body_xp",
+                        Map.of()).forGetter(Rewards::bodyXp)
         ).apply(i, Rewards::new));
     }
 

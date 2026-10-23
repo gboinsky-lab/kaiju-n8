@@ -1,0 +1,31 @@
+{
+  "category": "exam",
+  "giver": "kn8:exam_officer",
+  "requires": {
+    "rank": "kn8:candidato"
+  },
+  "objectives": [
+    {
+      "type": "kill_kaiju",
+      "target": "kn8:primigenius_resurrected",
+      "count": 1
+    }
+  ],
+  "fail": {
+    "time_ticks": 6000,
+    "on_death": true
+  },
+  "rewards": {
+    "training_xp": 60,
+    "body_xp": {
+      "resistance": 160,
+      "strength": 40
+    }
+  },
+  "grading": {
+    "par_ticks": 3000,
+    "min_grade": "d"
+  },
+  "repeatable": true,
+  "cooldown_ticks": 12000
+}

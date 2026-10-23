@@ -9,15 +9,18 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 import com.kn8.common.attribute.PowerService;
+import com.kn8.common.base.DefenseOfficerEntity;
 import com.kn8.common.boss.BossService;
 import com.kn8.common.config.ServerConfig;
 import com.kn8.common.data.KN8Data;
 import com.kn8.common.invasion.InvasionService;
 import com.kn8.common.data.def.MissionDef;
+import com.kn8.common.destruction.ProtectedAreas;
 import com.kn8.common.registry.KN8Sounds;
 import com.kn8.common.soldier.SquadService;
 import com.kn8.common.world.KaijuSpawner;
 import com.kn8.core.career.MissionGrader;
+import com.kn8.core.power.BodyStat;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -51,7 +54,21 @@ public final class MissionService {
     public enum Result {
         OK, UNKNOWN, ALREADY_ACTIVE, ALREADY_DONE, COOLDOWN, RANK_TOO_LOW, MISSING_PREREQUISITE, TOO_MANY,
         /** PM-7: a prova pede um esquadrao minimo ({@code grading.min_squad}). */
-        SQUAD_TOO_SMALL
+        SQUAD_TOO_SMALL,
+        /** PM-8B: prova so com o Oficial de Provas perto (dentro de uma base). */
+        NEEDS_EXAM_OFFICER
+    }
+
+    /** PM-8B: prova = categoria {@code exam} (curso dentro da base); o resto e missao de campo. */
+    public static boolean isExam(MissionDef def) {
+        return def.category() == MissionDef.Category.EXAM;
+    }
+
+    private static boolean nearExamOfficer(ServerPlayer player) {
+        double range = ServerConfig.EXAM_OFFICER_RANGE.get();
+        return !player.serverLevel().getEntitiesOfClass(DefenseOfficerEntity.class,
+                player.getBoundingBox().inflate(range),
+                officer -> DefenseOfficerEntity.EXAM_OFFICER.equals(officer.giver())).isEmpty();
     }
 
     private static final int MAX_ACTIVE = 3;
@@ -83,6 +100,9 @@ public final class MissionService {
         if (!data.completed().containsAll(def.get().requires().completed())) {
             return Result.MISSING_PREREQUISITE;
         }
+        if (isExam(def.get()) && !nearExamOfficer(player)) {
+            return Result.NEEDS_EXAM_OFFICER;
+        }
         int minSquad = def.get().grading().map(MissionDef.Grading::minSquad).orElse(0);
         if (minSquad > 0 && SquadService.members(player).size() < minSquad) {
             return Result.SQUAD_TOO_SMALL;
@@ -99,9 +119,21 @@ public final class MissionService {
         }
         MissionDef def = KN8Data.MISSION.get(id, false).orElseThrow();
         int count = def.objectives().size();
+        // PM-8B: a prova acontece onde foi aceita (na base, junto do oficial); a area nao pode ser quebrada.
+        Optional<BlockPos> origin = isExam(def) ? Optional.of(player.blockPosition()) : Optional.empty();
         CareerData.MissionProgress progress = new CareerData.MissionProgress(
                 new ArrayList<>(Collections.nCopies(count, 0)), player.level().getGameTime(),
-                new ArrayList<>(Collections.nCopies(count, CareerView.NO_POINT)));
+                new ArrayList<>(Collections.nCopies(count, CareerView.NO_POINT)), new CareerData.MissionStats(),
+                origin);
+        origin.ifPresent(spot -> {
+            int r = ServerConfig.EXAM_PROTECT_RADIUS.get();
+            if (r > 0) {
+                ProtectedAreas.get(player.serverLevel()).add(ExamTargets.areaName(player.getUUID(), id),
+                        spot.offset(-r, -r, -r), spot.offset(r, r, r));
+            }
+            player.sendSystemMessage(Component.translatable("kn8.mission.exam_area",
+                    (int) Math.round(ServerConfig.EXAM_LEAVE_DISTANCE.get())).withStyle(ChatFormatting.GREEN));
+        });
         CareerService.data(player).active().put(id, progress);
         player.sendSystemMessage(Component.translatable("kn8.mission.accepted", name(id))
                 .withStyle(ChatFormatting.AQUA));
@@ -114,9 +146,11 @@ public final class MissionService {
     }
 
     public static boolean abandon(ServerPlayer player, ResourceLocation id) {
-        if (CareerService.data(player).active().remove(id) == null) {
+        CareerData.MissionProgress removed = CareerService.data(player).active().remove(id);
+        if (removed == null) {
             return false;
         }
+        endExam(player, id, removed);
         player.sendSystemMessage(Component.translatable("kn8.mission.abandoned", name(id))
                 .withStyle(ChatFormatting.GRAY));
         CareerService.changed(player);
@@ -183,10 +217,21 @@ public final class MissionService {
 
     /** Um evento de jogo (abate, desmonte, chefe derrotado) conta para o objetivo ATUAL das missoes ativas. */
     public static void progress(ServerPlayer player, MissionDef.ObjectiveType type, ResourceLocation target) {
+        progress(player, type, target, false);
+    }
+
+    /**
+     * {@code fromExam}: evento de um kaiju de prova. Prova aceita com o oficial (com lugar) so conta os kaiju dela, e
+     * os kaiju dela nao contam para as missoes de campo (a prova nao vira atalho nem farm).
+     */
+    private static void progress(ServerPlayer player, MissionDef.ObjectiveType type, ResourceLocation target,
+            boolean fromExam) {
         CareerData data = CareerService.data(player);
         for (Map.Entry<ResourceLocation, CareerData.MissionProgress> entry : List.copyOf(data.active().entrySet())) {
             Optional<MissionDef> def = KN8Data.MISSION.get(entry.getKey(), false);
-            if (def.isEmpty()) {
+            // Defesa de invasao conta igual nos dois (a invasao da prova de Capitao nao marca os kaiju).
+            if (def.isEmpty() || (type != MissionDef.ObjectiveType.DEFEND_INVASION
+                    && entry.getValue().origin().isPresent() != fromExam)) {
                 continue;
             }
             int index = currentObjective(def.get(), entry.getValue());
@@ -214,6 +259,12 @@ public final class MissionService {
             Optional<Integer> limit = def.get().fail().timeTicks();
             if (limit.isPresent() && now - entry.getValue().acceptedTick() > limit.get()) {
                 fail(player, entry.getKey(), "time");
+                continue;
+            }
+            Optional<BlockPos> origin = entry.getValue().origin();
+            if (origin.isPresent()
+                    && horizontalDistance(player, origin.get()) > ServerConfig.EXAM_LEAVE_DISTANCE.get()) {
+                fail(player, entry.getKey(), "left");
                 continue;
             }
             int index = currentObjective(def.get(), entry.getValue());
@@ -256,8 +307,7 @@ public final class MissionService {
             activateObjective(player, id, def, progress, next);
         } else if (objective.type() == MissionDef.ObjectiveType.PATROL) {
             // Proximo ponto da patrulha.
-            setPoint(progress, index, KaijuSpawner.surfaceAround(player.serverLevel(), player.blockPosition(),
-                    ServerConfig.MISSION_PATROL_MIN.get(), ServerConfig.MISSION_PATROL_MAX.get(), player.getRandom()));
+            setPoint(progress, index, patrolPoint(player, progress));
             player.displayClientMessage(Component.translatable("kn8.mission.patrol_point", value, objective.count())
                     .withStyle(ChatFormatting.GREEN), true);
         }
@@ -269,20 +319,33 @@ public final class MissionService {
             CareerData.MissionProgress progress, int index) {
         MissionDef.Objective objective = def.objectives().get(index);
         ServerLevel level = player.serverLevel();
-        BlockPos area = KaijuSpawner.surfaceAround(level, player.blockPosition(), ServerConfig.MISSION_AREA_MIN.get(),
-                ServerConfig.MISSION_AREA_MAX.get(), player.getRandom());
+        // PM-8B: na prova tudo acontece perto de onde ela foi aceita (dentro da base); na missao, em campo.
+        Optional<BlockPos> origin = progress.origin();
+        BlockPos center = origin.orElse(player.blockPosition());
+        double areaMin = origin.isPresent() ? ServerConfig.EXAM_AREA_MIN.get() : ServerConfig.MISSION_AREA_MIN.get();
+        double areaMax = origin.isPresent() ? ServerConfig.EXAM_AREA_MAX.get() : ServerConfig.MISSION_AREA_MAX.get();
+        BlockPos area = KaijuSpawner.surfaceAround(level, center, areaMin, areaMax, player.getRandom());
+        double spread = origin.isPresent() ? 3 : 8;
         switch (objective.type()) {
             case KILL_KAIJU, DISMANTLE -> {
                 objective.target().ifPresent(species -> {
                     for (int i = 0; i < objective.count() - progress.progress().get(index); i++) {
-                        BlockPos spot = KaijuSpawner.surfaceAround(level, area, 0, 8, player.getRandom());
-                        KaijuSpawner.spawn(level, species, spot);
+                        BlockPos spot = KaijuSpawner.surfaceAround(level, area, 0, spread, player.getRandom());
+                        KaijuSpawner.spawn(level, species, spot).ifPresent(kaiju -> {
+                            if (origin.isPresent()) {
+                                ExamTargets.mark(kaiju, player.getUUID(), id);
+                            }
+                        });
                     }
                 });
                 setPoint(progress, index, area);
             }
             case DEFEAT_BOSS -> {
-                objective.target().ifPresent(boss -> BossService.spawn(level, boss, area));
+                objective.target().ifPresent(boss -> BossService.spawn(level, boss, area).ifPresent(kaiju -> {
+                    if (origin.isPresent()) {
+                        ExamTargets.mark(kaiju, player.getUUID(), id);
+                    }
+                }));
                 setPoint(progress, index, area);
             }
             case REACH_AREA -> setPoint(progress, index, area);
@@ -291,9 +354,7 @@ public final class MissionService {
                 objective.target().ifPresent(invasion -> InvasionService.start(level, invasion, area));
                 setPoint(progress, index, InvasionService.active(level).map(value -> value.center()).orElse(area));
             }
-            case PATROL -> setPoint(progress, index, KaijuSpawner.surfaceAround(level, player.blockPosition(),
-                    ServerConfig.MISSION_PATROL_MIN.get(), ServerConfig.MISSION_PATROL_MAX.get(),
-                    player.getRandom()));
+            case PATROL -> setPoint(progress, index, patrolPoint(player, progress));
         }
         player.sendSystemMessage(Component.translatable("kn8.mission.objective." + objective.type()
                 .getSerializedName(), objective.target().map(MissionService::targetName)
@@ -304,6 +365,7 @@ public final class MissionService {
     private static void complete(ServerPlayer player, ResourceLocation id, MissionDef def) {
         CareerData data = CareerService.data(player);
         CareerData.MissionProgress progress = data.active().remove(id);
+        endExam(player, id, progress);
         MissionGrader.Result result = evaluate(player, def, progress);
         if (def.grading().isPresent() && !result.passed()) {
             failExam(player, id, def, progress, result);
@@ -324,6 +386,15 @@ public final class MissionService {
         }
         if (rewards.trainingXp() > 0) {
             PowerService.addTrainingXp(player, rewards.trainingXp());
+        }
+        // PM-8B: a prova (curso) fortalece o corpo.
+        for (BodyStat stat : BodyStat.values()) {
+            double xp = rewards.bodyXp().getOrDefault(stat.key(), 0.0);
+            if (xp > 0) {
+                PowerService.addBodyXp(player, stat, xp);
+                player.sendSystemMessage(Component.translatable("kn8.mission.body_xp", Math.round(xp),
+                        Component.translatable("kn8.body." + stat.key())).withStyle(ChatFormatting.AQUA));
+            }
         }
         player.connection.send(new ClientboundSetTitleTextPacket(Component.translatable("kn8.mission.complete")
                 .withStyle(ChatFormatting.GOLD)));
@@ -453,7 +524,10 @@ public final class MissionService {
     }
 
     private static void fail(ServerPlayer player, ResourceLocation id, String reason) {
-        CareerService.data(player).active().remove(id);
+        CareerData.MissionProgress removed = CareerService.data(player).active().remove(id);
+        if (removed != null) {
+            endExam(player, id, removed);
+        }
         player.sendSystemMessage(Component.translatable("kn8.mission.failed." + reason, name(id))
                 .withStyle(ChatFormatting.RED));
         player.level().playSound(null, player.blockPosition(), KN8Sounds.GUARD_BREAK.get(), SoundSource.PLAYERS,
@@ -462,6 +536,30 @@ public final class MissionService {
     }
 
     // --- auxiliares ----------------------------------------------------------------------------------------------
+
+    /** Fim da prova (qualquer motivo): somem os kaiju dela e a area volta a poder ser quebrada. */
+    private static void endExam(ServerPlayer player, ResourceLocation id, CareerData.MissionProgress progress) {
+        progress.origin().ifPresent(origin -> {
+            ExamTargets.clear(player.serverLevel(), player.getUUID(), id, origin,
+                    ServerConfig.EXAM_LEAVE_DISTANCE.get() + 32);
+            ProtectedAreas.get(player.serverLevel()).remove(ExamTargets.areaName(player.getUUID(), id));
+        });
+    }
+
+    /** Ponto de patrulha: em campo longe do jogador; na prova, perto de onde ela foi aceita. */
+    private static BlockPos patrolPoint(ServerPlayer player, CareerData.MissionProgress progress) {
+        Optional<BlockPos> origin = progress.origin();
+        return KaijuSpawner.surfaceAround(player.serverLevel(), origin.orElse(player.blockPosition()),
+                origin.isPresent() ? ServerConfig.EXAM_AREA_MIN.get() : ServerConfig.MISSION_PATROL_MIN.get(),
+                origin.isPresent() ? ServerConfig.EXAM_AREA_MAX.get() : ServerConfig.MISSION_PATROL_MAX.get(),
+                player.getRandom());
+    }
+
+    /** PM-8B: kaiju de prova abatido: conta so para a prova do dono (sem merito nem XP de abate). */
+    public static void onExamKill(ServerPlayer owner, ResourceLocation species, Optional<ResourceLocation> boss) {
+        progress(owner, MissionDef.ObjectiveType.KILL_KAIJU, species, true);
+        boss.ifPresent(id -> progress(owner, MissionDef.ObjectiveType.DEFEAT_BOSS, id, true));
+    }
 
     /** Primeiro objetivo nao concluido; -1 = todos concluidos. */
     static int currentObjective(MissionDef def, CareerData.MissionProgress progress) {

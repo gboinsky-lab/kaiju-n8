@@ -1,5 +1,5 @@
 {
-  "category": "story",
+  "category": "exam",
   "giver": "kn8:exam_officer",
   "requires": {
     "rank": "kn8:candidato",
@@ -29,7 +29,11 @@
   "rewards": {
     "merit": 100,
     "training_xp": 300,
-    "promote_to": "kn8:oficial"
+    "promote_to": "kn8:oficial",
+    "body_xp": {
+      "strength": 150,
+      "resistance": 100
+    }
   },
   "grading": {
     "par_ticks": 6000,

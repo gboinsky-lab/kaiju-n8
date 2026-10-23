@@ -8,12 +8,15 @@ import java.util.UUID;
 import java.util.stream.IntStream;
 
 import com.kn8.KN8Constants;
+import com.kn8.common.base.DefenseOfficerEntity;
 import com.kn8.common.career.CareerData;
 import com.kn8.common.career.CareerService;
 import com.kn8.common.career.MissionService;
 import com.kn8.common.data.def.KaijuClass;
+import com.kn8.common.registry.KN8Entities;
 import com.mojang.authlib.GameProfile;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
@@ -51,6 +54,12 @@ public final class ExamGameTests {
         return player;
     }
 
+    /** PM-8B: prova so se aceita com o Oficial de Provas perto. */
+    private static void examOfficer(GameTestHelper helper) {
+        DefenseOfficerEntity officer = helper.spawn(KN8Entities.DEFENSE_OFFICER.get(), new BlockPos(5, 1, 4));
+        officer.setGiver(DefenseOfficerEntity.EXAM_OFFICER);
+    }
+
     private static void start(GameTestHelper helper, FakePlayer player, ResourceLocation id, int objectives) {
         CareerService.data(player).active().put(id, new CareerData.MissionProgress(
                 new ArrayList<>(Collections.nCopies(objectives, 0)), helper.getLevel().getGameTime(),
@@ -70,6 +79,7 @@ public final class ExamGameTests {
     @GameTest(template = TEMPLATE)
     public static void marksmanExamFailsOnAimAndPassesOnce(GameTestHelper helper) {
         FakePlayer player = player(helper, "marksman");
+        examOfficer(helper);
         CareerService.setRank(player, KN8Constants.id("oficial"));
         CareerData data = CareerService.data(player);
         helper.assertTrue(MissionService.canAccept(player, MARKSMAN) == MissionService.Result.OK,
@@ -109,6 +119,7 @@ public final class ExamGameTests {
     @GameTest(template = TEMPLATE)
     public static void higherRanksNeedTheirExam(GameTestHelper helper) {
         FakePlayer player = player(helper, "ranks");
+        examOfficer(helper);
         CareerService.setRank(player, KN8Constants.id("oficial"));
         CareerService.addMerit(player, 20_000);
         helper.assertTrue(rank(player).equals("oficial"), "Sem a Prova de Tiro deveria ficar Oficial, veio "
