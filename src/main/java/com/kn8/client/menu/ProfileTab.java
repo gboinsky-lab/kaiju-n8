@@ -186,6 +186,10 @@ final class ProfileTab implements MenuTab {
         stat(g, font, x, st + 24, w, "kn8.menu.profile.dismantled", String.valueOf(stats.dismantled()));
         stat(g, font, x, st + 38, w, "kn8.menu.profile.missions_done", String.valueOf(stats.missionsDone()));
         stat(g, font, x, st + 52, w, "kn8.menu.profile.invasions", String.valueOf(stats.invasionsDefended()));
+        // PM-7: precisao da carreira (tiros de arma de fogo que pegaram um kaiju).
+        stat(g, font, x, st + 66, w, "kn8.menu.profile.accuracy", stats.shotsFired() == 0 ? "-"
+                : Math.round(100.0 * stats.shotsHit() / stats.shotsFired()) + "% (" + stats.shotsHit() + "/"
+                        + stats.shotsFired() + ")");
     }
 
     private static void stat(GuiGraphics g, Font font, int x, int y, int w, String key, String value) {

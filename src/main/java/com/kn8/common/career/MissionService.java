@@ -3,8 +3,10 @@ package com.kn8.common.career;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import com.kn8.common.attribute.PowerService;
 import com.kn8.common.boss.BossService;
@@ -13,7 +15,9 @@ import com.kn8.common.data.KN8Data;
 import com.kn8.common.invasion.InvasionService;
 import com.kn8.common.data.def.MissionDef;
 import com.kn8.common.registry.KN8Sounds;
+import com.kn8.common.soldier.SquadService;
 import com.kn8.common.world.KaijuSpawner;
+import com.kn8.core.career.MissionGrader;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -45,7 +49,9 @@ public final class MissionService {
     }
 
     public enum Result {
-        OK, UNKNOWN, ALREADY_ACTIVE, ALREADY_DONE, COOLDOWN, RANK_TOO_LOW, MISSING_PREREQUISITE, TOO_MANY
+        OK, UNKNOWN, ALREADY_ACTIVE, ALREADY_DONE, COOLDOWN, RANK_TOO_LOW, MISSING_PREREQUISITE, TOO_MANY,
+        /** PM-7: a prova pede um esquadrao minimo ({@code grading.min_squad}). */
+        SQUAD_TOO_SMALL
     }
 
     private static final int MAX_ACTIVE = 3;
@@ -77,6 +83,10 @@ public final class MissionService {
         if (!data.completed().containsAll(def.get().requires().completed())) {
             return Result.MISSING_PREREQUISITE;
         }
+        int minSquad = def.get().grading().map(MissionDef.Grading::minSquad).orElse(0);
+        if (minSquad > 0 && SquadService.members(player).size() < minSquad) {
+            return Result.SQUAD_TOO_SMALL;
+        }
         return Result.OK;
     }
 
@@ -97,6 +107,7 @@ public final class MissionService {
                 .withStyle(ChatFormatting.AQUA));
         player.level().playSound(null, player.blockPosition(), SoundEvents.NOTE_BLOCK_CHIME.value(),
                 SoundSource.PLAYERS, 0.8F, 1.2F);
+        def.grading().ifPresent(grading -> showRequirements(player, grading));
         activateObjective(player, id, def, progress, 0);
         CareerService.changed(player);
         return Result.OK;
@@ -110,6 +121,62 @@ public final class MissionService {
                 .withStyle(ChatFormatting.GRAY));
         CareerService.changed(player);
         return true;
+    }
+
+    // --- medidas para a avaliacao (PM-7) --------------------------------------------------------------------------
+
+    /** Tiro de arma de fogo do jogador; {@code hit} = o raio pegou um kaiju. Conta na carreira e nas missoes. */
+    public static void onShot(ServerPlayer player, boolean hit) {
+        CareerService.data(player).addShot(hit);
+        forEachActive(player, stats -> {
+            stats.shots++;
+            if (hit) {
+                stats.hits++;
+            }
+        });
+        CareerService.changed(player);
+    }
+
+    public static void onDamageDealt(ServerPlayer player, float amount) {
+        forEachActive(player, stats -> stats.damageDealt += amount);
+    }
+
+    public static void onDamageTaken(ServerPlayer player, float amount) {
+        forEachActive(player, stats -> stats.damageTaken += amount);
+    }
+
+    /** Soldado do esquadrao do jogador morreu. */
+    public static void onAllyLost(ServerPlayer player) {
+        forEachActive(player, stats -> stats.alliesLost++);
+    }
+
+    private static void forEachActive(ServerPlayer player, Consumer<CareerData.MissionStats> fn) {
+        for (CareerData.MissionProgress progress : CareerService.data(player).active().values()) {
+            fn.accept(progress.stats());
+        }
+    }
+
+    /** Nota da missao com o que foi medido ate agora (requisitos da prova, se houver). */
+    public static MissionGrader.Result evaluate(ServerPlayer player, MissionDef def,
+            CareerData.MissionProgress progress) {
+        CareerData.MissionStats s = progress.stats();
+        long ticks = Math.max(0, player.level().getGameTime() - progress.acceptedTick());
+        MissionGrader.Stats stats = new MissionGrader.Stats(s.shots, s.hits, s.damageDealt, s.damageTaken,
+                player.getMaxHealth(), s.alliesLost, ticks);
+        return MissionGrader.grade(stats, requirements(def), gradeParams());
+    }
+
+    static MissionGrader.Requirements requirements(MissionDef def) {
+        return def.grading().map(g -> new MissionGrader.Requirements(g.minAccuracy().orElse(-1.0), g.minShots(),
+                g.maxDamageTaken().orElse(-1.0), g.maxAlliesLost().orElse(-1), g.parTicks().orElse(-1),
+                MissionGrader.Grade.valueOf(g.minGrade().toUpperCase()))).orElse(MissionGrader.Requirements.NONE);
+    }
+
+    public static MissionGrader.Params gradeParams() {
+        return new MissionGrader.Params(ServerConfig.GRADE_S.get(), ServerConfig.GRADE_A.get(),
+                ServerConfig.GRADE_B.get(), ServerConfig.GRADE_C.get(), ServerConfig.GRADE_ACCURACY_FULL.get(),
+                ServerConfig.GRADE_DAMAGE_ZERO.get(), ServerConfig.GRADE_ALLY_LOST_PENALTY.get(),
+                ServerConfig.GRADE_MIN_SHOTS.get());
     }
 
     // --- progresso -----------------------------------------------------------------------------------------------
@@ -236,7 +303,12 @@ public final class MissionService {
 
     private static void complete(ServerPlayer player, ResourceLocation id, MissionDef def) {
         CareerData data = CareerService.data(player);
-        data.active().remove(id);
+        CareerData.MissionProgress progress = data.active().remove(id);
+        MissionGrader.Result result = evaluate(player, def, progress);
+        if (def.grading().isPresent() && !result.passed()) {
+            failExam(player, id, def, progress, result);
+            return;
+        }
         data.completed().add(id);
         data.addMissionDone();
         if (def.repeatable() && def.cooldownTicks() > 0) {
@@ -265,9 +337,119 @@ public final class MissionService {
                 CareerService.promote(player, rank);
             }
         });
+        // PM-7: nota e resumo uma vez por conclusao (a missao ja saiu das ativas); merito extra so em S e A.
+        int bonus = MissionGrader.meritBonus(rewards.merit(), result.grade(), ServerConfig.GRADE_MERIT_BONUS_S.get(),
+                ServerConfig.GRADE_MERIT_BONUS_A.get());
+        String best = data.bestGrades().get(id);
+        if (best == null || result.grade().atLeast(MissionGrader.Grade.valueOf(best))) {
+            data.bestGrades().put(id, result.grade().name());
+        }
+        sendEvaluation(player, id, def, progress, result, bonus);
         // O merito tambem tenta promover (a missao concluida pode ser a de avaliacao da proxima patente).
-        CareerService.addMerit(player, rewards.merit());
+        CareerService.addMerit(player, rewards.merit() + bonus);
         CareerService.changed(player);
+    }
+
+    /** Prova reprovada: nao conclui, nao recompensa e so volta depois da espera. */
+    private static void failExam(ServerPlayer player, ResourceLocation id, MissionDef def,
+            CareerData.MissionProgress progress, MissionGrader.Result result) {
+        int retry = def.grading().map(MissionDef.Grading::retryCooldownTicks).orElse(0);
+        if (retry > 0) {
+            CareerService.data(player).cooldowns().put(id, player.level().getGameTime() + retry);
+        }
+        player.connection.send(new ClientboundSetTitleTextPacket(Component.translatable("kn8.mission.eval.failed_title")
+                .withStyle(ChatFormatting.RED)));
+        player.connection.send(new ClientboundSetSubtitleTextPacket(name(id)));
+        sendEvaluation(player, id, def, progress, result, 0);
+        player.sendSystemMessage(Component.translatable("kn8.mission.eval.retry", Math.max(1, retry / 1200))
+                .withStyle(ChatFormatting.RED));
+        player.level().playSound(null, player.blockPosition(), KN8Sounds.GUARD_BREAK.get(), SoundSource.PLAYERS,
+                0.6F, 0.7F);
+        CareerService.changed(player);
+    }
+
+    /** Resumo no chat: nota, medidas, linhas da prova e uma sugestao pela parte mais fraca. */
+    private static void sendEvaluation(ServerPlayer player, ResourceLocation id, MissionDef def,
+            CareerData.MissionProgress progress, MissionGrader.Result result, int bonus) {
+        CareerData.MissionStats s = progress.stats();
+        long ticks = Math.max(0, player.level().getGameTime() - progress.acceptedTick());
+        player.sendSystemMessage(Component.translatable("kn8.mission.eval.header", name(id),
+                Component.literal(result.grade().name()).withStyle(gradeColor(result.grade()), ChatFormatting.BOLD),
+                result.score()).withStyle(ChatFormatting.GOLD));
+        Component line = Component.translatable("kn8.mission.eval.stats", clock(ticks),
+                Math.round(s.damageDealt), oneDecimal(s.damageTaken),
+                Math.round(100 * s.damageTaken / Math.max(1.0F, player.getMaxHealth())), s.alliesLost);
+        if (s.shots > 0) {
+            line = line.copy().append(Component.translatable("kn8.mission.eval.accuracy",
+                    Math.round(100.0 * s.hits / s.shots), s.hits, s.shots));
+        }
+        player.sendSystemMessage(line.copy().withStyle(ChatFormatting.GRAY));
+        if (def.grading().isPresent()) {
+            for (MissionGrader.Check check : result.checks()) {
+                player.sendSystemMessage(Component.literal(check.ok() ? " \u2714 " : " \u2718 ")
+                        .append(checkText(check.key(), check.limit()))
+                        .withStyle(check.ok() ? ChatFormatting.GREEN : ChatFormatting.RED));
+            }
+            player.sendSystemMessage(Component.translatable(result.passed() ? "kn8.mission.eval.passed"
+                    : "kn8.mission.eval.failed").withStyle(result.passed() ? ChatFormatting.GREEN : ChatFormatting.RED,
+                    ChatFormatting.BOLD));
+        }
+        if (bonus > 0) {
+            player.sendSystemMessage(Component.translatable("kn8.mission.eval.bonus", bonus)
+                    .withStyle(ChatFormatting.YELLOW));
+        }
+        String weakest = result.weakest();
+        if (!weakest.isEmpty()) {
+            player.sendSystemMessage(Component.translatable("kn8.mission.eval.tip." + weakest)
+                    .withStyle(ChatFormatting.DARK_AQUA));
+        }
+    }
+
+    /** Requisitos da prova no chat ao aceitar (o menu mostra os mesmos). */
+    private static void showRequirements(ServerPlayer player, MissionDef.Grading grading) {
+        player.sendSystemMessage(Component.translatable("kn8.mission.exam_requirements")
+                .withStyle(ChatFormatting.AQUA, ChatFormatting.BOLD));
+        grading.minAccuracy().ifPresent(value -> player.sendSystemMessage(Component.literal(" - ")
+                .append(Component.translatable("kn8.mission.eval.check.accuracy_shots", Math.round(value * 100),
+                        grading.minShots())).withStyle(ChatFormatting.AQUA)));
+        grading.maxDamageTaken().ifPresent(value -> player.sendSystemMessage(Component.literal(" - ")
+                .append(checkText("damage", value)).withStyle(ChatFormatting.AQUA)));
+        grading.maxAlliesLost().ifPresent(value -> player.sendSystemMessage(Component.literal(" - ")
+                .append(checkText("allies", value)).withStyle(ChatFormatting.AQUA)));
+        grading.parTicks().ifPresent(value -> player.sendSystemMessage(Component.literal(" - ")
+                .append(Component.translatable("kn8.mission.eval.check.par", clock(value)))
+                .withStyle(ChatFormatting.AQUA)));
+        player.sendSystemMessage(Component.literal(" - ").append(checkText("grade",
+                MissionGrader.Grade.valueOf(grading.minGrade().toUpperCase()).ordinal()))
+                .withStyle(ChatFormatting.AQUA));
+    }
+
+    private static Component checkText(String key, double limit) {
+        Object value = switch (key) {
+            case "accuracy", "damage" -> Math.round(limit * 100);
+            case "grade" -> MissionGrader.Grade.values()[(int) limit].name();
+            default -> (int) limit;
+        };
+        return Component.translatable("kn8.mission.eval.check." + key, value);
+    }
+
+    private static ChatFormatting gradeColor(MissionGrader.Grade grade) {
+        return switch (grade) {
+            case S -> ChatFormatting.LIGHT_PURPLE;
+            case A -> ChatFormatting.GREEN;
+            case B -> ChatFormatting.AQUA;
+            case C -> ChatFormatting.YELLOW;
+            case D -> ChatFormatting.RED;
+        };
+    }
+
+    static String clock(long ticks) {
+        long seconds = ticks / 20;
+        return seconds / 60 + ":" + String.format("%02d", seconds % 60);
+    }
+
+    private static String oneDecimal(float value) {
+        return String.format(Locale.ROOT, "%.1f", value);
     }
 
     private static void fail(ServerPlayer player, ResourceLocation id, String reason) {

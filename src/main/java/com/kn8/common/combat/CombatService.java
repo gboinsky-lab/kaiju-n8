@@ -6,6 +6,7 @@ import java.util.Optional;
 import com.kn8.KN8Constants;
 import com.kn8.common.anim.AnimationBridge;
 import com.kn8.common.attribute.PowerService;
+import com.kn8.common.career.MissionService;
 import com.kn8.common.config.ServerConfig;
 import com.kn8.common.data.def.KaijuClass;
 import com.kn8.common.data.def.WeaponDef;
@@ -357,6 +358,9 @@ public final class CombatService {
             // 0.1-B: clarao e fumaca na boca do cano.
             VfxService.play((ServerLevel) player.level(), VfxService.WEAPON_FIRE, eye.add(look.scale(MUZZLE_DISTANCE)),
                     look, 1.0F, 0.0F, player);
+            // PM-7: precisao (acerto = o raio pegou um kaiju ou uma parte dele).
+            MissionService.onShot(player, found.map(hit -> hit instanceof PartEntity<?> part ? part.getParent() : hit)
+                    .filter(KaijuEntity.class::isInstance).isPresent());
         }
         if (found.isEmpty()) {
             return;

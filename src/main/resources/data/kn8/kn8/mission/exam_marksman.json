@@ -1,0 +1,30 @@
+{
+  "category": "story",
+  "giver": "kn8:exam_officer",
+  "requires": {
+    "rank": "kn8:oficial"
+  },
+  "objectives": [
+    {
+      "type": "kill_kaiju",
+      "target": "kn8:primigenius",
+      "count": 3
+    }
+  ],
+  "fail": {
+    "time_ticks": 12000,
+    "on_death": true
+  },
+  "rewards": {
+    "merit": 150,
+    "training_xp": 200
+  },
+  "grading": {
+    "min_accuracy": 0.35,
+    "min_shots": 15,
+    "max_damage_taken": 1.0,
+    "par_ticks": 4800,
+    "min_grade": "c",
+    "retry_cooldown_ticks": 12000
+  }
+}

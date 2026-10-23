@@ -184,6 +184,7 @@ public final class CareerService {
     }
 
     public static void onKaijuDamaged(ServerPlayer player, float damage) {
+        MissionService.onDamageDealt(player, damage);
         int xp = (int) Math.round(damage * ServerConfig.XP_PER_KAIJU_DAMAGE.get());
         if (xp > 0) {
             PowerService.addTrainingXp(player, xp);
@@ -232,8 +233,8 @@ public final class CareerService {
                 .filter(id -> !data.completed().contains(id)).map(ResourceLocation::toString).orElse("");
         return new CareerView(rank, nextId, data.merit(), nextMerit, nextMission,
                 new CareerView.Stats(data.kaijuKills(), data.dismantled(), data.missionsDone(),
-                        data.invasionsDefended()),
-                MissionService.activeView(player), List.copyOf(data.completed()));
+                        data.invasionsDefended(), data.shotsFired(), data.shotsHit()),
+                MissionService.activeView(player), List.copyOf(data.completed()), Map.copyOf(data.bestGrades()));
     }
 
     /** Marca o canal privado da carreira para envio no fim do tick. */

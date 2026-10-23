@@ -23,15 +23,54 @@ import net.minecraft.resources.ResourceLocation;
 public final class CareerData {
 
     /**
-     * Progresso de uma missao aceita: um contador por objetivo, o tick em que foi aceita e os pontos do mundo da
-     * missao (patrulha/area a alcancar, na ordem dos objetivos que usam ponto).
+     * Progresso de uma missao aceita: um contador por objetivo, o tick em que foi aceita, os pontos do mundo da
+     * missao (patrulha/area a alcancar, na ordem dos objetivos que usam ponto) e, desde a PM-7, o que foi medido
+     * nela para a avaliacao (missao salva antes da PM-7 comeca com tudo zerado).
      */
-    public record MissionProgress(List<Integer> progress, long acceptedTick, List<BlockPos> points) {
+    public record MissionProgress(List<Integer> progress, long acceptedTick, List<BlockPos> points,
+            MissionStats stats) {
         public static final Codec<MissionProgress> CODEC = RecordCodecBuilder.create(i -> i.group(
                 Codec.INT.listOf().fieldOf("progress").forGetter(MissionProgress::progress),
                 Codec.LONG.optionalFieldOf("accepted", 0L).forGetter(MissionProgress::acceptedTick),
-                BlockPos.CODEC.listOf().optionalFieldOf("points", List.of()).forGetter(MissionProgress::points)
-        ).apply(i, MissionProgress::new));
+                BlockPos.CODEC.listOf().optionalFieldOf("points", List.of()).forGetter(MissionProgress::points),
+                MissionStats.CODEC.optionalFieldOf("stats").forGetter(p -> Optional.of(p.stats()))
+        ).apply(i, (progress, accepted, points, stats) -> new MissionProgress(progress, accepted, points,
+                stats.orElseGet(MissionStats::new))));
+
+        public MissionProgress(List<Integer> progress, long acceptedTick, List<BlockPos> points) {
+            this(progress, acceptedTick, points, new MissionStats());
+        }
+    }
+
+    /**
+     * PM-7: medidas de uma missao em andamento (tiros dados e acertados em kaiju, dano causado em kaiju, dano
+     * recebido, aliados do esquadrao perdidos). Mudam no lugar; salvas com o progresso.
+     */
+    public static final class MissionStats {
+        public static final Codec<MissionStats> CODEC = RecordCodecBuilder.create(i -> i.group(
+                Codec.INT.optionalFieldOf("shots", 0).forGetter(s -> s.shots),
+                Codec.INT.optionalFieldOf("hits", 0).forGetter(s -> s.hits),
+                Codec.FLOAT.optionalFieldOf("dealt", 0.0F).forGetter(s -> s.damageDealt),
+                Codec.FLOAT.optionalFieldOf("taken", 0.0F).forGetter(s -> s.damageTaken),
+                Codec.INT.optionalFieldOf("allies_lost", 0).forGetter(s -> s.alliesLost)
+        ).apply(i, MissionStats::new));
+
+        public int shots;
+        public int hits;
+        public float damageDealt;
+        public float damageTaken;
+        public int alliesLost;
+
+        public MissionStats() {
+        }
+
+        private MissionStats(int shots, int hits, float damageDealt, float damageTaken, int alliesLost) {
+            this.shots = shots;
+            this.hits = hits;
+            this.damageDealt = damageDealt;
+            this.damageTaken = damageTaken;
+            this.alliesLost = alliesLost;
+        }
     }
 
     // Persistidos
@@ -44,6 +83,10 @@ public final class CareerData {
     private final Map<ResourceLocation, MissionProgress> active = new HashMap<>();
     private final Set<ResourceLocation> completed = new HashSet<>();
     private final Map<ResourceLocation, Long> cooldownUntil = new HashMap<>();
+    // PM-7: precisao de toda a carreira e melhor nota de cada missao (letra S..D)
+    private int shotsFired;
+    private int shotsHit;
+    private final Map<ResourceLocation, String> bestGrades = new HashMap<>();
 
     // Volateis
     private long dummyWindowStart = Long.MIN_VALUE;
@@ -61,7 +104,11 @@ public final class CareerData {
                     .forGetter(data -> List.copyOf(data.completed)),
             Codec.unboundedMap(ResourceLocation.CODEC, Codec.LONG).optionalFieldOf("cooldowns", Map.of())
                     .forGetter(data -> Map.copyOf(data.cooldownUntil)),
-            Codec.INT.optionalFieldOf("invasions_defended", 0).forGetter(CareerData::invasionsDefended)
+            Codec.INT.optionalFieldOf("invasions_defended", 0).forGetter(CareerData::invasionsDefended),
+            Codec.INT.optionalFieldOf("shots_fired", 0).forGetter(CareerData::shotsFired),
+            Codec.INT.optionalFieldOf("shots_hit", 0).forGetter(CareerData::shotsHit),
+            Codec.unboundedMap(ResourceLocation.CODEC, Codec.STRING).optionalFieldOf("best_grades", Map.of())
+                    .forGetter(data -> Map.copyOf(data.bestGrades))
     ).apply(i, CareerData::new));
 
     public CareerData() {
@@ -69,16 +116,20 @@ public final class CareerData {
 
     private CareerData(Optional<ResourceLocation> rank, int merit, int kaijuKills, int dismantled, int missionsDone,
             Map<ResourceLocation, MissionProgress> active, List<ResourceLocation> completed,
-            Map<ResourceLocation, Long> cooldowns, int invasionsDefended) {
+            Map<ResourceLocation, Long> cooldowns, int invasionsDefended, int shotsFired, int shotsHit,
+            Map<ResourceLocation, String> bestGrades) {
         this.rank = rank.orElse(null);
         this.merit = merit;
         this.kaijuKills = kaijuKills;
         this.dismantled = dismantled;
         this.missionsDone = missionsDone;
         this.invasionsDefended = invasionsDefended;
+        this.shotsFired = shotsFired;
+        this.shotsHit = shotsHit;
+        this.bestGrades.putAll(bestGrades);
         // O Codec devolve listas imutaveis: o progresso e alterado no lugar.
         active.forEach((id, progress) -> this.active.put(id, new MissionProgress(new ArrayList<>(progress.progress()),
-                progress.acceptedTick(), new ArrayList<>(progress.points()))));
+                progress.acceptedTick(), new ArrayList<>(progress.points()), progress.stats())));
         this.completed.addAll(completed);
         this.cooldownUntil.putAll(cooldowns);
     }
@@ -131,6 +182,27 @@ public final class CareerData {
     /** 0.2 (Etapa 7): invasao vencida com o jogador na area. */
     public void addInvasionDefended() {
         invasionsDefended++;
+    }
+
+    public int shotsFired() {
+        return shotsFired;
+    }
+
+    public int shotsHit() {
+        return shotsHit;
+    }
+
+    /** PM-7: tiro de arma de fogo do jogador (acertou = o raio pegou um kaiju). */
+    void addShot(boolean hit) {
+        shotsFired++;
+        if (hit) {
+            shotsHit++;
+        }
+    }
+
+    /** Melhor nota de cada missao concluida (letra S..D). */
+    public Map<ResourceLocation, String> bestGrades() {
+        return bestGrades;
     }
 
     public Map<ResourceLocation, MissionProgress> active() {

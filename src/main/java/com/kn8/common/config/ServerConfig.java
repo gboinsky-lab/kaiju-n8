@@ -53,6 +53,16 @@ public final class ServerConfig {
     public static final ModConfigSpec.IntValue MERIT_KILL_YOJU;
     public static final ModConfigSpec.IntValue MERIT_KILL_HONJU;
     public static final ModConfigSpec.IntValue MERIT_DISMANTLE;
+    public static final ModConfigSpec.IntValue GRADE_S;
+    public static final ModConfigSpec.IntValue GRADE_A;
+    public static final ModConfigSpec.IntValue GRADE_B;
+    public static final ModConfigSpec.IntValue GRADE_C;
+    public static final ModConfigSpec.DoubleValue GRADE_ACCURACY_FULL;
+    public static final ModConfigSpec.DoubleValue GRADE_DAMAGE_ZERO;
+    public static final ModConfigSpec.IntValue GRADE_ALLY_LOST_PENALTY;
+    public static final ModConfigSpec.IntValue GRADE_MIN_SHOTS;
+    public static final ModConfigSpec.DoubleValue GRADE_MERIT_BONUS_S;
+    public static final ModConfigSpec.DoubleValue GRADE_MERIT_BONUS_A;
     public static final ModConfigSpec.DoubleValue MISSION_AREA_MIN;
     public static final ModConfigSpec.DoubleValue MISSION_AREA_MAX;
     public static final ModConfigSpec.DoubleValue MISSION_PATROL_MIN;
@@ -452,6 +462,21 @@ public final class ServerConfig {
         MERIT_KILL_YOJU = intValue("meritKillYoju", "Merit for killing a Yoju.", 25, 0, 100000);
         MERIT_KILL_HONJU = intValue("meritKillHonju", "Merit for killing a Honju or bigger.", 150, 0, 100000);
         MERIT_DISMANTLE = intValue("meritDismantle", "Merit for finishing a carcass dismantle.", 15, 0, 100000);
+        // PM-7: nota da avaliacao pos-missao (media das partes medidas, 0-100) e merito extra das notas altas.
+        GRADE_S = intValue("gradeS", "Mission score (0-100) for grade S.", 90, 0, 100);
+        GRADE_A = intValue("gradeA", "Mission score for grade A.", 75, 0, 100);
+        GRADE_B = intValue("gradeB", "Mission score for grade B.", 60, 0, 100);
+        GRADE_C = intValue("gradeC", "Mission score for grade C (below = D).", 40, 0, 100);
+        GRADE_ACCURACY_FULL = doubleValue("gradeAccuracyForFullScore", "Hit rate (0-1) worth full accuracy points.",
+                0.6, 0.01, 1.0);
+        GRADE_DAMAGE_ZERO = doubleValue("gradeDamageTakenForZeroScore", "Damage taken, as a multiple of max"
+                + " health, that leaves zero damage points.", 2.0, 0.1, 100.0);
+        GRADE_ALLY_LOST_PENALTY = intValue("gradeAllyLostPenalty", "Points lost per squad soldier lost.", 25, 0,
+                100);
+        GRADE_MIN_SHOTS = intValue("gradeMinShots", "Shots needed for accuracy to count in the grade.", 5, 1, 1000);
+        GRADE_MERIT_BONUS_S = doubleValue("gradeMeritBonusS", "Extra merit (fraction of the reward) for grade S.",
+                0.2, 0.0, 10.0);
+        GRADE_MERIT_BONUS_A = doubleValue("gradeMeritBonusA", "Extra merit for grade A.", 0.1, 0.0, 10.0);
         BUILDER.pop();
 
         section("mission", "Missions (0.2): where targets and points appear around the player.");

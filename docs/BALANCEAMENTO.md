@@ -971,3 +971,29 @@ Anti-Giant no núcleo); 40 ticks deixam a janela sem acabar a luta. A recompensa
 | `focusRange` | 64 | Até onde o "focar" acha o kaiju mirado (blocos) |
 | `focusConeDegrees` | 12 | Ângulo da mira até o ponto da caixa do kaiju mais perto dela (0 = só com a mira passando pela caixa) |
 | `protectRadius` | 16 | Raio da área da "guarda"; anel do atirador 0,25 x raio (4), do assalto 0,5 x raio (8) |
+
+## PM-7: provas de promoção e avaliação pós-missão (2026-10-23) [SUPOSIÇÃO todos os números]
+
+Nota = média das partes medidas (0-100 cada): **tempo** (100 até o tempo ideal da prova, depois ideal/tempo),
+**precisão** (acertos/tiros ÷ `gradeAccuracyForFullScore`; só com `gradeMinShots`+ tiros, ou o `min_shots` da prova),
+**dano recebido** (100 x (1 - dano/vida máxima ÷ `gradeDamageTakenForZeroScore`)) e **aliados** (100 - perdas x
+`gradeAllyLostPenalty`). `[career]` no `kn8-server.toml`:
+
+| Chave | Valor | O quê |
+|---|---|---|
+| `gradeS` / `gradeA` / `gradeB` / `gradeC` | 90 / 75 / 60 / 40 | Nota mínima de cada letra (abaixo de C = D) |
+| `gradeAccuracyForFullScore` | 0,6 | Precisão que vale 100 pontos |
+| `gradeDamageTakenForZeroScore` | 2,0 | Dano recebido (em vidas máximas) que zera a parte |
+| `gradeAllyLostPenalty` | 25 | Pontos por soldado do esquadrão perdido |
+| `gradeMinShots` | 5 | Tiros para a precisão entrar na nota |
+| `gradeMeritBonusS` / `gradeMeritBonusA` | 0,2 / 0,1 | Mérito extra (fração da recompensa) em S e A |
+
+Provas (`grading` no `mission/<id>.json`; patente = `promotion_mission` do `rank/<id>.json`, junto do mérito):
+
+| Patente | Prova | Objetivo | Requisitos | Espera ao reprovar | Recompensa |
+|---|---|---|---|---|---|
+| Oficial | `exam` (Exame de Admissão) | o de antes | só avaliada (nota mínima D), tempo ideal 5 min | — | igual |
+| Oficial Sênior | `exam_marksman` | 3 Primigenius | precisão 35% com 15+ tiros, dano ≤ 100% da vida, nota C, ideal 4 min | 10 min | 150 mérito, 200 XP |
+| Líder de Pelotão | `exam_squad` | 4 Primigenius | esquadrão 2+, 0 perdas, dano ≤ 80%, nota C, ideal 5 min | 10 min | 300, 400 |
+| Vice-Capitão | `exam_command` | Honju (chefe) | esquadrão 3+, até 1 perda, dano ≤ 100%, nota B, ideal 8 min | 20 min | 800, 800 |
+| Capitão | `exam_captain` | horda (`kaiju_horde`) | esquadrão 4+, até 2 perdas, dano ≤ 150%, nota B | 20 min | 2000, 1500 |

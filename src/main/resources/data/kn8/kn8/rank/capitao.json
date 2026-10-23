@@ -3,5 +3,6 @@
   "merit_required": 20000,
   "max_health": 30,
   "npc_squad_size": 8,
-  "unlocks": []
+  "unlocks": [],
+  "promotion_mission": "kn8:exam_captain"
 }

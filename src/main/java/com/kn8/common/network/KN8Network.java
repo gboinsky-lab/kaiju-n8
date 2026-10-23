@@ -60,7 +60,7 @@ public final class KN8Network {
     // 20 = VFX-1: VfxS2C.source (perfil visual e receita) e registro sincronizado "vfx_profile".
     // 21 = VFX-2: VfxS2C.source.height (o efeito cresce com o corpo de quem o faz).
     // 22 = PM-1: CombatResult.PERFECT_DODGE e especiais "lunge"/"flurry" no registro de armas sincronizado.
-    private static final String PROTOCOL_VERSION = "22";
+    private static final String PROTOCOL_VERSION = "23";
 
     /** Diagnostico: 20 por segundo, rajada de 40. */
     private static final C2SGuard.Limit DEBUG_LIMIT = new C2SGuard.Limit(20, 40);

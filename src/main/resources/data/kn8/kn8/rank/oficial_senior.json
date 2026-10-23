@@ -6,5 +6,6 @@
   "unlocks": [
     "kn8:sword",
     "kn8:mk1_reinforced"
-  ]
+  ],
+  "promotion_mission": "kn8:exam_marksman"
 }

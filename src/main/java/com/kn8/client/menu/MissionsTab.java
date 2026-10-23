@@ -16,6 +16,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -108,8 +109,14 @@ final class MissionsTab implements MenuTab {
         int rewardsX = x + w * 7 / 10;
         MenuStyle.badge(g, font, Component.translatable("kn8.mission_category."
                 + mission.category().getSerializedName()), textX, y + 3, color);
-        g.drawString(font, Component.translatable("kn8.mission." + id.getPath() + ".name"), textX, y + 13,
-                MenuStyle.TEXT, false);
+        Component title = Component.translatable("kn8.mission." + id.getPath() + ".name");
+        g.drawString(font, title, textX, y + 13, MenuStyle.TEXT, false);
+        // PM-7: melhor nota ja tirada nesta missao.
+        String best = MenuData.career().bestGrades().get(id);
+        if (best != null) {
+            MenuStyle.badge(g, font, Component.translatable("kn8.menu.missions.best_grade", best),
+                    textX + font.width(title) + 4, y + 13, MenuStyle.YELLOW);
+        }
         MenuStyle.wrapped(g, font, Component.translatable("kn8.mission." + id.getPath() + ".desc"), textX, y + 23,
                 rewardsX - textX - 4, MenuStyle.TEXT_DIM, 1);
         // Objetivos com progresso (o atual em destaque) e requisito de patente.
@@ -125,6 +132,10 @@ final class MissionsTab implements MenuTab {
                     : running != null && running.objective() == i ? MenuStyle.YELLOW : MenuStyle.TEXT;
             MenuStyle.small(g, font, objectiveText(objective, done), textX, oy, lineColor);
             oy += 7;
+        }
+        // PM-7: requisitos da prova antes de aceitar.
+        if (mission.grading().isPresent() && oy <= y + CARD_HEIGHT - 8) {
+            MenuStyle.small(g, font, examText(mission.grading().get()), textX, oy, MenuStyle.TEXT_ACCENT);
         }
         int remaining = running == null ? -1 : running.remainingTicks(MenuData.player().level().getGameTime());
         if (remaining >= 0) {
@@ -201,6 +212,22 @@ final class MissionsTab implements MenuTab {
             }
         }
         return Optional.empty();
+    }
+
+    /** Linha curta com os requisitos da prova (precisao, dano recebido, aliados, nota minima). */
+    private static Component examText(MissionDef.Grading grading) {
+        MutableComponent text = Component.translatable("kn8.menu.missions.exam");
+        grading.minAccuracy().ifPresent(value -> text.append(" ").append(Component.translatable(
+                "kn8.menu.missions.exam.accuracy", Math.round(value * 100), grading.minShots())));
+        grading.maxDamageTaken().ifPresent(value -> text.append(" ").append(Component.translatable(
+                "kn8.menu.missions.exam.damage", Math.round(value * 100))));
+        grading.maxAlliesLost().ifPresent(value -> text.append(" ").append(Component.translatable(
+                "kn8.menu.missions.exam.allies", value)));
+        if (grading.minSquad() > 0) {
+            text.append(" ").append(Component.translatable("kn8.menu.missions.exam.squad", grading.minSquad()));
+        }
+        return text.append(" ").append(Component.translatable("kn8.menu.missions.exam.grade",
+                grading.minGrade().toUpperCase()));
     }
 
     private static Component objectiveText(MissionDef.Objective objective, int done) {

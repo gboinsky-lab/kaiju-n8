@@ -7,6 +7,7 @@ import com.kn8.common.boss.BossService;
 import com.kn8.common.config.ServerConfig;
 import com.kn8.common.data.def.KaijuClass;
 import com.kn8.common.kaiju.KaijuEntity;
+import com.kn8.common.soldier.SoldierEntity;
 import com.kn8.core.power.BodyStat;
 
 import net.minecraft.server.level.ServerPlayer;
@@ -54,6 +55,11 @@ public final class CareerEvents {
     /** Dano de jogador em kaiju vira XP de treino (golpes nas partes chegam aqui pelo corpo). */
     @SubscribeEvent
     public static void onDamage(LivingDamageEvent.Post event) {
+        // PM-7: dano recebido conta na avaliacao das missoes ativas.
+        if (event.getEntity() instanceof ServerPlayer hurt && event.getNewDamage() > 0
+                && ServerConfig.SPEC.isLoaded()) {
+            MissionService.onDamageTaken(hurt, event.getNewDamage());
+        }
         if (event.getEntity() instanceof KaijuEntity && event.getSource().getEntity() instanceof ServerPlayer player
                 && ServerConfig.SPEC.isLoaded()) {
             CareerService.onKaijuDamaged(player, event.getNewDamage());
@@ -84,6 +90,9 @@ public final class CareerEvents {
             }
         } else if (event.getEntity() instanceof ServerPlayer player) {
             MissionService.onDeath(player);
+        } else if (event.getEntity() instanceof SoldierEntity soldier && !soldier.level().isClientSide()
+                && soldier.squadLeaderPlayer() instanceof ServerPlayer leader) {
+            MissionService.onAllyLost(leader);
         }
     }
 }

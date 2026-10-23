@@ -1,0 +1,27 @@
+{
+  "category": "story",
+  "giver": "kn8:exam_officer",
+  "requires": {
+    "rank": "kn8:vice_capitao"
+  },
+  "objectives": [
+    {
+      "type": "defend_invasion",
+      "target": "kn8:kaiju_horde"
+    }
+  ],
+  "fail": {
+    "on_death": true
+  },
+  "rewards": {
+    "merit": 2000,
+    "training_xp": 1500
+  },
+  "grading": {
+    "max_allies_lost": 2,
+    "max_damage_taken": 1.5,
+    "min_grade": "b",
+    "min_squad": 4,
+    "retry_cooldown_ticks": 24000
+  }
+}

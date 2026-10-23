@@ -1234,3 +1234,19 @@ Servidor dedicado + 2 clientes, `[kaijuAi] debugLog` ligado, jogador com patente
 | 91.5 | Derrubar o designado | Aviso verde "Alvo designado abatido: o esquadrão volta a seguir"; log "alvo designado caiu"; voltam a lutar com o de perto |
 | 91.6 | **Focar** mirando o céu | Aviso vermelho "Mire em um kaiju para designar o alvo"; a ordem não muda |
 | 91.7 | Salvar e sair com o esquadrão focado, voltar | Continua focado no mesmo kaiju |
+
+## 92. Provas de promoção e avaliação pós-missão (PM-7)
+
+Servidor dedicado + 2 clientes. `/kn8 career rank <patente>` (ou o mérito) para chegar à patente de cada prova.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 92.1 | Menu (M) → Missões como Oficial | A "Prova de Tiro" mostra a linha "Prova: precisão 35% (15 tiros) dano ≤ 100% nota C+"; Perfil mostra "Precisão (tiros em kaiju)" com "-" |
+| 92.2 | Aceitar a Prova de Tiro | No chat: "Requisitos da prova:" com precisão (mínimo de tiros), dano recebido, tempo ideal (só na nota) e nota mínima |
+| 92.3 | Abater os 3 Primigenius errando muito (atirar no ar) | Título "Prova reprovada", resumo com nota, tempo, dano causado/recebido, aliados perdidos e "precisão X% (acertos/tiros)", linha ✘ da precisão, "Sem recompensa. Você pode tentar de novo em 10 min.", uma dica; a missão volta como "em espera" |
+| 92.4 | Depois da espera, de novo com boa pontaria | "PROVA APROVADA", recompensa uma vez só, "Nota X" ao lado do nome no menu; com mérito ≥ 500 a promoção a Oficial Sênior sai na hora; a missão não pode ser repetida |
+| 92.5 | Concluir uma missão comum (Extermínio) | Mesmo resumo (sem linhas de prova); em S/A "Mérito extra pela nota: +N" |
+| 92.6 | Oficial Sênior sem soldados aceitando a "Prova de Esquadrão" | Recusada: "A prova pede um esquadrão maior (aba Esquadrão)"; com 2 recrutados aceita |
+| 92.7 | Na Prova de Esquadrão deixar um soldado morrer | Reprovada pela linha "No máximo 0 soldado(s) do esquadrão perdido(s)" |
+| 92.8 | O outro cliente fazendo a mesma missão junto | Cada um tem a própria avaliação (os tiros e o dano de um não contam para o outro) |
+| 92.9 | Salvar e sair no meio de uma prova, voltar e terminar | As medidas continuam (a precisão do resumo conta os tiros de antes de sair) |

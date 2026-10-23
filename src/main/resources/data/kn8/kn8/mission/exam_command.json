@@ -1,0 +1,29 @@
+{
+  "category": "story",
+  "giver": "kn8:exam_officer",
+  "requires": {
+    "rank": "kn8:lider_pelotao"
+  },
+  "objectives": [
+    {
+      "type": "defeat_boss",
+      "target": "kn8:honju"
+    }
+  ],
+  "fail": {
+    "time_ticks": 24000,
+    "on_death": true
+  },
+  "rewards": {
+    "merit": 800,
+    "training_xp": 800
+  },
+  "grading": {
+    "max_allies_lost": 1,
+    "max_damage_taken": 1.0,
+    "par_ticks": 9600,
+    "min_grade": "b",
+    "min_squad": 3,
+    "retry_cooldown_ticks": 24000
+  }
+}

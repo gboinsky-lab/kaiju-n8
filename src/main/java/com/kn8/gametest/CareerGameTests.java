@@ -59,6 +59,10 @@ public final class CareerGameTests {
         helper.assertTrue(CareerService.rank(player).map(e -> e.getKey().getPath()).orElse("").equals("candidato"),
                 "Sem o Exame de Admissao nao pode virar Oficial, mesmo com merito");
         CareerService.data(player).completed().add(EXAM);
+        // PM-7: cada patente acima de Oficial tem a propria prova.
+        for (String exam : List.of("exam_marksman", "exam_squad", "exam_command", "exam_captain")) {
+            CareerService.data(player).completed().add(KN8Constants.id(exam));
+        }
         CareerService.tryPromote(player);
         helper.assertTrue(CareerService.rank(player).map(e -> e.getKey().getPath()).orElse("").equals("capitao"),
                 "Com o exame e 20000 de merito deveria subir ate Capitao, veio "

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.resources.ResourceLocation;
@@ -15,7 +16,31 @@ import net.minecraft.util.StringRepresentable;
  * {@code type}; os tipos da 0.1 e o campo que cada um exige estao em {@link ObjectiveType}.
  */
 public record MissionDef(Category category, Optional<ResourceLocation> giver, Requires requires,
-        List<Objective> objectives, Fail fail, Rewards rewards, boolean repeatable, int cooldownTicks) {
+        List<Objective> objectives, Fail fail, Rewards rewards, boolean repeatable, int cooldownTicks,
+        Optional<Grading> grading) {
+
+    /**
+     * PM-7: prova de promocao. Requisitos medidos durante a missao (todos opcionais): precisao minima com um minimo
+     * de tiros, dano recebido maximo (fracao da vida maxima), aliados do esquadrao perdidos, tempo ideal (so na nota),
+     * nota minima e esquadrao minimo para aceitar. Reprovada: nao conclui, nao da recompensa e so pode tentar de novo
+     * depois de {@code retry_cooldown_ticks}.
+     */
+    public record Grading(Optional<Double> minAccuracy, int minShots, Optional<Double> maxDamageTaken,
+            Optional<Integer> maxAlliesLost, Optional<Integer> parTicks, String minGrade, int minSquad,
+            int retryCooldownTicks) {
+        public static final Codec<Grading> CODEC = RecordCodecBuilder.create(i -> i.group(
+                Codec.doubleRange(0.0, 1.0).optionalFieldOf("min_accuracy").forGetter(Grading::minAccuracy),
+                Codec.intRange(1, 10_000).optionalFieldOf("min_shots", 10).forGetter(Grading::minShots),
+                Codec.doubleRange(0.0, 100.0).optionalFieldOf("max_damage_taken").forGetter(Grading::maxDamageTaken),
+                Codec.intRange(0, 64).optionalFieldOf("max_allies_lost").forGetter(Grading::maxAlliesLost),
+                Codec.intRange(1, 720_000).optionalFieldOf("par_ticks").forGetter(Grading::parTicks),
+                Codec.STRING.validate(s -> s.length() == 1 && "sabcd".contains(s.toLowerCase())
+                        ? DataResult.success(s) : DataResult.error(() -> "min_grade deve ser s, a, b, c ou d: " + s))
+                        .optionalFieldOf("min_grade", "d").forGetter(Grading::minGrade),
+                Codec.intRange(0, 64).optionalFieldOf("min_squad", 0).forGetter(Grading::minSquad),
+                DefCodecs.TICKS.optionalFieldOf("retry_cooldown_ticks", 6000).forGetter(Grading::retryCooldownTicks)
+        ).apply(i, Grading::new));
+    }
 
     /** Categorias do GDD (secao 20). */
     public enum Category implements StringRepresentable {
@@ -120,6 +145,7 @@ public record MissionDef(Category category, Optional<ResourceLocation> giver, Re
             Fail.CODEC.optionalFieldOf("fail", Fail.NEVER).forGetter(MissionDef::fail),
             Rewards.CODEC.optionalFieldOf("rewards", Rewards.NONE).forGetter(MissionDef::rewards),
             Codec.BOOL.optionalFieldOf("repeatable", false).forGetter(MissionDef::repeatable),
-            DefCodecs.TICKS.optionalFieldOf("cooldown_ticks", 0).forGetter(MissionDef::cooldownTicks)
+            DefCodecs.TICKS.optionalFieldOf("cooldown_ticks", 0).forGetter(MissionDef::cooldownTicks),
+            Grading.CODEC.optionalFieldOf("grading").forGetter(MissionDef::grading)
     ).apply(i, MissionDef::new));
 }
