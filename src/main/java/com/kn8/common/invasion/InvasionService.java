@@ -21,6 +21,7 @@ import com.kn8.common.numbered.No9Service;
 import com.kn8.common.registry.KN8Entities;
 import com.kn8.common.registry.KN8Sounds;
 import com.kn8.common.server.KN8Server;
+import com.kn8.common.site.RegionService;
 import com.kn8.common.site.SiteService;
 import com.kn8.common.soldier.SoldierEntity;
 import com.kn8.common.world.KaijuSpawner;
@@ -96,6 +97,7 @@ public final class InvasionService {
                     center.getZ()).withStyle(ChatFormatting.RED, ChatFormatting.BOLD));
         }
         siren(level, invasion);
+        RegionService.onInvasion(level, center, id, false);
         KN8Constants.LOGGER.info("[kn8] Invasao {} em {} ({})", id, center.toShortString(), level.dimension()
                 .location());
         sync(level, invasion);
@@ -409,6 +411,7 @@ public final class InvasionService {
             }
         }
         KN8Server.get(level.getServer()).invasions().remove(level.dimension());
+        RegionService.onInvasion(level, invasion.center, invasion.id, true);
         boolean victory = result == Invasion.Phase.VICTORY;
         List<ServerPlayer> rewarded = new ArrayList<>();
         float teamDamage = (float) invasion.damage.values().stream().mapToDouble(Float::doubleValue).sum();
@@ -533,7 +536,10 @@ public final class InvasionService {
         // Shinagawa...), na entrada da peca inicial.
         ServerPlayer chosen = candidates.get(level.random.nextInt(candidates.size()));
         Optional<SiteService.Hit> site = SiteService.siteAt(level, chosen.blockPosition());
-        if (site.isPresent() && level.random.nextDouble() < ServerConfig.SITE_INVASION_CHANCE.get()) {
+        // PM-9: regiao que ainda nao voltou ao normal nao recebe outra invasao do local (nao empilha ameaca).
+        if (site.isPresent() && RegionService.stateAt(level, chosen.blockPosition())
+                == com.kn8.core.world.RegionAlertMath.State.NORMAL
+                && level.random.nextDouble() < ServerConfig.SITE_INVASION_CHANCE.get()) {
             Optional<ResourceLocation> invasion = SiteService.rollInvasion(site.get(), level.random);
             if (invasion.isPresent()) {
                 start(level, invasion.get(), site.get().gate());

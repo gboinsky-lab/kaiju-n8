@@ -10,6 +10,7 @@ import com.kn8.client.combat.CombatInput;
 import com.kn8.client.hud.KN8Hud;
 import com.kn8.client.hud.KaijuHealthBar;
 import com.kn8.client.hud.MissionTracker;
+import com.kn8.client.region.ClientRegion;
 import com.kn8.client.invasion.ClientInvasion;
 import com.kn8.client.menu.DefenseForceScreen;
 import com.kn8.client.menu.MenuInput;
@@ -51,12 +52,14 @@ public final class KN8Client {
         VfxEffects.install();
         DefenseForceScreen.install();
         ClientInvasion.install();
+        ClientRegion.install();
         ParkourClient.install();
         // M6: HUD de poder.
         modEventBus.addListener(KN8Hud::register);
         // 0.1-B: barra de vida do kaiju mirado.
         modEventBus.addListener(KaijuHealthBar::register);
         modEventBus.addListener(MissionTracker::register);
+        modEventBus.addListener(ClientRegion::register);
         // M7a: renderers de kaiju.
         modEventBus.addListener(KN8Client::registerRenderers);
         // Etapa A/C: malhas do Meshy presas aos ossos (cache limpo no F3+T).

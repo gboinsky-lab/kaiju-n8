@@ -1071,3 +1071,32 @@ lugar), `protect` true (kaiju não quebram blocos na grade da base). Uma base po
 | Pátio de Treino (`training`) | | | 16 tábuas de carvalho, 4 fardos de feno | 3 bonecos de treino, alvos |
 
 Núcleo da Base na bancada (Oficial): 8 ferro, 2 fragmentos de núcleo, 4 redstone.
+
+## PM-9: alerta por região e rastro de destruição (2026-10-23) [SUPOSIÇÃO todos os números]
+
+`[region]` no `kn8-server.toml`:
+
+| Chave | Valor | O quê |
+|---|---|---|
+| `enabled` | true | Locais da obra reagem a kaiju e invasões |
+| `kaijuCheckTicks` | 40 | Cada kaiju informa o local onde está nesse intervalo (sem varredura global) |
+| `alertTicks` | 1200 | Alerta dura 1 min depois do último kaiju visto |
+| `combatTicks` | 600 | Combate dura 30 s depois da última luta (ou enquanto a invasão centrada no local durar) |
+| `recoveryTicks` | 2400 | Recuperação de 2 min antes de voltar ao normal |
+| `notifyMargin` | 32 | Jogadores até 32 blocos em volta do local recebem o aviso de mudança |
+| `closeServicesInCombat` | true | Em combate: estação de preparação, terminal de pesquisa e aceite de provas fechados |
+
+`[trail]`:
+
+| Chave | Valor | O quê |
+|---|---|---|
+| `enabled` | true | Kaiju deixam pistas onde quebram o caminho/golpeiam com destruição e onde caem |
+| `maxPoints` | 256 | Pistas por dimensão (as mais velhas saem) |
+| `lifeTicks` | 12000 | Pistas somem depois de 10 min |
+| `pointSpacing` | 8 | Uma pista nova por kaiju a cada 8 blocos |
+| `scanRadius` | 48 | Alcance do Rastreador de Kaiju |
+| `scanCooldownTicks` | 60 | Espera entre usos do Rastreador |
+| `markTicks` | 200 | Tempo do caminho desenhado no chão depois de investigar |
+| `meritPerClue` | 2 | Mérito por pista investigada pela primeira vez (por qualquer jogador) |
+
+Rastreador de Kaiju na bancada (livre): 3 ferro, 1 bússola, 2 redstone.

@@ -8,6 +8,7 @@ import com.kn8.common.career.CareerData;
 import com.kn8.common.career.CareerService;
 import com.kn8.common.career.MissionService;
 import com.kn8.common.config.ServerConfig;
+import com.kn8.common.site.RegionService;
 import com.kn8.common.data.def.RankDef;
 import com.kn8.common.soldier.SoldierEntity;
 import com.kn8.common.soldier.SquadService;
@@ -71,6 +72,10 @@ public final class BaseServices {
     }
 
     public static StationResult useStation(ServerLevel level, BlockPos pos, ServerPlayer player) {
+        if (RegionService.servicesClosed(level, pos)) {
+            RegionService.refuseClosed(player);
+            return StationResult.NONE;
+        }
         long now = level.getGameTime();
         CompoundTag data = player.getPersistentData();
         if (!player.isCreative() && now < data.getLong(TAG_STATION_READY)) {

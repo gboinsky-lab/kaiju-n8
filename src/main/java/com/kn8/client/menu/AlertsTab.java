@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Locale;
 
 import com.kn8.client.invasion.ClientInvasion;
+import com.kn8.client.region.ClientRegion;
 import com.kn8.common.data.def.KaijuDef;
 import com.kn8.common.invasion.Invasion;
 import com.kn8.common.invasion.InvasionStateS2C;
@@ -58,8 +59,18 @@ final class AlertsTab implements MenuTab {
         g.fill(x + w - 7, iy, x + w - 6, iy + ih, MenuStyle.RED);
         drawInvasion(g, font, x + 12, iy, w - 24);
 
+        // PM-9: estado da regiao onde o jogador esta (o mesmo da faixa da HUD).
+        int listY = iy + ih + 4;
+        Component region = ClientRegion.line(MenuData.player() == null ? 0L
+                : MenuData.player().level().getGameTime());
+        if (!region.getString().isEmpty()) {
+            MenuStyle.small(g, font, Component.translatable("kn8.menu.alerts.region", region), x + 8, listY,
+                    ClientRegion.color(ClientRegion.level()));
+            listY += 10;
+        }
+
         // Kaiju avistados.
-        int listY = iy + ih + 6;
+        listY += 2;
         MenuStyle.small(g, font, Component.translatable("kn8.menu.alerts.sighted", (int) RADIUS), x + 8, listY,
                 MenuStyle.TEXT);
         listY += 10;

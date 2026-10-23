@@ -7,6 +7,8 @@ import com.kn8.KN8Constants;
 import com.kn8.common.arena.TrainingArenaService;
 import com.kn8.common.attribute.PowerService;
 import com.kn8.common.research.ResearchService;
+import com.kn8.common.trail.KaijuTrail;
+import com.kn8.common.trail.KaijuTrailService;
 import com.kn8.common.boss.BossService;
 import com.kn8.common.config.ServerConfig;
 import com.kn8.common.data.def.KaijuClass;
@@ -82,6 +84,8 @@ public final class CareerEvents {
             return;
         }
         if (event.getEntity() instanceof KaijuEntity kaiju && !kaiju.level().isClientSide()) {
+            // PM-9: onde o kaiju caiu vira pista do rastro dele (treino e prova ficam de fora).
+            KaijuTrailService.note(kaiju, KaijuTrail.Kind.DEATH);
             // Kaiju da arena de treino nao conta: sem merito, missao ou chefe.
             if (TrainingArenaService.isTraining(kaiju)) {
                 return;

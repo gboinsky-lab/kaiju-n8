@@ -1317,3 +1317,20 @@ Servidor dedicado + 2 clientes. Terreno aberto (os lotes limpam o que estiver ac
 | 96.8 | O outro cliente usar o seu núcleo | "Este Núcleo da Base é de outro jogador" |
 | 96.9 | Kaiju dentro da grade da base | Não quebra os módulos (`[base] protect`) |
 | 96.10 | Quebrar o núcleo | "Seu Núcleo da Base foi destruído..."; os módulos ficam no mundo; dá para fundar outra base |
+
+## 97. Alerta por região e rastro de destruição (PM-9)
+
+Servidor dedicado + 2 clientes num mundo normal com um local da obra (`/locate structure kn8:shinagawa_city`; o
+`/place` desses locais não funciona em mundo plano porque eles conferem o terreno).
+
+| # | Passo | Esperado |
+|---|---|---|
+| 97.1 | Entrar em Shinagawa e soltar um Primigenius na rua (jogador em criativo) | Em até 2 s: chat amarelo "Shinagawa, Tóquio: ALERTA (Primigenius)" e faixa no canto superior esquerdo com o tempo |
+| 97.2 | Soldados ou o jogador em sobrevivência lutando com ele | "COMBATE" em vermelho; a faixa desce para baixo da barra de vida do kaiju quando ela aparece |
+| 97.3 | Menu M → Alertas | Linha "Região: Shinagawa — COMBATE: Primigenius (m:ss)", igual à faixa |
+| 97.4 | Em combate: estação de preparação, terminal de pesquisa e aceitar prova no local | "Instalação fechada: a região está em combate" / "Laboratório fechado" / "Provas fechadas" |
+| 97.5 | Matar o kaiju e esperar | 30 s depois "RECUPERAÇÃO" (azul), 2 min depois "NORMAL" (verde); a faixa some |
+| 97.6 | Rastreador de Kaiju (bancada) e botão direito perto de onde o kaiju passou | Chat: "Rastro de Primigenius: N pista(s), a mais recente há m:ss, indo para ... — o kaiju caiu aqui / ainda está no mundo, a X blocos / rastro frio"; caminho laranja no chão entre as pistas; "+N de mérito" só na primeira vez |
+| 97.7 | Usar o Rastreador de novo | Mesmo rastro, sem mérito novo |
+| 97.8 | Esperar 10 min | As pistas somem ("Nenhuma pista de kaiju...") |
+| 97.9 | Invasão (`/kn8 invasion start ...`) com o centro no local | COMBATE enquanto ela dura; ao terminar, RECUPERAÇÃO; nesse meio tempo a invasão natural não sorteia outra do local |

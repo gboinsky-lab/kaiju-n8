@@ -311,6 +311,23 @@ public final class ServerConfig {
     public static final ModConfigSpec.IntValue SITE_CHECK_TICKS;
     public static final ModConfigSpec.BooleanValue SITE_GARRISON;
     public static final ModConfigSpec.DoubleValue SITE_INVASION_CHANCE;
+    // [trail] PM-9
+    public static final ModConfigSpec.BooleanValue TRAIL_ENABLED;
+    public static final ModConfigSpec.IntValue TRAIL_MAX_POINTS;
+    public static final ModConfigSpec.IntValue TRAIL_LIFE_TICKS;
+    public static final ModConfigSpec.DoubleValue TRAIL_POINT_SPACING;
+    public static final ModConfigSpec.DoubleValue TRAIL_SCAN_RADIUS;
+    public static final ModConfigSpec.IntValue TRAIL_SCAN_COOLDOWN_TICKS;
+    public static final ModConfigSpec.IntValue TRAIL_MARK_TICKS;
+    public static final ModConfigSpec.IntValue TRAIL_MERIT_PER_CLUE;
+    // [region] PM-9
+    public static final ModConfigSpec.BooleanValue REGION_ALERTS;
+    public static final ModConfigSpec.IntValue REGION_KAIJU_CHECK_TICKS;
+    public static final ModConfigSpec.IntValue REGION_ALERT_TICKS;
+    public static final ModConfigSpec.IntValue REGION_COMBAT_TICKS;
+    public static final ModConfigSpec.IntValue REGION_RECOVERY_TICKS;
+    public static final ModConfigSpec.IntValue REGION_NOTIFY_MARGIN;
+    public static final ModConfigSpec.BooleanValue REGION_CLOSE_SERVICES;
 
     // --- combat (M10, GDD secoes 7 e 12) ---------------------------------------------------------------------------
     public static final ModConfigSpec.DoubleValue LIGHT_STAMINA_COST;
@@ -965,6 +982,39 @@ public final class ServerConfig {
                 + " research terminal (creative: anywhere).", 6, 1, 32);
         RESEARCH_DURATION_MULTIPLIER = doubleValue("durationMultiplier", "Multiplies the duration_ticks of every"
                 + " research (0.5 = twice as fast).", 1.0, 0.0, 100.0);
+        BUILDER.pop();
+
+        section("trail", "PM-9 destruction trail: clues where kaiju broke their way or fell, read with the tracker.");
+        TRAIL_ENABLED = booleanValue("enabled", "Kaiju leave clues where they break blocks or fall.", true);
+        TRAIL_MAX_POINTS = intValue("maxPoints", "Most clues kept per dimension (the oldest go first).", 256, 1,
+                4096);
+        TRAIL_LIFE_TICKS = intValue("lifeTicks", "Clues expire after this many ticks.", 12000, 20, 1_000_000);
+        TRAIL_POINT_SPACING = doubleValue("pointSpacing", "A kaiju leaves a new clue only this many blocks away from"
+                + " its last one.", 8.0, 1.0, 64.0);
+        TRAIL_SCAN_RADIUS = doubleValue("scanRadius", "The Kaiju Tracker reads clues this close (blocks).", 48.0, 4.0,
+                256.0);
+        TRAIL_SCAN_COOLDOWN_TICKS = intValue("scanCooldownTicks", "Wait between two uses of the Kaiju Tracker.", 60,
+                0, 6000);
+        TRAIL_MARK_TICKS = intValue("markTicks", "How long the trail stays drawn on the ground after a scan.", 200,
+                20, 2400);
+        TRAIL_MERIT_PER_CLUE = intValue("meritPerClue", "Merit for each clue investigated for the first time (by"
+                + " anyone).", 2, 0, 1000);
+        BUILDER.pop();
+
+        section("region", "PM-9 alert state of each place from the series (normal, alert, combat, recovery).");
+        REGION_ALERTS = booleanValue("enabled", "Places react to kaiju and invasions with an alert state.", true);
+        REGION_KAIJU_CHECK_TICKS = intValue("kaijuCheckTicks", "How often (ticks) each kaiju reports the place it is"
+                + " in (no global scans).", 40, 5, 1200);
+        REGION_ALERT_TICKS = intValue("alertTicks", "A place stays on alert this long after the last kaiju seen in"
+                + " it.", 1200, 20, 72000);
+        REGION_COMBAT_TICKS = intValue("combatTicks", "A place stays in combat this long after the last fight (or"
+                + " while an invasion centered in it lasts).", 600, 20, 72000);
+        REGION_RECOVERY_TICKS = intValue("recoveryTicks", "After combat, recovery lasts this long before going back"
+                + " to normal.", 2400, 0, 72000);
+        REGION_NOTIFY_MARGIN = intValue("notifyMargin", "Players this many blocks around a place hear about its"
+                + " state changes.", 32, 0, 256);
+        REGION_CLOSE_SERVICES = booleanValue("closeServicesInCombat", "During combat the squad station, research"
+                + " terminals and exam acceptance of the place are closed.", true);
         BUILDER.pop();
 
         section("sites", "Places from the series (C3): Ariake, Tachikawa base and city, Shinagawa.");

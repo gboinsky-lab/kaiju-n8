@@ -12,6 +12,7 @@ import com.kn8.common.data.def.ResearchDef;
 import com.kn8.common.data.def.WorkbenchRecipeDef;
 import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.registry.KN8Blocks;
+import com.kn8.common.site.RegionService;
 import com.kn8.common.vfx.VfxService;
 
 import net.minecraft.ChatFormatting;
@@ -36,7 +37,9 @@ public final class ResearchService {
     }
 
     public enum Result {
-        OK, UNKNOWN, NO_TERMINAL, ALREADY_DONE, BUSY, RANK_TOO_LOW, MISSING_PREREQUISITE, MISSING
+        OK, UNKNOWN, NO_TERMINAL, ALREADY_DONE, BUSY, RANK_TOO_LOW, MISSING_PREREQUISITE, MISSING,
+        /** PM-9: regiao em combate (laboratorio fechado). */
+        REGION_COMBAT
     }
 
     public static Result check(ServerPlayer player, ResourceLocation id) {
@@ -59,6 +62,9 @@ public final class ResearchService {
         }
         if (!nearTerminal(player)) {
             return Result.NO_TERMINAL;
+        }
+        if (RegionService.servicesClosed(player.serverLevel(), player.blockPosition())) {
+            return Result.REGION_COMBAT;
         }
         if (!player.getAbilities().instabuild) {
             for (WorkbenchRecipeDef.Ingredient ingredient : def.get().cost()) {

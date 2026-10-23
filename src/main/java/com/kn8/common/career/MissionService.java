@@ -17,6 +17,7 @@ import com.kn8.common.invasion.InvasionService;
 import com.kn8.common.data.def.MissionDef;
 import com.kn8.common.destruction.ProtectedAreas;
 import com.kn8.common.registry.KN8Sounds;
+import com.kn8.common.site.RegionService;
 import com.kn8.common.soldier.SquadService;
 import com.kn8.common.world.KaijuSpawner;
 import com.kn8.core.career.MissionGrader;
@@ -56,7 +57,9 @@ public final class MissionService {
         /** PM-7: a prova pede um esquadrao minimo ({@code grading.min_squad}). */
         SQUAD_TOO_SMALL,
         /** PM-8B: prova so com o Oficial de Provas perto (dentro de uma base). */
-        NEEDS_EXAM_OFFICER
+        NEEDS_EXAM_OFFICER,
+        /** PM-9: a regiao esta em combate (provas fechadas ate passar). */
+        REGION_COMBAT
     }
 
     /** PM-8B: prova = categoria {@code exam} (curso dentro da base); o resto e missao de campo. */
@@ -102,6 +105,9 @@ public final class MissionService {
         }
         if (isExam(def.get()) && !nearExamOfficer(player)) {
             return Result.NEEDS_EXAM_OFFICER;
+        }
+        if (isExam(def.get()) && RegionService.servicesClosed(player.serverLevel(), player.blockPosition())) {
+            return Result.REGION_COMBAT;
         }
         int minSquad = def.get().grading().map(MissionDef.Grading::minSquad).orElse(0);
         if (minSquad > 0 && SquadService.members(player).size() < minSquad) {

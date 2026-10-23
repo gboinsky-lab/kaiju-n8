@@ -5,6 +5,7 @@ import com.kn8.KN8Constants;
 import com.kn8.common.combat.MagazineItem;
 import com.kn8.common.combat.WeaponItem;
 import com.kn8.common.craft.SupplyItem;
+import com.kn8.common.trail.TrailScannerItem;
 import com.kn8.common.training.TrainingDummyItem;
 
 import net.minecraft.core.registries.Registries;
@@ -135,6 +136,9 @@ public final class KN8Items {
             "research_terminal", KN8Blocks.RESEARCH_TERMINAL);
     public static final DeferredItem<BlockItem> BASE_CORE = ITEMS.registerSimpleBlockItem("base_core",
             KN8Blocks.BASE_CORE);
+    /** PM-9: Rastreador de Kaiju (investiga o rastro de destruicao). */
+    public static final DeferredItem<TrailScannerItem> TRAIL_SCANNER = ITEMS.register("trail_scanner",
+            () -> new TrailScannerItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<ArmorItem> TRAINING_SUIT = suit("training_suit", KN8ArmorMaterials.TRAINING_SUIT);
     public static final DeferredItem<ArmorItem> MK1 = suit("mk1", KN8ArmorMaterials.MK1);
     public static final DeferredItem<ArmorItem> MK1_REINFORCED = suit("mk1_reinforced",
@@ -189,6 +193,7 @@ public final class KN8Items {
                         output.accept(SQUAD_STATION.get());
                         output.accept(RESEARCH_TERMINAL.get());
                         output.accept(BASE_CORE.get());
+                        output.accept(TRAIL_SCANNER.get());
                         output.accept(TRAINING_SUIT.get());
                         output.accept(MK1.get());
                         output.accept(MK1_REINFORCED.get());

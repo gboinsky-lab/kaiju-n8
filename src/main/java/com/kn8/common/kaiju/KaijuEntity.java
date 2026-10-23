@@ -18,6 +18,9 @@ import com.kn8.common.boss.BossService;
 import com.kn8.common.boss.BossState;
 import com.kn8.common.career.ExamTargets;
 import com.kn8.common.research.ResearchService;
+import com.kn8.common.site.RegionService;
+import com.kn8.common.trail.KaijuTrail;
+import com.kn8.common.trail.KaijuTrailService;
 import com.kn8.common.combat.CombatService;
 import com.kn8.common.config.ServerConfig;
 import com.kn8.common.data.KN8Data;
@@ -531,6 +534,7 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
             tickWounds();
             tickHabits();
             tickGroup();
+            RegionService.kaijuTick(this);
             tickAbility();
             breakWhileWalking();
             checkRage();
@@ -927,8 +931,11 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
     /** Quebra os blocos em volta do ponto do golpe (do JSON ou automatica). */
     void destroyAt(Vec3 center, AbilityDef ability) {
         if (level() instanceof ServerLevel server) {
-            attackDestruction(ability).ifPresent(destruction -> DestructionService.request(server, center,
-                    destruction, this));
+            attackDestruction(ability).ifPresent(destruction -> {
+                DestructionService.request(server, center, destruction, this);
+                // PM-9: golpe que destroi deixa pista do kaiju.
+                KaijuTrailService.note(this, KaijuTrail.Kind.DESTRUCTION);
+            });
         }
     }
 
@@ -1161,6 +1168,7 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
         blockedTicks = horizontalCollision && tryingToMove ? blockedTicks + 1 : 0;
         if (horizontalCollision && tryingToMove && mayBreakTerrain()) {
             DestructionService.requestPathClear(this, false);
+            KaijuTrailService.note(this, KaijuTrail.Kind.DESTRUCTION);
         }
         sinkFromBuilding();
     }

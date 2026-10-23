@@ -2,6 +2,7 @@ package com.kn8.common.invasion;
 
 import com.kn8.KN8Constants;
 import com.kn8.common.config.ServerConfig;
+import com.kn8.common.site.RegionService;
 import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.numbered.KaijuNo9Entity;
 
@@ -31,6 +32,7 @@ public final class InvasionEvents {
             return;
         }
         InvasionService.tick(level);
+        RegionService.tick(level);
         if (level.getDayTime() % DAY_TICKS == NIGHTFALL) {
             InvasionService.rollNatural(level);
         }

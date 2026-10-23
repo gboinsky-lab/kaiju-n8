@@ -14,6 +14,7 @@ import com.kn8.common.soldier.SquadCommandC2S;
 import com.kn8.common.craft.OpenWorkbenchS2C;
 import com.kn8.common.research.OpenResearchS2C;
 import com.kn8.common.research.ResearchC2S;
+import com.kn8.common.site.RegionAlertS2C;
 import com.kn8.common.invasion.InvasionStateS2C;
 import com.kn8.common.combat.CombatInputC2S;
 import com.kn8.common.combat.CombatNetwork;
@@ -68,7 +69,8 @@ public final class KN8Network {
     // 25 = PM-8B: categoria "exam" e "rewards.body_xp" no registro de missoes sincronizado.
     // 26 = PM-8C: OpenResearchS2C, ResearchC2S, CareerView.research e registro sincronizado "research".
     // 27 = PM-8D: OpenBaseS2C, BaseBuildC2S e registro sincronizado "base_module".
-    private static final String PROTOCOL_VERSION = "27";
+    // 28 = PM-9: RegionAlertS2C (alerta por regiao).
+    private static final String PROTOCOL_VERSION = "28";
 
     /** Diagnostico: 20 por segundo, rajada de 40. */
     private static final C2SGuard.Limit DEBUG_LIMIT = new C2SGuard.Limit(20, 40);
@@ -116,6 +118,8 @@ public final class KN8Network {
         // PM-8D: base do jogador (estado ao usar o nucleo e depois de cada obra) e pedido de construir/demolir.
         toClientHook(registrar, OpenBaseS2C.TYPE, OpenBaseS2C.STREAM_CODEC);
         toServer(registrar, BaseBuildC2S.TYPE, BaseBuildC2S.STREAM_CODEC, MENU_LIMIT, BaseBuildC2S::handle);
+        // PM-9: estado de alerta da regiao onde o jogador esta (so na mudanca).
+        toClientHook(registrar, RegionAlertS2C.TYPE, RegionAlertS2C.STREAM_CODEC);
         toClientHook(registrar, InvasionStateS2C.TYPE, InvasionStateS2C.STREAM_CODEC);
         // 0.5.0: tecla de Release (so na mudanca; o servidor sobe/desce a % no tick).
         toServer(registrar, ReleaseInputC2S.TYPE, ReleaseInputC2S.STREAM_CODEC, RELEASE_LIMIT,

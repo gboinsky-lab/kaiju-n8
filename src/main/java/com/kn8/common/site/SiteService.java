@@ -84,9 +84,11 @@ public final class SiteService {
         }
         if (now == null) {
             sites.remove(player.getUUID());
+            RegionService.syncTo(player);
             return;
         }
         sites.put(player.getUUID(), now);
+        RegionService.syncTo(player);
         announce(player, hit.get());
         if (ServerConfig.SITE_GARRISON.get()) {
             garrison(level, hit.get(), player);

@@ -1,0 +1,19 @@
+{
+  "result": "kn8:trail_scanner",
+  "category": "training",
+  "order": 43,
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 3
+    },
+    {
+      "item": "minecraft:compass",
+      "count": 1
+    },
+    {
+      "item": "minecraft:redstone",
+      "count": 2
+    }
+  ]
+}
