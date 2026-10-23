@@ -1,0 +1,19 @@
+{
+  "template": "kn8:base_module/barracks",
+  "order": 3,
+  "rank": "kn8:oficial_senior",
+  "cost": [
+    {
+      "item": "minecraft:stone_bricks",
+      "count": 32
+    },
+    {
+      "item": "minecraft:white_wool",
+      "count": 4
+    },
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 4
+    }
+  ]
+}

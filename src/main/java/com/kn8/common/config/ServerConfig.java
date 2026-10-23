@@ -300,6 +300,9 @@ public final class ServerConfig {
     public static final ModConfigSpec.DoubleValue SQUAD_PROTECT_RADIUS;
     public static final ModConfigSpec.DoubleValue STATION_RADIUS;
     public static final ModConfigSpec.IntValue STATION_COOLDOWN_TICKS;
+    // [base] PM-8D
+    public static final ModConfigSpec.DoubleValue BASE_MANAGE_DISTANCE;
+    public static final ModConfigSpec.BooleanValue BASE_PROTECT;
     // [research] PM-8C
     public static final ModConfigSpec.IntValue RESEARCH_TERMINAL_RANGE;
     public static final ModConfigSpec.DoubleValue RESEARCH_DURATION_MULTIPLIER;
@@ -948,6 +951,13 @@ public final class ServerConfig {
                 + " are healed and resupplied.", 16.0, 2.0, 64.0);
         STATION_COOLDOWN_TICKS = intValue("stationCooldownTicks", "PM-8 squad station: ticks before the same player"
                 + " can use a station again (creative: none).", 1200, 0, 72000);
+        BUILDER.pop();
+
+        section("base", "PM-8D player base: a Base Core and modules built on the plots around it.");
+        BASE_MANAGE_DISTANCE = doubleValue("manageDistance", "Modules can only be built or demolished this close"
+                + " (blocks) to the Base Core (creative: anywhere).", 24.0, 4.0, 128.0);
+        BASE_PROTECT = booleanValue("protect", "Kaiju attacks and walking do not break blocks inside a player base"
+                + " (3 x 3 plots around the core).", true);
         BUILDER.pop();
 
         section("research", "PM-8C research lab: kaiju material turned into unlocks and damage bonuses.");

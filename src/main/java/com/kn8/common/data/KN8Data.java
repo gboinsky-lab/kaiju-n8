@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import com.kn8.common.data.def.AbilityDef;
 import com.kn8.common.data.def.AuraDef;
+import com.kn8.common.data.def.BaseModuleDef;
 import com.kn8.common.data.def.BossDef;
 import com.kn8.common.data.def.DismantleDef;
 import com.kn8.common.data.def.InvasionDef;
@@ -93,12 +94,16 @@ public final class KN8Data {
     /** PM-8C: projetos de pesquisa do laboratorio (o cliente mostra a lista, o custo e o que liberam). */
     public static final DataRegistry<ResearchDef> RESEARCH = new DataRegistry<>("research", ResearchDef.CODEC, true);
 
+    /** PM-8D: modulos da base do jogador (o cliente mostra os modulos, o custo e o que pedem). */
+    public static final DataRegistry<BaseModuleDef> BASE_MODULE =
+            new DataRegistry<>("base_module", BaseModuleDef.CODEC, true);
+
     /** Ordem = ordem de validacao (cada um so referencia os anteriores). */
     public static final List<DataRegistry<?>> ALL =
             List.of(RANK, ABILITY, DISMANTLE, KAIJU, BOSS, WEAPON_PROFILE, WEAPON, AURA, SUIT, MISSION, SOLDIER, WORKBENCH,
                     INVASION,
                     NUMBERED, SPECIAL_SOLDIER, FLYER, LOCOMOTION, KAIJU_AI, SITE, VFX_PROFILE,
-                    RESEARCH);
+                    RESEARCH, BASE_MODULE);
 
     private KN8Data() {
     }

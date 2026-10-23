@@ -1,0 +1,22 @@
+{
+  "template": "kn8:base_module/command",
+  "order": 4,
+  "rank": "kn8:oficial_senior",
+  "requires": [
+    "kn8:workshop"
+  ],
+  "cost": [
+    {
+      "item": "minecraft:stone_bricks",
+      "count": 32
+    },
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 8
+    },
+    {
+      "item": "minecraft:gold_ingot",
+      "count": 4
+    }
+  ]
+}

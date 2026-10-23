@@ -1300,3 +1300,20 @@ base grande (laboratório de kaiju da arena), Ariake (laboratório de armas nume
 | 95.7 | Como Oficial, pesquisar Mecânica Muscular e abrir a bancada | O Mk1 Reforçado, antes "Precisa da patente: Oficial Sênior / ou a pesquisa: Mecânica Muscular", fica liberado |
 | 95.8 | `/kn8 research list Dev` | Lista com OK nas concluídas e o motivo nas outras (BUSY, RANK_TOO_LOW, MISSING_PREREQUISITE, MISSING, NO_TERMINAL) |
 | 95.9 | Sair do servidor no meio de uma pesquisa e voltar | Continua com o mesmo fim |
+
+## 96. Base modular do jogador (PM-8D)
+
+Servidor dedicado + 2 clientes. Terreno aberto (os lotes limpam o que estiver acima do chão).
+
+| # | Passo | Esperado |
+|---|---|---|
+| 96.1 | Como Oficial, fabricar o Núcleo da Base na bancada e colocá-lo | "Base fundada!"; usar o núcleo abre o menu na aba **BASE** com a grade 3 x 3 (núcleo no meio, 8 lotes vazios) |
+| 96.2 | Escolher o lote de cima, Oficina, CONSTRUIR | O material sai do inventário, a oficina aparece no lote ao norte (porta em cada lado), "Módulo construído: Oficina"; o lote mostra "Oficina" |
+| 96.3 | Tentar o Comando antes da Oficina / sem material / abaixo da patente | Botão apagado com "Precisa do módulo: Oficina", material em vermelho, "Precisa da patente" |
+| 96.4 | Construir Laboratório, Comando, Alojamento e Pátio de Treino | Cada um no seu lote; no Comando os dois oficiais; Oficial de Provas abre o quadro de provas (as provas valem na sua base) |
+| 96.5 | Laboratório: usar o terminal | Abre a seção Pesquisa (PM-8C) |
+| 96.6 | DEMOLIR um módulo (dois cliques: DEMOLIR e CONFIRMAR) | O lote fica limpo, baús soltam o conteúdo, os oficiais/bonecos somem, material não volta |
+| 96.7 | Colocar um segundo Núcleo da Base | "Você já tem uma base nesta dimensão (núcleo em ...)"; o bloco volta |
+| 96.8 | O outro cliente usar o seu núcleo | "Este Núcleo da Base é de outro jogador" |
+| 96.9 | Kaiju dentro da grade da base | Não quebra os módulos (`[base] protect`) |
+| 96.10 | Quebrar o núcleo | "Seu Núcleo da Base foi destruído..."; os módulos ficam no mundo; dá para fundar outra base |

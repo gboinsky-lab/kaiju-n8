@@ -1055,3 +1055,19 @@ bônus de pesquisas diferentes se somam.
 | Teoria das Armas Numeradas (`numbered_weapon_theory`) | Líder de Pelotão | Ressonância e Anatomia Honju | 2 núcleo intacto, 6 fragmento | 10 min | Libera a Espada do Hoshina (sem esperar Vice-Capitão), +5% contra numerados |
 
 Terminal de pesquisa na bancada (Oficial): 6 ferro, 4 painéis de vidro, 4 redstone, 2 tecido de kaiju.
+
+## PM-8D: base modular do jogador (2026-10-23) [SUPOSIÇÃO todos os números]
+
+`[base]` no `kn8-server.toml`: `manageDistance` 24 (blocos do núcleo para construir/demolir; criativo em qualquer
+lugar), `protect` true (kaiju não quebram blocos na grade da base). Uma base por jogador e dimensão; 8 lotes de
+11 x 11 em volta do núcleo (grade 3 x 3, 1 bloco de passagem). Demolir não devolve o material.
+
+| Módulo (`base_module/*.json`) | Patente | Pede | Material | Tem |
+|---|---|---|---|---|
+| Oficina (`workshop`) | | | 32 tijolos de pedra, 8 ferro | 2 bancadas, ferraria, bigorna, 2 baús |
+| Laboratório (`laboratory`) | Oficial | | 32 tijolos, 8 vidro, 4 ferro, 4 tecido de kaiju | 2 terminais de pesquisa, suporte de poções |
+| Alojamento (`barracks`) | Oficial Sênior | | 32 tijolos, 4 lã branca, 4 ferro | Estação de preparação, 4 camas |
+| Comando (`command`) | Oficial Sênior | Oficina | 32 tijolos, 8 ferro, 4 ouro | Oficial de Missões e Oficial de Provas |
+| Pátio de Treino (`training`) | | | 16 tábuas de carvalho, 4 fardos de feno | 3 bonecos de treino, alvos |
+
+Núcleo da Base na bancada (Oficial): 8 ferro, 2 fragmentos de núcleo, 4 redstone.

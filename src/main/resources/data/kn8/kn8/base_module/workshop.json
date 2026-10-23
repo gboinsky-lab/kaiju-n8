@@ -1,0 +1,14 @@
+{
+  "template": "kn8:base_module/workshop",
+  "order": 1,
+  "cost": [
+    {
+      "item": "minecraft:stone_bricks",
+      "count": 32
+    },
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 8
+    }
+  ]
+}

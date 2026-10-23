@@ -1,0 +1,23 @@
+{
+  "template": "kn8:base_module/laboratory",
+  "order": 2,
+  "rank": "kn8:oficial",
+  "cost": [
+    {
+      "item": "minecraft:stone_bricks",
+      "count": 32
+    },
+    {
+      "item": "minecraft:glass",
+      "count": 8
+    },
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 4
+    },
+    {
+      "item": "kn8:kaiju_tissue",
+      "count": 4
+    }
+  ]
+}

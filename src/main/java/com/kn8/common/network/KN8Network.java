@@ -3,6 +3,8 @@ package com.kn8.common.network;
 
 import com.kn8.common.anim.AnimTriggerS2C;
 import com.kn8.common.attribute.PowerService;
+import com.kn8.common.base.BaseBuildC2S;
+import com.kn8.common.base.OpenBaseS2C;
 import com.kn8.common.base.OpenMissionBoardS2C;
 import com.kn8.common.career.CareerService;
 import com.kn8.common.career.CareerSyncS2C;
@@ -65,7 +67,8 @@ public final class KN8Network {
     // 22 = PM-1: CombatResult.PERFECT_DODGE e especiais "lunge"/"flurry" no registro de armas sincronizado.
     // 25 = PM-8B: categoria "exam" e "rewards.body_xp" no registro de missoes sincronizado.
     // 26 = PM-8C: OpenResearchS2C, ResearchC2S, CareerView.research e registro sincronizado "research".
-    private static final String PROTOCOL_VERSION = "26";
+    // 27 = PM-8D: OpenBaseS2C, BaseBuildC2S e registro sincronizado "base_module".
+    private static final String PROTOCOL_VERSION = "27";
 
     /** Diagnostico: 20 por segundo, rajada de 40. */
     private static final C2SGuard.Limit DEBUG_LIMIT = new C2SGuard.Limit(20, 40);
@@ -110,6 +113,9 @@ public final class KN8Network {
         // PM-8C: terminal de pesquisa (abre a secao Pesquisa) e pedido de pesquisar.
         toClientHook(registrar, OpenResearchS2C.TYPE, OpenResearchS2C.STREAM_CODEC);
         toServer(registrar, ResearchC2S.TYPE, ResearchC2S.STREAM_CODEC, MENU_LIMIT, ResearchC2S::handle);
+        // PM-8D: base do jogador (estado ao usar o nucleo e depois de cada obra) e pedido de construir/demolir.
+        toClientHook(registrar, OpenBaseS2C.TYPE, OpenBaseS2C.STREAM_CODEC);
+        toServer(registrar, BaseBuildC2S.TYPE, BaseBuildC2S.STREAM_CODEC, MENU_LIMIT, BaseBuildC2S::handle);
         toClientHook(registrar, InvasionStateS2C.TYPE, InvasionStateS2C.STREAM_CODEC);
         // 0.5.0: tecla de Release (so na mudanca; o servidor sobe/desce a % no tick).
         toServer(registrar, ReleaseInputC2S.TYPE, ReleaseInputC2S.STREAM_CODEC, RELEASE_LIMIT,

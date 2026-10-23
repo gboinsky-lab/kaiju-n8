@@ -14,6 +14,7 @@ import com.kn8.KN8Constants;
 import com.kn8.core.kaiju.KaijuScale;
 import com.kn8.common.data.def.AbilityDef;
 import com.kn8.common.data.def.AuraDef;
+import com.kn8.common.data.def.BaseModuleDef;
 import com.kn8.common.data.def.BossDef;
 import com.kn8.common.data.def.DismantleDef;
 import com.kn8.common.data.def.InvasionDef;
@@ -102,6 +103,8 @@ public final class DataValidation {
         publish(KN8Data.LOCOMOTION, validateLocomotion(KN8Data.LOCOMOTION.loaded(), report), report);
         publish(KN8Data.VFX_PROFILE, validateVfxProfiles(KN8Data.VFX_PROFILE.loaded(), report), report);
         publish(KN8Data.RESEARCH, validateResearch(KN8Data.RESEARCH.loaded(), ranks.keySet(), report), report);
+        publish(KN8Data.BASE_MODULE, validateBaseModules(KN8Data.BASE_MODULE.loaded(), ranks.keySet(), report),
+                report);
         // Patentes apontam para missoes de avaliacao, que so foram validadas agora: confere no fim (so aviso).
         ranks.forEach((id, rank) -> rank.promotionMission().filter(mission -> !missions.containsKey(mission))
                 .ifPresent(mission -> report.warning("rank " + id + ": promotion_mission inexistente " + mission)));
@@ -152,6 +155,31 @@ public final class DataValidation {
                     report.error(where + ": ingrediente nao registrado " + ingredient.item());
                     return;
                 }
+            }
+            valid.put(id, def);
+        });
+        return valid;
+    }
+
+    /** PM-8D: custo com itens registrados, patente e modulos pedidos existentes (senao o modulo sai). */
+    public static Map<ResourceLocation, BaseModuleDef> validateBaseModules(Map<ResourceLocation, BaseModuleDef> input,
+            Set<ResourceLocation> ranks, DataReport report) {
+        Map<ResourceLocation, BaseModuleDef> valid = new LinkedHashMap<>();
+        input.forEach((id, def) -> {
+            String where = "base_module " + id;
+            for (WorkbenchRecipeDef.Ingredient ingredient : def.cost()) {
+                if (!BuiltInRegistries.ITEM.containsKey(ingredient.item())) {
+                    report.error(where + ": custo com item nao registrado " + ingredient.item());
+                    return;
+                }
+            }
+            if (def.rank().filter(rank -> !ranks.contains(rank)).isPresent()) {
+                report.error(where + ": patente inexistente " + def.rank().get());
+                return;
+            }
+            if (def.requires().stream().anyMatch(required -> !input.containsKey(required))) {
+                report.error(where + ": requires com modulo inexistente");
+                return;
             }
             valid.put(id, def);
         });

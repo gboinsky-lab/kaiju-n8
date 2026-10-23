@@ -1,0 +1,14 @@
+{
+  "template": "kn8:base_module/training",
+  "order": 5,
+  "cost": [
+    {
+      "item": "minecraft:oak_planks",
+      "count": 16
+    },
+    {
+      "item": "minecraft:hay_block",
+      "count": 4
+    }
+  ]
+}

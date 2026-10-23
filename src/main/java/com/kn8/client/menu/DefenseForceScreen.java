@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.lwjgl.glfw.GLFW;
 
+import com.kn8.common.base.OpenBaseS2C;
 import com.kn8.common.base.OpenMissionBoardS2C;
 import com.kn8.common.craft.OpenWorkbenchS2C;
 import com.kn8.common.research.OpenResearchS2C;
@@ -30,7 +31,7 @@ import net.minecraft.resources.ResourceLocation;
 public class DefenseForceScreen extends Screen {
 
     enum Tab {
-        PROFILE, MISSIONS, ALERTS, SQUAD, BESTIARY, ARSENAL
+        PROFILE, MISSIONS, ALERTS, SQUAD, BESTIARY, ARSENAL, BASE
     }
 
     private static final int BAR_HEIGHT = 22;
@@ -50,6 +51,7 @@ public class DefenseForceScreen extends Screen {
         tabs.put(Tab.SQUAD, new SquadTab());
         tabs.put(Tab.BESTIARY, new BestiaryTab());
         tabs.put(Tab.ARSENAL, new ArsenalTab());
+        tabs.put(Tab.BASE, new BaseTab());
     }
 
     /** A bancada (OpenWorkbenchS2C): abre o menu no Arsenal, secao de fabricacao. */
@@ -66,6 +68,15 @@ public class DefenseForceScreen extends Screen {
         Minecraft.getInstance().setScreen(new DefenseForceScreen());
     }
 
+    /** PM-8D: o Nucleo da Base abre a aba Base; depois de uma obra so atualiza o estado. */
+    public static void openBase(OpenBaseS2C payload) {
+        BaseTab.update(payload);
+        if (payload.open()) {
+            current = Tab.BASE;
+            Minecraft.getInstance().setScreen(new DefenseForceScreen());
+        }
+    }
+
     /** PM-8: o oficial de missoes abre a aba Missoes so com as missoes dele. */
     public static void openMissionBoard(String giver) {
         current = Tab.MISSIONS;
@@ -80,6 +91,7 @@ public class DefenseForceScreen extends Screen {
         KN8ClientHooks.register(OpenMissionBoardS2C.TYPE,
                 payload -> openMissionBoard(payload.giver()));
         KN8ClientHooks.register(OpenResearchS2C.TYPE, payload -> openResearch());
+        KN8ClientHooks.register(OpenBaseS2C.TYPE, DefenseForceScreen::openBase);
     }
 
     @Override
