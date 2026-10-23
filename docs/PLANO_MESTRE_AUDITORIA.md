@@ -60,3 +60,16 @@ commit e pacote; relatório com TESTADO / NÃO TESTADO / BLOQUEADO (Parte VII).
 - **[DECIDIR] Numerados do jogador (sistema 11):** o jogador pode usar armas numeradas além da espada do Hoshina? Quais
   e com que requisito (patente, missão, afinidade)?
 - **[DECIDIR] Precisão nas provas (sistema 9):** registrar tiros dados/acertados do jogador para usar nas provas?
+
+## 4. Decisões do Miguel (2026-10-23)
+
+1. **Civis:** criar uma entidade civil; o modelo muda depois (provisório até lá). Entra na PM-10.
+2. **Apoio militar:** só em missão e invasão, em **3 tipos: pequeno, médio e grande** (PM-10). [SUPOSIÇÃO] conteúdo de
+   cada um a propor na etapa (ex.: pequeno = reconhecimento que marca kaiju; médio = fogo de cobertura ou suprimentos;
+   grande = bombardeio limitado), com recarga e custo crescentes.
+3. **Numerados do jogador:** **todas** as armas numeradas podem ser usadas pelo jogador (PM-11), com requisitos.
+4. **Precisão:** registrar tiros dados e acertados do jogador para as provas (PM-7).
+
+## 5. Andamento
+
+- **PM-1 feita (2026-10-23):** esquiva perfeita (janela no começo da esquiva, contra-ataque crítico, stamina, atordoa Yoju, uma por esquiva; decidido no servidor pelo tick do golpe), especiais novos da espada (`lunge`, corte em avanço que não atravessa parede) e da faca (`flurry`, 4 cortes), tiro preciso das armas de fogo no clique direito (ação `heavy` do JSON), receitas desenhadas do jogador (`perfect_dodge`, `dash_cut`, `knife_flurry`). Números em `docs/BALANCEAMENTO.md`. Próxima: PM-2 (ferimentos por parte).

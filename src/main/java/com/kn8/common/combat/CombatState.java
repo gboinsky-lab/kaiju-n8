@@ -24,6 +24,9 @@ public final class CombatState {
     boolean blocking;
     long blockStartTick = NEVER;
     long invulnerableUntilTick = NEVER;
+    /** PM-1: inicio da esquiva atual e se ela ja deu a esquiva perfeita (uma por esquiva). */
+    long dodgeStartTick = NEVER;
+    boolean perfectDodgeUsed;
     long criticalUntilTick = NEVER;
     /** Inicio do ataque carregado em andamento (NEVER = nao esta carregando). */
     long chargeStartTick = NEVER;

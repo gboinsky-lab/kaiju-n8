@@ -25,5 +25,26 @@
     "swing": "kn8:weapon.knife_swing",
     "heavy": "kn8:weapon.knife_heavy",
     "hit": "kn8:weapon.knife_hit"
+  },
+  "special": {
+    "id": "knife_flurry",
+    "type": "flurry",
+    "multiplier": 0.9,
+    "duration_ticks": 16,
+    "impact_tick": 3,
+    "radius": 2.6,
+    "stamina_cost": 20,
+    "heat_cost": 2,
+    "cooldown_ticks": 100,
+    "knockback": 0.0,
+    "stagger_ticks": 0,
+    "camera_shake": 0.05,
+    "vfx": [
+      {
+        "effect": "kn8:slash",
+        "intensity": 0.9
+      }
+    ],
+    "sound": "kn8:weapon.knife_heavy"
   }
 }

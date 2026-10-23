@@ -20,7 +20,9 @@ public enum CombatResult {
     /** 0.5.0-D2: pente vazio e nenhum pente carregado na mochila. */
     DENIED_NO_MAGAZINE,
     /** 0.5.0-D3 (Miguel): arma de par (Hoshina) sem a segunda arma na outra mao. */
-    DENIED_NEEDS_DUAL;
+    DENIED_NEEDS_DUAL,
+    /** PM-1 (Plano Mestre): o golpe chegou no comeco da esquiva (janela de contra-ataque aberta). */
+    PERFECT_DODGE;
 
     public static CombatResult byIndex(int index) {
         CombatResult[] values = values();

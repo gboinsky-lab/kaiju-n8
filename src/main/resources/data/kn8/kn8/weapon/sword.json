@@ -25,5 +25,27 @@
     "swing": "kn8:weapon.sword_swing",
     "heavy": "kn8:weapon.sword_heavy",
     "hit": "kn8:weapon.sword_hit"
+  },
+  "special": {
+    "id": "dash_cut",
+    "type": "lunge",
+    "multiplier": 1.8,
+    "duration_ticks": 16,
+    "impact_tick": 5,
+    "radius": 1.3,
+    "forward": 5.0,
+    "stamina_cost": 25,
+    "heat_cost": 3,
+    "cooldown_ticks": 120,
+    "knockback": 0.4,
+    "stagger_ticks": 12,
+    "camera_shake": 0.15,
+    "vfx": [
+      {
+        "effect": "kn8:slash",
+        "intensity": 1.4
+      }
+    ],
+    "sound": "kn8:weapon.sword_heavy"
   }
 }

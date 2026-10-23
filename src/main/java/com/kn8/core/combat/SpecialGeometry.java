@@ -27,6 +27,26 @@ public final class SpecialGeometry {
     }
 
     /**
+     * PM-1: o alvo esta na faixa do corte em avanco? Faixa reta no plano a partir de (startX, startZ) na direcao
+     * (dirX, dirZ) unitaria, de comprimento {@code length} e meia largura {@code halfWidth}, contra a caixa inteira
+     * do alvo (o ponto da faixa mais perto do centro da caixa), na mesma faixa de altura do golpe no chao.
+     */
+    public static boolean inLunge(double startX, double startY, double startZ, double dirX, double dirZ,
+            double length, double halfWidth, double minX, double minY, double minZ, double maxX, double maxY,
+            double maxZ) {
+        boolean vertical = minY < startY + SLAM_HEIGHT && maxY > startY - SLAM_BELOW;
+        if (!vertical) {
+            return false;
+        }
+        double centerX = (minX + maxX) * 0.5;
+        double centerZ = (minZ + maxZ) * 0.5;
+        double along = Math.max(0.0, Math.min(length, (centerX - startX) * dirX + (centerZ - startZ) * dirZ));
+        double pointX = startX + dirX * along;
+        double pointZ = startZ + dirZ * along;
+        return horizontalDistanceToBox(pointX, pointZ, minX, minZ, maxX, maxZ) <= halfWidth;
+    }
+
+    /**
      * O alvo esta na area do golpe no chao?
      *
      * @param centerY altura do ponto de impacto (pes de quem ataca)

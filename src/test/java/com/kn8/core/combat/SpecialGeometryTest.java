@@ -34,6 +34,17 @@ class SpecialGeometryTest {
     }
 
     @Test
+    void lungeHitsAlongTheLineOnly() {
+        // Faixa de 5 blocos para +z, meia largura 1,3: zumbi a 3 blocos na linha entra; a 3 ao lado (borda 2,7) nao.
+        assertTrue(SpecialGeometry.inLunge(0, 64, 0, 0, 1, 5, 1.3, -0.3, 64, 2.7, 0.3, 66, 3.3));
+        assertFalse(SpecialGeometry.inLunge(0, 64, 0, 0, 1, 5, 1.3, 2.7, 64, 2.7, 3.3, 66, 3.3));
+        // Atras de quem ataca e depois do fim da faixa: fora; kaiju largo cuja borda encosta no fim: dentro.
+        assertFalse(SpecialGeometry.inLunge(0, 64, 0, 0, 1, 5, 1.3, -0.3, 64, -3.3, 0.3, 66, -2.7));
+        assertFalse(SpecialGeometry.inLunge(0, 64, 0, 0, 1, 5, 1.3, -0.3, 64, 7.7, 0.3, 66, 8.3));
+        assertTrue(SpecialGeometry.inLunge(0, 64, 0, 0, 1, 5, 1.3, -3, 64, 6, 3, 73, 12));
+    }
+
+    @Test
     void cooldownProgressGoesFromZeroToOne() {
         assertEquals(0.0F, SpecialGeometry.cooldownProgress(200, 200), 1e-6F);
         assertEquals(0.5F, SpecialGeometry.cooldownProgress(100, 200), 1e-6F);

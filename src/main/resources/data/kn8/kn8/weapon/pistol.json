@@ -9,6 +9,11 @@
       "multiplier": 1.0,
       "duration_ticks": 6,
       "impact_tick": 1
+    },
+    "heavy": {
+      "multiplier": 1.7,
+      "duration_ticks": 14,
+      "impact_tick": 4
     }
   },
   "sounds": {

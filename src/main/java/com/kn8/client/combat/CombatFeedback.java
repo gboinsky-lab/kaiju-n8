@@ -124,7 +124,7 @@ public final class CombatFeedback {
     /** Cor do aviso: vermelho para negado/quebra, dourado para parry/critico. */
     public static int messageColor() {
         return switch (lastResult) {
-            case PARRY, CRITICAL -> 0xFFFFD54F;
+            case PARRY, CRITICAL, PERFECT_DODGE -> 0xFFFFD54F;
             default -> 0xFFFF6E6E;
         };
     }

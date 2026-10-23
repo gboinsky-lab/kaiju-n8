@@ -859,3 +859,16 @@ Duelos (4 por confronto, V = matou, E = escapou, D = morreu):
 | Kaiju No. 8 × No. 9 preto | 0 / 5 / 0 | 1 / 1 / 0 (2 por tempo, 5 min) |
 
 Ele foi encurralado (15 s sem escapar, volta a lutar) 9 vezes nesses 40 duelos.
+
+## PM-1: esquiva perfeita e funções das armas (2026-10-23) [SUPOSIÇÃO todos os números]
+
+| Item | Valor | Onde |
+|---|---|---|
+| Janela da esquiva perfeita | 3 ticks do começo da esquiva (a esquiva é invulnerável 6) | `[combat] perfectDodgeTicks` |
+| Contra-ataque | o primeiro acerto em 30 ticks é crítico (×1,5) | `perfectDodgeCounterTicks`, `criticalMultiplier` |
+| Stamina devolvida | 12 (a esquiva custa 20: nunca sai de graça) | `perfectDodgeStaminaRefund` |
+| Atordoamento | Yoju 20 ticks, só golpe corpo a corpo | `perfectDodgeStaggerTicks` |
+| Espada: Corte em Avanço (`lunge`) | ×1,8, 5 blocos à frente, meia largura 1,3, impacto no tick 5 de 16, stamina 25, calor 3, recarga 6 s, empurrão 0,4, atordoa Yoju 12 ticks | `weapon/sword.json`, `[combat] lungeSpeedPerBlock` 0,45 |
+| Faca: Sequência de Cortes (`flurry`) | 4 cortes de ×0,9 a cada 3 ticks até 2,6 blocos, stamina 20, calor 2, recarga 5 s | `weapon/combat_knife.json`, `[combat] flurryHits`/`flurryIntervalTicks` |
+| Rifle: tiro preciso (clique direito) | ×2,2, 24 ticks (impacto no 6), 1 bala, conta como golpe pesado (teto de 15%) | `weapon/rifle.json` `actions.heavy` |
+| Pistola: tiro preciso | ×1,7, 14 ticks (impacto no 4), 1 bala | `weapon/pistol.json` `actions.heavy` |

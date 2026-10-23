@@ -71,7 +71,17 @@ public record WeaponDef(ResourceLocation item, float baseDamage, float reach, St
         /** Golpe no chao a frente: onda em area que fere, empurra e atordoa (machado). */
         GROUND_SLAM("ground_slam"),
         /** 0.6-D: corte que voa reto e atravessa os alvos (espada do Hoshina; ver {@link SlashSpec}). */
-        SLASH_WAVE("slash_wave");
+        SLASH_WAVE("slash_wave"),
+        /**
+         * PM-1: corte em avanco (espada): quem ataca vai {@code forward} blocos a frente e corta tudo numa faixa de
+         * meia largura {@code radius} pelo caminho.
+         */
+        LUNGE("lunge"),
+        /**
+         * PM-1: sequencia de cortes (faca): {@code [combat] flurryHits} cortes rapidos em quem esta a frente ate
+         * {@code radius}, cada um com o {@code multiplier}.
+         */
+        FLURRY("flurry");
 
         public static final Codec<SpecialType> CODEC = StringRepresentable.fromEnum(SpecialType::values);
 

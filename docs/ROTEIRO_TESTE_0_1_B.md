@@ -1151,3 +1151,15 @@ mostra a cada 5 s `[kn8 perf] fps=... drawn=... drawnPeak=... drawMs=... memMb=.
 | 85.2 | Repetir com `maxDrawnEffects = 0` | Nenhum efeito desenhado; a luta e o dano continuam iguais (o servidor não muda nada) |
 | 85.3 | `particleLevel` `LOW`, `MEDIUM`, `HIGH` com muitos efeitos ao mesmo tempo (ex.: vários `/kn8 vfx play kn8:technique kn8:kikoru 1 ground_smash` seguidos) | `drawnPeak` no máximo 35%, 70% e 100% de `maxDrawnEffects`; FPS maior no LOW |
 | 85.4 | `reduceFlashes = true` e uma explosão da Mina | Clarões menores e sem branco puro |
+
+## 86. Combate: esquiva perfeita e funções das armas (PM-1)
+
+Servidor dedicado + 2 clientes. Jogador de Mk1 com Resistência; o outro jogador assistindo de lado.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 86.1 | Espada na mão, dois `minecraft:husk` com `NoAI` a ~3 blocos (um na frente, outro 4 blocos ao lado) e um terceiro atrás de um muro de pedra; tecla **R** | "Corte em Avanço" na HUD com recarga; o jogador avança; só o da frente perde vida (o do lado e o de trás do muro não) |
+| 86.2 | Faca na mão, golem de ferro com `NoAI` a 2,5 blocos; **R** | "Sequência de Cortes": 4 cortes seguidos (golem ~100 → ~78 com o Release a 0), dois traços cruzados a cada corte |
+| 86.3 | Rifle com balas, golem a ~6 blocos; clique esquerdo, depois clique direito | Tiro comum (−5) e tiro preciso mais lento (−11), cada um gastando uma bala; a pistola faz o mesmo com o tiro preciso dela |
+| 86.4 | Espada na mão, `kn8:primigenius` atacando; apertar **Z** (esquiva) bem no momento do golpe | Às vezes "ESQUIVA PERFEITA!" em dourado na HUD, som agudo de parry e um anel ciano; o golpe seguinte sai crítico; o Primigenius fica atordoado; esquivar cedo ou tarde demais só esquiva |
+| 86.5 | Apertar **Z** várias vezes seguidas | A stamina cai (cada esquiva gasta 20, a perfeita devolve 12); sem stamina, "Sem stamina" e nada de esquiva |

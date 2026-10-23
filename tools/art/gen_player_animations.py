@@ -81,6 +81,42 @@ def special_slash(special):
     }}
 
 
+def special_lunge(special):
+    """PM-1: corte em avanco (lunge, espada): recolhe a lamina ao lado do quadril, avanca o corpo e corta na
+    horizontal no tick de impacto do JSON, com a perna da frente esticada."""
+    end, hit = special["duration_ticks"] * TICK, special["impact_tick"] * TICK
+    wind = hit * 0.55
+    follow = hit + (end - hit) * 0.35
+    return {"animation_length": round(end, 3), "bones": {
+        "right_arm": {"rotation": keys((0, [0, 0, 0]), (wind, [-40, 60, 20]), (hit, [-90, -45, 0]),
+                                       (follow, [-85, -60, 0]), (end, [0, 0, 0]))},
+        "left_arm": {"rotation": keys((0, [0, 0, 0]), (wind, [-20, 0, -20]), (hit, [30, 0, -15]),
+                                      (end, [0, 0, 0]))},
+        "torso": {"rotation": keys((0, [0, 0, 0]), (wind, [10, 30, 0]), (hit, [20, -25, 0]),
+                                   (follow, [20, -30, 0]), (end, [0, 0, 0]))},
+        "right_leg": {"rotation": keys((0, [0, 0, 0]), (wind, [-15, 0, 0]), (hit, [-45, 0, 0]), (end, [0, 0, 0]))},
+        "left_leg": {"rotation": keys((0, [0, 0, 0]), (hit, [30, 0, 0]), (end, [0, 0, 0]))},
+    }}
+
+
+def special_flurry(special, cuts=4, interval=3):
+    """PM-1: sequencia de cortes (flurry, faca): a partir do tick de impacto do JSON, um corte a cada intervalo
+    ([combat] flurryHits/flurryIntervalTicks; os padroes do config), alternando de cima para baixo e de baixo para
+    cima."""
+    end, hit = special["duration_ticks"] * TICK, special["impact_tick"] * TICK
+    frames = [(0, [0, 0, 0]), (hit * 0.6, [-120, 20, 30])]
+    for cut in range(cuts):
+        t = hit + cut * interval * TICK
+        frames.append((min(t, end - TICK), [-60, -40, -30] if cut % 2 == 0 else [-120, 30, 30]))
+    frames.append((end, [0, 0, 0]))
+    torso = [(0, [0, 0, 0]), (hit, [8, -15, 0]), (end, [0, 0, 0])]
+    return {"animation_length": round(end, 3), "bones": {
+        "right_arm": {"rotation": keys(*[(round(t, 4), v) for t, v in frames])},
+        "torso": {"rotation": keys(*torso)},
+        "right_leg": {"rotation": keys((0, [0, 0, 0]), (hit, [-20, 0, 0]), (end, [0, 0, 0]))},
+    }}
+
+
 def shoot(action, body_kick=1.0):
     """M10b: mira com os dois bracos e coice no tick de impacto do JSON do rifle. 0.5.0-D: o coice do corpo escala
     com o recoil.body_kick do perfil (pistola na mao so: o braco sobe mais)."""
@@ -685,6 +721,10 @@ def weapon_animations():
             result[f"player.{item}.special"] = special_slam(special)
         elif special and special["type"] == "slash_wave":
             result[f"player.{item}.special"] = special_slash(special)
+        elif special and special["type"] == "lunge":
+            result[f"player.{item}.special"] = special_lunge(special)
+        elif special and special["type"] == "flurry":
+            result[f"player.{item}.special"] = special_flurry(special)
     return result
 
 

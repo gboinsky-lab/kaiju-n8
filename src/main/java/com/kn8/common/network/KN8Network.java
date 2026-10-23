@@ -59,7 +59,8 @@ public final class KN8Network {
     // 18 = 0.5.0-E: ParkourInputC2S e ParkourStateS2C (parkour do jogador). 19 = IA-5: SquadCommandC2S (esquadrao).
     // 20 = VFX-1: VfxS2C.source (perfil visual e receita) e registro sincronizado "vfx_profile".
     // 21 = VFX-2: VfxS2C.source.height (o efeito cresce com o corpo de quem o faz).
-    private static final String PROTOCOL_VERSION = "21";
+    // 22 = PM-1: CombatResult.PERFECT_DODGE e especiais "lunge"/"flurry" no registro de armas sincronizado.
+    private static final String PROTOCOL_VERSION = "22";
 
     /** Diagnostico: 20 por segundo, rajada de 40. */
     private static final C2SGuard.Limit DEBUG_LIMIT = new C2SGuard.Limit(20, 40);

@@ -79,6 +79,18 @@ public final class CombatMath {
         return elapsed >= 0 && elapsed <= window;
     }
 
+    /**
+     * PM-1 (Plano Mestre): esquiva perfeita = o golpe chega ate {@code window} ticks depois de a esquiva comecar
+     * ({@code Long.MIN_VALUE} = nenhuma esquiva).
+     */
+    public static boolean isPerfectDodge(long dodgeStartTick, long hitTick, int window) {
+        if (dodgeStartTick == Long.MIN_VALUE) {
+            return false;
+        }
+        long elapsed = hitTick - dodgeStartTick;
+        return elapsed >= 0 && elapsed <= window;
+    }
+
     /** Dano do golpe com o critico pos-parry (consumido no primeiro golpe que acertar). */
     public static float withCritical(float damage, boolean critical, double criticalMultiplier) {
         return critical ? (float) (damage * criticalMultiplier) : damage;

@@ -7,6 +7,8 @@ import java.util.UUID;
 import com.kn8.KN8Constants;
 import com.kn8.common.attribute.PowerService;
 import com.kn8.common.combat.CombatService;
+import com.kn8.common.combat.WeaponHandling;
+import com.kn8.common.config.ServerConfig;
 import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.registry.KN8Entities;
 import com.kn8.common.registry.KN8Items;
@@ -19,8 +21,11 @@ import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.animal.IronGolem;
+import net.minecraft.world.entity.monster.Husk;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.util.FakePlayer;
 import net.neoforged.neoforge.common.util.FakePlayerFactory;
@@ -42,6 +47,8 @@ public final class SpecialAttackGameTests {
     private static final int SETTLE_TICKS = 2;
     /** impact_tick do special do machado (16) com folga. */
     private static final int IMPACT_MARGIN = 20;
+    /** impact_tick da sequencia de cortes da faca (JSON). */
+    private static final int FLURRY_FIRST_CUT = 3;
 
     private SpecialAttackGameTests() {
     }
@@ -98,10 +105,141 @@ public final class SpecialAttackGameTests {
     @GameTest(template = TEMPLATE)
     public static void weaponWithoutSpecialIsDenied(GameTestHelper helper) {
         FakePlayer player = player(helper, "nospecial");
-        player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(KN8Items.COMBAT_KNIFE.get()));
+        // PM-1: a faca ganhou a sequencia de cortes; a baioneta do Narumi continua sem especial do jogador.
+        player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(KN8Items.NARUMI_BAYONET.get()));
         helper.runAfterDelay(SETTLE_TICKS, () -> {
             PowerService.setStamina(player, 100);
-            helper.assertTrue(!CombatService.special(player), "A faca nao tem ataque especial");
+            helper.assertTrue(!CombatService.special(player), "A baioneta nao tem ataque especial");
+            helper.succeed();
+        });
+    }
+
+    /** PM-1: corte em avanco da espada: fere quem esta na faixa a frente, nao quem esta ao lado nem atras de parede. */
+    @GameTest(template = TEMPLATE)
+    public static void swordDashCutHitsTheLineOnly(GameTestHelper helper) {
+        FakePlayer player = player(helper, "dashcut");
+        player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(KN8Items.SWORD.get()));
+        // Muro atravessando a faixa em z = 3: o zumbi de tras dele fica dentro do alcance mas sem caminho livre.
+        for (int x = 2; x <= 6; x++) {
+            for (int y = 1; y <= 3; y++) {
+                helper.setBlock(new BlockPos(x, y, 3), Blocks.STONE);
+            }
+        }
+        // Husk: o zumbi comum queima no sol do GameTest e perderia vida sem golpe nenhum.
+        Husk ahead = helper.spawn(EntityType.HUSK, new BlockPos(4, 1, 5));
+        Husk aside = helper.spawn(EntityType.HUSK, new BlockPos(0, 1, 5));
+        Husk walled = helper.spawn(EntityType.HUSK, new BlockPos(4, 1, 2));
+        for (Husk zombie : new Husk[] {ahead, aside, walled}) {
+            zombie.setNoAi(true);
+        }
+        float[] before = new float[3];
+        helper.onEachTick(() -> CombatService.tick(player));
+        helper.runAfterDelay(SETTLE_TICKS, () -> {
+            PowerService.setStamina(player, 100);
+            before[0] = ahead.getHealth();
+            before[1] = aside.getHealth();
+            before[2] = walled.getHealth();
+            helper.assertTrue(CombatService.special(player), "O corte em avanco deveria comecar");
+        });
+        helper.runAfterDelay(SETTLE_TICKS + IMPACT_MARGIN, () -> {
+            helper.assertTrue(ahead.getHealth() < before[0], "O zumbi na faixa deveria levar o corte");
+            helper.assertTrue(aside.getHealth() >= before[1], "O zumbi ao lado ficou fora da faixa");
+            helper.assertTrue(walled.getHealth() >= before[2], "O corte nao atravessa o muro");
+            ahead.discard();
+            aside.discard();
+            walled.discard();
+            helper.succeed();
+        });
+    }
+
+    /** PM-1: sequencia de cortes da faca: varios cortes seguidos no mesmo alvo (cada um zera a invulnerabilidade). */
+    @GameTest(template = TEMPLATE)
+    public static void knifeFlurryCutsSeveralTimes(GameTestHelper helper) {
+        FakePlayer player = player(helper, "flurry");
+        player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(KN8Items.COMBAT_KNIFE.get()));
+        IronGolem golem = helper.spawn(EntityType.IRON_GOLEM, new BlockPos(4, 1, 5));
+        golem.setNoAi(true);
+        float[] health = new float[3];
+        int interval = ServerConfig.FLURRY_INTERVAL_TICKS.get();
+        int cuts = ServerConfig.FLURRY_HITS.get();
+        helper.onEachTick(() -> CombatService.tick(player));
+        helper.runAfterDelay(SETTLE_TICKS, () -> {
+            PowerService.setStamina(player, 100);
+            health[0] = golem.getHealth();
+            helper.assertTrue(CombatService.special(player), "A sequencia de cortes deveria comecar");
+        });
+        // impact_tick 3 da faca: o primeiro corte sai no tick 3; os outros a cada intervalo.
+        helper.runAfterDelay(SETTLE_TICKS + FLURRY_FIRST_CUT + 1, () -> health[1] = golem.getHealth());
+        helper.runAfterDelay(SETTLE_TICKS + FLURRY_FIRST_CUT + cuts * interval + 2, () -> {
+            health[2] = golem.getHealth();
+            helper.assertTrue(health[1] < health[0], "O primeiro corte deveria ferir o golem");
+            float first = health[0] - health[1];
+            helper.assertTrue(health[0] - health[2] > first * (cuts - 0.5F),
+                    "Todos os " + cuts + " cortes deveriam ferir (primeiro " + first + ", total "
+                            + (health[0] - health[2]) + ")");
+            golem.discard();
+            helper.succeed();
+        });
+    }
+
+    /**
+     * PM-1: esquiva perfeita: no comeco da esquiva o golpe abre o contra-ataque (critico), devolve stamina e atordoa
+     * o Yoju; so uma vez por esquiva e so dentro da janela.
+     */
+    @GameTest(template = TEMPLATE)
+    public static void perfectDodgeOpensCounterOnce(GameTestHelper helper) {
+        FakePlayer player = player(helper, "perfect");
+        player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(KN8Items.SWORD.get()));
+        KaijuEntity spider = helper.spawn(KN8Entities.TRICHONEPHILA.get(), new BlockPos(4, 1, 3));
+        spider.setNoAi(true);
+        double[] stamina = new double[1];
+        helper.runAfterDelay(SETTLE_TICKS, () -> {
+            PowerService.setStamina(player, 100);
+            helper.assertTrue(!CombatService.isPerfectDodge(player), "Sem esquiva nao ha esquiva perfeita");
+            helper.assertTrue(CombatService.dodge(player, 1, 0), "A esquiva deveria sair");
+            helper.assertTrue(CombatService.isPerfectDodge(player), "Logo no comeco a esquiva e perfeita");
+            stamina[0] = PowerService.view(player).stamina();
+            CombatService.perfectDodge(player, spider, true);
+            helper.assertTrue(CombatService.hasCriticalReady(player), "A esquiva perfeita abre o contra-ataque");
+            helper.assertTrue(PowerService.view(player).stamina() > stamina[0], "Devolve stamina");
+            helper.assertTrue(!CombatService.isPerfectDodge(player), "So uma esquiva perfeita por esquiva");
+        });
+        // O estado do kaiju muda no tick dele.
+        helper.runAfterDelay(SETTLE_TICKS + 2, () -> helper.assertTrue(spider.state() == KaijuState.STAGGER,
+                "O Yoju do golpe esquivado fica atordoado"));
+        helper.runAfterDelay(SETTLE_TICKS + ServerConfig.DODGE_DURATION_TICKS.get() + 1, () -> {
+            PowerService.setStamina(player, 100);
+            helper.assertTrue(CombatService.dodge(player, -1, 0), "A segunda esquiva deveria sair");
+        });
+        helper.runAfterDelay(SETTLE_TICKS + ServerConfig.DODGE_DURATION_TICKS.get() + 2
+                + ServerConfig.PERFECT_DODGE_TICKS.get(), () -> {
+            helper.assertTrue(!CombatService.isPerfectDodge(player), "Fora da janela a esquiva nao e perfeita");
+            spider.discard();
+            helper.succeed();
+        });
+    }
+
+    /** PM-1: clique direito na arma de fogo = tiro preciso (acao "heavy" do JSON), gasta uma bala e fere. */
+    @GameTest(template = TEMPLATE)
+    public static void rifleRightClickIsAPreciseShot(GameTestHelper helper) {
+        FakePlayer player = player(helper, "precise");
+        player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(KN8Items.RIFLE.get()));
+        IronGolem golem = helper.spawn(EntityType.IRON_GOLEM, new BlockPos(4, 1, 3));
+        golem.setNoAi(true);
+        float[] before = new float[1];
+        int[] rounds = new int[1];
+        helper.onEachTick(() -> CombatService.tick(player));
+        helper.runAfterDelay(SETTLE_TICKS, () -> {
+            PowerService.setStamina(player, 100);
+            before[0] = golem.getHealth();
+            rounds[0] = WeaponHandling.rounds(player);
+            helper.assertTrue(CombatService.attack(player, "heavy"), "O tiro preciso deveria sair");
+        });
+        helper.runAfterDelay(SETTLE_TICKS + IMPACT_MARGIN, () -> {
+            helper.assertTrue(golem.getHealth() < before[0], "O tiro preciso deveria ferir o golem");
+            helper.assertTrue(rounds[0] < 0 || WeaponHandling.rounds(player) == rounds[0] - 1,
+                    "O tiro preciso gasta uma bala");
+            golem.discard();
             helper.succeed();
         });
     }

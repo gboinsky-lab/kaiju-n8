@@ -9,6 +9,7 @@ import com.kn8.core.combat.CombatMath;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -51,6 +52,11 @@ public final class CombatEvents {
         }
         if (CombatService.isInvulnerable(player)) {
             event.setCanceled(true);
+            Entity source = event.getSource().getEntity();
+            if (source instanceof LivingEntity && source != player && CombatService.isPerfectDodge(player)) {
+                // PM-1: golpe anulado logo no comeco da esquiva = esquiva perfeita (uma por esquiva).
+                CombatService.perfectDodge(player, source, event.getSource().getDirectEntity() == source);
+            }
             return;
         }
         Entity attacker = event.getSource().getEntity();

@@ -9,6 +9,7 @@ import com.kn8.common.data.def.KaijuClass;
 import com.kn8.common.data.def.WeaponDef;
 import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.registry.KN8Sounds;
+import com.kn8.common.server.KN8Server;
 import com.kn8.common.soldier.SoldierEntity;
 import com.kn8.common.vfx.VfxService;
 import com.kn8.core.combat.SpecialGeometry;
@@ -22,7 +23,9 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 /**
@@ -60,6 +63,8 @@ public final class SpecialAttacks {
         return switch (special.type()) {
             case GROUND_SLAM -> groundSlam(level, source, special, damage, damageSource);
             case SLASH_WAVE -> slashWave(level, source, special, damage);
+            case LUNGE -> lunge(level, source, special, damage, damageSource);
+            case FLURRY -> flurry(level, source, special, damage, damageSource);
         };
     }
 
@@ -88,26 +93,131 @@ public final class SpecialAttacks {
                     box.minZ, box.maxX, box.maxY, box.maxZ)) {
                 continue;
             }
-            if (!target.hurt(damageSource, damage)) {
-                continue;
-            }
-            hits++;
-            Vec3 away = new Vec3(target.getX() - center.x, 0, target.getZ() - center.z);
-            if (special.knockback() > 0 && away.lengthSqr() > 1.0E-4) {
-                // knockback() aplica a resistencia do alvo (kaiju grande quase nao sai do lugar).
-                target.knockback(special.knockback(), -away.x, -away.z);
-                target.setDeltaMovement(target.getDeltaMovement().add(0, KNOCK_UP * special.knockback()
-                        * (1.0 - target.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE)), 0));
-                target.hurtMarked = true;
-            }
-            if (special.staggerTicks() > 0 && target instanceof KaijuEntity kaiju
-                    && kaiju.def().map(def -> def.kaijuClass() == KaijuClass.YOJU).orElse(false)) {
-                // Como o parry: so Yoju fica atordoado; Honju e numerados aguentam o tranco.
-                kaiju.stagger(special.staggerTicks());
+            if (hit(special, target, damage, damageSource, center)) {
+                hits++;
             }
         }
         effects(level, special, center, source);
         return hits;
+    }
+
+    /**
+     * PM-1: corte em avanco (espada). Quem ataca e lancado {@code forward} blocos a frente (o corpo vai junto do
+     * corte; jogador pelo {@code hurtMarked}) e todo inimigo na faixa do caminho, com caminho livre desde quem ataca,
+     * leva o golpe uma vez.
+     */
+    private static int lunge(ServerLevel level, LivingEntity source, WeaponDef.Special special, float damage,
+            DamageSource damageSource) {
+        Vec3 look = source.getLookAngle();
+        Vec3 flat = new Vec3(look.x, 0, look.z);
+        if (flat.lengthSqr() < 1.0E-4) {
+            return 0;
+        }
+        Vec3 direction = flat.normalize();
+        Vec3 start = source.position();
+        double length = special.forward();
+        double speed = length * ServerConfig.LUNGE_SPEED_PER_BLOCK.get();
+        source.setDeltaMovement(direction.x * speed, Math.max(source.getDeltaMovement().y, 0.1), direction.z * speed);
+        source.hurtMarked = true;
+        Vec3 end = start.add(direction.scale(length));
+        AABB search = new AABB(start, end).inflate(special.radius() + SEARCH_MARGIN, SpecialGeometry.SLAM_HEIGHT,
+                special.radius() + SEARCH_MARGIN);
+        List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class, search,
+                target -> target != source && target.isAlive() && !isAlly(source, target));
+        int hits = 0;
+        for (LivingEntity target : targets) {
+            AABB box = target.getBoundingBox();
+            if (!SpecialGeometry.inLunge(start.x, start.y, start.z, direction.x, direction.z, length, special.radius(),
+                    box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ)
+                    || !clearPath(level, source, box.getCenter())) {
+                continue;
+            }
+            if (hit(special, target, damage, damageSource, start)) {
+                hits++;
+            }
+        }
+        effects(level, special, start.add(direction.scale(length * 0.5)), source);
+        return hits;
+    }
+
+    /**
+     * PM-1: sequencia de cortes (faca): {@code [combat] flurryHits} cortes, um a cada {@code flurryIntervalTicks},
+     * em quem esta a frente ate {@code radius} (sem atravessar parede). O primeiro sai agora; os outros pela fila de
+     * tarefas do servidor e param se quem ataca morrer. Cada corte zera a invulnerabilidade vanilla (como os golpes
+     * das tecnicas): sem isso o segundo corte seria engolido. Devolve os alvos do primeiro corte.
+     */
+    private static int flurry(ServerLevel level, LivingEntity source, WeaponDef.Special special, float damage,
+            DamageSource damageSource) {
+        int first = flurryCut(level, source, special, damage, damageSource, true);
+        KN8Server server = KN8Server.get(level.getServer());
+        for (int cut = 1; cut < ServerConfig.FLURRY_HITS.get(); cut++) {
+            server.schedule(cut * ServerConfig.FLURRY_INTERVAL_TICKS.get(),
+                    () -> flurryCut(level, source, special, damage, damageSource, false));
+        }
+        return first;
+    }
+
+    private static int flurryCut(ServerLevel level, LivingEntity source, WeaponDef.Special special, float damage,
+            DamageSource damageSource, boolean first) {
+        if (!source.isAlive() || source.level() != level) {
+            return 0;
+        }
+        Vec3 look = source.getLookAngle();
+        Vec3 eye = source.getEyePosition();
+        double reach = special.radius();
+        AABB search = source.getBoundingBox().inflate(reach + SEARCH_MARGIN);
+        List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class, search,
+                target -> target != source && target.isAlive() && !isAlly(source, target));
+        int hits = 0;
+        for (LivingEntity target : targets) {
+            AABB box = target.getBoundingBox();
+            Vec3 to = box.getCenter().subtract(eye);
+            boolean inFront = look.x * to.x + look.z * to.z > 0;
+            if (!inFront || SpecialGeometry.horizontalDistanceToBox(source.getX(), source.getZ(), box.minX, box.minZ,
+                    box.maxX, box.maxZ) > reach || !clearPath(level, source, box.getCenter())) {
+                continue;
+            }
+            target.invulnerableTime = 0;
+            if (hit(special, target, damage, damageSource, source.position())) {
+                hits++;
+            }
+        }
+        Vec3 center = eye.add(look.scale(Math.min(reach, 1.5)));
+        if (first) {
+            effects(level, special, center, source);
+        } else {
+            // Os cortes seguintes so com o desenho (sem tremer a camera nem repetir o som de cada vez).
+            VfxService.play(level, VfxService.SLASH, center, look, 0.7F, 0.0F, source, special.id());
+        }
+        return hits;
+    }
+
+    /** Golpe do especial num alvo: dano, empurrao para longe de {@code from} e atordoamento de Yoju. */
+    private static boolean hit(WeaponDef.Special special, LivingEntity target, float damage,
+            DamageSource damageSource, Vec3 from) {
+        if (!target.hurt(damageSource, damage)) {
+            return false;
+        }
+        Vec3 away = new Vec3(target.getX() - from.x, 0, target.getZ() - from.z);
+        if (special.knockback() > 0 && away.lengthSqr() > 1.0E-4) {
+            // knockback() aplica a resistencia do alvo (kaiju grande quase nao sai do lugar).
+            target.knockback(special.knockback(), -away.x, -away.z);
+            target.setDeltaMovement(target.getDeltaMovement().add(0, KNOCK_UP * special.knockback()
+                    * (1.0 - target.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE)), 0));
+            target.hurtMarked = true;
+        }
+        if (special.staggerTicks() > 0 && target instanceof KaijuEntity kaiju
+                && kaiju.def().map(def -> def.kaijuClass() == KaijuClass.YOJU).orElse(false)) {
+            // Como o parry: so Yoju fica atordoado; Honju e numerados aguentam o tranco.
+            kaiju.stagger(special.staggerTicks());
+        }
+        return true;
+    }
+
+    /** Nenhum bloco solido entre os olhos de quem ataca e o ponto (o corte nao atravessa parede). */
+    private static boolean clearPath(ServerLevel level, LivingEntity source, Vec3 point) {
+        return level.clip(new ClipContext(source.getEyePosition(), point, ClipContext.Block.COLLIDER,
+                ClipContext.Fluid.NONE, source)).getType() == HitResult.Type.MISS;
     }
 
     /** Aliado de quem ataca (soldados, suportes de armadura, jogadores sem PvP): fica fora do golpe. */
@@ -129,8 +239,10 @@ public final class SpecialAttacks {
         Vec3 direction = new Vec3(look.x, 0, look.z);
         boolean first = true;
         for (AbilityDef.Vfx vfx : special.vfx()) {
+            // PM-1: o primeiro efeito leva o id do especial como receita do perfil visual de quem ataca (sem
+            // receita, o efeito comum).
             VfxService.play(level, vfx.effect(), center, direction, vfx.intensity(),
-                    first ? special.cameraShake() : 0.0F, source);
+                    first ? special.cameraShake() : 0.0F, source, first ? special.id() : "");
             first = false;
         }
         SoundEvent sound = special.sound()

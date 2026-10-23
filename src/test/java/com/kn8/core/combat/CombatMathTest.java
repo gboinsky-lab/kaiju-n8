@@ -98,4 +98,13 @@ class CombatMathTest {
         assertTrue(CombatMath.inFront(0, 1, 0.2, 0.9));
         assertFalse(CombatMath.inFront(0, 1, 0, -1));
     }
+
+    @Test
+    void perfectDodgeOnlyAtTheStartOfTheDodge() {
+        assertTrue(CombatMath.isPerfectDodge(100, 100, 3));
+        assertTrue(CombatMath.isPerfectDodge(100, 103, 3));
+        assertFalse(CombatMath.isPerfectDodge(100, 104, 3));
+        assertFalse(CombatMath.isPerfectDodge(100, 99, 3));
+        assertFalse(CombatMath.isPerfectDodge(Long.MIN_VALUE, 100, 3));
+    }
 }

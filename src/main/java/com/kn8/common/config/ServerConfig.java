@@ -296,6 +296,13 @@ public final class ServerConfig {
     public static final ModConfigSpec.IntValue DODGE_INVULNERABLE_TICKS;
     public static final ModConfigSpec.IntValue DODGE_DURATION_TICKS;
     public static final ModConfigSpec.DoubleValue DODGE_SPEED;
+    public static final ModConfigSpec.IntValue PERFECT_DODGE_TICKS;
+    public static final ModConfigSpec.IntValue PERFECT_DODGE_COUNTER_TICKS;
+    public static final ModConfigSpec.DoubleValue PERFECT_DODGE_STAMINA_REFUND;
+    public static final ModConfigSpec.IntValue PERFECT_DODGE_STAGGER_TICKS;
+    public static final ModConfigSpec.DoubleValue LUNGE_SPEED_PER_BLOCK;
+    public static final ModConfigSpec.IntValue FLURRY_HITS;
+    public static final ModConfigSpec.IntValue FLURRY_INTERVAL_TICKS;
     public static final ModConfigSpec.DoubleValue CORE_EXPOSED_MULTIPLIER;
     public static final ModConfigSpec.DoubleValue MAX_LIGHT_HIT_FRACTION;
     public static final ModConfigSpec.DoubleValue MAX_HEAVY_HIT_FRACTION;
@@ -915,6 +922,22 @@ public final class ServerConfig {
         DODGE_DURATION_TICKS = intValue("dodgeDurationTicks", "Duration of a dodge (no other action meanwhile).",
                 10, 1, 40);
         DODGE_SPEED = doubleValue("dodgeSpeed", "Horizontal speed of the dodge burst.", 0.9, 0.0, 5.0);
+        // PM-1 (Plano Mestre, Miguel 2026-10-23): esquiva perfeita = golpe que chega logo no comeco da esquiva.
+        PERFECT_DODGE_TICKS = intValue("perfectDodgeTicks", "A hit that arrives at most this many ticks after a"
+                + " dodge starts is a perfect dodge (counter window, stamina back).", 3, 0, 40);
+        PERFECT_DODGE_COUNTER_TICKS = intValue("perfectDodgeCounterTicks", "After a perfect dodge, the first hit"
+                + " within this many ticks is a critical (counterattack).", 30, 0, 200);
+        PERFECT_DODGE_STAMINA_REFUND = doubleValue("perfectDodgeStaminaRefund", "Stamina given back by a perfect"
+                + " dodge (keep it below dodgeStaminaCost so dodging is never free).", 12.0, 0.0, 100.0);
+        PERFECT_DODGE_STAGGER_TICKS = intValue("perfectDodgeStaggerTicks", "A Yoju whose melee attack was perfectly"
+                + " dodged is staggered this long (0 disables).", 20, 0, 200);
+        // PM-1: especiais novos da espada (corte em avanco) e da faca (sequencia de cortes).
+        LUNGE_SPEED_PER_BLOCK = doubleValue("lungeSpeedPerBlock", "Speed given per block of the 'forward' of a lunge"
+                + " special (the attacker travels with the cut).", 0.45, 0.0, 2.0);
+        FLURRY_HITS = intValue("flurryHits", "Number of cuts of a flurry special (each one with the special's"
+                + " multiplier).", 4, 1, 12);
+        FLURRY_INTERVAL_TICKS = intValue("flurryIntervalTicks", "Ticks between the cuts of a flurry special.", 3, 1,
+                20);
         CORE_EXPOSED_MULTIPLIER = doubleValue("coreExposedMultiplier", "Extra core damage multiplier after a heavy"
                 + " hit exposes the core.", 1.5, 1.0, 5.0);
         // 0.5.0 (Miguel): golpe comum nunca mata kaiju de uma vez; so o golpe especial da arma passa disso.

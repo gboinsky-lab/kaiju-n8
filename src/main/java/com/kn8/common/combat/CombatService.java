@@ -59,6 +59,10 @@ public final class CombatService {
     private static final float SHOT_SOUND_VOLUME = 1.0F;
     private static final float SWING_SOUND_VOLUME = 0.7F;
     private static final double MUZZLE_DISTANCE = 1.2;
+    /** PM-1: receita do perfil visual do jogador para a esquiva perfeita (sem ela, o efeito comum do parry). */
+    private static final String PERFECT_DODGE_RECIPE = "perfect_dodge";
+    /** Som do parry mais agudo: a esquiva perfeita soa diferente do parry. */
+    private static final float PERFECT_DODGE_PITCH = 1.5F;
 
     /**
      * 0.5.0: tipo de dano do golpe especial de arma (tecla R). E o unico golpe do jogador que pode passar do teto por
@@ -468,6 +472,42 @@ public final class CombatService {
         reply(player, CombatAction.BLOCK, CombatResult.PARRY);
     }
 
+    /**
+     * PM-1 (Plano Mestre): o golpe que a esquiva acabou de anular chegou no comeco dela? So uma vez por esquiva, e a
+     * esquiva precisa estar invulneravel (o evento so chega aqui de dentro da invulnerabilidade).
+     */
+    public static boolean isPerfectDodge(ServerPlayer player) {
+        CombatState state = state(player);
+        return !state.perfectDodgeUsed && CombatMath.isPerfectDodge(state.dodgeStartTick, now(player),
+                ServerConfig.PERFECT_DODGE_TICKS.get());
+    }
+
+    /**
+     * Esquiva perfeita: abre a janela de contra-ataque (o primeiro acerto e critico, como depois do parry), devolve
+     * parte da stamina (menos que o custo da esquiva: esquivar nunca sai de graca) e, se o golpe era corpo a corpo
+     * de um Yoju, o atordoa (interrompe o golpe seguinte). Efeito desenhado e som no lugar.
+     */
+    public static void perfectDodge(ServerPlayer player, Entity attacker, boolean melee) {
+        CombatState state = state(player);
+        state.perfectDodgeUsed = true;
+        state.criticalUntilTick = now(player) + ServerConfig.PERFECT_DODGE_COUNTER_TICKS.get();
+        PowerService.restoreStamina(player, ServerConfig.PERFECT_DODGE_STAMINA_REFUND.get());
+        PowerService.addBodyXp(player, BodyStat.AGILITY, ServerConfig.BODY_XP_AGILITY_PER_ACTION.get());
+        int stagger = ServerConfig.PERFECT_DODGE_STAGGER_TICKS.get();
+        if (melee && stagger > 0 && attacker instanceof KaijuEntity kaiju
+                && kaiju.def().map(def -> def.kaijuClass() == KaijuClass.YOJU).orElse(false)) {
+            kaiju.stagger(stagger);
+        }
+        if (player.level() instanceof ServerLevel level) {
+            Vec3 toAttacker = attacker.position().subtract(player.position());
+            VfxService.play(level, VfxService.PARRY, player.position().add(0, player.getBbHeight() * 0.5, 0),
+                    toAttacker, 0.8F, 0.0F, player, PERFECT_DODGE_RECIPE);
+        }
+        player.level().playSound(null, player.blockPosition(), KN8Sounds.PARRY.get(), SoundSource.PLAYERS, 0.8F,
+                PERFECT_DODGE_PITCH);
+        reply(player, CombatAction.DODGE, CombatResult.PERFECT_DODGE);
+    }
+
     /** Guarda quebrada (sem stamina para segurar o golpe): solta o bloqueio. */
     static void breakGuard(ServerPlayer player) {
         state(player).blocking = false;
@@ -477,7 +517,8 @@ public final class CombatService {
         reply(player, CombatAction.BLOCK, CombatResult.GUARD_BROKEN);
     }
 
-    static boolean dodge(ServerPlayer player, float dirX, float dirZ) {
+    /** Esquiva (publica para os GameTests; em jogo vem do pacote C2S). */
+    public static boolean dodge(ServerPlayer player, float dirX, float dirZ) {
         CombatState state = state(player);
         long now = now(player);
         if (state.blocking || state.timeline.isActive(now)) {
@@ -496,6 +537,8 @@ public final class CombatService {
         state.currentAction = CombatAction.DODGE;
         state.currentWeapon = null;
         state.invulnerableUntilTick = now + ServerConfig.DODGE_INVULNERABLE_TICKS.get();
+        state.dodgeStartTick = now;
+        state.perfectDodgeUsed = false;
         Vec3 direction = new Vec3(dirX, 0, dirZ);
         if (direction.lengthSqr() < 1.0E-4) {
             // Sem direcao: esquiva para tras.
@@ -556,13 +599,17 @@ public final class CombatService {
         CombatState state = state(player);
         Optional<WeaponDef> weapon = heldWeapon(player);
         long now = now(player);
-        if (weapon.isEmpty() || !isMelee(weapon.get())
+        boolean firearm = weapon.isPresent() && weapon.get().style() == WeaponDef.Style.FIREARM;
+        if (weapon.isEmpty() || !(isMelee(weapon.get()) || firearm)
                 || !weapon.get().actions().containsKey(HEAVY) || state.blocking || state.timeline.isActive(now)) {
             state.chargeStartTick = CombatState.NEVER;
             return;
         }
         state.chargeStartTick = now;
-        AnimationBridge.playPlayer(player, AnimationBridge.PLAYER_CHARGE);
+        if (!firearm) {
+            // PM-1: arma de fogo nao carrega; o clique direito e o tiro preciso (acao "heavy" do JSON), ao soltar.
+            AnimationBridge.playPlayer(player, AnimationBridge.PLAYER_CHARGE);
+        }
     }
 
     /**
@@ -576,6 +623,11 @@ public final class CombatService {
         }
         long held = now(player) - state.chargeStartTick;
         state.chargeStartTick = CombatState.NEVER;
+        if (heldWeapon(player).map(weapon -> weapon.style() == WeaponDef.Style.FIREARM).orElse(false)) {
+            // PM-1: tiro preciso (mais dano, mais lento; conta como golpe pesado para o teto por golpe).
+            attack(player, HEAVY);
+            return;
+        }
         float fraction = CombatMath.chargeFraction(held, ServerConfig.CHARGE_MIN_TICKS.get(),
                 ServerConfig.CHARGE_MAX_TICKS.get());
         if (fraction < 0) {
