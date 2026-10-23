@@ -1,7 +1,7 @@
 # Kaiju No. 8 — Prompts para substituir os sons que já existem
 
 Decisão do Miguel (2026-10-23): **não criar sons novos agora**, só regravar no ElevenLabs os sons que o mod já tem.
-Esta lista cobre os **27 eventos de som do mod** (`assets/kn8/sounds.json`, 66 arquivos), com o **mesmo nome de
+Esta lista cobre os **27 eventos de som do mod** (`assets/kn8/sounds.json`, 67 arquivos), com o **mesmo nome de
 arquivo** e a **mesma quantidade de variações**. Ou seja, o arquivo novo só toma o lugar do antigo, sem código e
 sem mudar o `sounds.json`.
 
@@ -23,13 +23,77 @@ Todos os prompts terminam com "no music, no voice, no speech".
 
 ### Nome dos arquivos enviados (Miguel, 2026-10-23)
 
-A letra na frente diz o grupo; depois vem o nome da coluna "Arquivos" sem a pasta:
+Cada arquivo tem um código fixo: a letra do grupo (`a` kaiju, `b` armas, `c` traje, carcaça e alerta) e o número na ordem deste documento, contando cada versão (`_1`, `_2`, `_3`) separada. Ex.: `a01.wav` é a 1ª versão do rugido, `a04.wav` a 1ª do rosnado.
 
-| Letra | Grupo | Exemplo | Vai para |
-|---|---|---|---|
-| `a_` | kaiju | `a_kaiju_roar_1.wav` | `sounds/kaiju/kaiju_roar_1.ogg` |
-| `b_` | armas | `b_rifle_shot_2.wav` | `sounds/weapon/rifle_shot_2.ogg` |
-| `c_` | traje, carcaça e alerta | `c_dash_1.wav`, `c_dismantle_3.wav`, `c_siren_1.wav` | `sounds/suit/`, `sounds/carcass/`, `sounds/alert/` |
+| Código | Substitui |
+|---|---|
+| `a01` | `kaiju/kaiju_roar_1.ogg` |
+| `a02` | `kaiju/kaiju_roar_2.ogg` |
+| `a03` | `kaiju/kaiju_roar_3.ogg` |
+| `a04` | `kaiju/kaiju_ambient_1.ogg` |
+| `a05` | `kaiju/kaiju_ambient_2.ogg` |
+| `a06` | `kaiju/kaiju_ambient_3.ogg` |
+| `a07` | `kaiju/kaiju_hurt_1.ogg` |
+| `a08` | `kaiju/kaiju_hurt_2.ogg` |
+| `a09` | `kaiju/kaiju_hurt_3.ogg` |
+| `a10` | `kaiju/kaiju_death_1.ogg` |
+| `a11` | `kaiju/kaiju_death_2.ogg` |
+| `a12` | `kaiju/kaiju_step_1.ogg` |
+| `a13` | `kaiju/kaiju_step_2.ogg` |
+| `a14` | `kaiju/kaiju_step_3.ogg` |
+| `a15` | `kaiju/kaiju_slam_1.ogg` |
+| `a16` | `kaiju/kaiju_slam_2.ogg` |
+| `a17` | `kaiju/kaiju_bite_1.ogg` |
+| `a18` | `kaiju/kaiju_bite_2.ogg` |
+| `a19` | `kaiju/kaiju_bite_3.ogg` |
+| `b01` | `weapon/rifle_shot_1.ogg` |
+| `b02` | `weapon/rifle_shot_2.ogg` |
+| `b03` | `weapon/rifle_shot_3.ogg` |
+| `b04` | `weapon/pistol_shot_1.ogg` |
+| `b05` | `weapon/pistol_shot_2.ogg` |
+| `b06` | `weapon/pistol_shot_3.ogg` |
+| `b07` | `weapon/blade_swing_1.ogg` |
+| `b08` | `weapon/blade_swing_2.ogg` |
+| `b09` | `weapon/blade_swing_3.ogg` |
+| `b10` | `weapon/blade_heavy_1.ogg` |
+| `b11` | `weapon/blade_heavy_2.ogg` |
+| `b12` | `weapon/knife_swing_1.ogg` |
+| `b13` | `weapon/knife_swing_2.ogg` |
+| `b14` | `weapon/knife_swing_3.ogg` |
+| `b15` | `weapon/knife_heavy_1.ogg` |
+| `b16` | `weapon/knife_heavy_2.ogg` |
+| `b17` | `weapon/knife_hit_1.ogg` |
+| `b18` | `weapon/knife_hit_2.ogg` |
+| `b19` | `weapon/knife_hit_3.ogg` |
+| `b20` | `weapon/sword_swing_1.ogg` |
+| `b21` | `weapon/sword_swing_2.ogg` |
+| `b22` | `weapon/sword_swing_3.ogg` |
+| `b23` | `weapon/sword_heavy_1.ogg` |
+| `b24` | `weapon/sword_heavy_2.ogg` |
+| `b25` | `weapon/sword_hit_1.ogg` |
+| `b26` | `weapon/sword_hit_2.ogg` |
+| `b27` | `weapon/sword_hit_3.ogg` |
+| `b28` | `weapon/axe_swing_1.ogg` |
+| `b29` | `weapon/axe_swing_2.ogg` |
+| `b30` | `weapon/axe_swing_3.ogg` |
+| `b31` | `weapon/axe_heavy_1.ogg` |
+| `b32` | `weapon/axe_heavy_2.ogg` |
+| `b33` | `weapon/axe_hit_1.ogg` |
+| `b34` | `weapon/axe_hit_2.ogg` |
+| `b35` | `weapon/axe_hit_3.ogg` |
+| `b36` | `weapon/axe_special_1.ogg` |
+| `b37` | `weapon/axe_special_2.ogg` |
+| `b38` | `weapon/parry_1.ogg` |
+| `b39` | `weapon/parry_2.ogg` |
+| `b40` | `weapon/guard_break_1.ogg` |
+| `b41` | `weapon/guard_break_2.ogg` |
+| `c01` | `suit/dash_1.ogg` |
+| `c02` | `suit/dash_2.ogg` |
+| `c03` | `suit/overheat_alarm_1.ogg` |
+| `c04` | `carcass/dismantle_1.ogg` |
+| `c05` | `carcass/dismantle_2.ogg` |
+| `c06` | `carcass/dismantle_3.ogg` |
+| `c07` | `alert/siren_1.ogg` |
 
 > **Atenção:** vários eventos servem a mais de uma coisa no jogo (veja "Onde toca"). Por exemplo, o
 > `kaiju.bite` também toca no jato de ácido e na teia, e o `weapon.axe_*` também nos socos do No. 8 e do Isao.
@@ -87,5 +151,5 @@ A letra na frente diz o grupo; depois vem o nome da coluna "Arquivos" sem a past
 - **Durações:** mantive perto das atuais para não mudar o ritmo do jogo. A sirene tem que ficar em **3 s**
   (no máximo 4,5 s): o jogo repete a cada 5 s, e mais longa ela se sobrepõe.
 - **Volume:** não precisa se preocupar; eu nivelo todos (hoje 6 arquivos distorcem por volume alto demais).
-- **Total:** 27 prompts e 66 gerações (uma por variação).
+- **Total:** 27 prompts e 67 gerações (a01–a19, b01–b41, c01–c07) (uma por variação).
 - **Ordem sugerida:** sirene e alarme do traje primeiro, depois os de kaiju, depois as armas.

@@ -13,7 +13,7 @@ em `AUDIO_PRODUCTION_CHECKLIST.md` e a ordem de implementação em `AUDIO_PRIORI
 - **Código:** todas as chamadas `playSound`/`playNotifySound`/`SimpleSoundInstance` em `src/main/java`, o registro
   `KN8Sounds`, os campos de som dos JSON (`weapon/*.json` → `sounds` e `special.sound`; `weapon_profile/*.json` →
   saque e etapas de recarga; `ability/*.json` → `sound`) e `assets/kn8/sounds.json`.
-- **Arquivos:** os 66 `.ogg` em `assets/kn8/sounds/` foram decodificados e medidos (duração, RMS, pico, centroide
+- **Arquivos:** os 67 `.ogg` em `assets/kn8/sounds/` foram decodificados e medidos (duração, RMS, pico, centroide
   espectral, frequência dominante por quarto do arquivo).
 - **"Escutar":** esta máquina não tem saída de áudio. Para saber o que cada arquivo é de verdade, a medição foi
   cruzada com a função que o gerou em `tools/audio/gen_sounds.py` (todos os sons do mod são **síntese
@@ -28,7 +28,7 @@ em `AUDIO_PRODUCTION_CHECKLIST.md` e a ordem de implementação em `AUDIO_PRIORI
 | Item | Quantidade | Observação |
 |---|---|---|
 | Eventos de som do mod (`KN8Sounds`) | 27 | 7 de kaiju, 16 de arma, 2 do traje, 1 de carcaça, 1 de alerta |
-| Arquivos `.ogg` | 66 | todos sintetizados por `gen_sounds.py` (placeholders) |
+| Arquivos `.ogg` | 67 | todos sintetizados por `gen_sounds.py` (placeholders) |
 | Sons vanilla usados pelo mod | 24 chamadas | incluindo Warden, Ravager, Wither, Enderman, Creeper, bigorna, TNT, besta |
 | Habilidades de kaiju (`ability/*.json`) | 58 | **todas** dividem só 4 sons: `kaiju.bite` (22), `kaiju.slam` (22), `kaiju.roar` (11), `weapon.pistol_shot` (3) |
 | Técnicas de soldados especiais | 62 (13 perfis) | todas começam com `weapon.sword_swing` e todo tiro/corte/onda sai com `weapon.sword_heavy` |
