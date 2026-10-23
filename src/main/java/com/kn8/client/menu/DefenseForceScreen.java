@@ -7,6 +7,7 @@ import org.lwjgl.glfw.GLFW;
 
 import com.kn8.common.base.OpenMissionBoardS2C;
 import com.kn8.common.craft.OpenWorkbenchS2C;
+import com.kn8.common.research.OpenResearchS2C;
 import com.kn8.common.network.KN8ClientHooks;
 
 import net.minecraft.client.Minecraft;
@@ -54,7 +55,14 @@ public class DefenseForceScreen extends Screen {
     /** A bancada (OpenWorkbenchS2C): abre o menu no Arsenal, secao de fabricacao. */
     public static void openWorkbench() {
         current = Tab.ARSENAL;
-        ArsenalTab.requestedSection = 2;
+        ArsenalTab.requestedSection = ArsenalTab.CRAFTING;
+        Minecraft.getInstance().setScreen(new DefenseForceScreen());
+    }
+
+    /** PM-8C: o terminal de pesquisa abre o Arsenal na secao Pesquisa. */
+    public static void openResearch() {
+        current = Tab.ARSENAL;
+        ArsenalTab.requestedSection = ArsenalTab.RESEARCH;
         Minecraft.getInstance().setScreen(new DefenseForceScreen());
     }
 
@@ -71,6 +79,7 @@ public class DefenseForceScreen extends Screen {
                 payload -> openWorkbench());
         KN8ClientHooks.register(OpenMissionBoardS2C.TYPE,
                 payload -> openMissionBoard(payload.giver()));
+        KN8ClientHooks.register(OpenResearchS2C.TYPE, payload -> openResearch());
     }
 
     @Override

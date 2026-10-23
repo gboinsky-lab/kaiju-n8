@@ -1,0 +1,25 @@
+{
+  "category": "analysis",
+  "order": 2,
+  "cost": [
+    {
+      "item": "kn8:kaiju_tissue",
+      "count": 10
+    },
+    {
+      "item": "kn8:core_fragment",
+      "count": 1
+    }
+  ],
+  "duration_ticks": 2400,
+  "requires": [
+    "kn8:yoju_tissue"
+  ],
+  "targets": [
+    "kn8:trichonephila",
+    "kn8:trichonephila_honju",
+    "kn8:camponotus",
+    "kn8:camponotus_reborn"
+  ],
+  "damage_bonus": 0.15
+}

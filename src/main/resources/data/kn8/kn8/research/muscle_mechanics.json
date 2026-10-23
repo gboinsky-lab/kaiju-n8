@@ -1,0 +1,22 @@
+{
+  "category": "materials",
+  "order": 3,
+  "rank": "kn8:oficial",
+  "cost": [
+    {
+      "item": "kn8:muscle_fiber",
+      "count": 6
+    },
+    {
+      "item": "kn8:kaiju_tissue",
+      "count": 4
+    }
+  ],
+  "duration_ticks": 3600,
+  "requires": [
+    "kn8:yoju_tissue"
+  ],
+  "unlocks": [
+    "kn8:mk1_reinforced"
+  ]
+}

@@ -74,6 +74,14 @@ public final class CareerData {
         }
     }
 
+    /** PM-8C: pesquisa em andamento no laboratorio e o tick (tempo de jogo) em que fica pronta. */
+    public record Researching(ResourceLocation id, long finishTick) {
+        public static final Codec<Researching> CODEC = RecordCodecBuilder.create(i -> i.group(
+                ResourceLocation.CODEC.fieldOf("id").forGetter(Researching::id),
+                Codec.LONG.fieldOf("finish").forGetter(Researching::finishTick)
+        ).apply(i, Researching::new));
+    }
+
     // Persistidos
     private ResourceLocation rank;
     private int merit;
@@ -88,6 +96,9 @@ public final class CareerData {
     private int shotsFired;
     private int shotsHit;
     private final Map<ResourceLocation, String> bestGrades = new HashMap<>();
+    // PM-8C: pesquisas concluidas e a em andamento (uma por vez)
+    private final Set<ResourceLocation> research = new HashSet<>();
+    private Researching researching;
 
     // Volateis
     private long dummyWindowStart = Long.MIN_VALUE;
@@ -109,7 +120,10 @@ public final class CareerData {
             Codec.INT.optionalFieldOf("shots_fired", 0).forGetter(CareerData::shotsFired),
             Codec.INT.optionalFieldOf("shots_hit", 0).forGetter(CareerData::shotsHit),
             Codec.unboundedMap(ResourceLocation.CODEC, Codec.STRING).optionalFieldOf("best_grades", Map.of())
-                    .forGetter(data -> Map.copyOf(data.bestGrades))
+                    .forGetter(data -> Map.copyOf(data.bestGrades)),
+            ResourceLocation.CODEC.listOf().optionalFieldOf("research", List.of())
+                    .forGetter(data -> List.copyOf(data.research)),
+            Researching.CODEC.optionalFieldOf("researching").forGetter(CareerData::researching)
     ).apply(i, CareerData::new));
 
     public CareerData() {
@@ -118,8 +132,11 @@ public final class CareerData {
     private CareerData(Optional<ResourceLocation> rank, int merit, int kaijuKills, int dismantled, int missionsDone,
             Map<ResourceLocation, MissionProgress> active, List<ResourceLocation> completed,
             Map<ResourceLocation, Long> cooldowns, int invasionsDefended, int shotsFired, int shotsHit,
-            Map<ResourceLocation, String> bestGrades) {
+            Map<ResourceLocation, String> bestGrades, List<ResourceLocation> research,
+            Optional<Researching> researching) {
         this.rank = rank.orElse(null);
+        this.research.addAll(research);
+        this.researching = researching.orElse(null);
         this.merit = merit;
         this.kaijuKills = kaijuKills;
         this.dismantled = dismantled;
@@ -205,6 +222,19 @@ public final class CareerData {
     /** Melhor nota de cada missao concluida (letra S..D). */
     public Map<ResourceLocation, String> bestGrades() {
         return bestGrades;
+    }
+
+    /** PM-8C: pesquisas concluidas. */
+    public Set<ResourceLocation> research() {
+        return research;
+    }
+
+    public Optional<Researching> researching() {
+        return Optional.ofNullable(researching);
+    }
+
+    public void setResearching(Researching value) {
+        researching = value;
     }
 
     public Map<ResourceLocation, MissionProgress> active() {

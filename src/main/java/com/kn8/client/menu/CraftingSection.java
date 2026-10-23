@@ -5,11 +5,13 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+import com.kn8.common.career.CareerView;
 import com.kn8.common.craft.CraftC2S;
 import com.kn8.common.craft.WorkbenchService;
 import com.kn8.common.data.KN8Data;
 import com.kn8.common.data.def.WorkbenchRecipeDef;
 import com.kn8.common.registry.KN8Blocks;
+import com.kn8.common.research.ResearchService;
 
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -124,9 +126,17 @@ final class CraftingSection {
 
         boolean unlocked = MenuData.unlocked(recipe.unlockId());
         if (!unlocked) {
-            MenuStyle.small(g, font, Component.translatable("kn8.workbench.needs_rank",
-                    MenuData.rankName(MenuData.unlockingRank(recipe.unlockId()))), detailX + 6, sy + 3,
-                    MenuStyle.RED);
+            ResourceLocation rank = MenuData.unlockingRank(recipe.unlockId());
+            if (!rank.equals(CareerView.NONE)) {
+                MenuStyle.small(g, font, Component.translatable("kn8.workbench.needs_rank",
+                        MenuData.rankName(rank)), detailX + 6, sy + 3, MenuStyle.RED);
+                sy += 9;
+            }
+            // PM-8C: tambem liberada por uma pesquisa do laboratorio.
+            int researchY = sy + 3;
+            MenuData.unlockingResearch(recipe.unlockId()).ifPresent(research -> MenuStyle.small(g, font,
+                    Component.translatable("kn8.workbench.or_research", ResearchService.name(research)),
+                    detailX + 6, researchY, MenuStyle.YELLOW));
         }
         updateNear(player);
         buttonX = detailX + detailW - BUTTON_W - 8;

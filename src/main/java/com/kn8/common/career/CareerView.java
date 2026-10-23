@@ -21,7 +21,23 @@ import net.minecraft.resources.ResourceLocation;
  */
 public record CareerView(ResourceLocation rank, ResourceLocation nextRank, int merit, int nextMerit,
         String nextMission, Stats stats, List<Active> active, List<ResourceLocation> completed,
-        Map<ResourceLocation, String> bestGrades) {
+        Map<ResourceLocation, String> bestGrades, Research research) {
+
+    /**
+     * PM-8C: pesquisas concluidas e a em andamento ({@link #NONE} = nenhuma; {@code finishTick} em tempo de jogo, o
+     * cliente conta o tempo sozinho).
+     */
+    public record Research(List<ResourceLocation> done, ResourceLocation current, long finishTick) {
+        public static final Research EMPTY = new Research(List.of(), NONE, 0L);
+        public static final StreamCodec<ByteBuf, Research> CODEC = StreamCodec.composite(
+                ResourceLocation.STREAM_CODEC.apply(ByteBufCodecs.list()), Research::done,
+                ResourceLocation.STREAM_CODEC, Research::current, ByteBufCodecs.VAR_LONG, Research::finishTick,
+                Research::new);
+
+        public boolean busy() {
+            return !current.equals(NONE);
+        }
+    }
 
     /** Contadores da aba Perfil; tiros dados/acertados em kaiju desde a PM-7 (precisao da carreira). */
     public record Stats(int kaijuKills, int dismantled, int missionsDone, int invasionsDefended, int shotsFired,
@@ -68,7 +84,7 @@ public record CareerView(ResourceLocation rank, ResourceLocation nextRank, int m
 
     public static final ResourceLocation NONE = ResourceLocation.withDefaultNamespace("empty");
     public static final CareerView EMPTY = new CareerView(NONE, NONE, 0, 0, "", new Stats(0, 0, 0, 0, 0, 0),
-            List.of(), List.of(), Map.of());
+            List.of(), List.of(), Map.of(), Research.EMPTY);
 
     public static final StreamCodec<ByteBuf, CareerView> STREAM_CODEC = StreamCodec.composite(
             Head.CODEC, view -> new Head(view.rank(), view.nextRank(), view.merit(), view.nextMerit(),
@@ -78,8 +94,9 @@ public record CareerView(ResourceLocation rank, ResourceLocation nextRank, int m
             ResourceLocation.STREAM_CODEC.apply(ByteBufCodecs.list()), CareerView::completed,
             ByteBufCodecs.<ByteBuf, ResourceLocation, String, Map<ResourceLocation, String>>map(HashMap::new,
                     ResourceLocation.STREAM_CODEC, ByteBufCodecs.STRING_UTF8), CareerView::bestGrades,
-            (head, stats, active, completed, grades) -> new CareerView(head.rank(), head.nextRank(), head.merit(),
-                    head.nextMerit(), head.nextMission(), stats, active, completed, grades));
+            Research.CODEC, CareerView::research,
+            (head, stats, active, completed, grades, research) -> new CareerView(head.rank(), head.nextRank(),
+                    head.merit(), head.nextMerit(), head.nextMission(), stats, active, completed, grades, research));
 
     public boolean isTopRank() {
         return rank.equals(nextRank);

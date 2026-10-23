@@ -15,6 +15,7 @@ import com.kn8.common.data.def.LocomotionDef;
 import com.kn8.common.data.def.MissionDef;
 import com.kn8.common.data.def.NumberedDef;
 import com.kn8.common.data.def.RankDef;
+import com.kn8.common.data.def.ResearchDef;
 import com.kn8.common.data.def.SiteDef;
 import com.kn8.common.data.def.FlyerDef;
 import com.kn8.common.data.def.SoldierDef;
@@ -89,11 +90,15 @@ public final class KN8Data {
     public static final DataRegistry<VfxProfileDef> VFX_PROFILE =
             new DataRegistry<>("vfx_profile", VfxProfileDef.CODEC, true);
 
+    /** PM-8C: projetos de pesquisa do laboratorio (o cliente mostra a lista, o custo e o que liberam). */
+    public static final DataRegistry<ResearchDef> RESEARCH = new DataRegistry<>("research", ResearchDef.CODEC, true);
+
     /** Ordem = ordem de validacao (cada um so referencia os anteriores). */
     public static final List<DataRegistry<?>> ALL =
             List.of(RANK, ABILITY, DISMANTLE, KAIJU, BOSS, WEAPON_PROFILE, WEAPON, AURA, SUIT, MISSION, SOLDIER, WORKBENCH,
                     INVASION,
-                    NUMBERED, SPECIAL_SOLDIER, FLYER, LOCOMOTION, KAIJU_AI, SITE, VFX_PROFILE);
+                    NUMBERED, SPECIAL_SOLDIER, FLYER, LOCOMOTION, KAIJU_AI, SITE, VFX_PROFILE,
+                    RESEARCH);
 
     private KN8Data() {
     }

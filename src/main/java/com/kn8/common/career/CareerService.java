@@ -13,6 +13,7 @@ import com.kn8.common.data.KN8Data;
 import com.kn8.common.data.def.KaijuClass;
 import com.kn8.common.data.def.MissionDef;
 import com.kn8.common.data.def.RankDef;
+import com.kn8.common.data.def.ResearchDef;
 import com.kn8.common.network.NetworkSync;
 import com.kn8.common.registry.KN8Attachments;
 
@@ -88,10 +89,21 @@ public final class CareerService {
                 .orElse(false);
     }
 
-    /** Algo foi liberado por alguma patente ate a atual ({@code unlocks}), ou nenhuma patente o prende. */
+    /**
+     * Algo foi liberado por alguma patente ate a atual ({@code unlocks}) ou por uma pesquisa concluida (PM-8C), ou
+     * nenhuma patente/pesquisa o prende.
+     */
     public static boolean isUnlocked(ServerPlayer player, ResourceLocation id) {
         int order = rank(player).map(entry -> entry.getValue().order()).orElse(0);
         boolean lockedSomewhere = false;
+        for (Map.Entry<ResourceLocation, ResearchDef> entry : KN8Data.RESEARCH.server().entrySet()) {
+            if (entry.getValue().unlocks().contains(id)) {
+                if (data(player).research().contains(entry.getKey())) {
+                    return true;
+                }
+                lockedSomewhere = true;
+            }
+        }
         for (Map.Entry<ResourceLocation, RankDef> entry : ranks()) {
             if (entry.getValue().unlocks().contains(id)) {
                 if (entry.getValue().order() <= order) {
@@ -234,7 +246,10 @@ public final class CareerService {
         return new CareerView(rank, nextId, data.merit(), nextMerit, nextMission,
                 new CareerView.Stats(data.kaijuKills(), data.dismantled(), data.missionsDone(),
                         data.invasionsDefended(), data.shotsFired(), data.shotsHit()),
-                MissionService.activeView(player), List.copyOf(data.completed()), Map.copyOf(data.bestGrades()));
+                MissionService.activeView(player), List.copyOf(data.completed()), Map.copyOf(data.bestGrades()),
+                new CareerView.Research(List.copyOf(data.research()), data.researching()
+                        .map(CareerData.Researching::id).orElse(CareerView.NONE), data.researching()
+                        .map(CareerData.Researching::finishTick).orElse(0L)));
     }
 
     /** Marca o canal privado da carreira para envio no fim do tick. */

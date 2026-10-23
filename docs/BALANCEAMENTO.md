@@ -1037,3 +1037,21 @@ XP do corpo por prova (`rewards.body_xp` do `mission/*.json`):
 
 Kaiju de prova não dão mérito nem contam no total de abates da carreira (para a prova não virar farm); o chefe da
 prova ainda dá o mérito do `boss/*.json` [SUPOSIÇÃO].
+
+## PM-8C: pesquisa no laboratório (2026-10-23) [SUPOSIÇÃO todos os números]
+
+`[research]` no `kn8-server.toml`: `terminalRange` 6 (blocos do terminal para começar), `durationMultiplier` 1,0
+(multiplica o tempo de todas). Uma pesquisa por vez; termina sozinha no tempo de jogo, mesmo longe da base. O bônus
+de dano vale no golpe do jogador (comum, pesado, tiro e especial) contra o kaiju, antes do teto de 12%/15% por golpe;
+bônus de pesquisas diferentes se somam.
+
+| Pesquisa (`research/*.json`) | Patente | Pré-requisito | Material | Tempo | Efeito |
+|---|---|---|---|---|---|
+| Análise de Tecido Yoju (`yoju_tissue`) | | | 8 tecido | 1 min | +10% contra Yoju |
+| Estudo dos Artrópodes (`arachnid_study`) | | Tecido Yoju | 10 tecido, 1 fragmento de núcleo | 2 min | +15% contra Trichonephila, Tecedeira, Camponotus e revivida |
+| Mecânica Muscular (`muscle_mechanics`) | Oficial | Tecido Yoju | 6 fibra muscular, 4 tecido | 3 min | Libera o Mk1 Reforçado (sem esperar Oficial Sênior) |
+| Ressonância do Núcleo (`core_resonance`) | Oficial | | 3 fragmento de núcleo | 4 min | Libera o Catalisador de Release (sem esperar Líder de Pelotão) |
+| Anatomia Honju (`honju_anatomy`) | Oficial Sênior | Mecânica Muscular | 1 núcleo intacto, 6 fibra, 10 tecido | 6 min | +12% contra Honju |
+| Teoria das Armas Numeradas (`numbered_weapon_theory`) | Líder de Pelotão | Ressonância e Anatomia Honju | 2 núcleo intacto, 6 fragmento | 10 min | Libera a Espada do Hoshina (sem esperar Vice-Capitão), +5% contra numerados |
+
+Terminal de pesquisa na bancada (Oficial): 6 ferro, 4 painéis de vidro, 4 redstone, 2 tecido de kaiju.

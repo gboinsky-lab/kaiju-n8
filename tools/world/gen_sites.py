@@ -169,6 +169,8 @@ def ariake_core():
         b.set(cx + 1, 1, 5, "minecraft:magma_block")
         b.set(cx + 1, 2, 5, "minecraft:end_rod", {"facing": "up"})
     b.set(4, 1, 12, "kn8:defense_workbench", {"facing": "north"})
+    for x in (8, 10):  # PM-8C: terminais de pesquisa
+        b.set(x, 1, 12, "kn8:research_terminal", {"facing": "north"})
     b.set(6, 1, 12, "minecraft:brewing_stand",
           {"has_bottle_0": "false", "has_bottle_1": "false", "has_bottle_2": "false"})
     for x in (12, 15, 18):
@@ -407,6 +409,7 @@ def tachikawa_core():
     b.entity(12, 1, 13, officer("officer", 0.0))
     b.entity(14, 1, 13, officer("exam_officer", 0.0))
     b.set(16, 1, 15, "kn8:squad_station", {"facing": "north"})
+    b.set(18, 1, 15, "kn8:research_terminal", {"facing": "north"})  # PM-8C
     b.chest(6, 1, 6, "kn8:chests/base_command", "south")
     b.chest(40, 1, 6, "kn8:chests/base_armory", "south")
     b.fill(7, 11, 15, 12, 12, 15, "minecraft:bookshelf")

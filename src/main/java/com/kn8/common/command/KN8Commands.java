@@ -37,6 +37,7 @@ public final class KN8Commands {
                 .then(CareerCommands.rank())
                 .then(CareerCommands.merit())
                 .then(CareerCommands.mission())
+                .then(CareerCommands.research())
                 .then(CareerCommands.boss())
                 .then(InvasionCommands.invasion())
                 .then(AuraCommands.aura())

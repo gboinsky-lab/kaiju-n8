@@ -102,7 +102,7 @@ public final class WorkbenchService {
         return total;
     }
 
-    private static void remove(Inventory inventory, Item item, int amount) {
+    public static void remove(Inventory inventory, Item item, int amount) {
         int left = amount;
         for (int i = 0; i < inventory.getContainerSize() && left > 0; i++) {
             ItemStack stack = inventory.getItem(i);

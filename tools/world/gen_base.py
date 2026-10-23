@@ -180,6 +180,8 @@ def content_core(b):
     # PM-8: oficiais de missoes e de provas na recepcao.
     b.entity(11, 1, 15, officer("officer", 0.0))
     b.entity(13, 1, 15, officer("exam_officer", 0.0))
+    # PM-8C: terminal de pesquisa na recepcao (o laboratorio da base pequena).
+    b.set(10, 1, 16, "kn8:research_terminal", {"facing": "north"})
     # Primeiro andar: sala de comando (mesas de cartografia, monitores de observador, baus).
     for x in (10, 12, 14):
         b.set(x, 6, 14, "minecraft:cartography_table")
@@ -680,6 +682,8 @@ def arena():
     b.set(88, 1, 19, "minecraft:brewing_stand",
           {"has_bottle_0": "false", "has_bottle_1": "false", "has_bottle_2": "false"})
     b.set(90, 1, 19, "kn8:defense_workbench", {"facing": "north"})
+    for x in (93, 96):  # PM-8C: terminais de pesquisa do laboratorio de kaiju
+        b.set(x, 1, 19, "kn8:research_terminal", {"facing": "north"})
     # Enfermaria de campo (leste, ao sul do laboratorio).
     b.building(88, 28, 104, 38, 5, wall="minecraft:white_concrete", stripe="minecraft:red_concrete",
                door=("west", 32, 34))

@@ -23,6 +23,7 @@ import com.kn8.common.data.def.LocomotionDef;
 import com.kn8.common.data.def.MissionDef;
 import com.kn8.common.data.def.NumberedDef;
 import com.kn8.common.data.def.RankDef;
+import com.kn8.common.data.def.ResearchDef;
 import com.kn8.common.data.def.SiteDef;
 import com.kn8.common.data.def.FlyerDef;
 import com.kn8.common.data.def.SoldierDef;
@@ -100,6 +101,7 @@ public final class DataValidation {
         publish(KN8Data.SITE, validateSites(KN8Data.SITE.loaded(), invasions.keySet(), report), report);
         publish(KN8Data.LOCOMOTION, validateLocomotion(KN8Data.LOCOMOTION.loaded(), report), report);
         publish(KN8Data.VFX_PROFILE, validateVfxProfiles(KN8Data.VFX_PROFILE.loaded(), report), report);
+        publish(KN8Data.RESEARCH, validateResearch(KN8Data.RESEARCH.loaded(), ranks.keySet(), report), report);
         // Patentes apontam para missoes de avaliacao, que so foram validadas agora: confere no fim (so aviso).
         ranks.forEach((id, rank) -> rank.promotionMission().filter(mission -> !missions.containsKey(mission))
                 .ifPresent(mission -> report.warning("rank " + id + ": promotion_mission inexistente " + mission)));
@@ -152,6 +154,43 @@ public final class DataValidation {
                 }
             }
             valid.put(id, def);
+        });
+        return valid;
+    }
+
+    /**
+     * PM-8C: custo com itens registrados e patente existente (senao a pesquisa sai); pre-requisito que nao existe
+     * tambem tira a pesquisa (nunca poderia comecar). Alvo do bonus e so aviso.
+     */
+    public static Map<ResourceLocation, ResearchDef> validateResearch(Map<ResourceLocation, ResearchDef> input,
+            Set<ResourceLocation> ranks, DataReport report) {
+        Map<ResourceLocation, ResearchDef> valid = new LinkedHashMap<>();
+        input.forEach((id, def) -> {
+            String where = "research " + id;
+            for (WorkbenchRecipeDef.Ingredient ingredient : def.cost()) {
+                if (!BuiltInRegistries.ITEM.containsKey(ingredient.item())) {
+                    report.error(where + ": custo com item nao registrado " + ingredient.item());
+                    return;
+                }
+            }
+            if (def.rank().filter(rank -> !ranks.contains(rank)).isPresent()) {
+                report.error(where + ": patente inexistente " + def.rank().get());
+                return;
+            }
+            for (String target : def.targets()) {
+                ResourceLocation species = target.startsWith("#") ? null : ResourceLocation.tryParse(target);
+                if (!target.startsWith("#") && (species == null || KN8Data.KAIJU.get(species, false).isEmpty())) {
+                    report.warning(where + ": alvo do bonus nao e kaiju nem #classe: " + target);
+                }
+            }
+            valid.put(id, def);
+        });
+        valid.entrySet().removeIf(entry -> {
+            boolean missing = entry.getValue().requires().stream().anyMatch(required -> !input.containsKey(required));
+            if (missing) {
+                report.error("research " + entry.getKey() + ": requires com pesquisa inexistente");
+            }
+            return missing;
         });
         return valid;
     }

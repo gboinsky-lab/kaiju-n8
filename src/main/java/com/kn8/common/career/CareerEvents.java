@@ -6,6 +6,7 @@ import java.util.UUID;
 import com.kn8.KN8Constants;
 import com.kn8.common.arena.TrainingArenaService;
 import com.kn8.common.attribute.PowerService;
+import com.kn8.common.research.ResearchService;
 import com.kn8.common.boss.BossService;
 import com.kn8.common.config.ServerConfig;
 import com.kn8.common.data.def.KaijuClass;
@@ -35,6 +36,7 @@ public final class CareerEvents {
         if (event.getEntity() instanceof ServerPlayer player && ServerConfig.SPEC.isLoaded()
                 && player.tickCount % MISSION_TICK_INTERVAL == 0) {
             MissionService.tick(player);
+            ResearchService.tick(player);
         }
     }
 

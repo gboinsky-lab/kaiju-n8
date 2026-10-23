@@ -131,6 +131,8 @@ public final class KN8Items {
             KN8Blocks.TRAINING_CONSOLE);
     public static final DeferredItem<BlockItem> SQUAD_STATION = ITEMS.registerSimpleBlockItem("squad_station",
             KN8Blocks.SQUAD_STATION);
+    public static final DeferredItem<BlockItem> RESEARCH_TERMINAL = ITEMS.registerSimpleBlockItem(
+            "research_terminal", KN8Blocks.RESEARCH_TERMINAL);
     public static final DeferredItem<ArmorItem> TRAINING_SUIT = suit("training_suit", KN8ArmorMaterials.TRAINING_SUIT);
     public static final DeferredItem<ArmorItem> MK1 = suit("mk1", KN8ArmorMaterials.MK1);
     public static final DeferredItem<ArmorItem> MK1_REINFORCED = suit("mk1_reinforced",
@@ -183,6 +185,7 @@ public final class KN8Items {
                         output.accept(DEFENSE_WORKBENCH.get());
                         output.accept(TRAINING_CONSOLE.get());
                         output.accept(SQUAD_STATION.get());
+                        output.accept(RESEARCH_TERMINAL.get());
                         output.accept(TRAINING_SUIT.get());
                         output.accept(MK1.get());
                         output.accept(MK1_REINFORCED.get());

@@ -17,6 +17,7 @@ import com.kn8.common.arena.TrainingArenaService;
 import com.kn8.common.boss.BossService;
 import com.kn8.common.boss.BossState;
 import com.kn8.common.career.ExamTargets;
+import com.kn8.common.research.ResearchService;
 import com.kn8.common.combat.CombatService;
 import com.kn8.common.config.ServerConfig;
 import com.kn8.common.data.KN8Data;
@@ -1526,8 +1527,14 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
      * {@code combat.maxHeavyHitFraction} 15% no pesado/carregado).
      */
     private float capPlayerHit(DamageSource source, float amount) {
-        if (!ServerConfig.SPEC.isLoaded() || !(source.getEntity() instanceof Player)
-                || source.is(CombatService.WEAPON_SPECIAL)) {
+        if (!ServerConfig.SPEC.isLoaded() || !(source.getEntity() instanceof Player)) {
+            return amount;
+        }
+        if (source.getEntity() instanceof ServerPlayer researcher) {
+            // PM-8C: pesquisas concluidas sobre esta especie/classe aumentam o golpe (antes do teto).
+            amount *= ResearchService.damageFactor(researcher, this);
+        }
+        if (source.is(CombatService.WEAPON_SPECIAL)) {
             return amount;
         }
         boolean heavy = source.getEntity() instanceof ServerPlayer player && CombatService.isHeavyStrike(player);

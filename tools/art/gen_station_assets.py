@@ -54,27 +54,32 @@ def textures():
     return {f"{NAME}_side": side, f"{NAME}_front": front, f"{NAME}_top": top, f"{NAME}_bottom": bottom}
 
 
-def main():
-    for name, image in textures().items():
-        save(image, f"textures/block/{name}.png")
-    write_json(f"models/block/{NAME}.json", {
+def write_block_files(name):
+    """Modelo orientavel, item, blockstate por direcao, loot e tag da picareta de um bloco de chapa."""
+    write_json(f"models/block/{name}.json", {
         "parent": "minecraft:block/orientable_with_bottom",
-        "textures": {"top": f"kn8:block/{NAME}_top", "front": f"kn8:block/{NAME}_front",
-                     "side": f"kn8:block/{NAME}_side", "bottom": f"kn8:block/{NAME}_bottom"}})
-    write_json(f"models/item/{NAME}.json", {"parent": f"kn8:block/{NAME}"})
+        "textures": {"top": f"kn8:block/{name}_top", "front": f"kn8:block/{name}_front",
+                     "side": f"kn8:block/{name}_side", "bottom": f"kn8:block/{name}_bottom"}})
+    write_json(f"models/item/{name}.json", {"parent": f"kn8:block/{name}"})
     rotations = {"north": 0, "east": 90, "south": 180, "west": 270}
-    write_json(f"blockstates/{NAME}.json", {"variants": {
-        f"facing={facing}": ({"model": f"kn8:block/{NAME}", "y": y} if y else {"model": f"kn8:block/{NAME}"})
+    write_json(f"blockstates/{name}.json", {"variants": {
+        f"facing={facing}": ({"model": f"kn8:block/{name}", "y": y} if y else {"model": f"kn8:block/{name}"})
         for facing, y in rotations.items()}})
-    loot = DATA / "kn8/loot_table/blocks" / f"{NAME}.json"
+    loot = DATA / "kn8/loot_table/blocks" / f"{name}.json"
     loot.write_text(json.dumps({"type": "minecraft:block", "pools": [{
-        "rolls": 1, "entries": [{"type": "minecraft:item", "name": f"kn8:{NAME}"}],
+        "rolls": 1, "entries": [{"type": "minecraft:item", "name": f"kn8:{name}"}],
         "conditions": [{"condition": "minecraft:survives_explosion"}]}]}, indent=2) + "\n", encoding="utf-8")
     tag = DATA / "minecraft/tags/block/mineable/pickaxe.json"
     values = json.loads(tag.read_text(encoding="utf-8"))
-    if f"kn8:{NAME}" not in values["values"]:
-        values["values"].append(f"kn8:{NAME}")
+    if f"kn8:{name}" not in values["values"]:
+        values["values"].append(f"kn8:{name}")
         tag.write_text(json.dumps(values, indent=2) + "\n", encoding="utf-8")
+
+
+def main():
+    for name, image in textures().items():
+        save(image, f"textures/block/{name}.png")
+    write_block_files(NAME)
     print("estacao de preparacao: texturas, modelos, blockstate, loot e tag")
 
 

@@ -9,6 +9,7 @@ import com.kn8.common.career.CareerService;
 import com.kn8.common.career.MissionService;
 import com.kn8.common.data.KN8Data;
 import com.kn8.common.data.def.RankDef;
+import com.kn8.common.research.ResearchService;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -44,6 +45,8 @@ final class CareerCommands {
             SharedSuggestionProvider.suggestResource(KN8Data.RANK.serverIds(), builder);
     private static final SuggestionProvider<CommandSourceStack> MISSIONS = (ctx, builder) ->
             SharedSuggestionProvider.suggestResource(KN8Data.MISSION.serverIds(), builder);
+    private static final SuggestionProvider<CommandSourceStack> RESEARCH = (ctx, builder) ->
+            SharedSuggestionProvider.suggestResource(KN8Data.RESEARCH.serverIds(), builder);
     private static final SuggestionProvider<CommandSourceStack> BOSSES = (ctx, builder) ->
             SharedSuggestionProvider.suggestResource(KN8Data.BOSS.serverIds(), builder);
 
@@ -82,6 +85,43 @@ final class CareerCommands {
                     CareerService.addMerit(player, IntegerArgumentType.getInteger(ctx, "amount"));
                     return show(ctx, player);
                 })));
+    }
+
+    /**
+     * PM-8C: {@code research start <id>} (as mesmas regras do terminal), {@code research finish} (termina a em
+     * andamento agora), {@code research reset} e {@code research list}.
+     */
+    static LiteralArgumentBuilder<CommandSourceStack> research() {
+        return Commands.literal("research")
+                .then(Commands.literal("start").then(withTarget(Commands.argument("research",
+                        ResourceLocationArgument.id()).suggests(RESEARCH), (ctx, player) -> {
+                            ResearchService.Result result = ResearchService.start(player,
+                                    ResourceLocationArgument.getId(ctx, "research"));
+                            ctx.getSource().sendSuccess(() -> Component.literal(result.name()), false);
+                            return result == ResearchService.Result.OK ? 1 : 0;
+                        })))
+                .then(withTarget(Commands.literal("finish"), (ctx, player) -> {
+                    Optional<CareerData.Researching> current = CareerService.data(player).researching();
+                    current.ifPresent(running -> ResearchService.complete(player, running.id()));
+                    return current.isPresent() ? 1 : 0;
+                }))
+                .then(withTarget(Commands.literal("reset"), (ctx, player) -> {
+                    CareerService.data(player).research().clear();
+                    CareerService.data(player).setResearching(null);
+                    CareerService.changed(player);
+                    ctx.getSource().sendSuccess(() -> Component.literal(player.getScoreboardName() + ": 0"), true);
+                    return 1;
+                }))
+                .then(withTarget(Commands.literal("list"), (ctx, player) -> {
+                    StringBuilder text = new StringBuilder(player.getScoreboardName());
+                    for (ResourceLocation id : KN8Data.RESEARCH.serverIds()) {
+                        boolean done = CareerService.data(player).research().contains(id);
+                        text.append("\n ").append(id).append(": ").append(done ? "OK"
+                                : ResearchService.check(player, id).name());
+                    }
+                    ctx.getSource().sendSuccess(() -> Component.literal(text.toString()), false);
+                    return 1;
+                }));
     }
 
     static LiteralArgumentBuilder<CommandSourceStack> mission() {

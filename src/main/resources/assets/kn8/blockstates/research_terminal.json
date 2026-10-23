@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "kn8:block/research_terminal"
+    },
+    "facing=east": {
+      "model": "kn8:block/research_terminal",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "kn8:block/research_terminal",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "kn8:block/research_terminal",
+      "y": 270
+    }
+  }
+}

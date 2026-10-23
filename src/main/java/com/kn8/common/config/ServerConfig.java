@@ -300,6 +300,9 @@ public final class ServerConfig {
     public static final ModConfigSpec.DoubleValue SQUAD_PROTECT_RADIUS;
     public static final ModConfigSpec.DoubleValue STATION_RADIUS;
     public static final ModConfigSpec.IntValue STATION_COOLDOWN_TICKS;
+    // [research] PM-8C
+    public static final ModConfigSpec.IntValue RESEARCH_TERMINAL_RANGE;
+    public static final ModConfigSpec.DoubleValue RESEARCH_DURATION_MULTIPLIER;
 
     // --- sites (construcoes C3: Ariake, Tachikawa, Shinagawa) -------------------------------------------------------
     public static final ModConfigSpec.IntValue SITE_CHECK_TICKS;
@@ -945,6 +948,13 @@ public final class ServerConfig {
                 + " are healed and resupplied.", 16.0, 2.0, 64.0);
         STATION_COOLDOWN_TICKS = intValue("stationCooldownTicks", "PM-8 squad station: ticks before the same player"
                 + " can use a station again (creative: none).", 1200, 0, 72000);
+        BUILDER.pop();
+
+        section("research", "PM-8C research lab: kaiju material turned into unlocks and damage bonuses.");
+        RESEARCH_TERMINAL_RANGE = intValue("terminalRange", "A research can only be started this close (blocks) to a"
+                + " research terminal (creative: anywhere).", 6, 1, 32);
+        RESEARCH_DURATION_MULTIPLIER = doubleValue("durationMultiplier", "Multiplies the duration_ticks of every"
+                + " research (0.5 = twice as fast).", 1.0, 0.0, 100.0);
         BUILDER.pop();
 
         section("sites", "Places from the series (C3): Ariake, Tachikawa base and city, Shinagawa.");

@@ -10,7 +10,8 @@
     "kn8:rifle_magazine",
     "kn8:pistol_magazine",
     "kn8:rifle_ammo",
-    "kn8:pistol_ammo"
+    "kn8:pistol_ammo",
+    "kn8:research_terminal"
   ],
   "promotion_mission": "kn8:exam"
 }

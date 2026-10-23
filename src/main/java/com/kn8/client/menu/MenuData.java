@@ -12,6 +12,7 @@ import com.kn8.common.career.CareerView;
 import com.kn8.common.data.KN8Data;
 import com.kn8.common.data.def.KaijuDef;
 import com.kn8.common.data.def.RankDef;
+import com.kn8.common.data.def.ResearchDef;
 import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.registry.KN8Attachments;
 import com.kn8.common.registry.KN8Entities;
@@ -104,10 +105,21 @@ final class MenuData {
         return currentRank().map(entry -> entry.getValue().order()).orElse(0);
     }
 
-    /** Mesma regra do servidor ({@code CareerService.isUnlocked}): livre se nenhuma patente prende o id. */
+    /**
+     * Mesma regra do servidor ({@code CareerService.isUnlocked}): liberado pela patente ou por uma pesquisa concluida
+     * (PM-8C); livre se nenhuma patente nem pesquisa prende o id.
+     */
     static boolean unlocked(ResourceLocation id) {
         int order = rankOrder();
         boolean lockedSomewhere = false;
+        for (Map.Entry<ResourceLocation, ResearchDef> entry : KN8Data.RESEARCH.client().entrySet()) {
+            if (entry.getValue().unlocks().contains(id)) {
+                if (career().research().done().contains(entry.getKey())) {
+                    return true;
+                }
+                lockedSomewhere = true;
+            }
+        }
         for (Map.Entry<ResourceLocation, RankDef> entry : ranks()) {
             if (entry.getValue().unlocks().contains(id)) {
                 if (entry.getValue().order() <= order) {
@@ -127,6 +139,16 @@ final class MenuData {
             return list.isEmpty() ? CareerView.NONE : list.get(0).getKey();
         }
         return rank;
+    }
+
+    /** PM-8C: pesquisa que libera o id (para o aviso de item travado); vazio se nenhuma. */
+    static Optional<ResourceLocation> unlockingResearch(ResourceLocation id) {
+        for (Map.Entry<ResourceLocation, ResearchDef> entry : KN8Data.RESEARCH.client().entrySet()) {
+            if (entry.getValue().unlocks().contains(id)) {
+                return Optional.of(entry.getKey());
+            }
+        }
+        return Optional.empty();
     }
 
     /** Patente mais baixa que libera o id (para o aviso de item travado). */

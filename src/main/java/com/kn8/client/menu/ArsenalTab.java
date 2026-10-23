@@ -23,7 +23,9 @@ import net.minecraft.world.item.ItemStack;
  */
 final class ArsenalTab implements MenuTab {
 
-    private static final String[] SECTIONS = {"weapons", "suits", "crafting"};
+    private static final String[] SECTIONS = {"weapons", "suits", "crafting", "research"};
+    static final int CRAFTING = 2;
+    static final int RESEARCH = 3;
     private static final int ROW_HEIGHT = 22;
     private static final float TICKS_PER_SECOND = 20.0F;
 
@@ -31,6 +33,7 @@ final class ArsenalTab implements MenuTab {
     static int requestedSection = -1;
 
     private final CraftingSection crafting = new CraftingSection();
+    private final ResearchSection research = new ResearchSection();
     private int section;
     private int selected;
     private int sectionX;
@@ -69,8 +72,9 @@ final class ArsenalTab implements MenuTab {
         switch (section) {
             case 0 -> renderWeapons(g, font, detailX, detailW, bottom);
             case 1 -> renderSuits(g, font, detailX, detailW, bottom);
-            default -> crafting.render(g, font, x, y, w, detailX, detailW, bottom, mouseX, mouseY, listX, listY,
-                    listW);
+            case CRAFTING -> crafting.render(g, font, x, y, w, detailX, detailW, bottom, mouseX, mouseY, listX,
+                    listY, listW);
+            default -> research.render(g, font, x, w, detailX, detailW, bottom, mouseX, mouseY, listX, listY, listW);
         }
     }
 
@@ -205,8 +209,11 @@ final class ArsenalTab implements MenuTab {
                 return true;
             }
         }
-        if (section == 2) {
+        if (section == CRAFTING) {
             return crafting.mouseClicked(mouseX, mouseY);
+        }
+        if (section == RESEARCH) {
+            return research.mouseClicked(mouseX, mouseY);
         }
         for (int i = 0; i < rows; i++) {
             if (MenuStyle.inside(mouseX, mouseY, listX, listY + i * (ROW_HEIGHT + 2), listW, ROW_HEIGHT)) {
@@ -219,6 +226,7 @@ final class ArsenalTab implements MenuTab {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scroll) {
-        return section == 2 && crafting.mouseScrolled(mouseX, mouseY, scroll);
+        return section == CRAFTING && crafting.mouseScrolled(mouseX, mouseY, scroll)
+                || section == RESEARCH && research.mouseScrolled(mouseX, mouseY, scroll);
     }
 }

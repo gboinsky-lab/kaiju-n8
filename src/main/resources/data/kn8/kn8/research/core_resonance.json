@@ -1,0 +1,15 @@
+{
+  "category": "core",
+  "order": 4,
+  "rank": "kn8:oficial",
+  "cost": [
+    {
+      "item": "kn8:core_fragment",
+      "count": 3
+    }
+  ],
+  "duration_ticks": 4800,
+  "unlocks": [
+    "kn8:release_catalyst"
+  ]
+}

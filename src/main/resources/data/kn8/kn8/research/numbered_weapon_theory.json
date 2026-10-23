@@ -1,0 +1,27 @@
+{
+  "category": "core",
+  "order": 6,
+  "rank": "kn8:lider_pelotao",
+  "cost": [
+    {
+      "item": "kn8:intact_core",
+      "count": 2
+    },
+    {
+      "item": "kn8:core_fragment",
+      "count": 6
+    }
+  ],
+  "duration_ticks": 12000,
+  "requires": [
+    "kn8:core_resonance",
+    "kn8:honju_anatomy"
+  ],
+  "unlocks": [
+    "kn8:hoshina_sword"
+  ],
+  "targets": [
+    "#numbered"
+  ],
+  "damage_bonus": 0.05
+}

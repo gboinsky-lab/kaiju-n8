@@ -1,0 +1,27 @@
+{
+  "category": "analysis",
+  "order": 5,
+  "rank": "kn8:oficial_senior",
+  "cost": [
+    {
+      "item": "kn8:intact_core",
+      "count": 1
+    },
+    {
+      "item": "kn8:muscle_fiber",
+      "count": 6
+    },
+    {
+      "item": "kn8:kaiju_tissue",
+      "count": 10
+    }
+  ],
+  "duration_ticks": 7200,
+  "requires": [
+    "kn8:muscle_mechanics"
+  ],
+  "targets": [
+    "#honju"
+  ],
+  "damage_bonus": 0.12
+}

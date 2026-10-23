@@ -10,6 +10,8 @@ import com.kn8.common.career.MissionActionC2S;
 import com.kn8.common.craft.CraftC2S;
 import com.kn8.common.soldier.SquadCommandC2S;
 import com.kn8.common.craft.OpenWorkbenchS2C;
+import com.kn8.common.research.OpenResearchS2C;
+import com.kn8.common.research.ResearchC2S;
 import com.kn8.common.invasion.InvasionStateS2C;
 import com.kn8.common.combat.CombatInputC2S;
 import com.kn8.common.combat.CombatNetwork;
@@ -62,7 +64,8 @@ public final class KN8Network {
     // 21 = VFX-2: VfxS2C.source.height (o efeito cresce com o corpo de quem o faz).
     // 22 = PM-1: CombatResult.PERFECT_DODGE e especiais "lunge"/"flurry" no registro de armas sincronizado.
     // 25 = PM-8B: categoria "exam" e "rewards.body_xp" no registro de missoes sincronizado.
-    private static final String PROTOCOL_VERSION = "25";
+    // 26 = PM-8C: OpenResearchS2C, ResearchC2S, CareerView.research e registro sincronizado "research".
+    private static final String PROTOCOL_VERSION = "26";
 
     /** Diagnostico: 20 por segundo, rajada de 40. */
     private static final C2SGuard.Limit DEBUG_LIMIT = new C2SGuard.Limit(20, 40);
@@ -104,6 +107,9 @@ public final class KN8Network {
         toClientHook(registrar, OpenWorkbenchS2C.TYPE, OpenWorkbenchS2C.STREAM_CODEC);
         // PM-8: oficial de missoes abre o quadro de missoes dele.
         toClientHook(registrar, OpenMissionBoardS2C.TYPE, OpenMissionBoardS2C.STREAM_CODEC);
+        // PM-8C: terminal de pesquisa (abre a secao Pesquisa) e pedido de pesquisar.
+        toClientHook(registrar, OpenResearchS2C.TYPE, OpenResearchS2C.STREAM_CODEC);
+        toServer(registrar, ResearchC2S.TYPE, ResearchC2S.STREAM_CODEC, MENU_LIMIT, ResearchC2S::handle);
         toClientHook(registrar, InvasionStateS2C.TYPE, InvasionStateS2C.STREAM_CODEC);
         // 0.5.0: tecla de Release (so na mudanca; o servidor sobe/desce a % no tick).
         toServer(registrar, ReleaseInputC2S.TYPE, ReleaseInputC2S.STREAM_CODEC, RELEASE_LIMIT,

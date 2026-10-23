@@ -1283,3 +1283,20 @@ Servidor dedicado + 2 clientes. Base gerada com `/place structure kn8:defense_ba
 | 94.7 | Abater um kaiju fora da base com uma prova ativa | Não conta para a prova |
 | 94.8 | Missões do Oficial de Missões (Defesa da Cidade, horda...) | Continuam em campo (em volta do jogador ou invasão), aceitas também pelo menu |
 | 94.9 | O outro cliente fazendo um curso ao mesmo tempo | Cada um só vê contar os próprios kaiju |
+
+## 95. Pesquisa no laboratório (PM-8C)
+
+Servidor dedicado + 2 clientes. Base gerada com `/place structure kn8:defense_base` (terminal na recepção do QG), a
+base grande (laboratório de kaiju da arena), Ariake (laboratório de armas numeradas) ou Tachikawa (recepção).
+
+| # | Passo | Esperado |
+|---|---|---|
+| 95.1 | Botão direito no Terminal de Pesquisa | O menu abre no Arsenal, seção **PESQUISA**, com os 6 projetos; cada um mostra descrição, material (tem/precisa), tempo, o que libera e o bônus |
+| 95.2 | Menu (M) → Arsenal → Pesquisa longe do terminal | Botão apagado e "Use um Terminal de Pesquisa (laboratório da base)" |
+| 95.3 | Desmontar kaiju até ter 8 tecidos e pesquisar a Análise de Tecido Yoju | "Pesquisa iniciada: ... (pronta em 1:00, mesmo longe da base)"; os 8 tecidos saem do inventário; a linha mostra "Em andamento: m:ss" e a barra |
+| 95.4 | Tentar outra pesquisa ao mesmo tempo | Botão apagado, "Laboratório ocupado: ..." |
+| 95.5 | Esperar 1 min (pode sair da base) | "Pesquisa concluída", "+10% de dano" no chat e som; a linha vira "Concluída" |
+| 95.6 | Bater num Primigenius antes e depois | Golpe ~10% mais forte depois (mesmo teto por golpe) |
+| 95.7 | Como Oficial, pesquisar Mecânica Muscular e abrir a bancada | O Mk1 Reforçado, antes "Precisa da patente: Oficial Sênior / ou a pesquisa: Mecânica Muscular", fica liberado |
+| 95.8 | `/kn8 research list Dev` | Lista com OK nas concluídas e o motivo nas outras (BUSY, RANK_TOO_LOW, MISSING_PREREQUISITE, MISSING, NO_TERMINAL) |
+| 95.9 | Sair do servidor no meio de uma pesquisa e voltar | Continua com o mesmo fim |

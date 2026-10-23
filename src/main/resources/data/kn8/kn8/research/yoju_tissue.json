@@ -1,0 +1,15 @@
+{
+  "category": "analysis",
+  "order": 1,
+  "cost": [
+    {
+      "item": "kn8:kaiju_tissue",
+      "count": 8
+    }
+  ],
+  "duration_ticks": 1200,
+  "targets": [
+    "#yoju"
+  ],
+  "damage_bonus": 0.1
+}

@@ -5,6 +5,7 @@ import com.kn8.KN8Constants;
 import com.kn8.common.arena.TrainingConsoleBlock;
 import com.kn8.common.base.SquadStationBlock;
 import com.kn8.common.craft.DefenseWorkbenchBlock;
+import com.kn8.common.research.ResearchTerminalBlock;
 
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -30,6 +31,11 @@ public final class KN8Blocks {
     /** PM-8: estacao de preparacao do esquadrao (cura e reabastece o esquadrao do jogador). */
     public static final DeferredBlock<SquadStationBlock> SQUAD_STATION = BLOCKS.register("squad_station",
             () -> new SquadStationBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL)
+                    .strength(3.5F, 6.0F).sound(SoundType.METAL).requiresCorrectToolForDrops()));
+
+    /** PM-8C: terminal de pesquisa do laboratorio (material de kaiju vira receitas e bonus contra kaiju). */
+    public static final DeferredBlock<ResearchTerminalBlock> RESEARCH_TERMINAL = BLOCKS.register("research_terminal",
+            () -> new ResearchTerminalBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL)
                     .strength(3.5F, 6.0F).sound(SoundType.METAL).requiresCorrectToolForDrops()));
 
     private KN8Blocks() {
