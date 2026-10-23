@@ -1,5 +1,8 @@
 # Kaiju No. 8 — Prompts para o ElevenLabs (efeitos sonoros)
 
+> **Guardado para depois (Miguel, 2026-10-23):** por ora nenhum som novo é criado. Os prompts em uso são os de
+> `PROMPTS_SUBSTITUICAO.md` (só regravar os 27 sons que já existem, mesmo nome de arquivo, sem código).
+
 Etapa **AUDIO-0** (2026-10-23). Cada efeito tem: arquivo, evento, som que substitui, duração, tipo, variações,
 dependência de animação, laço, prioridade e volume/distância, e o prompt pronto. Códigos iguais aos do
 `KAIJU_NO_8_AUDIO_DESIGN_CATALOG.md`.

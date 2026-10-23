@@ -1,5 +1,8 @@
 # Kaiju No. 8 — Plano de prioridade e implementação do áudio
 
+> **Decisão do Miguel (2026-10-23):** primeiro só substituir os sons existentes (`PROMPTS_SUBSTITUICAO.md`: 27
+> eventos, 66 arquivos, mesmos nomes, sem código). Os sons novos e as fases S1–S4 abaixo ficam guardados para depois.
+
 Etapa **AUDIO-0** (2026-10-23): planejamento. **Nenhum código mudou.** A implementação começa depois que os áudios
 gerados no ElevenLabs forem aprovados pelo Miguel (checklist, seção 3).
 
