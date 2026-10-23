@@ -11,7 +11,7 @@ A base inteira tem ~65 x 65 blocos. Pecas encaixam por blocos jigsaw no chao (y 
 canto e tentado pelas duas alas vizinhas e so a primeira cabe. Uso: python3 tools/world/gen_base.py
 Ver no jogo: /place structure kn8:defense_base   (ou /place jigsaw kn8:defense_base/core kn8:base_core 3 ~ ~ ~)
 """
-from gen_structures import DATA, SITES_EXCLUSION, Build, Float, dump, item, soldier
+from gen_structures import DATA, SITES_EXCLUSION, Build, Float, dump, item, officer, soldier
 
 FLOOR = "minecraft:gray_concrete"
 ROAD = "minecraft:light_gray_concrete"
@@ -177,6 +177,9 @@ def content_core(b):
     b.set(9, 1, 16, "minecraft:lectern", {"facing": "north", "has_book": "false", "powered": "false"})
     for x in range(9, 16):
         b.set(x, 1, 12, "minecraft:cyan_carpet")
+    # PM-8: oficiais de missoes e de provas na recepcao.
+    b.entity(11, 1, 15, officer("officer", 0.0))
+    b.entity(13, 1, 15, officer("exam_officer", 0.0))
     # Primeiro andar: sala de comando (mesas de cartografia, monitores de observador, baus).
     for x in (10, 12, 14):
         b.set(x, 6, 14, "minecraft:cartography_table")
@@ -254,6 +257,8 @@ def content_barracks(b):
     b.lamp_post(14, 2)
     b.entity(12, 1, 17, soldier("rifle", "normal", 0.0))
     b.entity(9, 1, 9, soldier("sword", "low", 90.0))
+    # PM-8: estacao de preparacao do esquadrao no patio do alojamento.
+    b.set(12, 1, 15, "kn8:squad_station", {"facing": "south"})
 
 
 def wing_armory():

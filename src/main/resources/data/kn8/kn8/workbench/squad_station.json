@@ -1,0 +1,19 @@
+{
+  "result": "kn8:squad_station",
+  "category": "training",
+  "order": 33,
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 6
+    },
+    {
+      "item": "kn8:stamina_stim",
+      "count": 2
+    },
+    {
+      "item": "kn8:rifle_magazine",
+      "count": 1
+    }
+  ]
+}

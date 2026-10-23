@@ -3,6 +3,7 @@ package com.kn8.common.network;
 
 import com.kn8.common.anim.AnimTriggerS2C;
 import com.kn8.common.attribute.PowerService;
+import com.kn8.common.base.OpenMissionBoardS2C;
 import com.kn8.common.career.CareerService;
 import com.kn8.common.career.CareerSyncS2C;
 import com.kn8.common.career.MissionActionC2S;
@@ -60,7 +61,7 @@ public final class KN8Network {
     // 20 = VFX-1: VfxS2C.source (perfil visual e receita) e registro sincronizado "vfx_profile".
     // 21 = VFX-2: VfxS2C.source.height (o efeito cresce com o corpo de quem o faz).
     // 22 = PM-1: CombatResult.PERFECT_DODGE e especiais "lunge"/"flurry" no registro de armas sincronizado.
-    private static final String PROTOCOL_VERSION = "23";
+    private static final String PROTOCOL_VERSION = "24";
 
     /** Diagnostico: 20 por segundo, rajada de 40. */
     private static final C2SGuard.Limit DEBUG_LIMIT = new C2SGuard.Limit(20, 40);
@@ -100,6 +101,8 @@ public final class KN8Network {
         // IA-5: esquadrao do jogador (recrutar, dispensar, ordens) pela aba Esquadrao.
         toServer(registrar, SquadCommandC2S.TYPE, SquadCommandC2S.STREAM_CODEC, MENU_LIMIT, SquadCommandC2S::handle);
         toClientHook(registrar, OpenWorkbenchS2C.TYPE, OpenWorkbenchS2C.STREAM_CODEC);
+        // PM-8: oficial de missoes abre o quadro de missoes dele.
+        toClientHook(registrar, OpenMissionBoardS2C.TYPE, OpenMissionBoardS2C.STREAM_CODEC);
         toClientHook(registrar, InvasionStateS2C.TYPE, InvasionStateS2C.STREAM_CODEC);
         // 0.5.0: tecla de Release (so na mudanca; o servidor sobe/desce a % no tick).
         toServer(registrar, ReleaseInputC2S.TYPE, ReleaseInputC2S.STREAM_CODEC, RELEASE_LIMIT,

@@ -5,7 +5,8 @@
   "npc_squad_size": 2,
   "unlocks": [
     "kn8:sword",
-    "kn8:mk1_reinforced"
+    "kn8:mk1_reinforced",
+    "kn8:squad_station"
   ],
   "promotion_mission": "kn8:exam_marksman"
 }

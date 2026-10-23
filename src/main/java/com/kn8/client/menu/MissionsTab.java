@@ -31,8 +31,18 @@ final class MissionsTab implements MenuTab {
     private static final String[] FILTERS = {"available", "active", "done"};
     private static final int CARD_HEIGHT = 54;
 
+    /** PM-8: pedido do oficial de missoes (consumido pela proxima aba criada). */
+    static ResourceLocation requestedGiver;
+
     private int filter;
     private int scroll;
+    /** Quadro de um oficial: so as missoes dele ({@code giver} do JSON); null = todas. */
+    private final ResourceLocation giver;
+
+    MissionsTab() {
+        giver = requestedGiver;
+        requestedGiver = null;
+    }
     /** Botoes desenhados no ultimo quadro: x, y, largura, altura e a acao (missao + aceitar/abandonar). */
     private final List<Button> buttons = new ArrayList<>();
 
@@ -46,9 +56,14 @@ final class MissionsTab implements MenuTab {
     public void render(GuiGraphics g, Font font, int x, int y, int w, int h, int mouseX, int mouseY,
             float partialTick) {
         MenuStyle.panel(g, x, y, w, h, MenuStyle.PANEL, MenuStyle.OUTLINE);
-        MenuStyle.title(g, font, Component.translatable("kn8.menu.tab.missions"), x + 6, y + 6);
+        MenuStyle.title(g, font, giver == null ? Component.translatable("kn8.menu.tab.missions")
+                : Component.translatable("kn8.menu.missions.board", Component.translatable(
+                        "entity.kn8.defense_officer." + giver.getPath())), x + 6, y + 6);
 
         List<Map.Entry<ResourceLocation, MissionDef>> all = new ArrayList<>(KN8Data.MISSION.client().entrySet());
+        if (giver != null) {
+            all.removeIf(entry -> !entry.getValue().giver().map(giver::equals).orElse(false));
+        }
         all.sort(Comparator.comparing(entry -> entry.getKey().getPath()));
         CareerView career = MenuData.career();
         Map<ResourceLocation, CareerView.Active> active = new HashMap<>();

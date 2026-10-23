@@ -192,7 +192,10 @@ final class MenuData {
     }
 
     static List<SoldierEntity> nearbySoldiers(double radius) {
-        return nearby(SoldierEntity.class, radius);
+        // PM-8: o oficial de missoes nao entra em esquadrao (nao aparece na lista).
+        List<SoldierEntity> list = nearby(SoldierEntity.class, radius);
+        list.removeIf(soldier -> !soldier.canJoinSquad());
+        return list;
     }
 
     private static <T extends Entity> List<T> nearby(Class<T> type, double radius) {

@@ -2,6 +2,7 @@
 package com.kn8.common.soldier;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -368,6 +369,61 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
 
     public boolean isOutOfAmmo() {
         return outOfAmmo;
+    }
+
+    /** PM-8: o oficial de missoes nao entra em esquadrao. */
+    public boolean canJoinSquad() {
+        return true;
+    }
+
+    /** Perfil da arma de fogo em qualquer mao (sem municao ela fica na mao secundaria). */
+    private Optional<WeaponProfileDef> gunProfile() {
+        for (ItemStack stack : List.of(getMainHandItem(), getOffhandItem())) {
+            Optional<WeaponDef> weapon = WeaponIndex.find(stack, false)
+                    .filter(def -> def.style() == WeaponDef.Style.FIREARM);
+            if (weapon.isPresent()) {
+                return WeaponHandling.profile(weapon.get(), false).filter(profile -> profile.reload().isPresent());
+            }
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * PM-8 (estacao de preparacao): balas que faltam para a reserva cheia do perfil ({@code npc.spare_magazines}
+     * pentes); 0 sem arma de fogo ou com a reserva ainda nao usada.
+     */
+    public int missingRounds() {
+        Optional<WeaponProfileDef> profile = gunProfile();
+        if (profile.isEmpty() || reserveRounds < 0) {
+            return 0;
+        }
+        int full = AmmoMath.initialReserve(profile.get().npc().spareMagazines(),
+                profile.get().reload().map(WeaponProfileDef.Reload::magazine).orElse(0));
+        return Math.max(0, full - reserveRounds);
+    }
+
+    /** Item de municao da arma de fogo (o que a estacao cobra do jogador, 1 por bala). */
+    public Optional<ResourceLocation> ammoItem() {
+        return gunProfile().flatMap(WeaponProfileDef::reload).flatMap(WeaponProfileDef.Reload::ammoItem);
+    }
+
+    /** Recebe balas na reserva; quem estava sem municao volta para a arma de fogo. */
+    public void resupply(int given) {
+        if (given <= 0 || reserveRounds < 0) {
+            return;
+        }
+        reserveRounds += given;
+        if (outOfAmmo) {
+            outOfAmmo = false;
+            if (!isShooter() && WeaponIndex.find(getOffhandItem(), false)
+                    .map(weapon -> weapon.style() == WeaponDef.Style.FIREARM).orElse(false)) {
+                swapHands();
+            }
+            // A faca dada so por falta de municao (especiais sem arma de apoio) sai quando a municao volta.
+            if (def().isEmpty() && ItemStack.isSameItem(getOffhandItem(), outOfAmmoWeapon())) {
+                setItemSlot(EquipmentSlot.OFFHAND, ItemStack.EMPTY);
+            }
+        }
     }
 
     private boolean hasMeleeOffhand() {

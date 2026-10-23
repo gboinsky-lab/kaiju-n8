@@ -102,6 +102,12 @@ class Build:
         print(f"{name}: {len(blocks)} blocos, {len(self.entities)} entidades, {self.size}")
 
 
+def officer(giver="officer", yaw=0.0):
+    """PM-8: oficial de missoes (giver kn8:officer) ou de provas (kn8:exam_officer)."""
+    return {"id": "kn8:defense_officer", "kn8_giver": f"kn8:{giver}", "PersistenceRequired": True,
+            "Rotation": [Float(yaw), Float(0.0)]}
+
+
 def soldier(variant, level="normal", yaw=0.0):
     return {"id": "kn8:soldier", "kn8_variant": variant, "kn8_power_level": level, "PersistenceRequired": True,
             "Rotation": [Float(yaw), Float(0.0)]}

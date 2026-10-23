@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.kn8.KN8Constants;
+import com.kn8.common.base.DefenseOfficerEntity;
 import com.kn8.common.combat.SlashProjectile;
 import com.kn8.common.kaiju.CarcassEntity;
 import com.kn8.common.kaiju.KaijuEntity;
@@ -138,6 +139,15 @@ public final class KN8Entities {
                     .eyeHeight(1.62F)
                     .clientTrackingRange(KAIJU_TRACKING_RANGE_CHUNKS)
                     .build("soldier"));
+
+    /** PM-8: oficial de missoes das bases (modelo do soldado, sem combate). */
+    public static final DeferredHolder<EntityType<?>, EntityType<DefenseOfficerEntity>> DEFENSE_OFFICER =
+            ENTITY_TYPES.register("defense_officer", () -> EntityType.Builder.<DefenseOfficerEntity>of(
+                    DefenseOfficerEntity::new, MobCategory.CREATURE)
+                    .sized(0.7F, 1.9F)
+                    .eyeHeight(1.62F)
+                    .clientTrackingRange(KAIJU_TRACKING_RANGE_CHUNKS)
+                    .build("defense_officer"));
 
     /** 0.6-D: Hoshina, primeiro soldado especial (perfil em special_soldier/hoshina.json). */
     public static final DeferredHolder<EntityType<?>, EntityType<HoshinaEntity>> HOSHINA = ENTITY_TYPES.register(
@@ -361,6 +371,7 @@ public final class KN8Entities {
     /** Mod bus: atributos base; os valores reais saem do JSON no primeiro tick. */
     public static void registerAttributes(EntityAttributeCreationEvent event) {
         event.put(SOLDIER.get(), SoldierEntity.createAttributes().build());
+        event.put(DEFENSE_OFFICER.get(), SoldierEntity.createAttributes().build());
         event.put(HOSHINA.get(), SoldierEntity.createAttributes().build());
         event.put(HOSHINA_NO10.get(), SoldierEntity.createAttributes().build());
         event.put(KIKORU.get(), SoldierEntity.createAttributes().build());

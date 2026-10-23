@@ -1250,3 +1250,20 @@ Servidor dedicado + 2 clientes. `/kn8 career rank <patente>` (ou o mérito) para
 | 92.7 | Na Prova de Esquadrão deixar um soldado morrer | Reprovada pela linha "No máximo 0 soldado(s) do esquadrão perdido(s)" |
 | 92.8 | O outro cliente fazendo a mesma missão junto | Cada um tem a própria avaliação (os tiros e o dano de um não contam para o outro) |
 | 92.9 | Salvar e sair no meio de uma prova, voltar e terminar | As medidas continuam (a precisão do resumo conta os tiros de antes de sair) |
+
+## 93. Instalações da base: oficial de missões e estação de preparação (PM-8)
+
+Servidor dedicado + 2 clientes. Base gerada com `/place structure kn8:defense_base` (ou Ariake/Tachikawa).
+
+| # | Passo | Esperado |
+|---|---|---|
+| 93.1 | Entrar no QG da base | Dois oficiais na recepção com o nome acima da cabeça: "Oficial de Missões" e "Oficial de Provas"; não andam, só olham quem chega |
+| 93.2 | Botão direito no Oficial de Missões | No chat: saudação, "Próxima patente: X (mérito a/b)" e a prova pendente; o menu abre em "Quadro: Oficial de Missões" só com as missões dele (Patrulha, Defesa da Cidade, horda...) |
+| 93.3 | Botão direito no Oficial de Provas | Quadro só com as provas (Exame de Admissão, Prova de Tiro, Esquadrão, Comando, Capitão); aceitar funciona como pelo menu |
+| 93.4 | Abrir o menu pela tecla M | Aba Missões normal, com todas as missões (o oficial não tranca nada) |
+| 93.5 | Bater/atirar no oficial, kaiju por perto | Não toma dano; kaiju não o atacam; não aparece na aba Esquadrão para recrutar |
+| 93.6 | Recrutar 2 soldados, deixá-los feridos e sem pentes (luta ou `/data`), ir ao pátio do alojamento e usar a Estação de Preparação com munição de rifle no inventário | "Esquadrão preparado: 2 soldado(s), 2 curado(s), N balas repostas"; a munição do inventário diminui; quem estava na faca volta ao rifle |
+| 93.7 | Usar de novo logo em seguida | "Estação recarregando: espere X s" (1 min) |
+| 93.8 | Sem munição suficiente | Repõe o que dá e avisa "Faltaram N balas" |
+| 93.9 | Soldados a mais de 16 blocos, ou sem esquadrão | "Nenhum soldado do seu esquadrão a até 16 blocos da estação" |
+| 93.10 | Bancada como Oficial Sênior | A Estação de Preparação aparece em Treino (6 ferro, 2 estimulantes, 1 pente de rifle) |

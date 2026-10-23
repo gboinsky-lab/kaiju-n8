@@ -42,7 +42,8 @@ public final class SquadService {
     }
 
     public static void recruit(ServerPlayer player, int entityId) {
-        if (!(player.serverLevel().getEntity(entityId) instanceof SoldierEntity soldier) || !soldier.isAlive()) {
+        if (!(player.serverLevel().getEntity(entityId) instanceof SoldierEntity soldier) || !soldier.isAlive()
+                || !soldier.canJoinSquad()) {
             return;
         }
         double range = ServerConfig.SQUAD_RECRUIT_RANGE.get();

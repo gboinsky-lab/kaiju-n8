@@ -78,6 +78,10 @@ public final class KN8Items {
     /** 0.1-B: ovo do soldado (variante rifle, nivel normal; outras pelo /kn8 soldier spawn). */
     public static final DeferredItem<DeferredSpawnEggItem> SOLDIER_SPAWN_EGG = ITEMS.register("soldier_spawn_egg",
             () -> new DeferredSpawnEggItem(KN8Entities.SOLDIER, 0x1C1F1A, 0x4DD0E1, new Item.Properties()));
+    /** PM-8: oficial de missoes (giver kn8:officer; o de provas pelo NBT kn8_giver). */
+    public static final DeferredItem<DeferredSpawnEggItem> DEFENSE_OFFICER_SPAWN_EGG = ITEMS.register(
+            "defense_officer_spawn_egg", () -> new DeferredSpawnEggItem(KN8Entities.DEFENSE_OFFICER, 0x1C1F1A,
+                    0xE8C547, new Item.Properties()));
     public static final DeferredItem<DeferredSpawnEggItem> HOSHINA_SPAWN_EGG = ITEMS.register("hoshina_spawn_egg",
             () -> new DeferredSpawnEggItem(KN8Entities.HOSHINA, 0x1A1A22, 0x9B59D0, new Item.Properties()));
     public static final DeferredItem<DeferredSpawnEggItem> HOSHINA_NO10_SPAWN_EGG = ITEMS.register(
@@ -125,6 +129,8 @@ public final class KN8Items {
             KN8Blocks.DEFENSE_WORKBENCH);
     public static final DeferredItem<BlockItem> TRAINING_CONSOLE = ITEMS.registerSimpleBlockItem("training_console",
             KN8Blocks.TRAINING_CONSOLE);
+    public static final DeferredItem<BlockItem> SQUAD_STATION = ITEMS.registerSimpleBlockItem("squad_station",
+            KN8Blocks.SQUAD_STATION);
     public static final DeferredItem<ArmorItem> TRAINING_SUIT = suit("training_suit", KN8ArmorMaterials.TRAINING_SUIT);
     public static final DeferredItem<ArmorItem> MK1 = suit("mk1", KN8ArmorMaterials.MK1);
     public static final DeferredItem<ArmorItem> MK1_REINFORCED = suit("mk1_reinforced",
@@ -159,6 +165,7 @@ public final class KN8Items {
                         output.accept(CORE_FRAGMENT.get());
                         output.accept(INTACT_CORE.get());
                         output.accept(SOLDIER_SPAWN_EGG.get());
+                        output.accept(DEFENSE_OFFICER_SPAWN_EGG.get());
                         output.accept(HOSHINA_SPAWN_EGG.get());
                         output.accept(HOSHINA_NO10_SPAWN_EGG.get());
                         output.accept(KIKORU_SPAWN_EGG.get());
@@ -175,6 +182,7 @@ public final class KN8Items {
                         output.accept(TRAINING_DUMMY.get());
                         output.accept(DEFENSE_WORKBENCH.get());
                         output.accept(TRAINING_CONSOLE.get());
+                        output.accept(SQUAD_STATION.get());
                         output.accept(TRAINING_SUIT.get());
                         output.accept(MK1.get());
                         output.accept(MK1_REINFORCED.get());

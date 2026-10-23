@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.lwjgl.glfw.GLFW;
 
+import com.kn8.common.base.OpenMissionBoardS2C;
 import com.kn8.common.craft.OpenWorkbenchS2C;
 import com.kn8.common.network.KN8ClientHooks;
 
@@ -14,6 +15,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ServerboundClientCommandPacket;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Menu da Forca de Defesa (0.2), a partir do concept do Miguel: barra de abas no topo (Perfil, Missoes, Alertas,
@@ -56,10 +58,19 @@ public class DefenseForceScreen extends Screen {
         Minecraft.getInstance().setScreen(new DefenseForceScreen());
     }
 
-    /** Instala o handler do pacote da bancada (chamado pelo KN8Client). */
+    /** PM-8: o oficial de missoes abre a aba Missoes so com as missoes dele. */
+    public static void openMissionBoard(String giver) {
+        current = Tab.MISSIONS;
+        MissionsTab.requestedGiver = ResourceLocation.tryParse(giver);
+        Minecraft.getInstance().setScreen(new DefenseForceScreen());
+    }
+
+    /** Instala o handler do pacote da bancada e do oficial (chamado pelo KN8Client). */
     public static void install() {
         KN8ClientHooks.register(OpenWorkbenchS2C.TYPE,
                 payload -> openWorkbench());
+        KN8ClientHooks.register(OpenMissionBoardS2C.TYPE,
+                payload -> openMissionBoard(payload.giver()));
     }
 
     @Override

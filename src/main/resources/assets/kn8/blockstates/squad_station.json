@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "kn8:block/squad_station"
+    },
+    "facing=east": {
+      "model": "kn8:block/squad_station",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "kn8:block/squad_station",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "kn8:block/squad_station",
+      "y": 270
+    }
+  }
+}

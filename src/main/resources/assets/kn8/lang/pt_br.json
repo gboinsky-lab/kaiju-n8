@@ -1010,5 +1010,20 @@
   "kn8.menu.missions.exam.allies": "perdas ≤ %s",
   "kn8.menu.missions.exam.squad": "esquadrão %s+",
   "kn8.menu.missions.exam.grade": "nota %s+",
-  "kn8.menu.profile.accuracy": "Precisão"
+  "kn8.menu.profile.accuracy": "Precisão",
+  "entity.kn8.defense_officer": "Oficial da Força de Defesa",
+  "entity.kn8.defense_officer.officer": "Oficial de Missões",
+  "entity.kn8.defense_officer.exam_officer": "Oficial de Provas",
+  "item.kn8.defense_officer_spawn_egg": "Ovo de Oficial de Missões",
+  "block.kn8.squad_station": "Estação de Preparação do Esquadrão",
+  "kn8.officer.greeting": "%s: \"Soldado! As missões estão no quadro.\"",
+  "kn8.officer.next": "Próxima patente: %s (mérito %s/%s)",
+  "kn8.officer.exam": "Prova pendente: %s",
+  "kn8.officer.exam_done": "Prova concluída: %s",
+  "kn8.officer.top": "Você já está na patente mais alta.",
+  "kn8.station.cooldown": "Estação recarregando: espere %s s",
+  "kn8.station.no_squad": "Nenhum soldado do seu esquadrão a até %s blocos da estação",
+  "kn8.station.done": "Esquadrão preparado: %s soldado(s), %s curado(s), %s balas repostas",
+  "kn8.station.short": "Faltaram %s balas: traga munição no inventário",
+  "kn8.menu.missions.board": "Quadro: %s"
 }

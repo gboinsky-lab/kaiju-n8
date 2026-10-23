@@ -997,3 +997,16 @@ Provas (`grading` no `mission/<id>.json`; patente = `promotion_mission` do `rank
 | Líder de Pelotão | `exam_squad` | 4 Primigenius | esquadrão 2+, 0 perdas, dano ≤ 80%, nota C, ideal 5 min | 10 min | 300, 400 |
 | Vice-Capitão | `exam_command` | Honju (chefe) | esquadrão 3+, até 1 perda, dano ≤ 100%, nota B, ideal 8 min | 20 min | 800, 800 |
 | Capitão | `exam_captain` | horda (`kaiju_horde`) | esquadrão 4+, até 2 perdas, dano ≤ 150%, nota B | 20 min | 2000, 1500 |
+
+## PM-8: instalações da base (2026-10-23) [SUPOSIÇÃO todos os números]
+
+`[squad]` no `kn8-server.toml`:
+
+| Chave | Valor | O quê |
+|---|---|---|
+| `stationRadius` | 16 | Membros do esquadrão até essa distância da estação são atendidos |
+| `stationCooldownTicks` | 1200 | Espera entre usos da estação por jogador (1 min; criativo sem espera) |
+
+Estação: cura até a vida máxima, tira só os efeitos ruins, completa a reserva até `npc.spare_magazines` pentes do
+perfil da arma de fogo (rifle 4 x 30 = 120, pistola 4 x pente) cobrando **1 item de munição por bala** do inventário
+do jogador (criativo não paga). Receita na bancada: 6 ferro, 2 estimulantes, 1 pente de rifle (Oficial Sênior).

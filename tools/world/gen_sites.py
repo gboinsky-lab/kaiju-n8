@@ -31,7 +31,7 @@ Ver no jogo: /place structure kn8:ariake_base_layout (sem conferir o terreno) ou
 from gen_base import Piece, ROAD, element, stairs
 from gen_city import ASPHALT, SIDEWALK, crossing_piece, floors_building, lot, street_end_piece, street_piece, \
     street_pools, tree, street_lamp
-from gen_structures import DATA, dump, item, soldier
+from gen_structures import DATA, dump, item, officer, soldier
 
 BASE_POOL = "kn8:defense_base"
 GLASS = "minecraft:light_blue_stained_glass"
@@ -132,6 +132,10 @@ def ariake_core():
     b.fill(x0 + 1, 0, z0 + 1, x1 - 1, 0, z1 - 1, "minecraft:polished_diorite")
     b.set(20, 1, 30, "kn8:defense_workbench", {"facing": "east"})
     b.set(20, 1, 28, "kn8:defense_workbench", {"facing": "east"})
+    # PM-8: oficiais atras do balcao da recepcao e a estacao de preparacao do esquadrao.
+    b.entity(24, 1, 30, officer("officer", 180.0))
+    b.entity(26, 1, 30, officer("exam_officer", 180.0))
+    b.set(30, 1, 26, "kn8:squad_station", {"facing": "west"})
     b.fill(23, 1, 29, 27, 1, 29, "minecraft:smooth_quartz_slab", {"type": "top", "waterlogged": "false"})
     for x in (24, 26):
         b.set(x, 1, 21, "minecraft:cartography_table")
@@ -399,6 +403,10 @@ def tachikawa_core():
     # Dentro: escritorio da capita (oeste) e do vice-capitao (leste) no 3o andar; recepcao no terreo.
     b.set(8, 1, 15, "kn8:defense_workbench", {"facing": "north"})
     b.set(10, 1, 15, "kn8:defense_workbench", {"facing": "north"})
+    # PM-8: oficiais na recepcao e a estacao de preparacao do esquadrao.
+    b.entity(12, 1, 13, officer("officer", 0.0))
+    b.entity(14, 1, 13, officer("exam_officer", 0.0))
+    b.set(16, 1, 15, "kn8:squad_station", {"facing": "north"})
     b.chest(6, 1, 6, "kn8:chests/base_command", "south")
     b.chest(40, 1, 6, "kn8:chests/base_armory", "south")
     b.fill(7, 11, 15, 12, 12, 15, "minecraft:bookshelf")

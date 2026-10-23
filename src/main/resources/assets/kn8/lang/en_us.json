@@ -1010,5 +1010,20 @@
   "kn8.menu.missions.exam.allies": "losses ≤ %s",
   "kn8.menu.missions.exam.squad": "squad %s+",
   "kn8.menu.missions.exam.grade": "grade %s+",
-  "kn8.menu.profile.accuracy": "Accuracy"
+  "kn8.menu.profile.accuracy": "Accuracy",
+  "entity.kn8.defense_officer": "Defense Force Officer",
+  "entity.kn8.defense_officer.officer": "Mission Officer",
+  "entity.kn8.defense_officer.exam_officer": "Exam Officer",
+  "item.kn8.defense_officer_spawn_egg": "Mission Officer Spawn Egg",
+  "block.kn8.squad_station": "Squad Preparation Station",
+  "kn8.officer.greeting": "%s: \"Soldier! The missions are on the board.\"",
+  "kn8.officer.next": "Next rank: %s (merit %s/%s)",
+  "kn8.officer.exam": "Pending exam: %s",
+  "kn8.officer.exam_done": "Exam passed: %s",
+  "kn8.officer.top": "You already hold the highest rank.",
+  "kn8.station.cooldown": "Station recharging: wait %s s",
+  "kn8.station.no_squad": "No soldier of your squad within %s blocks of the station",
+  "kn8.station.done": "Squad prepared: %s soldier(s), %s healed, %s rounds restocked",
+  "kn8.station.short": "%s rounds were missing: bring ammo in your inventory",
+  "kn8.menu.missions.board": "Board: %s"
 }

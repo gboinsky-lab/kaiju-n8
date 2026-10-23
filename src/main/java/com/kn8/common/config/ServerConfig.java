@@ -293,6 +293,8 @@ public final class ServerConfig {
     public static final ModConfigSpec.DoubleValue SQUAD_FOCUS_RANGE;
     public static final ModConfigSpec.DoubleValue SQUAD_FOCUS_CONE;
     public static final ModConfigSpec.DoubleValue SQUAD_PROTECT_RADIUS;
+    public static final ModConfigSpec.DoubleValue STATION_RADIUS;
+    public static final ModConfigSpec.IntValue STATION_COOLDOWN_TICKS;
 
     // --- sites (construcoes C3: Ariake, Tachikawa, Shinagawa) -------------------------------------------------------
     public static final ModConfigSpec.IntValue SITE_CHECK_TICKS;
@@ -923,6 +925,10 @@ public final class ServerConfig {
                 + " many degrees of the crosshair (0 = only when the aim crosses its box).", 12.0, 0.0, 45.0);
         SQUAD_PROTECT_RADIUS = doubleValue("protectRadius", "PM-6 \"guard\": radius of the area around the point of"
                 + " the order; members fight only kaiju inside it, the one deepest inside first.", 16.0, 4.0, 64.0);
+        STATION_RADIUS = doubleValue("stationRadius", "PM-8 squad station: squad members this close to the station"
+                + " are healed and resupplied.", 16.0, 2.0, 64.0);
+        STATION_COOLDOWN_TICKS = intValue("stationCooldownTicks", "PM-8 squad station: ticks before the same player"
+                + " can use a station again (creative: none).", 1200, 0, 72000);
         BUILDER.pop();
 
         section("sites", "Places from the series (C3): Ariake, Tachikawa base and city, Shinagawa.");

@@ -87,6 +87,7 @@ public final class KN8Client {
         event.registerEntityRenderer(KN8Entities.KAIJU_PROJECTILE.get(), ProjectileRenderers.Kaiju::new);
         event.registerEntityRenderer(KN8Entities.SLASH_PROJECTILE.get(), ProjectileRenderers.Slash::new);
         event.registerEntityRenderer(KN8Entities.SOLDIER.get(), SoldierRenderer::new);
+        event.registerEntityRenderer(KN8Entities.DEFENSE_OFFICER.get(), SoldierRenderer::new);
         event.registerEntityRenderer(KN8Entities.HOSHINA.get(), context -> new SoldierRenderer<>(context, "hoshina"));
         event.registerEntityRenderer(KN8Entities.HOSHINA_NO10.get(),
                 context -> new SoldierRenderer<>(context, "hoshina_no10"));
