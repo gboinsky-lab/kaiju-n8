@@ -1210,5 +1210,16 @@
   "kn8.weapon.special.numbers4_sky_dive.desc": "Desce com o machado sobre o chão: a onda fere, empurra e atordoa em volta.",
   "kn8.numbered.tooltip.tail": "Cauda: corta sozinha kaiju a até %s blocos e segura até %s%% de golpe pesado ou tiro vindo de trás",
   "kn8.numbered.tooltip.wings": "Asas: segure Shift no ar para planar (gasta stamina)",
-  "kn8.mission.eval.tip.civilians": "Dica: civis se perderam; fique perto deles (seguem quem está a até 12 blocos) e afaste o kaiju antes de levá-los."
+  "kn8.mission.eval.tip.civilians": "Dica: civis se perderam; fique perto deles (seguem quem está a até 12 blocos) e afaste o kaiju antes de levá-los.",
+  "kn8.host.infected.title": "Algo entrou no seu corpo",
+  "kn8.host.infected.subtitle": "Uma larva de kaiju se fundiu a você",
+  "kn8.host.infected.chat": "Você foi infectado por uma larva de kaiju. Algo dentro de você desperta... e ainda não responde.",
+  "kn8.command.host.status": "Hospedeiro do Kaiju No. 8: %s · %s",
+  "kn8.command.host.larva.yes": "larva voando agora",
+  "kn8.command.host.larva.no": "nenhuma larva no mundo",
+  "kn8.command.host.taken": "Este mundo já tem um hospedeiro ou uma larva voando (só um jogador por mundo).",
+  "kn8.command.host.spawn_failed": "A larva não conseguiu aparecer aqui.",
+  "kn8.command.host.spawned": "Uma larva apareceu perto de %s.",
+  "kn8.command.host.infected": "%s foi infectado.",
+  "kn8.command.host.cleared": "A infecção de %s foi desfeita."
 }

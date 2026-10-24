@@ -104,6 +104,16 @@ public final class KN8Attachments {
                     .copyOnDeath()
                     .build());
 
+    /**
+     * T-1: tick do jogo em que a larva infectou o jogador (-1 = nunca). Salvo e mantido na morte: so um jogador por
+     * mundo vira o hospedeiro do Kaiju No. 8 ({@code KaijuHostData}).
+     */
+    public static final Supplier<AttachmentType<Long>> KAIJU_HOST = ATTACHMENT_TYPES.register("kaiju_host",
+            () -> AttachmentType.builder(() -> -1L)
+                    .serialize(Codec.LONG)
+                    .copyOnDeath()
+                    .build());
+
     /** 0.5: aura forcada por comando ({@code /kn8 aura}), por cima da do traje. So no servidor, nunca salva. */
     public static final Supplier<AttachmentType<Optional<ResourceLocation>>> AURA_OVERRIDE =
             ATTACHMENT_TYPES.register("aura_override", () -> AttachmentType.<Optional<ResourceLocation>>builder(

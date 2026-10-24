@@ -84,3 +84,23 @@ e os modelos provisórios (asas e cauda do jogador, Narumi No. 1, Isao sem o Num
 5. **Força:** quanto mais forte que o jogador comum? Proposta: vida x3 a x5 da do jogador e o dano do punho do No. 8
    do NPC, crescendo com o Release do jogador (o limite pessoal vira a "sincronização" da forma).
 6. **Multiplayer:** mais de um jogador pode ser infectado no mesmo mundo, ou só um?
+
+### Decisões do Miguel (2026-10-24)
+
+1. **Larva:** bem rara, aparece no meio de restos de kaiju ou nas obras [SUPOSIÇÃO: "obras" = os locais da obra,
+   Shinagawa, Tachikawa e Ariake; corrigir se for outra coisa].
+2. **Ativação:** a tecla fica a critério do Claude (**V**); limite de **2 minutos** na forma; passando disso o jogador
+   **perde o controle do corpo** e sai atacando todos em volta.
+3. **Força de Defesa:** os soldados atacam o jogador transformado; **a partir de certa patente** não atacam mais.
+4. **Equipamento:** só os punhos.
+5. **Força:** o Release **não** muda o poder da forma kaiju; só os atributos físicos treinados (`BodyStat`) a deixam
+   mais forte. A forma já é muito forte por natureza (por isso a larva é muito rara).
+6. **Multiplayer:** só um jogador por mundo.
+
+## T-1 — Larva rara e infecção (feita, 2026-10-24)
+
+- `LarvaService` + `KaijuHostData` + attachment `kn8:kaiju_host`; números em `[larva]` (`docs/BALANCEAMENTO.md`).
+- A larva sorteia a cada 30 s (0,4%) para quem está em restos de kaiju (construção ou carcaça a até 24 blocos) ou num
+  local da obra; circula ~5 s, mergulha no peito e infecta; título, chat, náusea, escuridão e batida de coração.
+- Um hospedeiro por mundo; a infecção passa pela morte e fica salva no mundo.
+- `/kn8 host status|spawn|infect|clear <jogador>`; roteiro §103; imagem `docs/img/t1_larva_infeccao.jpg`.

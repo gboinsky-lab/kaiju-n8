@@ -42,6 +42,7 @@ public final class KN8Commands {
                 .then(InvasionCommands.invasion())
                 .then(AuraCommands.aura())
                 .then(VfxCommands.vfx())
+                .then(HostCommands.host())
                 .then(DebugCommands.build()));
     }
 }

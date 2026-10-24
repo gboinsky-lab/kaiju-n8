@@ -1178,3 +1178,21 @@ quem mira o jogador, depois quem está atrás/do lado, depois o mais perto): 6 �
 caminho normal do golpe do jogador (teto de golpe, pesquisa, domínio da arma na mão). **Guarda:** golpe pesado de kaiju
 (`[combat] tailGuardBlocksHeavy`) ou projétil vindo de fora dos 120° da frente leva de 49% (nível 0) a 70% (domínio
 total) a menos, uma vez a cada 40 ticks. Medido em jogo (nível 0, Release 0): ~2 de vida por corte num Primigenius.
+
+## T-1: larva rara e infecção (2026-10-24) [SUPOSIÇÃO todos os números]
+
+Config `[larva]` (`kn8-server.toml`). Miguel 2026-10-24: "bem rara, no meio de restos de kaiju ou obras", um hospedeiro
+por mundo.
+
+| Chave | Valor | Efeito |
+|---|---|---|
+| `enabled` | true | Liga o sorteio da larva |
+| `checkTicks` | 600 | Intervalo do sorteio por jogador (30 s) |
+| `chance` | 0,004 | Chance a cada sorteio no lugar certo (~1 vez a cada 2 h dentro dos restos/locais) |
+| `carcassRadius` | 24 | Carcaça de kaiju a até este raio conta como "restos" |
+| `spawnDistance` | 10 | Distância em que a larva aparece |
+| `circleTicks` | 100 | Tempo circulando antes do mergulho |
+| `speed` | 0,35 | Blocos por tick da larva |
+| `infectRadius` | 1,2 | Distância do peito em que infecta |
+| `lifeTicks` | 2400 | Larva vai embora depois disso sem infectar |
+| `loseDistance` | 48 | Jogador mais longe que isso: a larva vai embora |

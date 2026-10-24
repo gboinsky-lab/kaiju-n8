@@ -12,6 +12,7 @@ import com.kn8.common.arena.TrainingArenaService;
 import com.kn8.common.career.CareerService;
 import com.kn8.common.career.ExamTargets;
 import com.kn8.common.config.ServerConfig;
+import com.kn8.common.host.LarvaService;
 import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.vfx.VfxService;
 
@@ -46,7 +47,8 @@ public final class KaijuTrailService {
     /** Kaiju quebrou (ou pediu para quebrar) algo onde esta, ou morreu. */
     public static void note(KaijuEntity kaiju, KaijuTrail.Kind kind) {
         if (!(kaiju.level() instanceof ServerLevel level) || !ServerConfig.TRAIL_ENABLED.get()
-                || TrainingArenaService.isTraining(kaiju) || ExamTargets.isExam(kaiju)) {
+                || TrainingArenaService.isTraining(kaiju) || ExamTargets.isExam(kaiju)
+                || LarvaService.isHostLarva(kaiju)) {
             return;
         }
         KaijuTrail trail = KaijuTrail.get(level);

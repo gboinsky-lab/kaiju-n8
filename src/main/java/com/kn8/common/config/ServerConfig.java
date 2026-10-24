@@ -344,6 +344,16 @@ public final class ServerConfig {
     // [support] PM-10B
     public static final ModConfigSpec.DoubleValue SUPPORT_CALL_RANGE;
     public static final ModConfigSpec.IntValue SUPPORT_CALL_GAP_TICKS;
+    public static final ModConfigSpec.BooleanValue LARVA_ENABLED;
+    public static final ModConfigSpec.IntValue LARVA_CHECK_TICKS;
+    public static final ModConfigSpec.DoubleValue LARVA_CHANCE;
+    public static final ModConfigSpec.DoubleValue LARVA_CARCASS_RADIUS;
+    public static final ModConfigSpec.DoubleValue LARVA_SPAWN_DISTANCE;
+    public static final ModConfigSpec.IntValue LARVA_CIRCLE_TICKS;
+    public static final ModConfigSpec.DoubleValue LARVA_SPEED;
+    public static final ModConfigSpec.DoubleValue LARVA_INFECT_RADIUS;
+    public static final ModConfigSpec.IntValue LARVA_LIFE_TICKS;
+    public static final ModConfigSpec.DoubleValue LARVA_LOSE_DISTANCE;
     public static final ModConfigSpec.ConfigValue<String> SUPPORT_RECON_RANK;
     public static final ModConfigSpec.IntValue SUPPORT_RECON_USES;
     public static final ModConfigSpec.IntValue SUPPORT_RECON_COOLDOWN;
@@ -1115,6 +1125,25 @@ public final class ServerConfig {
         SUPPORT_STRIKE_FRACTION = doubleValue("strikeHealthFraction", "Damage as a fraction of each kaiju's maximum"
                 + " health (never solves a fight on its own).", 0.08, 0.0, 1.0);
         SUPPORT_STRIKE_MAX_DAMAGE = doubleValue("strikeMaxDamage", "Damage cap per kaiju.", 150.0, 0.0, 100000.0);
+        BUILDER.pop();
+
+        section("larva", "T-1: the rare larva that infects one player per world (the future host of Kaiju No. 8). It only"
+                + " appears among kaiju remains (structure or carcass) or inside the places from the series.");
+        LARVA_ENABLED = booleanValue("enabled", "The larva can appear.", true);
+        LARVA_CHECK_TICKS = intValue("checkTicks", "How often a player in a valid place rolls for the larva.", 600, 20,
+                72000);
+        LARVA_CHANCE = doubleValue("chance", "Chance per roll (very rare on purpose).", 0.004, 0.0, 1.0);
+        LARVA_CARCASS_RADIUS = doubleValue("carcassRadius", "A kaiju carcass this close counts as kaiju remains.",
+                24.0, 0.0, 128.0);
+        LARVA_SPAWN_DISTANCE = doubleValue("spawnDistance", "The larva appears this far from the player.", 10.0, 2.0,
+                48.0);
+        LARVA_CIRCLE_TICKS = intValue("circleTicks", "The larva circles the player this long before diving.", 100, 0,
+                2400);
+        LARVA_SPEED = doubleValue("speed", "Larva flying speed (blocks per tick).", 0.35, 0.05, 2.0);
+        LARVA_INFECT_RADIUS = doubleValue("infectRadius", "Touching distance that infects (blocks).", 1.2, 0.3, 4.0);
+        LARVA_LIFE_TICKS = intValue("lifeTicks", "The larva flies away after this long.", 2400, 100, 72000);
+        LARVA_LOSE_DISTANCE = doubleValue("loseDistance", "The larva flies away if the player gets this far.", 48.0,
+                8.0, 256.0);
         BUILDER.pop();
 
         section("sites", "Places from the series (C3): Ariake, Tachikawa base and city, Shinagawa.");

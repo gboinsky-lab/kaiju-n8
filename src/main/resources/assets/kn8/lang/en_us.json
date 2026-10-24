@@ -1210,5 +1210,16 @@
   "kn8.weapon.special.numbers4_sky_dive.desc": "Brings the axe down on the ground: the wave hurts, pushes and staggers around.",
   "kn8.numbered.tooltip.tail": "Tail: cuts kaiju up to %s blocks away on its own and blocks up to %s%% of heavy hits or shots from behind",
   "kn8.numbered.tooltip.wings": "Wings: hold Shift in the air to glide (uses stamina)",
-  "kn8.mission.eval.tip.civilians": "Tip: civilians were lost; stay close to them (they follow anyone within 12 blocks) and draw the kaiju away before escorting them."
+  "kn8.mission.eval.tip.civilians": "Tip: civilians were lost; stay close to them (they follow anyone within 12 blocks) and draw the kaiju away before escorting them.",
+  "kn8.host.infected.title": "Something entered your body",
+  "kn8.host.infected.subtitle": "A kaiju larva fused with you",
+  "kn8.host.infected.chat": "You were infected by a kaiju larva. Something inside you is awakening... and does not answer yet.",
+  "kn8.command.host.status": "Kaiju No. 8 host: %s · %s",
+  "kn8.command.host.larva.yes": "a larva is flying now",
+  "kn8.command.host.larva.no": "no larva in the world",
+  "kn8.command.host.taken": "This world already has a host or a flying larva (only one player per world).",
+  "kn8.command.host.spawn_failed": "The larva could not appear here.",
+  "kn8.command.host.spawned": "A larva appeared near %s.",
+  "kn8.command.host.infected": "%s was infected.",
+  "kn8.command.host.cleared": "%s's infection was removed."
 }

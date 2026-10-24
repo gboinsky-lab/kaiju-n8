@@ -1412,3 +1412,19 @@ Relatório e resultados em `docs/PM12_INTEGRACAO.md`.
 | 102.4 | Rastreador no lugar da luta | Rastros "o kaiju caiu aqui" e mérito uma vez só |
 | 102.5 | Reiniciar o servidor e morrer/renascer | Patente, mérito, pesquisa, domínio e notas iguais |
 | 102.6 | `/neoforge tps` durante a luta | 20 TPS |
+
+## 103. Larva rara e infecção (T-1)
+
+Servidor dedicado + 2 clientes. A larva aparece sozinha só em restos de kaiju (construção de restos ou carcaça a até 24
+blocos) ou dentro de um local da obra, com chance de 0,4% a cada 30 s por jogador; para testar, use
+`/kn8 host spawn <jogador>`. `/kn8 host status` diz quem é o hospedeiro e se há larva voando; `/kn8 host clear
+<jogador>` desfaz.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 103.1 | `/kn8 host spawn Dev` e ficar parado | Zumbido baixo; a larva aparece a ~10 blocos, circula o jogador por ~5 s e mergulha no peito |
+| 103.2 | Quando a larva encosta | Some; título "Algo entrou no seu corpo", subtítulo, mensagem no chat, náusea, escuridão rápida e batida de coração |
+| 103.3 | `/kn8 host status` e `/kn8 host spawn Dev2` | "Hospedeiro: Dev"; para o Dev2: "Este mundo já tem um hospedeiro..." (só um jogador por mundo) |
+| 103.4 | Morrer e renascer, reiniciar o servidor | O Dev continua hospedeiro |
+| 103.5 | `/kn8 host clear Dev`, `/kn8 host spawn Dev` e se afastar 50+ blocos | A larva vai embora (fumaça); status "nenhuma larva no mundo" |
+| 103.6 | Soldados perto da larva; larva num local da obra | Os soldados não atacam a larva; a faixa da região não entra em alerta |

@@ -8,6 +8,7 @@ import com.kn8.KN8Constants;
 import com.kn8.common.arena.TrainingArenaService;
 import com.kn8.common.career.ExamTargets;
 import com.kn8.common.config.ServerConfig;
+import com.kn8.common.host.LarvaService;
 import com.kn8.common.invasion.InvasionService;
 import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.core.world.RegionAlertMath;
@@ -89,7 +90,8 @@ public final class RegionService {
     public static void kaijuTick(KaijuEntity kaiju) {
         if (!(kaiju.level() instanceof ServerLevel level) || !kaiju.isAlive()
                 || kaiju.tickCount % ServerConfig.REGION_KAIJU_CHECK_TICKS.get() != 0
-                || TrainingArenaService.isTraining(kaiju) || ExamTargets.isExam(kaiju)) {
+                || TrainingArenaService.isTraining(kaiju) || ExamTargets.isExam(kaiju)
+                || LarvaService.isHostLarva(kaiju)) {
             return;
         }
         report(level, kaiju.blockPosition(), kaiju.getTarget() != null ? Event.FIGHTING : Event.KAIJU_SEEN,
