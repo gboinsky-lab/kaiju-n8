@@ -1,0 +1,86 @@
+# Plano 1.0.0 — depois do Plano Mestre (2026-10-24)
+
+O Plano Mestre terminou na PM-12. Este plano junta o que ainda falta para a versão **1.0.0** do mod, em etapas, uma
+por vez, cada uma esperando o teste e a aprovação do Miguel (regras do CLAUDE.md). Ordem combinada com o Miguel
+(2026-10-24: "ok pode seguir então"): **transformação do jogador** primeiro, depois **onde cada um nasce e o
+balanceamento final**, por último o **endurecimento e a versão 1.0.0**.
+
+## Etapas
+
+| Etapa | Conteúdo | Depende de |
+|---|---|---|
+| **T-0** | Auditoria da transformação do jogador (esta etapa: o que existe, o que falta, decisões) | — |
+| **T-1** | Larva rara e infecção: a larva aparece no mundo, encosta no jogador e o infecta (aviso, estado salvo, passa pela morte) | decisões 1 e 6 |
+| **T-2** | A transformação: tecla, estado decidido no servidor, o jogador desenhado como o Kaiju No. 8 (modelo do Miguel) para todos os clientes, caixa, vida, armadura, velocidade, aura azul, volta à forma humana, braços em 1ª pessoa | T-1, decisões 2 e 5 |
+| **T-3** | Combate na forma No. 8: socos de corpo inteiro, Heavy Punch, Ground Smash, Roar, dash, regeneração, detecção de kaiju na HUD; dano no servidor pelo JSON; limite de tempo/cansaço | T-2, decisões 2, 4 e 5 |
+| **T-4** | Consequências: reação da Força de Defesa ao jogador transformado, missões e carreira | T-3, decisão 3 |
+| **B-1** | Onde cada kaiju e personagem aparece: kaiju da 0.7/0.8, formas do No. 9, Hoshina No. 10 e os outros especiais nas invasões, missões e locais da obra | — |
+| **B-2** | Balanceamento final: matriz de duelos com todos, jogador por patente contra cada kaiju, armas numeradas, apoio militar | B-1 |
+| **R-1** | Endurecimento: GameTests instáveis (`invasionRunsWavesAndBreaks`, `yojuBreaksAStoneBrickWallWhileWalking`), desempenho com vários jogadores, saves antigos, JSON inválido, tabela de status do CLAUDE.md | — |
+| **R-2** | Versão 1.0.0: número da versão, lista de mudanças, roteiro de teste geral e o `.jar` final | tudo |
+
+Fora deste plano, esperando o Miguel: os sons (`docs/audio/PROMPTS_SUBSTITUICAO.md`), os tamanhos e tempos dos efeitos
+e os modelos provisórios (asas e cauda do jogador, Narumi No. 1, Isao sem o Numbers 2, civil, Oficial de Missões).
+
+---
+
+## T-0 — Auditoria da transformação do jogador
+
+### O que já foi decidido
+
+- **Miguel, 2026-10-08** (`docs/AUDITORIA_BIBLIOTECA_V21.md`, decisão 5): o Kafka é um aliado com duas formas, cada
+  uma com spawn próprio, e **o jogador também pode virar o Kaiju No. 8, mas só depois de achar o inseto (larva)**: ele
+  é raro de encontrar, infecta o corpo do jogador e o jogador recebe um aviso de que foi infectado.
+- **Fase 4 / CLAUDE.md:** transformação pelo **método D** (fantoche `GeoReplacedEntity`): o jogador continua sendo
+  jogador no servidor (inventário, carreira, conexão), e o cliente o desenha com o modelo GeckoLib do No. 8.
+- **Biblioteca v22, seção 2 (Kafka / No. 8):** forma Kaiju com Super Strength, Super Speed, Regeneration, Kaiju
+  Detection, Roar, Ground Smash, Heavy Punch, Grab/Throw; o soco envolve quadril, tronco, ombro, braço e punho, nunca
+  só o braço.
+
+### O que já existe e serve
+
+| Peça | Onde | Serve para |
+|---|---|---|
+| Modelo do Kaiju No. 8 do Miguel (2 m) | `meshes/kaiju_no8*`, `geo/entity/kaiju_no8.geo.json`, `textures/entity/kaiju_no8.png` | O corpo do jogador transformado (malha presa aos ossos) |
+| Animações do No. 8 | `animations/entity/kaiju_no8.animation.json`: andar, correr, parado, guarda e postura dos punhos, soco, golpe pesado, investida, golpe no chão, rugido, aparar, contra-ataque, ferido, salto | As mesmas animações no jogador transformado (corpo inteiro) |
+| No. 8 aliado (NPC) | `KaijuNo8Entity`, `special_soldier/kaiju_no8.json` (técnicas, regeneração, guarda contra golpe pesado), `weapon/kaiju_no8_fist.json` (soco 11, alcance 3) | Os números e as técnicas da forma do jogador partem daqui |
+| Efeitos do No. 8 | `vfx_profile/kaiju_no8.json` (troca de forma, socos, golpe no chão, rugido, regeneração), aura `kaiju_no8` com raios azuis | Os mesmos efeitos no jogador |
+| Troca de forma do Kafka | `HoshinaEntity.tickForm`/`transformInto` (fumaça, explosão sem dano, rugido) | O efeito da transformação |
+| Larva | `kaiju_larva` (voadora, 0,5 m, modelo do Miguel, `flyer/kaiju_larva.json`) | A larva que infecta |
+| GeckoLib 4.7.5 | `GeoReplacedEntity`, `GeoReplacedEntityRenderer` (conferidos no jar) | Desenhar o jogador como o No. 8 |
+| Escala vanilla | atributo `scale` (alturas da tabela mestra) | Caixa do jogador com o tamanho do No. 8 |
+| Combate do jogador | `CombatService`, `ActionTimeline`, especiais na tecla R, PAL | Golpes da forma No. 8 com dano no servidor |
+
+### O que falta
+
+1. **Larva no mundo:** hoje ela só nasce por `/summon`; não infecta ninguém.
+2. **Estado "infectado" e "transformado"** no jogador (servidor), salvo e sincronizado com todos os clientes (os
+   outros jogadores precisam ver o No. 8).
+3. **Desenho do jogador como No. 8:** um `GeoReplacedEntityRenderer` com a malha presa aos ossos (hoje a malha é
+   desenhada pelo `SoldierRenderer`), as animações tocadas pelo estado do servidor, a câmera de 1ª pessoa com os braços
+   do No. 8.
+4. **Atributos da forma:** vida, armadura, velocidade, escala, sem armas nem traje enquanto transformado.
+5. **Golpes da forma:** soco, Heavy Punch, Ground Smash, Roar, investida, regeneração e detecção de kaiju; o
+   Grab/Throw é novo (o NPC não tem).
+6. **Volta à forma humana:** por tecla, por tempo ou por cansaço; o que acontece com vida, calor e Release.
+7. **Reação do mundo:** a Força de Defesa vê um kaiju; missões e carreira.
+
+### Riscos técnicos
+
+- O PAL (animação do jogador) e a GeckoLib não podem animar o jogador ao mesmo tempo: transformado, a camada de
+  combate do PAL fica desligada e quem anima é a GeckoLib.
+- Outros mods que mexem no desenho do jogador (skins, Better Combat) podem conflitar com o `GeoReplacedEntity`.
+- A caixa do jogador maior (2 m) pode prender em portas e tetos de 2 blocos.
+
+### Decisões para o Miguel
+
+1. **Larva:** onde e com que raridade ela aparece? Proposta: aparece de noite, perto dos locais da obra e dos restos de
+   kaiju, no máximo uma por mundo de cada vez, e foge se o jogador demorar; ao encostar, infecta.
+2. **Ativação e limite:** tecla própria (proposta: **V**), com tempo máximo na forma e cansaço depois (como a fadiga do
+   Release), ou sem limite?
+3. **Força de Defesa:** os soldados atacam o jogador transformado (na obra o Kafka esconde o segredo), ignoram, ou só
+   estranham (sem atacar)? Proposta: não atacam, mas a transformação na frente de soldados derruba o mérito.
+4. **Equipamento:** transformado o jogador só usa os punhos (proposta) ou ainda segura arma?
+5. **Força:** quanto mais forte que o jogador comum? Proposta: vida x3 a x5 da do jogador e o dano do punho do No. 8
+   do NPC, crescendo com o Release do jogador (o limite pessoal vira a "sincronização" da forma).
+6. **Multiplayer:** mais de um jogador pode ser infectado no mesmo mundo, ou só um?
