@@ -1,6 +1,7 @@
 // src/main/java/com/kn8/client/KN8Client.java
 package com.kn8.client;
 
+import com.kn8.client.menu.NumberedTooltip;
 import com.kn8.client.render.CivilianRenderer;
 import com.kn8.client.vfx.draw.ProjectileRenderers;
 import com.kn8.KN8Constants;
@@ -54,6 +55,7 @@ public final class KN8Client {
         DefenseForceScreen.install();
         ClientInvasion.install();
         ClientRegion.install();
+        NumberedTooltip.install();
         ParkourClient.install();
         // M6: HUD de poder.
         modEventBus.addListener(KN8Hud::register);

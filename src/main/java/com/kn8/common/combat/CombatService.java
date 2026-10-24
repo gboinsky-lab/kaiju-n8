@@ -3,6 +3,7 @@ package com.kn8.common.combat;
 
 import java.util.Optional;
 
+import com.kn8.common.numbered.NumberedGearService;
 import com.kn8.KN8Constants;
 import com.kn8.common.anim.AnimationBridge;
 import com.kn8.common.attribute.PowerService;
@@ -150,6 +151,11 @@ public final class CombatService {
             reply(player, request, CombatResult.DENIED_NO_WEAPON);
             return false;
         }
+        if (!NumberedGearService.allowed(player)) {
+            // PM-11: arma numerada sem os requisitos nao ativa (nada e gasto; o motivo vai para a barra).
+            reply(player, request, CombatResult.DENIED_INCOMPATIBLE);
+            return false;
+        }
         WeaponDef.Action action = weapon.get().actions().get(actionName);
         if (action == null || action.impactTick() < 0) {
             // Ex.: o rifle nao tem golpe pesado. Nao e erro: so nao ha acao para esse botao.
@@ -262,6 +268,10 @@ public final class CombatService {
             replySpecial(player, CombatResult.DENIED_NO_SPECIAL);
             return false;
         }
+        if (!NumberedGearService.allowed(player)) {
+            replySpecial(player, CombatResult.DENIED_INCOMPATIBLE);
+            return false;
+        }
         if (!WeaponHandling.dualReady(player, weapon.get(), false)) {
             // 0.5.0-D3 (Miguel): tecnica de arma de par so com uma arma em cada mao (como o Hoshina NPC).
             replySpecial(player, CombatResult.DENIED_NEEDS_DUAL);
@@ -287,8 +297,10 @@ public final class CombatService {
             replySpecial(player, CombatResult.DENIED_BUSY);
             return false;
         }
-        if (def.heatCost() > 0) {
-            PowerService.setHeat(player, PowerService.data(player).heat() + def.heatCost());
+        // PM-11: arma numerada ainda sem dominio esquenta mais o traje no especial (instabilidade).
+        double heat = def.heatCost() + NumberedGearService.extraSpecialHeat(player);
+        if (heat > 0) {
+            PowerService.setHeat(player, PowerService.data(player).heat() + heat);
         }
         state.chargeStartTick = CombatState.NEVER;
         state.comboStep = -1;
@@ -483,7 +495,7 @@ public final class CombatService {
     public static boolean isPerfectDodge(ServerPlayer player) {
         CombatState state = state(player);
         return !state.perfectDodgeUsed && CombatMath.isPerfectDodge(state.dodgeStartTick, now(player),
-                ServerConfig.PERFECT_DODGE_TICKS.get());
+                ServerConfig.PERFECT_DODGE_TICKS.get() + NumberedGearService.perfectDodgeBonus(player));
     }
 
     /**

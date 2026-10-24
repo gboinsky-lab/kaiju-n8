@@ -107,6 +107,8 @@ public final class CareerData {
     // PM-8C: pesquisas concluidas e a em andamento (uma por vez)
     private final Set<ResourceLocation> research = new HashSet<>();
     private Researching researching;
+    // PM-11: XP de dominio de cada equipamento numerado (id do numbered_gear)
+    private final Map<ResourceLocation, Integer> mastery = new HashMap<>();
 
     // Volateis
     private long dummyWindowStart = Long.MIN_VALUE;
@@ -131,7 +133,9 @@ public final class CareerData {
                     .forGetter(data -> Map.copyOf(data.bestGrades)),
             ResourceLocation.CODEC.listOf().optionalFieldOf("research", List.of())
                     .forGetter(data -> List.copyOf(data.research)),
-            Researching.CODEC.optionalFieldOf("researching").forGetter(CareerData::researching)
+            Researching.CODEC.optionalFieldOf("researching").forGetter(CareerData::researching),
+            Codec.unboundedMap(ResourceLocation.CODEC, Codec.INT).optionalFieldOf("mastery", Map.of())
+                    .forGetter(data -> Map.copyOf(data.mastery))
     ).apply(i, CareerData::new));
 
     public CareerData() {
@@ -141,8 +145,9 @@ public final class CareerData {
             Map<ResourceLocation, MissionProgress> active, List<ResourceLocation> completed,
             Map<ResourceLocation, Long> cooldowns, int invasionsDefended, int shotsFired, int shotsHit,
             Map<ResourceLocation, String> bestGrades, List<ResourceLocation> research,
-            Optional<Researching> researching) {
+            Optional<Researching> researching, Map<ResourceLocation, Integer> mastery) {
         this.rank = rank.orElse(null);
+        this.mastery.putAll(mastery);
         this.research.addAll(research);
         this.researching = researching.orElse(null);
         this.merit = merit;
@@ -159,6 +164,11 @@ public final class CareerData {
                 progress.origin())));
         this.completed.addAll(completed);
         this.cooldownUntil.putAll(cooldowns);
+    }
+
+    /** PM-11: XP de dominio por equipamento numerado (alterado no lugar). */
+    public Map<ResourceLocation, Integer> mastery() {
+        return mastery;
     }
 
     /** Patente gravada; vazio = ainda nao definida (o servico usa a de menor ordem dos dados). */

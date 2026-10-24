@@ -1140,3 +1140,21 @@ usos contados por operação (missão aceita ou invasão começada de novo = uso
 
 Outros: alcance da mira `callRange` 64 blocos, intervalo mínimo entre chamadas `callGapTicks` 20. Rádio de Campo na
 bancada (livre): 4 ferro, 4 redstone, 2 cobre.
+
+## PM-11A: armas numeradas do jogador, Numbers 1, 2 e 6 (2026-10-24) [SUPOSIÇÃO todos os números]
+
+Registro `numbered_gear/<id>.json` (sincronizado). Para usar (golpe e especial) é preciso a patente, a pesquisa
+"Teoria das Armas Numeradas" e o limite pessoal de Release mínimo; o criativo passa. Fabricadas na bancada com a mesma
+pesquisa (material de núcleo).
+
+| Arma | Patente | Limite mínimo | Dano base | Alcance | Especial (R) | Calor extra do especial (sem domínio) | Outro |
+|---|---|---|---|---|---|---|---|
+| Numbers 1 (Baioneta) | Vice-Capitão | 30% | 8 | 3,6 | Estocada Prevista: avanço de 6 blocos, x2,0, recarga 7 s | +6 | Esquiva perfeita +3 ticks |
+| Numbers 2 (Manoplas) | Líder de Pelotão | 25% | 8 | 3,0 | Force Blast: onda de 4,5 blocos, x2,4, recarga 11 s | +8 | — |
+| Numbers 6 (Rifle de Gelo) | Líder de Pelotão | 20% | 6 | 48 | Tiro Congelante: atravessa, x2,0, Lentidão III por 4 s, recarga 10 s | +6 | — |
+
+**Domínio:** XP = dano real causado em kaiju com a arma na mão (`xp_per_damage` 1,0); níveis em 0/300/900/2.000/4.000
+XP. O dano vai de 70% (`effect_start` 0,7) no nível 0 a 100% no nível 4 (linear pelo progresso); o calor extra do
+especial cai até 0 no domínio total; o bônus de esquiva do Numbers 1 cresce do mesmo jeito (0 a 3 ticks).
+O fator do domínio entra depois do da pesquisa e antes do teto de golpe.
+Numbers 4 (asas/machado) e Numbers 10 (traje com a cauda) ficam para a PM-11B.

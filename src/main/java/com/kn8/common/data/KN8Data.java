@@ -4,6 +4,7 @@ package com.kn8.common.data;
 import java.util.List;
 import java.util.Optional;
 
+import com.kn8.common.data.def.NumberedGearDef;
 import com.kn8.common.data.def.AbilityDef;
 import com.kn8.common.data.def.AuraDef;
 import com.kn8.common.data.def.BaseModuleDef;
@@ -98,12 +99,16 @@ public final class KN8Data {
     public static final DataRegistry<BaseModuleDef> BASE_MODULE =
             new DataRegistry<>("base_module", BaseModuleDef.CODEC, true);
 
+    /** PM-11: requisitos e dominio dos equipamentos numerados do jogador (o cliente mostra antes de equipar). */
+    public static final DataRegistry<NumberedGearDef> NUMBERED_GEAR =
+            new DataRegistry<>("numbered_gear", NumberedGearDef.CODEC, true);
+
     /** Ordem = ordem de validacao (cada um so referencia os anteriores). */
     public static final List<DataRegistry<?>> ALL =
             List.of(RANK, ABILITY, DISMANTLE, KAIJU, BOSS, WEAPON_PROFILE, WEAPON, AURA, SUIT, MISSION, SOLDIER, WORKBENCH,
                     INVASION,
                     NUMBERED, SPECIAL_SOLDIER, FLYER, LOCOMOTION, KAIJU_AI, SITE, VFX_PROFILE,
-                    RESEARCH, BASE_MODULE);
+                    RESEARCH, BASE_MODULE, NUMBERED_GEAR);
 
     private KN8Data() {
     }

@@ -1,0 +1,51 @@
+{
+  "item": "kn8:numbers1_bayonet",
+  "base_damage": 8,
+  "reach": 3.6,
+  "style": "heavy",
+  "profile": "kn8:two_handed_axe",
+  "actions": {
+    "light": {
+      "multiplier": 1.0,
+      "duration_ticks": 11,
+      "impact_tick": 4
+    },
+    "heavy": {
+      "multiplier": 2.0,
+      "duration_ticks": 22,
+      "impact_tick": 10
+    }
+  },
+  "combo": [
+    1.0,
+    1.1,
+    1.25
+  ],
+  "sounds": {
+    "swing": "kn8:weapon.sword_swing",
+    "heavy": "kn8:weapon.sword_heavy",
+    "hit": "kn8:weapon.sword_hit"
+  },
+  "special": {
+    "id": "numbers1_thrust",
+    "type": "lunge",
+    "multiplier": 2.0,
+    "duration_ticks": 16,
+    "impact_tick": 5,
+    "radius": 1.0,
+    "forward": 6.0,
+    "stamina_cost": 25,
+    "heat_cost": 4,
+    "cooldown_ticks": 140,
+    "knockback": 0.3,
+    "stagger_ticks": 14,
+    "camera_shake": 0.15,
+    "vfx": [
+      {
+        "effect": "kn8:slash",
+        "intensity": 1.4
+      }
+    ],
+    "sound": "kn8:weapon.sword_heavy"
+  }
+}

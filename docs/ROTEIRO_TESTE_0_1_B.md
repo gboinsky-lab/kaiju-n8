@@ -1367,3 +1367,18 @@ os usos e a espera).
 | 99.6 | Chamar de novo o mesmo apoio | "Este apoio já foi usado nesta operação" ou a espera; nada é gasto |
 | 99.7 | Patente baixa pedindo bombardeio | "Patente insuficiente para este apoio" |
 | 99.8 | Dentro da área de uma invasão (`/kn8 invasion start ...`) | O rádio funciona sem missão |
+
+## 100. Armas numeradas do jogador: Numbers 1, 2 e 6 (PM-11A)
+
+Servidor dedicado + 2 clientes. `/give @s kn8:numbers2_gauntlets` (e `numbers1_bayonet`, `numbers6_rifle[kn8:rounds=30]`).
+
+| # | Passo | Esperado |
+|---|---|---|
+| 100.1 | Inventário (E), passar o mouse sobre a arma, como Candidato e sem pesquisa | Dica com "Equipamento numerado", ✘ vermelho em Patente e Pesquisa, ✔ ou ✘ no limite pessoal, "Domínio 0/4 · dano 70%" e "Instável" |
+| 100.2 | Golpear um kaiju assim (sobrevivência) | Nada sai; barra "Arma numerada exige a patente ..." e HUD "Arma numerada: requisitos não cumpridos" |
+| 100.3 | `/kn8 rank set kn8:lider_pelotao @s` e concluir a pesquisa (cadeia até "Teoria das Armas Numeradas") | Chat "Liberado na bancada: Numbers 1/2/6"; dica com ✔ verdes (Numbers 1 continua pedindo Vice-Capitão) |
+| 100.4 | Golpear e usar o especial (R) das manoplas | Golpes saem; Force Blast com a onda no chão; HUD "Force Blast: 11s"; o calor sobe mais que num especial comum |
+| 100.5 | Tiro Congelante do Numbers 6 num kaiju | O kaiju fica com Lentidão III por ~4 s |
+| 100.6 | Bater no kaiju até somar 300 de dano | Chat "Domínio do Numbers 2: nível 1 de 4"; a dica mostra o dano maior (77%) e o XP |
+| 100.7 | Morrer e voltar | O domínio continua |
+| 100.8 | Segundo cliente em inglês | Dica "Numbered equipment", "Rank", "Research", "Mastery" |

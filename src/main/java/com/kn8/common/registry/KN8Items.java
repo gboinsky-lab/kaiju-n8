@@ -49,6 +49,13 @@ public final class KN8Items {
             ITEMS.register("mina_cannon", () -> new WeaponItem(new Item.Properties()));
     public static final DeferredItem<WeaponItem> NARUMI_BAYONET =
             ITEMS.register("narumi_bayonet", () -> new WeaponItem(new Item.Properties()));
+    /** PM-11A: armas numeradas do jogador (requisitos e dominio no numbered_gear/*.json). */
+    public static final DeferredItem<WeaponItem> NUMBERS1_BAYONET = ITEMS.register("numbers1_bayonet",
+            () -> new WeaponItem(new Item.Properties().rarity(net.minecraft.world.item.Rarity.EPIC)));
+    public static final DeferredItem<WeaponItem> NUMBERS2_GAUNTLETS = ITEMS.register("numbers2_gauntlets",
+            () -> new WeaponItem(new Item.Properties().rarity(net.minecraft.world.item.Rarity.EPIC)));
+    public static final DeferredItem<WeaponItem> NUMBERS6_RIFLE = ITEMS.register("numbers6_rifle",
+            () -> new WeaponItem(new Item.Properties().rarity(net.minecraft.world.item.Rarity.EPIC)));
     /** 0.7-F: punhos do Kaiju No. 8 (item invisivel na mao: o dano dos golpes sai do weapon/kaiju_no8_fist.json). */
     public static final DeferredItem<WeaponItem> KAIJU_NO8_FIST =
             ITEMS.register("kaiju_no8_fist", () -> new WeaponItem(new Item.Properties()));
@@ -170,6 +177,9 @@ public final class KN8Items {
                         output.accept(HOSHINA_SWORD.get());
                         output.accept(MINA_CANNON.get());
                         output.accept(NARUMI_BAYONET.get());
+                        output.accept(NUMBERS1_BAYONET.get());
+                        output.accept(NUMBERS2_GAUNTLETS.get());
+                        output.accept(NUMBERS6_RIFLE.get());
                         output.accept(full(RIFLE_MAGAZINE.get(), parameters));
                         output.accept(full(PISTOL_MAGAZINE.get(), parameters));
                         output.accept(RIFLE_AMMO.get());

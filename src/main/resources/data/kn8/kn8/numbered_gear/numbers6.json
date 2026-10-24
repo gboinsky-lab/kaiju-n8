@@ -1,0 +1,12 @@
+{
+  "item": "kn8:numbers6_rifle",
+  "number": 6,
+  "rank": "kn8:lider_pelotao",
+  "research": "kn8:numbered_weapon_theory",
+  "min_limit": 20,
+  "mastery": [0, 300, 900, 2000, 4000],
+  "xp_per_damage": 1.0,
+  "effect_start": 0.7,
+  "instability_heat": 6.0,
+  "order": 6
+}

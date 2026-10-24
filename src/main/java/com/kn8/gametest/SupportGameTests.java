@@ -8,6 +8,7 @@ import com.kn8.KN8Constants;
 import com.kn8.common.career.CareerService;
 import com.kn8.common.career.MissionService;
 import com.kn8.common.evacuation.CivilianEntity;
+import com.kn8.common.invasion.InvasionService;
 import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.registry.KN8Entities;
 import com.kn8.common.registry.KN8Items;
@@ -65,6 +66,8 @@ public final class SupportGameTests {
     @GameTest(template = TEMPLATE, batch = "kn8_support")
     public static void supportNeedsOperationRankAndUses(GameTestHelper helper) {
         FakePlayer player = player(helper, "rules");
+        // Uma invasao que sobrou de outro teste (falho ou lento) poria o jogador falso em operacao.
+        InvasionService.stop(helper.getLevel());
         helper.assertTrue(SupportService.check(player, Tier.RECON) == Result.NO_OPERATION,
                 "Fora de operacao o apoio e recusado");
         helper.assertTrue(MissionService.accept(player, PATROL) == MissionService.Result.OK, "Patrulha nao aceita");

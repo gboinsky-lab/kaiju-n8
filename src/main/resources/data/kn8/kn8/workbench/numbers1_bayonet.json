@@ -1,0 +1,23 @@
+{
+  "result": "kn8:numbers1_bayonet",
+  "category": "weapon",
+  "order": 16,
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 8
+    },
+    {
+      "item": "kn8:muscle_fiber",
+      "count": 6
+    },
+    {
+      "item": "kn8:core_fragment",
+      "count": 6
+    },
+    {
+      "item": "kn8:intact_core",
+      "count": 2
+    }
+  ]
+}

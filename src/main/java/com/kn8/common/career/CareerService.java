@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.kn8.common.numbered.NumberedGearService;
 import com.kn8.KN8Constants;
 import com.kn8.common.attribute.PowerService;
 import com.kn8.common.config.ServerConfig;
@@ -197,6 +198,7 @@ public final class CareerService {
 
     public static void onKaijuDamaged(ServerPlayer player, float damage) {
         MissionService.onDamageDealt(player, damage);
+        NumberedGearService.onKaijuDamaged(player, damage);
         int xp = (int) Math.round(damage * ServerConfig.XP_PER_KAIJU_DAMAGE.get());
         if (xp > 0) {
             PowerService.addTrainingXp(player, xp);
@@ -249,7 +251,7 @@ public final class CareerService {
                 MissionService.activeView(player), List.copyOf(data.completed()), Map.copyOf(data.bestGrades()),
                 new CareerView.Research(List.copyOf(data.research()), data.researching()
                         .map(CareerData.Researching::id).orElse(CareerView.NONE), data.researching()
-                        .map(CareerData.Researching::finishTick).orElse(0L)));
+                        .map(CareerData.Researching::finishTick).orElse(0L), Map.copyOf(data.mastery())));
     }
 
     /** Marca o canal privado da carreira para envio no fim do tick. */

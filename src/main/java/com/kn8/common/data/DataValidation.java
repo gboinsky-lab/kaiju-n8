@@ -12,6 +12,7 @@ import java.util.Set;
 
 import com.kn8.KN8Constants;
 import com.kn8.core.kaiju.KaijuScale;
+import com.kn8.common.data.def.NumberedGearDef;
 import com.kn8.common.data.def.AbilityDef;
 import com.kn8.common.data.def.AuraDef;
 import com.kn8.common.data.def.BaseModuleDef;
@@ -105,6 +106,8 @@ public final class DataValidation {
         publish(KN8Data.RESEARCH, validateResearch(KN8Data.RESEARCH.loaded(), ranks.keySet(), report), report);
         publish(KN8Data.BASE_MODULE, validateBaseModules(KN8Data.BASE_MODULE.loaded(), ranks.keySet(), report),
                 report);
+        publish(KN8Data.NUMBERED_GEAR, validateNumberedGear(KN8Data.NUMBERED_GEAR.loaded(), ranks.keySet(),
+                KN8Data.RESEARCH.server().keySet(), report), report);
         // Patentes apontam para missoes de avaliacao, que so foram validadas agora: confere no fim (so aviso).
         ranks.forEach((id, rank) -> rank.promotionMission().filter(mission -> !missions.containsKey(mission))
                 .ifPresent(mission -> report.warning("rank " + id + ": promotion_mission inexistente " + mission)));
@@ -190,6 +193,36 @@ public final class DataValidation {
      * PM-8C: custo com itens registrados e patente existente (senao a pesquisa sai); pre-requisito que nao existe
      * tambem tira a pesquisa (nunca poderia comecar). Alvo do bonus e so aviso.
      */
+    /** PM-11: item registrado e com arma; patente e pesquisa pedidas existem; niveis de dominio crescentes. */
+    public static Map<ResourceLocation, NumberedGearDef> validateNumberedGear(
+            Map<ResourceLocation, NumberedGearDef> input, Set<ResourceLocation> ranks, Set<ResourceLocation> research,
+            DataReport report) {
+        Map<ResourceLocation, NumberedGearDef> valid = new LinkedHashMap<>();
+        input.forEach((id, def) -> {
+            String where = "numbered_gear " + id;
+            if (!BuiltInRegistries.ITEM.containsKey(def.item())) {
+                report.error(where + ": item nao registrado " + def.item());
+                return;
+            }
+            if (def.rank().filter(rank -> !ranks.contains(rank)).isPresent()) {
+                report.error(where + ": patente inexistente " + def.rank().get());
+                return;
+            }
+            if (def.research().filter(entry -> !research.contains(entry)).isPresent()) {
+                report.error(where + ": pesquisa inexistente " + def.research().get());
+                return;
+            }
+            for (int i = 1; i < def.mastery().size(); i++) {
+                if (def.mastery().get(i) <= def.mastery().get(i - 1)) {
+                    report.error(where + ": niveis de dominio precisam crescer");
+                    return;
+                }
+            }
+            valid.put(id, def);
+        });
+        return valid;
+    }
+
     public static Map<ResourceLocation, ResearchDef> validateResearch(Map<ResourceLocation, ResearchDef> input,
             Set<ResourceLocation> ranks, DataReport report) {
         Map<ResourceLocation, ResearchDef> valid = new LinkedHashMap<>();

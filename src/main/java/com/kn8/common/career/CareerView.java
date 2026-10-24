@@ -25,13 +25,17 @@ public record CareerView(ResourceLocation rank, ResourceLocation nextRank, int m
 
     /**
      * PM-8C: pesquisas concluidas e a em andamento ({@link #NONE} = nenhuma; {@code finishTick} em tempo de jogo, o
-     * cliente conta o tempo sozinho).
+     * cliente conta o tempo sozinho). PM-11: XP de dominio dos equipamentos numerados (o laboratorio e o menu os
+     * mostram juntos; aqui por caber no limite de campos do StreamCodec da visao).
      */
-    public record Research(List<ResourceLocation> done, ResourceLocation current, long finishTick) {
-        public static final Research EMPTY = new Research(List.of(), NONE, 0L);
+    public record Research(List<ResourceLocation> done, ResourceLocation current, long finishTick,
+            Map<ResourceLocation, Integer> mastery) {
+        public static final Research EMPTY = new Research(List.of(), NONE, 0L, Map.of());
         public static final StreamCodec<ByteBuf, Research> CODEC = StreamCodec.composite(
                 ResourceLocation.STREAM_CODEC.apply(ByteBufCodecs.list()), Research::done,
                 ResourceLocation.STREAM_CODEC, Research::current, ByteBufCodecs.VAR_LONG, Research::finishTick,
+                ByteBufCodecs.<ByteBuf, ResourceLocation, Integer, Map<ResourceLocation, Integer>>map(HashMap::new,
+                        ResourceLocation.STREAM_CODEC, ByteBufCodecs.VAR_INT), Research::mastery,
                 Research::new);
 
         public boolean busy() {

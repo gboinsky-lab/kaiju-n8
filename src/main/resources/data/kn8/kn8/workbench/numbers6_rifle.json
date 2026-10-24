@@ -1,0 +1,23 @@
+{
+  "result": "kn8:numbers6_rifle",
+  "category": "weapon",
+  "order": 18,
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 8
+    },
+    {
+      "item": "kn8:core_fragment",
+      "count": 6
+    },
+    {
+      "item": "minecraft:packed_ice",
+      "count": 8
+    },
+    {
+      "item": "kn8:intact_core",
+      "count": 2
+    }
+  ]
+}

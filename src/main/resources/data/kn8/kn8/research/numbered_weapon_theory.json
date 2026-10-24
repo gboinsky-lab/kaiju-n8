@@ -18,7 +18,10 @@
     "kn8:honju_anatomy"
   ],
   "unlocks": [
-    "kn8:hoshina_sword"
+    "kn8:hoshina_sword",
+    "kn8:numbers1_bayonet",
+    "kn8:numbers2_gauntlets",
+    "kn8:numbers6_rifle"
   ],
   "targets": [
     "#numbered"

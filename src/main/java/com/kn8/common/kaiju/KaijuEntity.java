@@ -10,6 +10,7 @@ import java.util.OptionalDouble;
 import java.util.Set;
 import java.util.UUID;
 
+import com.kn8.common.numbered.NumberedGearService;
 import com.kn8.KN8Constants;
 import com.kn8.common.ai.AiTuning;
 import com.kn8.common.anim.Locomotion;
@@ -1541,6 +1542,8 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
         if (source.getEntity() instanceof ServerPlayer researcher) {
             // PM-8C: pesquisas concluidas sobre esta especie/classe aumentam o golpe (antes do teto).
             amount *= ResearchService.damageFactor(researcher, this);
+            // PM-11: dominio da arma numerada na mao (curva de aprendizado ate o dano cheio).
+            amount *= NumberedGearService.damageFactor(researcher);
         }
         if (source.is(CombatService.WEAPON_SPECIAL)) {
             return amount;
