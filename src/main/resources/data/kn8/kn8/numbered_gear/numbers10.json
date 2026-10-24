@@ -1,0 +1,25 @@
+{
+  "item": "kn8:numbers10_suit",
+  "number": 10,
+  "rank": "kn8:vice_capitao",
+  "research": "kn8:numbered_weapon_theory",
+  "min_limit": 40,
+  "mastery": [
+    0,
+    500,
+    1500,
+    3500,
+    7000
+  ],
+  "xp_per_damage": 1.0,
+  "effect_start": 0.7,
+  "order": 10,
+  "tail": {
+    "reach": 4.5,
+    "cooldown_ticks": 40,
+    "damage": 6,
+    "guard_factor": 0.3,
+    "guard_cooldown_ticks": 40,
+    "front_arc_degrees": 120
+  }
+}

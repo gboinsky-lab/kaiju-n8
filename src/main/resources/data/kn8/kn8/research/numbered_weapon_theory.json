@@ -21,7 +21,9 @@
     "kn8:hoshina_sword",
     "kn8:numbers1_bayonet",
     "kn8:numbers2_gauntlets",
-    "kn8:numbers6_rifle"
+    "kn8:numbers6_rifle",
+    "kn8:numbers4_axe",
+    "kn8:numbers10_suit"
   ],
   "targets": [
     "#numbered"

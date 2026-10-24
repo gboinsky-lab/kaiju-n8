@@ -22,11 +22,17 @@ import net.minecraft.resources.ResourceLocation;
  *   <li>{@code instability_heat}: calor extra do especial no nivel 0, caindo a 0 no ultimo (estabilidade);</li>
  *   <li>{@code perfect_dodge_bonus_ticks}: janela a mais da esquiva perfeita no ultimo nivel (Numbers 1: a obra diz
  *   que as retinas do traje preveem o movimento; o numero e adaptacao).</li>
+ *   <li>{@code tail} (PM-11B, Numbers 10 vestido): a cauda do traje corta sozinha o kaiju mais perigoso por perto e
+ *   segura golpe pesado ou projetil vindo de fora da frente, como a do Hoshina No. 10;</li>
+ *   <li>{@code wings} (PM-11B, Numbers 4 na mao): Shift no ar abre as asas e plana (queda lenta, impulso para a frente
+ *   ao abrir, stamina por segundo).</li>
  * </ul>
+ * Cauda e asas crescem com o dominio (de {@code effect_start} ao cheio), como o dano.
  */
 public record NumberedGearDef(ResourceLocation item, int number, Optional<ResourceLocation> rank,
         Optional<ResourceLocation> research, int minLimit, List<Integer> mastery, double xpPerDamage,
-        double effectStart, double instabilityHeat, int perfectDodgeBonusTicks, int order) {
+        double effectStart, double instabilityHeat, int perfectDodgeBonusTicks, int order, Optional<Tail> tail,
+        Optional<Wings> wings) {
 
     public static final Codec<NumberedGearDef> CODEC = RecordCodecBuilder.create(i -> i.group(
             ResourceLocation.CODEC.fieldOf("item").forGetter(NumberedGearDef::item),
@@ -42,8 +48,39 @@ public record NumberedGearDef(ResourceLocation item, int number, Optional<Resour
                     .forGetter(NumberedGearDef::instabilityHeat),
             Codec.intRange(0, 40).optionalFieldOf("perfect_dodge_bonus_ticks", 0)
                     .forGetter(NumberedGearDef::perfectDodgeBonusTicks),
-            Codec.INT.optionalFieldOf("order", 0).forGetter(NumberedGearDef::order)
+            Codec.INT.optionalFieldOf("order", 0).forGetter(NumberedGearDef::order),
+            Tail.CODEC.optionalFieldOf("tail").forGetter(NumberedGearDef::tail),
+            Wings.CODEC.optionalFieldOf("wings").forGetter(NumberedGearDef::wings)
     ).apply(i, NumberedGearDef::new));
+
+    /**
+     * Cauda do traje: corte a cada {@code cooldown_ticks} no kaiju a ate {@code reach} (borda da hitbox) com
+     * {@code damage} de base (x Release); guarda multiplica o dano de golpe pesado/projetil vindo de fora do arco da
+     * frente ({@code front_arc_degrees}) por {@code guard_factor}, uma vez a cada {@code guard_cooldown_ticks}.
+     */
+    public record Tail(double reach, int cooldownTicks, float damage, float guardFactor, int guardCooldownTicks,
+            double frontArcDegrees) {
+
+        public static final Codec<Tail> CODEC = RecordCodecBuilder.create(i -> i.group(
+                Codec.doubleRange(0.5, 16.0).fieldOf("reach").forGetter(Tail::reach),
+                Codec.intRange(1, 1200).fieldOf("cooldown_ticks").forGetter(Tail::cooldownTicks),
+                Codec.floatRange(0.0F, 1000.0F).fieldOf("damage").forGetter(Tail::damage),
+                Codec.floatRange(0.0F, 1.0F).fieldOf("guard_factor").forGetter(Tail::guardFactor),
+                Codec.intRange(0, 1200).fieldOf("guard_cooldown_ticks").forGetter(Tail::guardCooldownTicks),
+                Codec.doubleRange(0.0, 360.0).optionalFieldOf("front_arc_degrees", 120.0)
+                        .forGetter(Tail::frontArcDegrees)
+        ).apply(i, Tail::new));
+    }
+
+    /** Asas: impulso para a frente ao abrir ({@code boost}, blocos/tick) e stamina gasta por segundo planando. */
+    public record Wings(double boost, float staminaPerSecond) {
+
+        public static final Codec<Wings> CODEC = RecordCodecBuilder.create(i -> i.group(
+                Codec.doubleRange(0.0, 3.0).fieldOf("boost").forGetter(Wings::boost),
+                Codec.floatRange(0.0F, 100.0F).optionalFieldOf("stamina_per_second", 0.0F)
+                        .forGetter(Wings::staminaPerSecond)
+        ).apply(i, Wings::new));
+    }
 
     /** Nivel de dominio (0 = recem-equipado) para o XP dado. */
     public int level(int xp) {
@@ -63,5 +100,10 @@ public record NumberedGearDef(ResourceLocation item, int number, Optional<Resour
     /** Fracao do caminho ate o dominio completo (0 no nivel 0, 1 no ultimo). */
     public double progress(int xp) {
         return maxLevel() == 0 ? 1.0 : (double) level(xp) / maxLevel();
+    }
+
+    /** Fracao do efeito pelo dominio: {@code effect_start} no nivel 0, 1,0 no ultimo. */
+    public double scale(int xp) {
+        return effectStart + (1.0 - effectStart) * progress(xp);
     }
 }

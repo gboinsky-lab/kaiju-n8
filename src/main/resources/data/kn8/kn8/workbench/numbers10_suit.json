@@ -1,0 +1,23 @@
+{
+  "result": "kn8:numbers10_suit",
+  "category": "suit",
+  "order": 46,
+  "ingredients": [
+    {
+      "item": "minecraft:diamond",
+      "count": 4
+    },
+    {
+      "item": "kn8:muscle_fiber",
+      "count": 10
+    },
+    {
+      "item": "kn8:core_fragment",
+      "count": 10
+    },
+    {
+      "item": "kn8:intact_core",
+      "count": 3
+    }
+  ]
+}

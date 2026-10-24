@@ -1,0 +1,58 @@
+{
+  "item": "kn8:numbers4_axe",
+  "base_damage": 12,
+  "reach": 3.2,
+  "style": "heavy",
+  "profile": "kn8:two_handed_axe",
+  "actions": {
+    "light": {
+      "multiplier": 1.0,
+      "duration_ticks": 18,
+      "impact_tick": 8
+    },
+    "heavy": {
+      "multiplier": 2.4,
+      "duration_ticks": 32,
+      "impact_tick": 15
+    }
+  },
+  "combo": [
+    1.0,
+    1.15
+  ],
+  "sounds": {
+    "swing": "kn8:weapon.axe_swing",
+    "heavy": "kn8:weapon.axe_heavy",
+    "hit": "kn8:weapon.axe_hit"
+  },
+  "special": {
+    "id": "numbers4_sky_dive",
+    "type": "ground_slam",
+    "multiplier": 2.8,
+    "duration_ticks": 30,
+    "impact_tick": 16,
+    "radius": 5.0,
+    "forward": 2.5,
+    "stamina_cost": 35,
+    "heat_cost": 6,
+    "cooldown_ticks": 200,
+    "knockback": 1.2,
+    "stagger_ticks": 34,
+    "camera_shake": 0.45,
+    "vfx": [
+      {
+        "effect": "kn8:ground_crack",
+        "intensity": 4.0
+      },
+      {
+        "effect": "kn8:shockwave",
+        "intensity": 1.4
+      },
+      {
+        "effect": "kn8:dust",
+        "intensity": 1.2
+      }
+    ],
+    "sound": "kn8:weapon.axe_special"
+  }
+}

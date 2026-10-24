@@ -1203,5 +1203,11 @@
   "kn8.weapon.special.numbers2_force_blast": "Force Blast",
   "kn8.weapon.special.numbers2_force_blast.desc": "Punches the ground: the gauntlets' wave hurts and pushes everyone around.",
   "kn8.weapon.special.numbers6_freeze_shot": "Freezing Shot",
-  "kn8.weapon.special.numbers6_freeze_shot.desc": "An ice shot that pierces and slows enemies down."
+  "kn8.weapon.special.numbers6_freeze_shot.desc": "An ice shot that pierces and slows enemies down.",
+  "item.kn8.numbers4_axe": "Numbers 4 (Winged Axe)",
+  "item.kn8.numbers10_suit": "Numbers 10 (Tail Suit)",
+  "kn8.weapon.special.numbers4_sky_dive": "Sky Dive",
+  "kn8.weapon.special.numbers4_sky_dive.desc": "Brings the axe down on the ground: the wave hurts, pushes and staggers around.",
+  "kn8.numbered.tooltip.tail": "Tail: cuts kaiju up to %s blocks away on its own and blocks up to %s%% of heavy hits or shots from behind",
+  "kn8.numbered.tooltip.wings": "Wings: hold Shift in the air to glide (uses stamina)"
 }

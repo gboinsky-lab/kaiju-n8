@@ -56,6 +56,9 @@ public final class KN8Items {
             () -> new WeaponItem(new Item.Properties().rarity(net.minecraft.world.item.Rarity.EPIC)));
     public static final DeferredItem<WeaponItem> NUMBERS6_RIFLE = ITEMS.register("numbers6_rifle",
             () -> new WeaponItem(new Item.Properties().rarity(net.minecraft.world.item.Rarity.EPIC)));
+    /** PM-11B: machado com asas Numbers 4 (plana com Shift no ar). */
+    public static final DeferredItem<WeaponItem> NUMBERS4_AXE = ITEMS.register("numbers4_axe",
+            () -> new WeaponItem(new Item.Properties().rarity(net.minecraft.world.item.Rarity.EPIC)));
     /** 0.7-F: punhos do Kaiju No. 8 (item invisivel na mao: o dano dos golpes sai do weapon/kaiju_no8_fist.json). */
     public static final DeferredItem<WeaponItem> KAIJU_NO8_FIST =
             ITEMS.register("kaiju_no8_fist", () -> new WeaponItem(new Item.Properties()));
@@ -156,6 +159,8 @@ public final class KN8Items {
     public static final DeferredItem<ArmorItem> MK1 = suit("mk1", KN8ArmorMaterials.MK1);
     public static final DeferredItem<ArmorItem> MK1_REINFORCED = suit("mk1_reinforced",
             KN8ArmorMaterials.MK1_REINFORCED);
+    public static final DeferredItem<ArmorItem> NUMBERS10_SUIT = suit("numbers10_suit",
+            KN8ArmorMaterials.NUMBERS10_SUIT);
     public static final DeferredItem<SupplyItem> SUIT_COOLANT = ITEMS.register("suit_coolant",
             () -> new SupplyItem(SupplyItem.Kind.COOLANT, new Item.Properties().stacksTo(16)));
     public static final DeferredItem<SupplyItem> STAMINA_STIM = ITEMS.register("stamina_stim",
@@ -180,6 +185,7 @@ public final class KN8Items {
                         output.accept(NUMBERS1_BAYONET.get());
                         output.accept(NUMBERS2_GAUNTLETS.get());
                         output.accept(NUMBERS6_RIFLE.get());
+                        output.accept(NUMBERS4_AXE.get());
                         output.accept(full(RIFLE_MAGAZINE.get(), parameters));
                         output.accept(full(PISTOL_MAGAZINE.get(), parameters));
                         output.accept(RIFLE_AMMO.get());
@@ -215,6 +221,7 @@ public final class KN8Items {
                         output.accept(TRAINING_SUIT.get());
                         output.accept(MK1.get());
                         output.accept(MK1_REINFORCED.get());
+                        output.accept(NUMBERS10_SUIT.get());
                         output.accept(SUIT_COOLANT.get());
                         output.accept(STAMINA_STIM.get());
                         output.accept(RELEASE_CATALYST.get());

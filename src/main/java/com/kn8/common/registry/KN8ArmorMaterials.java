@@ -24,6 +24,8 @@ public final class KN8ArmorMaterials {
     public static final DeferredHolder<ArmorMaterial, ArmorMaterial> TRAINING_SUIT = suit("training_suit");
     public static final DeferredHolder<ArmorMaterial, ArmorMaterial> MK1 = suit("mk1");
     public static final DeferredHolder<ArmorMaterial, ArmorMaterial> MK1_REINFORCED = suit("mk1_reinforced");
+    /** PM-11B: traje numerado 10 (requisitos e cauda no numbered_gear/numbers10.json). */
+    public static final DeferredHolder<ArmorMaterial, ArmorMaterial> NUMBERS10_SUIT = suit("numbers10_suit");
 
     private static final int ENCHANTABILITY = 10;
 

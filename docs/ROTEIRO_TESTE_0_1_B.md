@@ -1382,3 +1382,19 @@ Servidor dedicado + 2 clientes. `/give @s kn8:numbers2_gauntlets` (e `numbers1_b
 | 100.6 | Bater no kaiju até somar 300 de dano | Chat "Domínio do Numbers 2: nível 1 de 4"; a dica mostra o dano maior (77%) e o XP |
 | 100.7 | Morrer e voltar | O domínio continua |
 | 100.8 | Segundo cliente em inglês | Dica "Numbered equipment", "Rank", "Research", "Mastery" |
+
+## 101. Numbers 4 e Numbers 10 do jogador (PM-11B)
+
+Servidor dedicado + 2 clientes. `/give @s kn8:numbers4_axe` e `kn8:numbers10_suit` (vestir no peito). Requisitos:
+Vice-Capitão (`/kn8 rank set kn8:vice_capitao @s`), pesquisa "Teoria das Armas Numeradas" e limite pessoal 30%/40%.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 101.1 | Passar o mouse no machado e no traje | Dica com os requisitos (✔/✘), domínio e as linhas "Asas: segure Shift no ar para planar" e "Cauda: corta sozinha kaiju a até 4.5 blocos e segura até 70%..." |
+| 101.2 | Sem os requisitos: pular de um lugar alto com o machado e Shift; ficar perto de um kaiju com o traje | Cai normalmente; a cauda não corta |
+| 101.3 | Com os requisitos: pular de 20 blocos com o machado e segurar Shift | Impulso para a frente, queda lenta, traços ciano das asas saindo das costas; stamina descendo; sem dano ao pousar |
+| 101.4 | Soltar o Shift no ar | As asas fecham e a queda volta ao normal |
+| 101.5 | Kaiju parado atrás do jogador de traje | A cada 2 s o kaiju leva um corte (pisca vermelho) e a dica do traje mostra o XP subindo |
+| 101.6 | Kaiju atirando nas costas do jogador de traje (ex.: Philinosoma) | Faísca vermelha nas costas e menos dano; de frente, dano inteiro |
+| 101.7 | R com o machado perto do kaiju | Mergulho do Céu: onda e rachadura no chão, kaiju empurrado e ferido |
+| 101.8 | Segundo cliente em inglês | Dica "Wings: hold Shift in the air to glide" e "Tail: ..." |

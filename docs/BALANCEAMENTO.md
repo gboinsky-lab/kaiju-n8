@@ -1158,3 +1158,23 @@ XP. O dano vai de 70% (`effect_start` 0,7) no nível 0 a 100% no nível 4 (linea
 especial cai até 0 no domínio total; o bônus de esquiva do Numbers 1 cresce do mesmo jeito (0 a 3 ticks).
 O fator do domínio entra depois do da pesquisa e antes do teto de golpe.
 Numbers 4 (asas/machado) e Numbers 10 (traje com a cauda) ficam para a PM-11B.
+
+## PM-11B: Numbers 4 (machado com asas) e Numbers 10 (traje com cauda) do jogador (2026-10-24) [SUPOSIÇÃO todos os números]
+
+Mesmo sistema da PM-11A (requisitos e domínio no `numbered_gear/<id>.json`). O domínio vale também para o traje: todo
+dano em kaiju com ele vestido dá XP.
+
+| Equipamento | Patente | Limite mínimo | Níveis de domínio (XP) | Base |
+|---|---|---|---|---|
+| Numbers 4 (Machado com Asas) | Vice-Capitão | 30% | 0/300/900/2.000/4.000 | Dano 12 (o machado comum tem 11), alcance 3,2; especial Mergulho do Céu: onda de 5 blocos, x2,8, recarga 10 s; calor extra +8 sem domínio |
+| Numbers 10 (Traje com Cauda) | Vice-Capitão | 40% | 0/500/1.500/3.500/7.000 | Armadura 18, resistência 3, calor -35%, aura do Hoshina No. 10 |
+
+**Asas (Numbers 4 na mão):** Shift no ar caindo abre as asas: impulso para onde o jogador olha de 0,7 bloco/tick ×
+domínio (0,49 no nível 0) e queda lenta (a Queda Lenta do jogo, renovada a cada tick, sem ícone) enquanto o Shift
+estiver apertado; 6 de stamina por segundo (sem stamina as asas fecham até pousar). Sem dano de queda planando.
+
+**Cauda (Numbers 10 vestido):** a cada 40 ticks corta sozinha um kaiju a até 4,5 blocos da caixa do jogador (primeiro
+quem mira o jogador, depois quem está atrás/do lado, depois o mais perto): 6 × domínio × (1 + Release/100), pelo
+caminho normal do golpe do jogador (teto de golpe, pesquisa, domínio da arma na mão). **Guarda:** golpe pesado de kaiju
+(`[combat] tailGuardBlocksHeavy`) ou projétil vindo de fora dos 120° da frente leva de 49% (nível 0) a 70% (domínio
+total) a menos, uma vez a cada 40 ticks. Medido em jogo (nível 0, Release 0): ~2 de vida por corte num Primigenius.

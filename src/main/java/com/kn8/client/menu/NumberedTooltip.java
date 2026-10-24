@@ -59,6 +59,12 @@ public final class NumberedTooltip {
                 def.mastery().get(level + 1)) : Component.translatable("kn8.numbered.tooltip.mastered");
         lines.add(Component.translatable("kn8.numbered.tooltip.mastery", level, def.maxLevel(), damage)
                 .append(" ").append(next).withStyle(ChatFormatting.AQUA));
+        // PM-11B: o que o equipamento faz sozinho (cauda do traje, asas do machado).
+        def.tail().ifPresent(tail -> lines.add(Component.translatable("kn8.numbered.tooltip.tail",
+                String.valueOf(tail.reach()), Math.round(100 * (1.0 - tail.guardFactor())))
+                .withStyle(ChatFormatting.LIGHT_PURPLE)));
+        def.wings().ifPresent(wings -> lines.add(Component.translatable("kn8.numbered.tooltip.wings")
+                .withStyle(ChatFormatting.LIGHT_PURPLE)));
         if (def.instabilityHeat() > 0 && level < def.maxLevel()) {
             lines.add(Component.translatable("kn8.numbered.tooltip.unstable").withStyle(ChatFormatting.DARK_AQUA));
         }

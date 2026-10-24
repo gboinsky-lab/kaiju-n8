@@ -11,8 +11,17 @@ import com.kn8.common.combat.CombatService;
 import com.kn8.common.data.KN8Data;
 import com.kn8.common.data.def.NumberedGearDef;
 import com.kn8.common.numbered.NumberedGearService;
+import com.kn8.common.kaiju.KaijuEntity;
+import com.kn8.common.registry.KN8Entities;
 import com.kn8.common.registry.KN8Items;
 import com.mojang.authlib.GameProfile;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.EquipmentSlot;
 
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -31,7 +40,8 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 /**
  * GameTests da PM-11A: armas numeradas do jogador. Sem patente, pesquisa ou limite pessoal a arma nao ativa (golpe
  * recusado, nada gasto); com eles ativa. O dominio sobe com o dano em kaiju, leva o dano de 70% a 100% e e salvo na
- * carreira. Um perfil de jogador por teste.
+ * carreira. PM-11B: a cauda do traje Numbers 10 corta o kaiju de tras e guarda o tiro vindo de fora da frente; o
+ * machado Numbers 4 plana com Shift no ar. Um perfil de jogador por teste.
  */
 @GameTestHolder(KN8Constants.MOD_ID)
 @PrefixGameTestTemplate(false)
@@ -97,6 +107,74 @@ public final class NumberedGearGameTests {
         // Arma comum: sem fator nem XP de dominio.
         player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(KN8Items.SWORD.get()));
         helper.assertTrue(NumberedGearService.damageFactor(player) == 1.0F, "Arma comum sem mudanca");
+        helper.succeed();
+    }
+
+    private static void qualify(FakePlayer player) {
+        CareerService.setRank(player, KN8Constants.id("vice_capitao"));
+        CareerService.data(player).research().add(THEORY);
+        PowerService.setTrainedRelease(player, 50);
+    }
+
+    @GameTest(template = TEMPLATE, timeoutTicks = 60)
+    public static void numbers10TailCutsAndGuards(GameTestHelper helper) {
+        FakePlayer player = player(helper, "tail");
+        player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+        player.setItemSlot(EquipmentSlot.CHEST, new ItemStack(KN8Items.NUMBERS10_SUIT.get()));
+        player.setYRot(0.0F);
+        KaijuEntity kaiju = helper.spawn(KN8Entities.PRIMIGENIUS.get(), new BlockPos(4, 1, 1));
+        kaiju.setNoAi(true);
+        DamageSource shot = new DamageSource(helper.getLevel().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE)
+                .getHolderOrThrow(DamageTypes.ARROW), helper.absoluteVec(new Vec3(4.5, 1.5, 0.5)));
+        DamageSource front = new DamageSource(helper.getLevel().registryAccess()
+                .registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(DamageTypes.ARROW),
+                helper.absoluteVec(new Vec3(4.5, 1.5, 8.5)));
+        helper.runAfterDelay(2, () -> {
+            float before = kaiju.getHealth();
+            NumberedGearService.tick(player);
+            helper.assertTrue(kaiju.getHealth() == before, "Sem os requisitos a cauda nao corta");
+            helper.assertTrue(NumberedGearService.guard(player, shot, 10.0F) == 10.0F, "Sem requisitos nao guarda");
+            qualify(player);
+            NumberedGearService.tick(player);
+            helper.assertTrue(kaiju.getHealth() < before, "A cauda corta o kaiju atras");
+            float after = kaiju.getHealth();
+            NumberedGearService.tick(player);
+            helper.assertTrue(kaiju.getHealth() == after, "A cauda espera a recarga");
+            helper.assertTrue(NumberedGearService.guard(player, front, 10.0F) == 10.0F, "Tiro de frente passa");
+            float guarded = NumberedGearService.guard(player, shot, 10.0F);
+            helper.assertTrue(Math.abs(guarded - 5.1F) < 0.01F, "Sem dominio a guarda tira 49%: " + guarded);
+            helper.assertTrue(NumberedGearService.guard(player, shot, 10.0F) == 10.0F, "Guarda espera a recarga");
+            kaiju.discard();
+            helper.succeed();
+        });
+    }
+
+    @GameTest(template = TEMPLATE)
+    public static void numbers4WingsGlide(GameTestHelper helper) {
+        FakePlayer player = player(helper, "wings");
+        player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(KN8Items.NUMBERS4_AXE.get()));
+        qualify(player);
+        PowerService.setStamina(player, PowerService.maxStamina(player));
+        player.moveTo(helper.absoluteVec(new Vec3(4.5, 5, 4.5)));
+        player.setYRot(0.0F);
+        player.setXRot(0.0F);
+        player.setOnGround(false);
+        player.setShiftKeyDown(true);
+        player.setDeltaMovement(0, -0.5, 0);
+        NumberedGearService.tick(player);
+        helper.assertTrue(NumberedGearService.gliding(player), "Shift no ar caindo abre as asas");
+        helper.assertTrue(player.hasEffect(MobEffects.SLOW_FALLING), "Planando cai devagar");
+        helper.assertTrue(player.getDeltaMovement().z > 0.4, "Impulso para a frente: " + player.getDeltaMovement());
+        player.setShiftKeyDown(false);
+        NumberedGearService.tick(player);
+        helper.assertFalse(NumberedGearService.gliding(player), "Soltar o Shift fecha as asas");
+        player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(KN8Items.AXE.get()));
+        player.setShiftKeyDown(true);
+        player.setDeltaMovement(0, -0.5, 0);
+        player.removeAllEffects();
+        NumberedGearService.tick(player);
+        helper.assertFalse(NumberedGearService.gliding(player), "Machado comum nao plana");
+        player.setShiftKeyDown(false);
         helper.succeed();
     }
 }

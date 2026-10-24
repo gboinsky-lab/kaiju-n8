@@ -70,7 +70,9 @@ public final class KN8Network {
     // 26 = PM-8C: OpenResearchS2C, ResearchC2S, CareerView.research e registro sincronizado "research".
     // 27 = PM-8D: OpenBaseS2C, BaseBuildC2S e registro sincronizado "base_module".
     // 28 = PM-9: RegionAlertS2C (alerta por regiao).
-    private static final String PROTOCOL_VERSION = "30";
+    // 30 = PM-11A: registro sincronizado "numbered_gear", CareerView.Research.mastery e DENIED_INCOMPATIBLE.
+    // 31 = PM-11B: blocos "tail" e "wings" no registro "numbered_gear".
+    private static final String PROTOCOL_VERSION = "31";
 
     /** Diagnostico: 20 por segundo, rajada de 40. */
     private static final C2SGuard.Limit DEBUG_LIMIT = new C2SGuard.Limit(20, 40);
