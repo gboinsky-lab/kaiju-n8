@@ -1398,3 +1398,17 @@ Vice-Capitão (`/kn8 rank set kn8:vice_capitao @s`), pesquisa "Teoria das Armas 
 | 101.6 | Kaiju atirando nas costas do jogador de traje (ex.: Philinosoma) | Faísca vermelha nas costas e menos dano; de frente, dano inteiro |
 | 101.7 | R com o machado perto do kaiju | Mergulho do Céu: onda e rachadura no chão, kaiju empurrado e ferido |
 | 101.8 | Segundo cliente em inglês | Dica "Wings: hold Shift in the air to glide" e "Tail: ..." |
+
+## 102. Integração do Plano Mestre (PM-12)
+
+Servidor dedicado + 2 clientes, num local da obra (Shinagawa: `/locate structure kn8:shinagawa_city` num mundo normal).
+Relatório e resultados em `docs/PM12_INTEGRACAO.md`.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 102.1 | Jogador 1 aceita "Evacuação sob Honju" e jogador 2 "Evacuação do Bairro" no mesmo local | Civis, pontos de extração e ameaças de cada um; faixa EVACUAÇÃO nos dois |
+| 102.2 | Rádio: reconhecimento e bombardeio no Honju | Kaiju marcados, faixa COMBATE, "Bombardeio concluído: N kaiju atingido(s)" |
+| 102.3 | Derrubar o Honju (esquadrão, traje Numbers 10) e levar os civis | Cada jogador com a própria avaliação (nota, civis evacuados/perdidos); perdas de civis dão a dica de escolta |
+| 102.4 | Rastreador no lugar da luta | Rastros "o kaiju caiu aqui" e mérito uma vez só |
+| 102.5 | Reiniciar o servidor e morrer/renascer | Patente, mérito, pesquisa, domínio e notas iguais |
+| 102.6 | `/neoforge tps` durante a luta | 20 TPS |

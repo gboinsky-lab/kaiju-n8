@@ -536,6 +536,10 @@ public final class MissionService {
                     .withStyle(ChatFormatting.YELLOW));
         }
         String weakest = result.weakest();
+        // PM-12: a nota soma civis aos aliados perdidos; se as perdas foram de civis, a dica fala da escolta.
+        if ("allies".equals(weakest) && s.civiliansLost > 0 && s.civiliansLost >= s.alliesLost) {
+            weakest = "civilians";
+        }
         if (!weakest.isEmpty()) {
             player.sendSystemMessage(Component.translatable("kn8.mission.eval.tip." + weakest)
                     .withStyle(ChatFormatting.DARK_AQUA));

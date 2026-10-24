@@ -1209,5 +1209,6 @@
   "kn8.weapon.special.numbers4_sky_dive": "Mergulho do Céu",
   "kn8.weapon.special.numbers4_sky_dive.desc": "Desce com o machado sobre o chão: a onda fere, empurra e atordoa em volta.",
   "kn8.numbered.tooltip.tail": "Cauda: corta sozinha kaiju a até %s blocos e segura até %s%% de golpe pesado ou tiro vindo de trás",
-  "kn8.numbered.tooltip.wings": "Asas: segure Shift no ar para planar (gasta stamina)"
+  "kn8.numbered.tooltip.wings": "Asas: segure Shift no ar para planar (gasta stamina)",
+  "kn8.mission.eval.tip.civilians": "Dica: civis se perderam; fique perto deles (seguem quem está a até 12 blocos) e afaste o kaiju antes de levá-los."
 }

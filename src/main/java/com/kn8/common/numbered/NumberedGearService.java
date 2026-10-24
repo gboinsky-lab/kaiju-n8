@@ -55,6 +55,7 @@ public final class NumberedGearService {
     private static final int GLIDE_EFFECT_TICKS = 4;
     private static final int WING_BEAT_TICKS = 9;
     private static final double TAIL_VFX_AHEAD = 1.8;
+    private static final int TAIL_IDLE_RECHECK_TICKS = 10;
     private static final ResourceLocation NO10_VFX = KN8Constants.id("hoshina_no10");
     private static final ResourceLocation NO4_VFX = KN8Constants.id("kikoru_no4");
 
@@ -219,6 +220,8 @@ public final class NumberedGearService {
         }
         Optional<KaijuEntity> target = tailTarget(player, tail.reach());
         if (target.isEmpty()) {
+            // PM-12: sem kaiju por perto a cauda so procura de novo daqui a pouco (nada de busca a cada tick).
+            state.putLong(TAIL_READY, now + TAIL_IDLE_RECHECK_TICKS);
             return;
         }
         float damage = (float) (tail.damage() * scale(player, entry)

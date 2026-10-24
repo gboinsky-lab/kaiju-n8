@@ -1209,5 +1209,6 @@
   "kn8.weapon.special.numbers4_sky_dive": "Sky Dive",
   "kn8.weapon.special.numbers4_sky_dive.desc": "Brings the axe down on the ground: the wave hurts, pushes and staggers around.",
   "kn8.numbered.tooltip.tail": "Tail: cuts kaiju up to %s blocks away on its own and blocks up to %s%% of heavy hits or shots from behind",
-  "kn8.numbered.tooltip.wings": "Wings: hold Shift in the air to glide (uses stamina)"
+  "kn8.numbered.tooltip.wings": "Wings: hold Shift in the air to glide (uses stamina)",
+  "kn8.mission.eval.tip.civilians": "Tip: civilians were lost; stay close to them (they follow anyone within 12 blocks) and draw the kaiju away before escorting them."
 }
