@@ -573,79 +573,45 @@
     ],
     "no9_isao_thunder_emperor": [
       {
-        "shape": "flash",
-        "color": "core",
+        "shape": "sparks",
+        "color": "#FFD640",
+        "pattern": "line",
+        "count": 5,
+        "size": 0.1,
+        "speed": 0.7,
+        "spread": 1.4,
+        "lifetime": 6
+      },
+      {
+        "shape": "pulse",
+        "color": "#FFD640",
         "pattern": "burst",
         "count": 1,
-        "size": 1.6,
-        "speed": 0.0,
-        "spread": 1.6,
+        "size": 0.8,
+        "speed": 0,
+        "spread": 0.8,
+        "lifetime": 5,
+        "forward": -0.3
+      },
+      {
+        "shape": "pulse",
+        "color": "#FFF4B0",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.4,
+        "speed": 0,
+        "spread": 0.4,
         "lifetime": 4
       },
       {
         "shape": "pulse",
-        "color": "core",
+        "color": "accent",
         "pattern": "burst",
         "count": 1,
         "size": 1.4,
         "speed": 0,
         "spread": 1.4,
         "lifetime": 6
-      },
-      {
-        "shape": "pulse",
-        "color": "accent",
-        "pattern": "burst",
-        "count": 1,
-        "size": 2.6,
-        "speed": 0,
-        "spread": 2.6,
-        "lifetime": 10,
-        "delay": 1
-      },
-      {
-        "shape": "pulse",
-        "color": "secondary",
-        "pattern": "burst",
-        "count": 1,
-        "size": 3.6,
-        "speed": 0,
-        "spread": 3.6,
-        "lifetime": 12,
-        "delay": 3
-      },
-      {
-        "shape": "sparks",
-        "color": "accent",
-        "pattern": "line",
-        "count": 14,
-        "size": 0.1,
-        "speed": 0.9,
-        "spread": 2.0,
-        "lifetime": 8
-      },
-      {
-        "shape": "crack",
-        "color": "primary",
-        "pattern": "burst",
-        "count": 8,
-        "size": 0.35,
-        "speed": 0,
-        "spread": 3.0,
-        "lifetime": 50,
-        "edge": "accent",
-        "up": -1.0
-      },
-      {
-        "shape": "smoke",
-        "color": "primary",
-        "pattern": "burst",
-        "count": 6,
-        "size": 0.8,
-        "speed": 0.05,
-        "spread": 1.4,
-        "lifetime": 30,
-        "delay": 1
       }
     ],
     "no9_isao_force_blast": [

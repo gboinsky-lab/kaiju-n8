@@ -51,5 +51,130 @@
       }
     ],
     "sound": "kn8:weapon.axe_special"
-  }
+  },
+  "techniques": [
+    {
+      "id": "barrage_blast",
+      "type": "lunge",
+      "multiplier": 2.0,
+      "duration_ticks": 16,
+      "impact_tick": 6,
+      "radius": 1.5,
+      "stamina_cost": 20,
+      "heat_cost": 3,
+      "cooldown_ticks": 60,
+      "forward": 1.5,
+      "knockback": 1.0,
+      "camera_shake": 0.15,
+      "vfx": [
+        {
+          "effect": "kn8:technique",
+          "intensity": 1.0
+        }
+      ],
+      "sound": "kn8:weapon.axe_heavy"
+    },
+    {
+      "id": "twin_blast",
+      "type": "slash_wave",
+      "multiplier": 1.4,
+      "duration_ticks": 20,
+      "impact_tick": 9,
+      "radius": 1.2,
+      "stamina_cost": 24,
+      "heat_cost": 4,
+      "cooldown_ticks": 90,
+      "camera_shake": 0.15,
+      "vfx": [
+        {
+          "effect": "kn8:technique",
+          "intensity": 1.0
+        }
+      ],
+      "sound": "kn8:weapon.axe_heavy",
+      "slash": {
+        "count": 2,
+        "spread_degrees": 10.0,
+        "speed": 1.6,
+        "range": 10.0,
+        "width": 1.2,
+        "color": 16766528
+      }
+    },
+    {
+      "id": "rising_blast",
+      "type": "lunge",
+      "multiplier": 2.2,
+      "duration_ticks": 18,
+      "impact_tick": 7,
+      "radius": 1.5,
+      "stamina_cost": 24,
+      "heat_cost": 4,
+      "cooldown_ticks": 100,
+      "forward": 1.2,
+      "knockback": 1.8,
+      "stagger_ticks": 24,
+      "camera_shake": 0.2,
+      "vfx": [
+        {
+          "effect": "kn8:technique",
+          "intensity": 1.0
+        }
+      ],
+      "sound": "kn8:weapon.axe_heavy"
+    },
+    {
+      "id": "spiral_blast",
+      "type": "slash_wave",
+      "multiplier": 1.8,
+      "duration_ticks": 18,
+      "impact_tick": 8,
+      "radius": 1.0,
+      "stamina_cost": 22,
+      "heat_cost": 3,
+      "cooldown_ticks": 70,
+      "camera_shake": 0.15,
+      "vfx": [
+        {
+          "effect": "kn8:technique",
+          "intensity": 1.0
+        }
+      ],
+      "sound": "kn8:weapon.axe_heavy",
+      "slash": {
+        "count": 1,
+        "speed": 2.4,
+        "range": 24.0,
+        "width": 0.9,
+        "color": 16766528,
+        "bullet": true
+      }
+    },
+    {
+      "id": "thunder_emperor",
+      "type": "flurry",
+      "multiplier": 1.0,
+      "duration_ticks": 40,
+      "impact_tick": 10,
+      "radius": 3.0,
+      "stamina_cost": 45,
+      "heat_cost": 8,
+      "cooldown_ticks": 300,
+      "camera_shake": 0.3,
+      "vfx": [
+        {
+          "effect": "kn8:technique",
+          "intensity": 1.0
+        }
+      ],
+      "sound": "kn8:weapon.axe_special",
+      "slash": {
+        "count": 9,
+        "speed": 1.6,
+        "range": 10.0,
+        "width": 1.2,
+        "color": 16766528
+      }
+    }
+  ]
 }

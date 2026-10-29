@@ -600,6 +600,13 @@ NPC (`kikoru.json`/`kikoru_no4.json`): Falling Thunder [2,4] (Kikoru: salto real
 [1,9] (expoe o nucleo 40 ticks), Twin Swallows [1,1; 1,1], Daruma Dropper [0,8 x3; 1,0], Ten Hit [0,55 x9; 1,2];
 prioridades 3-5 (genericas 1). Duelos da matriz nao remedidos (COMBATE-8).
 
+**Squadron Style do Isao (COMBATE-4)** [SUPOSIÇÃO todos]: NPC (`isao.json`): Barrage Blast cotovelada [1,6] com avanço,
+Twin Blast 2 ondas [1,1] até 10 blocos, Rising Blast uppercut [2,0] (empurrão 1,8), Spiral Blast [1,5] amarelo,
+Thunder Emperor [0,9 x8; 2,6] a cada 2 ticks (recarga 180, expõe o núcleo 120 ticks). No. 9 com o Isao: Thunder
+Emperor `multi_hit` 9 x0,85, Barrage Blast `melee` x1,9. Jogador (manoplas, base 8): Barrage Blast `lunge` x2,0,
+Twin Blast x1,4, Rising Blast x2,2 (atordoa Yoju 24), Spiral Blast x1,8, Thunder Emperor `flurry` 9 x1,0 (recarga
+300, 45 de stamina, 8 de calor). Duelos não remedidos (COMBATE-8).
+
 **Kōsa-uchi do jogador** (segunda técnica da espada do Hoshina, COMBATE-1, `techniques` do `hoshina_sword.json`): dois
 cortes em X (`roll_degrees` 45, abertos 6 graus) que voam 12 blocos a 1,5 bloco/tick, ×1,5 cada, 18 ticks (corte no 7),
 25 de stamina, 4 de calor, recarga própria de 90 ticks (a do NPC) [SUPOSIÇÃO]. Cada técnica tem a sua recarga.

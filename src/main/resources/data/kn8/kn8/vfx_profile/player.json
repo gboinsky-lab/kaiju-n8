@@ -511,6 +511,355 @@
         "lifetime": 20,
         "up": -1.0
       }
+    ],
+    "barrage_blast": [
+      {
+        "shape": "pulse",
+        "color": "#FFD640",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.9,
+        "speed": 0,
+        "spread": 0.9,
+        "lifetime": 6,
+        "forward": -0.5
+      },
+      {
+        "shape": "pulse",
+        "color": "#FFF4B0",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.5,
+        "speed": 0,
+        "spread": 0,
+        "lifetime": 4,
+        "forward": -0.2
+      },
+      {
+        "shape": "sparks",
+        "color": "#FFD640",
+        "pattern": "line",
+        "count": 6,
+        "size": 0.07,
+        "speed": 0.5,
+        "spread": 0.6,
+        "lifetime": 5
+      },
+      {
+        "shape": "smoke",
+        "color": "#8C8270",
+        "pattern": "burst",
+        "count": 2,
+        "size": 0.35,
+        "speed": 0.03,
+        "spread": 0.4,
+        "lifetime": 14
+      }
+    ],
+    "rising_blast": [
+      {
+        "shape": "pulse",
+        "color": "#FFD640",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.9,
+        "speed": 0,
+        "spread": 0.9,
+        "lifetime": 6,
+        "forward": -0.5
+      },
+      {
+        "shape": "pulse",
+        "color": "#FFF4B0",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.5,
+        "speed": 0,
+        "spread": 0,
+        "lifetime": 4,
+        "forward": -0.2
+      },
+      {
+        "shape": "sparks",
+        "color": "#FFD640",
+        "pattern": "line",
+        "count": 6,
+        "size": 0.07,
+        "speed": 0.5,
+        "spread": 0.6,
+        "lifetime": 5
+      },
+      {
+        "shape": "smoke",
+        "color": "#8C8270",
+        "pattern": "burst",
+        "count": 2,
+        "size": 0.35,
+        "speed": 0.03,
+        "spread": 0.4,
+        "lifetime": 14
+      },
+      {
+        "shape": "sparks",
+        "color": "#FFD640",
+        "pattern": "rise",
+        "count": 6,
+        "size": 0.1,
+        "speed": 0.6,
+        "spread": 1.0,
+        "lifetime": 7
+      }
+    ],
+    "twin_blast": [
+      {
+        "shape": "pulse",
+        "color": "#FFD640",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.6,
+        "speed": 0,
+        "spread": 0.6,
+        "lifetime": 5,
+        "forward": 0.6,
+        "up": 1.25
+      },
+      {
+        "shape": "flash",
+        "color": "#FFF4B0",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.4,
+        "speed": 0.0,
+        "spread": 0.4,
+        "lifetime": 2,
+        "forward": 0.6,
+        "up": 1.25
+      },
+      {
+        "shape": "sparks",
+        "color": "#FFD640",
+        "pattern": "line",
+        "count": 6,
+        "size": 0.07,
+        "speed": 0.6,
+        "spread": 1.2,
+        "lifetime": 4,
+        "forward": 0.6,
+        "up": 1.25
+      }
+    ],
+    "twin_blast_trail": [
+      {
+        "shape": "pulse",
+        "color": "#FFD640",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.5,
+        "speed": 0,
+        "spread": 0.5,
+        "lifetime": 7,
+        "forward": -0.3
+      }
+    ],
+    "twin_blast_impact": [
+      {
+        "shape": "pulse",
+        "color": "#FFD640",
+        "pattern": "burst",
+        "count": 1,
+        "size": 1.2,
+        "speed": 0,
+        "spread": 1.2,
+        "lifetime": 7
+      },
+      {
+        "shape": "flash",
+        "color": "#FFF4B0",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.6,
+        "speed": 0.0,
+        "spread": 0.6,
+        "lifetime": 3
+      },
+      {
+        "shape": "sparks",
+        "color": "#FFD640",
+        "pattern": "burst",
+        "count": 8,
+        "size": 0.08,
+        "speed": 0.5,
+        "spread": 0.9,
+        "lifetime": 6
+      },
+      {
+        "shape": "smoke",
+        "color": "#8C8270",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.5,
+        "speed": 0.03,
+        "spread": 0.6,
+        "lifetime": 20
+      }
+    ],
+    "spiral_blast": [
+      {
+        "shape": "pulse",
+        "color": "#FFD640",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.6,
+        "speed": 0,
+        "spread": 0.6,
+        "lifetime": 5,
+        "forward": 0.6,
+        "up": 1.25
+      },
+      {
+        "shape": "flash",
+        "color": "#FFF4B0",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.4,
+        "speed": 0.0,
+        "spread": 0.4,
+        "lifetime": 2,
+        "forward": 0.6,
+        "up": 1.25
+      },
+      {
+        "shape": "sparks",
+        "color": "#FFD640",
+        "pattern": "line",
+        "count": 6,
+        "size": 0.07,
+        "speed": 0.6,
+        "spread": 1.2,
+        "lifetime": 4,
+        "forward": 0.6,
+        "up": 1.25
+      }
+    ],
+    "spiral_blast_trail": [
+      {
+        "shape": "pulse",
+        "color": "#FFD640",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.5,
+        "speed": 0,
+        "spread": 0.5,
+        "lifetime": 7,
+        "forward": -0.3
+      },
+      {
+        "shape": "sparks",
+        "color": "#FFD640",
+        "pattern": "ring",
+        "count": 4,
+        "size": 0.07,
+        "speed": 0.25,
+        "spread": 0.5,
+        "lifetime": 6,
+        "forward": -0.6
+      },
+      {
+        "shape": "pulse",
+        "color": "#FFF4B0",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.32,
+        "speed": 0,
+        "spread": 0.32,
+        "lifetime": 5,
+        "forward": -0.9
+      }
+    ],
+    "spiral_blast_impact": [
+      {
+        "shape": "pulse",
+        "color": "#FFD640",
+        "pattern": "burst",
+        "count": 1,
+        "size": 1.2,
+        "speed": 0,
+        "spread": 1.2,
+        "lifetime": 7
+      },
+      {
+        "shape": "flash",
+        "color": "#FFF4B0",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.6,
+        "speed": 0.0,
+        "spread": 0.6,
+        "lifetime": 3
+      },
+      {
+        "shape": "sparks",
+        "color": "#FFD640",
+        "pattern": "burst",
+        "count": 8,
+        "size": 0.08,
+        "speed": 0.5,
+        "spread": 0.9,
+        "lifetime": 6
+      },
+      {
+        "shape": "smoke",
+        "color": "#8C8270",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.5,
+        "speed": 0.03,
+        "spread": 0.6,
+        "lifetime": 20
+      }
+    ],
+    "thunder_emperor": [
+      {
+        "shape": "sparks",
+        "color": "#FFD640",
+        "pattern": "line",
+        "count": 5,
+        "size": 0.1,
+        "speed": 0.7,
+        "spread": 1.4,
+        "lifetime": 6
+      },
+      {
+        "shape": "pulse",
+        "color": "#FFD640",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.8,
+        "speed": 0,
+        "spread": 0.8,
+        "lifetime": 5,
+        "forward": -0.3
+      },
+      {
+        "shape": "pulse",
+        "color": "#FFF4B0",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.4,
+        "speed": 0,
+        "spread": 0.4,
+        "lifetime": 4
+      },
+      {
+        "shape": "flash",
+        "color": "#FFF4B0",
+        "pattern": "burst",
+        "count": 1,
+        "size": 1.2,
+        "speed": 0,
+        "spread": 1.2,
+        "lifetime": 3
+      }
     ]
   }
 }

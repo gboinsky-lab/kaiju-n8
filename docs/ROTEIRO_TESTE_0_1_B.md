@@ -1559,3 +1559,15 @@ Servidor dedicado + 2 clientes. Imagem: `docs/img/combate3_kikoru.jpg`.
 | 112.3 | R em cada uma das outras | Corte horizontal com onda a frente; giro inteiro; corte de baixo para cima que lanca; avanco com dois cortes em X; quatro cortes descendo; cada uma com a propria recarga |
 | 112.4 | Machado do Numbers 4 (com os requisitos) | Mergulho do Ceu, as seis e o Daruma Dropper: Ten Hit (10 cortes) |
 | 112.5 | Kikoru e Kikoru No. 4 NPC contra um Honju | Usam as tecnicas da obra (os golpes genericos aparecem menos); no Falling Thunder a Kikoru salta alto (4-9 blocos) e cai sobre o kaiju com o raio do ceu; a No. 4 tambem o Ten Hit |
+
+## 113. COMBATE-4: Isao e No. 9 com o Isao com as tecnicas da obra
+
+Servidor dedicado + 2 clientes. Imagem: `docs/img/combate4_isao.jpg`.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 113.1 | Manoplas do Numbers 2 (com os requisitos ou no criativo), X varias vezes | Force Blast (1/6), Barrage Blast, Twin Blast, Rising Blast, Spiral Blast, Thunder Emperor |
+| 113.2 | R em cada uma perto de um kaiju | Cotovelada curta; duas ondas dos dois punhos; uppercut que lanca; soco com espiral amarela que voa; barragem de 9 socos com tracos amarelos (recarga longa) |
+| 113.3 | Isao (`kn8:isao`) contra um Honju | Usa as tecnicas acima; o Thunder Emperor e uma barragem de socos e o ultimo, maior, expoe o nucleo ("EXPOSTO") |
+| 113.4 | Isao sem o Numbers 2 (`kn8:isao_base`) | So golpes fisicos (jab, cotovelada, direto); sem ondas nem Thunder Emperor |
+| 113.5 | No. 9 com o Isao contra um soldado especial | Cotovelada e Thunder Emperor em barragem com os tracos amarelos |

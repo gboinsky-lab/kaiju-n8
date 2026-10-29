@@ -177,6 +177,66 @@ def combo(base, hits, end, sides=("left", "right"), power=1.0, height=0.0):
     return timeline(end, frames)
 
 
+# ------------------------------------------------------------------------------------------------ COMBATE-4
+# Squadron Style do Isao (documento de referencias: Barrage Blast = cotovelada curta, Twin Blast com os dois punhos,
+# Rising Blast = uppercut) e o Thunder Emperor do Miguel (barragem de socos fortes, o ultimo maior). Servem ao Isao e a
+# forma do No. 9 com o Isao. Poses inferidas [INFERENCIA].
+def elbow_anim(base, hit, end, power=1.0):
+    """Cotovelada: cotovelo direito recolhido atras e o tronco girando para meter o cotovelo no alvo com passo."""
+    wind = offset(base, {"arm_right": [-60, 50 * power, 40], "forearm_right": [-140, 0, 0], "chest": [0, 38 * power, 0],
+                         "body": [0, 16 * power, 0], "head": [0, -15, 0]})
+    impact = offset(lunge(base, 0.7 * power), {"arm_right": [-55, -78 * power, 40], "forearm_right": [-148, 0, 0],
+                                               "chest": [8, -48 * power, 0], "body": [5, -20 * power, 0],
+                                               "head": [0, 20, 0]})
+    return timeline(end, [(0, base, BACK), (hit * 0.65, wind, WIND), (hit, impact, STRIKE),
+                          (hit + 0.15, impact, HOLD), (end, base, BACK)])
+
+
+def twin_anim(base, hit, end, power=1.0):
+    """Twin Blast: os dois punhos recolhidos juntos e disparados ao mesmo tempo para a frente."""
+    load = offset(base, {"arm_left": [-10, -20, -25], "arm_right": [-10, 20, 25], "forearm_left": [-120, 0, 0],
+                         "forearm_right": [-120, 0, 0], "chest": [-8, 0, 0], "body_pos": [0, -1.0, 0.6]})
+    blast = offset(lunge(base, 0.9 * power), {"arm_left": [-58, 8, -6], "arm_right": [-58, -8, 6],
+                                              "forearm_left": [-4, 0, 0], "forearm_right": [-4, 0, 0],
+                                              "chest": [12, 0, 0], "body": [6, 0, 0]})
+    blast = merge(blast, {"arm_left": [-92, 8, -6], "arm_right": [-92, -8, 6]})
+    return timeline(end, [(0, base, BACK), (hit * 0.7, load, WIND), (hit, blast, STRIKE), (hit + 0.2, blast, HOLD),
+                          (end, base, BACK)])
+
+
+def rising_anim(base, hit, end, power=1.0):
+    """Rising Blast: agacha com o punho direito baixo e sobe num uppercut, o corpo esticando para cima."""
+    crouch = offset(base, {"arm_right": [30, 20, 20], "forearm_right": [-70, 0, 0], "chest": [14, 25, 0],
+                           "body": [10, 10, 0], "body_pos": [0, -2.5 * power, 0], "leg_left": [-22, 0, 0],
+                           "shin_left": [40, 0, 0], "leg_right": [-10, 0, 0], "shin_right": [35, 0, 0]})
+    upper = offset(base, {"arm_right": [-165, -10, 0], "forearm_right": [-35, 0, 0], "chest": [-16, -20, 0],
+                          "body": [-6, -8, 0], "head": [-18, 0, 0], "body_pos": [0, 1.2 * power, 0],
+                          "leg_right": [12, 0, 0], "foot_right": [25, 0, 0]})
+    return timeline(end, [(0, base, BACK), (hit * 0.65, crouch, WIND), (hit, upper, STRIKE),
+                          (hit + 0.2, upper, HOLD), (end, base, BACK)])
+
+
+def thunder_barrage(base, hits, end, power=1.0):
+    """Thunder Emperor (Miguel, 2026-10-29): barragem de socos fortes alternados e o ultimo, maior, de corpo
+    inteiro."""
+    frames = [(0, base, BACK)]
+    previous = 0.0
+    for i, t in enumerate(hits[:-1]):
+        side = ("left", "right")[i % 2]
+        gap = t - previous
+        frames.append((t - min(gap * 0.5, 0.05), cock_pose(side, base, power * 0.7), WIND))
+        frames.append((t, punch_pose(side, lunge(base, 0.5), power * 1.3, height=(i % 3 - 1) * 12), STRIKE))
+        previous = t
+    last = hits[-1]
+    coil = offset(lunge(base, 0.6), {"arm_right": [25, 35, 35], "forearm_right": [-125, 0, 0],
+                                     "chest": [-6, 55, 0], "body": [0, 25, 0], "head": [0, -35, 0]})
+    strike = offset(punch_pose("right", lunge(base, 1.2), 2.0 * power), {"arm_left": [60, 0, -20],
+                                                                        "forearm_left": [-90, 0, 0]})
+    frames += [(last - min(last - previous, 0.15) * 0.8, coil, WIND), (last, strike, STRIKE),
+               (last + 0.25, strike, HOLD), (end, base, BACK)]
+    return timeline(end, frames)
+
+
 # ------------------------------------------------------------------------------------------------ Isao
 def technique(profile, name):
     t = profile["techniques"][name]
@@ -215,8 +275,15 @@ def isao(profile):
                                                          (length, pose, BACK)], loop=True)
     techniques = profile["techniques"]
     if "barrage_blast" in techniques:
-        hits, end = technique(profile, "barrage_blast")
-        out[p + "action.barrage_blast"] = combo(guard, hits, end, power=1.2)
+        # COMBATE-4: Barrage Blast da obra = cotovelada curta.
+        (hit,), end = technique(profile, "barrage_blast")
+        out[p + "action.barrage_blast"] = elbow_anim(guard, hit, end, 1.2)
+    if "twin_blast" in techniques:
+        (hit,), end = technique(profile, "twin_blast")
+        out[p + "action.twin_blast"] = twin_anim(guard, hit, end)
+    if "rising_blast" in techniques:
+        (hit,), end = technique(profile, "rising_blast")
+        out[p + "action.rising_blast"] = rising_anim(guard, hit, end)
     if "jab_combo" in techniques:
         hits, end = technique(profile, "jab_combo")
         out[p + "action.jab_combo"] = combo(guard, hits, end, power=0.8)
@@ -256,18 +323,9 @@ def isao(profile):
             (0, guard, BACK), (hit * 0.8, load, WIND), (hit, blast, STRIKE), (hit + 0.25, blast, HOLD),
             (end, guard, BACK)])
     if "thunder_emperor" in techniques:
+        # COMBATE-4: barragem de socos com o ultimo maior (Miguel).
         hits, end = technique(profile, "thunder_emperor")
-        coil = offset(lunge(guard, 0.6, lead="left"), {
-            "arm_right": [25, 35, 35], "forearm_right": [-125, 0, 0], "arm_left": [-75, -20, -10],
-            "forearm_left": [-20, 0, 0], "chest": [-6, 55, 0], "body": [0, 25, 0], "head": [0, -35, 0],
-            "body_pos": [0, -1.5, 1.0]})
-        strike = offset(punch_pose("right", lunge(guard, 1.2), 2.0), {"arm_left": [60, 0, -20],
-                                                                      "forearm_left": [-90, 0, 0]})
-        drive = offset(strike, {"chest": [8, -12, 0], "body": [6, -6, 0], "body_pos": [0, -0.8, -1.5],
-                                "arm_right": [-4, 0, 0]})
-        out[p + "action.thunder_emperor"] = timeline(end, [
-            (0, guard, BACK), (hits[0] * 0.75, coil, WIND), (hits[0], strike, STRIKE), (hits[1], drive, HOLD),
-            (hits[1] + 0.25, drive, HOLD), (end, guard, BACK)])
+        out[p + "action.thunder_emperor"] = thunder_barrage(guard, hits, end)
     counter_hit = profile["counter"]["strike_delay_ticks"] * TICK
     counter_end = counter_hit + 8 * TICK
     hook_wind = offset(guard, {"arm_left": [-20, -20, -60], "forearm_left": [-90, 0, 0], "chest": [0, -25, 0],
@@ -459,22 +517,16 @@ def kaiju_no9_isao(_profile):
                                        "hand_left": [30, 0, 0], "hand_right": [30, 0, 0], "chest": [12, 0, 0]})
     out[p + "action.tendril"] = timeline(end, [(0, base, BACK), (hit * 0.7, open_, WIND), (hit, thrust, STRIKE),
                                                (hit + 0.15, thrust, HOLD), (end, base, BACK)])
-    times, step, end = multi_hits("no9_isao_barrage_blast")
-    out[p + "action.barrage_blast"] = combo(base, times, end, power=1.3)
+    # COMBATE-4: Barrage Blast = cotovelada; Thunder Emperor = barragem de socos (as do Isao, em escala de kaiju).
+    hit, end = ability("no9_isao_barrage_blast")
+    out[p + "action.barrage_blast"] = elbow_anim(base, hit, end, 1.3)
     hit, end = ability("no9_isao_sonic_blast")
     out[p + "action.sonic_blast"] = timeline(end, [
         (0, base, BACK), (hit * 0.7, cock_pose("right", lunge(base, 0.4), 1.4), WIND),
         (hit, punch_pose("right", lunge(base, 1.0), 1.4), STRIKE),
         (hit + 0.2, punch_pose("right", lunge(base, 1.0), 1.2), HOLD), (end, base, BACK)])
-    hit, end = ability("no9_isao_thunder_emperor")
-    coil = offset(lunge(base, 0.6), {"arm_right": [25, 35, 35], "forearm_right": [-125, 0, 0],
-                                     "arm_left": [-75, -20, -10], "forearm_left": [-20, 0, 0],
-                                     "chest": [-6, 55, 0], "body": [0, 25, 0], "head": [0, -35, 0]})
-    strike = offset(punch_pose("right", lunge(base, 1.2), 2.0), {"arm_left": [60, 0, -20],
-                                                                 "forearm_left": [-90, 0, 0]})
-    out[p + "action.thunder_emperor"] = timeline(end, [(0, base, BACK), (hit * 0.75, coil, WIND),
-                                                       (hit, strike, STRIKE), (hit + 0.25, strike, HOLD),
-                                                       (end, base, BACK)])
+    times, step, end = multi_hits("no9_isao_thunder_emperor")
+    out[p + "action.thunder_emperor"] = thunder_barrage(base, times, end)
     hit, end = ability("no9_isao_force_blast")
     load = offset(base, {"arm_left": [70, -20, -30], "arm_right": [70, 20, 30], "forearm_left": [-30, 0, 0],
                          "forearm_right": [-30, 0, 0], "chest": [-12, 0, 0], "body_pos": [0, -2.0, 0],

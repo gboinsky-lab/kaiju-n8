@@ -1259,5 +1259,10 @@
   "kn8.hud.combat.denied_needs_height": "Strike from above: you must be up high, over the target",
   "kn8.configuration.diveSlamSpeed": "Dive slam speed (Falling Thunder)",
   "kn8.configuration.diveSlamBonusPerBlock": "Dive slam extra damage per block fallen",
-  "kn8.configuration.diveSlamMaxBonus": "Dive slam maximum extra damage"
+  "kn8.configuration.diveSlamMaxBonus": "Dive slam maximum extra damage",
+  "kn8.weapon.special.barrage_blast": "Barrage Blast",
+  "kn8.weapon.special.twin_blast": "Twin Blast",
+  "kn8.weapon.special.rising_blast": "Rising Blast",
+  "kn8.weapon.special.spiral_blast": "Spiral Blast",
+  "kn8.weapon.special.thunder_emperor": "Thunder Emperor"
 }

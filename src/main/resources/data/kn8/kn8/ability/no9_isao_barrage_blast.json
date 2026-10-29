@@ -1,10 +1,9 @@
 {
-  "type": "kn8:multi_hit",
-  "damage_multiplier": 0.75,
-  "radius": 1.2,
+  "type": "kn8:melee",
+  "damage_multiplier": 1.9,
   "windup_ticks": 8,
-  "active_ticks": 15,
-  "cooldown_ticks": 70,
+  "active_ticks": 2,
+  "cooldown_ticks": 60,
   "animation": "action.barrage_blast",
   "vfx": [
     {
@@ -20,8 +19,6 @@
   "sound": "kn8:kaiju.slam",
   "behavior": {
     "priority": 3,
-    "max_range": 3.5,
-    "hits": 5,
-    "hit_interval": 3
+    "max_range": 3.5
   }
 }

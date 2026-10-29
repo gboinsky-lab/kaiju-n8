@@ -23,7 +23,9 @@ public class IsaoEntity extends HoshinaEntity {
     public static final String VARIANT_ISAO = "isao";
     /** Tecnicas do JSON e reacoes com animacao propria (isao.action.<id>). */
     public static final List<String> ANIMATED_ISAO = List.of(
-            "barrage_blast", "spiral_blast", "force_blast", "thunder_emperor", "counter", "dash", "parry");
+            "barrage_blast", "spiral_blast", "force_blast", "thunder_emperor", "counter", "dash", "parry",
+            // COMBATE-4: Squadron Style da obra (Twin Blast e Rising Blast).
+            "twin_blast", "rising_blast");
 
     public IsaoEntity(EntityType<? extends IsaoEntity> type, Level level) {
         super(type, level);

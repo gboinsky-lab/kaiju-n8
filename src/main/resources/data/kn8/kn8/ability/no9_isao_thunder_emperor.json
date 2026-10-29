@@ -1,9 +1,9 @@
 {
-  "type": "kn8:melee",
-  "damage_multiplier": 3.0,
-  "windup_ticks": 16,
-  "active_ticks": 2,
-  "cooldown_ticks": 140,
+  "type": "kn8:multi_hit",
+  "damage_multiplier": 0.85,
+  "windup_ticks": 12,
+  "active_ticks": 20,
+  "cooldown_ticks": 160,
   "animation": "action.thunder_emperor",
   "particles": "kn8:dust",
   "heavy": true,
@@ -27,6 +27,9 @@
   "sound": "kn8:kaiju.slam",
   "behavior": {
     "priority": 5,
-    "max_range": 4.0
-  }
+    "max_range": 4.0,
+    "hits": 9,
+    "hit_interval": 2
+  },
+  "radius": 1.6
 }

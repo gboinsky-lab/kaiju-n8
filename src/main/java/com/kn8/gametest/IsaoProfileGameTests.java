@@ -6,6 +6,7 @@ import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.registry.KN8Entities;
 import com.kn8.common.registry.KN8Items;
 import com.kn8.common.soldier.special.IsaoBaseEntity;
+import com.kn8.common.soldier.special.IsaoEntity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
@@ -42,6 +43,45 @@ public final class IsaoProfileGameTests {
             helper.assertTrue(def.techniques().values().stream()
                     .noneMatch(t -> t.type() == SpecialSoldierDef.TechniqueType.SLASH),
                     "Sem o Numbers 2 nao ha ondas de choque");
+            isao.discard();
+            helper.succeed();
+        });
+    }
+
+    /**
+     * COMBATE-4 (Miguel: Thunder Emperor = barragem de socos fortes, so do Isao com o Numbers 2 e do No. 9 com o
+     * Isao): o Thunder Emperor do Isao acerta o kaiju golpe a golpe (9 vezes) e expoe o nucleo; o Isao tem o Twin
+     * Blast e o Rising Blast da obra e o Isao sem o Numbers 2 nao tem o Thunder Emperor.
+     */
+    @GameTest(template = TEMPLATE, timeoutTicks = 120, batch = "kn8_combate4_isao")
+    public static void thunderEmperorIsABarrageOfPunches(GameTestHelper helper) {
+        IsaoEntity isao = helper.spawn(KN8Entities.ISAO.get(), new BlockPos(5, 1, 7));
+        isao.setNoAi(true);
+        KaijuEntity kaiju = helper.spawn(KN8Entities.PRIMIGENIUS_HONJU.get(), new BlockPos(11, 1, 7));
+        kaiju.setNoAi(true);
+        int[] drops = {0};
+        float[] last = new float[1];
+        helper.runAfterDelay(SETTLE, () -> {
+            SpecialSoldierDef def = isao.profile().orElseThrow();
+            helper.assertTrue(def.techniques().containsKey("twin_blast")
+                    && def.techniques().containsKey("rising_blast"),
+                    "Twin Blast e Rising Blast da obra");
+            helper.assertTrue(def.techniques().get("thunder_emperor").hits().size() == 9,
+                    "Thunder Emperor = barragem de 9 socos");
+            isao.lookAt(kaiju, 360.0F, 90.0F);
+            last[0] = kaiju.getHealth();
+            helper.assertTrue(isao.startTechnique("thunder_emperor", kaiju), "Thunder Emperor comecou");
+        });
+        helper.onEachTick(() -> {
+            if (kaiju.isAlive() && kaiju.getHealth() < last[0] - 0.01F) {
+                drops[0]++;
+                last[0] = kaiju.getHealth();
+            }
+        });
+        helper.runAfterDelay(SETTLE + 50, () -> {
+            helper.assertTrue(drops[0] >= 6, "A barragem deveria acertar varias vezes: " + drops[0]);
+            helper.assertTrue(kaiju.isCoreExposed(), "O ultimo golpe expoe o nucleo");
+            kaiju.discard();
             isao.discard();
             helper.succeed();
         });

@@ -529,6 +529,40 @@ KIKORU_TECHNIQUES["daruma_dropper_ten_hit"] = {
     "moves": [KIKORU_TECHNIQUES["daruma_dropper"]["moves"][i % 4 if i < 8 else 3 - i % 4] for i in range(10)]}
 
 
+# COMBATE-4: Squadron Style do Isao nas manoplas do Numbers 2 do jogador (perfil da faca). Barrage Blast = cotovelada,
+# Twin Blast = os dois punhos, Rising Blast = uppercut, Spiral Blast = soco girando o punho, Thunder Emperor =
+# barragem de socos alternados e o ultimo maior (Miguel) [INFERENCIA poses].
+PUNCH_R = {"wind": {"right_arm": [-20, 30, 30], "torso": [0, 30, 0]},
+           "hit": {"right_arm": [-92, 0, 0], "torso": [8, -25, 0], "right_leg": [-25, 0, 8]}}
+PUNCH_L = {"wind": {"left_arm": [-20, -30, -30], "torso": [0, -30, 0]},
+           "hit": {"left_arm": [-92, 0, 0], "torso": [8, 25, 0], "left_leg": [-25, 0, -8]}}
+ISAO_TECHNIQUES = {
+    "barrage_blast": {"moves": [
+        {"wind": {"right_arm": [-70, 60, 40], "torso": [0, 40, 0]},
+         "hit": {"right_arm": [-80, -70, 30], "torso": [10, -50, 0], "right_leg": [-35, 0, 10],
+                 "left_leg": [25, 0, -10], "body_pos": [0, -1.5, 0]}}]},
+    "twin_blast": {"moves": [
+        {"wind": {"right_arm": [-30, 25, 20], "left_arm": [-30, -25, -20], "torso": [-8, 0, 0],
+                  "body_pos": [0, -1, 0]},
+         "hit": {"right_arm": [-92, -8, 0], "left_arm": [-92, 8, 0], "torso": [12, 0, 0], "right_leg": [-35, 0, 8],
+                 "left_leg": [25, 0, -8], "body_pos": [0, -2, 0]}}]},
+    "rising_blast": {"moves": [
+        {"wind": {"right_arm": [25, 20, 20], "torso": [18, 25, 0], "body_pos": [0, -4, 0],
+                  "right_leg": [-30, 0, 8], "left_leg": [-20, 0, -8]},
+         "hit": {"right_arm": [-170, -10, 0], "torso": [-15, -15, 0], "body_pos": [0, 2, 0],
+                 "right_leg": [10, 0, 8], "left_leg": [-15, 0, -8]}}]},
+    "spiral_blast": {"moves": [
+        {"wind": {"right_arm": [-25, 35, 40], "torso": [0, 40, 0], "body_pos": [0, -1, 0]},
+         "hit": {"right_arm": [-92, 0, 90], "torso": [10, -35, 0], "right_leg": [-35, 0, 8],
+                 "left_leg": [25, 0, -8], "body_pos": [0, -2, 0]}}]},
+    "thunder_emperor": {"moves": [PUNCH_L, PUNCH_R] * 4 + [
+        {"wind": {"right_arm": [20, 40, 40], "torso": [-5, 55, 0], "body_pos": [0, -2, 0]},
+         "hit": {"right_arm": [-95, 0, 0], "left_arm": [20, 0, 0], "torso": [15, -40, 0],
+                 "right_leg": [-45, 0, 10], "left_leg": [35, 0, -10], "body_pos": [0, -3, 0]}}]},
+}
+TECHNIQUE_POSES = {**KIKORU_TECHNIQUES, **ISAO_TECHNIQUES}
+
+
 def technique_frames(moves, hit_ticks, duration_ticks, start, spin=None):
     """COMBATE-3: golpes em sequencia (ticks): cada um vai ao preparo e acerta no tick dado; o ultimo segue e volta a
     postura no fim. Golpe seguinte sem preparo sai direto da pose do anterior. Com spin, como o strike_frames."""
@@ -818,7 +852,7 @@ def weapon_animations():
             result[f"player.{item}.special"] = special_flurry(special)
         # COMBATE-1/3: tecnicas a mais da arma (player.<item>.special_<id>).
         for technique in weapon.get("techniques", []):
-            spec = KIKORU_TECHNIQUES.get(technique["id"])
+            spec = TECHNIQUE_POSES.get(technique["id"])
             if spec is None or family not in STANCES:
                 continue
             if technique["type"] == "dive_slam":
