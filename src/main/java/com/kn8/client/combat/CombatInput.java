@@ -32,7 +32,8 @@ import net.neoforged.neoforge.network.PacketDistributor;
 /**
  * Entrada de combate do jogador (M10a). Com uma arma do kn8 na mao: clique esquerdo = golpe leve, clique direito =
  * golpe pesado/carregado ao soltar (no lugar do ataque e do uso vanilla); V segurado = bloqueio; Z = esquiva na
- * direcao do movimento; Alt esquerdo = dash; R = ataque especial da arma (0.5).
+ * direcao do movimento; Alt esquerdo = dash; R = ataque especial da arma (0.5); X = troca a tecnica da arma
+ * (COMBATE-1; Shift + X volta uma).
  * Teclas configuraveis em Controles (categoria kn8). O cliente so manda a intencao; o servidor decide tudo.
  */
 @EventBusSubscriber(modid = KN8Constants.MOD_ID, value = Dist.CLIENT)
@@ -50,6 +51,12 @@ public final class CombatInput {
     /** 0.5: ataque especial da arma (so armas especiais, com {@code special} no JSON). */
     public static final KeyMapping SPECIAL_KEY = new KeyMapping("key.kn8.special", InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_R, CATEGORY);
+    /**
+     * COMBATE-1 (Miguel: "a"): troca a tecnica escolhida da arma na mao; a R usa a escolhida. No criativo o X do
+     * vanilla e "carregar barra" (so com numero), como o C do parkour.
+     */
+    public static final KeyMapping TECHNIQUE_KEY = new KeyMapping("key.kn8.technique", InputConstants.Type.KEYSYM,
+            GLFW.GLFW_KEY_X, CATEGORY);
 
     /** Ultimo estado enviado do bloqueio (para mandar so as mudancas); estado de entrada deste cliente. */
     private static boolean blockSent;
@@ -68,6 +75,7 @@ public final class CombatInput {
         event.register(DODGE_KEY);
         event.register(DASH_KEY);
         event.register(SPECIAL_KEY);
+        event.register(TECHNIQUE_KEY);
     }
 
     @SubscribeEvent
@@ -146,6 +154,11 @@ public final class CombatInput {
         while (SPECIAL_KEY.consumeClick()) {
             if (armed && minecraft.screen == null) {
                 send(CombatAction.SPECIAL, true, 0, 0);
+            }
+        }
+        while (TECHNIQUE_KEY.consumeClick()) {
+            if (armed && minecraft.screen == null) {
+                send(CombatAction.NEXT_TECHNIQUE, true, player.isShiftKeyDown() ? -1 : 1, 0);
             }
         }
         boolean wantBlock = armed && minecraft.screen == null && BLOCK_KEY.isDown();

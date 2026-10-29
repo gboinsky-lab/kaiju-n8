@@ -1,6 +1,9 @@
 // src/main/java/com/kn8/common/combat/CombatState.java
 package com.kn8.common.combat;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.kn8.common.data.def.WeaponDef;
 import com.kn8.common.data.def.WeaponProfileDef;
 import com.kn8.core.combat.ActionTimeline;
@@ -30,10 +33,14 @@ public final class CombatState {
     long criticalUntilTick = NEVER;
     /** Inicio do ataque carregado em andamento (NEVER = nao esta carregando). */
     long chargeStartTick = NEVER;
-    /** 0.5: tick em que o ataque especial volta a ficar pronto (por jogador, vale para qualquer arma). */
-    long specialReadyTick = NEVER;
-    /** 0.5: recarga total do ultimo ataque especial (para a HUD mostrar a fracao). */
-    int specialCooldownTicks;
+    /** COMBATE-1: tick em que cada tecnica (id) volta a ficar pronta; recarga propria por tecnica. */
+    final Map<String, Long> techniqueReadyTick = new HashMap<>();
+    /** COMBATE-1: recarga total de cada tecnica usada (para a HUD mostrar a fracao). */
+    final Map<String, Integer> techniqueCooldownTicks = new HashMap<>();
+    /** COMBATE-1: tecnica escolhida por arma (item); sem entrada = a primeira (o {@code special}). */
+    final Map<ResourceLocation, Integer> selectedTechnique = new HashMap<>();
+    /** COMBATE-1: tecnica em andamento (o dano sai dela no tick de impacto). */
+    WeaponDef.Special currentTechnique;
     /** 0.5.0-D: item da mao principal no ultimo tick (saque ao trocar). */
     ResourceLocation lastHeldItem;
     long reloadStartTick = NEVER;

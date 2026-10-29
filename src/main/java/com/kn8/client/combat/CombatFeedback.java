@@ -1,16 +1,22 @@
 // src/main/java/com/kn8/client/combat/CombatFeedback.java
 package com.kn8.client.combat;
 
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import com.kn8.common.combat.AmmoS2C;
 import com.kn8.common.combat.CombatAction;
 import com.kn8.common.combat.CombatResult;
+import com.kn8.common.combat.CombatService;
 import com.kn8.common.combat.CombatStateS2C;
 import com.kn8.common.network.KN8ClientHooks;
 import com.kn8.core.combat.SpecialGeometry;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Ultima resposta de combate recebida (M10b), para a HUD: passo do combo e um aviso curto ("PARRY!", "CRITICO!",
@@ -30,6 +36,12 @@ public final class CombatFeedback {
     /** 0.5: quando (relogio do cliente) o ataque especial fica pronto e a recarga total, vindos do servidor. */
     private static long specialReadyAt;
     private static long specialTotalMillis;
+    /**
+     * COMBATE-1: tecnica escolhida por arma (item; indice na lista dela), como no servidor, e quando o servidor
+     * confirmou a ultima troca.
+     */
+    private static final Map<ResourceLocation, Integer> TECHNIQUE_INDEX = new HashMap<>();
+    private static long techniqueChangedAt;
     /** 0.5.0-D: pente da arma de fogo na mao (magazine 0 = sem pente) e fim da recarga no relogio do cliente. */
     private static int rounds;
     private static int magazine;
@@ -82,6 +94,15 @@ public final class CombatFeedback {
                 && (result == CombatResult.OK || result == CombatResult.SLOWED_NO_STAMINA)) {
             WeaponRecoil.onShot();
         }
+        if (payload.action() == CombatAction.NEXT_TECHNIQUE.ordinal()) {
+            // Na troca de tecnica os campos do combo levam o indice escolhido e quantas a arma tem.
+            LocalPlayer player = Minecraft.getInstance().player;
+            if (player != null) {
+                CombatService.heldWeapon(player).ifPresent(weapon -> TECHNIQUE_INDEX.put(weapon.item(),
+                        payload.comboStep()));
+            }
+            techniqueChangedAt = now;
+        }
         if (payload.action() == CombatAction.SPECIAL.ordinal()) {
             // Na acao SPECIAL os campos do combo levam a recarga em ticks (CombatStateS2C).
             specialReadyAt = now + payload.comboStep() * MILLIS_PER_TICK;
@@ -91,6 +112,16 @@ public final class CombatFeedback {
             lastResult = result;
             lastResultAt = now;
         }
+    }
+
+    /** COMBATE-1: indice da tecnica escolhida na lista da arma (o servidor manda na troca; 0 ao entrar). */
+    public static int techniqueIndex(ResourceLocation weapon) {
+        return TECHNIQUE_INDEX.getOrDefault(weapon, 0);
+    }
+
+    /** COMBATE-1: a tecnica acabou de ser trocada (a HUD destaca a linha por um instante)? */
+    public static boolean techniqueJustChanged() {
+        return System.currentTimeMillis() - techniqueChangedAt < MESSAGE_MILLIS;
     }
 
     /** Fracao da recarga do ataque especial (0 = acabou de usar, 1 = pronto). */

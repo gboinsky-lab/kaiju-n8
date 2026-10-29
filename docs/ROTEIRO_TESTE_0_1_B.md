@@ -1519,3 +1519,18 @@ para andar, correr e lutar. Imagem: `docs/img/fix2_armas_e_juntas.jpg`.
 | 109.5 | No. 10 pequeno, No. 10 gigante e fusao andando, investindo e golpeando | Tronco e pernas juntos: a bacia nao abre quando o tronco inclina (pernas voltaram a ser filhas do tronco, como antes do RIG-2) |
 | 109.6 | Os personagens acima atacando e saltando (vault) | Tronco, ombros e quadril giram no mesmo ponto de antes do RIG-2; joelho, pe, peito e cotovelo novos continuam |
 | 109.7 | No. 8, No. 9, forma preta, Isao, No. 13, No. 9 com o Isao | Sem mudanca nesta etapa (animacoes feitas sobre o rig novo) |
+
+## 110. COMBATE-1: varias tecnicas por arma para o jogador
+
+Servidor dedicado + 2 clientes, sobrevivencia. Duas espadas do Hoshina (uma em cada mao), Primigenius a frente.
+Imagem: `docs/img/combate1_tecnicas_do_jogador.jpg`.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 110.1 | Olhar a HUD com as duas espadas | "Kūuchi PRONTO [R] (1/2, troca [X])" |
+| 110.2 | R | Sai o Kūuchi (corte que voa); a linha mostra a recarga dele |
+| 110.3 | X | A linha troca para "Kōsa-uchi ... (2/2 ...)" e acende por um instante; Shift + X volta |
+| 110.4 | R com o Kūuchi ainda recarregando | Sai o Kōsa-uchi (dois cortes em X); o outro cliente ve os cortes |
+| 110.5 | X e R logo depois | Kūuchi negado (recarga propria dele continua) |
+| 110.6 | Machado, faca, espada | Uma tecnica so: X nao muda nada e R continua como antes |
+| 110.7 | Controles > kn8 | Tecla "Trocar tecnica da arma" (X), configuravel |

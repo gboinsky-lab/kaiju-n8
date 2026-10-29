@@ -1,6 +1,7 @@
 // src/main/java/com/kn8/common/combat/CombatService.java
 package com.kn8.common.combat;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.kn8.common.numbered.NumberedGearService;
@@ -20,6 +21,7 @@ import com.kn8.common.registry.KN8Sounds;
 import com.kn8.common.soldier.special.HoshinaEntity;
 import com.kn8.common.vfx.VfxService;
 import com.kn8.core.combat.CombatMath;
+import com.kn8.core.combat.TechniqueSelection;
 import com.kn8.core.power.BodyStat;
 import com.kn8.core.power.PowerMath;
 
@@ -133,6 +135,7 @@ public final class CombatService {
             case CHARGE_START -> startCharge(player);
             case CHARGE_RELEASE -> releaseCharge(player);
             case SPECIAL -> special(player);
+            case NEXT_TECHNIQUE -> cycleTechnique(player, payload.dirX() < 0.0F ? -1 : 1);
         }
     }
 
@@ -243,12 +246,14 @@ public final class CombatService {
         WeaponDef weapon = state.currentWeapon;
         boolean heavy = state.currentAction == CombatAction.HEAVY;
         state.currentWeapon = null;
-        if (state.currentAction == CombatAction.SPECIAL && weapon.special().isPresent()) {
+        if (state.currentAction == CombatAction.SPECIAL && state.currentTechnique != null) {
+            WeaponDef.Special technique = state.currentTechnique;
+            state.currentTechnique = null;
             double release = PowerMath.damageMultiplier(PowerService.effectiveRelease(player), PowerService.params());
             // 0.5.0: a forca do corpo vale tambem no especial (golpe da arma).
             float damage = CombatMath.damage(weapon.baseDamage(), state.currentMultiplier, 1.0F, release)
                     * PowerService.strengthMultiplier(player) * KaijuFormService.damageFactor(player);
-            SpecialAttacks.resolve(player, weapon.special().get(), damage, specialDamage(player));
+            SpecialAttacks.resolve(player, technique, damage, specialDamage(player));
             return;
         }
         strike(player, weapon, state.currentMultiplier, heavy);
@@ -268,7 +273,7 @@ public final class CombatService {
             replySpecial(player, CombatResult.DENIED_NO_WEAPON);
             return false;
         }
-        Optional<WeaponDef.Special> special = weapon.get().special();
+        Optional<WeaponDef.Special> special = selectedTechnique(player, weapon.get());
         if (special.isEmpty() && weapon.get().style() == WeaponDef.Style.FIREARM && !state.blocking
                 && WeaponHandling.manualReload(player, state, weapon.get(), now)) {
             // 0.5.0-D: na arma de fogo sem especial, a tecla R recarrega.
@@ -317,10 +322,14 @@ public final class CombatService {
         state.currentAction = CombatAction.SPECIAL;
         state.currentWeapon = weapon.get();
         state.currentMultiplier = def.multiplier();
-        state.specialCooldownTicks = def.cooldownTicks();
-        state.specialReadyTick = now + def.cooldownTicks();
-        AnimationBridge.playPlayer(player, AnimationBridge.weaponAction(weapon.get().item(), "special"),
-                (float) def.durationTicks() / duration);
+        state.currentTechnique = def;
+        state.techniqueCooldownTicks.put(def.id(), def.cooldownTicks());
+        state.techniqueReadyTick.put(def.id(), now + def.cooldownTicks());
+        // COMBATE-1: a primeira tecnica toca a animacao "special" de sempre; as outras "special_<id>" (o cliente
+        // volta para "special" enquanto a animacao propria nao existe).
+        boolean first = weapon.get().special().map(s -> s.id().equals(def.id())).orElse(false);
+        AnimationBridge.playPlayer(player, AnimationBridge.weaponAction(weapon.get().item(),
+                first ? "special" : "special_" + def.id()), (float) def.durationTicks() / duration);
         player.level().playSound(null, player.getX(), player.getEyeY(), player.getZ(),
                 weaponSound(weapon.get(), "heavy", KN8Sounds.BLADE_HEAVY.get()), SoundSource.PLAYERS,
                 SWING_SOUND_VOLUME, 0.8F);
@@ -357,16 +366,58 @@ public final class CombatService {
                 || attacker instanceof KaijuEntity kaiju && kaiju.isDealingHeavyHit();
     }
 
-    /** Ticks que faltam para o ataque especial ficar pronto (0 = pronto). */
+    /** Ticks que faltam para a tecnica escolhida da arma na mao ficar pronta (0 = pronta ou sem tecnica). */
     public static long specialCooldown(ServerPlayer player) {
-        CombatState state = state(player);
-        return state.specialReadyTick == CombatState.NEVER ? 0 : Math.max(0, state.specialReadyTick - now(player));
+        return heldWeapon(player).flatMap(weapon -> selectedTechnique(player, weapon))
+                .map(technique -> techniqueCooldown(player, technique.id())).orElse(0L);
     }
 
-    /** Resposta do especial: leva a recarga restante e a total (ver {@link CombatStateS2C}). */
+    /** COMBATE-1: ticks que faltam para a tecnica {@code id} ficar pronta (0 = pronta). */
+    public static long techniqueCooldown(ServerPlayer player, String id) {
+        Long ready = state(player).techniqueReadyTick.get(id);
+        return ready == null ? 0 : Math.max(0, ready - now(player));
+    }
+
+    /** COMBATE-1: tecnica escolhida da arma (a primeira se nada foi escolhido ou a lista encolheu num reload). */
+    public static Optional<WeaponDef.Special> selectedTechnique(ServerPlayer player, WeaponDef weapon) {
+        List<WeaponDef.Special> all = weapon.allTechniques();
+        if (all.isEmpty()) {
+            return Optional.empty();
+        }
+        int index = state(player).selectedTechnique.getOrDefault(weapon.item(), 0);
+        return Optional.of(all.get(TechniqueSelection.clamp(index, all.size())));
+    }
+
+    /**
+     * COMBATE-1: troca a tecnica escolhida da arma na mao (tecla X; publico para os GameTests). Arma sem tecnica ou
+     * com uma so: nada muda. Responde com o indice e a recarga da tecnica nova.
+     */
+    public static boolean cycleTechnique(ServerPlayer player, int delta) {
+        Optional<WeaponDef> weapon = heldWeapon(player);
+        List<WeaponDef.Special> all = weapon.map(WeaponDef::allTechniques).orElse(List.of());
+        if (all.size() < 2) {
+            PacketDistributor.sendToPlayer(player, new CombatStateS2C(CombatAction.NEXT_TECHNIQUE.ordinal(),
+                    (all.isEmpty() ? CombatResult.DENIED_NO_SPECIAL : CombatResult.OK).ordinal(), 0, all.size()));
+            return false;
+        }
+        CombatState state = state(player);
+        int index = TechniqueSelection.next(state.selectedTechnique.getOrDefault(weapon.get().item(), 0), delta,
+                all.size());
+        state.selectedTechnique.put(weapon.get().item(), index);
+        PacketDistributor.sendToPlayer(player, new CombatStateS2C(CombatAction.NEXT_TECHNIQUE.ordinal(),
+                CombatResult.OK.ordinal(), index, all.size()));
+        replySpecial(player, CombatResult.OK);
+        return true;
+    }
+
+    /** Resposta do especial: leva a recarga restante e a total da tecnica escolhida (ver {@link CombatStateS2C}). */
     private static void replySpecial(ServerPlayer player, CombatResult result) {
+        int total = heldWeapon(player).flatMap(weapon -> selectedTechnique(player, weapon))
+                .map(technique -> state(player).techniqueCooldownTicks.getOrDefault(technique.id(),
+                        technique.cooldownTicks()))
+                .orElse(0);
         PacketDistributor.sendToPlayer(player, new CombatStateS2C(CombatAction.SPECIAL.ordinal(), result.ordinal(),
-                (int) specialCooldown(player), state(player).specialCooldownTicks));
+                (int) specialCooldown(player), total));
     }
 
     private static void strike(ServerPlayer player, WeaponDef weapon, float multiplier, boolean heavy) {

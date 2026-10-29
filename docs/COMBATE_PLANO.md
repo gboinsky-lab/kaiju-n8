@@ -55,7 +55,16 @@ Regras do documento (valem para toda a etapa):
 | **COMBATE-7 — Kafka/No. 8, Mina, Reno** | Soco de ruptura do No. 8 (forma do jogador também), mira/clarão/impacto da Mina, gelo do Reno em etapas |
 | **COMBATE-8 — regressão** | Duelos da matriz (as técnicas mudam o dano), GameTests, efeitos (VFX) e sons de cada técnica nova |
 
-## 4. [DECIDIR] antes da COMBATE-1
+## 4. Respostas do Miguel (2026-10-29) aos [DECIDIR]
+
+1. **Escolha da técnica:** (a): tecla **X** troca (Shift + X volta uma), **R** usa a escolhida. Feito na COMBATE-1.
+2. **Técnicas genéricas da Kikoru:** ficam como golpes básicos, abaixo das da obra.
+3. **Técnica nº 4 da Kikoru:** criar uma técnica nova (não está na obra; marcar [INFERÊNCIA]).
+4. **Narumi com o Numbers 1:** as técnicas são aprimoradas e **sempre acertam o alvo** (o Numbers 1 prevê o futuro;
+   a previsão não muda o combate em si, só garante o acerto).
+5. **Spiral Blast do Isao:** um soco que cria uma espiral amarela.
+
+## 5. Perguntas que ficaram (histórico)
 
 1. **Como o jogador escolhe a técnica:** (a) uma tecla troca a técnica e R usa (como munição/seletor); (b) R + número; (c) a técnica muda pelo combo (leve, leve, R = técnica 2...). Proposta: (a), tecla **X** para trocar [SUPOSIÇÃO].
 2. **Técnicas genéricas da Kikoru que não existem na obra** (guard_break, dash_strike...): ficam como golpes básicos sem nome da obra, ou saem do NPC? O documento pede não apagar; proposta: ficam, com prioridade menor que as da obra.

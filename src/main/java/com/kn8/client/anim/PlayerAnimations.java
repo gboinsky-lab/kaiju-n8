@@ -142,9 +142,16 @@ public final class PlayerAnimations {
         if (fade > 0 && controller.isActive()) {
             found = controller.replaceAnimationWithFade(AbstractFadeModifier.standardFadeIn(fade,
                     EasingType.EASE_IN_OUT_SINE), payload.animation(), true);
+            if (!found && fallbackSpecial(payload.animation()) != null) {
+                found = controller.replaceAnimationWithFade(AbstractFadeModifier.standardFadeIn(fade,
+                        EasingType.EASE_IN_OUT_SINE), fallbackSpecial(payload.animation()), true);
+            }
             startTick = 0.0F;
         } else {
             found = controller.triggerAnimation(payload.animation(), startTick);
+            if (!found && fallbackSpecial(payload.animation()) != null) {
+                found = controller.triggerAnimation(fallbackSpecial(payload.animation()), startTick);
+            }
             if (found && fade > 0) {
                 // Sem golpe tocando, a camada de combate entra misturando com a postura de baixo (saque e guarda nao
                 // comecam na pose da postura e cortavam seco).
@@ -158,6 +165,17 @@ public final class PlayerAnimations {
         }
         remember(new Received(player.getGameProfile().getName(), payload.animation(),
                 AnimTiming.delayTicks(payload.serverTick(), clientTick), catchUp, found));
+    }
+
+    /**
+     * COMBATE-1: tecnica sem animacao propria ({@code player.<arma>.special_<id>}) toca a do especial da arma
+     * ({@code player.<arma>.special}). Null se a animacao pedida nao e de tecnica.
+     */
+    private static ResourceLocation fallbackSpecial(ResourceLocation animation) {
+        String path = animation.getPath();
+        int at = path.lastIndexOf(".special_");
+        return at < 0 ? null : ResourceLocation.fromNamespaceAndPath(animation.getNamespace(),
+                path.substring(0, at) + ".special");
     }
 
     /** Os golpes desta arma aparecem em primeira pessoa? ({@code first_person} do perfil; sem perfil, nao). */

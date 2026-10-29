@@ -1,6 +1,7 @@
 // src/main/java/com/kn8/common/data/def/WeaponDef.java
 package com.kn8.common.data.def;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -28,10 +29,25 @@ import net.minecraft.util.StringRepresentable;
  *
  * <p>{@code profile} (0.5.0-D, opcional): perfil de animacao e manuseio da familia da arma
  * ({@code weapon_profile/<id>.json}: maos, postura, saque, guarda, recarga, coice, NPC).</p>
+ *
+ * <p>{@code techniques} (COMBATE-1, opcional): tecnicas a mais da arma para o jogador, no mesmo formato do
+ * {@code special}. O jogador troca a tecnica escolhida com a tecla X e usa com a R; o {@code special} continua sendo
+ * a primeira (nada some). Cada tecnica tem a propria recarga.</p>
  */
 public record WeaponDef(ResourceLocation item, float baseDamage, float reach, Style style,
         Map<String, Action> actions, List<Float> combo, Map<String, ResourceLocation> sounds,
-        Optional<Special> special, Optional<ResourceLocation> profile) {
+        Optional<Special> special, Optional<ResourceLocation> profile, List<Special> techniques) {
+
+    /** COMBATE-1: todas as tecnicas da arma para o jogador, o {@code special} primeiro. */
+    public List<Special> allTechniques() {
+        if (special.isEmpty()) {
+            return techniques;
+        }
+        List<Special> all = new ArrayList<>(techniques.size() + 1);
+        all.add(special.get());
+        all.addAll(techniques);
+        return List.copyOf(all);
+    }
 
     /** Familia da arma (decide animacoes e regras de combate). */
     public enum Style implements StringRepresentable {
@@ -141,6 +157,7 @@ public record WeaponDef(ResourceLocation item, float baseDamage, float reach, St
             Codec.unboundedMap(Codec.STRING, ResourceLocation.CODEC).optionalFieldOf("sounds", Map.of())
                     .forGetter(WeaponDef::sounds),
             Special.CODEC.optionalFieldOf("special").forGetter(WeaponDef::special),
-            ResourceLocation.CODEC.optionalFieldOf("profile").forGetter(WeaponDef::profile)
+            ResourceLocation.CODEC.optionalFieldOf("profile").forGetter(WeaponDef::profile),
+            Special.CODEC.listOf().optionalFieldOf("techniques", List.of()).forGetter(WeaponDef::techniques)
     ).apply(i, WeaponDef::new));
 }

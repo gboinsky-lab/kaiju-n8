@@ -14,7 +14,12 @@ public enum CombatAction {
     /** 0.1-B: solta o ataque carregado (clique direito solto). */
     CHARGE_RELEASE,
     /** 0.5: ataque especial da arma (tecla R), so armas com {@code special} no JSON. */
-    SPECIAL;
+    SPECIAL,
+    /**
+     * COMBATE-1: troca a tecnica escolhida da arma na mao (tecla X); {@code dirX} positivo = proxima, negativo =
+     * anterior.
+     */
+    NEXT_TECHNIQUE;
 
     public static CombatAction byIndex(int index) {
         CombatAction[] values = values();

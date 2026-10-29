@@ -1245,5 +1245,8 @@
   "kn8.host.form.dir.w": "W",
   "kn8.host.form.dir.nw": "NW",
   "kn8.command.host.not_transformed": "This player is not in the Kaiju No. 8 form.",
-  "kn8.command.host.rampage": "%s reached the form's time limit."
+  "kn8.command.host.rampage": "%s reached the form's time limit.",
+  "key.kn8.technique": "Switch weapon technique",
+  "kn8.hud.technique.many": "%s (%s/%s, switch [%s])",
+  "kn8.weapon.special.kosa_uchi": "Kōsa-uchi"
 }

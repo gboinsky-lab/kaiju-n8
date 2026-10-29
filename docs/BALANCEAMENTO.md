@@ -591,6 +591,10 @@ sobe mais rápido. A fuga do No. 9 só dá mérito a quem causou dano nele.
 **Kūuchi** (especial da espada do Hoshina, 0.6-D, tipo `slash_wave`): corte que voa 12 blocos a 1,6 bloco/tick,
 ×1,6, atravessa os alvos, 20 de stamina, 3 de calor, recarga de 40 ticks [SUPOSIÇÃO].
 
+**Kōsa-uchi do jogador** (segunda técnica da espada do Hoshina, COMBATE-1, `techniques` do `hoshina_sword.json`): dois
+cortes em X (`roll_degrees` 45, abertos 6 graus) que voam 12 blocos a 1,5 bloco/tick, ×1,5 cada, 18 ticks (corte no 7),
+25 de stamina, 4 de calor, recarga própria de 90 ticks (a do NPC) [SUPOSIÇÃO]. Cada técnica tem a sua recarga.
+
 ### Soldados especiais (`special_soldier/<id>.json`, 0.6-D)
 
 **Reno, Mina e Narumi** (0.7-C): vida, armadura e velocidade da seção 12 do Balanceamento v1.2; o resto

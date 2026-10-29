@@ -7,6 +7,7 @@ import java.util.UUID;
 import com.kn8.KN8Constants;
 import com.kn8.common.attribute.PowerService;
 import com.kn8.common.combat.CombatService;
+import com.kn8.common.combat.SlashProjectile;
 import com.kn8.common.combat.WeaponHandling;
 import com.kn8.common.config.ServerConfig;
 import com.kn8.common.kaiju.KaijuEntity;
@@ -20,12 +21,14 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.monster.Husk;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.util.FakePlayer;
 import net.neoforged.neoforge.common.util.FakePlayerFactory;
@@ -100,6 +103,54 @@ public final class SpecialAttackGameTests {
             soldier.discard();
             helper.succeed();
         });
+    }
+
+    /**
+     * COMBATE-1: a espada do Hoshina tem duas tecnicas (Kuuchi e Kosa-uchi); X troca, R usa a escolhida, cada uma com
+     * a propria recarga; o Kosa-uchi solta os dois cortes do X. Arma com uma tecnica so nao troca.
+     */
+    @GameTest(template = TEMPLATE)
+    public static void playerTechniquesCycleWithOwnCooldowns(GameTestHelper helper) {
+        FakePlayer player = player(helper, "techniques");
+        player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(KN8Items.HOSHINA_SWORD.get()));
+        player.setItemInHand(InteractionHand.OFF_HAND, new ItemStack(KN8Items.HOSHINA_SWORD.get()));
+        int[] slashes = new int[1];
+        helper.onEachTick(() -> CombatService.tick(player));
+        helper.runAfterDelay(SETTLE_TICKS, () -> {
+            PowerService.setStamina(player, 100);
+            helper.assertTrue(CombatService.heldWeapon(player).map(w -> w.allTechniques().size()).orElse(0) == 2,
+                    "A espada do Hoshina deveria ter duas tecnicas");
+            helper.assertTrue(CombatService.selectedTechnique(player, CombatService.heldWeapon(player).get())
+                    .map(t -> t.id().equals("kuuchi")).orElse(false), "A primeira tecnica deveria ser o Kuuchi");
+            helper.assertTrue(CombatService.special(player), "O Kuuchi deveria sair");
+            helper.assertTrue(CombatService.techniqueCooldown(player, "kuuchi") > 0, "O Kuuchi deveria recarregar");
+            helper.assertTrue(CombatService.cycleTechnique(player, 1), "X deveria trocar a tecnica");
+            helper.assertTrue(CombatService.specialCooldown(player) == 0,
+                    "O Kosa-uchi tem recarga propria e deveria estar pronto");
+        });
+        // Depois do Kuuchi (14 ticks): o Kosa-uchi sai com a recarga do Kuuchi ainda correndo.
+        helper.runAfterDelay(SETTLE_TICKS + 16, () -> {
+            PowerService.setStamina(player, 100);
+            slashes[0] = slashCount(helper);
+            helper.assertTrue(CombatService.special(player), "O Kosa-uchi deveria sair com o Kuuchi em recarga");
+        });
+        helper.runAfterDelay(SETTLE_TICKS + 16 + 10, () -> {
+            helper.assertTrue(slashCount(helper) >= slashes[0] + 2, "O Kosa-uchi deveria soltar os dois cortes do X");
+            helper.assertTrue(CombatService.cycleTechnique(player, 1), "X de novo volta ao Kuuchi");
+            PowerService.setStamina(player, 100);
+            helper.assertTrue(CombatService.specialCooldown(player) > 0 && !CombatService.special(player),
+                    "O Kuuchi continua na propria recarga");
+            player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(KN8Items.AXE.get()));
+            helper.assertTrue(!CombatService.cycleTechnique(player, 1), "Arma com uma tecnica so nao troca");
+            helper.getLevel().getEntitiesOfClass(SlashProjectile.class, new AABB(helper.absolutePos(BlockPos.ZERO))
+                    .inflate(40)).forEach(Entity::discard);
+            helper.succeed();
+        });
+    }
+
+    private static int slashCount(GameTestHelper helper) {
+        return helper.getLevel().getEntitiesOfClass(SlashProjectile.class,
+                new AABB(helper.absolutePos(BlockPos.ZERO)).inflate(40)).size();
     }
 
     @GameTest(template = TEMPLATE)
