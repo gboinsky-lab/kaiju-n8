@@ -1546,3 +1546,15 @@ Servidor dedicado + 2 clientes. Imagem: `docs/img/combate2_pernas_e_no10.jpg`.
 | 111.3 | Soldado, Hoshina, Kikoru, Kikoru No. 4, Mina, Reno, Reno No. 6, Narumi, Kafka andando e correndo (de lado) | A perna que vai a frente dobra o joelho e estica ao pisar; correndo o pe de tras sobe; pe plano no apoio; armas nas maos como antes |
 | 111.4 | Os mesmos parados | Joelhos levemente dobrados (mais com a perna aberta), pes no chao |
 | 111.5 | No. 10 pequeno, gigante e fusao andando | Joelho dobrando na passada; cauda como antes |
+
+## 112. COMBATE-3: Kikoru e Kikoru No. 4 com as tecnicas da obra
+
+Servidor dedicado + 2 clientes. Imagem: `docs/img/combate3_kikoru.jpg`.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 112.1 | Machado (`kn8:axe`) na mao, olhar a HUD e apertar X varias vezes | Golpe Sismico (1/7), No. 1 Falling Thunder, No. 2 Water Skimmer, No. 3 Half-Moon, No. 4 Rising Thunder, No. 5 Twin Swallows, No. 6 Daruma Dropper |
+| 112.2 | R com o Falling Thunder perto de um kaiju | Salta para cima e para a frente com o machado erguido e cai esmagando (anel dourado, rachadura); o outro cliente ve o salto |
+| 112.3 | R em cada uma das outras | Corte horizontal com onda a frente; giro inteiro; corte de baixo para cima que lanca; avanco com dois cortes em X; quatro cortes descendo; cada uma com a propria recarga |
+| 112.4 | Machado do Numbers 4 (com os requisitos) | Mergulho do Ceu, as seis e o Daruma Dropper: Ten Hit (10 cortes) |
+| 112.5 | Kikoru e Kikoru No. 4 NPC contra um Honju | Usam as tecnicas da obra (os golpes genericos aparecem menos); a No. 4 tambem o Ten Hit |

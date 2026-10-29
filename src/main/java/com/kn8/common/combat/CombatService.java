@@ -323,6 +323,10 @@ public final class CombatService {
         state.currentWeapon = weapon.get();
         state.currentMultiplier = def.multiplier();
         state.currentTechnique = def;
+        if (def.type() == WeaponDef.SpecialType.LEAP_SLAM) {
+            // COMBATE-3: o salto do Falling Thunder comeca agora e cai no tick do impacto.
+            SpecialAttacks.startLeap(player, def, Math.min(duration - 1, CombatMath.faster(def.impactTick(), speed)));
+        }
         state.techniqueCooldownTicks.put(def.id(), def.cooldownTicks());
         state.techniqueReadyTick.put(def.id(), now + def.cooldownTicks());
         // COMBATE-1: a primeira tecnica toca a animacao "special" de sempre; as outras "special_<id>" (o cliente

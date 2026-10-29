@@ -59,6 +59,36 @@ public final class SpecialGeometry {
         return vertical && horizontalDistanceToBox(centerX, centerZ, minX, minZ, maxX, maxZ) <= radius;
     }
 
+    /** Gravidade e freios do ar do vanilla (entidade viva: vy = (vy - 0,08) x 0,98; horizontal x 0,91 por tick). */
+    private static final double GRAVITY = 0.08;
+    private static final double AIR_DRAG_Y = 0.98;
+    private static final double AIR_DRAG_XZ = 0.91;
+
+    /** COMBATE-3: velocidade horizontal que anda {@code distance} blocos em {@code ticks} no ar (com o freio). */
+    public static double leapHorizontalSpeed(double distance, int ticks) {
+        double travelled = (1.0 - Math.pow(AIR_DRAG_XZ, ticks)) / (1.0 - AIR_DRAG_XZ);
+        return distance / travelled;
+    }
+
+    /** COMBATE-3: velocidade vertical do salto que volta a altura de partida em {@code ticks} (gravidade e freio). */
+    public static double leapVerticalSpeed(int ticks) {
+        // A altura no tick T e linear na velocidade inicial: y = v x A - B (A e B pela simulacao do vanilla).
+        double withOne = leapHeight(1.0, ticks);
+        double withZero = leapHeight(0.0, ticks);
+        return -withZero / (withOne - withZero);
+    }
+
+    /** Altura (blocos) depois de {@code ticks} saindo com a velocidade vertical {@code speed}. */
+    public static double leapHeight(double speed, int ticks) {
+        double y = 0.0;
+        double v = speed;
+        for (int i = 0; i < ticks; i++) {
+            y += v;
+            v = (v - GRAVITY) * AIR_DRAG_Y;
+        }
+        return y;
+    }
+
     /** Fracao da recarga que ja passou (0 = acabou de usar, 1 = pronto). */
     public static float cooldownProgress(long remainingTicks, long totalTicks) {
         if (totalTicks <= 0 || remainingTicks <= 0) {

@@ -21,7 +21,9 @@ public class KikoruEntity extends HoshinaEntity {
     public static final String VARIANT_KIKORU = "kikoru";
     /** Tecnicas do JSON e reacoes com animacao propria (kikoru.action.<id>). */
     public static final List<String> ANIMATED_KIKORU = List.of("axe_slash", "heavy_swing", "shockwave", "dash_strike",
-            "ground_smash", "guard_break", "counter", "dash", "parry");
+            "ground_smash", "guard_break", "counter", "dash", "parry",
+            // COMBATE-3: estilo do machado do Esquadrao (nomes da obra; a no. 4 e nova, Miguel 2026-10-29).
+            "falling_thunder", "water_skimmer", "half_moon", "rising_thunder", "twin_swallows", "daruma_dropper");
 
     public KikoruEntity(EntityType<? extends KikoruEntity> type, Level level) {
         super(type, level);

@@ -12,6 +12,22 @@ class SpecialGeometryTest {
     private static final double DELTA = 1e-6;
 
     @Test
+    void leapLandsAtTheStartHeightAfterTheGivenTicks() {
+        double vertical = SpecialGeometry.leapVerticalSpeed(12);
+        assertEquals(0.0, SpecialGeometry.leapHeight(vertical, 12), 1e-9);
+        assertTrue(SpecialGeometry.leapHeight(vertical, 6) > 1.0, "O salto deveria subir mais de um bloco");
+        // Horizontal: 5 blocos em 12 ticks com o freio do ar de 0,91 por tick.
+        double speed = SpecialGeometry.leapHorizontalSpeed(5.0, 12);
+        double x = 0;
+        double v = speed;
+        for (int i = 0; i < 12; i++) {
+            x += v;
+            v *= 0.91;
+        }
+        assertEquals(5.0, x, 1e-9);
+    }
+
+    @Test
     void distanceToBoxIsZeroInsideAndMeasuredFromTheEdge() {
         assertEquals(0.0, SpecialGeometry.horizontalDistanceToBox(0, 0, -1, -1, 1, 1), DELTA);
         assertEquals(2.0, SpecialGeometry.horizontalDistanceToBox(0, 0, 2, -1, 4, 1), DELTA);

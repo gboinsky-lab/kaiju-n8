@@ -17,8 +17,8 @@ from pathlib import Path
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).parent))
-from gen_player_animations import (COMBOS, HEAVIES, SPECIALS, STANCES, animate, axe_hand_point, merged,  # noqa: E402
-                                   stance, stance_move, to_gecko)
+from gen_player_animations import (COMBOS, HEAVIES, KIKORU_TECHNIQUES, SPECIALS, STANCES, animate,  # noqa: E402
+                                   axe_hand_point, merged, stance, stance_move, technique_frames, to_gecko)
 
 ROOT = Path(__file__).resolve().parents[2]
 SPECIES = "kikoru"
@@ -66,6 +66,19 @@ def technique(name, moves, profile, extra=None):
     return strikes([moves[i % len(moves)] for i in range(count)], hits, t["duration_ticks"], extra=extra)
 
 
+def canon(name, profile):
+    """COMBATE-3: tecnica do estilo do machado da obra (KIKORU_TECHNIQUES, as mesmas poses do jogador) com os tempos
+    do JSON da Kikoru: um golpe visual em cada golpe do servidor."""
+    t = profile["techniques"][name]
+    spec = KIKORU_TECHNIQUES[name]
+    step = t.get("hit_interval", 2)
+    count = len(t["hits"]) if t["type"] == "combo" else 1
+    hits = [t["windup_ticks"] + i * step for i in range(count)]
+    moves = [spec["moves"][i % len(spec["moves"])] for i in range(count)]
+    frames, end = technique_frames(moves, hits, t["duration_ticks"], IDLE, spec.get("spin"))
+    return animate(frames, end, to_gecko, vector=False)
+
+
 def dash():
     """Esquiva/avanco: corpo para tras, pernas no passo, machado junto ao corpo."""
     mid = DASH_TICKS * 0.4
@@ -109,7 +122,10 @@ def axe_grip_points():
     shoulder = np.array([bones["arm_right"]["pivot"][0], bones["arm_right"]["pivot"][1],
                          -bones["arm_right"]["pivot"][2]])
     index = json.loads((ASSETS / f"meshes/{SPECIES}.json").read_text(encoding="utf-8"))["bones"]
-    arm = to_bb_from_internal(read_obj(ASSETS / index["arm_right"].split(":")[1])[0])
+    # FIX-2/COMBATE-3: desde o RIG-2 o braco e ombro, antebraco e mao; o punho e o fim da cadeia inteira (so o
+    # "arm_right" dava o cotovelo e a pegada saia do lugar).
+    chain = [b for b in ("arm_right", "forearm_right", "hand_right") if b in index]
+    arm = to_bb_from_internal(np.vstack([read_obj(ASSETS / index[b].split(":")[1])[0] for b in chain]))
     direction = (pivot - shoulder) / np.linalg.norm(pivot - shoulder)
     reach = (arm - shoulder) @ direction
     fist = arm[reach > reach.max() - 3].mean(0)
@@ -180,6 +196,13 @@ def main():
         "dash": dash(),
         "parry": parry(),
     }
+    # COMBATE-3: estilo do machado da obra (o Ten Hit e da Kikoru com o Numbers 4: tempos do perfil dela; a
+    # gen_special_animations.py copia todas as da Kikoru para a kikoru_no4).
+    no4 = json.loads(PROFILE.with_name("kikoru_no4.json").read_text(encoding="utf-8"))
+    for name in KIKORU_TECHNIQUES:
+        source = profile if name in profile["techniques"] else no4
+        if name in source["techniques"]:
+            actions[name] = canon(name, source)
     generated[f"{SPECIES}.action.attack"] = technique("axe_slash", combo[:1], dict(
         techniques={"axe_slash": {"type": "combo", "hits": [1.0], "windup_ticks": 5, "duration_ticks": 12}}))
     for name, anim in actions.items():

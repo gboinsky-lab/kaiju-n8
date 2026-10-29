@@ -26,8 +26,9 @@ public final class KikoruProfileGameTests {
 
     private static final String TEMPLATE = "empty_15x12x15";
     private static final int SETTLE = 3;
-    /** Tecnicas pesadas do kikoru.json (bloco heavy). */
-    private static final Set<String> HEAVY = Set.of("heavy_swing", "shockwave", "ground_smash", "guard_break");
+    /** Lista "heavy" do kikoru.json (COMBATE-3: Falling Thunder e Half-Moon entraram). */
+    private static final Set<String> HEAVY = Set.of("heavy_swing", "shockwave", "ground_smash", "guard_break",
+            "falling_thunder", "half_moon");
 
     private KikoruProfileGameTests() {
     }
@@ -38,18 +39,23 @@ public final class KikoruProfileGameTests {
         kikoru.setNoAi(true);
         KaijuEntity kaiju = helper.spawn(KN8Entities.PRIMIGENIUS.get(), new BlockPos(9, 1, 7));
         kaiju.setNoAi(true);
-        int[] step = {0};
+        // COMBATE-3: -1 = esperando o pesado comecar (o succeedWhen roda desde o tick 0).
+        int[] step = {-1};
         helper.runAfterDelay(SETTLE, () -> {
             kikoru.lookAt(kaiju, 360.0F, 90.0F);
             helper.assertTrue(kikoru.startTechnique("ground_smash", kaiju), "Golpe no chao (pesado) comecou");
+            step[0] = 0;
         });
         helper.succeedWhen(() -> {
+            helper.assertTrue(step[0] >= 0, "Esperando o pesado comecar");
             helper.assertTrue(!kikoru.isUsingTechnique(), "Tecnica em andamento");
             if (step[0] == 0) {
                 // Depois do pesado: o golpe rapido ganha o bonus de alternar e passa os pesados empatados.
                 Optional<String> next = kikoru.chooseTechnique(kaiju);
-                helper.assertTrue(next.equals(Optional.of("axe_slash")), "Depois do pesado, o rapido: " + next);
-                helper.assertTrue(kikoru.startTechnique("axe_slash", kaiju), "Corte rapido comecou");
+                // COMBATE-3: o rapido agora e uma tecnica da obra (Twin Swallows/Daruma Dropper), nao o axe_slash.
+                helper.assertTrue(next.isPresent() && !HEAVY.contains(next.get()),
+                        "Depois do pesado, o rapido: " + next);
+                helper.assertTrue(kikoru.startTechnique(next.get(), kaiju), "Corte rapido comecou");
                 step[0] = 1;
                 helper.fail("esperando o corte rapido terminar");
             }

@@ -66,7 +66,34 @@ public final class SpecialAttacks {
             case SLASH_WAVE -> slashWave(level, source, special, damage);
             case LUNGE -> lunge(level, source, special, damage, damageSource);
             case FLURRY -> flurry(level, source, special, damage, damageSource);
+            case LEAP_SLAM -> leapSlam(level, source, special, damage, damageSource);
         };
+    }
+
+    /**
+     * COMBATE-3: comeco do salto do {@code leap_slam} (chamado quando a tecnica comeca): impulso para cima e para a
+     * frente que cai {@code forward} blocos adiante no tick de impacto (gravidade e freio do ar de mob vanilla).
+     */
+    public static void startLeap(LivingEntity source, WeaponDef.Special special, int impactTicks) {
+        Vec3 look = source.getLookAngle();
+        Vec3 flat = new Vec3(look.x, 0, look.z);
+        Vec3 direction = flat.lengthSqr() < 1.0E-4 ? Vec3.ZERO : flat.normalize();
+        int ticks = Math.max(1, impactTicks);
+        double horizontal = SpecialGeometry.leapHorizontalSpeed(special.forward(), ticks);
+        double vertical = SpecialGeometry.leapVerticalSpeed(ticks);
+        source.setDeltaMovement(direction.x * horizontal, vertical, direction.z * horizontal);
+        source.hurtMarked = true;
+        source.fallDistance = 0.0F;
+    }
+
+    /** COMBATE-3: a queda do {@code leap_slam}: esmaga a area em volta de onde quem ataca caiu (raio pela borda). */
+    private static int leapSlam(ServerLevel level, LivingEntity source, WeaponDef.Special special, float damage,
+            DamageSource damageSource) {
+        source.fallDistance = 0.0F;
+        Vec3 look = source.getLookAngle();
+        Vec3 flat = new Vec3(look.x, 0, look.z);
+        Vec3 center = source.position().add(flat.lengthSqr() < 1.0E-4 ? Vec3.ZERO : flat.normalize());
+        return areaHit(level, source, special, damage, damageSource, center);
     }
 
     /**
@@ -81,7 +108,11 @@ public final class SpecialAttacks {
 
     private static int groundSlam(ServerLevel level, LivingEntity source, WeaponDef.Special special, float damage,
             DamageSource damageSource) {
-        Vec3 center = center(source, special);
+        return areaHit(level, source, special, damage, damageSource, center(source, special));
+    }
+
+    private static int areaHit(ServerLevel level, LivingEntity source, WeaponDef.Special special, float damage,
+            DamageSource damageSource, Vec3 center) {
         double reach = special.radius() + SEARCH_MARGIN;
         AABB search = new AABB(center.x - reach, center.y - SpecialGeometry.SLAM_BELOW, center.z - reach,
                 center.x + reach, center.y + SpecialGeometry.SLAM_HEIGHT, center.z + reach);
@@ -133,7 +164,13 @@ public final class SpecialAttacks {
                     || !clearPath(level, source, box.getCenter())) {
                 continue;
             }
-            if (hit(special, target, damage, damageSource, start)) {
+            // COMBATE-3: Twin Swallows = dois cortes no mesmo avanco (slash.count); cada um zera a invulnerabilidade.
+            boolean struck = false;
+            for (int cut = 0; cut < Math.max(1, special.slash().count()); cut++) {
+                target.invulnerableTime = 0;
+                struck |= hit(special, target, damage, damageSource, start);
+            }
+            if (struck) {
                 hits++;
             }
         }
@@ -151,7 +188,9 @@ public final class SpecialAttacks {
             DamageSource damageSource) {
         int first = flurryCut(level, source, special, damage, damageSource, true);
         KN8Server server = KN8Server.get(level.getServer());
-        for (int cut = 1; cut < ServerConfig.FLURRY_HITS.get(); cut++) {
+        // COMBATE-3: slash.count > 1 da o numero de cortes da tecnica (Daruma Dropper 4, Ten Hit 10).
+        int cuts = special.slash().count() > 1 ? special.slash().count() : ServerConfig.FLURRY_HITS.get();
+        for (int cut = 1; cut < cuts; cut++) {
             server.schedule(cut * ServerConfig.FLURRY_INTERVAL_TICKS.get(),
                     () -> flurryCut(level, source, special, damage, damageSource, false));
         }

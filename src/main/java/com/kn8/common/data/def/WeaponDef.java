@@ -97,7 +97,13 @@ public record WeaponDef(ResourceLocation item, float baseDamage, float reach, St
          * PM-1: sequencia de cortes (faca): {@code [combat] flurryHits} cortes rapidos em quem esta a frente ate
          * {@code radius}, cada um com o {@code multiplier}.
          */
-        FLURRY("flurry");
+        FLURRY("flurry"),
+        /**
+         * COMBATE-3 (Falling Thunder da Kikoru, Miguel: "um golpe que acompanha por cima e esmaga o kaiju embaixo"):
+         * quem ataca salta para cima e para a frente ate {@code forward} blocos, cai no tick de impacto e esmaga a
+         * area de raio {@code radius} onde caiu.
+         */
+        LEAP_SLAM("leap_slam");
 
         public static final Codec<SpecialType> CODEC = StringRepresentable.fromEnum(SpecialType::values);
 
@@ -118,7 +124,9 @@ public record WeaponDef(ResourceLocation item, float baseDamage, float reach, St
      * {@code base_damage x multiplier} (com o Release de quem usa); o centro da area fica {@code forward} blocos a
      * frente e atinge quem tem a borda da hitbox a ate {@code radius}. {@code stagger_ticks} so vale em Yoju (como o
      * parry). {@code vfx}, {@code camera_shake} e {@code sound} saem no tick de impacto. {@code slash} (0.6-D) so vale
-     * no tipo {@code slash_wave}: quantos cortes, velocidade, alcance e cor.
+     * no tipo {@code slash_wave}: quantos cortes, velocidade, alcance e cor. COMBATE-3: no {@code lunge} e no
+     * {@code flurry}, {@code slash.count} maior que 1 da o numero de cortes (Twin Swallows 2, Daruma Dropper 4,
+     * Ten Hit 10); 1 = o de sempre.
      */
     public record Special(String id, SpecialType type, float multiplier, int durationTicks, int impactTick,
             float radius, float forward, float staminaCost, float heatCost, int cooldownTicks, float knockback,

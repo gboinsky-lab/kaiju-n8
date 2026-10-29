@@ -29,7 +29,8 @@ public record SlashSpec(int count, float spreadDegrees, float rollDegrees, float
         float vulnerable, float minTargetHeight) {
 
     public static final Codec<SlashSpec> CODEC = RecordCodecBuilder.create(i -> i.group(
-            Codec.intRange(1, 8).optionalFieldOf("count", 1).forGetter(SlashSpec::count),
+            // COMBATE-3: ate 12 (o Ten Hit da Kikoru No. 4 usa 10 cortes no flurry do jogador).
+            Codec.intRange(1, 12).optionalFieldOf("count", 1).forGetter(SlashSpec::count),
             Codec.floatRange(0.0F, 90.0F).optionalFieldOf("spread_degrees", 0.0F).forGetter(SlashSpec::spreadDegrees),
             Codec.floatRange(-90.0F, 90.0F).optionalFieldOf("roll_degrees", 0.0F).forGetter(SlashSpec::rollDegrees),
             Codec.floatRange(0.1F, 6.0F).optionalFieldOf("speed", 1.6F).forGetter(SlashSpec::speed),

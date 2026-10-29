@@ -30,7 +30,10 @@ public class KikoruNo4Entity extends KikoruEntity {
     public static final ResourceLocation PROFILE_NO4 = KN8Constants.id("kikoru_no4");
     public static final String VARIANT_NO4 = "kikoru_no4";
     public static final List<String> ANIMATED_NO4 = List.of("high_speed_axe", "dive_strike", "vertical_assault",
-            "air_combo", "aerial_dash", "counter", "dash", "parry");
+            "air_combo", "aerial_dash", "counter", "dash", "parry",
+            // COMBATE-3: o estilo do machado da Kikoru e o Ten Hit (so com o Numbers 4).
+            "falling_thunder", "water_skimmer", "half_moon", "rising_thunder", "twin_swallows", "daruma_dropper",
+            "daruma_dropper_ten_hit");
     /** Distancia horizontal (alem das bordas) em que para de avancar e so ajusta a altura. */
     private static final double HOLD_DISTANCE = 1.2;
     /** Fracao da diferenca de altura corrigida por tick (subida/descida suave). */

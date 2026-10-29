@@ -18,6 +18,8 @@ RIFLE = ROOT / "src/main/resources/data/kn8/kn8/weapon/rifle.json"
 OUT = ROOT / "src/main/resources/assets/kn8/player_animations/combat.json"
 TICK = 1 / 20
 DODGE_TICKS = 10
+# [combat] flurryIntervalTicks (padrao do config): intervalo entre os cortes da sequencia.
+FLURRY_INTERVAL = 3
 BLOCK_RAISE_TICKS = 4
 
 
@@ -460,6 +462,94 @@ SPECIALS = {
 }
 
 
+# COMBATE-3 (Miguel, 2026-10-29; documento docs/referencias_combate/, imagens kikoru_*): estilo do machado do Esquadrao
+# da Kikoru. Cada tecnica: lista de golpes (preparo "wind" e impacto "hit"; mais de um = um por golpe, na ordem) e,
+# opcional, "spin" (giro do tronco em graus, sem desenrolar). Servem ao jogador (player.axe.special_<id>) e a Kikoru
+# NPC (kikoru.action.<id>, gen_kikoru_animations.py). Poses inferidas dos paineis da obra [INFERENCIA].
+AXE_HIGH = [0, 0, 0]
+AXE_DOWN = [45, 0, 0]
+KIKORU_TECHNIQUES = {
+    # No. 1 Falling Thunder: salta com o machado erguido acima da cabeca (pernas recolhidas) e cai cravando de cima
+    # para baixo no kaiju embaixo ("vem por cima e esmaga").
+    "falling_thunder": {"moves": [
+        {"wind": {"right_arm": [-178, -5, 10], "left_arm": [-175, 8, -10], "right_item": AXE_HIGH, "torso": [-20, 0, 0],
+                  "right_leg": [-70, 0, 8], "left_leg": [-45, 0, -8], "body_pos": [0, 13, 0]},
+         "hit": {"right_arm": [-30, 0, 5], "left_arm": [-30, 0, -5], "right_item": AXE_DOWN, "torso": [40, 0, 0],
+                 "right_leg": [-45, 0, 12], "left_leg": [30, 0, -12], "body_pos": [0, -4, 0]}}]},
+    # No. 2 Water Skimmer: corte horizontal rente, da direita para a esquerda, com passo a frente; a onda sai a
+    # frente no contato.
+    "water_skimmer": {"moves": [
+        {"wind": {"right_arm": [-65, 70, 0], "left_arm": [-65, 85, 0], "torso": [12, 70, 0], "body_pos": [0, -2, 0],
+                  "right_item": AXE_ACROSS, "right_item_pos": AXE_GRIP},
+         "hit": {"right_arm": [-80, -65, 0], "left_arm": [-75, -40, 0], "torso": [15, -70, 0],
+                 "right_leg": [-40, 0, 10], "left_leg": [25, 0, -10], "body_pos": [0, -3, 0],
+                 "right_item": AXE_ACROSS, "right_item_pos": AXE_GRIP}}]},
+    # No. 3 Half-Moon: giro inteiro do corpo com o machado aberto na altura da cintura (o arco da meia-lua).
+    "half_moon": {"spin": -360, "moves": [
+        {"wind": {"right_arm": [-60, 45, 20], "left_arm": [-60, 70, 0], "torso": [10, 60, 0], "body_pos": [0, -2, 0],
+                  "right_item": AXE_ACROSS, "right_item_pos": AXE_GRIP},
+         "hit": {"right_arm": [-75, -30, 30], "left_arm": [-70, -10, 0], "torso": [12, -200, 0],
+                 "body_pos": [0, -3, 0], "right_item": AXE_ACROSS, "right_item_pos": AXE_GRIP}}]},
+    # No. 4 Rising Thunder [INFERENCIA, Miguel: "pode criar uma tecnica nova"]: agachada com o machado rente ao chao,
+    # sobe num corte de baixo para cima que lanca o kaiju.
+    "rising_thunder": {"moves": [
+        {"wind": {"right_arm": [-10, 20, 10], "left_arm": [-15, 30, 0], "torso": [28, 20, 0], "body_pos": [0, -5, 0],
+                  "right_leg": [-35, 0, 10], "left_leg": [25, 0, -10], "right_item": AXE_LOW,
+                  "right_item_pos": AXE_GRIP},
+         "hit": {"right_arm": [-172, -10, 0], "left_arm": [-162, 15, 0], "torso": [-18, -10, 0], "right_item": AXE_HIGH,
+                 "body_pos": [0, 4, 0], "right_leg": [-20, 0, 8], "left_leg": [15, 0, -8]}}]},
+    # No. 5 Twin Swallows: avanco com dois cortes cruzados em X (diagonal da direita e diagonal da esquerda).
+    "twin_swallows": {"moves": [
+        {"wind": {"right_arm": [-160, 40, 20], "left_arm": [-150, 60, 0], "torso": [-5, 35, 0], "right_item": AXE_HIGH},
+         "hit": {"right_arm": [-50, -40, -10], "left_arm": [-55, -20, 0], "torso": [20, -30, 0],
+                 "right_leg": [-40, 0, 10], "left_leg": [25, 0, -10], "body_pos": [0, -2, 0], "right_item": AXE_DOWN}},
+        {"wind": {"right_arm": [-160, -40, -10], "left_arm": [-150, -20, 0], "torso": [-5, -35, 0],
+                  "right_item": AXE_HIGH},
+         "hit": {"right_arm": [-50, 45, 20], "left_arm": [-55, 60, 0], "torso": [20, 35, 0],
+                 "left_leg": [-35, 0, -10], "right_leg": [20, 0, 10], "body_pos": [0, -2, 0], "right_item": AXE_DOWN}},
+    ]},
+    # No. 6 Daruma Dropper: quatro cortes horizontais descendo da cabeca as pernas, alternando o lado.
+    "daruma_dropper": {"moves": [
+        {"wind": {"right_arm": [-120, 60, 0], "left_arm": [-115, 80, 0], "torso": [5, 45, 0],
+                  "right_item": AXE_ACROSS, "right_item_pos": AXE_GRIP},
+         "hit": {"right_arm": [-115, -60, 0], "left_arm": [-110, -35, 0], "torso": [5, -45, 0],
+                 "right_item": AXE_ACROSS, "right_item_pos": AXE_GRIP}},
+        {"wind": {}, "hit": {"right_arm": [-85, 60, 0], "left_arm": [-80, 80, 0], "torso": [10, 45, 0],
+                             "body_pos": [0, -1, 0], "right_item": AXE_ACROSS, "right_item_pos": AXE_GRIP}},
+        {"wind": {}, "hit": {"right_arm": [-55, -60, 0], "left_arm": [-50, -35, 0], "torso": [16, -45, 0],
+                             "body_pos": [0, -2.5, 0], "right_leg": [-30, 0, 10],
+                             "right_item": AXE_ACROSS, "right_item_pos": AXE_GRIP}},
+        {"wind": {}, "hit": {"right_arm": [-25, 60, 0], "left_arm": [-25, 80, 0], "torso": [25, 45, 0],
+                             "body_pos": [0, -4.5, 0], "left_leg": [-35, 0, -10],
+                             "right_item": AXE_LOW, "right_item_pos": AXE_GRIP}},
+    ]},
+}
+# Daruma Dropper: Ten Hit (Kikoru com o Numbers 4): os quatro niveis do Daruma Dropper em sequencia ate dez cortes.
+KIKORU_TECHNIQUES["daruma_dropper_ten_hit"] = {
+    "moves": [KIKORU_TECHNIQUES["daruma_dropper"]["moves"][i % 4 if i < 8 else 3 - i % 4] for i in range(10)]}
+
+
+def technique_frames(moves, hit_ticks, duration_ticks, start, spin=None):
+    """COMBATE-3: golpes em sequencia (ticks): cada um vai ao preparo e acerta no tick dado; o ultimo segue e volta a
+    postura no fim. Golpe seguinte sem preparo sai direto da pose do anterior. Com spin, como o strike_frames."""
+    if len(moves) == 1:
+        action = {"duration_ticks": duration_ticks, "impact_tick": hit_ticks[0]}
+        return strike_frames(action, start, moves[0]["wind"], moves[0]["hit"], spin)
+    frames = [(0, start)]
+    previous, struck = 0, start
+    for move, hit in zip(moves, hit_ticks):
+        wound = merged(struck if not move["wind"] else start, move["wind"])
+        if move["wind"]:
+            frames.append(((previous + (hit - previous) * 0.6) * TICK, wound))
+        struck = merged(wound, move["hit"])
+        frames.append((hit * TICK, struck))
+        previous = hit
+    frames.append(((previous + (duration_ticks - previous) * 0.35) * TICK, struck))
+    frames.append(((duration_ticks - 2) * TICK, start))
+    frames.append((duration_ticks * TICK, start))
+    return frames, duration_ticks * TICK
+
+
 def strike_frames(action, start, wind, hit, spin=None):
     """Preparo, impacto no tick do JSON, continuacao e recuperacao ate a postura. Com spin (graus), o giro do
     tronco segue no mesmo sentido ate a volta inteira em vez de desenrolar (giro de 360 graus)."""
@@ -726,6 +816,23 @@ def weapon_animations():
             result[f"player.{item}.special"] = special_lunge(special)
         elif special and special["type"] == "flurry":
             result[f"player.{item}.special"] = special_flurry(special)
+        # COMBATE-1/3: tecnicas a mais da arma (player.<item>.special_<id>).
+        for technique in weapon.get("techniques", []):
+            spec = KIKORU_TECHNIQUES.get(technique["id"])
+            if spec is None or family not in STANCES:
+                continue
+            impact = technique["impact_tick"]
+            count = technique.get("slash", {}).get("count", 1)
+            if technique["type"] == "flurry":
+                hits = [impact + i * FLURRY_INTERVAL for i in range(count)]
+            elif technique["type"] == "lunge" and count > 1:
+                hits = [max(1, impact - 3 * (count - 1 - i)) for i in range(count)]
+            else:
+                hits = [impact]
+            moves = [spec["moves"][i % len(spec["moves"])] for i in range(len(hits))]
+            frames, end = technique_frames(moves, hits, technique["duration_ticks"], STANCES[family]["idle"],
+                                           spec.get("spin"))
+            result[f"player.{item}.special_{technique['id']}"] = animate(frames, end)
     return result
 
 
@@ -734,7 +841,7 @@ def weapon_animations():
 # seguia o cabo na pegada parada e, girando, o machado saia da mao. Agora a posicao vem da rotacao: o ponto do cabo
 # que a pegada parada poe na mao continua na mao (no especial do Miguel esse ponto ficou o mesmo, ~12 px no cabo).
 AXE_GRIPPED = ("player.two_handed_axe.light_", "player.two_handed_axe.heavy", "player.two_handed_axe.draw",
-               "player.axe.")
+               "player.axe.", "player.numbers4_axe.")
 
 
 def axe_hand_point():

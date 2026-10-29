@@ -1248,5 +1248,12 @@
   "kn8.command.host.rampage": "%s chegou ao limite da forma.",
   "key.kn8.technique": "Trocar técnica da arma",
   "kn8.hud.technique.many": "%s (%s/%s, troca [%s])",
-  "kn8.weapon.special.kosa_uchi": "Kōsa-uchi"
+  "kn8.weapon.special.kosa_uchi": "Kōsa-uchi",
+  "kn8.weapon.special.falling_thunder": "Nº 1 Falling Thunder",
+  "kn8.weapon.special.water_skimmer": "Nº 2 Water Skimmer",
+  "kn8.weapon.special.half_moon": "Nº 3 Half-Moon",
+  "kn8.weapon.special.rising_thunder": "Nº 4 Rising Thunder",
+  "kn8.weapon.special.twin_swallows": "Nº 5 Twin Swallows",
+  "kn8.weapon.special.daruma_dropper": "Nº 6 Daruma Dropper",
+  "kn8.weapon.special.daruma_dropper_ten_hit": "Daruma Dropper: Ten Hit"
 }
