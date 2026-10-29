@@ -85,7 +85,7 @@
     {
       "id": "ran_uchi",
       "type": "flurry",
-      "multiplier": 0.45,
+      "multiplier": 0.5,
       "duration_ticks": 36,
       "impact_tick": 4,
       "radius": 3.2,
@@ -107,7 +107,7 @@
     {
       "id": "kasumi_uchi",
       "type": "flurry",
-      "multiplier": 0.75,
+      "multiplier": 1.1,
       "duration_ticks": 16,
       "impact_tick": 4,
       "radius": 3.2,
@@ -129,7 +129,7 @@
     {
       "id": "kaeshi_uchi",
       "type": "flurry",
-      "multiplier": 1.0,
+      "multiplier": 1.6,
       "duration_ticks": 14,
       "impact_tick": 5,
       "radius": 3.4,
@@ -152,7 +152,7 @@
     {
       "id": "yae_uchi",
       "type": "flurry",
-      "multiplier": 0.55,
+      "multiplier": 0.8,
       "duration_ticks": 32,
       "impact_tick": 4,
       "radius": 3.4,
@@ -175,7 +175,7 @@
     {
       "id": "juni_hitoe",
       "type": "flurry",
-      "multiplier": 0.6,
+      "multiplier": 1.0,
       "duration_ticks": 44,
       "impact_tick": 4,
       "radius": 3.6,

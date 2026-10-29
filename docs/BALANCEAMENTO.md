@@ -613,10 +613,24 @@ no `numbers2_gauntlets.json` e no `isao.json`, `behavior.health_below` 0,4 na `n
 cortes em X (`roll_degrees` 45, abertos 6 graus) que voam 12 blocos a 1,5 bloco/tick, ×1,5 cada, 18 ticks (corte no 7),
 25 de stamina, 4 de calor, recarga própria de 90 ticks (a do NPC) [SUPOSIÇÃO]. Cada técnica tem a sua recarga.
 
-**Formas do Hoshina do jogador (COMBATE-5)** [SUPOSIÇÃO todos], espada do Hoshina (base 7, cortes `flurry` a cada
-3 ticks): Ran-uchi 10 × 0,45 (raio 3,2, 30 de stamina, recarga 130), Kasumi-uchi 3 × 0,75 (recarga 100), Kaeshi-uchi
-2 × 1,0 com empurrão 0,6 (recarga 90), Yae-uchi 8 × 0,55 (atordoa Yoju 20, 40 de stamina, recarga 240), Jūni-hitoe
-12 × 0,6 (atordoa 30, 60 de stamina, 12 de calor, recarga 600, só com o traje Numbers 10 e o Release no limite pessoal).
+**Formas do Hoshina do jogador (COMBATE-5)** [SUPOSIÇÃO], espada do Hoshina (base 7, cortes `flurry` a cada 3 ticks).
+**Prévia de balanceamento** (Miguel 2026-10-29: "faça uma prévia agora e depois refazemos"): conta de dano por uso e
+por segundo de recarga (base x multiplicador x cortes, sem Release, sem o teto de 12%/15% por golpe, que não chega a
+limitar contra Honju), comparada ao machado da Kikoru (4,4–7,2/s) e às manoplas do Numbers 2 (3,5–5,3/s). As formas
+comuns ficaram 3,1–4,8/s e foram subidas para a faixa; Yae-uchi e Jūni-hitoe são explosão com recarga longa:
+
+| Forma | Antes | Agora | Dano por uso | Recarga | Dano/s |
+|---|---|---|---|---|---|
+| Kūuchi | 1 × 1,6 | igual | 11,2 | 2 s | 5,6 |
+| Kōsa-uchi | 2 × 1,5 | igual | 21,0 | 4,5 s | 4,7 |
+| Ran-uchi | 10 × 0,45 | 10 × 0,5 | 35,0 | 6,5 s | 5,4 |
+| Kasumi-uchi | 3 × 0,75 | 3 × 1,1 | 23,1 | 5 s | 4,6 |
+| Kaeshi-uchi | 2 × 1,0 | 2 × 1,6 | 22,4 | 4,5 s | 5,0 |
+| Yae-uchi (atordoa Yoju 20) | 8 × 0,55 | 8 × 0,8 | 44,8 | 12 s | 3,7 |
+| Jūni-hitoe (só Numbers 10 no limite) | 12 × 0,6 | 12 × 1,0 | 84,0 | 30 s | 2,8 |
+
+Fora da faixa, para a COMBATE-8: Daruma Dropper do machado (7,2/s; 7,9/s no do Numbers 4) e o Force Blast das
+manoplas (1,7/s, é golpe de área). Duelos não medidos.
 
 ### Soldados especiais (`special_soldier/<id>.json`, 0.6-D)
 
