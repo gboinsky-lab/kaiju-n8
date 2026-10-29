@@ -65,6 +65,8 @@ Regras do documento (valem para toda a etapa):
 5. **Spiral Blast do Isao:** um soco que cria uma espiral amarela.
 6. **Thunder Emperor (depois da COMBATE-4):** só com a vida baixa, para o jogador e para a NPC (feito: 40%
    [SUPOSIÇÃO]). **Falling Thunder:** altura mínima de 3 blocos aprovada.
+7. **COMBATE-5 (Hoshina):** feita. NPC já batia com a obra (Jūni-hitoe só em Full Release, o último estágio); o
+   jogador ganhou as 7 formas e o Jūni-hitoe só com o traje Numbers 10 na força total [SUPOSIÇÃO].
 
 ## 5. Perguntas que ficaram (histórico)
 

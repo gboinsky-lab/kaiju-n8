@@ -860,6 +860,2104 @@
         "spread": 1.2,
         "lifetime": 3
       }
+    ],
+    "kuuchi": [
+      {
+        "shape": "glow",
+        "color": "#1E1C20",
+        "pattern": "arc",
+        "count": 83,
+        "size": 0.11,
+        "speed": 0.0,
+        "spread": 2.6,
+        "lifetime": 6,
+        "forward": 1.2,
+        "up": 1.1
+      },
+      {
+        "shape": "glow",
+        "color": "accent",
+        "pattern": "arc",
+        "count": 58,
+        "size": 0.15,
+        "speed": 0.0,
+        "spread": 2.7,
+        "lifetime": 6,
+        "forward": 1.2,
+        "up": 1.1
+      }
+    ],
+    "kosa_uchi": [
+      {
+        "shape": "glow",
+        "color": "#1E1C20",
+        "pattern": "arc",
+        "count": 58,
+        "size": 0.11,
+        "speed": 0.0,
+        "spread": 1.6,
+        "lifetime": 6,
+        "forward": 1.2,
+        "up": 1.1,
+        "tilt": 40
+      },
+      {
+        "shape": "glow",
+        "color": "accent",
+        "pattern": "arc",
+        "count": 38,
+        "size": 0.15,
+        "speed": 0.0,
+        "spread": 1.6640000000000001,
+        "lifetime": 6,
+        "forward": 1.2,
+        "up": 1.1,
+        "tilt": 40
+      },
+      {
+        "shape": "glow",
+        "color": "#1E1C20",
+        "pattern": "arc",
+        "count": 58,
+        "size": 0.11,
+        "speed": 0.0,
+        "spread": 1.6,
+        "lifetime": 6,
+        "forward": 1.2,
+        "up": 1.1,
+        "delay": 2,
+        "tilt": -40
+      },
+      {
+        "shape": "glow",
+        "color": "accent",
+        "pattern": "arc",
+        "count": 38,
+        "size": 0.15,
+        "speed": 0.0,
+        "spread": 1.6640000000000001,
+        "lifetime": 6,
+        "forward": 1.2,
+        "up": 1.1,
+        "delay": 2,
+        "tilt": -40
+      }
+    ],
+    "ran_uchi/1": [
+      {
+        "shape": "glow",
+        "color": "#1E1C20",
+        "pattern": "arc",
+        "count": 51,
+        "size": 0.11,
+        "speed": 0.0,
+        "spread": 1.3,
+        "lifetime": 5,
+        "forward": -0.9,
+        "up": 0.35,
+        "tilt": 35
+      },
+      {
+        "shape": "glow",
+        "color": "accent",
+        "pattern": "arc",
+        "count": 35,
+        "size": 0.15,
+        "speed": 0.0,
+        "spread": 1.352,
+        "lifetime": 5,
+        "forward": -0.9,
+        "up": 0.35,
+        "tilt": 35
+      },
+      {
+        "shape": "shard",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.08,
+        "speed": 0.25,
+        "spread": 0.2,
+        "lifetime": 10
+      },
+      {
+        "shape": "streak",
+        "color": "#EFECEF",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.07,
+        "speed": 0.0,
+        "spread": 0.0,
+        "lifetime": 3
+      }
+    ],
+    "ran_uchi/2": [
+      {
+        "shape": "glow",
+        "color": "#1E1C20",
+        "pattern": "arc",
+        "count": 51,
+        "size": 0.11,
+        "speed": 0.0,
+        "spread": 1.3,
+        "lifetime": 5,
+        "forward": -0.9,
+        "up": -0.4
+      },
+      {
+        "shape": "glow",
+        "color": "accent",
+        "pattern": "arc",
+        "count": 35,
+        "size": 0.15,
+        "speed": 0.0,
+        "spread": 1.352,
+        "lifetime": 5,
+        "forward": -0.9,
+        "up": -0.4
+      },
+      {
+        "shape": "shard",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.08,
+        "speed": 0.25,
+        "spread": 0.2,
+        "lifetime": 10
+      },
+      {
+        "shape": "streak",
+        "color": "#EFECEF",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.07,
+        "speed": 0.0,
+        "spread": 0.0,
+        "lifetime": 3
+      }
+    ],
+    "ran_uchi/3": [
+      {
+        "shape": "glow",
+        "color": "#1E1C20",
+        "pattern": "arc",
+        "count": 51,
+        "size": 0.11,
+        "speed": 0.0,
+        "spread": 1.3,
+        "lifetime": 5,
+        "forward": -0.9,
+        "tilt": -60
+      },
+      {
+        "shape": "glow",
+        "color": "accent",
+        "pattern": "arc",
+        "count": 35,
+        "size": 0.15,
+        "speed": 0.0,
+        "spread": 1.352,
+        "lifetime": 5,
+        "forward": -0.9,
+        "tilt": -60
+      },
+      {
+        "shape": "shard",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.08,
+        "speed": 0.25,
+        "spread": 0.2,
+        "lifetime": 10
+      },
+      {
+        "shape": "streak",
+        "color": "#EFECEF",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.07,
+        "speed": 0.0,
+        "spread": 0.0,
+        "lifetime": 3
+      }
+    ],
+    "ran_uchi/4": [
+      {
+        "shape": "glow",
+        "color": "#1E1C20",
+        "pattern": "arc",
+        "count": 51,
+        "size": 0.11,
+        "speed": 0.0,
+        "spread": 1.9,
+        "lifetime": 5,
+        "forward": -0.9
+      },
+      {
+        "shape": "glow",
+        "color": "accent",
+        "pattern": "arc",
+        "count": 35,
+        "size": 0.15,
+        "speed": 0.0,
+        "spread": 1.976,
+        "lifetime": 5,
+        "forward": -0.9
+      },
+      {
+        "shape": "shard",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.08,
+        "speed": 0.25,
+        "spread": 0.2,
+        "lifetime": 10
+      },
+      {
+        "shape": "streak",
+        "color": "#EFECEF",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.07,
+        "speed": 0.0,
+        "spread": 0.0,
+        "lifetime": 3
+      }
+    ],
+    "ran_uchi/5": [
+      {
+        "shape": "glow",
+        "color": "#1E1C20",
+        "pattern": "arc",
+        "count": 51,
+        "size": 0.11,
+        "speed": 0.0,
+        "spread": 1.3,
+        "lifetime": 5,
+        "forward": -0.9,
+        "up": 0.35,
+        "tilt": 35
+      },
+      {
+        "shape": "glow",
+        "color": "accent",
+        "pattern": "arc",
+        "count": 35,
+        "size": 0.15,
+        "speed": 0.0,
+        "spread": 1.352,
+        "lifetime": 5,
+        "forward": -0.9,
+        "up": 0.35,
+        "tilt": 35
+      },
+      {
+        "shape": "shard",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.08,
+        "speed": 0.25,
+        "spread": 0.2,
+        "lifetime": 10
+      },
+      {
+        "shape": "streak",
+        "color": "#EFECEF",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.07,
+        "speed": 0.0,
+        "spread": 0.0,
+        "lifetime": 3
+      }
+    ],
+    "ran_uchi/6": [
+      {
+        "shape": "glow",
+        "color": "#1E1C20",
+        "pattern": "arc",
+        "count": 51,
+        "size": 0.11,
+        "speed": 0.0,
+        "spread": 1.3,
+        "lifetime": 5,
+        "forward": -0.9,
+        "up": -0.4
+      },
+      {
+        "shape": "glow",
+        "color": "accent",
+        "pattern": "arc",
+        "count": 35,
+        "size": 0.15,
+        "speed": 0.0,
+        "spread": 1.352,
+        "lifetime": 5,
+        "forward": -0.9,
+        "up": -0.4
+      },
+      {
+        "shape": "shard",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.08,
+        "speed": 0.25,
+        "spread": 0.2,
+        "lifetime": 10
+      },
+      {
+        "shape": "streak",
+        "color": "#EFECEF",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.07,
+        "speed": 0.0,
+        "spread": 0.0,
+        "lifetime": 3
+      }
+    ],
+    "ran_uchi/7": [
+      {
+        "shape": "glow",
+        "color": "#1E1C20",
+        "pattern": "arc",
+        "count": 51,
+        "size": 0.11,
+        "speed": 0.0,
+        "spread": 1.3,
+        "lifetime": 5,
+        "forward": -0.9,
+        "tilt": -60
+      },
+      {
+        "shape": "glow",
+        "color": "accent",
+        "pattern": "arc",
+        "count": 35,
+        "size": 0.15,
+        "speed": 0.0,
+        "spread": 1.352,
+        "lifetime": 5,
+        "forward": -0.9,
+        "tilt": -60
+      },
+      {
+        "shape": "shard",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.08,
+        "speed": 0.25,
+        "spread": 0.2,
+        "lifetime": 10
+      },
+      {
+        "shape": "streak",
+        "color": "#EFECEF",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.07,
+        "speed": 0.0,
+        "spread": 0.0,
+        "lifetime": 3
+      }
+    ],
+    "ran_uchi/8": [
+      {
+        "shape": "glow",
+        "color": "#1E1C20",
+        "pattern": "arc",
+        "count": 51,
+        "size": 0.11,
+        "speed": 0.0,
+        "spread": 1.9,
+        "lifetime": 5,
+        "forward": -0.9
+      },
+      {
+        "shape": "glow",
+        "color": "accent",
+        "pattern": "arc",
+        "count": 35,
+        "size": 0.15,
+        "speed": 0.0,
+        "spread": 1.976,
+        "lifetime": 5,
+        "forward": -0.9
+      },
+      {
+        "shape": "shard",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.08,
+        "speed": 0.25,
+        "spread": 0.2,
+        "lifetime": 10
+      },
+      {
+        "shape": "streak",
+        "color": "#EFECEF",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.07,
+        "speed": 0.0,
+        "spread": 0.0,
+        "lifetime": 3
+      }
+    ],
+    "ran_uchi/9": [
+      {
+        "shape": "glow",
+        "color": "#1E1C20",
+        "pattern": "arc",
+        "count": 51,
+        "size": 0.11,
+        "speed": 0.0,
+        "spread": 1.3,
+        "lifetime": 5,
+        "forward": -0.9,
+        "up": 0.35,
+        "tilt": 35
+      },
+      {
+        "shape": "glow",
+        "color": "accent",
+        "pattern": "arc",
+        "count": 35,
+        "size": 0.15,
+        "speed": 0.0,
+        "spread": 1.352,
+        "lifetime": 5,
+        "forward": -0.9,
+        "up": 0.35,
+        "tilt": 35
+      },
+      {
+        "shape": "shard",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.08,
+        "speed": 0.25,
+        "spread": 0.2,
+        "lifetime": 10
+      },
+      {
+        "shape": "streak",
+        "color": "#EFECEF",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.07,
+        "speed": 0.0,
+        "spread": 0.0,
+        "lifetime": 3
+      }
+    ],
+    "ran_uchi/10": [
+      {
+        "shape": "glow",
+        "color": "#1E1C20",
+        "pattern": "arc",
+        "count": 51,
+        "size": 0.11,
+        "speed": 0.0,
+        "spread": 1.3,
+        "lifetime": 5,
+        "forward": -0.9,
+        "up": -0.4
+      },
+      {
+        "shape": "glow",
+        "color": "accent",
+        "pattern": "arc",
+        "count": 35,
+        "size": 0.15,
+        "speed": 0.0,
+        "spread": 1.352,
+        "lifetime": 5,
+        "forward": -0.9,
+        "up": -0.4
+      },
+      {
+        "shape": "shard",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.08,
+        "speed": 0.25,
+        "spread": 0.2,
+        "lifetime": 10
+      },
+      {
+        "shape": "streak",
+        "color": "#EFECEF",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.07,
+        "speed": 0.0,
+        "spread": 0.0,
+        "lifetime": 3
+      }
+    ],
+    "kasumi_uchi/1": [
+      {
+        "shape": "glow",
+        "color": "#1E1C20",
+        "pattern": "arc",
+        "count": 51,
+        "size": 0.11,
+        "speed": 0.0,
+        "spread": 1.3,
+        "lifetime": 5,
+        "forward": -0.9,
+        "tilt": 40
+      },
+      {
+        "shape": "glow",
+        "color": "accent",
+        "pattern": "arc",
+        "count": 35,
+        "size": 0.15,
+        "speed": 0.0,
+        "spread": 1.352,
+        "lifetime": 5,
+        "forward": -0.9,
+        "tilt": 40
+      },
+      {
+        "shape": "shard",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.08,
+        "speed": 0.25,
+        "spread": 0.2,
+        "lifetime": 10
+      },
+      {
+        "shape": "streak",
+        "color": "#EFECEF",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.07,
+        "speed": 0.0,
+        "spread": 0.0,
+        "lifetime": 3
+      }
+    ],
+    "kasumi_uchi/2": [
+      {
+        "shape": "glow",
+        "color": "#1E1C20",
+        "pattern": "arc",
+        "count": 51,
+        "size": 0.11,
+        "speed": 0.0,
+        "spread": 1.3,
+        "lifetime": 5,
+        "forward": -0.9,
+        "tilt": -40
+      },
+      {
+        "shape": "glow",
+        "color": "accent",
+        "pattern": "arc",
+        "count": 35,
+        "size": 0.15,
+        "speed": 0.0,
+        "spread": 1.352,
+        "lifetime": 5,
+        "forward": -0.9,
+        "tilt": -40
+      },
+      {
+        "shape": "shard",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.08,
+        "speed": 0.25,
+        "spread": 0.2,
+        "lifetime": 10
+      },
+      {
+        "shape": "streak",
+        "color": "#EFECEF",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.07,
+        "speed": 0.0,
+        "spread": 0.0,
+        "lifetime": 3
+      }
+    ],
+    "kasumi_uchi/3": [
+      {
+        "shape": "glow",
+        "color": "#1E1C20",
+        "pattern": "arc",
+        "count": 51,
+        "size": 0.11,
+        "speed": 0.0,
+        "spread": 1.5,
+        "lifetime": 5,
+        "forward": -0.9,
+        "up": -0.5
+      },
+      {
+        "shape": "glow",
+        "color": "accent",
+        "pattern": "arc",
+        "count": 35,
+        "size": 0.15,
+        "speed": 0.0,
+        "spread": 1.56,
+        "lifetime": 5,
+        "forward": -0.9,
+        "up": -0.5
+      },
+      {
+        "shape": "shard",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.08,
+        "speed": 0.25,
+        "spread": 0.2,
+        "lifetime": 10
+      },
+      {
+        "shape": "streak",
+        "color": "#EFECEF",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.07,
+        "speed": 0.0,
+        "spread": 0.0,
+        "lifetime": 3
+      }
+    ],
+    "yae_uchi/1": [
+      {
+        "shape": "glow",
+        "color": "#1E1C20",
+        "pattern": "arc",
+        "count": 45,
+        "size": 0.11,
+        "speed": 0.0,
+        "spread": 1.3,
+        "lifetime": 5,
+        "forward": -0.9
+      },
+      {
+        "shape": "glow",
+        "color": "accent",
+        "pattern": "arc",
+        "count": 29,
+        "size": 0.15,
+        "speed": 0.0,
+        "spread": 1.352,
+        "lifetime": 5,
+        "forward": -0.9
+      },
+      {
+        "shape": "shard",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.08,
+        "speed": 0.25,
+        "spread": 0.2,
+        "lifetime": 10
+      },
+      {
+        "shape": "streak",
+        "color": "#EFECEF",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.07,
+        "speed": 0.0,
+        "spread": 0.0,
+        "lifetime": 3
+      }
+    ],
+    "yae_uchi/2": [
+      {
+        "shape": "glow",
+        "color": "#1E1C20",
+        "pattern": "arc",
+        "count": 45,
+        "size": 0.11,
+        "speed": 0.0,
+        "spread": 1.3,
+        "lifetime": 5,
+        "forward": -0.9,
+        "tilt": 22.5
+      },
+      {
+        "shape": "glow",
+        "color": "accent",
+        "pattern": "arc",
+        "count": 29,
+        "size": 0.15,
+        "speed": 0.0,
+        "spread": 1.352,
+        "lifetime": 5,
+        "forward": -0.9,
+        "tilt": 22.5
+      },
+      {
+        "shape": "shard",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.08,
+        "speed": 0.25,
+        "spread": 0.2,
+        "lifetime": 10
+      },
+      {
+        "shape": "streak",
+        "color": "#EFECEF",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.07,
+        "speed": 0.0,
+        "spread": 0.0,
+        "lifetime": 3
+      }
+    ],
+    "yae_uchi/3": [
+      {
+        "shape": "glow",
+        "color": "#1E1C20",
+        "pattern": "arc",
+        "count": 45,
+        "size": 0.11,
+        "speed": 0.0,
+        "spread": 1.3,
+        "lifetime": 5,
+        "forward": -0.9,
+        "tilt": 45.0
+      },
+      {
+        "shape": "glow",
+        "color": "accent",
+        "pattern": "arc",
+        "count": 29,
+        "size": 0.15,
+        "speed": 0.0,
+        "spread": 1.352,
+        "lifetime": 5,
+        "forward": -0.9,
+        "tilt": 45.0
+      },
+      {
+        "shape": "shard",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.08,
+        "speed": 0.25,
+        "spread": 0.2,
+        "lifetime": 10
+      },
+      {
+        "shape": "streak",
+        "color": "#EFECEF",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.07,
+        "speed": 0.0,
+        "spread": 0.0,
+        "lifetime": 3
+      }
+    ],
+    "yae_uchi/4": [
+      {
+        "shape": "glow",
+        "color": "#1E1C20",
+        "pattern": "arc",
+        "count": 45,
+        "size": 0.11,
+        "speed": 0.0,
+        "spread": 1.3,
+        "lifetime": 5,
+        "forward": -0.9,
+        "tilt": 67.5
+      },
+      {
+        "shape": "glow",
+        "color": "accent",
+        "pattern": "arc",
+        "count": 29,
+        "size": 0.15,
+        "speed": 0.0,
+        "spread": 1.352,
+        "lifetime": 5,
+        "forward": -0.9,
+        "tilt": 67.5
+      },
+      {
+        "shape": "shard",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.08,
+        "speed": 0.25,
+        "spread": 0.2,
+        "lifetime": 10
+      },
+      {
+        "shape": "streak",
+        "color": "#EFECEF",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.07,
+        "speed": 0.0,
+        "spread": 0.0,
+        "lifetime": 3
+      }
+    ],
+    "yae_uchi/5": [
+      {
+        "shape": "glow",
+        "color": "#1E1C20",
+        "pattern": "arc",
+        "count": 45,
+        "size": 0.11,
+        "speed": 0.0,
+        "spread": 1.3,
+        "lifetime": 5,
+        "forward": -0.9,
+        "tilt": 90.0
+      },
+      {
+        "shape": "glow",
+        "color": "accent",
+        "pattern": "arc",
+        "count": 29,
+        "size": 0.15,
+        "speed": 0.0,
+        "spread": 1.352,
+        "lifetime": 5,
+        "forward": -0.9,
+        "tilt": 90.0
+      },
+      {
+        "shape": "shard",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.08,
+        "speed": 0.25,
+        "spread": 0.2,
+        "lifetime": 10
+      },
+      {
+        "shape": "streak",
+        "color": "#EFECEF",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.07,
+        "speed": 0.0,
+        "spread": 0.0,
+        "lifetime": 3
+      }
+    ],
+    "yae_uchi/6": [
+      {
+        "shape": "glow",
+        "color": "#1E1C20",
+        "pattern": "arc",
+        "count": 45,
+        "size": 0.11,
+        "speed": 0.0,
+        "spread": 1.3,
+        "lifetime": 5,
+        "forward": -0.9,
+        "tilt": 112.5
+      },
+      {
+        "shape": "glow",
+        "color": "accent",
+        "pattern": "arc",
+        "count": 29,
+        "size": 0.15,
+        "speed": 0.0,
+        "spread": 1.352,
+        "lifetime": 5,
+        "forward": -0.9,
+        "tilt": 112.5
+      },
+      {
+        "shape": "shard",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.08,
+        "speed": 0.25,
+        "spread": 0.2,
+        "lifetime": 10
+      },
+      {
+        "shape": "streak",
+        "color": "#EFECEF",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.07,
+        "speed": 0.0,
+        "spread": 0.0,
+        "lifetime": 3
+      }
+    ],
+    "yae_uchi/7": [
+      {
+        "shape": "glow",
+        "color": "#1E1C20",
+        "pattern": "arc",
+        "count": 45,
+        "size": 0.11,
+        "speed": 0.0,
+        "spread": 1.3,
+        "lifetime": 5,
+        "forward": -0.9,
+        "tilt": 135.0
+      },
+      {
+        "shape": "glow",
+        "color": "accent",
+        "pattern": "arc",
+        "count": 29,
+        "size": 0.15,
+        "speed": 0.0,
+        "spread": 1.352,
+        "lifetime": 5,
+        "forward": -0.9,
+        "tilt": 135.0
+      },
+      {
+        "shape": "shard",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.08,
+        "speed": 0.25,
+        "spread": 0.2,
+        "lifetime": 10
+      },
+      {
+        "shape": "streak",
+        "color": "#EFECEF",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.07,
+        "speed": 0.0,
+        "spread": 0.0,
+        "lifetime": 3
+      }
+    ],
+    "yae_uchi/8": [
+      {
+        "shape": "glow",
+        "color": "#1E1C20",
+        "pattern": "arc",
+        "count": 45,
+        "size": 0.11,
+        "speed": 0.0,
+        "spread": 1.3,
+        "lifetime": 5,
+        "forward": -0.9,
+        "tilt": 157.5
+      },
+      {
+        "shape": "glow",
+        "color": "accent",
+        "pattern": "arc",
+        "count": 29,
+        "size": 0.15,
+        "speed": 0.0,
+        "spread": 1.352,
+        "lifetime": 5,
+        "forward": -0.9,
+        "tilt": 157.5
+      },
+      {
+        "shape": "shard",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.08,
+        "speed": 0.25,
+        "spread": 0.2,
+        "lifetime": 10
+      },
+      {
+        "shape": "streak",
+        "color": "#EFECEF",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.07,
+        "speed": 0.0,
+        "spread": 0.0,
+        "lifetime": 3
+      }
+    ],
+    "juni_hitoe/1": [
+      {
+        "shape": "glow",
+        "color": "#1E1C20",
+        "pattern": "arc",
+        "count": 45,
+        "size": 0.11,
+        "speed": 0.0,
+        "spread": 1.4,
+        "lifetime": 5,
+        "forward": -0.9
+      },
+      {
+        "shape": "glow",
+        "color": "accent",
+        "pattern": "arc",
+        "count": 29,
+        "size": 0.15,
+        "speed": 0.0,
+        "spread": 1.456,
+        "lifetime": 5,
+        "forward": -0.9
+      },
+      {
+        "shape": "shard",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.08,
+        "speed": 0.25,
+        "spread": 0.2,
+        "lifetime": 10
+      },
+      {
+        "shape": "streak",
+        "color": "#EFECEF",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.07,
+        "speed": 0.0,
+        "spread": 0.0,
+        "lifetime": 3
+      },
+      {
+        "shape": "streak",
+        "color": "core",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.08,
+        "speed": 0.35,
+        "spread": 0.4,
+        "lifetime": 4
+      }
+    ],
+    "juni_hitoe/2": [
+      {
+        "shape": "glow",
+        "color": "#1E1C20",
+        "pattern": "arc",
+        "count": 45,
+        "size": 0.11,
+        "speed": 0.0,
+        "spread": 1.4,
+        "lifetime": 5,
+        "forward": -0.9,
+        "tilt": 15.0
+      },
+      {
+        "shape": "glow",
+        "color": "accent",
+        "pattern": "arc",
+        "count": 29,
+        "size": 0.15,
+        "speed": 0.0,
+        "spread": 1.456,
+        "lifetime": 5,
+        "forward": -0.9,
+        "tilt": 15.0
+      },
+      {
+        "shape": "shard",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.08,
+        "speed": 0.25,
+        "spread": 0.2,
+        "lifetime": 10
+      },
+      {
+        "shape": "streak",
+        "color": "#EFECEF",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.07,
+        "speed": 0.0,
+        "spread": 0.0,
+        "lifetime": 3
+      },
+      {
+        "shape": "streak",
+        "color": "core",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.08,
+        "speed": 0.35,
+        "spread": 0.4,
+        "lifetime": 4
+      }
+    ],
+    "juni_hitoe/3": [
+      {
+        "shape": "glow",
+        "color": "#1E1C20",
+        "pattern": "arc",
+        "count": 45,
+        "size": 0.11,
+        "speed": 0.0,
+        "spread": 1.4,
+        "lifetime": 5,
+        "forward": -0.9,
+        "tilt": 30.0
+      },
+      {
+        "shape": "glow",
+        "color": "accent",
+        "pattern": "arc",
+        "count": 29,
+        "size": 0.15,
+        "speed": 0.0,
+        "spread": 1.456,
+        "lifetime": 5,
+        "forward": -0.9,
+        "tilt": 30.0
+      },
+      {
+        "shape": "shard",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.08,
+        "speed": 0.25,
+        "spread": 0.2,
+        "lifetime": 10
+      },
+      {
+        "shape": "streak",
+        "color": "#EFECEF",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.07,
+        "speed": 0.0,
+        "spread": 0.0,
+        "lifetime": 3
+      },
+      {
+        "shape": "streak",
+        "color": "core",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.08,
+        "speed": 0.35,
+        "spread": 0.4,
+        "lifetime": 4
+      }
+    ],
+    "juni_hitoe/4": [
+      {
+        "shape": "glow",
+        "color": "#1E1C20",
+        "pattern": "arc",
+        "count": 45,
+        "size": 0.11,
+        "speed": 0.0,
+        "spread": 1.4,
+        "lifetime": 5,
+        "forward": -0.9,
+        "tilt": 45.0
+      },
+      {
+        "shape": "glow",
+        "color": "accent",
+        "pattern": "arc",
+        "count": 29,
+        "size": 0.15,
+        "speed": 0.0,
+        "spread": 1.456,
+        "lifetime": 5,
+        "forward": -0.9,
+        "tilt": 45.0
+      },
+      {
+        "shape": "shard",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.08,
+        "speed": 0.25,
+        "spread": 0.2,
+        "lifetime": 10
+      },
+      {
+        "shape": "streak",
+        "color": "#EFECEF",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.07,
+        "speed": 0.0,
+        "spread": 0.0,
+        "lifetime": 3
+      },
+      {
+        "shape": "streak",
+        "color": "core",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.08,
+        "speed": 0.35,
+        "spread": 0.4,
+        "lifetime": 4
+      }
+    ],
+    "juni_hitoe/5": [
+      {
+        "shape": "glow",
+        "color": "#1E1C20",
+        "pattern": "arc",
+        "count": 45,
+        "size": 0.11,
+        "speed": 0.0,
+        "spread": 1.4,
+        "lifetime": 5,
+        "forward": -0.9,
+        "tilt": 60.0
+      },
+      {
+        "shape": "glow",
+        "color": "accent",
+        "pattern": "arc",
+        "count": 29,
+        "size": 0.15,
+        "speed": 0.0,
+        "spread": 1.456,
+        "lifetime": 5,
+        "forward": -0.9,
+        "tilt": 60.0
+      },
+      {
+        "shape": "shard",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.08,
+        "speed": 0.25,
+        "spread": 0.2,
+        "lifetime": 10
+      },
+      {
+        "shape": "streak",
+        "color": "#EFECEF",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.07,
+        "speed": 0.0,
+        "spread": 0.0,
+        "lifetime": 3
+      },
+      {
+        "shape": "streak",
+        "color": "core",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.08,
+        "speed": 0.35,
+        "spread": 0.4,
+        "lifetime": 4
+      }
+    ],
+    "juni_hitoe/6": [
+      {
+        "shape": "glow",
+        "color": "#1E1C20",
+        "pattern": "arc",
+        "count": 45,
+        "size": 0.11,
+        "speed": 0.0,
+        "spread": 1.4,
+        "lifetime": 5,
+        "forward": -0.9,
+        "tilt": 75.0
+      },
+      {
+        "shape": "glow",
+        "color": "accent",
+        "pattern": "arc",
+        "count": 29,
+        "size": 0.15,
+        "speed": 0.0,
+        "spread": 1.456,
+        "lifetime": 5,
+        "forward": -0.9,
+        "tilt": 75.0
+      },
+      {
+        "shape": "shard",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.08,
+        "speed": 0.25,
+        "spread": 0.2,
+        "lifetime": 10
+      },
+      {
+        "shape": "streak",
+        "color": "#EFECEF",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.07,
+        "speed": 0.0,
+        "spread": 0.0,
+        "lifetime": 3
+      },
+      {
+        "shape": "streak",
+        "color": "core",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.08,
+        "speed": 0.35,
+        "spread": 0.4,
+        "lifetime": 4
+      }
+    ],
+    "juni_hitoe/7": [
+      {
+        "shape": "glow",
+        "color": "#1E1C20",
+        "pattern": "arc",
+        "count": 45,
+        "size": 0.11,
+        "speed": 0.0,
+        "spread": 1.4,
+        "lifetime": 5,
+        "forward": -0.9,
+        "tilt": 90.0
+      },
+      {
+        "shape": "glow",
+        "color": "accent",
+        "pattern": "arc",
+        "count": 29,
+        "size": 0.15,
+        "speed": 0.0,
+        "spread": 1.456,
+        "lifetime": 5,
+        "forward": -0.9,
+        "tilt": 90.0
+      },
+      {
+        "shape": "shard",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.08,
+        "speed": 0.25,
+        "spread": 0.2,
+        "lifetime": 10
+      },
+      {
+        "shape": "streak",
+        "color": "#EFECEF",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.07,
+        "speed": 0.0,
+        "spread": 0.0,
+        "lifetime": 3
+      },
+      {
+        "shape": "streak",
+        "color": "core",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.08,
+        "speed": 0.35,
+        "spread": 0.4,
+        "lifetime": 4
+      }
+    ],
+    "juni_hitoe/8": [
+      {
+        "shape": "glow",
+        "color": "#1E1C20",
+        "pattern": "arc",
+        "count": 45,
+        "size": 0.11,
+        "speed": 0.0,
+        "spread": 1.4,
+        "lifetime": 5,
+        "forward": -0.9,
+        "tilt": 105.0
+      },
+      {
+        "shape": "glow",
+        "color": "accent",
+        "pattern": "arc",
+        "count": 29,
+        "size": 0.15,
+        "speed": 0.0,
+        "spread": 1.456,
+        "lifetime": 5,
+        "forward": -0.9,
+        "tilt": 105.0
+      },
+      {
+        "shape": "shard",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.08,
+        "speed": 0.25,
+        "spread": 0.2,
+        "lifetime": 10
+      },
+      {
+        "shape": "streak",
+        "color": "#EFECEF",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.07,
+        "speed": 0.0,
+        "spread": 0.0,
+        "lifetime": 3
+      },
+      {
+        "shape": "streak",
+        "color": "core",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.08,
+        "speed": 0.35,
+        "spread": 0.4,
+        "lifetime": 4
+      }
+    ],
+    "juni_hitoe/9": [
+      {
+        "shape": "glow",
+        "color": "#1E1C20",
+        "pattern": "arc",
+        "count": 45,
+        "size": 0.11,
+        "speed": 0.0,
+        "spread": 1.4,
+        "lifetime": 5,
+        "forward": -0.9,
+        "tilt": 120.0
+      },
+      {
+        "shape": "glow",
+        "color": "accent",
+        "pattern": "arc",
+        "count": 29,
+        "size": 0.15,
+        "speed": 0.0,
+        "spread": 1.456,
+        "lifetime": 5,
+        "forward": -0.9,
+        "tilt": 120.0
+      },
+      {
+        "shape": "shard",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.08,
+        "speed": 0.25,
+        "spread": 0.2,
+        "lifetime": 10
+      },
+      {
+        "shape": "streak",
+        "color": "#EFECEF",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.07,
+        "speed": 0.0,
+        "spread": 0.0,
+        "lifetime": 3
+      },
+      {
+        "shape": "streak",
+        "color": "core",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.08,
+        "speed": 0.35,
+        "spread": 0.4,
+        "lifetime": 4
+      }
+    ],
+    "juni_hitoe/10": [
+      {
+        "shape": "glow",
+        "color": "#1E1C20",
+        "pattern": "arc",
+        "count": 45,
+        "size": 0.11,
+        "speed": 0.0,
+        "spread": 1.4,
+        "lifetime": 5,
+        "forward": -0.9,
+        "tilt": 135.0
+      },
+      {
+        "shape": "glow",
+        "color": "accent",
+        "pattern": "arc",
+        "count": 29,
+        "size": 0.15,
+        "speed": 0.0,
+        "spread": 1.456,
+        "lifetime": 5,
+        "forward": -0.9,
+        "tilt": 135.0
+      },
+      {
+        "shape": "shard",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.08,
+        "speed": 0.25,
+        "spread": 0.2,
+        "lifetime": 10
+      },
+      {
+        "shape": "streak",
+        "color": "#EFECEF",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.07,
+        "speed": 0.0,
+        "spread": 0.0,
+        "lifetime": 3
+      },
+      {
+        "shape": "streak",
+        "color": "core",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.08,
+        "speed": 0.35,
+        "spread": 0.4,
+        "lifetime": 4
+      }
+    ],
+    "juni_hitoe/11": [
+      {
+        "shape": "glow",
+        "color": "#1E1C20",
+        "pattern": "arc",
+        "count": 45,
+        "size": 0.11,
+        "speed": 0.0,
+        "spread": 1.4,
+        "lifetime": 5,
+        "forward": -0.9,
+        "tilt": 150.0
+      },
+      {
+        "shape": "glow",
+        "color": "accent",
+        "pattern": "arc",
+        "count": 29,
+        "size": 0.15,
+        "speed": 0.0,
+        "spread": 1.456,
+        "lifetime": 5,
+        "forward": -0.9,
+        "tilt": 150.0
+      },
+      {
+        "shape": "shard",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.08,
+        "speed": 0.25,
+        "spread": 0.2,
+        "lifetime": 10
+      },
+      {
+        "shape": "streak",
+        "color": "#EFECEF",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.07,
+        "speed": 0.0,
+        "spread": 0.0,
+        "lifetime": 3
+      },
+      {
+        "shape": "streak",
+        "color": "core",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.08,
+        "speed": 0.35,
+        "spread": 0.4,
+        "lifetime": 4
+      }
+    ],
+    "juni_hitoe/12": [
+      {
+        "shape": "glow",
+        "color": "#1E1C20",
+        "pattern": "arc",
+        "count": 77,
+        "size": 0.11,
+        "speed": 0.0,
+        "spread": 2.4,
+        "lifetime": 8,
+        "forward": -0.9,
+        "tilt": 45
+      },
+      {
+        "shape": "glow",
+        "color": "accent",
+        "pattern": "arc",
+        "count": 51,
+        "size": 0.15,
+        "speed": 0.0,
+        "spread": 2.496,
+        "lifetime": 8,
+        "forward": -0.9,
+        "tilt": 45
+      },
+      {
+        "shape": "glow",
+        "color": "#1E1C20",
+        "pattern": "arc",
+        "count": 77,
+        "size": 0.11,
+        "speed": 0.0,
+        "spread": 2.4,
+        "lifetime": 8,
+        "forward": -0.9,
+        "tilt": -45
+      },
+      {
+        "shape": "glow",
+        "color": "accent",
+        "pattern": "arc",
+        "count": 51,
+        "size": 0.15,
+        "speed": 0.0,
+        "spread": 2.496,
+        "lifetime": 8,
+        "forward": -0.9,
+        "tilt": -45
+      },
+      {
+        "shape": "shard",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.08,
+        "speed": 0.25,
+        "spread": 0.2,
+        "lifetime": 10
+      },
+      {
+        "shape": "streak",
+        "color": "#EFECEF",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.07,
+        "speed": 0.0,
+        "spread": 0.0,
+        "lifetime": 3
+      },
+      {
+        "shape": "pulse",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 1,
+        "size": 1.4,
+        "speed": 0,
+        "spread": 0,
+        "lifetime": 6
+      },
+      {
+        "shape": "streak",
+        "color": "core",
+        "pattern": "burst",
+        "count": 8,
+        "size": 0.1,
+        "speed": 0.5,
+        "spread": 0.6,
+        "lifetime": 5
+      },
+      {
+        "shape": "glow",
+        "color": "core",
+        "pattern": "burst",
+        "count": 6,
+        "size": 0.22,
+        "speed": 0.3,
+        "spread": 0.4,
+        "lifetime": 8
+      }
+    ],
+    "ran_uchi": [
+      {
+        "shape": "glow",
+        "color": "#1E1C20",
+        "pattern": "arc",
+        "count": 51,
+        "size": 0.11,
+        "speed": 0.0,
+        "spread": 1.3,
+        "lifetime": 5,
+        "forward": -0.9,
+        "up": 0.35,
+        "tilt": 35
+      },
+      {
+        "shape": "glow",
+        "color": "accent",
+        "pattern": "arc",
+        "count": 35,
+        "size": 0.15,
+        "speed": 0.0,
+        "spread": 1.352,
+        "lifetime": 5,
+        "forward": -0.9,
+        "up": 0.35,
+        "tilt": 35
+      },
+      {
+        "shape": "shard",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.08,
+        "speed": 0.25,
+        "spread": 0.2,
+        "lifetime": 10
+      },
+      {
+        "shape": "streak",
+        "color": "#EFECEF",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.07,
+        "speed": 0.0,
+        "spread": 0.0,
+        "lifetime": 3
+      }
+    ],
+    "kasumi_uchi": [
+      {
+        "shape": "glow",
+        "color": "#1E1C20",
+        "pattern": "arc",
+        "count": 51,
+        "size": 0.11,
+        "speed": 0.0,
+        "spread": 1.3,
+        "lifetime": 5,
+        "forward": -0.9,
+        "tilt": 40
+      },
+      {
+        "shape": "glow",
+        "color": "accent",
+        "pattern": "arc",
+        "count": 35,
+        "size": 0.15,
+        "speed": 0.0,
+        "spread": 1.352,
+        "lifetime": 5,
+        "forward": -0.9,
+        "tilt": 40
+      },
+      {
+        "shape": "shard",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.08,
+        "speed": 0.25,
+        "spread": 0.2,
+        "lifetime": 10
+      },
+      {
+        "shape": "streak",
+        "color": "#EFECEF",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.07,
+        "speed": 0.0,
+        "spread": 0.0,
+        "lifetime": 3
+      }
+    ],
+    "yae_uchi": [
+      {
+        "shape": "glow",
+        "color": "#1E1C20",
+        "pattern": "arc",
+        "count": 45,
+        "size": 0.11,
+        "speed": 0.0,
+        "spread": 1.3,
+        "lifetime": 5,
+        "forward": -0.9
+      },
+      {
+        "shape": "glow",
+        "color": "accent",
+        "pattern": "arc",
+        "count": 29,
+        "size": 0.15,
+        "speed": 0.0,
+        "spread": 1.352,
+        "lifetime": 5,
+        "forward": -0.9
+      },
+      {
+        "shape": "shard",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.08,
+        "speed": 0.25,
+        "spread": 0.2,
+        "lifetime": 10
+      },
+      {
+        "shape": "streak",
+        "color": "#EFECEF",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.07,
+        "speed": 0.0,
+        "spread": 0.0,
+        "lifetime": 3
+      }
+    ],
+    "juni_hitoe": [
+      {
+        "shape": "glow",
+        "color": "#1E1C20",
+        "pattern": "arc",
+        "count": 45,
+        "size": 0.11,
+        "speed": 0.0,
+        "spread": 1.4,
+        "lifetime": 5,
+        "forward": -0.9
+      },
+      {
+        "shape": "glow",
+        "color": "accent",
+        "pattern": "arc",
+        "count": 29,
+        "size": 0.15,
+        "speed": 0.0,
+        "spread": 1.456,
+        "lifetime": 5,
+        "forward": -0.9
+      },
+      {
+        "shape": "shard",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.08,
+        "speed": 0.25,
+        "spread": 0.2,
+        "lifetime": 10
+      },
+      {
+        "shape": "streak",
+        "color": "#EFECEF",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.07,
+        "speed": 0.0,
+        "spread": 0.0,
+        "lifetime": 3
+      },
+      {
+        "shape": "streak",
+        "color": "core",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.08,
+        "speed": 0.35,
+        "spread": 0.4,
+        "lifetime": 4
+      }
+    ],
+    "kaeshi_uchi": [
+      {
+        "shape": "glow",
+        "color": "#1E1C20",
+        "pattern": "arc",
+        "count": 70,
+        "size": 0.11,
+        "speed": 0.0,
+        "spread": 1.9,
+        "lifetime": 7,
+        "forward": -0.9
+      },
+      {
+        "shape": "glow",
+        "color": "accent",
+        "pattern": "arc",
+        "count": 48,
+        "size": 0.15,
+        "speed": 0.0,
+        "spread": 1.976,
+        "lifetime": 7,
+        "forward": -0.9
+      },
+      {
+        "shape": "glow",
+        "color": "#1E1C20",
+        "pattern": "arc",
+        "count": 38,
+        "size": 0.11,
+        "speed": 0.0,
+        "spread": 1.2,
+        "lifetime": 6,
+        "forward": -0.9,
+        "up": 0.2,
+        "delay": 2,
+        "tilt": 30
+      },
+      {
+        "shape": "glow",
+        "color": "accent",
+        "pattern": "arc",
+        "count": 26,
+        "size": 0.15,
+        "speed": 0.0,
+        "spread": 1.248,
+        "lifetime": 6,
+        "forward": -0.9,
+        "up": 0.2,
+        "delay": 2,
+        "tilt": 30
+      },
+      {
+        "shape": "shard",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.08,
+        "speed": 0.25,
+        "spread": 0.2,
+        "lifetime": 10
+      },
+      {
+        "shape": "streak",
+        "color": "#EFECEF",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.07,
+        "speed": 0.0,
+        "spread": 0.0,
+        "lifetime": 3
+      }
+    ],
+    "kaeshi_uchi/2": [
+      {
+        "shape": "glow",
+        "color": "#1E1C20",
+        "pattern": "arc",
+        "count": 70,
+        "size": 0.11,
+        "speed": 0.0,
+        "spread": 1.9,
+        "lifetime": 7,
+        "forward": -0.9
+      },
+      {
+        "shape": "glow",
+        "color": "accent",
+        "pattern": "arc",
+        "count": 48,
+        "size": 0.15,
+        "speed": 0.0,
+        "spread": 1.976,
+        "lifetime": 7,
+        "forward": -0.9
+      },
+      {
+        "shape": "glow",
+        "color": "#1E1C20",
+        "pattern": "arc",
+        "count": 38,
+        "size": 0.11,
+        "speed": 0.0,
+        "spread": 1.2,
+        "lifetime": 6,
+        "forward": -0.9,
+        "up": 0.2,
+        "delay": 2,
+        "tilt": 30
+      },
+      {
+        "shape": "glow",
+        "color": "accent",
+        "pattern": "arc",
+        "count": 26,
+        "size": 0.15,
+        "speed": 0.0,
+        "spread": 1.248,
+        "lifetime": 6,
+        "forward": -0.9,
+        "up": 0.2,
+        "delay": 2,
+        "tilt": 30
+      },
+      {
+        "shape": "shard",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.08,
+        "speed": 0.25,
+        "spread": 0.2,
+        "lifetime": 10
+      },
+      {
+        "shape": "streak",
+        "color": "#EFECEF",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.07,
+        "speed": 0.0,
+        "spread": 0.0,
+        "lifetime": 3
+      }
     ]
   }
 }

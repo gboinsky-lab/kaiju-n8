@@ -1573,3 +1573,16 @@ Servidor dedicado + 2 clientes. Imagem: `docs/img/combate4_isao.jpg`.
 | 113.5 | No. 9 com o Isao contra um soldado especial | Cotovelada e Thunder Emperor em barragem com os tracos amarelos |
 | 113.6 | Thunder Emperor das manoplas com a vida cheia (sobrevivencia) | Recusado: "Ultimo recurso: so com a vida baixa"; com 40% da vida ou menos sai |
 | 113.7 | Isao NPC e No. 9 com o Isao com a vida acima de 40% | Nao usam o Thunder Emperor (so as outras); abaixo de 40% ele volta a aparecer |
+
+## 114. COMBATE-5: Hoshina pela obra (jogador)
+
+Servidor dedicado + 2 clientes. Imagem: `docs/img/combate5_hoshina.jpg`.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 114.1 | Duas espadas do Hoshina (uma em cada mao), X varias vezes | Kuuchi (1/7), Kosa-uchi, Ran-uchi (Forma 4), Kasumi-uchi (Forma 5), Kaeshi-uchi (Forma 3), Yae-uchi (Forma 6), Juni-hitoe (Forma 7); Shift + X volta |
+| 114.2 | R em cada uma perto de um kaiju | Kosa-uchi com as duas laminas cruzando em X (animacao propria); Ran-uchi 10 cortes de varios angulos; Kasumi-uchi X duplo e o baixo; Kaeshi-uchi giro inteiro; Yae-uchi 8 cortes em estrela; cada uma com a propria recarga |
+| 114.3 | Juni-hitoe com o Mk1 (ou sem traje) | Recusado: "Ultimo estagio: traje Numbers 10 e Release na forca total" |
+| 114.4 | Traje Numbers 10 vestido, Release abaixo do limite (G) e depois no limite | Abaixo recusado; no limite saem 12 cortes com o vermelho do No. 10 |
+| 114.5 | Hoshina No. 10 NPC contra um kaiju forte | Juni-hitoe so depois do Full Release (sincronizacao 100%) |
+| 114.6 | Manoplas do Numbers 2: Thunder Emperor com a vida cheia e com 40% ou menos | Cheia: "Ultimo recurso: so com a vida baixa"; baixa: sai a barragem |

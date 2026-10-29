@@ -81,6 +81,125 @@
         "width": 1.3,
         "color": 13144319
       }
+    },
+    {
+      "id": "ran_uchi",
+      "type": "flurry",
+      "multiplier": 0.45,
+      "duration_ticks": 36,
+      "impact_tick": 4,
+      "radius": 3.2,
+      "stamina_cost": 30,
+      "heat_cost": 5,
+      "cooldown_ticks": 130,
+      "camera_shake": 0.12,
+      "vfx": [
+        {
+          "effect": "kn8:slash",
+          "intensity": 1.2
+        }
+      ],
+      "sound": "kn8:weapon.sword_heavy",
+      "slash": {
+        "count": 10
+      }
+    },
+    {
+      "id": "kasumi_uchi",
+      "type": "flurry",
+      "multiplier": 0.75,
+      "duration_ticks": 16,
+      "impact_tick": 4,
+      "radius": 3.2,
+      "stamina_cost": 25,
+      "heat_cost": 4,
+      "cooldown_ticks": 100,
+      "camera_shake": 0.12,
+      "vfx": [
+        {
+          "effect": "kn8:slash",
+          "intensity": 1.2
+        }
+      ],
+      "sound": "kn8:weapon.sword_heavy",
+      "slash": {
+        "count": 3
+      }
+    },
+    {
+      "id": "kaeshi_uchi",
+      "type": "flurry",
+      "multiplier": 1.0,
+      "duration_ticks": 14,
+      "impact_tick": 5,
+      "radius": 3.4,
+      "stamina_cost": 25,
+      "heat_cost": 4,
+      "cooldown_ticks": 90,
+      "knockback": 0.6,
+      "camera_shake": 0.15,
+      "vfx": [
+        {
+          "effect": "kn8:slash",
+          "intensity": 1.3
+        }
+      ],
+      "sound": "kn8:weapon.sword_heavy",
+      "slash": {
+        "count": 2
+      }
+    },
+    {
+      "id": "yae_uchi",
+      "type": "flurry",
+      "multiplier": 0.55,
+      "duration_ticks": 32,
+      "impact_tick": 4,
+      "radius": 3.4,
+      "stamina_cost": 40,
+      "heat_cost": 7,
+      "cooldown_ticks": 240,
+      "stagger_ticks": 20,
+      "camera_shake": 0.18,
+      "vfx": [
+        {
+          "effect": "kn8:slash",
+          "intensity": 1.4
+        }
+      ],
+      "sound": "kn8:weapon.sword_heavy",
+      "slash": {
+        "count": 8
+      }
+    },
+    {
+      "id": "juni_hitoe",
+      "type": "flurry",
+      "multiplier": 0.6,
+      "duration_ticks": 44,
+      "impact_tick": 4,
+      "radius": 3.6,
+      "stamina_cost": 60,
+      "heat_cost": 12,
+      "cooldown_ticks": 600,
+      "stagger_ticks": 30,
+      "camera_shake": 0.3,
+      "vfx": [
+        {
+          "effect": "kn8:slash",
+          "intensity": 1.6
+        }
+      ],
+      "sound": "kn8:weapon.sword_heavy",
+      "slash": {
+        "count": 12
+      }
     }
-  ]
+  ],
+  "stages": {
+    "juni_hitoe": {
+      "suit": "kn8:numbers10_suit",
+      "full_release": true
+    }
+  }
 }

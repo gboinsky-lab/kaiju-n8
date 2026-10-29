@@ -613,6 +613,11 @@ no `numbers2_gauntlets.json` e no `isao.json`, `behavior.health_below` 0,4 na `n
 cortes em X (`roll_degrees` 45, abertos 6 graus) que voam 12 blocos a 1,5 bloco/tick, ×1,5 cada, 18 ticks (corte no 7),
 25 de stamina, 4 de calor, recarga própria de 90 ticks (a do NPC) [SUPOSIÇÃO]. Cada técnica tem a sua recarga.
 
+**Formas do Hoshina do jogador (COMBATE-5)** [SUPOSIÇÃO todos], espada do Hoshina (base 7, cortes `flurry` a cada
+3 ticks): Ran-uchi 10 × 0,45 (raio 3,2, 30 de stamina, recarga 130), Kasumi-uchi 3 × 0,75 (recarga 100), Kaeshi-uchi
+2 × 1,0 com empurrão 0,6 (recarga 90), Yae-uchi 8 × 0,55 (atordoa Yoju 20, 40 de stamina, recarga 240), Jūni-hitoe
+12 × 0,6 (atordoa 30, 60 de stamina, 12 de calor, recarga 600, só com o traje Numbers 10 e o Release no limite pessoal).
+
 ### Soldados especiais (`special_soldier/<id>.json`, 0.6-D)
 
 **Reno, Mina e Narumi** (0.7-C): vida, armadura e velocidade da seção 12 do Balanceamento v1.2; o resto

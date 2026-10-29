@@ -22,6 +22,7 @@ import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.monster.Husk;
@@ -118,8 +119,8 @@ public final class SpecialAttackGameTests {
         helper.onEachTick(() -> CombatService.tick(player));
         helper.runAfterDelay(SETTLE_TICKS, () -> {
             PowerService.setStamina(player, 100);
-            helper.assertTrue(CombatService.heldWeapon(player).map(w -> w.allTechniques().size()).orElse(0) == 2,
-                    "A espada do Hoshina deveria ter duas tecnicas");
+            helper.assertTrue(CombatService.heldWeapon(player).map(w -> w.allTechniques().size()).orElse(0) == 7,
+                    "A espada do Hoshina deveria ter as sete formas");
             helper.assertTrue(CombatService.selectedTechnique(player, CombatService.heldWeapon(player).get())
                     .map(t -> t.id().equals("kuuchi")).orElse(false), "A primeira tecnica deveria ser o Kuuchi");
             helper.assertTrue(CombatService.special(player), "O Kuuchi deveria sair");
@@ -136,7 +137,7 @@ public final class SpecialAttackGameTests {
         });
         helper.runAfterDelay(SETTLE_TICKS + 16 + 10, () -> {
             helper.assertTrue(slashCount(helper) >= slashes[0] + 2, "O Kosa-uchi deveria soltar os dois cortes do X");
-            helper.assertTrue(CombatService.cycleTechnique(player, 1), "X de novo volta ao Kuuchi");
+            helper.assertTrue(CombatService.cycleTechnique(player, -1), "Shift + X volta ao Kuuchi");
             PowerService.setStamina(player, 100);
             helper.assertTrue(CombatService.specialCooldown(player) > 0 && !CombatService.special(player),
                     "O Kuuchi continua na propria recarga");
@@ -144,6 +145,43 @@ public final class SpecialAttackGameTests {
             helper.assertTrue(!CombatService.cycleTechnique(player, 1), "Arma com uma tecnica so nao troca");
             helper.getLevel().getEntitiesOfClass(SlashProjectile.class, new AABB(helper.absolutePos(BlockPos.ZERO))
                     .inflate(40)).forEach(Entity::discard);
+            helper.succeed();
+        });
+    }
+
+    /**
+     * COMBATE-5 (Miguel: Juni-hitoe "apenas no ultimo estagio do Hoshina"): a forma 7 da espada do Hoshina so sai com
+     * o traje Numbers 10 vestido e o Release na forca total; o Yae-uchi solta os oito cortes.
+     */
+    @GameTest(template = TEMPLATE)
+    public static void juniHitoeOnlyInTheLastStage(GameTestHelper helper) {
+        FakePlayer player = player(helper, "junihitoe");
+        player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(KN8Items.HOSHINA_SWORD.get()));
+        player.setItemInHand(InteractionHand.OFF_HAND, new ItemStack(KN8Items.HOSHINA_SWORD.get()));
+        player.setItemSlot(EquipmentSlot.CHEST, ItemStack.EMPTY);
+        IronGolem golem = helper.spawn(EntityType.IRON_GOLEM, new BlockPos(4, 1, 5));
+        golem.setNoAi(true);
+        float[] before = new float[1];
+        helper.onEachTick(() -> CombatService.tick(player));
+        helper.runAfterDelay(SETTLE_TICKS, () -> {
+            PowerService.setStamina(player, 100);
+            helper.assertTrue(CombatService.cycleTechnique(player, -1), "Shift + X vai para a ultima forma");
+            helper.assertTrue(CombatService.selectedTechnique(player, CombatService.heldWeapon(player).orElseThrow())
+                    .map(t -> t.id().equals("juni_hitoe")).orElse(false), "A ultima e o Juni-hitoe");
+            helper.assertFalse(CombatService.special(player), "Sem o Numbers 10 o Juni-hitoe e recusado");
+            player.setItemSlot(EquipmentSlot.CHEST, new ItemStack(KN8Items.NUMBERS10_SUIT.get()));
+            PowerService.setTrainedRelease(player, 40);
+            PowerService.setActive(player, 20);
+            helper.assertFalse(CombatService.special(player), "Com o traje fora da forca total tambem");
+            PowerService.setActive(player, 40);
+            helper.assertTrue(CombatService.special(player), "Com o Numbers 10 na forca total o Juni-hitoe sai");
+            before[0] = golem.getHealth();
+        });
+        helper.runAfterDelay(SETTLE_TICKS + 45, () -> {
+            helper.assertTrue(golem.getHealth() < before[0], "Os cortes do Juni-hitoe acertam: " + golem.getHealth());
+            player.setItemSlot(EquipmentSlot.CHEST, ItemStack.EMPTY);
+            PowerService.setActive(player, 0);
+            golem.discard();
             helper.succeed();
         });
     }

@@ -560,7 +560,68 @@ ISAO_TECHNIQUES = {
          "hit": {"right_arm": [-95, 0, 0], "left_arm": [20, 0, 0], "torso": [15, -40, 0],
                  "right_leg": [-45, 0, 10], "left_leg": [35, 0, -10], "body_pos": [0, -3, 0]}}]},
 }
-TECHNIQUE_POSES = {**KIKORU_TECHNIQUES, **ISAO_TECHNIQUES}
+
+
+# COMBATE-5: formas do estilo Hoshina para o jogador com as duas espadas (espada do Hoshina; o Kuuchi e o especial,
+# SPECIALS). Bracos da PAL: o direito vai para dentro com Y negativo e para fora com Z positivo; o esquerdo espelhado.
+# As laminas ficam na pegada invertida da postura (o cabo continua na mao: SWORD_GRIPPED). Poses inferidas da obra
+# (docs/referencias_combate/: corte simples, X, varios angulos, oito pontas, doze golpes) [INFERENCIA].
+def _cut(arm, wind, hit, torso_wind=(0, 0, 0), torso_hit=(0, 0, 0), step=True):
+    """Um corte de um braco (ou dos dois, arm='both' com pares) do preparo ao fim."""
+    other = {"right_arm": "left_arm", "left_arm": "right_arm"}
+    move = {"wind": {"torso": list(torso_wind)}, "hit": {"torso": list(torso_hit), "body_pos": [0, -2, 0]}}
+    if arm == "both":
+        move["wind"].update({"right_arm": wind[0], "left_arm": wind[1]})
+        move["hit"].update({"right_arm": hit[0], "left_arm": hit[1]})
+    else:
+        move["wind"][arm] = wind
+        move["hit"][arm] = hit
+    if step:
+        lead = "right_leg" if arm != "left_arm" else "left_leg"
+        move["hit"][lead] = [-45, 0, 10 if lead == "right_leg" else -10]
+        move["hit"]["left_leg" if lead == "right_leg" else "right_leg"] = [30, 0, -10 if lead == "right_leg" else 10]
+    return move
+
+
+def _star(count):
+    """Cortes em estrela (Yae-uchi: 8; Juni-hitoe: 12): bracos alternados, cada corte girado 360/count."""
+    import math
+    moves = []
+    for k in range(count):
+        a = math.radians(k * 360 / count)
+        arm, sign = ("right_arm", 1) if k % 2 == 0 else ("left_arm", -1)
+        wind = [round(-95 - 70 * math.cos(a)), round(sign * 35 * math.sin(a)), round(sign * (30 + 40 * math.sin(a)))]
+        hit = [round(-95 + 60 * math.cos(a)), round(-sign * 50), round(sign * (10 - 30 * math.sin(a)))]
+        moves.append(_cut(arm, wind, hit, (0, sign * 25, 0), (15, -sign * 30, 0), step=k % 4 == 0))
+    return moves
+
+
+HOSHINA_TECHNIQUES = {
+    # Forma 2 Kosa-uchi: as duas laminas erguidas para fora cruzam em X a frente do peito.
+    "kosa_uchi": {"moves": [_cut("both", ([-165, 20, 35], [-165, -20, -35]), ([-55, -50, 0], [-55, 50, 0]),
+                                 (-8, 0, 0), (22, 0, 0))]},
+    # Forma 4 Ran-uchi: diagonal alta, horizontal baixa, subida e varredura, repetidas (10 cortes).
+    "ran_uchi": {"moves": [
+        _cut("right_arm", [-165, 20, 40], [-60, -50, 0], (0, 20, 0), (18, -25, 0)),
+        _cut("left_arm", [-55, 55, 0], [-60, -55, -45], (8, -20, 0), (14, 30, 0)),
+        _cut("right_arm", [-15, -30, 0], [-170, 10, 25], (20, 15, 0), (-10, -10, 0), step=False),
+        _cut("both", ([-90, 30, 0], [-90, -30, 0]), ([-90, 0, 70], [-90, 0, -70]), (10, 50, 0), (12, -50, 0))]},
+    # Forma 5 Kasumi-uchi: X duplo e o terceiro baixo pelo lado.
+    "kasumi_uchi": {"moves": [
+        _cut("both", ([-160, 15, 30], [-160, -15, -30]), ([-60, -45, 0], [-60, 45, 0]), (-6, 0, 0), (20, 0, 0)),
+        _cut("both", ([-60, 45, 30], [-60, -45, -30]), ([-150, -30, 0], [-150, 30, 0]), (20, 0, 0), (-5, 0, 0),
+             step=False),
+        _cut("right_arm", [-40, -40, 0], [-35, 45, 60], (25, -20, 0), (30, 40, 0))]},
+    # Forma 3 Kaeshi-uchi: giro inteiro com as laminas abertas e o corte cruzado na volta.
+    "kaeshi_uchi": {"spin": -360, "moves": [
+        _cut("both", ([-85, 20, 40], [-85, -20, -40]), ([-80, 0, 75], [-80, 0, -75]), (10, 40, 0), (12, -200, 0))]},
+    # Forma 6 Yae-uchi: oito cortes em estrela.
+    "yae_uchi": {"moves": _star(8)},
+    # Forma 7 Juni-hitoe (so com o Numbers 10 na forca total): doze cortes em estrela, o ultimo em X grande.
+    "juni_hitoe": {"moves": _star(11) + [
+        _cut("both", ([-175, 25, 40], [-175, -25, -40]), ([-40, -55, 0], [-40, 55, 0]), (-15, 0, 0), (35, 0, 0))]},
+}
+TECHNIQUE_POSES = {**KIKORU_TECHNIQUES, **ISAO_TECHNIQUES, **HOSHINA_TECHNIQUES}
 
 
 def technique_frames(moves, hit_ticks, duration_ticks, start, spin=None):
@@ -975,6 +1036,15 @@ def main():
     if "stance" in dual:
         # Golpes, saque e especial (Kuuchi) das duas espadas saem e voltam a pose de partida do parado do Hoshina.
         STANCES["dual_reverse"]["idle"] = dict(dual["stance"][0][0][1])
+        # COMBATE-5: a postura das duas espadas no jogo e a do combat.json atual (aprovada antes do RIG-2 do Hoshina
+        # NPC, que mudou a pegada dele); as tecnicas novas partem das laminas dela, sem salto no comeco.
+        if OUT.exists():
+            kept = json.loads(OUT.read_text(encoding="utf-8"))["animations"].get("player.dual_reverse.stance", {})
+            for bone in ("right_item", "left_item"):
+                channel = kept.get("bones", {}).get(bone, {}).get("rotation")
+                if channel:
+                    first = channel[min(channel, key=float)]
+                    STANCES["dual_reverse"]["idle"][bone] = list(first["vector"] if isinstance(first, dict) else first)
     weapon = json.loads(WEAPON.read_text(encoding="utf-8"))
     actions = weapon["actions"]
     data = {"format_version": "1.8.0", "animations": {

@@ -39,6 +39,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.PartEntity;
@@ -309,6 +310,11 @@ public final class CombatService {
             replySpecial(player, CombatResult.DENIED_NEEDS_LOW_HEALTH);
             return false;
         }
+        if (!stageReached(player, weapon.get().stages().get(def.id()))) {
+            // COMBATE-5 (Miguel): o Juni-hitoe so no ultimo estagio (traje Numbers 10 na forca total).
+            replySpecial(player, CombatResult.DENIED_NEEDS_STAGE);
+            return false;
+        }
         if (def.type() == WeaponDef.SpecialType.DIVE_SLAM && (player.onGround()
                 || SpecialAttacks.heightAboveGround(player, def.forward()) < def.forward())) {
             // COMBATE-3 (Miguel): o Falling Thunder vem de cima: pular de uma construcao e cair no kaiju.
@@ -459,6 +465,17 @@ public final class CombatService {
                 CombatResult.OK.ordinal(), index, all.size()));
         replySpecial(player, CombatResult.OK);
         return true;
+    }
+
+    /** COMBATE-5: o jogador esta no estagio da tecnica (traje vestido e, se pedido, Release na forca total)? */
+    public static boolean stageReached(ServerPlayer player, WeaponDef.Stage stage) {
+        if (stage == null) {
+            return true;
+        }
+        boolean suit = stage.suit().map(id -> id.equals(BuiltInRegistries.ITEM.getKey(
+                player.getItemBySlot(EquipmentSlot.CHEST).getItem()))).orElse(true);
+        int limit = PowerService.limit(player);
+        return suit && (!stage.fullRelease() || (limit > 0 && PowerService.activeRelease(player) >= limit));
     }
 
     /** Resposta do especial: leva a recarga restante e a total da tecnica escolhida (ver {@link CombatStateS2C}). */

@@ -66,7 +66,8 @@ public final class KaijuAreaAbilityGameTests {
         });
     }
 
-    @GameTest(template = LONG_TEMPLATE, timeoutTicks = CHARGE_TIMEOUT)
+    // Lote proprio: com IA o kaiju as vezes ja tinha comecado outro ataque contra o alvo de um teste vizinho.
+    @GameTest(template = LONG_TEMPLATE, timeoutTicks = CHARGE_TIMEOUT, batch = "kn8_kaiju_charge")
     public static void chargeReachesTheTargetAndHitsOnce(GameTestHelper helper) {
         KaijuEntity brute = facingSouth(helper, new BlockPos(4, 1, 2), true);
         IronGolem golem = helper.spawn(EntityType.IRON_GOLEM, new BlockPos(4, 1, 14));

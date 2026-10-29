@@ -199,19 +199,20 @@ public final class SpecialAttacks {
      */
     private static int flurry(ServerLevel level, LivingEntity source, WeaponDef.Special special, float damage,
             DamageSource damageSource) {
-        int first = flurryCut(level, source, special, damage, damageSource, true);
+        int first = flurryCut(level, source, special, damage, damageSource, 0);
         KN8Server server = KN8Server.get(level.getServer());
         // COMBATE-3: slash.count > 1 da o numero de cortes da tecnica (Daruma Dropper 4, Ten Hit 10).
         int cuts = special.slash().count() > 1 ? special.slash().count() : ServerConfig.FLURRY_HITS.get();
         for (int cut = 1; cut < cuts; cut++) {
+            int index = cut;
             server.schedule(cut * ServerConfig.FLURRY_INTERVAL_TICKS.get(),
-                    () -> flurryCut(level, source, special, damage, damageSource, false));
+                    () -> flurryCut(level, source, special, damage, damageSource, index));
         }
         return first;
     }
 
     private static int flurryCut(ServerLevel level, LivingEntity source, WeaponDef.Special special, float damage,
-            DamageSource damageSource, boolean first) {
+            DamageSource damageSource, int cut) {
         if (!source.isAlive() || source.level() != level) {
             return 0;
         }
@@ -236,11 +237,14 @@ public final class SpecialAttacks {
             }
         }
         Vec3 center = eye.add(look.scale(Math.min(reach, 1.5)));
-        if (first) {
+        if (cut == 0) {
             effects(level, special, center, source);
         } else {
-            // Os cortes seguintes so com o desenho (sem tremer a camera nem repetir o som de cada vez).
-            VfxService.play(level, VfxService.SLASH, center, look, 0.7F, 0.0F, source, special.id());
+            // Os cortes seguintes so com o desenho (sem tremer a camera nem repetir o som de cada vez). COMBATE-5:
+            // chave "<tecnica>/<corte>" (como os golpes das tecnicas dos especiais): o cliente procura a receita do
+            // corte, depois a da tecnica.
+            VfxService.play(level, VfxService.SLASH, center, look, 0.7F, 0.0F, source,
+                    special.id() + "/" + (cut + 1));
         }
         return hits;
     }

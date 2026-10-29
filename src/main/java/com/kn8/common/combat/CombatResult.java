@@ -28,7 +28,9 @@ public enum CombatResult {
     /** COMBATE-3: tecnica que vem de cima (Falling Thunder) pedida no chao ou baixo demais. */
     DENIED_NEEDS_HEIGHT,
     /** COMBATE-4: tecnica de ultimo recurso (Thunder Emperor) pedida com a vida acima do limite. */
-    DENIED_NEEDS_LOW_HEALTH;
+    DENIED_NEEDS_LOW_HEALTH,
+    /** COMBATE-5: tecnica do ultimo estagio (Juni-hitoe) sem o traje ou fora da forca total. */
+    DENIED_NEEDS_STAGE;
 
     public static CombatResult byIndex(int index) {
         CombatResult[] values = values();
