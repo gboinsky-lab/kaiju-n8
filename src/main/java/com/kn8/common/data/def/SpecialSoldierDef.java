@@ -80,6 +80,15 @@ public record SpecialSoldierDef(float health, float armor, float speed, float fo
         return growth.regeneration();
     }
 
+    /**
+     * COMBATE-4 (Miguel, 2026-10-29: Thunder Emperor "apenas com a vida baixa"): a tecnica so sai com a vida ate a
+     * fracao do bloco {@code low_health} (id -> fracao; sem o id = sempre).
+     */
+    public boolean healthAllows(String techniqueId, float health, float maxHealth) {
+        Float below = growth.lowHealth().get(techniqueId);
+        return below == null || health <= maxHealth * below;
+    }
+
     /** Comportamento de atirador que mantem distancia (Mina, Reno); vazio = vai ate o alcance da arma. */
     public Optional<Ranged> ranged() {
         return growth.ranged();
@@ -97,7 +106,7 @@ public record SpecialSoldierDef(float health, float armor, float speed, float fo
     public record Growth(Escalation escalation, Optional<Numbers10> numbers10, Optional<Flight> flight,
             Optional<Transform> transform, Optional<Regeneration> regeneration, float height,
             Optional<Ranged> ranged, Optional<Heavy> heavy, Map<String, Integer> techniqueUses,
-            Optional<HeavyGuard> heavyGuard, Tactics tactics, Rhythm rhythm) {
+            Optional<HeavyGuard> heavyGuard, Tactics tactics, Rhythm rhythm, Map<String, Float> lowHealth) {
         public static final MapCodec<Growth> MAP_CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
                 Escalation.CODEC.optionalFieldOf("escalation", Escalation.NONE).forGetter(Growth::escalation),
                 Numbers10.CODEC.optionalFieldOf("numbers10").forGetter(Growth::numbers10),
@@ -111,7 +120,9 @@ public record SpecialSoldierDef(float health, float armor, float speed, float fo
                         .forGetter(Growth::techniqueUses),
                 HeavyGuard.CODEC.optionalFieldOf("heavy_guard").forGetter(Growth::heavyGuard),
                 Tactics.CODEC.optionalFieldOf("tactics", Tactics.DEFAULT).forGetter(Growth::tactics),
-                Rhythm.CODEC.optionalFieldOf("rhythm", Rhythm.NONE).forGetter(Growth::rhythm)
+                Rhythm.CODEC.optionalFieldOf("rhythm", Rhythm.NONE).forGetter(Growth::rhythm),
+                Codec.unboundedMap(Codec.STRING, Codec.floatRange(0.0F, 1.0F)).optionalFieldOf("low_health", Map.of())
+                        .forGetter(Growth::lowHealth)
         ).apply(i, Growth::new));
     }
 

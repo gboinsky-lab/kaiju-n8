@@ -33,10 +33,23 @@ import net.minecraft.util.StringRepresentable;
  * <p>{@code techniques} (COMBATE-1, opcional): tecnicas a mais da arma para o jogador, no mesmo formato do
  * {@code special}. O jogador troca a tecnica escolhida com a tecla X e usa com a R; o {@code special} continua sendo
  * a primeira (nada some). Cada tecnica tem a propria recarga.</p>
+ *
+ * <p>{@code low_health} (COMBATE-4, opcional): tecnica -> fracao da vida; a tecnica so sai com a vida ate essa
+ * fracao (Thunder Emperor das manoplas do Numbers 2).</p>
  */
 public record WeaponDef(ResourceLocation item, float baseDamage, float reach, Style style,
         Map<String, Action> actions, List<Float> combo, Map<String, ResourceLocation> sounds,
-        Optional<Special> special, Optional<ResourceLocation> profile, List<Special> techniques) {
+        Optional<Special> special, Optional<ResourceLocation> profile, List<Special> techniques,
+        Map<String, Float> lowHealth) {
+
+    /**
+     * COMBATE-4 (Miguel, 2026-10-29: Thunder Emperor "apenas com a vida baixa"): fracao da vida maxima abaixo da qual
+     * a tecnica pode ser usada ({@code low_health}: id da tecnica -> fracao; sem o id = sempre).
+     */
+    public boolean healthAllows(String techniqueId, float health, float maxHealth) {
+        Float below = lowHealth.get(techniqueId);
+        return below == null || health <= maxHealth * below;
+    }
 
     /** COMBATE-1: todas as tecnicas da arma para o jogador, o {@code special} primeiro. */
     public List<Special> allTechniques() {
@@ -168,6 +181,8 @@ public record WeaponDef(ResourceLocation item, float baseDamage, float reach, St
                     .forGetter(WeaponDef::sounds),
             Special.CODEC.optionalFieldOf("special").forGetter(WeaponDef::special),
             ResourceLocation.CODEC.optionalFieldOf("profile").forGetter(WeaponDef::profile),
-            Special.CODEC.listOf().optionalFieldOf("techniques", List.of()).forGetter(WeaponDef::techniques)
+            Special.CODEC.listOf().optionalFieldOf("techniques", List.of()).forGetter(WeaponDef::techniques),
+            Codec.unboundedMap(Codec.STRING, Codec.floatRange(0.0F, 1.0F)).optionalFieldOf("low_health", Map.of())
+                    .forGetter(WeaponDef::lowHealth)
     ).apply(i, WeaponDef::new));
 }

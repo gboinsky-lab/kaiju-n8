@@ -605,7 +605,9 @@ Twin Blast 2 ondas [1,1] até 10 blocos, Rising Blast uppercut [2,0] (empurrão 
 Thunder Emperor [0,9 x8; 2,6] a cada 2 ticks (recarga 180, expõe o núcleo 120 ticks). No. 9 com o Isao: Thunder
 Emperor `multi_hit` 9 x0,85, Barrage Blast `melee` x1,9. Jogador (manoplas, base 8): Barrage Blast `lunge` x2,0,
 Twin Blast x1,4, Rising Blast x2,2 (atordoa Yoju 24), Spiral Blast x1,8, Thunder Emperor `flurry` 9 x1,0 (recarga
-300, 45 de stamina, 8 de calor). Duelos não remedidos (COMBATE-8).
+300, 45 de stamina, 8 de calor). **Thunder Emperor só com a vida até 40%** (Miguel 2026-10-29, jogador e NPC: `low_health`
+no `numbers2_gauntlets.json` e no `isao.json`, `behavior.health_below` 0,4 na `no9_isao_thunder_emperor`)
+[SUPOSIÇÃO 40%]. Duelos não remedidos (COMBATE-8).
 
 **Kōsa-uchi do jogador** (segunda técnica da espada do Hoshina, COMBATE-1, `techniques` do `hoshina_sword.json`): dois
 cortes em X (`roll_degrees` 45, abertos 6 graus) que voam 12 blocos a 1,5 bloco/tick, ×1,5 cada, 18 ticks (corte no 7),

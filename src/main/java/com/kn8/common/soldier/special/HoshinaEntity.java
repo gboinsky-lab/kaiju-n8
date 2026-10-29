@@ -395,7 +395,8 @@ public class HoshinaEntity extends SoldierEntity {
                     || now < readyAt.getOrDefault(entry.getKey(), 0L) || edge < candidate.minRange()
                     || edge > candidate.maxRange() || target.getBbHeight() < candidate.slash().minTargetHeight()
                     || (candidate.type() == SpecialSoldierDef.TechniqueType.SLASH && !sees) || !reaches
-                    || usesLeft(def.get(), entry.getKey()) == 0) {
+                    || usesLeft(def.get(), entry.getKey()) == 0
+                    || !def.get().healthAllows(entry.getKey(), getHealth(), getMaxHealth())) {
                 continue;
             }
             if (!big && def.get().techniqueUses().containsKey(entry.getKey())

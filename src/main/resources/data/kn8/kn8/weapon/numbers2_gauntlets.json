@@ -176,5 +176,8 @@
         "color": 16766528
       }
     }
-  ]
+  ],
+  "low_health": {
+    "thunder_emperor": 0.4
+  }
 }

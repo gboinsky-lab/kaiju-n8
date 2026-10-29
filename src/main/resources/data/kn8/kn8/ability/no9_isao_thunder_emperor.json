@@ -27,6 +27,7 @@
   "sound": "kn8:kaiju.slam",
   "behavior": {
     "priority": 5,
+    "health_below": 0.4,
     "max_range": 4.0,
     "hits": 9,
     "hit_interval": 2

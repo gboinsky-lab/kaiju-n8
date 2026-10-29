@@ -77,7 +77,8 @@ public final class KN8Network {
     // 33 = T-3: kn8:kaiju_form virou inteiro (humano, forma, sem controle) e o punho do No. 8 ganhou especial.
     // 34 = COMBATE-1: CombatAction.NEXT_TECHNIQUE (tecla X) e weapon.techniques no registro de armas sincronizado.
     // 35 = COMBATE-3: CombatResult.DENIED_NEEDS_HEIGHT (Falling Thunder vem de cima).
-    private static final String PROTOCOL_VERSION = "35";
+    // 36 = COMBATE-4: CombatResult.DENIED_NEEDS_LOW_HEALTH e weapon.low_health (Thunder Emperor com a vida baixa).
+    private static final String PROTOCOL_VERSION = "36";
 
     /** Diagnostico: 20 por segundo, rajada de 40. */
     private static final C2SGuard.Limit DEBUG_LIMIT = new C2SGuard.Limit(20, 40);

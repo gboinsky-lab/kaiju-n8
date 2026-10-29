@@ -1257,6 +1257,7 @@
   "kn8.weapon.special.daruma_dropper": "No. 6 Daruma Dropper",
   "kn8.weapon.special.daruma_dropper_ten_hit": "Daruma Dropper: Ten Hit",
   "kn8.hud.combat.denied_needs_height": "Strike from above: you must be up high, over the target",
+  "kn8.hud.combat.denied_needs_low_health": "Last resort: only with low health",
   "kn8.configuration.diveSlamSpeed": "Dive slam speed (Falling Thunder)",
   "kn8.configuration.diveSlamBonusPerBlock": "Dive slam extra damage per block fallen",
   "kn8.configuration.diveSlamMaxBonus": "Dive slam maximum extra damage",

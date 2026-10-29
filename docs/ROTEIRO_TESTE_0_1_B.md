@@ -1571,3 +1571,5 @@ Servidor dedicado + 2 clientes. Imagem: `docs/img/combate4_isao.jpg`.
 | 113.3 | Isao (`kn8:isao`) contra um Honju | Usa as tecnicas acima; o Thunder Emperor e uma barragem de socos e o ultimo, maior, expoe o nucleo ("EXPOSTO") |
 | 113.4 | Isao sem o Numbers 2 (`kn8:isao_base`) | So golpes fisicos (jab, cotovelada, direto); sem ondas nem Thunder Emperor |
 | 113.5 | No. 9 com o Isao contra um soldado especial | Cotovelada e Thunder Emperor em barragem com os tracos amarelos |
+| 113.6 | Thunder Emperor das manoplas com a vida cheia (sobrevivencia) | Recusado: "Ultimo recurso: so com a vida baixa"; com 40% da vida ou menos sai |
+| 113.7 | Isao NPC e No. 9 com o Isao com a vida acima de 40% | Nao usam o Thunder Emperor (so as outras); abaixo de 40% ele volta a aparecer |

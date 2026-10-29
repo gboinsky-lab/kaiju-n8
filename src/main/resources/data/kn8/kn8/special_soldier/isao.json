@@ -175,5 +175,8 @@
   },
   "rhythm": {
     "press_regeneration": 2
+  },
+  "low_health": {
+    "thunder_emperor": 0.4
   }
 }

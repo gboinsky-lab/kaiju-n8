@@ -78,6 +78,7 @@ public final class KikoruProfileGameTests {
         KaijuEntity kaiju = helper.spawn(KN8Entities.PRIMIGENIUS.get(), new BlockPos(10, 1, 7));
         kaiju.setNoAi(true);
         double[] startX = new double[1];
+        double[] peak = {Double.NEGATIVE_INFINITY};
         long[] started = {-1};
         double ground = helper.absoluteVec(new Vec3(0, 1, 0)).y;
         // Tenta a cada tick ate a Kikoru estar livre (ao nascer ela saca a arma) e no chao.
@@ -94,8 +95,11 @@ public final class KikoruProfileGameTests {
                 started[0] = now;
                 helper.fail("saltando");
             }
+            // Pico do salto (medir num tick fixo falhava quando ela ja tinha descido ou ainda subia).
+            peak[0] = Math.max(peak[0], kikoru.getY());
             helper.assertTrue(now >= started[0] + 8, "No ar");
-            helper.assertTrue(kikoru.getY() > ground + 1.5, "No meio do Falling Thunder deveria estar no alto");
+            helper.assertTrue(peak[0] > ground + 1.5, "No meio do Falling Thunder deveria estar no alto: pico "
+                    + (peak[0] - ground));
             helper.assertTrue(kikoru.getX() > startX[0] + 0.5, "A Kikoru deveria ir na direcao do kaiju");
             kaiju.discard();
             kikoru.discard();

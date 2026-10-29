@@ -63,6 +63,8 @@ Regras do documento (valem para toda a etapa):
 4. **Narumi com o Numbers 1:** as técnicas são aprimoradas e **sempre acertam o alvo** (o Numbers 1 prevê o futuro;
    a previsão não muda o combate em si, só garante o acerto).
 5. **Spiral Blast do Isao:** um soco que cria uma espiral amarela.
+6. **Thunder Emperor (depois da COMBATE-4):** só com a vida baixa, para o jogador e para a NPC (feito: 40%
+   [SUPOSIÇÃO]). **Falling Thunder:** altura mínima de 3 blocos aprovada.
 
 ## 5. Perguntas que ficaram (histórico)
 

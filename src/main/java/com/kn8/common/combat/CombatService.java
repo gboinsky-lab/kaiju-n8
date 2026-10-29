@@ -304,6 +304,11 @@ public final class CombatService {
             return false;
         }
         WeaponDef.Special def = special.get();
+        if (!weapon.get().healthAllows(def.id(), player.getHealth(), player.getMaxHealth())) {
+            // COMBATE-4 (Miguel): o Thunder Emperor so sai com a vida baixa (jogador e NPC).
+            replySpecial(player, CombatResult.DENIED_NEEDS_LOW_HEALTH);
+            return false;
+        }
         if (def.type() == WeaponDef.SpecialType.DIVE_SLAM && (player.onGround()
                 || SpecialAttacks.heightAboveGround(player, def.forward()) < def.forward())) {
             // COMBATE-3 (Miguel): o Falling Thunder vem de cima: pular de uma construcao e cair no kaiju.

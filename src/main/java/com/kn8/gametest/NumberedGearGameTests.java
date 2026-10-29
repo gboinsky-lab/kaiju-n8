@@ -177,4 +177,34 @@ public final class NumberedGearGameTests {
         player.setShiftKeyDown(false);
         helper.succeed();
     }
+
+    /**
+     * COMBATE-4 (Miguel, 2026-10-29: "pode ser usado apenas com a vida baixa, vale tanto para o player quanto para o
+     * npc"): o Thunder Emperor das manoplas so sai com a vida ate 40%; o do Isao com o Numbers 2 e o do No. 9 com o
+     * Isao tambem.
+     */
+    @GameTest(template = TEMPLATE)
+    public static void thunderEmperorOnlyWithLowHealth(GameTestHelper helper) {
+        FakePlayer player = player(helper, "thunder");
+        CareerService.setRank(player, KN8Constants.id("lider_pelotao"));
+        CareerService.data(player).research().add(THEORY);
+        PowerService.setTrainedRelease(player, 40);
+        PowerService.setStamina(player, 100);
+        player.setHealth(player.getMaxHealth());
+        helper.assertTrue(CombatService.cycleTechnique(player, -1), "Shift + X volta para a ultima tecnica");
+        helper.assertTrue(CombatService.selectedTechnique(player, CombatService.heldWeapon(player).orElseThrow())
+                .map(t -> t.id().equals("thunder_emperor")).orElse(false), "A ultima tecnica e o Thunder Emperor");
+        helper.assertFalse(CombatService.special(player), "Com a vida cheia o Thunder Emperor e recusado");
+        player.setHealth(player.getMaxHealth() * 0.3F);
+        helper.assertTrue(CombatService.special(player), "Com a vida baixa o Thunder Emperor sai");
+        helper.assertTrue(KN8Data.SPECIAL_SOLDIER.get(KN8Constants.id("isao"), false).map(def ->
+                !def.healthAllows("thunder_emperor", 500.0F, 700.0F) && def.healthAllows("thunder_emperor", 200.0F,
+                        700.0F) && def.healthAllows("force_blast", 700.0F, 700.0F)).orElse(false),
+                "O Isao NPC so usa o Thunder Emperor com a vida baixa");
+        helper.assertTrue(KN8Data.ABILITY.get(KN8Constants.id("no9_isao_thunder_emperor"), false)
+                .map(def -> def.behavior().healthBelow() <= 0.4F).orElse(false),
+                "O No. 9 com o Isao tambem");
+        player.setHealth(player.getMaxHealth());
+        helper.succeed();
+    }
 }
