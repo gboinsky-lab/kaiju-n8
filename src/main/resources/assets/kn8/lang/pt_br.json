@@ -66,6 +66,7 @@
   "kn8.configuration.reduceFlashes": "Reduzir clarões",
   "kn8.configuration.maxDrawnEffects": "Máximo de efeitos desenhados",
   "kn8.configuration.perfLog": "Log de desempenho dos efeitos",
+  "kn8.configuration.modSoundVolume": "Volume dos sons do kn8",
   "kn8.configuration.referenceHeight": "Altura de referência dos efeitos",
   "kn8.configuration.scaleSizeExponent": "Tamanho do efeito pelo corpo",
   "kn8.configuration.scaleSpreadExponent": "Alcance do efeito pelo corpo",

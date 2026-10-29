@@ -225,12 +225,13 @@ STANCES = {
         "run": {"swing": 45, "period": 0.5, "body_pos": [0, -1, 0], "torso": [20, 0, 0],
                 "right_arm": [30, 0, 20], "left_arm": [-30, 0, -20]},
     },
-    # Espada de uma mao (referencia: braco caido a frente, lamina apontando para o chao na diagonal).
+    # Espada de uma mao. Miguel (2026-10-29: "a combat sword esta na posicao errada"): a lamina para o chao virou
+    # guarda de esgrima: braco a frente, lamina para a frente e para cima, mao esquerda solta perto do peito.
     "sword": {
         "idle": {"body_pos": [0, -1.5, 0], "right_leg": [-14, 0, 6], "left_leg": [12, 0, -6], "torso": [6, 10, 0],
-                 "right_arm": [-18, 0, 22], "right_item": [55, 0, 0], "left_arm": [-10, 6, -6]},
+                 "right_arm": [-42, -10, 8], "right_item": [-25, 0, 0], "left_arm": [-22, 14, -8]},
         "move": {"swing": 26, "period": 0.75, "body_pos": [0, -1, 0], "torso": [6, 8, 0],
-                 "right_arm": [-18, 0, 22], "right_item": [55, 0, 0], "left_arm": [-10, 6, -6]},
+                 "right_arm": [-42, -10, 8], "right_item": [-25, 0, 0], "left_arm": [-22, 14, -8]},
         "run": {"swing": 45, "period": 0.5, "body_pos": [0, -1, 0], "torso": [22, 0, 0],
                 "right_arm": [40, 0, 18], "right_item": [70, 0, 0], "left_arm": [-35, 0, -15]},
     },

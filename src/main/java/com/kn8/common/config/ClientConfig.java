@@ -43,6 +43,7 @@ public final class ClientConfig {
     public static final ModConfigSpec.BooleanValue REDUCE_FLASHES;
     public static final ModConfigSpec.IntValue MAX_DRAWN_EFFECTS;
     public static final ModConfigSpec.BooleanValue PERF_LOG;
+    public static final ModConfigSpec.DoubleValue MOD_SOUND_VOLUME;
     public static final ModConfigSpec.DoubleValue REFERENCE_HEIGHT;
     public static final ModConfigSpec.DoubleValue SCALE_SIZE_EXPONENT;
     public static final ModConfigSpec.DoubleValue SCALE_SPREAD_EXPONENT;
@@ -88,6 +89,11 @@ public final class ClientConfig {
                         + " tests).")
                 .translation(PREFIX + "perfLog")
                 .define("perfLog", false);
+        // FIX-1 (Miguel, 2026-10-29: "diminuir os sons", volume geral em 29%): os sons do mod saem por este fator,
+        // sem mudar a distancia em que sao ouvidos (os rugidos tocam com volume 2-8 so pelo alcance).
+        MOD_SOUND_VOLUME = BUILDER.comment("Loudness of the kn8 sounds (0-1); the hearing range does not change.")
+                .translation(PREFIX + "modSoundVolume")
+                .defineInRange("modSoundVolume", 0.35, 0.0, 1.0);
         // VFX-2 (Miguel: "um kaiju grande nao deve ter ataques pequenos ou com efeitos pequenos"): o efeito cresce
         // com a altura de quem o faz, pela altura de referencia (um humano), com expoentes por grandeza.
         REFERENCE_HEIGHT = BUILDER.comment("Body height (blocks) the kn8 effects are designed for; bigger bodies get"

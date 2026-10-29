@@ -399,7 +399,9 @@ remedidos depois disso (2 de cada): perde para o No. 10 gigante (93–104 s, gig
 |---|---|---|
 | Subir / descer na tecla | **2% por segundo** (Miguel) / 40 por segundo | `[power] raisePercentPerSecond`, `lowerPerSecond` |
 | Acima do limite | no maximo **+20** (limite 40 -> ate 60%) | `[power] maxOverLimit` |
-| Desgaste acima do limite | 0,06 de vida/s por ponto acima (+20 = 1,2/s) mais o calor | `[power] overLimitDamagePerPoint` [SUPOSICAO] |
+| Desgaste acima do limite | **so com o calor no maximo** (FIX-1, Miguel 2026-10-29): 0,06 de vida/s por ponto acima (+20 = 1,2/s) mais 2/s do calor maximo; antes disso o traje so esquenta (limite 40 e 60%: ~29 s sem dano, depois ~3,2/s) | `[power] overLimitDamagePerPoint`, `[heat] maxHeatDrainPerSecond` [SUPOSICAO] (`overloadDrainPerSecond`/`criticalDrainPerSecond` ficam sem uso) |
+| Empurrao ao tomar dano (jogador) | **0** (FIX-1, Miguel: tirar o empurrao); 1 = vanilla | `[combat] playerKnockback` |
+| Volume dos sons do mod (cliente) | **35%** da altura (FIX-1, Miguel com o volume geral em 29%); o alcance continua igual | `[fx] modSoundVolume` (kn8-client.toml) [SUPOSICAO] |
 | Fadiga ao voltar para o limite | 1 tick por tick no maximo acima (metade na metade); entre 3 s e 30 s; Lentidao IV, Fraqueza II, Cansaco II, sem Release | `[power] fatigueTicksPerStrain`, `fatigueMinTicks`, `fatigueMaxTicks` [SUPOSICAO] |
 | Golpe em kaiju (balanceamento v1.0) | comum no maximo **12%** da vida maxima por golpe, pesado/carregado **15%** (ja com parte/nucleo); so o golpe especial da arma passa disso | `[combat] maxLightHitFraction`, `maxHeavyHitFraction` |
 | Limite pessoal inicial (talento) | comum 5-10%; **raro** (10% de chance, Miguel) 15-30% | `[talent]` |

@@ -111,6 +111,7 @@ public final class ServerConfig {
     /** IA-2: a guarda da cauda do Hoshina No. 10 segura golpe pesado de kaiju? */
     public static final ModConfigSpec.BooleanValue TAIL_GUARD_BLOCKS_HEAVY;
     public static final ModConfigSpec.BooleanValue KINETIC_SUIT_NO_FALL_DAMAGE;
+    public static final ModConfigSpec.DoubleValue PLAYER_KNOCKBACK;
     public static final ModConfigSpec.BooleanValue SOLDIER_NO_FALL_DAMAGE;
     public static final ModConfigSpec.IntValue PATH_POWER_YOJU;
     public static final ModConfigSpec.IntValue PATH_POWER_HONJU;
@@ -1241,6 +1242,8 @@ public final class ServerConfig {
                 + " damage).", true);
         KINETIC_SUIT_NO_FALL_DAMAGE = booleanValue("kineticSuitNoFallDamage", "A player wearing a Defense Force suit"
                 + " takes no fall damage: the kinetic armor absorbs the impact (Miguel, 2026-10-16).", true);
+        PLAYER_KNOCKBACK = doubleValue("playerKnockback", "Multiplies the knockback a player takes when hurt (Miguel,"
+                + " 2026-10-29: taking damage threw the player back; 0 = no knockback).", 0.0, 0.0, 1.0);
         SOLDIER_NO_FALL_DAMAGE = booleanValue("soldierNoFallDamage", "Soldiers (common and special) take no fall"
                 + " damage: they wear the kinetic armor (Miguel, 2026-10-16).", true);
         LIGHT_STAMINA_COST = doubleValue("lightStaminaCost", "Stamina spent by a light attack.", 5.0, 0.0, 100.0);

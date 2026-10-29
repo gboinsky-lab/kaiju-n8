@@ -505,8 +505,9 @@ public final class PowerService {
     }
 
     /**
-     * 0.5.0: o corpo so desgasta enquanto a % estiver ACIMA do limite pessoal (decisao do Miguel), e mais quanto mais
-     * quente o traje; no calor maximo o desgaste e pesado e o alarme toca, mas a % nao cai.
+     * 0.5.0: o corpo so desgasta enquanto a % estiver ACIMA do limite pessoal (decisao do Miguel). Miguel (2026-10-29):
+     * "so deve dar dano quando o heat chegar no maximo": abaixo do calor maximo o excesso so aquece o traje (avisos e
+     * lentidao no critico); no calor maximo o alarme toca e o corpo perde vida pelo excesso, mas a % nao cai.
      */
     private static void applyHeatEffects(ServerPlayer player, HeatStage stage, long now) {
         if (excess(player) <= 0) {
@@ -523,13 +524,10 @@ public final class PowerService {
         if (now % TICKS_PER_SECOND != 0) {
             return;
         }
-        // Quanto mais acima do limite, mais dano (Miguel); o calor alto soma por cima.
-        double drain = excess(player) * ServerConfig.OVER_LIMIT_DAMAGE_PER_POINT.get() + switch (stage) {
-            case OVERLOAD -> ServerConfig.OVERLOAD_DRAIN_PER_SECOND.get();
-            case CRITICAL -> ServerConfig.CRITICAL_DRAIN_PER_SECOND.get();
-            case PANIC -> ServerConfig.MAX_HEAT_DRAIN_PER_SECOND.get();
-            default -> 0.0;
-        };
+        // So no calor maximo; quanto mais acima do limite, mais dano (Miguel).
+        double drain = stage != HeatStage.PANIC ? 0.0
+                : excess(player) * ServerConfig.OVER_LIMIT_DAMAGE_PER_POINT.get()
+                        + ServerConfig.MAX_HEAT_DRAIN_PER_SECOND.get();
         if (drain > 0) {
             player.hurt(overheatDamage(player), (float) drain);
         }

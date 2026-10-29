@@ -1492,3 +1492,15 @@ gigante) e depois sem `NoAI` com um kaiju por perto.
 | 107.5 | No. 9 e forma preta | No. 9 ereto e frio; forma preta curvada; garra, Finger Gun, braço-lâmina, espinhos encolhendo e explodindo, tentáculos, bote |
 | 107.6 | No. 10 pequeno, gigante e fusão andando e golpeando | Joelhos, pés e cotovelos acompanham; cauda como antes |
 | 107.7 | Jogador hospedeiro transformado (B), em 1ª pessoa | O braço do No. 8 novo inteiro (ombro, antebraço e mão) aparece; em 3ª pessoa o fantoche usa o modelo novo |
+
+## 108. Correcoes da FIX-1 (ovo do oficial, espada, Release acima do limite, empurrao, volume)
+
+Servidor dedicado + 2 clientes; volume geral como o Miguel usa (29%).
+
+| # | Passo | Esperado |
+|---|---|---|
+| 108.1 | Criativo, aba de ovos do kn8: ovo do Oficial de Missoes | Ovo preto e dourado (antes cubo roxo e preto); usar no chao faz surgir o oficial |
+| 108.2 | `kn8:sword` na mao, 3a pessoa (F5) e visto pelo outro cliente, parado e andando | Espada em guarda: braco a frente na altura do peito, lamina para a frente e para cima (antes apontava para o chao) |
+| 108.3 | Traje Mk1, limite 40 (`/kn8 release set 40 Dev`), Release a 60% (`/kn8 release active 60 Dev`), sobrevivencia | Calor sobe sem tirar vida; so com o calor no maximo a vida cai (~29 s sem dano no teste; depois ~3 de vida/s); voltar para 40% para o desgaste |
+| 108.4 | Zumbi/kaiju batendo no jogador | O jogador toma o dano e nao e empurrado (`[combat] playerKnockback` 0; 1 = como antes) |
+| 108.5 | Rugido de kaiju, tiros, golpes de espada, sirene | Sons do mod bem mais baixos (35%), ainda ouvidos de longe como antes; `modSoundVolume` no `kn8-client.toml` ajusta (0 a 1) |

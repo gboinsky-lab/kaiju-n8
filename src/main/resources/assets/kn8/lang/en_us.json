@@ -66,6 +66,7 @@
   "kn8.configuration.reduceFlashes": "Reduce flashes",
   "kn8.configuration.maxDrawnEffects": "Max drawn effects",
   "kn8.configuration.perfLog": "Effects performance log",
+  "kn8.configuration.modSoundVolume": "kn8 sounds volume",
   "kn8.configuration.referenceHeight": "Effect reference height",
   "kn8.configuration.scaleSizeExponent": "Effect size by body size",
   "kn8.configuration.scaleSpreadExponent": "Effect reach by body size",
