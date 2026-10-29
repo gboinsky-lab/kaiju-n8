@@ -763,6 +763,128 @@ def articulate(name, anim, unarmed):
             bones["chest"] = {"rotation": compact(times, values)}
 
 
+# ------------------------------------------------------------------------------------- COMBATE-2: pernas nas posturas
+# Miguel (2026-10-29): "em posturas quero apenas a perna dobrando". Joelho e pe das posturas (parado, andando,
+# correndo) refeitos pela fase do passo; a coxa, o tempo do passo e os bracos ficam como estao (armas na mao). Graus.
+POSTURE_KNEE = {
+    # (joelho no apoio, joelho no meio da perna indo a frente)
+    "walk": (8.0, 58.0),
+    "run": (18.0, 100.0),
+}
+IDLE_KNEE = 10.0
+IDLE_KNEE_PER_DEGREE = 0.5
+
+
+def posture_legs(name, anim):
+    """Joelho e pe de uma postura em laco, tirados da coxa: a perna que vai a frente (coxa com X diminuindo) dobra o
+    joelho ate o pico logo no comeco do balanco e estica ao pisar; no apoio o joelho fica quase reto e o pe plano
+    (pe = -(coxa + joelho)). Parado: joelho levemente dobrado (mais com a perna aberta), pe plano. Sobrescreve o que a
+    passada automatica (articulate) tinha posto, sempre a partir da coxa: rodar de novo da o mesmo resultado."""
+    kind = name.rsplit(".", 1)[-1]
+    length = float(anim.get("animation_length", 0) or 0)
+    bones = anim.get("bones", {})
+    if length <= 0 or kind not in ("idle", "walk", "run"):
+        return False
+    steps = max(2, int(round(length / 0.05)) + 1)
+    times = [length * i / (steps - 1) for i in range(steps)]
+    changed = False
+    for side in ("left", "right"):
+        leg = bones.get(f"leg_{side}", {}).get("rotation")
+        if not leg:
+            continue
+        xs = [sample(leg, t)[0] for t in times]
+        if kind == "idle":
+            knees = [IDLE_KNEE + IDLE_KNEE_PER_DEGREE * abs(x) for x in xs]
+        else:
+            stance, peak = POSTURE_KNEE[kind]
+            speeds = []
+            for i in range(steps):
+                # Laco: vizinhos dao a volta (o primeiro e o ultimo quadro sao o mesmo instante).
+                j, k = (i - 1) % (steps - 1), (i + 1) % (steps - 1)
+                speeds.append(-(xs[k] - xs[j]) / (2 * length / (steps - 1)))
+            top = max(max(speeds), 1e-6)
+            knees = [stance + (peak - stance) * min(1.0, max(0.0, v) / (0.6 * top)) for v in speeds]
+            # Suaviza o pico (media com os vizinhos, em laco) para nao estalar.
+            knees = [(knees[(i - 1) % (steps - 1)] + 2 * knees[i] + knees[(i + 1) % (steps - 1)]) / 4
+                     for i in range(steps)]
+        feet = []
+        for i, (x, k) in enumerate(zip(xs, knees)):
+            flat = -(x + k)
+            swinging = kind != "idle" and k > POSTURE_KNEE.get(kind, (0, 0))[0] + 10
+            feet.append([max(-60.0, min(60.0, flat * (0.6 if swinging else 1.0))), 0.0, 0.0])
+        bones[f"shin_{side}"] = {"rotation": compact(times, [[k, 0.0, 0.0] for k in knees])}
+        bones[f"foot_{side}"] = {"rotation": compact(times, feet)}
+        changed = True
+    return changed
+
+
+# Hoshina No. 10 parado (Miguel, 2026-10-29, figura): agachado com o joelho direito no chao, a perna esquerda a frente e
+# para fora com a canela em pe e o pe plano, tronco inclinado, cabeca para a frente; bracos e laminas para tras
+# (controller "arms", sem mudar). O modelo do No. 10 ja tem as coxas inclinadas no repouso: as pernas sao dadas pela
+# DIRECAO de cada segmento (coxa, canela, pe; espaco do modelo da GeckoLib: +X direita do personagem, +Y cima, -Z frente)
+# e as rotacoes saem dela; a altura do corpo sai da malha (preview_rig) para o joelho encostar no chao.
+NO10_KNEEL_TRUNK = {"body": [28, 0, 0], "chest": [12, 6, 0], "head": [-38, -4, 0]}
+NO10_KNEEL_LEGS = {
+    "right": {"leg": (0.25, -1.0, -0.45), "shin": (0.05, -0.15, 1.0), "foot": (0.0, -0.7, 1.0)},
+    "left": {"leg": (-0.45, -0.2, -1.0), "shin": (-0.05, -1.0, 0.1), "foot": (-0.15, 0.0, -1.0)},
+}
+
+
+def _keyframe(local):
+    """Matriz local -> keyframe [x, y, z] da GeckoLib (o preview_rig monta Rz(z) Ry(-y) Rx(-x))."""
+    from scipy.spatial.transform import Rotation
+    c, b, a = Rotation.from_matrix(local).as_euler("ZYX", degrees=True)
+    return [round(float(-a), 2), round(float(-b), 2), round(float(c), 2)]
+
+
+def _aim(rest, target):
+    import numpy as np
+    a = np.asarray(rest, float) / np.linalg.norm(rest)
+    b = np.asarray(target, float) / np.linalg.norm(target)
+    v, c = np.cross(a, b), float(np.dot(a, b))
+    k = np.array([[0, -v[2], v[1]], [v[2], 0, -v[0]], [-v[1], v[0], 0]])
+    return np.eye(3) + k + k @ k / (1 + c)
+
+
+def hoshina_no10_kneel(data):
+    import numpy as np
+    import preview_rig
+    name = "hoshina_no10.movement.idle"
+    rig = preview_rig.Rig("hoshina_no10")
+    pose = dict(NO10_KNEEL_TRUNK)
+    for side, dirs in NO10_KNEEL_LEGS.items():
+        hip, knee, ankle = (rig.pivot(f"{b}_{side}") for b in ("leg", "shin", "foot"))
+        # Sem malha do pe (o corte do No. 10 deixou o pe esquerdo na canela): a ponta do pe vai reta a frente.
+        foot = rig.meshes.get(f"foot_{side}")
+        toe = foot[0].reshape(-1, 3)[np.argmin(foot[0].reshape(-1, 3)[:, 2])] if foot else ankle + [0, 0, -0.1]
+        parent = np.eye(3)
+        for bone, rest in (("leg", knee - hip), ("shin", ankle - knee), ("foot", toe - ankle)):
+            local = _aim(rest, parent.T @ np.asarray(dirs[bone], float))
+            pose[f"{bone}_{side}"] = _keyframe(local)
+            parent = parent @ local
+    bones = {}
+    for bone, rot in pose.items():
+        if bone in ("body", "chest"):
+            # Respiracao: o tronco sobe e desce 1,5 grau em 2 s.
+            breath = 1.5 if bone == "body" else 0.8
+            bones[bone] = {"rotation": {"0.0": rot, "1.0": [rot[0] + breath, rot[1], rot[2]], "2.0": rot}}
+        else:
+            bones[bone] = {"rotation": {"0.0": rot, "2.0": rot}}
+    for side in ("left", "right"):
+        # O Blockbench do Miguel encolhia as pernas por escala; com o joelho de verdade, escala 1.
+        bones[f"leg_{side}"]["scale"] = {"0.0": [1, 1, 1], "2.0": [1, 1, 1]}
+        bones[f"leg_{side}"]["position"] = {"0.0": [0, 0, 0], "2.0": [0, 0, 0]}
+    bones["body"]["position"] = {"0.0": [0, 0, 0], "2.0": [0, 0, 0]}
+    anim = {"loop": True, "animation_length": 2.0, "bones": bones}
+    rig.anims[name] = anim
+    rot, pos = rig.pose("movement.idle@0")
+    world = rig.world(rot, pos)
+    low = min(float((m[0].reshape(-1, 3) @ world[b][:3, :3].T + world[b][:3, 3])[:, 1].min())
+              for b, m in rig.meshes.items() if not b.startswith("tail"))
+    bones["root"] = {"position": {"0.0": [0, round(-low * 16, 2), 0], "2.0": [0, round(-low * 16, 2), 0]}}
+    data["animations"][name] = anim
+
+
 # Especies so com a passada automatica (animacoes de arma medidas, Blockbench do Miguel, caudas): o que ja existe fica.
 ARTICULATE = {"soldier": False, "hoshina": False, "hoshina_no10": False, "kikoru": False, "kikoru_no4": False,
               "mina": False, "reno": False, "reno_no6": False, "narumi": False, "kafka": False,
@@ -782,6 +904,10 @@ def main():
         if species in ARTICULATE:
             for name, anim in data["animations"].items():
                 articulate(name, anim, ARTICULATE[species])
+                if anim.get("loop") and ".movement." in name:
+                    posture_legs(name, anim)
+            if species == "hoshina_no10":
+                hoshina_no10_kneel(data)
             path.write_bytes((json.dumps(data, indent=2) + "\n").replace("\n", newline).encode("utf-8"))
             print(species, len(data["animations"]), "animacoes com joelho/pe/peito")
             continue

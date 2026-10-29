@@ -1534,3 +1534,15 @@ Imagem: `docs/img/combate1_tecnicas_do_jogador.jpg`.
 | 110.5 | X e R logo depois | Kūuchi negado (recarga propria dele continua) |
 | 110.6 | Machado, faca, espada | Uma tecnica so: X nao muda nada e R continua como antes |
 | 110.7 | Controles > kn8 | Tecla "Trocar tecnica da arma" (X), configuravel |
+
+## 111. COMBATE-2: pernas dobrando nas posturas e Hoshina No. 10 ajoelhado
+
+Servidor dedicado + 2 clientes. Imagem: `docs/img/combate2_pernas_e_no10.jpg`.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 111.1 | `/summon kn8:hoshina_no10 ~ ~ ~ {NoAI:1b}` e olhar de frente e de lado | Ajoelhado: joelho direito no chao, perna esquerda a frente com o pe plano, tronco inclinado, cabeca para a frente, laminas nas maos, respirando |
+| 111.2 | Hoshina No. 10 com alvo | Sai da pose ajoelhada para andar/correr e volta a ela parado |
+| 111.3 | Soldado, Hoshina, Kikoru, Kikoru No. 4, Mina, Reno, Reno No. 6, Narumi, Kafka andando e correndo (de lado) | A perna que vai a frente dobra o joelho e estica ao pisar; correndo o pe de tras sobe; pe plano no apoio; armas nas maos como antes |
+| 111.4 | Os mesmos parados | Joelhos levemente dobrados (mais com a perna aberta), pes no chao |
+| 111.5 | No. 10 pequeno, gigante e fusao andando | Joelho dobrando na passada; cauda como antes |
