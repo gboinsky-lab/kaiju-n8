@@ -1196,3 +1196,20 @@ por mundo.
 | `infectRadius` | 1,2 | Distância do peito em que infecta |
 | `lifeTicks` | 2400 | Larva vai embora depois disso sem infectar |
 | `loseDistance` | 48 | Jogador mais longe que isso: a larva vai embora |
+
+## T-2: forma do Kaiju No. 8 do jogador (2026-10-24) [SUPOSIÇÃO todos os números]
+
+Config `[kaijuForm]`. Miguel 2026-10-24: o Release não muda a forma; só os atributos do corpo treinados (nível 0-100).
+
+| Chave | Valor | Efeito |
+|---|---|---|
+| `cooldownTicks` | 200 | Espera depois de voltar a humano |
+| `height` | 2,0 | Altura da forma (escala 1,11 sobre o jogador) |
+| `healthBonus` / `healthPerResistance` | 180 / 2,0 | Vida: 20 + 180 = 200; com resistência 100, 400 |
+| `armor` / `armorPerResistance` / `toughness` | 16 / 0,04 / 8 | Armadura extra (até +20) e dureza |
+| `speedBonus` / `speedPerLevel` | 0,3 / 0,003 | Velocidade +30% (até +60% com velocidade 100) |
+| `jumpBonus` / `jumpPerAgility` | 0,2 / 0,002 | Salto (até +0,4) |
+| `knockbackResistance` | 0,8 | Quase não é empurrado |
+| `fallDamageMultiplier` | 0,2 | Leva 20% do dano de queda |
+| `stepHeightBonus` | 0,5 | Sobe degraus de 1 bloco andando |
+| `auraRelease` | 60 | Força com que a aura do No. 8 é desenhada |

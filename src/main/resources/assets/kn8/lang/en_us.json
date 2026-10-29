@@ -1221,5 +1221,11 @@
   "kn8.command.host.spawn_failed": "The larva could not appear here.",
   "kn8.command.host.spawned": "A larva appeared near %s.",
   "kn8.command.host.infected": "%s was infected.",
-  "kn8.command.host.cleared": "%s's infection was removed."
+  "kn8.command.host.cleared": "%s's infection was removed.",
+  "key.kn8.kaiju_form": "Kaiju No. 8 form",
+  "kn8.host.form.not_host": "Nothing answers inside you.",
+  "kn8.host.form.disabled": "Transformation is disabled on this server.",
+  "kn8.host.form.cooldown": "Your body is still recovering (%s s).",
+  "kn8.host.form.unavailable": "You cannot transform right now.",
+  "kn8.command.host.form": "Form of %s: %s"
 }

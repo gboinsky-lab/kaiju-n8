@@ -104,3 +104,17 @@ e os modelos provisórios (asas e cauda do jogador, Narumi No. 1, Isao sem o Num
   local da obra; circula ~5 s, mergulha no peito e infecta; título, chat, náusea, escuridão e batida de coração.
 - Um hospedeiro por mundo; a infecção passa pela morte e fica salva no mundo.
 - `/kn8 host status|spawn|infect|clear <jogador>`; roteiro §103; imagem `docs/img/t1_larva_infeccao.jpg`.
+
+## T-2 — Transformação (feita, 2026-10-29)
+
+- Tecla **B** (a V já é o bloqueio): `KaijuFormC2S` só com a intenção; `KaijuFormService` decide (só o hospedeiro,
+  vivo, fora da espera de `[kaijuForm] cooldownTicks` depois de voltar).
+- Estado público `kn8:kaiju_form` (sync nativo, salvo, não passa pela morte). Atributos transitórios reaplicados a cada
+  segundo: vida, armadura, velocidade, salto, empurrão, queda, degrau e altura de 2 m, crescendo só com resistência,
+  velocidade e agilidade treinadas; Release em 0 e aura `kaiju_no8` enquanto transformado.
+- Desenho (método D): `PuppetNo8`, um Kaiju No. 8 só do cliente que segue o jogador e é desenhado pelo renderer do
+  NPC no lugar do jogador (malha, andar/correr, postura dos punhos); em 1ª pessoa, a malha do braço direito do No. 8.
+  [DECIDIR aprovado em princípio] fantoche de entidade em vez de um `GeoReplacedEntityRenderer` próprio: reaproveita
+  malha, animações e efeitos do No. 8 aliado.
+- Fica para a T-3: golpes (só punhos), o limite de 2 minutos e a perda de controle; hoje transformado o jogador ainda
+  usa o item da mão no ataque vanilla e não há HUD de tempo.

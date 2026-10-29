@@ -2,6 +2,7 @@ package com.kn8.common.command;
 
 import java.util.UUID;
 
+import com.kn8.common.host.KaijuFormService;
 import com.kn8.common.host.KaijuHostData;
 import com.kn8.common.host.LarvaService;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -17,7 +18,8 @@ import net.minecraft.server.level.ServerPlayer;
 /**
  * T-1: comandos do hospedeiro do Kaiju No. 8 (operador). {@code /kn8 host status} diz quem e o hospedeiro do mundo e
  * se ha larva voando; {@code spawn <jogador>} faz a larva aparecer para ele agora (sem sorteio nem lugar, mas com a
- * regra de um hospedeiro por mundo); {@code infect}/{@code clear <jogador>} infecta direto ou desfaz.
+ * regra de um hospedeiro por mundo); {@code infect}/{@code clear <jogador>} infecta direto ou desfaz; {@code form <jogador>} transforma ou
+ * volta (T-2), como a tecla.
  */
 final class HostCommands {
 
@@ -32,7 +34,9 @@ final class HostCommands {
                 .then(Commands.literal("infect").then(Commands.argument("player", EntityArgument.player())
                         .executes(HostCommands::infect)))
                 .then(Commands.literal("clear").then(Commands.argument("player", EntityArgument.player())
-                        .executes(HostCommands::clear)));
+                        .executes(HostCommands::clear)))
+                .then(Commands.literal("form").then(Commands.argument("player", EntityArgument.player())
+                        .executes(HostCommands::form)));
     }
 
     private static int status(CommandContext<CommandSourceStack> ctx) {
@@ -74,6 +78,15 @@ final class HostCommands {
         ctx.getSource().sendSuccess(() -> Component.translatable("kn8.command.host.infected",
                 player.getGameProfile().getName()), true);
         return 1;
+    }
+
+    /** T-2: o mesmo que a tecla da forma (transforma ou volta), com as mesmas regras. */
+    private static int form(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        ServerPlayer player = EntityArgument.getPlayer(ctx, "player");
+        KaijuFormService.Result result = KaijuFormService.toggle(player);
+        ctx.getSource().sendSuccess(() -> Component.translatable("kn8.command.host.form", player.getGameProfile()
+                .getName(), result.name()), true);
+        return result == KaijuFormService.Result.TRANSFORMED || result == KaijuFormService.Result.REVERTED ? 1 : 0;
     }
 
     private static int clear(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {

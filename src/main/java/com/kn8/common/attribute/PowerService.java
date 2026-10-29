@@ -9,6 +9,7 @@ import com.kn8.common.config.ServerConfig;
 import com.kn8.common.data.KN8Data;
 import com.kn8.common.craft.SuitEvents;
 import com.kn8.common.data.def.SuitDef;
+import com.kn8.common.host.KaijuFormService;
 import com.kn8.common.network.NetworkSync;
 import com.kn8.common.registry.KN8Attachments;
 import com.kn8.common.registry.KN8Sounds;
@@ -134,7 +135,8 @@ public final class PowerService {
 
     /** % efetiva usada por todas as regras: a ativa mais o desespero, so com o traje vestido e sem fadiga. */
     public static int effectiveRelease(ServerPlayer player) {
-        if (!suitWorn(player) || fatigued(player)) {
+        // T-2 (Miguel 2026-10-24): o Release nao muda a forma kaiju; transformado a % efetiva e 0.
+        if (!suitWorn(player) || fatigued(player) || KaijuFormService.isTransformed(player)) {
             return 0;
         }
         // 0.5: com a vida baixa a % sobe sozinha (desperationHealth/desperationMaxPoints), sem calor.
@@ -203,6 +205,9 @@ public final class PowerService {
      * Miguel, 2026-10-23), senao a padrao.
      */
     public static ResourceLocation auraOf(ServerPlayer player) {
+        if (KaijuFormService.isTransformed(player)) {
+            return KaijuFormService.PROFILE;
+        }
         return player.getData(KN8Attachments.AURA_OVERRIDE)
                 .or(() -> SuitEvents.worn(player).flatMap(SuitDef::aura))
                 .orElseGet(() -> playerAura(player));
@@ -370,7 +375,7 @@ public final class PowerService {
 
         ensureTalent(player, data);
         boolean suit = suitWorn(player);
-        if (suit && !fatigued(player)) {
+        if (suit && !fatigued(player) && !KaijuFormService.isTransformed(player)) {
             data.setActive(Math.min(maxActive(player),
                     PowerMath.releaseAfterInput(data.active(), data.releaseInput(), params)));
         } else {
@@ -416,7 +421,11 @@ public final class PowerService {
                     bodyParams().speedPerLevel() * data.bodyLevel(BodyStat.SPEED),
                     AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
             data.setLastAppliedRelease(effective);
-            player.setData(KN8Attachments.RELEASE_VISUAL, effective);
+        }
+        // T-2: a forma do No. 8 nao tem Release, mas a aura dela aparece sempre com a forca do [kaijuForm].
+        int visual = KaijuFormService.isTransformed(player) ? ServerConfig.FORM_AURA_RELEASE.get() : effective;
+        if (visual != player.getData(KN8Attachments.RELEASE_VISUAL)) {
+            player.setData(KN8Attachments.RELEASE_VISUAL, visual);
         }
         ResourceLocation aura = auraOf(player);
         if (!aura.equals(player.getData(KN8Attachments.AURA))) {

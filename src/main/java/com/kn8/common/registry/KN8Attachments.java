@@ -114,6 +114,16 @@ public final class KN8Attachments {
                     .copyOnDeath()
                     .build());
 
+    /**
+     * T-2: o hospedeiro esta na forma do Kaiju No. 8. PUBLICO (sync nativo): todos os clientes desenham o jogador como
+     * o No. 8. Salvo (relogar continua transformado); nao passa pela morte (renasce humano).
+     */
+    public static final Supplier<AttachmentType<Boolean>> KAIJU_FORM = ATTACHMENT_TYPES.register("kaiju_form",
+            () -> AttachmentType.builder(() -> false)
+                    .serialize(Codec.BOOL)
+                    .sync(ByteBufCodecs.BOOL)
+                    .build());
+
     /** 0.5: aura forcada por comando ({@code /kn8 aura}), por cima da do traje. So no servidor, nunca salva. */
     public static final Supplier<AttachmentType<Optional<ResourceLocation>>> AURA_OVERRIDE =
             ATTACHMENT_TYPES.register("aura_override", () -> AttachmentType.<Optional<ResourceLocation>>builder(

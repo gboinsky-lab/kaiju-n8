@@ -1428,3 +1428,18 @@ blocos) ou dentro de um local da obra, com chance de 0,4% a cada 30 s por jogado
 | 103.4 | Morrer e renascer, reiniciar o servidor | O Dev continua hospedeiro |
 | 103.5 | `/kn8 host clear Dev`, `/kn8 host spawn Dev` e se afastar 50+ blocos | A larva vai embora (fumaça); status "nenhuma larva no mundo" |
 | 103.6 | Soldados perto da larva; larva num local da obra | Os soldados não atacam a larva; a faixa da região não entra em alerta |
+
+## 104. Transformação em Kaiju No. 8 (T-2)
+
+Servidor dedicado + 2 clientes. O jogador precisa ser o hospedeiro (`/kn8 host infect Dev` ou a larva da T-1). Tecla
+**B** (configurável em Controles, categoria kn8). Golpes da forma, limite de 2 minutos e perda de controle vêm na T-3.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 104.1 | Dev2 (não infectado) aperta B | "Nada responde dentro de você." na barra de ação; nada muda |
+| 104.2 | Dev (hospedeiro) aperta B | Rugido, fumaça e linhas ciano; Dev2 vê o Dev como o Kaiju No. 8 (2 m, nome em cima, aura azul com raios); vida 200 (com resistência treinada, mais) |
+| 104.3 | Dev olha em 1ª pessoa e em 3ª (F5) | Em 1ª pessoa o braço escuro do No. 8 no lugar da mão/arma; em 3ª pessoa o corpo do No. 8 |
+| 104.4 | Dev anda e corre | Dev2 vê o No. 8 andando/correndo com a passada |
+| 104.5 | Dev segura G (Release) transformado | A % fica em 0 (a forma não usa Release) |
+| 104.6 | Dev aperta B de novo e logo depois outra vez | Volta a humano (vida e altura normais); a segunda vez avisa a espera (~10 s) |
+| 104.7 | Transformado, relogar e morrer | Relogando continua No. 8; morrendo renasce humano |

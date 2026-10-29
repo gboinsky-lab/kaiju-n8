@@ -7,6 +7,7 @@ import com.kn8.client.vfx.draw.ProjectileRenderers;
 import com.kn8.KN8Constants;
 import com.kn8.client.anim.PlayerAnimations;
 import com.kn8.client.attribute.ReleaseInput;
+import com.kn8.client.host.KaijuFormClient;
 import com.kn8.client.combat.CombatFeedback;
 import com.kn8.client.combat.CombatInput;
 import com.kn8.client.hud.KN8Hud;
@@ -82,6 +83,8 @@ public final class KN8Client {
         modEventBus.addListener(ReleaseInput::registerKeys);
         // 0.5.0-E: tecla de parkour (C).
         modEventBus.addListener(ParkourClient::registerKeys);
+        // T-2: tecla da forma do Kaiju No. 8 (B).
+        modEventBus.addListener(KaijuFormClient::registerKeys);
     }
 
     /** Um renderer GeckoLib por especie; a sombra acompanha mais ou menos a largura da hitbox registrada. */

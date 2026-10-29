@@ -22,6 +22,7 @@ import com.kn8.common.combat.AmmoS2C;
 import com.kn8.common.combat.CombatStateS2C;
 import com.kn8.common.attribute.PowerSyncS2C;
 import com.kn8.common.attribute.ReleaseInputC2S;
+import com.kn8.common.host.KaijuFormC2S;
 import com.kn8.common.data.DataSyncS2C;
 import com.kn8.common.network.debug.NetPingC2S;
 import com.kn8.common.vfx.VfxS2C;
@@ -72,7 +73,8 @@ public final class KN8Network {
     // 28 = PM-9: RegionAlertS2C (alerta por regiao).
     // 30 = PM-11A: registro sincronizado "numbered_gear", CareerView.Research.mastery e DENIED_INCOMPATIBLE.
     // 31 = PM-11B: blocos "tail" e "wings" no registro "numbered_gear".
-    private static final String PROTOCOL_VERSION = "31";
+    // 32 = T-2: KaijuFormC2S (tecla da forma do Kaiju No. 8).
+    private static final String PROTOCOL_VERSION = "32";
 
     /** Diagnostico: 20 por segundo, rajada de 40. */
     private static final C2SGuard.Limit DEBUG_LIMIT = new C2SGuard.Limit(20, 40);
@@ -88,6 +90,9 @@ public final class KN8Network {
     private static final C2SGuard.Limit MENU_LIMIT = new C2SGuard.Limit(4, 4);
     /** Tecla de Release: pressionar/soltar, ate 10 por segundo com rajada de 10. */
     private static final C2SGuard.Limit RELEASE_LIMIT = new C2SGuard.Limit(10, 10);
+
+    /** T-2: tecla da forma do No. 8, ate 2 por segundo com rajada de 2. */
+    private static final C2SGuard.Limit FORM_LIMIT = new C2SGuard.Limit(2, 2);
 
     /** Parkour: intencoes pontuais (pulo, borda, slide), ate 10 por segundo com rajada de 10. */
     private static final C2SGuard.Limit PARKOUR_LIMIT = new C2SGuard.Limit(10, 10);
@@ -126,6 +131,8 @@ public final class KN8Network {
         // 0.5.0: tecla de Release (so na mudanca; o servidor sobe/desce a % no tick).
         toServer(registrar, ReleaseInputC2S.TYPE, ReleaseInputC2S.STREAM_CODEC, RELEASE_LIMIT,
                 ReleaseInputC2S::handle);
+        // T-2: tecla da forma do Kaiju No. 8 (o servidor decide transformar ou voltar).
+        toServer(registrar, KaijuFormC2S.TYPE, KaijuFormC2S.STREAM_CODEC, FORM_LIMIT, KaijuFormC2S::handle);
         // M10: intencao de combate (o servidor valida tudo).
         toServer(registrar, CombatInputC2S.TYPE, CombatInputC2S.STREAM_CODEC, COMBAT_LIMIT, CombatNetwork::handle);
         // 0.1-B: efeitos visuais (desenhados no cliente).

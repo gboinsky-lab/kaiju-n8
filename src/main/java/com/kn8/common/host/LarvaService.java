@@ -243,6 +243,9 @@ public final class LarvaService {
 
     /** Desfaz a infeccao (comando de operador e GameTests). */
     public static void clear(ServerPlayer player) {
+        if (KaijuFormService.isTransformed(player)) {
+            KaijuFormService.revert(player);
+        }
         player.setData(KN8Attachments.KAIJU_HOST.get(), -1L);
         KaijuHostData data = KaijuHostData.get(player.getServer());
         if (player.getUUID().equals(data.host())) {

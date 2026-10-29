@@ -6,6 +6,7 @@ import java.util.Optional;
 import com.kn8.KN8Constants;
 import com.kn8.common.config.ServerConfig;
 import com.kn8.common.data.KN8Data;
+import com.kn8.common.host.KaijuFormService;
 import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.soldier.SoldierEntity;
 import com.kn8.common.soldier.special.HoshinaEntity;
@@ -125,8 +126,10 @@ public final class VfxService {
         if (source instanceof SoldierEntity) {
             return Optional.of(BuiltInRegistries.ENTITY_TYPE.getKey(source.getType()));
         }
-        if (source instanceof Player) {
-            return Optional.of(KN8Constants.id("player"));
+        if (source instanceof Player player) {
+            // T-2: transformado, os efeitos do jogador saem com a paleta do No. 8.
+            return Optional.of(KaijuFormService.isTransformed(player) ? KaijuFormService.PROFILE
+                    : KN8Constants.id("player"));
         }
         return Optional.empty();
     }

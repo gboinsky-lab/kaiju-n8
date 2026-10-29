@@ -4,12 +4,15 @@ import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 import com.kn8.KN8Constants;
+import com.kn8.common.attribute.PowerService;
 import com.kn8.common.config.ServerConfig;
+import com.kn8.common.host.KaijuFormService;
 import com.kn8.common.host.KaijuHostData;
 import com.kn8.common.host.LarvaService;
 import com.kn8.common.kaiju.CarcassEntity;
 import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.world.KaijuSpawner;
+import com.kn8.core.power.BodyStat;
 import com.mojang.authlib.GameProfile;
 
 import net.minecraft.core.BlockPos;
@@ -17,6 +20,7 @@ import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.util.FakePlayer;
@@ -90,6 +94,61 @@ public final class HostGameTests {
             data.setLarva(null);
         }
         helper.assertFalse(LarvaService.isHost(first), "Clear desfaz");
+        helper.succeed();
+    }
+
+    @GameTest(template = TEMPLATE, batch = "kn8_host_form")
+    public static void hostTransformsWithBodyStrengthAndTurnsBack(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        KaijuHostData data = KaijuHostData.get(level.getServer());
+        data.setHost(null);
+        data.setLarva(null);
+        FakePlayer host = player(helper, "form");
+        FakePlayer human = player(helper, "human");
+        LarvaService.clear(host);
+        LarvaService.clear(human);
+        host.getPersistentData().remove("kn8_form_ready");
+        try {
+            helper.assertTrue(KaijuFormService.transform(human) == KaijuFormService.Result.NOT_HOST,
+                    "Quem nao foi infectado nao transforma");
+            helper.assertTrue(LarvaService.infect(host), "Hospedeiro");
+            PowerService.setBodyLevel(host, BodyStat.RESISTANCE, 0);
+            float humanHealth = host.getMaxHealth();
+            double humanHeight = host.getBbHeight();
+            helper.assertTrue(KaijuFormService.toggle(host) == KaijuFormService.Result.TRANSFORMED, "Transforma");
+            helper.assertTrue(KaijuFormService.isTransformed(host), "Estado publico ligado");
+            double bonus = ServerConfig.FORM_HEALTH_BONUS.get();
+            helper.assertTrue(Math.abs(host.getMaxHealth() - (humanHealth + bonus)) < 0.01,
+                    "Vida da forma: " + host.getMaxHealth());
+            helper.assertTrue(host.getHealth() == host.getMaxHealth(), "Nasce com a vida cheia");
+            helper.assertTrue(Math.abs(host.getBbHeight() - ServerConfig.FORM_HEIGHT.get()) < 0.05,
+                    "Altura do No. 8: " + host.getBbHeight() + " (humano " + humanHeight + ")");
+            helper.assertTrue(host.getAttributeValue(Attributes.ARMOR) >= ServerConfig.FORM_ARMOR.get(),
+                    "Armadura da forma");
+            // Release nao muda a forma; o corpo treinado sim (Miguel 2026-10-24).
+            PowerService.setActive(host, 60);
+            helper.assertTrue(PowerService.effectiveRelease(host) == 0, "Transformado a % efetiva e 0");
+            helper.assertTrue(KaijuFormService.PROFILE.equals(PowerService.auraOf(host)), "Aura do No. 8");
+            PowerService.setBodyLevel(host, BodyStat.RESISTANCE, 50);
+            host.tickCount = 0;
+            KaijuFormService.tick(host);
+            double trained = humanHealth + bonus + 50 * ServerConfig.FORM_HEALTH_PER_RESISTANCE.get();
+            helper.assertTrue(Math.abs(host.getMaxHealth() - trained) < 0.01,
+                    "Resistencia treinada sobe a vida: " + host.getMaxHealth());
+            helper.assertTrue(KaijuFormService.toggle(host) == KaijuFormService.Result.REVERTED, "Volta");
+            helper.assertTrue(Math.abs(host.getMaxHealth() - humanHealth) < 0.01
+                    && host.getHealth() <= host.getMaxHealth(), "Vida humana de volta");
+            helper.assertTrue(Math.abs(host.getBbHeight() - humanHeight) < 0.01, "Altura humana de volta");
+            helper.assertTrue(KaijuFormService.toggle(host) == KaijuFormService.Result.COOLDOWN,
+                    "Espera depois de voltar");
+            helper.assertFalse(KaijuFormService.isTransformed(host), "Recusado nao transforma");
+        } finally {
+            PowerService.setBodyLevel(host, BodyStat.RESISTANCE, 0);
+            LarvaService.clear(host);
+            LarvaService.clear(human);
+            data.setHost(null);
+            data.setLarva(null);
+        }
         helper.succeed();
     }
 

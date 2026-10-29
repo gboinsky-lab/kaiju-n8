@@ -354,6 +354,22 @@ public final class ServerConfig {
     public static final ModConfigSpec.DoubleValue LARVA_INFECT_RADIUS;
     public static final ModConfigSpec.IntValue LARVA_LIFE_TICKS;
     public static final ModConfigSpec.DoubleValue LARVA_LOSE_DISTANCE;
+    public static final ModConfigSpec.BooleanValue FORM_ENABLED;
+    public static final ModConfigSpec.IntValue FORM_COOLDOWN_TICKS;
+    public static final ModConfigSpec.DoubleValue FORM_HEIGHT;
+    public static final ModConfigSpec.DoubleValue FORM_HEALTH_BONUS;
+    public static final ModConfigSpec.DoubleValue FORM_HEALTH_PER_RESISTANCE;
+    public static final ModConfigSpec.DoubleValue FORM_ARMOR;
+    public static final ModConfigSpec.DoubleValue FORM_ARMOR_PER_RESISTANCE;
+    public static final ModConfigSpec.DoubleValue FORM_TOUGHNESS;
+    public static final ModConfigSpec.DoubleValue FORM_SPEED_BONUS;
+    public static final ModConfigSpec.DoubleValue FORM_SPEED_PER_LEVEL;
+    public static final ModConfigSpec.DoubleValue FORM_JUMP_BONUS;
+    public static final ModConfigSpec.DoubleValue FORM_JUMP_PER_AGILITY;
+    public static final ModConfigSpec.DoubleValue FORM_KNOCKBACK_RESISTANCE;
+    public static final ModConfigSpec.DoubleValue FORM_FALL_DAMAGE_MULTIPLIER;
+    public static final ModConfigSpec.DoubleValue FORM_STEP_HEIGHT_BONUS;
+    public static final ModConfigSpec.IntValue FORM_AURA_RELEASE;
     public static final ModConfigSpec.ConfigValue<String> SUPPORT_RECON_RANK;
     public static final ModConfigSpec.IntValue SUPPORT_RECON_USES;
     public static final ModConfigSpec.IntValue SUPPORT_RECON_COOLDOWN;
@@ -1144,6 +1160,36 @@ public final class ServerConfig {
         LARVA_LIFE_TICKS = intValue("lifeTicks", "The larva flies away after this long.", 2400, 100, 72000);
         LARVA_LOSE_DISTANCE = doubleValue("loseDistance", "The larva flies away if the player gets this far.", 48.0,
                 8.0, 256.0);
+        BUILDER.pop();
+
+        section("kaijuForm", "T-2: the infected player turns into Kaiju No. 8 (key B). Release does not change the form;"
+                + " only the trained body attributes (resistance, speed, agility) make it stronger (Miguel 2026-10-24).");
+        FORM_ENABLED = booleanValue("enabled", "The host can transform.", true);
+        FORM_COOLDOWN_TICKS = intValue("cooldownTicks", "Wait after turning back before transforming again.", 200, 0,
+                72000);
+        FORM_HEIGHT = doubleValue("height", "Body height in the form (blocks; the model of Kaiju No. 8 is 2 m).", 2.0,
+                1.0, 6.0);
+        FORM_HEALTH_BONUS = doubleValue("healthBonus", "Extra maximum health in the form.", 180.0, 0.0, 10000.0);
+        FORM_HEALTH_PER_RESISTANCE = doubleValue("healthPerResistance", "Extra maximum health per resistance level.",
+                2.0, 0.0, 1000.0);
+        FORM_ARMOR = doubleValue("armor", "Extra armor in the form.", 16.0, 0.0, 100.0);
+        FORM_ARMOR_PER_RESISTANCE = doubleValue("armorPerResistance", "Extra armor per resistance level.", 0.04, 0.0,
+                10.0);
+        FORM_TOUGHNESS = doubleValue("toughness", "Extra armor toughness in the form.", 8.0, 0.0, 100.0);
+        FORM_SPEED_BONUS = doubleValue("speedBonus", "Movement speed bonus (fraction of the base speed).", 0.3, 0.0,
+                5.0);
+        FORM_SPEED_PER_LEVEL = doubleValue("speedPerLevel", "Extra speed bonus per speed level.", 0.003, 0.0, 1.0);
+        FORM_JUMP_BONUS = doubleValue("jumpBonus", "Extra jump strength.", 0.2, 0.0, 5.0);
+        FORM_JUMP_PER_AGILITY = doubleValue("jumpPerAgility", "Extra jump strength per agility level.", 0.002, 0.0,
+                1.0);
+        FORM_KNOCKBACK_RESISTANCE = doubleValue("knockbackResistance", "Knockback resistance in the form.", 0.8, 0.0,
+                1.0);
+        FORM_FALL_DAMAGE_MULTIPLIER = doubleValue("fallDamageMultiplier", "Fall damage multiplier in the form.", 0.2,
+                0.0, 1.0);
+        FORM_STEP_HEIGHT_BONUS = doubleValue("stepHeightBonus", "Extra step height in the form (blocks).", 0.5, 0.0,
+                3.0);
+        FORM_AURA_RELEASE = intValue("auraRelease", "Aura strength drawn on the form (the form has no Release).", 60, 0,
+                100);
         BUILDER.pop();
 
         section("sites", "Places from the series (C3): Ariake, Tachikawa base and city, Shinagawa.");

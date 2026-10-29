@@ -10,7 +10,10 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
-/** T-1: sorteio da larva no tick do jogador e voo dela no tick da propria entidade (so no servidor). */
+/**
+ * T-1/T-2: sorteio da larva e forma do Kaiju No. 8 no tick do jogador; voo da larva no tick da propria entidade (so no
+ * servidor).
+ */
 @EventBusSubscriber(modid = KN8Constants.MOD_ID)
 public final class HostEvents {
 
@@ -21,6 +24,7 @@ public final class HostEvents {
     public static void onPlayerTick(PlayerTickEvent.Post event) {
         if (event.getEntity() instanceof ServerPlayer player && ServerConfig.SPEC.isLoaded()) {
             LarvaService.playerTick(player);
+            KaijuFormService.tick(player);
         }
     }
 
