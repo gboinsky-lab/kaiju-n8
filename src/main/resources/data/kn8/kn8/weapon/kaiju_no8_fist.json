@@ -25,5 +25,27 @@
     "swing": "kn8:weapon.axe_swing",
     "heavy": "kn8:weapon.axe_heavy",
     "hit": "kn8:weapon.axe_hit"
+  },
+  "special": {
+    "id": "ground_smash",
+    "type": "ground_slam",
+    "multiplier": 2.2,
+    "duration_ticks": 26,
+    "impact_tick": 12,
+    "radius": 5.0,
+    "forward": 2.0,
+    "stamina_cost": 30,
+    "heat_cost": 0,
+    "cooldown_ticks": 200,
+    "knockback": 1.6,
+    "stagger_ticks": 30,
+    "camera_shake": 0.5,
+    "vfx": [
+      {
+        "effect": "kn8:technique",
+        "intensity": 1.4
+      }
+    ],
+    "sound": "kn8:weapon.axe_special"
   }
 }

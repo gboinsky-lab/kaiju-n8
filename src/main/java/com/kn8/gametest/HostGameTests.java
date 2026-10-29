@@ -5,12 +5,14 @@ import java.util.UUID;
 
 import com.kn8.KN8Constants;
 import com.kn8.common.attribute.PowerService;
+import com.kn8.common.combat.CombatService;
 import com.kn8.common.config.ServerConfig;
 import com.kn8.common.host.KaijuFormService;
 import com.kn8.common.host.KaijuHostData;
 import com.kn8.common.host.LarvaService;
 import com.kn8.common.kaiju.CarcassEntity;
 import com.kn8.common.kaiju.KaijuEntity;
+import com.kn8.common.registry.KN8Items;
 import com.kn8.common.world.KaijuSpawner;
 import com.kn8.core.power.BodyStat;
 import com.mojang.authlib.GameProfile;
@@ -20,7 +22,12 @@ import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.monster.Husk;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.util.FakePlayer;
@@ -150,6 +157,55 @@ public final class HostGameTests {
             data.setLarva(null);
         }
         helper.succeed();
+    }
+
+    @GameTest(template = TEMPLATE, batch = "kn8_host_fists")
+    public static void formFightsWithFistsAndLosesControlAfterTheLimit(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        KaijuHostData data = KaijuHostData.get(level.getServer());
+        data.setHost(null);
+        data.setLarva(null);
+        FakePlayer host = player(helper, "fists");
+        LarvaService.clear(host);
+        host.getPersistentData().remove("kn8_form_ready");
+        host.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(KN8Items.SWORD.get()));
+        helper.assertTrue(CombatService.heldWeapon(host).map(w -> !w.item().equals(KaijuFormService.FIST))
+                .orElse(false), "Humano luta com a espada");
+        helper.assertTrue(LarvaService.infect(host)
+                && KaijuFormService.transform(host) == KaijuFormService.Result.TRANSFORMED, "Transforma");
+        helper.assertTrue(CombatService.heldWeapon(host).map(w -> w.item().equals(KaijuFormService.FIST))
+                .orElse(false), "Na forma so os punhos, mesmo com a espada na mao");
+        helper.assertTrue(CombatService.heldWeapon(host).flatMap(w -> w.special()).isPresent(),
+                "Punho da forma com o Golpe no Chao");
+        helper.assertTrue(KaijuFormService.damageFactor(host) == ServerConfig.FORM_DAMAGE_MULTIPLIER.get()
+                .floatValue(), "Forca da forma pelo config, nao pelo Release");
+        Husk husk = helper.spawnWithNoFreeWill(EntityType.HUSK, new BlockPos(4, 1, 6));
+        float huskHealth = husk.getHealth();
+        // Passou do tempo limite: no proximo tick perde o controle e vai socar quem estiver perto.
+        host.getPersistentData().putLong("kn8_form_since", level.getGameTime() - ServerConfig.FORM_LIMIT_TICKS.get());
+        helper.onEachTick(() -> {
+            if (KaijuFormService.isTransformed(host)) {
+                host.tickCount++;
+                KaijuFormService.tick(host);
+                CombatService.tick(host);
+            }
+        });
+        helper.succeedWhen(() -> {
+            helper.assertTrue(KaijuFormService.isRampaging(host), "Sem controle depois do limite");
+            helper.assertTrue(husk.getHealth() < huskHealth, "Sem controle soca quem esta perto");
+            // Fim do surto: volta humano, exausto e com espera longa.
+            host.getPersistentData().putLong("kn8_form_since", level.getGameTime()
+                    - ServerConfig.FORM_LIMIT_TICKS.get() - ServerConfig.FORM_RAMPAGE_TICKS.get());
+            KaijuFormService.tick(host);
+            helper.assertFalse(KaijuFormService.isTransformed(host), "Volta humano no fim do surto");
+            helper.assertTrue(host.hasEffect(MobEffects.MOVEMENT_SLOWDOWN), "Exausto depois do surto");
+            helper.assertTrue(KaijuFormService.readyTick(host) >= level.getGameTime()
+                    + ServerConfig.FORM_RAMPAGE_COOLDOWN_TICKS.get(), "Espera longa depois do surto");
+            LarvaService.clear(host);
+            data.setHost(null);
+            host.removeAllEffects();
+            host.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+        });
     }
 
     @GameTest(template = TEMPLATE, batch = "kn8_host_place")

@@ -11,6 +11,7 @@ import com.kn8.client.render.mesh.MeshModel;
 import com.kn8.client.render.mesh.MeshModels;
 import com.kn8.common.host.KaijuFormC2S;
 import com.kn8.common.host.KaijuFormService;
+import com.kn8.common.registry.KN8Attachments;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -20,17 +21,21 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.player.Input;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.MovementInputUpdateEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RenderHandEvent;
 import net.neoforged.neoforge.client.event.RenderLivingEvent;
@@ -58,6 +63,7 @@ public final class KaijuFormClient {
     /** Braco em primeira pessoa (posicao/escala na tela, conferidas em jogo). */
     private static final float ARM_SCALE = 0.85F;
     private static final int WHITE = 0xFFFFFFFF;
+    private static final float RAMPAGE_TURN_DEGREES = 30.0F;
 
     private static final Map<UUID, PuppetNo8> PUPPETS = new HashMap<>();
 
@@ -91,6 +97,29 @@ public final class KaijuFormClient {
                 PUPPETS.computeIfAbsent(player.getUUID(), id -> new PuppetNo8(level, player)).follow(player);
             }
         }
+        lookAtRampageTarget(minecraft.player);
+    }
+
+    /**
+     * T-3: sem controle do corpo a camera vira sozinha para quem o servidor escolheu atacar (no maximo
+     * {@link #RAMPAGE_TURN_DEGREES} por tick, para nao saltar). O golpe sai do olhar do servidor, que vira junto.
+     */
+    private static void lookAtRampageTarget(Player player) {
+        if (!KaijuFormService.isRampaging(player)) {
+            return;
+        }
+        Entity target = player.level().getEntity(player.getData(KN8Attachments.RAMPAGE_TARGET.get()));
+        if (target == null) {
+            return;
+        }
+        Vec3 to = target.getBoundingBox().getCenter().subtract(player.getEyePosition());
+        float yaw = (float) (Mth.atan2(to.z, to.x) * Mth.RAD_TO_DEG) - 90.0F;
+        float pitch = (float) -(Mth.atan2(to.y, to.horizontalDistance()) * Mth.RAD_TO_DEG);
+        float yawStep = Mth.clamp(Mth.wrapDegrees(yaw - player.getYRot()), -RAMPAGE_TURN_DEGREES,
+                RAMPAGE_TURN_DEGREES);
+        float pitchStep = Mth.clamp(pitch - player.getXRot(), -RAMPAGE_TURN_DEGREES, RAMPAGE_TURN_DEGREES);
+        player.setYRot(player.getYRot() + yawStep);
+        player.setXRot(Mth.clamp(player.getXRot() + pitchStep, -90.0F, 90.0F));
     }
 
     /** Jogador transformado: o fantoche do No. 8 no lugar do modelo do jogador (com o nome de quem e). */
@@ -113,6 +142,53 @@ public final class KaijuFormClient {
         EntityRenderer<? super PuppetNo8> renderer = minecraft.getEntityRenderDispatcher().getRenderer(puppet);
         renderer.render(puppet, player.getYRot(), event.getPartialTick(), event.getPoseStack(),
                 event.getMultiBufferSource(), event.getPackedLight());
+    }
+
+    /**
+     * T-3: golpe do jogador transformado (animacao do servidor, {@code AnimTriggerS2C}) vira a animacao do No. 8 no
+     * fantoche: soco do combo, soco pesado, Golpe no Chao (especial), investida (dash/esquiva). Em 1a pessoa o braco
+     * balanca como o vanilla. Devolve se tratou (a PAL fica de fora).
+     */
+    public static boolean onAnimation(AbstractClientPlayer player, ResourceLocation animation, boolean stop) {
+        if (!KaijuFormService.isTransformed(player)) {
+            return false;
+        }
+        if (stop) {
+            return true;
+        }
+        String path = animation.getPath();
+        String name = path.endsWith("special") ? "ground_smash"
+                : path.contains("heavy") || path.contains("charge") ? "heavy_punch"
+                : path.contains("dash") || path.contains("dodge") ? "dash"
+                : path.contains("light") || path.contains("shoot") ? "attack" : null;
+        if (name == null) {
+            return true;
+        }
+        PuppetNo8 puppet = PUPPETS.get(player.getUUID());
+        if (puppet != null) {
+            puppet.triggerAnim("action", name);
+        }
+        if (player == Minecraft.getInstance().player) {
+            player.swing(InteractionHand.MAIN_HAND);
+        }
+        return true;
+    }
+
+    /** T-3: sem controle do corpo o jogador nao anda nem pula pela propria vontade (o servidor o move). */
+    @SubscribeEvent
+    public static void onMovementInput(MovementInputUpdateEvent event) {
+        if (!KaijuFormService.isRampaging(event.getEntity())) {
+            return;
+        }
+        Input input = event.getInput();
+        input.up = false;
+        input.down = false;
+        input.left = false;
+        input.right = false;
+        input.jumping = false;
+        input.shiftKeyDown = false;
+        input.forwardImpulse = 0.0F;
+        input.leftImpulse = 0.0F;
     }
 
     /** Primeira pessoa: a mao vazia vira o braco do No. 8 (golpe e troca de item como o vanilla). */

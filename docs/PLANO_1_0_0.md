@@ -118,3 +118,17 @@ e os modelos provisórios (asas e cauda do jogador, Narumi No. 1, Isao sem o Num
   malha, animações e efeitos do No. 8 aliado.
 - Fica para a T-3: golpes (só punhos), o limite de 2 minutos e a perda de controle; hoje transformado o jogador ainda
   usa o item da mão no ataque vanilla e não há HUD de tempo.
+
+## T-3 — Combate, limite e descontrole (feita, 2026-10-29)
+
+- **Só punhos:** transformado, `CombatService.heldWeapon` é sempre o punho do No. 8 (`weapon/kaiju_no8_fist.json`),
+  qualquer item na mão; combo de socos, soco pesado, carga e o **Golpe no Chão** (especial novo do punho, tecla R).
+  Animações tocadas no fantoche (`attack`, `heavy_punch`, `ground_smash`, `dash`); armas/trajes numerados parados e sem
+  domínio na forma.
+- **Força:** punho x `[kaijuForm] damageMultiplier` 5 x força treinada; Release fora.
+- **Regeneração** abaixo de 50% e **detecção de kaiju** + tempo restante na barra de ação, uma vez por segundo.
+- **Limite de 2 minutos:** estado público `kn8:kaiju_form` = 2 (sem controle). O servidor escolhe o vivo mais perto
+  (jogador fora do criativo/espectador, soldado, civil, kaiju, monstro), corre até ele e soca (`Rampage`); o cliente do
+  dono trava a entrada de movimento e vira a câmera para o alvo publicado (`kn8:rampage_target`). 15 s depois volta
+  humano, exausto, com 2 min de espera. Soldados e civis aceitam dano só do hospedeiro sem controle.
+- Não feito: Roar e Grab/Throw na mão do jogador (só no NPC), arremesso; reação da Força de Defesa = T-4.

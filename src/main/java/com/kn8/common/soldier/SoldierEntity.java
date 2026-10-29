@@ -21,6 +21,7 @@ import com.kn8.common.data.def.SoldierDef;
 import com.kn8.common.data.def.WeaponDef;
 import com.kn8.common.data.def.WeaponProfileDef;
 import com.kn8.common.config.ServerConfig;
+import com.kn8.common.host.KaijuFormService;
 import com.kn8.common.kaiju.CarcassEntity;
 import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.registry.KN8Items;
@@ -820,7 +821,7 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
     @Override
     public boolean hurt(DamageSource source, float amount) {
         if ((source.getEntity() instanceof Player || source.getEntity() instanceof SoldierEntity)
-                && !isDuelFoe(source.getEntity(), this)) {
+                && !isDuelFoe(source.getEntity(), this) && !KaijuFormService.isRampaging(source.getEntity())) {
             // Fogo amigo nao fere (o raycast ja evita, isto cobre o resto).
             return false;
         }

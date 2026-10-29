@@ -6,6 +6,7 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 
 import com.kn8.common.config.ServerConfig;
+import com.kn8.common.host.KaijuFormService;
 import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.soldier.SoldierEntity;
 
@@ -146,7 +147,9 @@ public class CivilianEntity extends PathfinderMob {
     /** Fogo amigo nao fere: o civil so corre perigo pelos kaiju (e pelo ambiente). */
     @Override
     public boolean hurt(DamageSource source, float amount) {
-        if (source.getEntity() instanceof Player || source.getEntity() instanceof SoldierEntity) {
+        if ((source.getEntity() instanceof Player || source.getEntity() instanceof SoldierEntity)
+                && !KaijuFormService.isRampaging(source.getEntity())) {
+            // T-3: so o hospedeiro sem controle do corpo fere civis.
             return false;
         }
         return super.hurt(source, amount);

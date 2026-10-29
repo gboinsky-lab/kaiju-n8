@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.kn8.KN8Constants;
+import com.kn8.client.host.KaijuFormClient;
 import com.kn8.common.anim.AnimTriggerS2C;
 import com.kn8.common.anim.AnimationBridge;
 import com.kn8.common.combat.CombatService;
@@ -109,6 +110,10 @@ public final class PlayerAnimations {
         }
         Entity entity = minecraft.level.getEntity(payload.entityId());
         if (!(entity instanceof AbstractClientPlayer player)) {
+            return;
+        }
+        if (KaijuFormClient.onAnimation(player, payload.animation(), payload.stop())) {
+            // T-3: transformado, quem anima e o fantoche do No. 8 (GeckoLib), nao a PAL.
             return;
         }
         IAnimation layer = PlayerAnimationAccess.getPlayerAnimationLayer(player, LAYER_ID);

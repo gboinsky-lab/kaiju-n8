@@ -12,6 +12,7 @@ import com.kn8.common.combat.CombatService;
 import com.kn8.common.config.ServerConfig;
 import com.kn8.common.data.KN8Data;
 import com.kn8.common.data.def.NumberedGearDef;
+import com.kn8.common.host.KaijuFormService;
 import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.vfx.VfxService;
 
@@ -147,6 +148,10 @@ public final class NumberedGearService {
      * sincroniza com toda luta); subir de nivel avisa.
      */
     public static void onKaijuDamaged(ServerPlayer player, float damage) {
+        if (KaijuFormService.isTransformed(player)) {
+            // T-3: quem bate e a forma do No. 8, nao a arma/traje numerado: sem dominio.
+            return;
+        }
         Optional<Map.Entry<ResourceLocation, NumberedGearDef>> hand = held(player);
         hand.ifPresent(entry -> gainXp(player, entry, damage));
         worn(player).filter(entry -> hand.map(h -> !h.getKey().equals(entry.getKey())).orElse(true))
@@ -190,7 +195,8 @@ public final class NumberedGearService {
 
     /** Tick do jogador no servidor: cauda do traje e asas do machado. */
     public static void tick(ServerPlayer player) {
-        if (!player.isAlive() || player.isSpectator()) {
+        // T-3: na forma do Kaiju No. 8 os equipamentos numerados ficam parados (so os punhos da forma).
+        if (!player.isAlive() || player.isSpectator() || KaijuFormService.isTransformed(player)) {
             return;
         }
         long now = player.level().getGameTime();
@@ -280,6 +286,9 @@ public final class NumberedGearService {
      * Devolve o dano que fica.
      */
     public static float guard(ServerPlayer player, DamageSource source, float amount) {
+        if (KaijuFormService.isTransformed(player)) {
+            return amount;
+        }
         Optional<Map.Entry<ResourceLocation, NumberedGearDef>> gear = usable(player, worn(player));
         Vec3 from = source.getSourcePosition();
         if (gear.isEmpty() || gear.get().getValue().tail().isEmpty() || from == null) {

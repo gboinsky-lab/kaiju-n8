@@ -116,12 +116,22 @@ public final class KN8Attachments {
 
     /**
      * T-2: o hospedeiro esta na forma do Kaiju No. 8. PUBLICO (sync nativo): todos os clientes desenham o jogador como
-     * o No. 8. Salvo (relogar continua transformado); nao passa pela morte (renasce humano).
+     * o No. 8. T-3: 0 humano, 1 forma, 2 descontrolado (passou do tempo limite). Salvo (relogar continua
+     * transformado); nao passa pela morte (renasce humano).
      */
-    public static final Supplier<AttachmentType<Boolean>> KAIJU_FORM = ATTACHMENT_TYPES.register("kaiju_form",
-            () -> AttachmentType.builder(() -> false)
-                    .serialize(Codec.BOOL)
-                    .sync(ByteBufCodecs.BOOL)
+    public static final Supplier<AttachmentType<Integer>> KAIJU_FORM = ATTACHMENT_TYPES.register("kaiju_form",
+            () -> AttachmentType.builder(() -> 0)
+                    .serialize(Codec.INT)
+                    .sync(ByteBufCodecs.VAR_INT)
+                    .build());
+
+    /**
+     * T-3: id da entidade que o hospedeiro sem controle esta atacando (-1 = nenhuma). Publico (sync nativo, so na
+     * mudanca): o cliente do dono vira a camera para ele (o jogador nao manda mais no olhar). Nunca salvo.
+     */
+    public static final Supplier<AttachmentType<Integer>> RAMPAGE_TARGET = ATTACHMENT_TYPES.register(
+            "rampage_target", () -> AttachmentType.builder(() -> -1)
+                    .sync(ByteBufCodecs.VAR_INT)
                     .build());
 
     /** 0.5: aura forcada por comando ({@code /kn8 aura}), por cima da do traje. So no servidor, nunca salva. */

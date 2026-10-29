@@ -1213,3 +1213,24 @@ Config `[kaijuForm]`. Miguel 2026-10-24: o Release não muda a forma; só os atr
 | `fallDamageMultiplier` | 0,2 | Leva 20% do dano de queda |
 | `stepHeightBonus` | 0,5 | Sobe degraus de 1 bloco andando |
 | `auraRelease` | 60 | Força com que a aura do No. 8 é desenhada |
+
+## T-3: combate, tempo limite e descontrole da forma (2026-10-29) [SUPOSIÇÃO todos os números]
+
+Golpes = `weapon/kaiju_no8_fist.json` (o mesmo punho do No. 8 aliado: 11 de dano, alcance 3, leve x1,0 / pesado x1,8,
+combo 1,0/1,1/1,3) x `damageMultiplier` x força treinada (`[body] strengthDamagePerLevel`); o Release não entra. O teto
+por golpe em kaiju (12% leve / 15% pesado) continua. Especial na tecla R: Golpe no Chão (`ground_slam`, x2,2, raio 5,
+recarga 200 ticks, 30 de stamina).
+
+| Chave `[kaijuForm]` | Valor | Efeito |
+|---|---|---|
+| `damageMultiplier` | 5,0 | Soco leve 55 (x força treinada) |
+| `regenPerSecond` / `regenBelow` | 0,015 / 0,5 | Regenera 1,5%/s abaixo de 50% da vida |
+| `limitTicks` | 2400 | 2 minutos na forma (Miguel) |
+| `warnTicks` | 400 | Aviso vermelho nos últimos 20 s |
+| `rampageTicks` | 300 | 15 s sem controle |
+| `rampageRadius` / `rampageSpeed` | 16 / 0,45 | Ataca quem estiver a 16 blocos, correndo a 0,45 bloco/tick |
+| `rampageCooldownTicks` | 2400 | Espera de 2 min depois do surto (em vez de 10 s) |
+| `exhaustTicks` | 400 | Lentidão II e Fraqueza II por 20 s depois do surto |
+| `detectRadius` | 64 | Detecção de kaiju na barra de ação |
+
+Medido em jogo: Primigenius 220 → 124 com o combo e → 23 com o Golpe no Chão (Dev sem força treinada).

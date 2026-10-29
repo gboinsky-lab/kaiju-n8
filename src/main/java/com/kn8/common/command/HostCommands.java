@@ -19,7 +19,7 @@ import net.minecraft.server.level.ServerPlayer;
  * T-1: comandos do hospedeiro do Kaiju No. 8 (operador). {@code /kn8 host status} diz quem e o hospedeiro do mundo e
  * se ha larva voando; {@code spawn <jogador>} faz a larva aparecer para ele agora (sem sorteio nem lugar, mas com a
  * regra de um hospedeiro por mundo); {@code infect}/{@code clear <jogador>} infecta direto ou desfaz; {@code form <jogador>} transforma ou
- * volta (T-2), como a tecla.
+ * volta (T-2), como a tecla; {@code rampage <jogador>} leva a forma ao tempo limite (T-3).
  */
 final class HostCommands {
 
@@ -36,7 +36,9 @@ final class HostCommands {
                 .then(Commands.literal("clear").then(Commands.argument("player", EntityArgument.player())
                         .executes(HostCommands::clear)))
                 .then(Commands.literal("form").then(Commands.argument("player", EntityArgument.player())
-                        .executes(HostCommands::form)));
+                        .executes(HostCommands::form)))
+                .then(Commands.literal("rampage").then(Commands.argument("player", EntityArgument.player())
+                        .executes(HostCommands::rampage)));
     }
 
     private static int status(CommandContext<CommandSourceStack> ctx) {
@@ -89,9 +91,22 @@ final class HostCommands {
         return result == KaijuFormService.Result.TRANSFORMED || result == KaijuFormService.Result.REVERTED ? 1 : 0;
     }
 
+    /** T-3: leva a forma ao tempo limite (o jogador perde o controle no proximo tick), para testar o surto. */
+    private static int rampage(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        ServerPlayer player = EntityArgument.getPlayer(ctx, "player");
+        if (!KaijuFormService.expire(player)) {
+            ctx.getSource().sendFailure(Component.translatable("kn8.command.host.not_transformed"));
+            return 0;
+        }
+        ctx.getSource().sendSuccess(() -> Component.translatable("kn8.command.host.rampage",
+                player.getGameProfile().getName()), true);
+        return 1;
+    }
+
     private static int clear(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         ServerPlayer player = EntityArgument.getPlayer(ctx, "player");
         LarvaService.clear(player);
+        KaijuFormService.resetWait(player);
         ctx.getSource().sendSuccess(() -> Component.translatable("kn8.command.host.cleared",
                 player.getGameProfile().getName()), true);
         return 1;

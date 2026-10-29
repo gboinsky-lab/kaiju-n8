@@ -2,10 +2,13 @@ package com.kn8.common.host;
 
 import java.util.Optional;
 
+import javax.annotation.Nullable;
+
 import com.kn8.KN8Constants;
 import com.kn8.core.power.BodyStat;
 import com.kn8.common.attribute.PowerService;
 import com.kn8.common.config.ServerConfig;
+import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.registry.KN8Attachments;
 import com.kn8.common.vfx.VfxService;
 
@@ -17,6 +20,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -33,15 +38,18 @@ import net.minecraft.world.phys.Vec3;
  * <p>Forca da forma (Miguel 2026-10-24): o Release nao muda a forma kaiju (a % fica em 0 enquanto transformado); so os
  * atributos do corpo treinados a deixam mais forte. A forma ja e muito forte por natureza ({@code [kaijuForm]}): vida,
  * armadura, velocidade, salto, resistencia a empurrao e a queda, degrau, altura de 2 m. Os golpes da forma (so os
- * punhos), o limite de tempo e a perda de controle sao da T-3.</p>
+ * punhos com o Golpe no Chao na tecla R), o limite de tempo e a perda de controle ({@link Rampage}) sao da T-3.</p>
  */
 public final class KaijuFormService {
 
     /** Perfil visual e aura da forma (os mesmos do No. 8 aliado). */
     public static final ResourceLocation PROFILE = KN8Constants.id("kaiju_no8");
+    /** T-3: arma da forma (so os punhos): a mesma do No. 8 aliado, com o Golpe no Chao na tecla R. */
+    public static final ResourceLocation FIST = KN8Constants.id("kaiju_no8_fist");
     /** Perfil visual da forma humana (o Kafka): efeito da volta. */
     private static final ResourceLocation HUMAN_PROFILE = KN8Constants.id("kafka");
     private static final String TAG_READY = "kn8_form_ready";
+    private static final String TAG_SINCE = "kn8_form_since";
     /** Altura do jogador no vanilla (o atributo de escala multiplica por ela). */
     private static final double PLAYER_HEIGHT = 1.8;
     private static final int REFRESH_TICKS = 20;
@@ -64,13 +72,57 @@ public final class KaijuFormService {
     private KaijuFormService() {
     }
 
-    /** Esta na forma do No. 8? Vale no servidor e no cliente (dado publico). */
+    /** Estados publicos da forma ({@code kn8:kaiju_form}). */
+    public static final int HUMAN = 0;
+    public static final int FORM = 1;
+    public static final int RAMPAGE = 2;
+
+    /** Esta na forma do No. 8 (no controle ou nao)? Vale no servidor e no cliente (dado publico). */
     public static boolean isTransformed(Entity entity) {
-        return entity instanceof Player player && player.getData(KN8Attachments.KAIJU_FORM.get());
+        return entity instanceof Player player && player.getData(KN8Attachments.KAIJU_FORM.get()) != HUMAN;
+    }
+
+    /** T-3: passou do tempo limite e perdeu o controle do corpo (servidor e cliente). */
+    public static boolean isRampaging(Entity entity) {
+        return entity instanceof Player player && player.getData(KN8Attachments.KAIJU_FORM.get()) == RAMPAGE;
+    }
+
+    /**
+     * T-3: forca dos golpes na forma: o punho do JSON vezes {@code [kaijuForm] damageMultiplier} (a forca treinada do
+     * corpo multiplica por cima, no CombatService); o Release nao entra (Miguel 2026-10-24). Humano: 1.
+     */
+    public static float damageFactor(Entity entity) {
+        return isTransformed(entity) ? (float) ServerConfig.FORM_DAMAGE_MULTIPLIER.get().doubleValue() : 1.0F;
+    }
+
+    /** Comando de operador ({@code /kn8 host clear}): tira a espera para transformar de novo. */
+    public static void resetWait(ServerPlayer player) {
+        player.getPersistentData().remove(TAG_READY);
+    }
+
+    /** Comando de teste: leva o tempo na forma ao limite (perde o controle no proximo tick). */
+    public static boolean expire(ServerPlayer player) {
+        if (!isTransformed(player)) {
+            return false;
+        }
+        player.getPersistentData().putLong(TAG_SINCE, player.level().getGameTime()
+                - Math.max(formTicks(player), ServerConfig.FORM_LIMIT_TICKS.get()));
+        return true;
+    }
+
+    /** T-3: ticks na forma desde a transformacao. */
+    public static long formTicks(ServerPlayer player) {
+        return player.level().getGameTime() - player.getPersistentData().getLong(TAG_SINCE);
     }
 
     /** Tecla da forma: transforma ou volta. */
     public static Result toggle(ServerPlayer player) {
+        if (isRampaging(player)) {
+            // Sem controle do corpo: a tecla nao responde ate o surto passar.
+            player.displayClientMessage(Component.translatable("kn8.host.form.no_control")
+                    .withStyle(ChatFormatting.DARK_RED), true);
+            return Result.UNAVAILABLE;
+        }
         Result result = isTransformed(player) ? revert(player) : transform(player);
         String key = switch (result) {
             case TRANSFORMED, REVERTED -> null;
@@ -99,7 +151,8 @@ public final class KaijuFormService {
         if (player.level().getGameTime() < readyTick(player)) {
             return Result.COOLDOWN;
         }
-        player.setData(KN8Attachments.KAIJU_FORM.get(), true);
+        player.setData(KN8Attachments.KAIJU_FORM.get(), FORM);
+        player.getPersistentData().putLong(TAG_SINCE, player.level().getGameTime());
         applyModifiers(player, true);
         player.setHealth(player.getMaxHealth());
         effect(player, PROFILE, 1.0F);
@@ -113,11 +166,22 @@ public final class KaijuFormService {
         if (!isTransformed(player)) {
             return Result.UNAVAILABLE;
         }
-        player.setData(KN8Attachments.KAIJU_FORM.get(), false);
+        boolean rampage = isRampaging(player);
+        player.setData(KN8Attachments.KAIJU_FORM.get(), HUMAN);
+        player.getPersistentData().remove(TAG_SINCE);
+        player.setData(KN8Attachments.RAMPAGE_TARGET.get(), -1);
         applyModifiers(player, false);
         player.setHealth(Math.min(player.getHealth(), player.getMaxHealth()));
-        player.getPersistentData().putLong(TAG_READY,
-                player.level().getGameTime() + ServerConfig.FORM_COOLDOWN_TICKS.get());
+        int wait = rampage ? ServerConfig.FORM_RAMPAGE_COOLDOWN_TICKS.get() : ServerConfig.FORM_COOLDOWN_TICKS.get();
+        player.getPersistentData().putLong(TAG_READY, player.level().getGameTime() + wait);
+        if (rampage) {
+            // O corpo cobra o surto: lento e fraco por um tempo.
+            int exhaust = ServerConfig.FORM_EXHAUST_TICKS.get();
+            player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, exhaust, 1, false, false, true));
+            player.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, exhaust, 1, false, false, true));
+            player.displayClientMessage(Component.translatable("kn8.host.form.control_back")
+                    .withStyle(ChatFormatting.GRAY), false);
+        }
         effect(player, HUMAN_PROFILE, 0.7F);
         KN8Constants.LOGGER.info("[kn8] {} voltou a forma humana", player.getGameProfile().getName());
         return Result.REVERTED;
@@ -138,6 +202,101 @@ public final class KaijuFormService {
         if (player.tickCount % REFRESH_TICKS == 0 || !hasModifier(player, Attributes.MAX_HEALTH, HEALTH)) {
             applyModifiers(player, true);
         }
+        if (!player.getPersistentData().contains(TAG_SINCE)) {
+            // Save de antes da T-3 (transformado sem a marca): a contagem comeca agora, nao no tick 0 do mundo.
+            player.getPersistentData().putLong(TAG_SINCE, player.level().getGameTime());
+        }
+        long elapsed = formTicks(player);
+        int limit = ServerConfig.FORM_LIMIT_TICKS.get();
+        if (!isRampaging(player) && elapsed >= limit) {
+            startRampage(player);
+        } else if (isRampaging(player) && elapsed >= limit + ServerConfig.FORM_RAMPAGE_TICKS.get()) {
+            revert(player);
+            return;
+        }
+        if (isRampaging(player)) {
+            Rampage.tick(player);
+        }
+        if (player.tickCount % REFRESH_TICKS == 0) {
+            regenerate(player);
+            status(player, elapsed, limit);
+        }
+    }
+
+    /** T-3 (Miguel: "caso fique mais que isso ... perca o controle do corpo e saia atacando todos em volta"). */
+    private static void startRampage(ServerPlayer player) {
+        player.setData(KN8Attachments.KAIJU_FORM.get(), RAMPAGE);
+        player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.RAVAGER_ROAR,
+                SoundSource.PLAYERS, 2.0F, 0.6F);
+        if (player.level() instanceof ServerLevel level) {
+            VfxService.play(level, VfxService.ROAR, player.getEyePosition(), player.getLookAngle(), 1.4F, 0.4F,
+                    Optional.of(PROFILE), "roar", (float) ServerConfig.FORM_HEIGHT.get().doubleValue());
+        }
+        player.displayClientMessage(Component.translatable("kn8.host.form.lost_control")
+                .withStyle(ChatFormatting.DARK_RED, ChatFormatting.BOLD), false);
+        KN8Constants.LOGGER.info("[kn8] {} perdeu o controle da forma do Kaiju No. 8", player.getGameProfile()
+                .getName());
+    }
+
+    /** Regeneracao da forma (como o No. 8 aliado): so abaixo de {@code regenBelow} da vida. */
+    private static void regenerate(ServerPlayer player) {
+        float max = player.getMaxHealth();
+        if (player.getHealth() < max * ServerConfig.FORM_REGEN_BELOW.get()) {
+            player.heal((float) (max * ServerConfig.FORM_REGEN_PER_SECOND.get()));
+        }
+    }
+
+    /**
+     * Barra de acao uma vez por segundo: tempo que resta na forma (aviso nos ultimos {@code warnTicks}) e a deteccao
+     * de kaiju do No. 8 (o mais perto, distancia e direcao).
+     */
+    private static void status(ServerPlayer player, long elapsed, int limit) {
+        Component line;
+        if (isRampaging(player)) {
+            line = Component.translatable("kn8.host.form.hud.rampage").withStyle(ChatFormatting.DARK_RED);
+        } else {
+            long left = Math.max(0, limit - elapsed) / 20;
+            String time = String.format("%d:%02d", left / 60, left % 60);
+            boolean warn = limit - elapsed <= ServerConfig.FORM_WARN_TICKS.get();
+            line = Component.translatable("kn8.host.form.hud.time", time)
+                    .withStyle(warn ? ChatFormatting.RED : ChatFormatting.AQUA);
+        }
+        KaijuEntity nearest = nearestKaiju(player);
+        if (nearest != null) {
+            Vec3 to = nearest.position().subtract(player.position());
+            line = line.copy().append(Component.literal("  ")).append(Component.translatable(
+                    "kn8.host.form.hud.kaiju", nearest.getDisplayName(), (int) Math.round(to.horizontalDistance()),
+                    Component.translatable("kn8.host.form.dir." + direction(to)))
+                    .withStyle(ChatFormatting.GRAY));
+        }
+        player.displayClientMessage(line, true);
+    }
+
+    @Nullable
+    private static KaijuEntity nearestKaiju(ServerPlayer player) {
+        double radius = ServerConfig.FORM_DETECT_RADIUS.get();
+        if (radius <= 0) {
+            return null;
+        }
+        KaijuEntity best = null;
+        double bestDistance = Double.MAX_VALUE;
+        for (KaijuEntity kaiju : player.level().getEntitiesOfClass(KaijuEntity.class,
+                player.getBoundingBox().inflate(radius), KaijuEntity::isAlive)) {
+            double distance = kaiju.distanceToSqr(player);
+            if (!LarvaService.isHostLarva(kaiju) && distance < bestDistance) {
+                best = kaiju;
+                bestDistance = distance;
+            }
+        }
+        return best;
+    }
+
+    /** Ponto cardeal (n, ne, e, se, s, sw, w, nw) de um vetor no mundo (norte = -Z). */
+    private static String direction(Vec3 to) {
+        String[] names = {"s", "sw", "w", "nw", "n", "ne", "e", "se"};
+        double angle = Math.toDegrees(Math.atan2(-to.x, to.z));
+        int index = (int) Math.floorMod(Math.round(angle / 45.0), 8);
+        return names[index];
     }
 
     /** Tick do jogo a partir do qual pode transformar de novo. */

@@ -9,8 +9,10 @@ import com.kn8.common.anim.AnimationBridge;
 import com.kn8.common.attribute.PowerService;
 import com.kn8.common.career.MissionService;
 import com.kn8.common.config.ServerConfig;
+import com.kn8.common.data.KN8Data;
 import com.kn8.common.data.def.KaijuClass;
 import com.kn8.common.data.def.WeaponDef;
+import com.kn8.common.host.KaijuFormService;
 import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.kaiju.KaijuProjectile;
 import com.kn8.common.registry.KN8Attachments;
@@ -103,15 +105,23 @@ public final class CombatService {
         return state.criticalUntilTick != CombatState.NEVER && now(player) < state.criticalUntilTick;
     }
 
-    /** Arma do kn8 na mao principal, se houver. */
+    /**
+     * Arma do kn8 na mao principal, se houver. T-3 (Miguel 2026-10-24: "apenas com os punhos"): na forma do Kaiju
+     * No. 8 e sempre o punho do No. 8 ({@code weapon/kaiju_no8_fist.json}), qualquer que seja o item na mao.
+     */
     public static Optional<WeaponDef> heldWeapon(Player player) {
+        if (KaijuFormService.isTransformed(player)) {
+            return KN8Data.WEAPON.get(KaijuFormService.FIST, player.level().isClientSide());
+        }
         return WeaponIndex.find(player.getMainHandItem(), player.level().isClientSide());
     }
 
     /** Entrada do pacote C2S (ja passou pelo rate limit do C2SGuard). */
     static void handle(CombatInputC2S payload, ServerPlayer player) {
         CombatAction action = CombatAction.byIndex(payload.action());
-        if (action == null || !player.isAlive() || player.isSpectator() || !ServerConfig.SPEC.isLoaded()) {
+        if (action == null || !player.isAlive() || player.isSpectator() || !ServerConfig.SPEC.isLoaded()
+                || KaijuFormService.isRampaging(player)) {
+            // T-3: sem controle do corpo, quem golpeia e o servidor (Rampage), nao o jogador.
             return;
         }
         switch (action) {
@@ -151,7 +161,7 @@ public final class CombatService {
             reply(player, request, CombatResult.DENIED_NO_WEAPON);
             return false;
         }
-        if (!NumberedGearService.allowed(player)) {
+        if (!KaijuFormService.isTransformed(player) && !NumberedGearService.allowed(player)) {
             // PM-11: arma numerada sem os requisitos nao ativa (nada e gasto; o motivo vai para a barra).
             reply(player, request, CombatResult.DENIED_INCOMPATIBLE);
             return false;
@@ -237,7 +247,7 @@ public final class CombatService {
             double release = PowerMath.damageMultiplier(PowerService.effectiveRelease(player), PowerService.params());
             // 0.5.0: a forca do corpo vale tambem no especial (golpe da arma).
             float damage = CombatMath.damage(weapon.baseDamage(), state.currentMultiplier, 1.0F, release)
-                    * PowerService.strengthMultiplier(player);
+                    * PowerService.strengthMultiplier(player) * KaijuFormService.damageFactor(player);
             SpecialAttacks.resolve(player, weapon.special().get(), damage, specialDamage(player));
             return;
         }
@@ -268,7 +278,7 @@ public final class CombatService {
             replySpecial(player, CombatResult.DENIED_NO_SPECIAL);
             return false;
         }
-        if (!NumberedGearService.allowed(player)) {
+        if (!KaijuFormService.isTransformed(player) && !NumberedGearService.allowed(player)) {
             replySpecial(player, CombatResult.DENIED_INCOMPATIBLE);
             return false;
         }
@@ -379,14 +389,16 @@ public final class CombatService {
         }
         Entity target = found.get();
         Entity root = target instanceof PartEntity<?> part ? part.getParent() : target;
-        if (root instanceof Player && !ServerConfig.PVP_ENABLED.get()) {
+        if (root instanceof Player && !ServerConfig.PVP_ENABLED.get() && !KaijuFormService.isRampaging(player)) {
             return;
         }
         CombatState state = state(player);
         boolean critical = state.criticalUntilTick != CombatState.NEVER && now(player) < state.criticalUntilTick;
         double release = PowerMath.damageMultiplier(PowerService.effectiveRelease(player), PowerService.params());
         // 0.5.0: a forca do corpo so vale no corpo a corpo (arma de fogo nao depende do braco).
-        float strength = firearm ? 1.0F : PowerService.strengthMultiplier(player);
+        // T-3: na forma do No. 8 o punho bate [kaijuForm] damageMultiplier vezes mais (o Release fica de fora).
+        float strength = firearm ? 1.0F : PowerService.strengthMultiplier(player)
+                * KaijuFormService.damageFactor(player);
         float damage = CombatMath.withCritical(CombatMath.damage(weapon.baseDamage(), multiplier, 1.0F, release)
                 * strength, critical, ServerConfig.CRITICAL_MULTIPLIER.get());
         if (heavy && !firearm && root instanceof KaijuEntity kaiju) {

@@ -74,7 +74,8 @@ public final class KN8Network {
     // 30 = PM-11A: registro sincronizado "numbered_gear", CareerView.Research.mastery e DENIED_INCOMPATIBLE.
     // 31 = PM-11B: blocos "tail" e "wings" no registro "numbered_gear".
     // 32 = T-2: KaijuFormC2S (tecla da forma do Kaiju No. 8).
-    private static final String PROTOCOL_VERSION = "32";
+    // 33 = T-3: kn8:kaiju_form virou inteiro (humano, forma, sem controle) e o punho do No. 8 ganhou especial.
+    private static final String PROTOCOL_VERSION = "33";
 
     /** Diagnostico: 20 por segundo, rajada de 40. */
     private static final C2SGuard.Limit DEBUG_LIMIT = new C2SGuard.Limit(20, 40);

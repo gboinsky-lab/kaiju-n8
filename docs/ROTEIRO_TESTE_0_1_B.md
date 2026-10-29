@@ -1443,3 +1443,18 @@ Servidor dedicado + 2 clientes. O jogador precisa ser o hospedeiro (`/kn8 host i
 | 104.5 | Dev segura G (Release) transformado | A % fica em 0 (a forma não usa Release) |
 | 104.6 | Dev aperta B de novo e logo depois outra vez | Volta a humano (vida e altura normais); a segunda vez avisa a espera (~10 s) |
 | 104.7 | Transformado, relogar e morrer | Relogando continua No. 8; morrendo renasce humano |
+
+## 105. Combate da forma, limite de tempo e descontrole (T-3)
+
+Servidor dedicado + 2 clientes; Dev hospedeiro (`/kn8 host infect Dev`, B para transformar). Observação: o servidor de
+teste tem `spawn-animals=false` (animais somem sozinhos); use zumbis, husks e soldados como alvo.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 105.1 | Transformado, com qualquer arma na mão, clicar num kaiju | Socos do No. 8 (combo de 3, o fantoche soca para o Dev2), dano grande (Primigenius cai em ~5 socos), sem a arma; HUD "Golpe no Chão PRONTO [R]" |
+| 105.2 | R perto do kaiju | Golpe no Chão: onda, kaiju empurrado e atordoado, recarga de 10 s |
+| 105.3 | Barra de ação | "Forma kaiju 1:55 · Primigenius a 3 m (S)": tempo que resta e o kaiju mais perto (até 64 blocos); vermelho nos últimos 20 s |
+| 105.4 | Ficar abaixo de metade da vida | Regenera 1,5% da vida por segundo |
+| 105.5 | `/kn8 host rampage Dev` (ou esperar 2 min) com zumbi, husk e soldado em volta | Rugido, "Você perdeu o controle do corpo!", "SEM CONTROLE"; o Dev não anda nem soca pela própria vontade, a câmera vira sozinha para o alvo e o No. 8 corre até cada um e o derruba (soldados e civis também); jogador em criativo/espectador não é atacado |
+| 105.6 | 15 s depois | Volta humano, "Você recupera o controle. O corpo está exausto.", Lentidão e Fraqueza; B avisa espera de 2 min |
+| 105.7 | Com traje/arma numerada, transformado | O domínio do numerado não sobe; a cauda e as asas não agem |

@@ -1227,5 +1227,22 @@
   "kn8.host.form.disabled": "Transformation is disabled on this server.",
   "kn8.host.form.cooldown": "Your body is still recovering (%s s).",
   "kn8.host.form.unavailable": "You cannot transform right now.",
-  "kn8.command.host.form": "Form of %s: %s"
+  "kn8.command.host.form": "Form of %s: %s",
+  "kn8.weapon.special.ground_smash": "Ground Smash",
+  "kn8.host.form.hud.time": "Kaiju form %s",
+  "kn8.host.form.hud.rampage": "OUT OF CONTROL",
+  "kn8.host.form.hud.kaiju": "· %s at %s m (%s)",
+  "kn8.host.form.lost_control": "You lost control of your body!",
+  "kn8.host.form.control_back": "You regain control. Your body is exhausted.",
+  "kn8.host.form.no_control": "Your body does not obey.",
+  "kn8.host.form.dir.n": "N",
+  "kn8.host.form.dir.ne": "NE",
+  "kn8.host.form.dir.e": "E",
+  "kn8.host.form.dir.se": "SE",
+  "kn8.host.form.dir.s": "S",
+  "kn8.host.form.dir.sw": "SW",
+  "kn8.host.form.dir.w": "W",
+  "kn8.host.form.dir.nw": "NW",
+  "kn8.command.host.not_transformed": "This player is not in the Kaiju No. 8 form.",
+  "kn8.command.host.rampage": "%s reached the form's time limit."
 }

@@ -370,6 +370,17 @@ public final class ServerConfig {
     public static final ModConfigSpec.DoubleValue FORM_FALL_DAMAGE_MULTIPLIER;
     public static final ModConfigSpec.DoubleValue FORM_STEP_HEIGHT_BONUS;
     public static final ModConfigSpec.IntValue FORM_AURA_RELEASE;
+    public static final ModConfigSpec.DoubleValue FORM_DAMAGE_MULTIPLIER;
+    public static final ModConfigSpec.DoubleValue FORM_REGEN_PER_SECOND;
+    public static final ModConfigSpec.DoubleValue FORM_REGEN_BELOW;
+    public static final ModConfigSpec.IntValue FORM_LIMIT_TICKS;
+    public static final ModConfigSpec.IntValue FORM_WARN_TICKS;
+    public static final ModConfigSpec.IntValue FORM_RAMPAGE_TICKS;
+    public static final ModConfigSpec.DoubleValue FORM_RAMPAGE_RADIUS;
+    public static final ModConfigSpec.DoubleValue FORM_RAMPAGE_SPEED;
+    public static final ModConfigSpec.IntValue FORM_RAMPAGE_COOLDOWN_TICKS;
+    public static final ModConfigSpec.IntValue FORM_EXHAUST_TICKS;
+    public static final ModConfigSpec.DoubleValue FORM_DETECT_RADIUS;
     public static final ModConfigSpec.ConfigValue<String> SUPPORT_RECON_RANK;
     public static final ModConfigSpec.IntValue SUPPORT_RECON_USES;
     public static final ModConfigSpec.IntValue SUPPORT_RECON_COOLDOWN;
@@ -1190,6 +1201,27 @@ public final class ServerConfig {
                 3.0);
         FORM_AURA_RELEASE = intValue("auraRelease", "Aura strength drawn on the form (the form has no Release).", 60, 0,
                 100);
+        FORM_DAMAGE_MULTIPLIER = doubleValue("damageMultiplier", "T-3: the fists of the form hit this many times"
+                + " the fist JSON damage (the strength level multiplies on top; Release does not).", 5.0, 0.1, 100.0);
+        FORM_REGEN_PER_SECOND = doubleValue("regenPerSecond", "T-3: health regained per second (fraction of the"
+                + " maximum) while below regenBelow.", 0.015, 0.0, 1.0);
+        FORM_REGEN_BELOW = doubleValue("regenBelow", "T-3: regeneration works below this fraction of the health.", 0.5,
+                0.0, 1.0);
+        FORM_LIMIT_TICKS = intValue("limitTicks", "T-3: time in the form before the host loses control (Miguel: 2"
+                + " minutes).", 2400, 20, 720000);
+        FORM_WARN_TICKS = intValue("warnTicks", "T-3: warning this long before losing control.", 400, 0, 72000);
+        FORM_RAMPAGE_TICKS = intValue("rampageTicks", "T-3: out of control this long, attacking everyone around, then"
+                + " forced back to human.", 300, 20, 72000);
+        FORM_RAMPAGE_RADIUS = doubleValue("rampageRadius", "T-3: out of control, attacks anyone this close.",
+                16.0, 2.0, 64.0);
+        FORM_RAMPAGE_SPEED = doubleValue("rampageSpeed", "T-3: out of control, running speed toward the target"
+                + " (blocks per tick).", 0.45, 0.05, 2.0);
+        FORM_RAMPAGE_COOLDOWN_TICKS = intValue("rampageCooldownTicks", "T-3: wait to transform again after losing"
+                + " control.", 2400, 0, 720000);
+        FORM_EXHAUST_TICKS = intValue("exhaustTicks", "T-3: slowness and weakness after losing control.", 400, 0,
+                72000);
+        FORM_DETECT_RADIUS = doubleValue("detectRadius", "T-3: kaiju detection of the form (nearest kaiju"
+                + " shown).", 64.0, 0.0, 256.0);
         BUILDER.pop();
 
         section("sites", "Places from the series (C3): Ariake, Tachikawa base and city, Shinagawa.");
