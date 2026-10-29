@@ -346,7 +346,13 @@ def to_bb_from_internal(points):
 
 def hoshina_hand(bones, item_bone):
     """Mesma cadeia do SoldierRenderer: alinha ao braco (ombro -> mao) e desce 1 px / avanca 2 px."""
-    arm = gecko_internal(bones[bones[item_bone]["parent"]]["pivot"])
+    # FIX-2: ombro (osso "arm_" acima do item), como o SoldierRenderer.armRoot; desde o RIG-2 o pai do item e a mao.
+    arm_bone = bones[item_bone]["parent"]
+    while not arm_bone.startswith("arm_") and bones[arm_bone].get("parent"):
+        arm_bone = bones[arm_bone]["parent"]
+    if not arm_bone.startswith("arm_"):
+        arm_bone = bones[item_bone]["parent"]
+    arm = gecko_internal(bones[arm_bone]["pivot"])
     hand = gecko_internal(bones[item_bone]["pivot"])
     rto = r3(ph.rotation_to((0, -1, 0), hand - arm))
     center = hand + rto @ np.array([0, -1 / 16, -2 / 16])

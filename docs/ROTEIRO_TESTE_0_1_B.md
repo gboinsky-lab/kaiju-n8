@@ -1504,3 +1504,18 @@ Servidor dedicado + 2 clientes; volume geral como o Miguel usa (29%).
 | 108.3 | Traje Mk1, limite 40 (`/kn8 release set 40 Dev`), Release a 60% (`/kn8 release active 60 Dev`), sobrevivencia | Calor sobe sem tirar vida; so com o calor no maximo a vida cai (~29 s sem dano no teste; depois ~3 de vida/s); voltar para 40% para o desgaste |
 | 108.4 | Zumbi/kaiju batendo no jogador | O jogador toma o dano e nao e empurrado (`[combat] playerKnockback` 0; 1 = como antes) |
 | 108.5 | Rugido de kaiju, tiros, golpes de espada, sirene | Sons do mod bem mais baixos (35%), ainda ouvidos de longe como antes; `modSoundVolume` no `kn8-client.toml` ajusta (0 a 1) |
+
+## 109. FIX-2: modelos inteiros e armas na mao depois do RIG-2
+
+Servidor dedicado + 2 clientes. `/summon` de cada um com `{NoAI:1b}` para olhar parado e sem `NoAI` perto de um kaiju
+para andar, correr e lutar. Imagem: `docs/img/fix2_armas_e_juntas.jpg`.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 109.1 | Soldado, Kafka, Reno, Reno No. 6: parado, andando, correndo, mirando | Fuzil na mao como antes do RIG-2 (antes do FIX-2 saia de lado/para fora da mao) |
+| 109.2 | Kikoru e Kikoru No. 4 com o machado | Machado na horizontal a frente com as duas maos; correndo e nos golpes o cabo continua na mao (antes da correcao a No. 4 ficava com o machado a ~17 px da mao) |
+| 109.3 | Mina (canhao) e Narumi (baioneta) | Canhao no quadril e baioneta nas maos |
+| 109.4 | Hoshina e Hoshina No. 10 | As duas espadas no punho parado, andando e correndo (pegada refeita com o eixo ombro -> mao) |
+| 109.5 | No. 10 pequeno, No. 10 gigante e fusao andando, investindo e golpeando | Tronco e pernas juntos: a bacia nao abre quando o tronco inclina (pernas voltaram a ser filhas do tronco, como antes do RIG-2) |
+| 109.6 | Os personagens acima atacando e saltando (vault) | Tronco, ombros e quadril giram no mesmo ponto de antes do RIG-2; joelho, pe, peito e cotovelo novos continuam |
+| 109.7 | No. 8, No. 9, forma preta, Isao, No. 13, No. 9 com o Isao | Sem mudanca nesta etapa (animacoes feitas sobre o rig novo) |

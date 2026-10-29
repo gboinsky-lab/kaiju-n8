@@ -117,7 +117,7 @@ public class SoldierRenderer<T extends SoldierEntity> extends GeoEntityRenderer<
             protected void renderStackForBone(PoseStack poseStack, GeoBone bone, ItemStack stack,
                     T animatable, MultiBufferSource bufferSource, float partialTick, int packedLight,
                     int packedOverlay) {
-                GeoBone arm = bone.getParent();
+                GeoBone arm = armRoot(bone);
                 if (arm != null) {
                     // Eixo do braco em repouso (ombro -> mao) no lugar do "para baixo" do braco vanilla.
                     float dx = bone.getPivotX() - arm.getPivotX();
@@ -146,6 +146,20 @@ public class SoldierRenderer<T extends SoldierEntity> extends GeoEntityRenderer<
                         packedLight, packedOverlay);
             }
         });
+    }
+
+    /**
+     * FIX-2: osso do braco inteiro (ombro) acima do osso do item. Desde o RIG-2 o item e filho da mao (a 1 px dela, em
+     * direcao qualquer) e o eixo pai -> item girava a arma para fora da mao; as pegadas foram medidas no eixo
+     * ombro -> item, como antes. Sem osso "arm_" na cadeia (soldado antigo), o pai.
+     */
+    private static GeoBone armRoot(GeoBone item) {
+        for (GeoBone bone = item.getParent(); bone != null; bone = bone.getParent()) {
+            if (bone.getName().startsWith("arm_")) {
+                return bone;
+            }
+        }
+        return item.getParent();
     }
 
     /**

@@ -1,5 +1,6 @@
 {
   "bones": {
+    "body": "kn8:meshes/kaiju_no10_giant/body.obj",
     "chest": "kn8:meshes/kaiju_no10_giant/chest.obj",
     "head": "kn8:meshes/kaiju_no10_giant/head.obj",
     "arm_left": "kn8:meshes/kaiju_no10_giant/arm_left.obj",

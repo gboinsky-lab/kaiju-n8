@@ -22,7 +22,7 @@ from rig_trichonephila_mesh import read_obj  # noqa: E402
 ROOT = Path(__file__).resolve().parents[2]
 ASSETS = ROOT / "src/main/resources/assets/kn8"
 PX = 16.0
-SIZE = 320
+SIZE = int(__import__("os").environ.get("KN8_PREVIEW_SIZE", "320"))
 
 
 def rx(a):

@@ -73,10 +73,19 @@ SPECIES = {
     "kaiju_no8": {"items": True, "new_mesh": True},
     "kaiju_no9": {"items": False},
     "kaiju_no9_black": {"items": False},
-    "kaiju_no9_fusion": {"items": False, "keep": TAIL + ["jaw", "fin_left", "fin_right"]},
-    "kaiju_no10_small": {"items": False, "keep": TAIL + ["jaw", "fin_left", "fin_right"]},
-    "kaiju_no10_giant": {"items": False, "keep": TAIL + ["jaw", "fin_left", "fin_right"]},
+    "kaiju_no9_fusion": {"items": False, "keep": TAIL + ["jaw", "fin_left", "fin_right"], "legs_on_body": True},
+    "kaiju_no10_small": {"items": False, "keep": TAIL + ["jaw", "fin_left", "fin_right"], "legs_on_body": True},
+    "kaiju_no10_giant": {"items": False, "keep": TAIL + ["jaw", "fin_left", "fin_right"], "legs_on_body": True},
 }
+# FIX-2: "legs_on_body" = pernas filhas do tronco, como no rig de antes (No. 10 e fusao): as animacoes deles inclinam o
+# tronco contando que as pernas vao junto; com as pernas na raiz a bacia abria ("o modelo parte no meio").
+# FIX-2 (Miguel, 2026-10-29: "modelos que se partem no meio", "armas fora da mao"): especies que mantiveram a malha e
+# as animacoes de antes do RIG-2 voltam ao pivo antigo nos ossos de cima (tronco, cabeca, ombros, quadril), gravado de
+# antes do RIG-2 em skins/legacy_pivots.json. As animacoes aprovadas (Blockbench, tecnicas, pegadas das armas) giram
+# de novo no mesmo ponto; as juntas novas (peito, cotovelo, punho, joelho, tornozelo) ficam no rig do Meshy. Fora:
+# Hoshina e Kaiju No. 8 (modelo novo) e as especies com animacoes refeitas no humanoid_anims.py (No. 9, forma preta,
+# Isao, No. 13, No. 9 com o Isao), feitas sobre os pivos do rig.
+LEGACY_PIVOTS = SKINS / "legacy_pivots.json"
 # Rodadas do filtro de maioria (cada face vai para o osso da maioria das vizinhas quando ela e minoria).
 SMOOTH_ROUNDS = 3
 # Pedaco solto de um osso com menos faces que isto vai para o vizinho.
@@ -403,6 +412,13 @@ def build(species):
         vertices, uvs, normals, faces = read_obj(CONVERTED / species / f"{species}.obj")
         old = np.array([""] * len(faces), dtype=object)
     labels = label_faces(vertices, faces, skin)
+    if species in json.loads(LEGACY_PIVOTS.read_text(encoding="utf-8")) if LEGACY_PIVOTS.exists() else False:
+        # FIX-2: com o pivo antigo do quadril, o corte do quadril tambem volta ao antigo (o Meshy punha parte da bacia
+        # na coxa e a bacia abria ao levantar a perna). Joelho e tornozelo continuam pelo rig.
+        for side in ("left", "right"):
+            leg = f"leg_{side}"
+            labels[(old == "body") & (labels == leg)] = "body"
+            labels[(old == leg) & (labels == "body")] = leg
     keep = cfg.get("keep", [])
     kept = np.isin(old, keep)
     labels[kept] = old[kept]
@@ -411,6 +427,8 @@ def build(species):
     geo = json.loads(geo_path.read_text(encoding="utf-8"))
     previous = {b["name"]: b for b in geo["minecraft:geometry"][0]["bones"]}
     parents = hierarchy(cfg["items"])
+    if cfg.get("legs_on_body"):
+        parents["leg_left"] = parents["leg_right"] = "body"
     for bone in keep:
         parents[bone] = cfg.get("reparent", {}).get(bone, previous[bone].get("parent"))
     mesh_dir = ASSETS / "meshes" / species
@@ -431,9 +449,12 @@ def build(species):
             return seam(vertices, faces, labels, bone, parent)
         return seam(vertices, faces, labels, bone, "body")
     points = pivots(skin, used, cut)
+    legacy = json.loads(LEGACY_PIVOTS.read_text(encoding="utf-8")).get(species, {}) if LEGACY_PIVOTS.exists() else {}
     bones = []
     for bone, parent in parents.items():
         pivot = geo_pivot(points[bone]) if bone in points else previous[bone]["pivot"]
+        if bone in legacy:
+            pivot = legacy[bone]
         # A pegada das armas foi medida no lugar antigo do item (espadas do Hoshina, machado da Kikoru): com a mesma
         # malha, o item fica onde estava (so passa a ser filho da mao).
         if bone.startswith("item_") and bone in previous and not cfg.get("new_mesh"):
