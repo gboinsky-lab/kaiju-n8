@@ -55,6 +55,8 @@ public final class KaijuFormClient {
 
     private static final ResourceLocation SPECIES = KN8Constants.id("kaiju_no8");
     private static final ResourceLocation TEXTURE = KN8Constants.id("textures/entity/kaiju_no8.png");
+    /** Sem controle do corpo: linhas e olhos vermelhos (mesma textura do fantoche). */
+    private static final ResourceLocation RAMPAGE_TEXTURE = KN8Constants.id("textures/entity/kaiju_no8_rampage.png");
     /** RIG-2: o braco tem tres pecas (ombro, antebraco, mao); em repouso ficam no lugar, desenhadas juntas. */
     private static final String[] ARM_BONES = {"arm_right", "forearm_right", "hand_right"};
     /** Pivo do osso {@code arm_right} no espaco da GeckoLib (blocos; X ja invertido como a GeckoLib carrega). */
@@ -228,7 +230,8 @@ public final class KaijuFormClient {
         pose.translate(-5.0F / 16.0F, 2.0F / 16.0F, 0.0F);
         pose.scale(-ARM_SCALE, -ARM_SCALE, ARM_SCALE);
         pose.translate(-ARM_PIVOT_X, -ARM_PIVOT_Y, -ARM_PIVOT_Z);
-        VertexConsumer buffer = event.getMultiBufferSource().getBuffer(RenderType.entityCutoutNoCull(TEXTURE));
+        VertexConsumer buffer = event.getMultiBufferSource().getBuffer(RenderType.entityCutoutNoCull(
+                KaijuFormService.isRampaging(minecraft.player) ? RAMPAGE_TEXTURE : TEXTURE));
         for (String bone : ARM_BONES) {
             float[] mesh = model.bone(bone);
             if (mesh != null) {

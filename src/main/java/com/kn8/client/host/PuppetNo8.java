@@ -1,5 +1,6 @@
 package com.kn8.client.host;
 
+import com.kn8.common.host.KaijuFormService;
 import com.kn8.common.registry.KN8Entities;
 import com.kn8.common.soldier.special.KaijuNo8Entity;
 
@@ -12,6 +13,9 @@ import net.minecraft.world.entity.player.Player;
  * mesma malha, mesmas animacoes de andar/correr e postura dos punhos. Id negativo para nao cruzar com entidades reais.
  */
 public final class PuppetNo8 extends KaijuNo8Entity {
+
+    /** Dono sem controle do corpo (T-3): o modelo troca as linhas e os olhos ciano por vermelho. */
+    private boolean rampaging;
 
     PuppetNo8(ClientLevel level, Player player) {
         super(KN8Entities.KAIJU_NO8.get(), level);
@@ -33,8 +37,13 @@ public final class PuppetNo8 extends KaijuNo8Entity {
         setOnGround(player.onGround());
         setShiftKeyDown(player.isShiftKeyDown());
         hurtTime = player.hurtTime;
+        rampaging = KaijuFormService.isRampaging(player);
         calculateEntityAnimation(false);
         tickCount++;
+    }
+
+    public boolean rampaging() {
+        return rampaging;
     }
 
     /** Giro do jogador neste quadro (a interpolacao usa o anterior guardado no tick). */

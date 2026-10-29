@@ -6,6 +6,7 @@ import java.util.Map;
 import org.joml.Quaternionf;
 
 import com.kn8.KN8Constants;
+import com.kn8.client.host.PuppetNo8;
 import com.kn8.client.render.mesh.MeshRenderLayer;
 import com.kn8.common.soldier.SoldierEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -17,6 +18,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -174,6 +176,18 @@ public class SoldierRenderer<T extends SoldierEntity> extends GeoEntityRenderer<
             // O soldado comum nao anima a cabeca e continua com o da GeckoLib.
             super(KN8Constants.id(species), "soldier".equals(species));
             this.addLook = !"soldier".equals(species);
+        }
+
+        /** Miguel (2026-10-29): forma do jogador sem controle = linhas e olhos vermelhos (gen_no8_rampage_texture.py). */
+        private static final ResourceLocation RAMPAGE_TEXTURE =
+                KN8Constants.id("textures/entity/kaiju_no8_rampage.png");
+
+        @Override
+        public ResourceLocation getTextureResource(T animatable) {
+            if (animatable instanceof PuppetNo8 puppet && puppet.rampaging()) {
+                return RAMPAGE_TEXTURE;
+            }
+            return super.getTextureResource(animatable);
         }
 
         @Override

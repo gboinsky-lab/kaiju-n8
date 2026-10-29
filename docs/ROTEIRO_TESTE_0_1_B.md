@@ -1458,6 +1458,7 @@ teste tem `spawn-animals=false` (animais somem sozinhos); use zumbis, husks e so
 | 105.5 | `/kn8 host rampage Dev` (ou esperar 2 min) com zumbi, husk e soldado em volta | Rugido, "Você perdeu o controle do corpo!", "SEM CONTROLE"; o Dev não anda nem soca pela própria vontade, a câmera vira sozinha para o alvo e o No. 8 corre até cada um e o derruba (soldados e civis também); jogador em criativo/espectador não é atacado |
 | 105.6 | 15 s depois | Volta humano, "Você recupera o controle. O corpo está exausto.", Lentidão e Fraqueza; B avisa espera de 2 min |
 | 105.7 | Com traje/arma numerada, transformado | O domínio do numerado não sobe; a cauda e as asas não agem |
+| 105.8 | Olhar o Dev sem controle pelo Dev2 e o próprio braço em 1ª pessoa | As linhas e os olhos ciano do No. 8 ficam vermelhos enquanto durar o descontrole e voltam ao ciano depois; o No. 8 NPC continua ciano |
 
 ## 106. Ossos articulados e animações refeitas (RIG-1)
 
