@@ -34,7 +34,9 @@ public final class DrawnFactory {
             case "bolt" -> {
                 for (int i = 0; i < count; i++) {
                     Vec3 dir = direction(pattern, flat, random);
-                    Vec3 start = pattern == VfxPatterns.Pattern.CONVERGE ? origin.subtract(dir.scale(spread)) : origin;
+                    // COMBATE-3: FALL = raio caindo do ceu, do alto ate o ponto.
+                    Vec3 start = pattern == VfxPatterns.Pattern.CONVERGE || pattern == VfxPatterns.Pattern.FALL
+                            ? origin.subtract(dir.scale(spread)) : origin;
                     DrawnRenderer.add(new Drawn.Bolt(start, dir, Math.max(0.3, spread), Math.max(0.02, size), color,
                             light, lifetime, 0.4F, random));
                 }
@@ -47,8 +49,13 @@ public final class DrawnFactory {
                 double radius = Math.max(spread, size) * (reduce ? FLASH_SIZE : 1.0F);
                 DrawnRenderer.add(new Drawn.Pulse(origin, radius, Math.max(0.06, radius * 0.18), color, lifetime));
             }
-            case "beam" -> DrawnRenderer.add(new Drawn.Beam(origin, origin.add(direction(pattern, flat, random)
-                    .scale(Math.max(0.3, spread))), Math.max(0.02, size), speed, color, light, lifetime));
+            case "beam" -> {
+                Vec3 dir = direction(pattern, flat, random).scale(Math.max(0.3, spread));
+                // COMBATE-3: FALL = coluna de luz que desce do alto ate o ponto.
+                Vec3 from = pattern == VfxPatterns.Pattern.FALL ? origin.subtract(dir) : origin;
+                DrawnRenderer.add(new Drawn.Beam(from, from.add(dir), Math.max(0.02, size), speed, color, light,
+                        lifetime));
+            }
             case "flash" -> DrawnRenderer.add(new Drawn.Flash(origin, Math.max(size, spread)
                     * (reduce ? FLASH_SIZE : 1.0F), reduce ? VfxColors.shade(color, -0.2F) : color, lifetime));
             case "smoke" -> DrawnRenderer.add(new Drawn.Smoke(origin, Math.max(1, count), Math.max(0.1, spread),
@@ -185,6 +192,8 @@ public final class DrawnFactory {
             case LINE, ARC -> flat.add((random.nextDouble() - 0.5) * 0.3, (random.nextDouble() - 0.5) * 0.2,
                     (random.nextDouble() - 0.5) * 0.3).normalize();
             case RISE -> new Vec3((random.nextDouble() - 0.5) * 0.5, 1.0, (random.nextDouble() - 0.5) * 0.5)
+                    .normalize();
+            case FALL -> new Vec3((random.nextDouble() - 0.5) * 0.12, -1.0, (random.nextDouble() - 0.5) * 0.12)
                     .normalize();
             case RING -> {
                 double a = random.nextDouble() * Math.PI * 2;

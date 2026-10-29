@@ -1554,7 +1554,8 @@ Servidor dedicado + 2 clientes. Imagem: `docs/img/combate3_kikoru.jpg`.
 | # | Passo | Esperado |
 |---|---|---|
 | 112.1 | Machado (`kn8:axe`) na mao, olhar a HUD e apertar X varias vezes | Golpe Sismico (1/7), No. 1 Falling Thunder, No. 2 Water Skimmer, No. 3 Half-Moon, No. 4 Rising Thunder, No. 5 Twin Swallows, No. 6 Daruma Dropper |
-| 112.2 | R com o Falling Thunder perto de um kaiju | Salta para cima e para a frente com o machado erguido e cai esmagando (anel dourado, rachadura); o outro cliente ve o salto |
+| 112.2 | Falling Thunder no chao | Recusado: "Pule de cima: precisa estar no alto, acima do alvo" |
+| 112.2b | Subir numa construcao (parkour), pular em cima do kaiju e apertar R no ar | Mergulha com o machado erguido; ao tocar o kaiju (ou o chao) crava: raio dourado caindo do ceu, clarao, rachadura e onda; quanto mais alto, mais dano |
 | 112.3 | R em cada uma das outras | Corte horizontal com onda a frente; giro inteiro; corte de baixo para cima que lanca; avanco com dois cortes em X; quatro cortes descendo; cada uma com a propria recarga |
 | 112.4 | Machado do Numbers 4 (com os requisitos) | Mergulho do Ceu, as seis e o Daruma Dropper: Ten Hit (10 cortes) |
-| 112.5 | Kikoru e Kikoru No. 4 NPC contra um Honju | Usam as tecnicas da obra (os golpes genericos aparecem menos); a No. 4 tambem o Ten Hit |
+| 112.5 | Kikoru e Kikoru No. 4 NPC contra um Honju | Usam as tecnicas da obra (os golpes genericos aparecem menos); no Falling Thunder a Kikoru salta alto (4-9 blocos) e cai sobre o kaiju com o raio do ceu; a No. 4 tambem o Ten Hit |

@@ -149,11 +149,11 @@ public final class SpecialAttackGameTests {
     }
 
     /**
-     * COMBATE-3: o machado tem o estilo da Kikoru depois do Golpe Sismico; o Falling Thunder (tecnica 2) salta para
-     * cima e esmaga quem esta embaixo/na frente ao cair; o Daruma Dropper (tecnica 7) da quatro cortes.
+     * COMBATE-3: o machado tem o estilo da Kikoru depois do Golpe Sismico. O Falling Thunder (tecnica 2) vem de cima
+     * (Miguel): no chao e recusado; no alto, mergulha e esmaga ao tocar o kaiju. O Daruma Dropper (7) corta.
      */
     @GameTest(template = TEMPLATE)
-    public static void kikoruAxeStyleLeapsAndCuts(GameTestHelper helper) {
+    public static void kikoruAxeStyleDivesAndCuts(GameTestHelper helper) {
         FakePlayer player = player(helper, "axestyle");
         // Golem (100 de vida) aguenta o esmagamento e os cortes.
         IronGolem golem = helper.spawn(EntityType.IRON_GOLEM, new BlockPos(4, 1, 5));
@@ -167,20 +167,34 @@ public final class SpecialAttackGameTests {
             CombatService.cycleTechnique(player, 1);
             helper.assertTrue(CombatService.selectedTechnique(player, CombatService.heldWeapon(player).get())
                     .map(t -> t.id().equals("falling_thunder")).orElse(false), "Tecnica 2 = Falling Thunder");
+            player.setOnGround(true);
+            helper.assertTrue(!CombatService.special(player), "No chao o Falling Thunder deveria ser recusado");
+            // Em cima de uma construcao: 4 blocos acima do chao, caindo.
+            Vec3 high = helper.absoluteVec(new Vec3(4.5, 5.0, 7.0));
+            player.moveTo(high.x, high.y, high.z, FACING_NORTH, 60.0F);
+            player.setOnGround(false);
             before[0] = golem.getHealth();
-            helper.assertTrue(CombatService.special(player), "O Falling Thunder deveria sair");
-            helper.assertTrue(player.getDeltaMovement().y > 0.3, "O Falling Thunder deveria lancar para cima");
+            helper.assertTrue(CombatService.special(player), "No alto o Falling Thunder deveria sair");
+            helper.assertTrue(player.getDeltaMovement().y < -0.5, "O Falling Thunder deveria mergulhar");
         });
-        helper.runAfterDelay(SETTLE_TICKS + 26, () -> {
-            helper.assertTrue(golem.getHealth() < before[0], "Quem esta na queda deveria ser esmagado");
+        helper.runAfterDelay(SETTLE_TICKS + 3, () -> {
+            helper.assertTrue(golem.getHealth() >= before[0], "Antes de tocar, nada de dano");
+            // Caiu em cima do golem.
+            Vec3 landing = helper.absoluteVec(new Vec3(4.5, 1.0, 6.4));
+            player.moveTo(landing.x, landing.y, landing.z, FACING_NORTH, 60.0F);
+            player.setOnGround(true);
+        });
+        helper.runAfterDelay(SETTLE_TICKS + 6, () -> {
+            helper.assertTrue(golem.getHealth() < before[0], "Quem esta embaixo da queda deveria ser esmagado");
             golem.invulnerableTime = 0;
-            // Seis passos para a frente = tecnica 7 (Daruma Dropper).
+            // Cinco passos para a frente = tecnica 7 (Daruma Dropper).
             CombatService.cycleTechnique(player, 5);
             PowerService.setStamina(player, 100);
+            player.moveTo(player.getX(), player.getY(), player.getZ(), FACING_NORTH, 0.0F);
             before[1] = golem.getHealth();
             helper.assertTrue(CombatService.special(player), "O Daruma Dropper deveria sair");
         });
-        helper.runAfterDelay(SETTLE_TICKS + 26 + 24, () -> {
+        helper.runAfterDelay(SETTLE_TICKS + 6 + 24, () -> {
             float lost = before[1] - golem.getHealth();
             helper.assertTrue(lost > 0, "O Daruma Dropper deveria cortar");
             golem.discard();

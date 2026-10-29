@@ -129,6 +129,51 @@
     ],
     "falling_thunder": [
       {
+        "shape": "beam",
+        "color": "#FFF6D0",
+        "pattern": "fall",
+        "count": 1,
+        "size": 1.4,
+        "speed": 0.0,
+        "spread": 22.0,
+        "lifetime": 12
+      },
+      {
+        "shape": "bolt",
+        "color": "#FFE27A",
+        "pattern": "fall",
+        "count": 4,
+        "size": 0.24,
+        "spread": 22.0,
+        "lifetime": 12
+      },
+      {
+        "shape": "bolt",
+        "color": "#E8B830",
+        "pattern": "fall",
+        "count": 3,
+        "size": 0.14,
+        "spread": 16.0,
+        "lifetime": 10,
+        "delay": 2
+      },
+      {
+        "shape": "bolt",
+        "color": "#FFF6D0",
+        "pattern": "fall",
+        "count": 2,
+        "size": 0.18,
+        "spread": 22.0,
+        "lifetime": 8,
+        "delay": 5
+      },
+      {
+        "shape": "flash",
+        "color": "#FFFFFF",
+        "size": 4.5,
+        "lifetime": 6
+      },
+      {
         "shape": "crack",
         "color": "#2A2018",
         "pattern": "burst",

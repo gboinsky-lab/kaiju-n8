@@ -24,7 +24,9 @@ public enum CombatResult {
     /** PM-1 (Plano Mestre): o golpe chegou no comeco da esquiva (janela de contra-ataque aberta). */
     PERFECT_DODGE,
     /** PM-11: arma numerada sem patente, pesquisa ou limite pessoal exigidos. */
-    DENIED_INCOMPATIBLE;
+    DENIED_INCOMPATIBLE,
+    /** COMBATE-3: tecnica que vem de cima (Falling Thunder) pedida no chao ou baixo demais. */
+    DENIED_NEEDS_HEIGHT;
 
     public static CombatResult byIndex(int index) {
         CombatResult[] values = values();

@@ -469,11 +469,11 @@ SPECIALS = {
 AXE_HIGH = [0, 0, 0]
 AXE_DOWN = [45, 0, 0]
 KIKORU_TECHNIQUES = {
-    # No. 1 Falling Thunder: salta com o machado erguido acima da cabeca (pernas recolhidas) e cai cravando de cima
-    # para baixo no kaiju embaixo ("vem por cima e esmaga").
+    # No. 1 Falling Thunder: vem de cima (Miguel: o jogador pula de uma construcao em cima do kaiju; a Kikoru NPC
+    # salta de verdade): machado erguido acima da cabeca com as pernas recolhidas na queda e crava de cima para baixo.
     "falling_thunder": {"moves": [
         {"wind": {"right_arm": [-178, -5, 10], "left_arm": [-175, 8, -10], "right_item": AXE_HIGH, "torso": [-20, 0, 0],
-                  "right_leg": [-70, 0, 8], "left_leg": [-45, 0, -8], "body_pos": [0, 13, 0]},
+                  "right_leg": [-70, 0, 8], "left_leg": [-45, 0, -8]},
          "hit": {"right_arm": [-30, 0, 5], "left_arm": [-30, 0, -5], "right_item": AXE_DOWN, "torso": [40, 0, 0],
                  "right_leg": [-45, 0, 12], "left_leg": [30, 0, -12], "body_pos": [0, -4, 0]}}]},
     # No. 2 Water Skimmer: corte horizontal rente, da direita para a esquerda, com passo a frente; a onda sai a
@@ -820,6 +820,17 @@ def weapon_animations():
         for technique in weapon.get("techniques", []):
             spec = KIKORU_TECHNIQUES.get(technique["id"])
             if spec is None or family not in STANCES:
+                continue
+            if technique["type"] == "dive_slam":
+                # COMBATE-3: mergulho: ergue e segura ate tocar (o servidor manda a segunda animacao no toque).
+                start = STANCES[family]["idle"]
+                wound = merged(start, spec["moves"][0]["wind"])
+                struck = merged(wound, spec["moves"][0]["hit"])
+                hold = technique["duration_ticks"] * TICK
+                result[f"player.{item}.special_{technique['id']}"] = animate(
+                    [(0, start), (3 * TICK, wound), (hold, wound)], hold)
+                result[f"player.{item}.special_{technique['id']}_impact"] = animate(
+                    [(0, wound), (2 * TICK, struck), (7 * TICK, struck), (16 * TICK, start)], 16 * TICK)
                 continue
             impact = technique["impact_tick"]
             count = technique.get("slash", {}).get("count", 1)

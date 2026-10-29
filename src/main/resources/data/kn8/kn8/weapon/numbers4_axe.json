@@ -58,26 +58,22 @@
   "techniques": [
     {
       "id": "falling_thunder",
-      "type": "leap_slam",
+      "type": "dive_slam",
       "multiplier": 2.8,
-      "duration_ticks": 24,
-      "impact_tick": 12,
+      "duration_ticks": 40,
+      "impact_tick": 1,
       "radius": 3.0,
       "stamina_cost": 30,
       "heat_cost": 5,
       "cooldown_ticks": 140,
-      "forward": 5.0,
+      "forward": 3.0,
       "knockback": 0.6,
       "stagger_ticks": 36,
       "camera_shake": 0.4,
       "vfx": [
         {
-          "effect": "kn8:ground_crack",
-          "intensity": 3.0
-        },
-        {
-          "effect": "kn8:shockwave",
-          "intensity": 1.2
+          "effect": "kn8:technique",
+          "intensity": 1.0
         },
         {
           "effect": "kn8:dust",

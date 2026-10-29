@@ -218,6 +218,13 @@ public class HoshinaEntity extends SoldierEntity {
         return VARIANT;
     }
 
+    /**
+     * COMBATE-3: gancho no comeco de uma tecnica (depois do avanco), com o tick do primeiro golpe ja na velocidade
+     * do Release. A Kikoru salta no Falling Thunder.
+     */
+    protected void onTechniqueStart(String id, LivingEntity target, int firstHitTicks) {
+    }
+
     /** Tecnicas e reacoes com animacao propria ({@code <prefixo>.action.<id>}); as outras tocam o golpe basico. */
     protected List<String> animatedTechniques() {
         return ANIMATED;
@@ -535,6 +542,7 @@ public class HoshinaEntity extends SoldierEntity {
         if (technique.dashIn() > 0) {
             dashSafe(target.position().subtract(position()), technique.dashIn(), "avanco da tecnica " + id);
         }
+        onTechniqueStart(id, target, CombatMath.faster(technique.windupTicks(), techniqueSpeed));
         triggerAnim("action", animatedTechniques().contains(id) ? id : "attack");
         // VFX-5: carga no preparo (canhao da Mina, cristal do Reno No. 6): so com a receita "<tecnica>_charge"; as
         // camadas dela usam o "delay" para acompanhar o preparo inteiro.

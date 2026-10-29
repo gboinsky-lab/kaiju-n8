@@ -240,6 +240,9 @@ public final class CombatService {
     public static void tick(ServerPlayer player) {
         CombatState state = state(player);
         WeaponHandling.tick(player, state, now(player));
+        if (state.diveTechnique != null) {
+            tickDive(player, state, now(player));
+        }
         if (state.currentWeapon == null || !state.timeline.consumeImpact(now(player))) {
             return;
         }
@@ -301,6 +304,12 @@ public final class CombatService {
             return false;
         }
         WeaponDef.Special def = special.get();
+        if (def.type() == WeaponDef.SpecialType.DIVE_SLAM && (player.onGround()
+                || SpecialAttacks.heightAboveGround(player, def.forward()) < def.forward())) {
+            // COMBATE-3 (Miguel): o Falling Thunder vem de cima: pular de uma construcao e cair no kaiju.
+            replySpecial(player, CombatResult.DENIED_NEEDS_HEIGHT);
+            return false;
+        }
         if (!PowerService.tryConsumeStamina(player, def.staminaCost())) {
             replySpecial(player, CombatResult.DENIED_NO_STAMINA);
             return false;
@@ -323,9 +332,15 @@ public final class CombatService {
         state.currentWeapon = weapon.get();
         state.currentMultiplier = def.multiplier();
         state.currentTechnique = def;
-        if (def.type() == WeaponDef.SpecialType.LEAP_SLAM) {
-            // COMBATE-3: o salto do Falling Thunder comeca agora e cai no tick do impacto.
-            SpecialAttacks.startLeap(player, def, Math.min(duration - 1, CombatMath.faster(def.impactTick(), speed)));
+        if (def.type() == WeaponDef.SpecialType.DIVE_SLAM) {
+            // COMBATE-3: mergulho; o golpe sai quando tocar o chao ou o kaiju (tickDive), nao no impact_tick.
+            state.diveTechnique = def;
+            state.diveWeapon = weapon.get();
+            state.diveStartY = player.getY();
+            state.diveUntilTick = now + def.durationTicks();
+            state.currentWeapon = null;
+            state.currentTechnique = null;
+            SpecialAttacks.startDive(player);
         }
         state.techniqueCooldownTicks.put(def.id(), def.cooldownTicks());
         state.techniqueReadyTick.put(def.id(), now + def.cooldownTicks());
@@ -339,6 +354,33 @@ public final class CombatService {
                 SWING_SOUND_VOLUME, 0.8F);
         replySpecial(player, CombatResult.OK);
         return true;
+    }
+
+    /**
+     * COMBATE-3: mergulho do Falling Thunder: ao tocar o chao ou um inimigo, esmaga a area com o dano da tecnica mais
+     * o bonus da altura caida ({@code [combat] diveSlamBonusPerBlock}, ate {@code diveSlamMaxBonus}); passou do
+     * {@code duration_ticks} sem tocar, acaba sem golpe.
+     */
+    private static void tickDive(ServerPlayer player, CombatState state, long now) {
+        WeaponDef.Special technique = state.diveTechnique;
+        if (!player.onGround() && !SpecialAttacks.diveTouches(player)) {
+            if (now > state.diveUntilTick) {
+                state.diveTechnique = null;
+            }
+            return;
+        }
+        state.diveTechnique = null;
+        // O mergulho ocupava a linha do tempo ate o prazo: ao tocar, termina (o golpe de volta vem pela animacao).
+        state.timeline.cancel();
+        double fallen = Math.max(0.0, state.diveStartY - player.getY());
+        double bonus = Math.min(ServerConfig.DIVE_SLAM_MAX_BONUS.get(),
+                fallen * ServerConfig.DIVE_SLAM_BONUS_PER_BLOCK.get());
+        double release = PowerMath.damageMultiplier(PowerService.effectiveRelease(player), PowerService.params());
+        float damage = (float) (CombatMath.damage(state.diveWeapon.baseDamage(), technique.multiplier(), 1.0F, release)
+                * PowerService.strengthMultiplier(player) * KaijuFormService.damageFactor(player) * (1.0 + bonus));
+        AnimationBridge.playPlayer(player, AnimationBridge.weaponAction(state.diveWeapon.item(),
+                "special_" + technique.id() + "_impact"));
+        SpecialAttacks.resolve(player, technique, damage, specialDamage(player));
     }
 
     /** 0.5.0-D7: fator de velocidade dos golpes pelo Release efetivo do jogador ({@code [combat]}). */

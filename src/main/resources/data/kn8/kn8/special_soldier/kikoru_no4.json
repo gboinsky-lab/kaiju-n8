@@ -80,14 +80,13 @@
       "hits": [
         2.4
       ],
-      "windup_ticks": 12,
-      "duration_ticks": 26,
+      "windup_ticks": 20,
+      "duration_ticks": 32,
       "cooldown_ticks": 140,
-      "min_range": 2.0,
-      "max_range": 8.0,
+      "min_range": 3.0,
+      "max_range": 10.0,
       "priority": 4,
       "honju_priority": 2,
-      "dash_in": 1.5,
       "final_knockback": 1.0
     },
     "water_skimmer": {
@@ -147,7 +146,7 @@
       "cooldown_ticks": 70,
       "min_range": 2.0,
       "max_range": 7.0,
-      "priority": 4,
+      "priority": 3,
       "dash_in": 1.3
     },
     "daruma_dropper": {
@@ -163,7 +162,7 @@
       "duration_ticks": 24,
       "cooldown_ticks": 120,
       "max_range": 3.5,
-      "priority": 4,
+      "priority": 3,
       "honju_priority": 2
     },
     "daruma_dropper_ten_hit": {

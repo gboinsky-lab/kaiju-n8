@@ -12,6 +12,7 @@ import com.kn8.common.soldier.special.KikoruEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
@@ -61,6 +62,41 @@ public final class KikoruProfileGameTests {
             }
             Optional<String> next = kikoru.chooseTechnique(kaiju);
             helper.assertTrue(next.isPresent() && HEAVY.contains(next.get()), "Depois do rapido, um pesado: " + next);
+            kaiju.discard();
+            kikoru.discard();
+        });
+    }
+
+    /**
+     * COMBATE-3 (Miguel: o Falling Thunder vem de cima): a Kikoru NPC salta para cima e na direcao do kaiju no comeco
+     * da tecnica e cai em cima dele.
+     */
+    @GameTest(template = TEMPLATE, timeoutTicks = 60, batch = "kn8_mov5c_kikoru")
+    public static void kikoruFallingThunderLeapsOntoTheKaiju(GameTestHelper helper) {
+        // Com IA: mob sem IA nao segue a velocidade (0.6-A); o teste comeca a tecnica antes de a IA escolher alvo.
+        KikoruEntity kikoru = helper.spawn(KN8Entities.KIKORU.get(), new BlockPos(3, 1, 7));
+        KaijuEntity kaiju = helper.spawn(KN8Entities.PRIMIGENIUS.get(), new BlockPos(10, 1, 7));
+        kaiju.setNoAi(true);
+        double[] startX = new double[1];
+        long[] started = {-1};
+        double ground = helper.absoluteVec(new Vec3(0, 1, 0)).y;
+        // Tenta a cada tick ate a Kikoru estar livre (ao nascer ela saca a arma) e no chao.
+        helper.succeedWhen(() -> {
+            long now = helper.getTick();
+            if (started[0] < 0) {
+                helper.assertTrue(kikoru.onGround() && !kikoru.isUsingTechnique() && !kikoru.isActing(),
+                        "Esperando a Kikoru ficar livre no chao");
+                kikoru.lookAt(kaiju, 360.0F, 90.0F);
+                startX[0] = kikoru.getX();
+                helper.assertTrue(kikoru.startTechnique("falling_thunder", kaiju), "Falling Thunder comecou");
+                helper.assertTrue(kikoru.getDeltaMovement().y > 0.5, "A Kikoru deveria saltar alto: "
+                        + kikoru.getDeltaMovement());
+                started[0] = now;
+                helper.fail("saltando");
+            }
+            helper.assertTrue(now >= started[0] + 8, "No ar");
+            helper.assertTrue(kikoru.getY() > ground + 1.5, "No meio do Falling Thunder deveria estar no alto");
+            helper.assertTrue(kikoru.getX() > startX[0] + 0.5, "A Kikoru deveria ir na direcao do kaiju");
             kaiju.discard();
             kikoru.discard();
         });

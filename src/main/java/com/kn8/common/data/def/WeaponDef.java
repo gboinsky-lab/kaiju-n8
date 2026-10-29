@@ -99,11 +99,13 @@ public record WeaponDef(ResourceLocation item, float baseDamage, float reach, St
          */
         FLURRY("flurry"),
         /**
-         * COMBATE-3 (Falling Thunder da Kikoru, Miguel: "um golpe que acompanha por cima e esmaga o kaiju embaixo"):
-         * quem ataca salta para cima e para a frente ate {@code forward} blocos, cai no tick de impacto e esmaga a
-         * area de raio {@code radius} onde caiu.
+         * COMBATE-3 (Falling Thunder da Kikoru, Miguel: "o jogador sobe em alguma construcao com o parkour e pula em
+         * cima do kaiju; ao cair em cima dele ele deve fazer o ataque"): so no ar, com pelo menos {@code forward}
+         * blocos ate o chao; quem ataca mergulha e, ao tocar o chao ou o kaiju, esmaga a area de raio {@code radius}
+         * (dano maior quanto mais alta a queda, {@code [combat] diveSlam*}). {@code duration_ticks} = tempo maximo
+         * caindo; {@code impact_tick} nao vale (o golpe sai no toque).
          */
-        LEAP_SLAM("leap_slam");
+        DIVE_SLAM("dive_slam");
 
         public static final Codec<SpecialType> CODEC = StringRepresentable.fromEnum(SpecialType::values);
 

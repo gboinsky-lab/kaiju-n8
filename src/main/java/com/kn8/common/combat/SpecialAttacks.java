@@ -39,6 +39,10 @@ public final class SpecialAttacks {
     private static final float SOUND_VOLUME = 2.0F;
     /** Folga da busca: a hitbox de um kaiju largo pode estar com o centro bem fora do raio. */
     private static final double SEARCH_MARGIN = 8.0;
+    /** COMBATE-3: mergulho do Falling Thunder: deriva para a frente e folga do toque no kaiju (blocos). */
+    private static final double DIVE_FORWARD = 0.25;
+    private static final double DIVE_TOUCH_BELOW = 0.6;
+    private static final double DIVE_TOUCH_SIDE = 0.4;
     /** Empurrao vertical da onda (sai do chao). */
     private static final double KNOCK_UP = 0.35;
 
@@ -66,34 +70,43 @@ public final class SpecialAttacks {
             case SLASH_WAVE -> slashWave(level, source, special, damage);
             case LUNGE -> lunge(level, source, special, damage, damageSource);
             case FLURRY -> flurry(level, source, special, damage, damageSource);
-            case LEAP_SLAM -> leapSlam(level, source, special, damage, damageSource);
+            case DIVE_SLAM -> diveSlam(level, source, special, damage, damageSource);
         };
     }
 
-    /**
-     * COMBATE-3: comeco do salto do {@code leap_slam} (chamado quando a tecnica comeca): impulso para cima e para a
-     * frente que cai {@code forward} blocos adiante no tick de impacto (gravidade e freio do ar de mob vanilla).
-     */
-    public static void startLeap(LivingEntity source, WeaponDef.Special special, int impactTicks) {
-        Vec3 look = source.getLookAngle();
-        Vec3 flat = new Vec3(look.x, 0, look.z);
-        Vec3 direction = flat.lengthSqr() < 1.0E-4 ? Vec3.ZERO : flat.normalize();
-        int ticks = Math.max(1, impactTicks);
-        double horizontal = SpecialGeometry.leapHorizontalSpeed(special.forward(), ticks);
-        double vertical = SpecialGeometry.leapVerticalSpeed(ticks);
-        source.setDeltaMovement(direction.x * horizontal, vertical, direction.z * horizontal);
-        source.hurtMarked = true;
-        source.fallDistance = 0.0F;
+    /** COMBATE-3: altura (blocos) dos pes ate o chao logo abaixo, ate {@code max} (sem chao ate la = {@code max}). */
+    public static double heightAboveGround(LivingEntity source, double max) {
+        Vec3 feet = source.position();
+        HitResult hit = source.level().clip(new ClipContext(feet, feet.subtract(0, max, 0),
+                ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, source));
+        return hit.getType() == HitResult.Type.MISS ? max : feet.y - hit.getLocation().y;
     }
 
-    /** COMBATE-3: a queda do {@code leap_slam}: esmaga a area em volta de onde quem ataca caiu (raio pela borda). */
-    private static int leapSlam(ServerLevel level, LivingEntity source, WeaponDef.Special special, float damage,
-            DamageSource damageSource) {
-        source.fallDistance = 0.0F;
+    /**
+     * COMBATE-3: comeco do mergulho do {@code dive_slam} (Falling Thunder do jogador): para baixo a
+     * {@code [combat] diveSlamSpeed}, um pouco para a frente (de cima do kaiju, cai nele).
+     */
+    public static void startDive(LivingEntity source) {
         Vec3 look = source.getLookAngle();
         Vec3 flat = new Vec3(look.x, 0, look.z);
-        Vec3 center = source.position().add(flat.lengthSqr() < 1.0E-4 ? Vec3.ZERO : flat.normalize());
-        return areaHit(level, source, special, damage, damageSource, center);
+        Vec3 forward = flat.lengthSqr() < 1.0E-4 ? Vec3.ZERO : flat.normalize().scale(DIVE_FORWARD);
+        source.setDeltaMovement(forward.x, -ServerConfig.DIVE_SLAM_SPEED.get(), forward.z);
+        source.hurtMarked = true;
+    }
+
+    /** COMBATE-3: o mergulho encostou num inimigo (caixa de quem cai, um pouco para baixo, cruza a dele)? */
+    public static boolean diveTouches(LivingEntity source) {
+        AABB below = source.getBoundingBox().expandTowards(0, -DIVE_TOUCH_BELOW, 0).inflate(DIVE_TOUCH_SIDE, 0,
+                DIVE_TOUCH_SIDE);
+        return !source.level().getEntitiesOfClass(LivingEntity.class, below,
+                target -> target != source && target.isAlive() && !isAlly(source, target)).isEmpty();
+    }
+
+    /** COMBATE-3: o toque do mergulho: esmaga a area em volta de onde quem caiu tocou (raio pela borda). */
+    private static int diveSlam(ServerLevel level, LivingEntity source, WeaponDef.Special special, float damage,
+            DamageSource damageSource) {
+        source.fallDistance = 0.0F;
+        return areaHit(level, source, special, damage, damageSource, source.position());
     }
 
     /**

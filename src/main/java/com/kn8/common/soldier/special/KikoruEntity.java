@@ -4,10 +4,13 @@ package com.kn8.common.soldier.special;
 import java.util.List;
 
 import com.kn8.KN8Constants;
+import com.kn8.core.combat.SpecialGeometry;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * Kikoru Shinomiya, traje normal (0.5.0-D8, modelo do Miguel). Soldado especial como o Hoshina (mesma IA de tecnicas,
@@ -19,6 +22,10 @@ public class KikoruEntity extends HoshinaEntity {
 
     public static final ResourceLocation PROFILE_KIKORU = KN8Constants.id("kikoru");
     public static final String VARIANT_KIKORU = "kikoru";
+    /** COMBATE-3: tecnica que vem de cima (salto real da Kikoru) e folga ate a borda do kaiju ao cair (blocos). */
+    private static final String FALLING_THUNDER = "falling_thunder";
+    private static final double LANDING_GAP = 0.3;
+    private static final double STAND_PROBE = 0.2;
     /** Tecnicas do JSON e reacoes com animacao propria (kikoru.action.<id>). */
     public static final List<String> ANIMATED_KIKORU = List.of("axe_slash", "heavy_swing", "shockwave", "dash_strike",
             "ground_smash", "guard_break", "counter", "dash", "parry",
@@ -57,5 +64,29 @@ public class KikoruEntity extends HoshinaEntity {
     @Override
     protected String counterAnimation() {
         return "counter";
+    }
+
+    /**
+     * COMBATE-3 (Miguel: "o falling thunder deve vir de um ataque de cima"): no chao, a Kikoru salta alto e cai em
+     * cima do kaiju no tick do golpe (mesma fisica de mob do vanilla: o arco tem o tempo do preparo do JSON). No ar
+     * (a No. 4 voando) o golpe ja vem de cima.
+     */
+    @Override
+    protected void onTechniqueStart(String id, LivingEntity target, int firstHitTicks) {
+        // No chao: o onGround do mob demora um tick a aparecer (logo ao nascer, depois de um passo); um bloco solido
+        // logo abaixo dos pes tambem vale.
+        boolean standing = onGround() || !level().noCollision(this, getBoundingBox().move(0, -STAND_PROBE, 0));
+        if (!FALLING_THUNDER.equals(id) || !standing) {
+            return;
+        }
+        Vec3 toTarget = new Vec3(target.getX() - getX(), 0, target.getZ() - getZ());
+        double distance = Math.max(0.0, toTarget.length() - (target.getBbWidth() + getBbWidth()) * 0.5
+                - LANDING_GAP);
+        Vec3 direction = toTarget.lengthSqr() < 1.0E-4 ? Vec3.ZERO : toTarget.normalize();
+        int ticks = Math.max(1, firstHitTicks);
+        double horizontal = SpecialGeometry.leapHorizontalSpeed(distance, ticks);
+        setDeltaMovement(direction.x * horizontal, SpecialGeometry.leapVerticalSpeed(ticks),
+                direction.z * horizontal);
+        hasImpulse = true;
     }
 }

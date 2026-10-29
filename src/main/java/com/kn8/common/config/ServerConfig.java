@@ -421,6 +421,9 @@ public final class ServerConfig {
     public static final ModConfigSpec.IntValue PERFECT_DODGE_STAGGER_TICKS;
     public static final ModConfigSpec.DoubleValue LUNGE_SPEED_PER_BLOCK;
     public static final ModConfigSpec.IntValue FLURRY_HITS;
+    public static final ModConfigSpec.DoubleValue DIVE_SLAM_SPEED;
+    public static final ModConfigSpec.DoubleValue DIVE_SLAM_BONUS_PER_BLOCK;
+    public static final ModConfigSpec.DoubleValue DIVE_SLAM_MAX_BONUS;
     public static final ModConfigSpec.IntValue FLURRY_INTERVAL_TICKS;
     public static final ModConfigSpec.DoubleValue CORE_EXPOSED_MULTIPLIER;
     public static final ModConfigSpec.DoubleValue MAX_LIGHT_HIT_FRACTION;
@@ -1284,6 +1287,13 @@ public final class ServerConfig {
                 + " multiplier).", 4, 1, 12);
         FLURRY_INTERVAL_TICKS = intValue("flurryIntervalTicks", "Ticks between the cuts of a flurry special.", 3, 1,
                 20);
+        // COMBATE-3: Falling Thunder do jogador (vem de cima): mergulho e dano pela altura da queda.
+        DIVE_SLAM_SPEED = doubleValue("diveSlamSpeed", "Downward speed given when a dive slam special starts in the"
+                + " air.", 1.4, 0.1, 4.0);
+        DIVE_SLAM_BONUS_PER_BLOCK = doubleValue("diveSlamBonusPerBlock", "Extra damage of a dive slam per block"
+                + " fallen (0.05 = +5% per block).", 0.05, 0.0, 1.0);
+        DIVE_SLAM_MAX_BONUS = doubleValue("diveSlamMaxBonus", "Maximum extra damage of a dive slam from the fall"
+                + " height (0.75 = +75%).", 0.75, 0.0, 5.0);
         CORE_EXPOSED_MULTIPLIER = doubleValue("coreExposedMultiplier", "Extra core damage multiplier after a heavy"
                 + " hit exposes the core.", 1.5, 1.0, 5.0);
         // 0.5.0 (Miguel): golpe comum nunca mata kaiju de uma vez; so o golpe especial da arma passa disso.

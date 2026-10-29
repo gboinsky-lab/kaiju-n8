@@ -1255,5 +1255,9 @@
   "kn8.weapon.special.rising_thunder": "Nº 4 Rising Thunder",
   "kn8.weapon.special.twin_swallows": "Nº 5 Twin Swallows",
   "kn8.weapon.special.daruma_dropper": "Nº 6 Daruma Dropper",
-  "kn8.weapon.special.daruma_dropper_ten_hit": "Daruma Dropper: Ten Hit"
+  "kn8.weapon.special.daruma_dropper_ten_hit": "Daruma Dropper: Ten Hit",
+  "kn8.hud.combat.denied_needs_height": "Pule de cima: precisa estar no alto, acima do alvo",
+  "kn8.configuration.diveSlamSpeed": "Velocidade do mergulho (Falling Thunder)",
+  "kn8.configuration.diveSlamBonusPerBlock": "Dano extra do mergulho por bloco de queda",
+  "kn8.configuration.diveSlamMaxBonus": "Dano extra máximo do mergulho"
 }

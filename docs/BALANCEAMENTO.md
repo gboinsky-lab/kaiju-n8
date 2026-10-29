@@ -592,11 +592,11 @@ sobe mais rápido. A fuga do No. 9 só dá mérito a quem causou dano nele.
 ×1,6, atravessa os alvos, 20 de stamina, 3 de calor, recarga de 40 ticks [SUPOSIÇÃO].
 
 **Estilo do machado da Kikoru (COMBATE-3)** [SUPOSIÇÃO todos]: jogador (`axe.json`, iguais no `numbers4_axe.json`,
-dano x base 11): Falling Thunder `leap_slam` x2,8, raio 3, 5 blocos de salto, 24 ticks (queda no 12), 30 de stamina,
+dano x base 11): Falling Thunder `dive_slam` x2,8, raio 3, so no ar a 3+ blocos do chao, +5% por bloco caido (ate +75%, `[combat] diveSlam*`), ate 40 ticks caindo, 30 de stamina,
 recarga 140; Water Skimmer corte horizontal x1,8, 8 blocos, recarga 70; Half-Moon area em volta x1,7, raio 3,4,
 recarga 80; Rising Thunder avanco de 2,5 x2,0 com empurrao 1,6, recarga 90; Twin Swallows avanco de 4 com 2 cortes
 x1,15, recarga 80; Daruma Dropper 4 cortes x0,9, recarga 110; Ten Hit (so Numbers 4) 10 cortes x0,6, recarga 220.
-NPC (`kikoru.json`/`kikoru_no4.json`): Falling Thunder [2,4], Water Skimmer [1,4], Half-Moon [1,7], Rising Thunder
+NPC (`kikoru.json`/`kikoru_no4.json`): Falling Thunder [2,4] (Kikoru: salto real com preparo de 30 ticks), Water Skimmer [1,4], Half-Moon [1,7], Rising Thunder
 [1,9] (expoe o nucleo 40 ticks), Twin Swallows [1,1; 1,1], Daruma Dropper [0,8 x3; 1,0], Ten Hit [0,55 x9; 1,2];
 prioridades 3-5 (genericas 1). Duelos da matriz nao remedidos (COMBATE-8).
 

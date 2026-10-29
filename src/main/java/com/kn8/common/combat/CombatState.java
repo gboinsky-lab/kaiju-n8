@@ -41,6 +41,11 @@ public final class CombatState {
     final Map<ResourceLocation, Integer> selectedTechnique = new HashMap<>();
     /** COMBATE-1: tecnica em andamento (o dano sai dela no tick de impacto). */
     WeaponDef.Special currentTechnique;
+    /** COMBATE-3: mergulho do Falling Thunder em andamento (o dano sai no toque), arma, altura do comeco e prazo. */
+    WeaponDef.Special diveTechnique;
+    WeaponDef diveWeapon;
+    double diveStartY;
+    long diveUntilTick = NEVER;
     /** 0.5.0-D: item da mao principal no ultimo tick (saque ao trocar). */
     ResourceLocation lastHeldItem;
     long reloadStartTick = NEVER;

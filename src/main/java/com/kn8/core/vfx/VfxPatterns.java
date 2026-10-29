@@ -19,7 +19,12 @@ import java.util.function.DoubleSupplier;
 public final class VfxPatterns {
 
     public enum Pattern {
-        BURST, RING, LINE, ARC, CONVERGE, RISE;
+        BURST, RING, LINE, ARC, CONVERGE, RISE,
+        /**
+         * COMBATE-3 (Falling Thunder, Miguel: "como se fosse um raio caindo do ceu"): do alto ({@code spread} blocos
+         * acima) ate o ponto, para baixo.
+         */
+        FALL;
 
         /** Nome do JSON (minusculas); desconhecido = burst. */
         public static Pattern of(String name) {
@@ -86,6 +91,10 @@ public final class VfxPatterns {
                 double[] d = sphere(random);
                 return new double[] {d[0] * spread, d[1] * spread, d[2] * spread, -d[0] * speed, -d[1] * speed,
                         -d[2] * speed};
+            }
+            case FALL -> {
+                // Pontos ao longo da coluna que desce do alto ate o ponto (ate 0,3 do eixo).
+                return new double[] {jitter(random, 0.3), spread * (1.0 - t), jitter(random, 0.3), 0.0, -speed, 0.0};
             }
             case RISE -> {
                 double angle = random.getAsDouble() * 2.0 * Math.PI;
