@@ -1,10 +1,19 @@
 {
   "bones": {
-    "head": "kn8:meshes/kaiju_no8/head.obj",
     "body": "kn8:meshes/kaiju_no8/body.obj",
+    "chest": "kn8:meshes/kaiju_no8/chest.obj",
+    "head": "kn8:meshes/kaiju_no8/head.obj",
     "arm_left": "kn8:meshes/kaiju_no8/arm_left.obj",
-    "arm_right": "kn8:meshes/kaiju_no8/arm_right.obj",
+    "forearm_left": "kn8:meshes/kaiju_no8/forearm_left.obj",
+    "hand_left": "kn8:meshes/kaiju_no8/hand_left.obj",
     "leg_left": "kn8:meshes/kaiju_no8/leg_left.obj",
-    "leg_right": "kn8:meshes/kaiju_no8/leg_right.obj"
+    "shin_left": "kn8:meshes/kaiju_no8/shin_left.obj",
+    "foot_left": "kn8:meshes/kaiju_no8/foot_left.obj",
+    "arm_right": "kn8:meshes/kaiju_no8/arm_right.obj",
+    "forearm_right": "kn8:meshes/kaiju_no8/forearm_right.obj",
+    "hand_right": "kn8:meshes/kaiju_no8/hand_right.obj",
+    "leg_right": "kn8:meshes/kaiju_no8/leg_right.obj",
+    "shin_right": "kn8:meshes/kaiju_no8/shin_right.obj",
+    "foot_right": "kn8:meshes/kaiju_no8/foot_right.obj"
   }
 }

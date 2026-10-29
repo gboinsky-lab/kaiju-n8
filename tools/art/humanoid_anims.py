@@ -502,15 +502,289 @@ def kaiju_no9_isao(_profile):
     return out
 
 
-SPECIES = {"isao": isao, "kaiju_no13": kaiju_no13, "kaiju_no9_isao": kaiju_no9_isao}
+# ------------------------------------------------------------------------------------------------ RIG-2
+# Kaiju No. 8 (soldado especial e fantoche da forma do jogador): lutador pesado, guarda baixa e larga de brigao,
+# socos com o corpo inteiro, golpe no chao com os dois punhos e rugido abrindo o peito.
+NO8_GUARD = {"arm_left": [-30, 14, 8], "forearm_left": [-92, 0, 0], "hand_left": [0, 0, 0],
+             "arm_right": [-24, -16, -10], "forearm_right": [-100, 0, 0], "hand_right": [0, 0, 0]}
+NO8_STANCE = {"body": [8, 10, 0], "chest": [6, -8, 0], "head": [-8, -4, 0],
+              "leg_left": [-14, 0, -6], "shin_left": [20, 0, 0], "foot_left": [-6, 0, 0],
+              "leg_right": [10, 0, 6], "shin_right": [16, 0, 0], "foot_right": [-8, 0, 0], "body_pos": [0, -0.9, 0]}
+NO8_READY = {"arm_left": [-12, 6, 4], "forearm_left": [-40, 0, 0], "arm_right": [-10, -6, -4],
+             "forearm_right": [-45, 0, 0]}
+
+
+def fighter_movement(p, stance, guard, ready, out, walk=0.9, run=0.6, heavy=1.0):
+    out[p + "movement.idle"] = breathing(3.0, stance, arms=False, depth=2.0 * heavy)
+    out[p + "movement.walk"] = gait(walk, {"body": [4, 0, 0], "chest": [3, 0, 0]}, stride=26, knee=48, swing=0,
+                                    elbow=0, bob=0.7 * heavy, lean=4, arms=False)
+    out[p + "movement.run"] = gait(run, {"body": [14, 0, 0], "chest": [6, 0, 0], "head": [-12, 0, 0]}, stride=46,
+                                   knee=95, swing=0, elbow=0, bob=1.5 * heavy, lean=14, twist=6, arms=False)
+    arms = {"ready": (ready, 3.0, 2.0), "walk": (guard, 0.45, 2.5), "run": (guard, 0.3, 3.0),
+            "aim": (guard, 2.0, 1.5)}
+    for name, (pose, length, sway) in arms.items():
+        up = offset(pose, {"arm_left": [-sway, 0, 0], "arm_right": [-sway, 0, 0],
+                           "forearm_left": [-sway, 0, 0], "forearm_right": [sway, 0, 0]})
+        out[f"{p}arms.fists_{name}"] = timeline(length, [(0, pose, BACK), (length / 2, up, BACK),
+                                                         (length, pose, BACK)], loop=True)
+
+
+def kaiju_no8(profile):
+    p = "kaiju_no8."
+    guard = merge(NO8_STANCE, NO8_GUARD)
+    out = {}
+    fighter_movement(p, NO8_STANCE, NO8_GUARD, NO8_READY, out, heavy=1.3)
+    hits, end = technique(profile, "rush_combo")
+    out[p + "action.rush_combo"] = combo(guard, hits, end, sides=("right", "left"), power=1.4)
+    (hit,), end = technique(profile, "heavy_punch")
+    impact = punch_pose("right", lunge(guard, 1.1), 1.8)
+    out[p + "action.heavy_punch"] = timeline(end, [
+        (0, guard, BACK), (hit * 0.7, cock_pose("right", lunge(guard, 0.4), 1.8), WIND), (hit, impact, STRIKE),
+        (hit + 0.2, offset(impact, {"chest": [4, -6, 0]}), HOLD), (end, guard, BACK)])
+    (hit,), end = technique(profile, "dash_strike")
+    charge_pose = offset(guard, {"body": [26, 0, 0], "chest": [8, 0, 0], "head": [-20, 0, 0],
+                                 "body_pos": [0, -2.5, 0], "leg_left": [-50, 0, 0], "shin_left": [60, 0, 0],
+                                 "leg_right": [35, 0, 0], "shin_right": [30, 0, 0], "foot_right": [20, 0, 0]})
+    out[p + "action.dash_strike"] = timeline(end, [
+        (0, guard, BACK), (hit * 0.6, cock_pose("right", charge_pose, 1.4), WIND),
+        (hit, punch_pose("right", lunge(guard, 1.3), 1.8), STRIKE),
+        (hit + 0.2, punch_pose("right", lunge(guard, 1.3), 1.5), HOLD), (end, guard, BACK)])
+    (hit,), end = technique(profile, "ground_smash")
+    lift = offset(guard, {"arm_left": [-170, -10, -10], "arm_right": [-170, 10, 10], "forearm_left": [40, 0, 0],
+                          "forearm_right": [45, 0, 0], "chest": [-18, 0, 0], "body": [-6, 0, 0], "head": [-12, 0, 0],
+                          "body_pos": [0, 1.5, 0]})
+    smash = offset(guard, {"arm_left": [-20, 0, 0], "arm_right": [-20, 0, 0], "forearm_left": [60, 0, 0],
+                           "forearm_right": [70, 0, 0], "chest": [20, 0, 0], "body": [8, 0, 0], "head": [-6, 0, 0],
+                           "leg_left": [-40, 0, -10], "shin_left": [70, 0, 0], "leg_right": [-20, 0, 10],
+                           "shin_right": [55, 0, 0], "body_pos": [0, -5.0, -1.5]})
+    out[p + "action.ground_smash"] = timeline(end, [
+        (0, guard, BACK), (hit * 0.65, lift, WIND), (hit, smash, STRIKE), (hit + 0.3, smash, HOLD),
+        (end, guard, BACK)])
+    (hit,), end = technique(profile, "roar")
+    breathe_in = offset(guard, {"chest": [14, 0, 0], "head": [18, 0, 0], "arm_left": [10, 0, 10],
+                                "arm_right": [10, 0, -10], "body_pos": [0, -1.0, 0]})
+    roar = offset(guard, {"chest": [-24, 0, 0], "head": [-34, 0, 0], "arm_left": [40, -10, -75],
+                          "arm_right": [40, 10, 75], "forearm_left": [60, 0, 0], "forearm_right": [70, 0, 0],
+                          "body": [-6, 0, 0]})
+    out[p + "action.roar"] = timeline(end, [(0, guard, BACK), (hit * 0.7, breathe_in, WIND), (hit, roar, STRIKE),
+                                            (end - 0.25, offset(roar, {"head": [4, 0, 0]}), HOLD),
+                                            (end, guard, BACK)])
+    counter_hit = profile["counter"]["strike_delay_ticks"] * TICK
+    counter_end = counter_hit + 8 * TICK
+    upper_wind = offset(guard, {"arm_right": [20, 20, 20], "forearm_right": [-80, 0, 0], "chest": [4, 25, 0],
+                                "body_pos": [0, -2.0, 0], "shin_left": [20, 0, 0], "shin_right": [20, 0, 0]})
+    uppercut = offset(guard, {"arm_right": [-140, 0, -10], "forearm_right": [10, 0, 0], "chest": [-14, -25, 0],
+                              "head": [-10, 10, 0], "body_pos": [0, 0.8, 0]})
+    out[p + "action.counter"] = timeline(counter_end, [
+        (0, guard, BACK), (counter_hit * 0.6, upper_wind, WIND), (counter_hit, uppercut, STRIKE),
+        (counter_hit + 0.1, uppercut, HOLD), (counter_end, guard, BACK)])
+    dash_end = 8 * TICK
+    out[p + "action.dash"] = timeline(dash_end, [(0, guard, BACK), (dash_end * 0.4, charge_pose, WIND),
+                                                 (dash_end, guard, BACK)])
+    parry_end = 8 * TICK
+    block = merge(offset(guard, {"chest": [-4, 0, 0], "head": [10, 0, 0], "body_pos": [0, -0.8, 0.6]}),
+                  {"forearm_left": [-128, 0, 0], "forearm_right": [-128, 0, 0],
+                   "arm_left": [-60, 52, 10], "arm_right": [-60, -52, -10]})
+    out[p + "action.parry"] = timeline(parry_end, [(0, guard, BACK), (0.1, block, WIND), (0.2, block, HOLD),
+                                                   (parry_end, guard, BACK)])
+    # Golpe comum (e o soco leve da forma do jogador: KaijuFormClient toca "attack").
+    jab = 0.25
+    out[p + "action.attack"] = timeline(0.6, [(0, guard, BACK), (jab * 0.5, cock_pose("right", guard, 0.8), WIND),
+                                             (jab, punch_pose("right", guard, 1.2), STRIKE),
+                                             (jab + 0.1, punch_pose("right", guard, 1.0), HOLD), (0.6, guard, BACK)])
+    hurt = offset(guard, {"chest": [-14, 6, 0], "head": [-20, 8, 0], "body_pos": [0, 0, 1.2],
+                          "arm_left": [10, 0, 0], "arm_right": [10, 0, 0]})
+    out[p + "reaction.hurt"] = timeline(0.3, [(0, guard, BACK), (0.08, hurt, WIND), (0.3, guard, BACK)])
+    return out
+
+
+# No. 9 (2 m, frio e calculista) e a forma preta (5 m, agressiva, braco-lamina e espinhos).
+NO9_READY = {"body": [2, 0, 0], "chest": [2, 0, 0], "head": [-2, 0, 0],
+             "arm_left": [-8, 4, 6], "forearm_left": [-28, 0, 0], "arm_right": [-8, -4, -6],
+             "forearm_right": [-28, 0, 0], "leg_left": [-4, 0, -2], "shin_left": [8, 0, 0],
+             "leg_right": [-3, 0, 2], "shin_right": [6, 0, 0], "foot_left": [-4, 0, 0], "foot_right": [-3, 0, 0]}
+NO9_BLACK_READY = {"body": [12, 0, 0], "chest": [10, 0, 0], "head": [-18, 0, 0],
+                   "arm_left": [-20, 10, 8], "forearm_left": [-45, 0, 0], "hand_left": [-10, 0, 0],
+                   "arm_right": [-20, -10, -8], "forearm_right": [-45, 0, 0], "hand_right": [-10, 0, 0],
+                   "leg_left": [-16, 0, -4], "shin_left": [28, 0, 0], "foot_left": [-10, 0, 0],
+                   "leg_right": [-12, 0, 4], "shin_right": [24, 0, 0], "foot_right": [-10, 0, 0],
+                   "body_pos": [0, -1.0, 0]}
+
+
+def no9_common(p, base, out, walk_args):
+    out.update(kaiju_common(p, base, gait(0.8, base, **walk_args)))
+    hit, end = ability("claw")
+    up, down = rake("right", base, 0.9)
+    claw = timeline(end, [(0, base, BACK), (hit * 0.7, up, WIND), (hit, down, STRIKE), (hit + 0.1, down, HOLD),
+                          (end, base, BACK)])
+    out[p + "action.claw"] = claw
+    out[p + "action.attack"] = claw
+    out[p + "action.charge"] = charge(base, "charge")
+    hit, end = ability("finger_gun")
+    aim = point(base, ("right",))
+    out[p + "action.finger_gun"] = timeline(end, [(0, base, BACK), (hit * 0.6, aim, WIND), (hit - 0.05, aim, HOLD),
+                                                  (hit, point(base, ("right",), 22), STRIKE),
+                                                  (hit + 0.12, aim, BACK), (end - 0.1, aim, HOLD), (end, base, BACK)])
+    for name, length in (("absorb", 3.0), ("revive", 3.0)):
+        hold = length - 0.4
+        pull = offset(base, {"body": [12, 0, 0], "chest": [10, 0, 0], "head": [-10, 0, 0],
+                             "arm_left": [-85, 25, -20], "arm_right": [-85, -25, 20], "forearm_left": [-15, 0, 0],
+                             "forearm_right": [-15, 0, 0], "hand_left": [20, 0, 0], "hand_right": [20, 0, 0]})
+        if name == "revive":
+            # Reviver: maos abertas para a carcaca, dedos tremendo, corpo inclinado sobre ela.
+            pull = offset(pull, {"arm_left": [10, 0, 0], "arm_right": [10, 0, 0], "body": [6, 0, 0],
+                                 "hand_left": [-40, 0, 0], "hand_right": [-40, 0, 0]})
+        tug = offset(pull, {"arm_left": [20, 0, 0], "arm_right": [20, 0, 0], "forearm_left": [-50, 0, 0],
+                            "forearm_right": [-50, 0, 0], "body": [-10, 0, 0], "body_pos": [0, 0, 1.5]})
+        frames = [(0, base, BACK), (0.4, pull, WIND)]
+        t = 0.4
+        while t + 0.5 < hold:
+            frames += [(t + 0.25, tug, BACK), (t + 0.5, pull, BACK)]
+            t += 0.5
+        out[p + "action." + name] = timeline(length, frames + [(hold, pull, HOLD), (length, base, BACK)])
+
+
+def kaiju_no9(_profile):
+    p, out = "kaiju_no9.", {}
+    no9_common(p, NO9_READY, out, {"stride": 24, "knee": 44, "swing": 16, "elbow": 30, "bob": 0.6, "lean": 2,
+                                   "twist": 3})
+    return out
+
+
+def kaiju_no9_black(_profile):
+    p, base, out = "kaiju_no9_black.", NO9_BLACK_READY, {}
+    no9_common(p, base, out, {"stride": 30, "knee": 60, "swing": 22, "elbow": 36, "bob": 1.0, "lean": 4,
+                              "twist": 5})
+    hit, end = ability("no9_black_multi_finger_gun")
+    aim = point(base, ("right", "left"))
+    out[p + "action.multi_finger_gun"] = timeline(end, [
+        (0, base, BACK), (hit * 0.6, aim, WIND), (hit, point(base, ("right", "left"), 22), STRIKE),
+        (hit + 0.12, aim, BACK), (end - 0.1, aim, HOLD), (end, base, BACK)])
+    hit, end = ability("no9_black_blade_arm")
+    wind = offset(base, {"arm_right": [-90, 60, 50], "forearm_right": [-20, 0, 0], "chest": [-4, 45, 0],
+                         "body": [0, 18, 0], "head": [0, -20, 0], "body_pos": [0, -1.5, 0]})
+    slash = offset(lunge(base, 0.8), {"arm_right": [-85, -80, -10], "forearm_right": [-5, 0, 0],
+                                      "chest": [10, -50, 0], "body": [6, -20, 0], "head": [0, 24, 0]})
+    out[p + "action.blade_arm"] = timeline(end, [(0, base, BACK), (hit * 0.7, wind, WIND), (hit, slash, STRIKE),
+                                                 (hit + 0.15, slash, HOLD), (end, base, BACK)])
+    hit, end = ability("no9_black_tendril")
+    open_ = offset(base, {"arm_left": [-70, 25, -25], "arm_right": [-70, -25, 25], "forearm_left": [-50, 0, 0],
+                          "forearm_right": [-50, 0, 0], "chest": [-10, 0, 0], "body_pos": [0, 0, 1.0]})
+    thrust = offset(lunge(base, 0.6), {"arm_left": [-95, 5, -5], "arm_right": [-95, -5, 5],
+                                       "forearm_left": [40, 0, 0], "forearm_right": [40, 0, 0],
+                                       "hand_left": [30, 0, 0], "hand_right": [30, 0, 0], "chest": [12, 0, 0]})
+    out[p + "action.tendril"] = timeline(end, [(0, base, BACK), (hit * 0.7, open_, WIND), (hit, thrust, STRIKE),
+                                               (hit + 0.15, thrust, HOLD), (end, base, BACK)])
+    hit, end = ability("no9_black_spike_burst")
+    curl = offset(base, {"body": [20, 0, 0], "chest": [20, 0, 0], "head": [20, 0, 0], "arm_left": [-40, 30, 20],
+                         "arm_right": [-40, -30, -20], "forearm_left": [-90, 0, 0], "forearm_right": [-90, 0, 0],
+                         "shin_left": [30, 0, 0], "shin_right": [30, 0, 0], "body_pos": [0, -3.0, 0]})
+    burst = offset(base, {"body": [-10, 0, 0], "chest": [-18, 0, 0], "head": [-25, 0, 0],
+                          "arm_left": [10, -20, -85], "arm_right": [10, 20, 85], "forearm_left": [40, 0, 0],
+                          "forearm_right": [40, 0, 0], "hand_left": [30, 0, 0], "hand_right": [30, 0, 0],
+                          "body_pos": [0, 1.0, 0]})
+    out[p + "action.spike_burst"] = timeline(end, [(0, base, BACK), (hit * 0.8, curl, WIND), (hit, burst, STRIKE),
+                                                   (hit + 0.25, burst, HOLD), (end, base, BACK)])
+    out[p + "action.leap"] = pounce(base, "no9_black_short_flight", claws=True)
+    return out
+
+
+# ------------------------------------------------------------------------------------------------ passada automatica
+def sample(channel, t):
+    keys = []
+    for k, v in channel.items():
+        if isinstance(v, dict):
+            v = v.get("vector", v.get("post", v.get("pre")))
+        keys.append((float(k), [float(x) for x in v]))
+    keys.sort()
+    if t <= keys[0][0]:
+        return keys[0][1]
+    for (t0, v0), (t1, v1) in zip(keys, keys[1:]):
+        if t <= t1:
+            u = (t - t0) / max(t1 - t0, 1e-9)
+            return [a * (1 - u) + b * u for a, b in zip(v0, v1)]
+    return keys[-1][1]
+
+
+def compact(times, values, tolerance=0.6):
+    """Keyframes lineares a cada 0,05 s sem os pontos que a reta entre os vizinhos ja da."""
+    keep = [0]
+    for i in range(1, len(times) - 1):
+        a, b = keep[-1], i + 1
+        u = (times[i] - times[a]) / (times[b] - times[a])
+        guess = [x * (1 - u) + y * u for x, y in zip(values[a], values[b])]
+        if max(abs(g - v) for g, v in zip(guess, values[i])) > tolerance:
+            keep.append(i)
+    keep.append(len(times) - 1)
+    return {("0.0" if times[i] == 0 else f"{round(times[i], 3)}"): [round(x, 2) for x in values[i]] for i in keep}
+
+
+def articulate(name, anim, unarmed):
+    """Joelho, pe e peito (e cotovelo de quem luta sem arma) tirados do movimento que a animacao ja tem: so entra em
+    osso que a animacao nao anima. Braco de quem segura arma fica como estava (pegada medida das duas maos)."""
+    length = float(anim.get("animation_length", 0) or 0)
+    bones = anim.setdefault("bones", {})
+    if length <= 0:
+        return
+    steps = max(2, int(round(length / 0.05)) + 1)
+    times = [length * i / (steps - 1) for i in range(steps)]
+    loop = bool(anim.get("loop"))
+    moving = loop and (".movement." in name or ".arms." in name)
+    for side in ("left", "right"):
+        leg = bones.get(f"leg_{side}", {}).get("rotation")
+        if leg and f"shin_{side}" not in bones:
+            xs = [sample(leg, t)[0] for t in times]
+            bends, feet = [], []
+            for i, x in enumerate(xs):
+                j, k = max(i - 1, 0), min(i + 1, steps - 1)
+                speed = (xs[k] - xs[j]) / max(times[k] - times[j], 1e-6)
+                if moving:
+                    bend = 0.22 * max(0.0, -speed) + 0.3 * max(0.0, x)
+                else:
+                    bend = 0.7 * max(0.0, -x - 8) + 0.25 * max(0.0, x) + 0.1 * max(0.0, -speed)
+                bend = min(bend, 100.0)
+                bends.append([bend, 0.0, 0.0])
+                feet.append([max(-40.0, min(40.0, -(x + bend) * 0.8)), 0.0, 0.0])
+            bones[f"shin_{side}"] = {"rotation": compact(times, bends)}
+            bones[f"foot_{side}"] = {"rotation": compact(times, feet)}
+        arm = bones.get(f"arm_{side}", {}).get("rotation")
+        if unarmed and arm and f"forearm_{side}" not in bones:
+            values = [[-(15 + 0.25 * max(0.0, -sample(arm, t)[0])), 0.0, 0.0] for t in times]
+            bones[f"forearm_{side}"] = {"rotation": compact(times, values)}
+    body = bones.get("body", {}).get("rotation")
+    legs = [bones.get(f"leg_{s}", {}).get("rotation") for s in ("left", "right")]
+    if "chest" not in bones and (body or all(legs)):
+        values = []
+        for t in times:
+            b = sample(body, t) if body else [0.0, 0.0, 0.0]
+            twist = 0.12 * (sample(legs[0], t)[0] - sample(legs[1], t)[0]) if all(legs) and moving else 0.0
+            values.append([0.25 * b[0], 0.4 * b[1] + twist, 0.2 * b[2]])
+        if any(abs(v) > 0.5 for value in values for v in value):
+            bones["chest"] = {"rotation": compact(times, values)}
+
+
+# Especies so com a passada automatica (animacoes de arma medidas, Blockbench do Miguel, caudas): o que ja existe fica.
+ARTICULATE = {"soldier": False, "hoshina": False, "hoshina_no10": False, "kikoru": False, "kikoru_no4": False,
+              "mina": False, "reno": False, "reno_no6": False, "narumi": False, "kafka": False,
+              "kaiju_no9_fusion": True, "kaiju_no10_small": True, "kaiju_no10_giant": True}
+
+
+SPECIES = {"isao": isao, "kaiju_no13": kaiju_no13, "kaiju_no9_isao": kaiju_no9_isao, "kaiju_no8": kaiju_no8,
+           "kaiju_no9": kaiju_no9, "kaiju_no9_black": kaiju_no9_black}
 
 
 def main():
-    for species in sys.argv[1:] or list(SPECIES):
+    for species in sys.argv[1:] or list(SPECIES) + list(ARTICULATE):
         path = ASSETS / f"{species}.animation.json"
         raw = path.read_bytes().decode("utf-8")
         newline = "\r\n" if "\r\n" in raw else "\n"
         data = json.loads(raw)
+        if species in ARTICULATE:
+            for name, anim in data["animations"].items():
+                articulate(name, anim, ARTICULATE[species])
+            path.write_bytes((json.dumps(data, indent=2) + "\n").replace("\n", newline).encode("utf-8"))
+            print(species, len(data["animations"]), "animacoes com joelho/pe/peito")
+            continue
         profile = None
         if (PROFILES / f"{species}.json").exists():
             profile = json.loads((PROFILES / f"{species}.json").read_text(encoding="utf-8"))
@@ -521,6 +795,10 @@ def main():
                     profile["techniques"].setdefault(name, t)
         generated = SPECIES[species](profile)
         data["animations"].update(generated)
+        # O resto (tiro, recarga, salto tatico) ganha joelho/pe/peito sem mexer nos bracos.
+        for name, anim in data["animations"].items():
+            if name not in generated:
+                articulate(name, anim, False)
         path.write_bytes((json.dumps(data, indent=2) + "\n").replace("\n", newline).encode("utf-8"))
         print(species, len(generated), "animacoes:", ", ".join(sorted(n.split(".", 1)[1] for n in generated)))
 

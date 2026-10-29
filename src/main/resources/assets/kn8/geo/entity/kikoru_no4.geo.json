@@ -26,65 +26,83 @@
         {
           "name": "body",
           "pivot": [
-            -0.0,
-            11.936,
-            0.0
+            0.179,
+            13.31,
+            0.771
           ],
           "parent": "root"
+        },
+        {
+          "name": "chest",
+          "pivot": [
+            0.172,
+            15.958,
+            1.279
+          ],
+          "parent": "body"
         },
         {
           "name": "head",
           "pivot": [
-            -0.0,
-            18.992,
-            -0.487
+            0.153,
+            17.958,
+            1.663
           ],
-          "parent": "body"
+          "parent": "chest"
         },
         {
           "name": "arm_left",
           "pivot": [
-            3.181,
-            18.644,
-            -0.019
+            3.422,
+            17.639,
+            0.814
           ],
-          "parent": "body"
+          "parent": "chest"
         },
         {
-          "name": "arm_right",
+          "name": "forearm_left",
           "pivot": [
-            -2.994,
-            18.458,
-            0.293
+            4.283,
+            14.453,
+            1.078
           ],
-          "parent": "body"
+          "parent": "arm_left"
+        },
+        {
+          "name": "hand_left",
+          "pivot": [
+            5.375,
+            11.64,
+            0.464
+          ],
+          "parent": "forearm_left"
         },
         {
           "name": "leg_left",
           "pivot": [
-            2.589,
-            11.936,
-            -1.122
+            2.123,
+            11.927,
+            0.626
           ],
           "parent": "root"
         },
         {
-          "name": "leg_right",
+          "name": "shin_left",
           "pivot": [
-            -2.744,
-            11.936,
-            -1.22
+            3.053,
+            6.59,
+            -1.344
           ],
-          "parent": "root"
+          "parent": "leg_left"
         },
         {
-          "name": "item_right",
+          "name": "foot_left",
           "pivot": [
-            -4.56,
-            11.586,
-            -0.187
+            3.783,
+            1.075,
+            -0.291
           ],
-          "parent": "arm_right"
+          "parent": "shin_left"
         },
         {
           "name": "item_left",
@@ -93,7 +111,70 @@
             11.179,
             -0.293
           ],
-          "parent": "arm_left"
+          "parent": "hand_left"
+        },
+        {
+          "name": "arm_right",
+          "pivot": [
+            -3.029,
+            17.831,
+            1.42
+          ],
+          "parent": "chest"
+        },
+        {
+          "name": "forearm_right",
+          "pivot": [
+            -3.773,
+            14.517,
+            1.311
+          ],
+          "parent": "arm_right"
+        },
+        {
+          "name": "hand_right",
+          "pivot": [
+            -4.875,
+            11.544,
+            0.76
+          ],
+          "parent": "forearm_right"
+        },
+        {
+          "name": "leg_right",
+          "pivot": [
+            -1.721,
+            11.987,
+            0.674
+          ],
+          "parent": "root"
+        },
+        {
+          "name": "shin_right",
+          "pivot": [
+            -2.752,
+            6.764,
+            -1.263
+          ],
+          "parent": "leg_right"
+        },
+        {
+          "name": "foot_right",
+          "pivot": [
+            -3.861,
+            1.295,
+            -0.508
+          ],
+          "parent": "shin_right"
+        },
+        {
+          "name": "item_right",
+          "pivot": [
+            -4.56,
+            11.586,
+            -0.187
+          ],
+          "parent": "hand_right"
         },
         {
           "name": "wing_left",
@@ -102,7 +183,7 @@
             17.28,
             3.2
           ],
-          "parent": "body"
+          "parent": "chest"
         },
         {
           "name": "wing_right",
@@ -111,7 +192,7 @@
             17.28,
             3.2
           ],
-          "parent": "body"
+          "parent": "chest"
         }
       ]
     }

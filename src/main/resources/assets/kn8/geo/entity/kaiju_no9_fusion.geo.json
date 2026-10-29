@@ -26,101 +26,137 @@
         {
           "name": "body",
           "pivot": [
-            -2.4,
-            33.6,
-            1.6
+            -2.409,
+            39.877,
+            1.079
           ],
           "parent": "root"
         },
         {
-          "name": "head",
+          "name": "chest",
           "pivot": [
-            -1.92,
-            63.2,
-            -0.8
+            -2.398,
+            52.046,
+            1.32
           ],
           "parent": "body"
         },
         {
-          "name": "jaw",
+          "name": "head",
           "pivot": [
-            -1.76,
-            68.0,
-            -7.2
+            -2.383,
+            62.757,
+            1.533
           ],
-          "parent": "head"
-        },
-        {
-          "name": "fin_left",
-          "pivot": [
-            6.24,
-            81.6,
-            -0.8
-          ],
-          "parent": "head"
-        },
-        {
-          "name": "fin_right",
-          "pivot": [
-            -9.76,
-            81.6,
-            -0.8
-          ],
-          "parent": "head"
+          "parent": "chest"
         },
         {
           "name": "arm_left",
           "pivot": [
-            12.0,
-            57.6,
-            3.2
+            12.387,
+            59.365,
+            3.109
           ],
-          "parent": "body"
-        },
-        {
-          "name": "arm_right",
-          "pivot": [
-            -17.6,
-            57.6,
-            3.2
-          ],
-          "parent": "body"
+          "parent": "chest"
         },
         {
           "name": "forearm_left",
           "pivot": [
-            19.2,
-            41.6,
-            1.6
+            14.749,
+            46.087,
+            6.639
           ],
           "parent": "arm_left"
         },
         {
-          "name": "forearm_right",
+          "name": "hand_left",
           "pivot": [
-            -22.4,
-            41.6,
-            1.6
+            21.51,
+            36.073,
+            -0.298
           ],
-          "parent": "arm_right"
+          "parent": "forearm_left"
         },
         {
           "name": "leg_left",
           "pivot": [
-            5.6,
-            30.4,
-            1.6
+            5.18,
+            36.46,
+            0.277
           ],
-          "parent": "body"
+          "parent": "root"
+        },
+        {
+          "name": "shin_left",
+          "pivot": [
+            8.956,
+            22.791,
+            -2.932
+          ],
+          "parent": "leg_left"
+        },
+        {
+          "name": "foot_left",
+          "pivot": [
+            11.506,
+            6.975,
+            2.913
+          ],
+          "parent": "shin_left"
+        },
+        {
+          "name": "arm_right",
+          "pivot": [
+            -17.547,
+            59.364,
+            2.541
+          ],
+          "parent": "chest"
+        },
+        {
+          "name": "forearm_right",
+          "pivot": [
+            -19.909,
+            46.087,
+            4.746
+          ],
+          "parent": "arm_right"
+        },
+        {
+          "name": "hand_right",
+          "pivot": [
+            -26.669,
+            36.073,
+            -1.028
+          ],
+          "parent": "forearm_right"
         },
         {
           "name": "leg_right",
           "pivot": [
-            -10.4,
-            30.4,
-            1.6
+            -9.853,
+            36.46,
+            0.379
           ],
-          "parent": "body"
+          "parent": "root"
+        },
+        {
+          "name": "shin_right",
+          "pivot": [
+            -14.115,
+            22.79,
+            -2.418
+          ],
+          "parent": "leg_right"
+        },
+        {
+          "name": "foot_right",
+          "pivot": [
+            -16.665,
+            6.975,
+            5.582
+          ],
+          "parent": "shin_right"
         },
         {
           "name": "tail_1",
@@ -157,6 +193,33 @@
             43.85
           ],
           "parent": "tail_3"
+        },
+        {
+          "name": "jaw",
+          "pivot": [
+            -1.76,
+            68.0,
+            -7.2
+          ],
+          "parent": "head"
+        },
+        {
+          "name": "fin_left",
+          "pivot": [
+            6.24,
+            81.6,
+            -0.8
+          ],
+          "parent": "head"
+        },
+        {
+          "name": "fin_right",
+          "pivot": [
+            -9.76,
+            81.6,
+            -0.8
+          ],
+          "parent": "head"
         }
       ]
     }

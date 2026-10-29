@@ -1475,3 +1475,19 @@ Numbers 2).
 | 106.5 | No. 13: garra, rajada, soco, agarrão, investida, bote | Garra de cima para baixo cruzando o corpo; agarrão com o braço esticado e a mão fechando; investida curvada com os braços para trás; bote agachando fundo e caindo com as garras à frente |
 | 106.6 | No. 9 com o Isao: Finger Gun, Multi-Finger Gun, tentáculo, Thunder Emperor, Force Blast, rajada, absorção | Braço esticado na mira com o coice no tiro; tentáculo com avanço; absorção puxando em pulsos |
 | 106.7 | Isao x No. 13 com IA | Andam, correm e golpeiam com as animações novas; o dano continua no tick do JSON |
+
+## 107. Ossos articulados dos outros 16 modelos (RIG-2)
+
+Servidor dedicado + 2 clientes. `/summon` de cada um com `{NoAI:1b}` em fila (soldado, Hoshina, Hoshina No. 10, Kikoru,
+Kikoru No. 4, Mina, Reno, Reno No. 6, Narumi, Kafka, Kaiju No. 8, No. 9, forma preta, fusão, No. 10 pequeno e
+gigante) e depois sem `NoAI` com um kaiju por perto.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 107.1 | Olhar a fila de frente e de lado | Sem buraco nas juntas; cauda do Hoshina No. 10, asas da Kikoru No. 4, cauda/mandíbula dos No. 10 e da fusão no lugar; armas nas mãos como antes |
+| 107.2 | Kaiju No. 8 (modelo novo, mais orgânico, espinhos nas costas) | Guarda de brigão; combo, soco pesado, investida com soco, Golpe no Chão com os dois punhos, rugido abrindo o peito, gancho no contra-ataque |
+| 107.3 | Hoshina (modelo novo) | As duas espadas presas nas mãos em todas as posturas e técnicas (a pegada foi recalculada) |
+| 107.4 | Soldados, Kikoru, Mina, Reno, Narumi, Kafka andando, correndo e atacando | Joelhos dobram na passada, pés acompanham, peito gira junto do quadril; braços e armas como antes |
+| 107.5 | No. 9 e forma preta | No. 9 ereto e frio; forma preta curvada; garra, Finger Gun, braço-lâmina, espinhos encolhendo e explodindo, tentáculos, bote |
+| 107.6 | No. 10 pequeno, gigante e fusão andando e golpeando | Joelhos, pés e cotovelos acompanham; cauda como antes |
+| 107.7 | Jogador hospedeiro transformado (B), em 1ª pessoa | O braço do No. 8 novo inteiro (ombro, antebraço e mão) aparece; em 3ª pessoa o fantoche usa o modelo novo |

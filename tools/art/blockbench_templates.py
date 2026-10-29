@@ -415,7 +415,9 @@ def hoshina_grip_points(species="hoshina"):
         item_bone, arm_bone = f"item_{side}", f"arm_{side}"
         pivot = np.array([bones[item_bone]["pivot"][0], bones[item_bone]["pivot"][1], -bones[item_bone]["pivot"][2]])
         shoulder = np.array([bones[arm_bone]["pivot"][0], bones[arm_bone]["pivot"][1], -bones[arm_bone]["pivot"][2]])
-        arm = to_bb_from_internal(read_obj(ASSETS / index[arm_bone].split(":")[1])[0])
+        # RIG-2: o braco virou ombro, antebraco e mao (rig_from_skin.py); o punho e o fim da cadeia inteira.
+        chain = [b for b in (arm_bone, f"forearm_{side}", f"hand_{side}") if b in index]
+        arm = to_bb_from_internal(np.vstack([read_obj(ASSETS / index[b].split(":")[1])[0] for b in chain]))
         direction = (pivot - shoulder) / np.linalg.norm(pivot - shoulder)
         along = (arm - shoulder) @ direction
         fist = arm[along > along.max() - 3].mean(0)

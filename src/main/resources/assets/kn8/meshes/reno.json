@@ -1,10 +1,19 @@
 {
   "bones": {
-    "head": "kn8:meshes/reno/head.obj",
     "body": "kn8:meshes/reno/body.obj",
+    "chest": "kn8:meshes/reno/chest.obj",
+    "head": "kn8:meshes/reno/head.obj",
     "arm_left": "kn8:meshes/reno/arm_left.obj",
-    "arm_right": "kn8:meshes/reno/arm_right.obj",
+    "forearm_left": "kn8:meshes/reno/forearm_left.obj",
+    "hand_left": "kn8:meshes/reno/hand_left.obj",
     "leg_left": "kn8:meshes/reno/leg_left.obj",
-    "leg_right": "kn8:meshes/reno/leg_right.obj"
+    "shin_left": "kn8:meshes/reno/shin_left.obj",
+    "foot_left": "kn8:meshes/reno/foot_left.obj",
+    "arm_right": "kn8:meshes/reno/arm_right.obj",
+    "forearm_right": "kn8:meshes/reno/forearm_right.obj",
+    "hand_right": "kn8:meshes/reno/hand_right.obj",
+    "leg_right": "kn8:meshes/reno/leg_right.obj",
+    "shin_right": "kn8:meshes/reno/shin_right.obj",
+    "foot_right": "kn8:meshes/reno/foot_right.obj"
   }
 }

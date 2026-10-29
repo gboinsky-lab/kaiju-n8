@@ -1,17 +1,23 @@
 {
   "bones": {
-    "body": "kn8:meshes/kaiju_no10_giant/body.obj",
+    "chest": "kn8:meshes/kaiju_no10_giant/chest.obj",
     "head": "kn8:meshes/kaiju_no10_giant/head.obj",
-    "jaw": "kn8:meshes/kaiju_no10_giant/jaw.obj",
     "arm_left": "kn8:meshes/kaiju_no10_giant/arm_left.obj",
-    "arm_right": "kn8:meshes/kaiju_no10_giant/arm_right.obj",
     "forearm_left": "kn8:meshes/kaiju_no10_giant/forearm_left.obj",
-    "forearm_right": "kn8:meshes/kaiju_no10_giant/forearm_right.obj",
+    "hand_left": "kn8:meshes/kaiju_no10_giant/hand_left.obj",
     "leg_left": "kn8:meshes/kaiju_no10_giant/leg_left.obj",
+    "shin_left": "kn8:meshes/kaiju_no10_giant/shin_left.obj",
+    "foot_left": "kn8:meshes/kaiju_no10_giant/foot_left.obj",
+    "arm_right": "kn8:meshes/kaiju_no10_giant/arm_right.obj",
+    "forearm_right": "kn8:meshes/kaiju_no10_giant/forearm_right.obj",
+    "hand_right": "kn8:meshes/kaiju_no10_giant/hand_right.obj",
     "leg_right": "kn8:meshes/kaiju_no10_giant/leg_right.obj",
+    "shin_right": "kn8:meshes/kaiju_no10_giant/shin_right.obj",
+    "foot_right": "kn8:meshes/kaiju_no10_giant/foot_right.obj",
     "tail_1": "kn8:meshes/kaiju_no10_giant/tail_1.obj",
     "tail_2": "kn8:meshes/kaiju_no10_giant/tail_2.obj",
     "tail_3": "kn8:meshes/kaiju_no10_giant/tail_3.obj",
-    "tail_4": "kn8:meshes/kaiju_no10_giant/tail_4.obj"
+    "tail_4": "kn8:meshes/kaiju_no10_giant/tail_4.obj",
+    "jaw": "kn8:meshes/kaiju_no10_giant/jaw.obj"
   }
 }

@@ -1,11 +1,19 @@
 {
   "bones": {
-    "head": "kn8:meshes/kikoru_no4/head.obj",
     "body": "kn8:meshes/kikoru_no4/body.obj",
+    "chest": "kn8:meshes/kikoru_no4/chest.obj",
+    "head": "kn8:meshes/kikoru_no4/head.obj",
     "arm_left": "kn8:meshes/kikoru_no4/arm_left.obj",
-    "arm_right": "kn8:meshes/kikoru_no4/arm_right.obj",
+    "forearm_left": "kn8:meshes/kikoru_no4/forearm_left.obj",
+    "hand_left": "kn8:meshes/kikoru_no4/hand_left.obj",
     "leg_left": "kn8:meshes/kikoru_no4/leg_left.obj",
+    "shin_left": "kn8:meshes/kikoru_no4/shin_left.obj",
+    "foot_left": "kn8:meshes/kikoru_no4/foot_left.obj",
+    "arm_right": "kn8:meshes/kikoru_no4/arm_right.obj",
+    "forearm_right": "kn8:meshes/kikoru_no4/forearm_right.obj",
+    "hand_right": "kn8:meshes/kikoru_no4/hand_right.obj",
     "leg_right": "kn8:meshes/kikoru_no4/leg_right.obj",
+    "shin_right": "kn8:meshes/kikoru_no4/shin_right.obj",
     "wing_left": "kn8:meshes/kikoru_no4/wing_left.obj",
     "wing_right": "kn8:meshes/kikoru_no4/wing_right.obj"
   }

@@ -1,10 +1,19 @@
 {
   "bones": {
-    "head": "kn8:meshes/hoshina/head.obj",
     "body": "kn8:meshes/hoshina/body.obj",
+    "chest": "kn8:meshes/hoshina/chest.obj",
+    "head": "kn8:meshes/hoshina/head.obj",
     "arm_left": "kn8:meshes/hoshina/arm_left.obj",
-    "arm_right": "kn8:meshes/hoshina/arm_right.obj",
+    "forearm_left": "kn8:meshes/hoshina/forearm_left.obj",
+    "hand_left": "kn8:meshes/hoshina/hand_left.obj",
     "leg_left": "kn8:meshes/hoshina/leg_left.obj",
-    "leg_right": "kn8:meshes/hoshina/leg_right.obj"
+    "shin_left": "kn8:meshes/hoshina/shin_left.obj",
+    "foot_left": "kn8:meshes/hoshina/foot_left.obj",
+    "arm_right": "kn8:meshes/hoshina/arm_right.obj",
+    "forearm_right": "kn8:meshes/hoshina/forearm_right.obj",
+    "hand_right": "kn8:meshes/hoshina/hand_right.obj",
+    "leg_right": "kn8:meshes/hoshina/leg_right.obj",
+    "shin_right": "kn8:meshes/hoshina/shin_right.obj",
+    "foot_right": "kn8:meshes/hoshina/foot_right.obj"
   }
 }

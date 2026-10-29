@@ -1,10 +1,19 @@
 {
   "bones": {
-    "head": "kn8:meshes/soldier/head.obj",
     "body": "kn8:meshes/soldier/body.obj",
+    "chest": "kn8:meshes/soldier/chest.obj",
+    "head": "kn8:meshes/soldier/head.obj",
     "arm_left": "kn8:meshes/soldier/arm_left.obj",
-    "arm_right": "kn8:meshes/soldier/arm_right.obj",
+    "forearm_left": "kn8:meshes/soldier/forearm_left.obj",
+    "hand_left": "kn8:meshes/soldier/hand_left.obj",
     "leg_left": "kn8:meshes/soldier/leg_left.obj",
-    "leg_right": "kn8:meshes/soldier/leg_right.obj"
+    "shin_left": "kn8:meshes/soldier/shin_left.obj",
+    "foot_left": "kn8:meshes/soldier/foot_left.obj",
+    "arm_right": "kn8:meshes/soldier/arm_right.obj",
+    "forearm_right": "kn8:meshes/soldier/forearm_right.obj",
+    "hand_right": "kn8:meshes/soldier/hand_right.obj",
+    "leg_right": "kn8:meshes/soldier/leg_right.obj",
+    "shin_right": "kn8:meshes/soldier/shin_right.obj",
+    "foot_right": "kn8:meshes/soldier/foot_right.obj"
   }
 }

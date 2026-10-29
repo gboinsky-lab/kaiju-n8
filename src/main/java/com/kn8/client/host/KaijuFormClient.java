@@ -55,11 +55,12 @@ public final class KaijuFormClient {
 
     private static final ResourceLocation SPECIES = KN8Constants.id("kaiju_no8");
     private static final ResourceLocation TEXTURE = KN8Constants.id("textures/entity/kaiju_no8.png");
-    private static final String ARM_BONE = "arm_right";
+    /** RIG-2: o braco tem tres pecas (ombro, antebraco, mao); em repouso ficam no lugar, desenhadas juntas. */
+    private static final String[] ARM_BONES = {"arm_right", "forearm_right", "hand_right"};
     /** Pivo do osso {@code arm_right} no espaco da GeckoLib (blocos; X ja invertido como a GeckoLib carrega). */
-    private static final float ARM_PIVOT_X = 4.371F / 16.0F;
-    private static final float ARM_PIVOT_Y = 23.428F / 16.0F;
-    private static final float ARM_PIVOT_Z = 1.463F / 16.0F;
+    private static final float ARM_PIVOT_X = 4.35F / 16.0F;
+    private static final float ARM_PIVOT_Y = 24.975F / 16.0F;
+    private static final float ARM_PIVOT_Z = -0.128F / 16.0F;
     /** Braco em primeira pessoa (posicao/escala na tela, conferidas em jogo). */
     private static final float ARM_SCALE = 0.85F;
     private static final int WHITE = 0xFFFFFFFF;
@@ -202,8 +203,8 @@ public final class KaijuFormClient {
         if (event.getHand() != InteractionHand.MAIN_HAND || minecraft.player.isInvisible()) {
             return;
         }
-        float[] mesh = MeshModels.get(SPECIES).map(model -> model.bone(ARM_BONE)).orElse(null);
-        if (mesh == null) {
+        MeshModel model = MeshModels.get(SPECIES).orElse(null);
+        if (model == null || model.bone(ARM_BONES[0]) == null) {
             return;
         }
         PoseStack pose = event.getPoseStack();
@@ -228,7 +229,12 @@ public final class KaijuFormClient {
         pose.scale(-ARM_SCALE, -ARM_SCALE, ARM_SCALE);
         pose.translate(-ARM_PIVOT_X, -ARM_PIVOT_Y, -ARM_PIVOT_Z);
         VertexConsumer buffer = event.getMultiBufferSource().getBuffer(RenderType.entityCutoutNoCull(TEXTURE));
-        drawMesh(pose.last(), buffer, mesh, event.getPackedLight());
+        for (String bone : ARM_BONES) {
+            float[] mesh = model.bone(bone);
+            if (mesh != null) {
+                drawMesh(pose.last(), buffer, mesh, event.getPackedLight());
+            }
+        }
         pose.popPose();
     }
 

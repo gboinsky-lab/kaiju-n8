@@ -1,10 +1,19 @@
 {
   "bones": {
-    "head": "kn8:meshes/kafka/head.obj",
     "body": "kn8:meshes/kafka/body.obj",
+    "chest": "kn8:meshes/kafka/chest.obj",
+    "head": "kn8:meshes/kafka/head.obj",
     "arm_left": "kn8:meshes/kafka/arm_left.obj",
-    "arm_right": "kn8:meshes/kafka/arm_right.obj",
+    "forearm_left": "kn8:meshes/kafka/forearm_left.obj",
+    "hand_left": "kn8:meshes/kafka/hand_left.obj",
     "leg_left": "kn8:meshes/kafka/leg_left.obj",
-    "leg_right": "kn8:meshes/kafka/leg_right.obj"
+    "shin_left": "kn8:meshes/kafka/shin_left.obj",
+    "foot_left": "kn8:meshes/kafka/foot_left.obj",
+    "arm_right": "kn8:meshes/kafka/arm_right.obj",
+    "forearm_right": "kn8:meshes/kafka/forearm_right.obj",
+    "hand_right": "kn8:meshes/kafka/hand_right.obj",
+    "leg_right": "kn8:meshes/kafka/leg_right.obj",
+    "shin_right": "kn8:meshes/kafka/shin_right.obj",
+    "foot_right": "kn8:meshes/kafka/foot_right.obj"
   }
 }
