@@ -204,6 +204,11 @@ def main():
     (ASSETS / f"geo/entity/{NAME}.geo.json").write_text(json.dumps(geo, indent=2) + "\n", encoding="utf-8")
     (ASSETS / f"animations/entity/{NAME}.animation.json").write_text(json.dumps(animations(), indent=2) + "\n",
                                                                     encoding="utf-8")
+    # RIG-1: especie com o rig do Meshy (tools/art/skins/<especie>.npz): cortes e ossos articulados vem do
+    # rig_from_skin.py (as animacoes desta especie saem depois pelo humanoid_anims.py).
+    if (ROOT / "tools/art/skins" / f"{NAME}.npz").exists():
+        import rig_from_skin
+        rig_from_skin.build(NAME)
 
 
 if __name__ == "__main__":

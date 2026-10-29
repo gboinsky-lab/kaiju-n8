@@ -1,12 +1,19 @@
 {
   "bones": {
     "body": "kn8:meshes/kaiju_no9_isao/body.obj",
+    "chest": "kn8:meshes/kaiju_no9_isao/chest.obj",
     "head": "kn8:meshes/kaiju_no9_isao/head.obj",
     "arm_left": "kn8:meshes/kaiju_no9_isao/arm_left.obj",
     "forearm_left": "kn8:meshes/kaiju_no9_isao/forearm_left.obj",
+    "hand_left": "kn8:meshes/kaiju_no9_isao/hand_left.obj",
+    "leg_left": "kn8:meshes/kaiju_no9_isao/leg_left.obj",
+    "shin_left": "kn8:meshes/kaiju_no9_isao/shin_left.obj",
+    "foot_left": "kn8:meshes/kaiju_no9_isao/foot_left.obj",
     "arm_right": "kn8:meshes/kaiju_no9_isao/arm_right.obj",
     "forearm_right": "kn8:meshes/kaiju_no9_isao/forearm_right.obj",
-    "leg_left": "kn8:meshes/kaiju_no9_isao/leg_left.obj",
-    "leg_right": "kn8:meshes/kaiju_no9_isao/leg_right.obj"
+    "hand_right": "kn8:meshes/kaiju_no9_isao/hand_right.obj",
+    "leg_right": "kn8:meshes/kaiju_no9_isao/leg_right.obj",
+    "shin_right": "kn8:meshes/kaiju_no9_isao/shin_right.obj",
+    "foot_right": "kn8:meshes/kaiju_no9_isao/foot_right.obj"
   }
 }

@@ -1458,3 +1458,20 @@ teste tem `spawn-animals=false` (animais somem sozinhos); use zumbis, husks e so
 | 105.5 | `/kn8 host rampage Dev` (ou esperar 2 min) com zumbi, husk e soldado em volta | Rugido, "Você perdeu o controle do corpo!", "SEM CONTROLE"; o Dev não anda nem soca pela própria vontade, a câmera vira sozinha para o alvo e o No. 8 corre até cada um e o derruba (soldados e civis também); jogador em criativo/espectador não é atacado |
 | 105.6 | 15 s depois | Volta humano, "Você recupera o controle. O corpo está exausto.", Lentidão e Fraqueza; B avisa espera de 2 min |
 | 105.7 | Com traje/arma numerada, transformado | O domínio do numerado não sobe; a cauda e as asas não agem |
+
+## 106. Ossos articulados e animações refeitas (RIG-1)
+
+Servidor dedicado + 2 clientes; área plana; `/summon kn8:isao`, `kn8:isao_base`, `kn8:kaiju_no13`, `kn8:kaiju_no9_isao`
+(com `{NoAI:1b}` para disparar golpes por comando: `/execute positioned <x y z> run kn8 anim soldier action <técnica>`
+ou `kn8 anim kaiju action action.<golpe>`; a técnica precisa ser da própria entidade: o Heavy Straight é do Isao sem o
+Numbers 2).
+
+| # | Passo | Esperado |
+|---|---|---|
+| 106.1 | Olhar os três parados, de frente e de lado | Sem buraco nem peça solta nas juntas (cotovelo, punho, joelho, cintura, pescoço); Isao com os braços meio dobrados; No. 13 curvado com joelhos e cotovelos dobrados; No. 9 com o Isao ereto, manoplas meio erguidas |
+| 106.2 | Isao (Numbers 2): Thunder Emperor, Force Blast, Spiral Blast, Barrage Blast, contra-ataque, aparar | Golpes de corpo inteiro: o peito e o quadril giram, o cotovelo dobra no preparo e estica no impacto, a perna da frente dobra no avanço; nada de braço reto "de zumbi"; volta à guarda sem corte seco |
+| 106.3 | Isao sem o Numbers 2: Jab Combo, Elbow Strike, Heavy Straight | Jabs alternados saindo da guarda; cotovelada cruzando o corpo; direto com avanço |
+| 106.4 | Isao andando e correndo (tirar o `NoAI`, dar um alvo) | Joelhos dobram na passada, pés acompanham, guarda de boxeador mantida, peito balança contra o quadril |
+| 106.5 | No. 13: garra, rajada, soco, agarrão, investida, bote | Garra de cima para baixo cruzando o corpo; agarrão com o braço esticado e a mão fechando; investida curvada com os braços para trás; bote agachando fundo e caindo com as garras à frente |
+| 106.6 | No. 9 com o Isao: Finger Gun, Multi-Finger Gun, tentáculo, Thunder Emperor, Force Blast, rajada, absorção | Braço esticado na mira com o coice no tiro; tentáculo com avanço; absorção puxando em pulsos |
+| 106.7 | Isao x No. 13 com IA | Andam, correm e golpeiam com as animações novas; o dano continua no tick do JSON |
