@@ -1,8 +1,13 @@
 #!/usr/bin/env python3
-"""Base de Tachikawa dentro da cidade de Tachikawa (BASES-1, Miguel 2026-10-30: "de preferencia quero elas dentro das
-respectivas cidades"), pelas referencias de bases e cidades do Miguel (docs/referencias_bases/).
+"""Base de Tachikawa grande, no meio da cidade de Tachikawa (BASES-1; BASES-4, Miguel 2026-10-30: "refaca as 2 bases
+elas estao muito pequenas ... fazer a base separada por inteiro (a base tem que ser grande) e depois coloque a base
+dentro de uma area que ficaria bom"), pelas referencias de bases e cidades do Miguel (docs/referencias_bases/).
 
-  tachikawa/base_core      ligada a saida norte da estacao (no lugar do distrito da CIDADES), 81 x 72:
+A base e uma estrutura propria (kn8:tachikawa_base, ~210 x 180): QG no meio, campo de treino a oeste, aerodromo a
+leste, alas duplas e cantos com torre ao sul e a avenida de entrada ao norte; os bairros da cidade nascem em volta
+dela (gen_sites.py).
+
+  tachikawa_base/hq        peca inicial, 81 x 72:
                            estacionamento com carros na frente (painel do manga), QG largo de 7 andares com o volume
                            vertical da entrada e caixas com antenas nas pontas do telhado, torre de comunicacao com
                            radomes e mastro a oeste; dentro: recepcao com os oficiais, refeitorio, enfermaria,
@@ -10,7 +15,8 @@ respectivas cidades"), pelas referencias de bases e cidades do Miguel (docs/refe
                            vestiario com as baias dos trajes, laboratorio, alojamentos, sala de descanso, salas da
                            capita e do vice-capitao, sala de reuniao, heliporto; atras, patio de formatura, area de
                            veiculos e o hangar de teste do traje (estrutura de aco, plataforma, tela de diagnostico)
-  tachikawa/base_training  campo de treino urbano a oeste (romance oficial da 3a Divisao: simula o bairro de uma
+  tachikawa_base/front     avenida de entrada ao norte (81 x 24): portal com o "3", guaritas, bandeiras, mais vagas
+  tachikawa_base/training  campo de treino urbano a oeste (romance oficial da 3a Divisao: simula o bairro de uma
                            estacao, muros altos e grossos, sala de controle que ve a area e abre/fecha as passagens):
                            muro de 3 de espessura, sala de controle no alto com o painel da arena (solta kaiju de
                            treino), alavancas que abrem as duas comportas pelo redstone dentro do muro, estacao,
@@ -101,18 +107,21 @@ def base_core(ruined=False):
     b = Piece((W, H, D), 351, floor="minecraft:polished_andesite")
     x0, z0, x1, z1 = HQ
     roof = FLOORS * FLOOR_H
-    # Entrada pela estacao: rua ate o portao e o acesso ao QG.
+    # Entrada pela avenida (peca da frente): rua ate o portao e o acesso ao QG.
     for z in range(0, 21):
         for x in range(37, 44):
             b.set(x, 0, z, ASPHALT)
     for z in range(0, 21, 3):
         b.set(40, 0, z, "minecraft:white_concrete")
-    b.jigsaw(40, 0, "north", "kn8:city_street", "kn8:city_link", "minecraft:empty", ASPHALT, priority=PRIORITY)
-    # Muro com o portao da frente e o portao oeste (para o campo de treino).
+    b.jigsaw(40, 0, "north", "kn8:base_core_l", "kn8:base_wing_l", "kn8:tachikawa_base/front", ASPHALT)
+    # Muro com os portoes: frente, oeste (campo de treino), leste (aerodromo) e fundos (alas).
     b.wall_line(0, 3, W - 1, 3, gate=(34, 46))
     b.wall_line(0, 3, 0, D - 1, gate=(44, 52))
-    b.wall_line(W - 1, 3, W - 1, D - 1)
-    b.wall_line(0, D - 1, W - 1, D - 1)
+    b.wall_line(W - 1, 3, W - 1, D - 1, gate=(32, 38))
+    b.wall_line(0, D - 1, W - 1, D - 1, gate=(36, 44))
+    for z in range(32, 39):
+        for x in range(73, W):
+            b.set(x, 0, z, ROAD)
     for x in (32, 48):  # guaritas
         b.fill(x - 1, 1, 4, x + 1, 3, 6, "minecraft:white_concrete")
         b.fill(x, 2, 4, x, 2, 6, "minecraft:glass_pane")
@@ -250,7 +259,9 @@ def base_core(ruined=False):
         b.lamp_post(x, z)
     suffix = "_ruined" if ruined else ""
     b.jigsaw(0, 48, "west", "kn8:tachikawa_base_link", "kn8:tachikawa_base_link",
-             f"kn8:tachikawa/base_training{suffix}", ROAD, priority=PRIORITY)
+             f"kn8:tachikawa_base/training{suffix}", ROAD)
+    b.jigsaw(W - 1, 35, "east", "kn8:base_core_l", "kn8:base_wing_l", "kn8:tachikawa_base/airfield", ROAD)
+    b.jigsaw(40, D - 1, "south", "kn8:base_core_l", "kn8:base_wing_l", "kn8:defense_base/large_wings", ROAD)
     if ruined:
         # Raide do No. 10 com os kaiju voadores: ala oeste do QG desabada, fachada leste aberta, alto da torre
         # arrancado, teto do hangar caido, cratera no estacionamento e o muro leste rompido [SUPOSICAO posicoes].
@@ -259,7 +270,7 @@ def base_core(ruined=False):
         drop_officers(b)
         field_post(b, 22, 42)
         emergency_lights(b, [(10, 10), (26, 10), (70, 30)])
-    b.finish(f"tachikawa/base_core{suffix}")
+    b.finish(f"tachikawa_base/hq{suffix}")
 
 
 def flagpole(b, x, z, color, height=8):
@@ -539,8 +550,7 @@ def apartment(b, x0, z0, x1, z1, floors, damaged=False, seed=0):
 def base_training(ruined=False):
     b = Piece((TW, TH, TD), 352, floor="minecraft:polished_andesite")
     wx0, wz0, wx1, wz1 = WALL
-    b.jigsaw(32, 0, "north", "kn8:tachikawa_base_link", "kn8:tachikawa_base_link", "minecraft:empty", ROAD,
-             priority=PRIORITY)
+    b.jigsaw(32, 0, "north", "kn8:tachikawa_base_link", "kn8:tachikawa_base_link", "minecraft:empty", ROAD)
     for z in range(0, wz0):
         for x in range(26, 39):
             b.set(x, 0, z, ROAD)
@@ -627,7 +637,64 @@ def base_training(ruined=False):
         ruin(b, [(4, 4, 30, 5), (32, 4, 51, 5), (12, 9, 13, 5), (34, 6, 46, 4), (55, 10, 36, 4)], 372, glass=0.5,
              keep_box=(10, 0, 3, 54, 11, 7))
         emergency_lights(b, [(9, 30), (32, 42)])
-    b.finish("tachikawa/base_training" + ("_ruined" if ruined else ""))
+    b.finish("tachikawa_base/training" + ("_ruined" if ruined else ""))
 
 
-__all__ = ["base_core", "base_training"]
+def base_front():
+    """Avenida de entrada (BASES-4): a borda da base virada para a cidade. Portal com o "3" da divisao, guaritas,
+    fileiras de bandeiras, vagas dos dois lados, ponto de onibus e arvores [SUPOSICAO desenho]."""
+    b = Piece((81, 20, 24), 353, floor="minecraft:polished_andesite")
+    for z in range(24):
+        for x in range(34, 47):
+            b.set(x, 0, z, ASPHALT)
+        if z % 4 < 2:
+            b.set(40, 0, z, "minecraft:white_concrete")
+    for z in range(24):
+        for x in (33, 47):
+            b.set(x, 0, z, "minecraft:light_gray_concrete")
+    # Vagas dos dois lados da avenida.
+    k = 0
+    for x0 in (3, 50):
+        for z in (4, 13):
+            for x in range(x0, x0 + 28, 3):
+                b.fill(x, 0, z - 1, x, 0, z + 4, "minecraft:white_concrete")
+                if (x + z) % 4:
+                    car(b, x + 1, z, CAR_COLORS[k % len(CAR_COLORS)])
+                    k += 1
+    # Portal com o "3" sobre a avenida e guaritas.
+    b.fill(31, 1, 18, 33, 11, 20, "minecraft:white_concrete")
+    b.fill(47, 1, 18, 49, 11, 20, "minecraft:white_concrete")
+    b.fill(31, 12, 18, 49, 13, 20, ORANGE)
+    b.fill(31, 11, 19, 49, 11, 19, "minecraft:white_concrete")
+    digit = ["#####", "    #", "    #", " ####", "    #", "    #", "#####"]
+    # Placa virada para fora (quem chega da cidade olha para o norte: x cresce para a direita).
+    for r, line in enumerate(digit):
+        for c, ch in enumerate(line):
+            b.set(38 + c, 18 - r, 21, "minecraft:white_concrete" if ch == "#" else "minecraft:orange_concrete")
+    for x in (28, 52):
+        b.fill(x - 1, 1, 19, x + 1, 3, 21, "minecraft:white_concrete")
+        b.fill(x, 2, 19, x, 2, 21, "minecraft:glass_pane")
+        b.fill(x - 1, 4, 19, x + 1, 4, 21, ORANGE)
+        b.entity(x, 1, 18, soldier("rifle", "normal", 0.0))
+    b.fill(34, 1, 22, 46, 1, 22, "minecraft:yellow_concrete")
+    b.fill(35, 1, 22, 45, 1, 22, "minecraft:air")
+    for x in range(36, 46, 2):
+        b.set(x, 1, 21, "minecraft:black_concrete")
+    # Bandeiras ao longo da avenida, arvores e ponto de onibus.
+    for z in (3, 9, 15):
+        flagpole(b, 31, z, "orange", 7)
+        flagpole(b, 48, z, "blue", 7)
+    for z in (2, 10):
+        tree(b, 1, z, 5)
+        tree(b, 79, z, 5)
+    b.fill(56, 1, 21, 62, 1, 21, "minecraft:smooth_stone_slab", {"type": "bottom", "waterlogged": "false"})
+    b.fill(56, 3, 20, 62, 3, 22, "minecraft:light_gray_concrete")
+    b.fill(56, 1, 22, 56, 2, 22, "minecraft:iron_bars")
+    b.fill(62, 1, 22, 62, 2, 22, "minecraft:iron_bars")
+    for x in (2, 78):
+        street_lamp(b, x, 21)
+    b.jigsaw(40, 0, "north", "kn8:base_wing_l", "kn8:base_core_l", "minecraft:empty", ASPHALT)
+    b.finish("tachikawa_base/front")
+
+
+__all__ = ["base_core", "base_training", "base_front"]

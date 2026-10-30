@@ -5,7 +5,7 @@
       "weight": 3,
       "element": {
         "element_type": "minecraft:single_pool_element",
-        "location": "kn8:tachikawa/base_core",
+        "location": "kn8:ariake_base/hq",
         "projection": "rigid",
         "processors": "minecraft:empty"
       }
@@ -14,7 +14,7 @@
       "weight": 1,
       "element": {
         "element_type": "minecraft:single_pool_element",
-        "location": "kn8:tachikawa/base_core_ruined",
+        "location": "kn8:ariake_base/hq_ruined",
         "projection": "rigid",
         "processors": "minecraft:empty"
       }

@@ -1,0 +1,54 @@
+{
+  "biomes": "#kn8:has_structure/ariake_ward",
+  "step": "surface_structures",
+  "spawn_overrides": {},
+  "terrain_adaptation": "beard_thin",
+  "type": "kn8:checked_jigsaw",
+  "layout": "kn8:ariake_ward_layout",
+  "check_radius": 96,
+  "check_step": 12,
+  "max_slope": 40,
+  "slope_radius": 64,
+  "max_water": 0.15,
+  "avoid": [
+    {
+      "structure_set": "minecraft:villages",
+      "chunks": 9
+    },
+    {
+      "structure_set": "minecraft:pillager_outposts",
+      "chunks": 6
+    },
+    {
+      "structure_set": "minecraft:woodland_mansions",
+      "chunks": 8
+    },
+    {
+      "structure_set": "kn8:defense_bases",
+      "chunks": 24,
+      "generated": true
+    },
+    {
+      "structure_set": "kn8:defense_sites",
+      "chunks": 14
+    }
+  ],
+  "anchor": {
+    "structure": "kn8:ariake_base",
+    "structure_set": "kn8:defense_bases",
+    "offsets": [
+      [
+        17,
+        0
+      ],
+      [
+        0,
+        17
+      ],
+      [
+        -17,
+        0
+      ]
+    ]
+  }
+}

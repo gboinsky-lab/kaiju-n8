@@ -167,7 +167,7 @@ def worldgen():
         "terrain_adaptation": "beard_thin", "type": "minecraft:jigsaw", "start_pool": f"kn8:{NAME}/start",
         "size": 1, "start_height": {"absolute": -1}, "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "max_distance_from_center": 80, "use_expansion_hack": False})
-    avoid = json.loads((wg / "structure/tachikawa_base.json").read_text(encoding="utf-8"))["avoid"]
+    avoid = json.loads((wg / "structure/shinagawa_city.json").read_text(encoding="utf-8"))["avoid"]
     dump(wg / f"structure/{NAME}.json", {
         "biomes": f"#kn8:has_structure/{NAME}", "step": "surface_structures", "spawn_overrides": {},
         "terrain_adaptation": "beard_thin", "type": "kn8:checked_jigsaw", "layout": f"kn8:{NAME}_layout",

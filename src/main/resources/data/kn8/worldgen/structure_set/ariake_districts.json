@@ -1,0 +1,18 @@
+{
+  "structures": [
+    {
+      "structure": "kn8:ariake_city",
+      "weight": 1
+    },
+    {
+      "structure": "kn8:ariake_ward",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 1,
+    "separation": 0,
+    "salt": 333871210
+  }
+}

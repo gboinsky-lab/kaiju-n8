@@ -91,7 +91,10 @@ def street_end_piece(prefix="city"):
     b.finish(f"{prefix}/street_end")
 
 
-def plaza_piece():
+def plaza_piece(prefix="city"):
+    """Praca com quatro ruas e oito lotes; BASES-4: tambem e o comeco dos bairros em volta das bases (prefix da
+    cidade)."""
+    pool = f"kn8:{prefix}"
     b = Piece((33, 14, 33), 204, floor="minecraft:polished_andesite")
     for x in range(33):
         for z in range(33):
@@ -117,12 +120,12 @@ def plaza_piece():
     for x, z in ((2, 2), (30, 2), (2, 30), (30, 30), (12, 12), (20, 20)):
         street_lamp(b, x, z)
     for x, z, facing in ((16, 0, "north"), (16, 32, "south"), (0, 16, "west"), (32, 16, "east")):
-        b.jigsaw(x, z, facing, "kn8:city_link", "kn8:city_street", f"{POOL}/streets", "minecraft:polished_andesite")
+        b.jigsaw(x, z, facing, "kn8:city_link", "kn8:city_street", f"{pool}/streets", "minecraft:polished_andesite")
     # Lotes da praca longe das saidas de rua (um lote de 15 em x 4 vai de -3 a 11; a rua comeca em 12).
     for x, z, facing in ((4, 0, "north"), (28, 0, "north"), (4, 32, "south"), (28, 32, "south"),
                          (0, 4, "west"), (0, 28, "west"), (32, 4, "east"), (32, 28, "east")):
-        b.jigsaw(x, z, facing, "kn8:city_slot", "kn8:city_lot", f"{POOL}/lots", "minecraft:polished_andesite")
-    b.finish("city/plaza")
+        b.jigsaw(x, z, facing, "kn8:city_slot", "kn8:city_lot", f"{pool}/lots", "minecraft:polished_andesite")
+    b.finish(f"{prefix}/plaza")
 
 
 # --- lotes (frente para a rua em z = 0; jigsaw no meio da frente) -------------------------------------------------

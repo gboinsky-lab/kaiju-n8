@@ -1,29 +1,6 @@
 {
   "structure": "kn8:ariake_city",
   "division": "first",
-  "garrison": [
-    {
-      "variant": "narumi",
-      "count": 1
-    },
-    {
-      "variant": "isao",
-      "count": 1
-    },
-    {
-      "variant": "rifle",
-      "level": "elite",
-      "count": 2
-    }
-  ],
-  "garrison_at": {
-    "piece": "kn8:ariake/base_core",
-    "pos": [
-      40,
-      13,
-      10
-    ]
-  },
   "invasions": [
     {
       "invasion": "kn8:ariake_assault",

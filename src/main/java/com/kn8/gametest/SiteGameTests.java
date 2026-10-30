@@ -22,6 +22,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureSet;
+import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadStructurePlacement;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.neoforged.neoforge.gametest.GameTestHolder;
@@ -37,13 +38,12 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 public final class SiteGameTests {
 
     private static final List<String> SITES = List.of("ariake_base", "tachikawa_base", "shinagawa_city",
-            "tachikawa_city", "exam_ground", "ariake_city");
+            "tachikawa_city", "exam_ground", "ariake_city", "tachikawa_ward", "ariake_ward");
     /**
-     * BASES-1 e BASES-2: as bases avulsas de Tachikawa e Ariake nao nascem mais sozinhas (ficam dentro das cidades);
-     * so pelo /place.
+     * BASES-4: no conjunto comum so Shinagawa e o Campo do Exame; cada base tem o conjunto dela e as cidades de
+     * Tachikawa e Ariake (com os bairros) nascem em volta da base.
      */
-    private static final List<String> NATURAL = List.of("shinagawa_city", "tachikawa_city", "exam_ground",
-            "ariake_city");
+    private static final List<String> NATURAL = List.of("shinagawa_city", "exam_ground");
     /** Peca e quantos encaixes ela tem. */
     private static final Map<String, Integer> PIECES = Map.ofEntries(Map.entry("ariake_base/core", 4),
             Map.entry("ariake_base/harbor", 1), Map.entry("tachikawa_base/core", 4),
@@ -52,12 +52,13 @@ public final class SiteGameTests {
             Map.entry("shinagawa/lot_ant_ruins", 1), Map.entry("shinagawa/street", 6),
             Map.entry("tachikawa/station", 10), Map.entry("tachikawa/lot_department", 1),
             Map.entry("tachikawa/lot_showa_park", 1), Map.entry("tachikawa/lot_stage_garden", 1),
-            Map.entry("tachikawa/street", 6), Map.entry("tachikawa/base_core", 2),
-            Map.entry("tachikawa/base_training", 1), Map.entry("shinagawa/district", 1),
-            Map.entry("ariake/station", 10), Map.entry("ariake/base_core", 2), Map.entry("ariake/harbor", 1),
+            Map.entry("tachikawa/street", 6), Map.entry("tachikawa/plaza", 12), Map.entry("shinagawa/district", 1),
+            Map.entry("tachikawa_base/hq", 4), Map.entry("tachikawa_base/hq_ruined", 4),
+            Map.entry("tachikawa_base/training", 1), Map.entry("tachikawa_base/training_ruined", 1),
+            Map.entry("tachikawa_base/front", 1), Map.entry("ariake/station", 10), Map.entry("ariake/plaza", 12),
             Map.entry("ariake/street", 6), Map.entry("ariake/lot_bigsight", 1), Map.entry("ariake/lot_warehouse", 1),
-            Map.entry("ariake/lot_canal", 1), Map.entry("tachikawa/base_core_ruined", 2),
-            Map.entry("tachikawa/base_training_ruined", 1), Map.entry("ariake/base_core_ruined", 2));
+            Map.entry("ariake/lot_canal", 1), Map.entry("ariake_base/hq", 4), Map.entry("ariake_base/hq_ruined", 4),
+            Map.entry("ariake_base/front", 1));
 
     private SiteGameTests() {
     }
@@ -86,9 +87,9 @@ public final class SiteGameTests {
      */
     @GameTest(template = "empty_3x3")
     public static void citiesHaveTheDefenseForceDistrict(GameTestHelper helper) {
-        // BASES-1: em Tachikawa o distrito virou a base inteira (QG da obra e o campo de treino urbano).
-        Map<String, String> districts = Map.of("tachikawa", "tachikawa/base_core", "shinagawa", "shinagawa/district");
-        for (String city : List.of("tachikawa", "shinagawa")) {
+        // BASES-4: Tachikawa e Ariake tem a base grande ao lado (testes abaixo); o distrito ficou em Shinagawa.
+        Map<String, String> districts = Map.of("shinagawa", "shinagawa/district");
+        for (String city : districts.keySet()) {
             StructureTemplate station = helper.getLevel().getStructureManager()
                     .get(KN8Constants.id(city + "/station")).orElseThrow();
             long toDistrict = station.filterBlocks(BlockPos.ZERO, new StructurePlaceSettings(), Blocks.JIGSAW).stream()
@@ -110,49 +111,72 @@ public final class SiteGameTests {
     }
 
     /**
-     * BASES-1: a Base de Tachikawa dentro da cidade tem o campo de treino urbano com o painel da arena na sala de
-     * controle no alto e as comportas de ferro ligadas as alavancas pelo redstone; a guarnicao da base (Mina,
-     * Hoshina, Kikoru, Reno) e as invasoes dela passaram para a cidade.
+     * BASES-4: a Base de Tachikawa e uma estrutura grande propria (QG, entrada ao norte, campo de treino urbano a
+     * oeste, aerodromo a leste e alas ao sul) com o painel da arena na sala de controle no alto e as comportas de
+     * ferro ligadas as alavancas pelo redstone; a guarnicao (Mina, Hoshina, Kikoru, Reno) e o raide ficam na base; a
+     * cidade e os bairros nascem em volta dela (anchor) e a estacao nao leva mais a base.
      */
     @GameTest(template = "empty_3x3")
-    public static void tachikawaBaseIsInsideTheCity(GameTestHelper helper) {
-        StructureTemplate training = helper.getLevel().getStructureManager()
-                .get(KN8Constants.id("tachikawa/base_training")).orElseThrow();
-        var consoles = training.filterBlocks(BlockPos.ZERO, new StructurePlaceSettings(),
-                KN8Blocks.TRAINING_CONSOLE.get());
+    public static void tachikawaBaseIsBigAndSurroundedByTheCity(GameTestHelper helper) {
+        var manager = helper.getLevel().getStructureManager();
+        var settings = new StructurePlaceSettings();
+        StructureTemplate hq = manager.get(KN8Constants.id("tachikawa_base/hq")).orElseThrow();
+        for (String pool : List.of("kn8:tachikawa_base/front", "kn8:tachikawa_base/training",
+                "kn8:tachikawa_base/airfield", "kn8:defense_base/large_wings")) {
+            helper.assertTrue(hq.filterBlocks(BlockPos.ZERO, settings, Blocks.JIGSAW).stream()
+                    .anyMatch(info -> info.nbt() != null && info.nbt().getString("pool").equals(pool)),
+                    "O QG de Tachikawa deveria levar a " + pool);
+        }
+        StructureTemplate training = manager.get(KN8Constants.id("tachikawa_base/training")).orElseThrow();
+        var consoles = training.filterBlocks(BlockPos.ZERO, settings, KN8Blocks.TRAINING_CONSOLE.get());
         helper.assertTrue(consoles.size() == 1 && consoles.get(0).pos().getY() > 5,
                 "O painel deveria ficar na sala de controle no alto");
-        helper.assertTrue(training.filterBlocks(BlockPos.ZERO, new StructurePlaceSettings(), Blocks.IRON_DOOR)
-                .size() == 4, "Duas comportas de ferro (porta de duas metades)");
-        helper.assertTrue(training.filterBlocks(BlockPos.ZERO, new StructurePlaceSettings(), Blocks.LEVER).size() == 2,
+        helper.assertTrue(training.filterBlocks(BlockPos.ZERO, settings, Blocks.IRON_DOOR).size() == 4,
+                "Duas comportas de ferro (porta de duas metades)");
+        helper.assertTrue(training.filterBlocks(BlockPos.ZERO, settings, Blocks.LEVER).size() == 2,
                 "Duas alavancas na sala de controle");
-        helper.assertTrue(training.filterBlocks(BlockPos.ZERO, new StructurePlaceSettings(), Blocks.REDSTONE_WIRE)
-                .size() == 20, "Redstone das duas comportas (10 cada)");
-        SiteDef city = KN8Data.SITE.server().get(KN8Constants.id("tachikawa_city"));
-        helper.assertTrue(city.garrison().size() == 4 && city.garrisonAt().isPresent()
-                && city.garrisonAt().get().piece().equals(KN8Constants.id("tachikawa/base_core")),
-                "A guarnicao de Tachikawa deveria aparecer dentro da base da cidade");
-        helper.assertTrue(city.invasions().stream().anyMatch(entry -> entry.invasion()
-                .equals(KN8Constants.id("tachikawa_raid"))), "O raide a base (No. 10) deveria cair na cidade");
+        helper.assertTrue(training.filterBlocks(BlockPos.ZERO, settings, Blocks.REDSTONE_WIRE).size() == 20,
+                "Redstone das duas comportas (10 cada)");
+        SiteDef base = KN8Data.SITE.server().get(KN8Constants.id("tachikawa_base"));
+        helper.assertTrue(base.garrison().size() == 4 && base.garrisonAt().isPresent()
+                && base.garrisonAt().get().piece().equals(KN8Constants.id("tachikawa_base/hq")),
+                "A guarnicao de Tachikawa deveria aparecer no patio da base");
+        helper.assertTrue(base.invasions().stream().anyMatch(entry -> entry.invasion()
+                .equals(KN8Constants.id("tachikawa_raid"))), "O raide (No. 10) deveria cair na base");
+        StructureTemplate station = manager.get(KN8Constants.id("tachikawa/station")).orElseThrow();
+        helper.assertTrue(station.filterBlocks(BlockPos.ZERO, settings, Blocks.JIGSAW).stream()
+                .noneMatch(info -> info.nbt() != null && info.nbt().getString("pool").contains("base")),
+                "A estacao nao leva mais a base");
+        assertAnchored(helper, "tachikawa_city", "tachikawa_base");
+        assertAnchored(helper, "tachikawa_ward", "tachikawa_base");
         helper.succeed();
     }
 
+    private static void assertAnchored(GameTestHelper helper, String district, String base) {
+        Structure structure = helper.getLevel().registryAccess().registryOrThrow(Registries.STRUCTURE)
+                .get(KN8Constants.id(district));
+        helper.assertTrue(structure instanceof CheckedJigsawStructure checked && checked.anchor()
+                .map(anchor -> anchor.structure().is(KN8Constants.id(base))).orElse(false),
+                district + " deveria nascer em volta da " + base);
+    }
+
     /**
-     * BASES-2: a Base Maritima de Ariake dentro da cidade costeira de Ariake (Koto). A estacao leva a base; a base
-     * tem o chao no y 12 com o subsolo embaixo (abrigo e treino de trajes), a ala de seguranca com a sala de
-     * contencao e o porto a oeste com agua; a guarnicao (Narumi, Isao) e as invasoes de Ariake ficam na cidade.
+     * BASES-2 e BASES-4: a Base Maritima de Ariake e uma estrutura grande propria com o chao no y 12 e o subsolo
+     * embaixo (abrigo e treino de trajes), a ala de seguranca com a sala de contencao, o porto grande a oeste com agua
+     * e as alas; a guarnicao (Narumi, Isao) fica na base e a cidade costeira e os bairros em volta.
      */
     @GameTest(template = "empty_3x3")
-    public static void ariakeBaseIsInsideTheCoastalCity(GameTestHelper helper) {
+    public static void ariakeBaseIsBigAndSurroundedByTheCity(GameTestHelper helper) {
         var manager = helper.getLevel().getStructureManager();
-        StructureTemplate station = manager.get(KN8Constants.id("ariake/station")).orElseThrow();
-        helper.assertTrue(station.filterBlocks(BlockPos.ZERO, new StructurePlaceSettings(), Blocks.JIGSAW).stream()
-                .anyMatch(info -> info.nbt() != null && info.nbt().getString("pool").equals("kn8:ariake/base_core")),
-                "A estacao de Ariake deveria levar a base");
-        StructureTemplate core = manager.get(KN8Constants.id("ariake/base_core")).orElseThrow();
         var settings = new StructurePlaceSettings();
-        int ground = core.filterBlocks(BlockPos.ZERO, settings, Blocks.JIGSAW).get(0).pos().getY();
+        StructureTemplate core = manager.get(KN8Constants.id("ariake_base/hq")).orElseThrow();
+        var jigsaws = core.filterBlocks(BlockPos.ZERO, settings, Blocks.JIGSAW);
+        int ground = jigsaws.get(0).pos().getY();
         helper.assertTrue(ground == 12, "O chao da base deveria ficar no y 12 (subsolo embaixo), esta no " + ground);
+        for (String pool : List.of("kn8:ariake_base/front", "kn8:ariake_base/harbor", "kn8:defense_base/large_wings")) {
+            helper.assertTrue(jigsaws.stream().anyMatch(info -> info.nbt() != null
+                    && info.nbt().getString("pool").equals(pool)), "O QG de Ariake deveria levar a " + pool);
+        }
         helper.assertTrue(core.filterBlocks(BlockPos.ZERO, settings, KN8Blocks.WEIGHT_RACK.get()).stream()
                 .allMatch(info -> info.pos().getY() < ground), "O treino de trajes deveria ficar no subsolo");
         helper.assertTrue(core.filterBlocks(BlockPos.ZERO, settings, Blocks.REINFORCED_DEEPSLATE).size() > 500,
@@ -164,16 +188,15 @@ public final class SiteGameTests {
             helper.assertTrue(!core.filterBlocks(BlockPos.ZERO, settings, block).isEmpty(),
                     "A base de Ariake deveria ter " + block);
         }
-        StructureTemplate harbor = manager.get(KN8Constants.id("ariake/harbor")).orElseThrow();
-        helper.assertTrue(harbor.filterBlocks(BlockPos.ZERO, settings, Blocks.WATER).size() > 1000,
-                "O porto de Ariake deveria ter a bacia com agua");
-        SiteDef city = KN8Data.SITE.server().get(KN8Constants.id("ariake_city"));
-        helper.assertTrue(city != null && city.division().equals("first") && city.fieldMissions()
-                && city.garrison().stream().anyMatch(member -> member.variant().equals("narumi"))
-                && city.garrisonAt().map(at -> at.piece().equals(KN8Constants.id("ariake/base_core"))).orElse(false),
-                "Ariake: Primeira Divisao, missoes na cidade e a guarnicao dentro da base");
-        helper.assertTrue(city.invasions().stream().anyMatch(entry -> entry.invasion()
-                .equals(KN8Constants.id("ariake_assault"))), "O ataque a Ariake deveria cair na cidade");
+        SiteDef base = KN8Data.SITE.server().get(KN8Constants.id("ariake_base"));
+        helper.assertTrue(base != null && base.division().equals("first")
+                && base.garrison().stream().anyMatch(member -> member.variant().equals("narumi"))
+                && base.garrisonAt().map(at -> at.piece().equals(KN8Constants.id("ariake_base/hq"))).orElse(false),
+                "Ariake: Primeira Divisao e a guarnicao dentro da base");
+        helper.assertTrue(KN8Data.SITE.server().get(KN8Constants.id("ariake_city")).fieldMissions(),
+                "Ariake: missoes de campo na cidade");
+        assertAnchored(helper, "ariake_city", "ariake_base");
+        assertAnchored(helper, "ariake_ward", "ariake_base");
         helper.succeed();
     }
 
@@ -187,13 +210,13 @@ public final class SiteGameTests {
         var manager = helper.getLevel().getStructureManager();
         var settings = new StructurePlaceSettings();
         var pools = helper.getLevel().registryAccess().registryOrThrow(Registries.TEMPLATE_POOL);
-        for (String city : List.of("tachikawa", "ariake")) {
-            var pool = pools.get(KN8Constants.id(city + "/base_core"));
+        for (String city : List.of("tachikawa_base", "ariake_base")) {
+            var pool = pools.get(KN8Constants.id(city + "/hq"));
             helper.assertTrue(pool != null && pool.getShuffledTemplates(helper.getLevel().getRandom()).stream()
-                    .anyMatch(element -> element.toString().contains("base_core_ruined")),
+                    .anyMatch(element -> element.toString().contains("hq_ruined")),
                     city + ": o pool da base deveria ter a versao atingida");
-            StructureTemplate intact = manager.get(KN8Constants.id(city + "/base_core")).orElseThrow();
-            StructureTemplate ruined = manager.get(KN8Constants.id(city + "/base_core_ruined")).orElseThrow();
+            StructureTemplate intact = manager.get(KN8Constants.id(city + "/hq")).orElseThrow();
+            StructureTemplate ruined = manager.get(KN8Constants.id(city + "/hq_ruined")).orElseThrow();
             int glassIntact = glass(intact, settings);
             int glassRuined = glass(ruined, settings);
             helper.assertTrue(glassRuined < glassIntact * 0.6, city + ": vidros quebrados (" + glassRuined + " de "
@@ -210,7 +233,7 @@ public final class SiteGameTests {
                         city + ": o posto de campanha deveria ter " + block);
             }
         }
-        StructureTemplate training = manager.get(KN8Constants.id("tachikawa/base_training_ruined")).orElseThrow();
+        StructureTemplate training = manager.get(KN8Constants.id("tachikawa_base/training_ruined")).orElseThrow();
         helper.assertTrue(training.filterBlocks(BlockPos.ZERO, settings, Blocks.REDSTONE_WIRE).size() == 20
                 && training.filterBlocks(BlockPos.ZERO, settings, KN8Blocks.TRAINING_CONSOLE.get()).size() == 1,
                 "O campo de treino atingido continua com o painel e as comportas");
@@ -238,9 +261,16 @@ public final class SiteGameTests {
                 .get(KN8Constants.id("defense_sites"));
         helper.assertTrue(set != null && set.structures().size() == NATURAL.size(),
                 "kn8:defense_sites deveria ter os " + NATURAL.size() + " locais que nascem sozinhos");
-        for (String alone : List.of("tachikawa_base", "ariake_base")) {
-            helper.assertTrue(set.structures().stream().noneMatch(entry -> entry.structure()
-                    .is(KN8Constants.id(alone))), "A base avulsa " + alone + " nao nasce mais sozinha");
+        var sets = helper.getLevel().registryAccess().registryOrThrow(Registries.STRUCTURE_SET);
+        StructureSet bases = sets.get(KN8Constants.id("defense_bases"));
+        for (String base : List.of("tachikawa_base", "ariake_base")) {
+            helper.assertTrue(bases != null && bases.structures().stream().anyMatch(entry -> entry.structure()
+                    .is(KN8Constants.id(base))), "A base " + base + " deveria nascer no conjunto das bases");
+        }
+        for (String city : List.of("tachikawa", "ariake")) {
+            StructureSet districts = sets.get(KN8Constants.id(city + "_districts"));
+            helper.assertTrue(districts != null && districts.structures().size() == 2,
+                    city + ": a cidade e os bairros deveriam estar no conjunto dos bairros");
         }
         helper.assertTrue(helper.getLevel().registryAccess().registryOrThrow(Registries.STRUCTURE_SET)
                 .get(KN8Constants.id("defense_base_large")) == null, "A base grande generica nao nasce mais sozinha");
@@ -252,20 +282,66 @@ public final class SiteGameTests {
     public static void siteAcceptsFlatDryGround(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Structure site = level.registryAccess().registryOrThrow(Registries.STRUCTURE)
-                .get(KN8Constants.id("tachikawa_city"));
+                .get(KN8Constants.id("shinagawa_city"));
         ChunkGenerator generator = level.getChunkSource().getGenerator();
-        // Alguns chunks seguidos: um ou outro cai perto de um ponto candidato de vila (planicie) e e recusado.
+        // Alguns chunks seguidos: parte cai perto de um ponto candidato de vila (planicie) ou de uma base (no plano toda
+        // base cabe) e e recusada.
         ChunkPos base = new ChunkPos(helper.absolutePos(BlockPos.ZERO).offset(4096, 0, 4096));
         boolean accepted = false;
-        for (int i = 0; i < 12 && !accepted && site != null; i++) {
+        for (int i = 0; i < 40 && !accepted && site != null; i++) {
             ChunkPos chunk = new ChunkPos(base.x + i * 23, base.z - i * 17);
             Structure.GenerationContext context = new Structure.GenerationContext(level.registryAccess(), generator,
                     generator.getBiomeSource(), level.getChunkSource().randomState(), level.getStructureManager(),
                     level.getSeed(), chunk, level, biome -> true);
             accepted = site.findValidGenerationPoint(context).isPresent();
         }
-        helper.assertTrue(accepted, "No chao plano e seco a cidade de Tachikawa deveria passar na checagem do terreno");
+        helper.assertTrue(accepted, "No chao plano e seco a cidade de Shinagawa deveria passar na checagem do terreno");
         helper.succeed();
+    }
+
+    /**
+     * BASES-4: a cidade de Tachikawa so pode nascer a 17 chunks ao norte do ponto candidato do conjunto das bases
+     * (nunca um chunk ao lado nem no proprio chunk da base); e onde a ancora aceita, a base de Tachikawa cabe. No mundo
+     * plano toda base cabe e a cidade sempre tem outra base a menos de 24 chunks: a cidade inteira so em jogo.
+     */
+    @GameTest(template = "empty_3x3", timeoutTicks = 600)
+    public static void districtsOnlyAroundTheirBase(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        var structures = level.registryAccess().registryOrThrow(Registries.STRUCTURE);
+        Structure city = structures.get(KN8Constants.id("tachikawa_city"));
+        StructureSet set = level.registryAccess().registryOrThrow(Registries.STRUCTURE_SET)
+                .get(KN8Constants.id("defense_bases"));
+        helper.assertTrue(city instanceof CheckedJigsawStructure && set != null
+                && set.placement() instanceof RandomSpreadStructurePlacement, "Cidade e conjunto das bases");
+        RandomSpreadStructurePlacement spread = (RandomSpreadStructurePlacement) set.placement();
+        var anchor = ((CheckedJigsawStructure) city).anchor().orElseThrow();
+        helper.assertTrue(anchor.set().is(KN8Constants.id("defense_bases"))
+                && anchor.structure().is(KN8Constants.id("tachikawa_base")), "A cidade se ancora na base de Tachikawa");
+        ChunkPos start = new ChunkPos(helper.absolutePos(BlockPos.ZERO).offset(8192, 0, 8192));
+        for (int i = 0; i < 8; i++) {
+            ChunkPos at = spread.getPotentialStructureChunk(level.getSeed(), start.x + i * spread.spacing(),
+                    start.z);
+            helper.assertTrue(CheckedJigsawStructure.anchorCandidateHere(context(level, new ChunkPos(at.x,
+                    at.z - 17)), anchor), "17 chunks ao norte do ponto da base e lugar da cidade");
+            helper.assertTrue(!CheckedJigsawStructure.anchorCandidateHere(context(level, new ChunkPos(at.x + 1,
+                    at.z - 17)), anchor), "Um chunk ao lado nao e");
+            helper.assertTrue(!CheckedJigsawStructure.anchorCandidateHere(context(level, at), anchor),
+                    "O chunk da base nao e");
+            ChunkPos north = new ChunkPos(at.x, at.z - 17);
+            if (CheckedJigsawStructure.anchoredHere(context(level, north), anchor)) {
+                helper.assertTrue(structures.get(KN8Constants.id("tachikawa_base"))
+                        .findValidGenerationPoint(context(level, at)).isPresent(),
+                        "Com a ancora aceita a base deveria caber");
+            }
+        }
+        helper.succeed();
+    }
+
+    private static Structure.GenerationContext context(ServerLevel level, ChunkPos chunk) {
+        ChunkGenerator generator = level.getChunkSource().getGenerator();
+        return new Structure.GenerationContext(level.registryAccess(), generator, generator.getBiomeSource(),
+                level.getChunkSource().randomState(), level.getStructureManager(), level.getSeed(), chunk, level,
+                biome -> true);
     }
 
     @GameTest(template = "empty_3x3")

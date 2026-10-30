@@ -1,37 +1,7 @@
 {
   "structure": "kn8:tachikawa_city",
   "division": "third",
-  "garrison": [
-    {
-      "variant": "mina",
-      "count": 1
-    },
-    {
-      "variant": "hoshina",
-      "count": 1
-    },
-    {
-      "variant": "kikoru",
-      "count": 1
-    },
-    {
-      "variant": "reno",
-      "count": 1
-    }
-  ],
-  "garrison_at": {
-    "piece": "kn8:tachikawa/base_core",
-    "pos": [
-      20,
-      1,
-      47
-    ]
-  },
   "invasions": [
-    {
-      "invasion": "kn8:tachikawa_raid",
-      "weight": 3
-    },
     {
       "invasion": "kn8:tachikawa_city_raid",
       "weight": 2

@@ -7,13 +7,13 @@
   "layout": "kn8:tachikawa_base_layout",
   "check_radius": 112,
   "check_step": 12,
-  "max_slope": 14,
+  "max_slope": 18,
   "slope_radius": 64,
-  "max_water": 0.05,
+  "max_water": 0.08,
   "avoid": [
     {
       "structure_set": "minecraft:villages",
-      "chunks": 14
+      "chunks": 11
     },
     {
       "structure_set": "minecraft:pillager_outposts",
@@ -39,5 +39,12 @@
       "structure_set": "minecraft:jungle_temples",
       "chunks": 6
     }
-  ]
+  ],
+  "companion": {
+    "structure": "kn8:tachikawa_city",
+    "offset": [
+      0,
+      -17
+    ]
+  }
 }

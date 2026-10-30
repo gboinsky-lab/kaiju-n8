@@ -1733,3 +1733,25 @@ Num mundo novo, cada base de Tachikawa e de Ariake tem 1 chance em 4 de nascer a
 | 124.3 | Campo de treino atingido | Muro rompido dos lados e no fundo, predios atingidos; sala de controle, alavancas, comportas e painel funcionando |
 | 124.4 | Ariake atingida | QG de vidro com os andares de cima abertos, ala de seguranca rompida (contencao exposta), cratera na praca, tenda de campanha |
 | 124.5 | Primeira visita a uma cidade com a base atingida | A guarnicao aparece na praca/patio do mesmo jeito |
+
+## 125. BASES-4: bases grandes separadas, dentro de uma area da cidade
+
+As duas bases viraram estruturas grandes proprias (~210 x 180): QG no meio, entrada ao norte, campo de treino urbano
+(Tachikawa) ou porto grande (Ariake) de um lado, aerodromo (Tachikawa) e alas com torres da base generica nos outros.
+A cidade da base nasce sempre 17 chunks (272 blocos) ao norte; ate tres bairros (praca com lotes da cidade) nos outros
+lados, quando o terreno deixa. Num mundo novo (semente 8008: Ariake a ~5,7 mil blocos, Tachikawa a ~12,5 mil):
+`/locate structure kn8:ariake_base` (ou `#kn8:defense_sites`), depois, de la, `/locate structure kn8:ariake_city` e
+`kn8:ariake_ward` (os bairros so pelo id, ate 1.600 blocos). Para ver so o desenho: `/place structure
+kn8:tachikawa_base_layout` (mundo plano) ou `kn8:ariake_base_layout` (mundo normal: 12 de subsolo). Imagem:
+`docs/img/bases4_bases_grandes_e_cidades.jpg`. As provas, a guarnicao e as invasoes continuam como antes.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 125.1 | Chegar na Base de Tachikawa | Nome do local "Base de Tachikawa"; avenida de entrada com o portal do "3", guaritas e estacionamento; QG da obra (BASES-1) no meio; campo de treino urbano de um lado e aerodromo do outro; alas com torres atras |
+| 125.2 | Patio do QG na primeira visita | Mina, Hoshina, Kikoru e Reno aparecem no patio |
+| 125.3 | Andar 272 blocos para o norte da base | Cidade de Tachikawa (estacao com o monotrilho, ruas e lotes) com o nome "Tachikawa"; a estacao nao leva mais a base |
+| 125.4 | Outros lados da base | Bairros "Bairros de Tachikawa" (praca com fonte, ruas e lotes) onde o terreno deixou; nunca colados em outra base |
+| 125.5 | Base Maritima de Ariake | Entrada com o arco azul do "1", fontes e cerejeiras; praca do circulo, QG de vidro, porto grande com agua de um lado, alas nos outros; Narumi e Isao na praca |
+| 125.6 | Norte de Ariake | Cidade costeira de Ariake (monotrilho, via expressa, Big Sight) |
+| 125.7 | Base atingida (1 em 4) | QG atingido com a tenda de campanha; em Tachikawa o campo de treino atingido |
+| 125.8 | Missao de campo dentro da cidade ou dos bairros | Kaiju/pontos dentro das ruas (como na CIDADES) |

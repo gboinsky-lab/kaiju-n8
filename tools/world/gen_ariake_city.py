@@ -1,19 +1,20 @@
 #!/usr/bin/env python3
-"""Cidade costeira de Ariake (Koto, Toquio) com a Base Maritima de Ariake dentro (BASES-2, Miguel 2026-10-30:
-"de preferencia quero elas dentro das respectivas cidades"; escolha 2: cidade costeira nova para Ariake), pelas
-referencias de bases e cidades do Miguel (docs/referencias_bases/).
+"""Cidade costeira de Ariake (Koto, Toquio) e a Base Maritima de Ariake (BASES-2, Miguel 2026-10-30: escolha 2,
+cidade costeira nova para Ariake; BASES-4, Miguel 2026-10-30: "a base tem que ser grande", separada por inteiro e
+dentro de uma area da cidade), pelas referencias de bases e cidades do Miguel (docs/referencias_bases/).
 
-  ariake/station         peca inicial 41 x 41: estacao de monotrilho sem condutor elevada (como a Yurikamome) e a via
-                         expressa elevada da baia por cima das ruas (vias elevadas da vista do manga), praca
-  ariake/base_core       saida norte da estacao, 81 x 72, chao no y 12 (subsolo embaixo): praca cerimonial com o
+  ariake/station         peca inicial 41 x 41 da cidade: estacao de monotrilho sem condutor elevada (como a
+                         Yurikamome) e a via expressa elevada da baia por cima das ruas, praca
+  ariake_base/hq         peca inicial da base, 81 x 72, chao no y 12 (subsolo embaixo): praca cerimonial com o
                          circulo e as bandeiras das seis divisoes, QG de vidro de 7 andares (centro de operacoes
                          nacional, sala do conselho de madeira escura com mesa oval longa, gabinete do Diretor-Geral),
                          laboratorio de armas numeradas, ala de seguranca (antecamara, corredor com guarda, sala de
                          contencao de paineis de metal com a cadeira de contencao, sala de observacao), catapulta
                          eletromagnetica, salao das divisoes, patio de logistica e passarela elevada; no subsolo o
-                         abrigo fortificado e o treino de trajes e armas numeradas [SUPOSICAO: a obra so cita]
-  ariake/harbor          porto a oeste (81 x 44): cais, bacia com agua, guindastes, conteineres, armazens, pier,
-                         barco de patrulha e farol
+                         abrigo fortificado e o treino de trajes e armas numeradas [SUPOSICAO: a obra so cita].
+                         Encaixes: entrada ao norte (ariake_base/front), porto grande a oeste (ariake_base/harbor,
+                         111 x 50, do gen_sites.py) e alas grandes da base generica a leste e ao sul
+  ariake_base/front      entrada 81 x 24: arco azul com o "1", fontes, cerejeiras, bandeiras e guaritas
   ariake/lot_*           Tokyo Big Sight (piramides invertidas), armazem de logistica e parque com canal
 
 As ruas sao as da cidade comum (gen_city.street_piece("ariake")). O que a obra nao mostra e adaptacao [SUPOSICAO].
@@ -30,8 +31,6 @@ LANTERN = {"hanging": "true", "waterlogged": "false"}
 LADDER = {"waterlogged": "false"}
 SLAB_TOP = {"type": "top", "waterlogged": "false"}
 DIVISION_COLORS = ["blue", "green", "orange", "red", "purple", "yellow"]
-PRIORITY = 10
-LINK = "kn8:ariake_base_link"
 
 
 class Lifted(Piece):
@@ -127,7 +126,7 @@ def ariake_station():
         b.set(x, 1, 13, "minecraft:spruce_stairs", stairs("north"))
     for x, z in ((1, 39), (39, 39), (1, 26), (39, 26)):
         street_lamp(b, x, z)
-    station_jigsaws(b, "ariake", district="kn8:ariake/base_core")
+    station_jigsaws(b, "ariake", district="kn8:ariake/streets")
     b.finish("ariake/station")
 
 
@@ -177,12 +176,18 @@ def base_core(ruined=False):
     for z in range(0, 20):
         for x in range(37, 44):
             b.set(x, 0, z, ROAD)
-    b.jigsaw(40, 0, "north", "kn8:city_street", "kn8:city_link", "minecraft:empty", ROAD, y=LIFT, priority=PRIORITY)
-    # Muro: portao da frente e portao oeste (para o porto).
+    b.jigsaw(40, 0, "north", "kn8:base_core_l", "kn8:base_wing_l", "kn8:ariake_base/front", ROAD, y=LIFT)
+    # Muro: portoes da frente, oeste (porto), leste e fundos (alas da base).
     b.wall_line(0, 3, W - 1, 3, gate=(34, 46))
     b.wall_line(0, 3, 0, D - 1, gate=(31, 41))
-    b.wall_line(W - 1, 3, W - 1, D - 1)
-    b.wall_line(0, D - 1, W - 1, D - 1)
+    b.wall_line(W - 1, 3, W - 1, D - 1, gate=(47, 51))
+    b.wall_line(0, D - 1, W - 1, D - 1, gate=(37, 43))
+    for z in range(47, 52):
+        for x in range(76, W):
+            b.set(x, 0, z, ROAD)
+    for z in range(63, D):
+        for x in range(37, 44):
+            b.set(x, 0, z, ROAD)
     for x in (32, 48):
         b.fill(x - 1, 1, 4, x + 1, 3, 6, "minecraft:white_concrete")
         b.fill(x - 1, 4, 4, x + 1, 4, 6, "minecraft:blue_concrete")
@@ -192,7 +197,10 @@ def base_core(ruined=False):
     for z in range(31, 42):
         for x in range(1, 6):
             b.set(x, 0, z, ROAD)
-    b.jigsaw(0, 36, "west", LINK, LINK, "kn8:ariake/harbor", ROAD, y=LIFT, priority=PRIORITY)
+    b.jigsaw(0, 36, "west", "kn8:base_core_l", "kn8:base_wing_l", "kn8:ariake_base/harbor", ROAD, y=LIFT)
+    b.jigsaw(W - 1, 49, "east", "kn8:base_core_l", "kn8:base_wing_l", "kn8:defense_base/large_wings", ROAD, y=LIFT)
+    b.jigsaw(40, D - 1, "south", "kn8:base_core_l", "kn8:base_wing_l", "kn8:defense_base/large_wings", ROAD,
+             y=LIFT)
 
     # Praca cerimonial com o circulo (vista do manga) e as bandeiras das seis divisoes.
     cx, cz = 40, 12
@@ -237,7 +245,7 @@ def base_core(ruined=False):
         drop_officers(b)
         field_post(b, 56, 5, ground=g)
         emergency_lights(b, [(20, 10), (36, 10), (74, 30)], ground=g)
-    b.finish("ariake/base_core" + ("_ruined" if ruined else ""))
+    b.finish("ariake_base/hq" + ("_ruined" if ruined else ""))
 
 
 def hq_rooms(b, x0, z0, x1, z1):
@@ -413,7 +421,7 @@ def logistics(b):
         b.fill(x, 1, 56, x + 3, 2, 62, "minecraft:green_terracotta")
         b.fill(x, 1, 56, x + 3, 2, 57, "minecraft:gray_concrete")
         b.fill(x, 3, 56, x + 3, 3, 57, "minecraft:light_blue_stained_glass")
-    for k, x in enumerate((26, 34)):
+    for k, x in enumerate((18, 26)):
         b.fill(x, 1, 66, x + 6, 3, 68, f"minecraft:{['red', 'blue'][k]}_concrete")
     for x in (30, 36, 42, 48):
         b.entity(x, 1, 50, soldier("rifle", "normal", 180.0))
@@ -485,103 +493,48 @@ def underground(b):
     ladder(b, 52, -9, 2, 40, "north")  # o corredor foi aberto por cima da escada de mao
 
 
-# --- porto ----------------------------------------------------------------------------------------------------------
-
-def ariake_harbor():
-    """Porto 81 x 44 a oeste da base: encaixa pelo jigsaw em (40, 3, 0); cais no nivel da base, bacia abaixo."""
-    deck = 3
-    b = Piece((81, 30, 44), 363, floor="minecraft:stone")
-    rnd = b.random
-    basin = (6, 18, 74, 38)
-    for x in range(81):
-        for z in range(44):
-            if basin[0] <= x <= basin[2] and basin[1] <= z <= basin[3]:
-                b.set(x, 0, z, "minecraft:gravel" if rnd.random() < 0.6 else "minecraft:mud")
-                b.fill(x, 1, z, x, deck, z, "minecraft:water", {"level": "0"})
-            else:
-                b.fill(x, 0, z, x, deck - 1, z, "minecraft:stone")
-                tile = "gray_concrete" if (x // 4 + z // 4) % 2 else "light_gray_concrete"
-                b.set(x, deck, z, f"minecraft:{tile}")
-    for x in range(basin[0] - 1, basin[2] + 2):
-        b.set(x, deck, basin[1] - 1, "minecraft:yellow_concrete" if x % 2 else "minecraft:black_concrete")
-    for z in range(0, 3):
+def base_front():
+    """Avenida cerimonial de entrada (BASES-4), a borda da base virada para a cidade: arco azul com o "1" da Primeira
+    Divisao, cerejeiras, fontes, bandeiras das seis divisoes e guaritas [SUPOSICAO desenho]."""
+    b = Piece((81, 22, 24), 364, floor="minecraft:smooth_stone")
+    for z in range(24):
         for x in range(81):
-            b.set(x, deck, z, ROAD)
-    for z in range(3, basin[1] - 1):
-        for x in range(38, 43):
-            b.set(x, deck, z, ROAD)
-    for x in range(81):
-        for z in (39, 40, 41, 42, 43):
-            b.fill(x, 0, z, x, deck + 1, z, "minecraft:stone_bricks" if z < 43 else "minecraft:polished_andesite")
-    for z in range(44):
-        for x in (0, 80):
-            b.fill(x, deck + 1, z, x, deck + 2, z, "minecraft:light_gray_concrete")
-            b.set(x, deck + 3, z, "minecraft:iron_bars")
-    for c in (20, 60):  # guindastes
-        for x in (c - 3, c + 3):
-            for z in (6, 15):
-                b.fill(x, deck + 1, z, x, deck + 16, z, "minecraft:orange_concrete")
-            b.fill(x, deck + 17, 3, x, deck + 17, 30, "minecraft:orange_concrete")
-        for z in (3, 6, 15, 30):
-            b.fill(c - 3, deck + 17, z, c + 3, deck + 17, z, "minecraft:orange_concrete")
-        b.fill(c - 1, deck + 15, 24, c + 1, deck + 16, 26, "minecraft:white_concrete")
-        b.fill(c, deck + 9, 28, c, deck + 16, 28, "minecraft:chain", {"axis": "y", "waterlogged": "false"})
-        b.fill(c - 1, deck + 6, 27, c + 1, deck + 8, 29, "minecraft:blue_concrete")
-    colors = ["red", "blue", "green", "orange", "gray", "cyan"]
-    for row, z in enumerate((4, 10)):
-        for k, x in enumerate((2, 10, 64, 72)):
-            for level in range(1 + (k + row) % 2 + 1):
-                y = deck + 1 + level * 3
-                b.fill(x, y, z, x + 6, y + 2, z + 2, f"minecraft:{colors[(k * 3 + row + level) % 6]}_concrete")
-    for wx0 in (24, 45):  # armazens
-        b.fill(wx0, deck + 1, 4, wx0 + 11, deck + 8, 14, "minecraft:light_gray_concrete")
-        b.fill(wx0 + 1, deck + 1, 5, wx0 + 10, deck + 7, 13, "minecraft:air")
-        b.fill(wx0 + 3, deck + 1, 14, wx0 + 8, deck + 4, 14, "minecraft:air")
-        b.fill(wx0, deck + 8, 4, wx0 + 11, deck + 8, 14, "minecraft:gray_concrete")
-        for x in range(wx0, wx0 + 12):
-            b.set(x, deck + 7, 14, "minecraft:blue_concrete")
-        b.chest(wx0 + 2, deck + 1, 12, "kn8:chests/ariake_harbor", "east")
-        b.set(wx0 + 5, deck + 7, 9, "minecraft:lantern", LANTERN)
-    b.fill(38, deck, 18, 41, deck, 32, "minecraft:spruce_planks")  # pier
-    for z in (20, 26, 32):
-        for x in (38, 41):
-            b.fill(x, 0, z, x, deck - 1, z, "minecraft:spruce_log", {"axis": "y"})
-            b.set(x, deck + 1, z, "minecraft:spruce_fence")
-    # Barco de patrulha (casco, conves, ponte, mastro e canhao na proa).
-    bz, half = 28, 3
-    for x in range(10, 33):
-        w = half if x < 28 else max(0, half - (x - 28))
-        for z in range(bz - w, bz + w + 1):
-            b.fill(x, 1, z, x, deck - 1, z, "minecraft:gray_concrete")
-            b.set(x, deck, z, "minecraft:smooth_stone")
-        for z in (bz - w - 1, bz + w + 1):
-            b.set(x, deck, z, "minecraft:gray_concrete")
-            b.set(x, deck + 1, z, "minecraft:iron_bars")
-    b.fill(15, deck + 1, bz - 2, 21, deck + 4, bz + 2, "minecraft:white_concrete")
-    b.fill(16, deck + 3, bz - 2, 20, deck + 3, bz + 2, "minecraft:glass")
-    b.fill(16, deck + 1, bz - 1, 20, deck + 2, bz + 1, "minecraft:air")
-    b.fill(18, deck + 5, bz, 18, deck + 9, bz, "minecraft:iron_bars")
-    b.set(25, deck + 1, bz, "minecraft:black_concrete")
-    b.fill(26, deck + 2, bz, 28, deck + 2, bz, "minecraft:iron_bars")
-    b.chest(17, deck + 1, bz, "kn8:chests/ariake_harbor", "north")
-    # Farol no quebra-mar.
-    fx, fz = 72, 39
-    for y in range(deck + 2, deck + 18):
-        color = "red" if (y // 3) % 2 else "white"
-        b.fill(fx, y, fz, fx + 4, y, fz + 4, f"minecraft:{color}_concrete")
-        b.fill(fx + 1, y, fz + 1, fx + 3, y, fz + 3, "minecraft:air")
-    b.fill(fx - 1, deck + 18, fz - 1, fx + 5, deck + 18, fz + 5, "minecraft:smooth_stone")
-    b.fill(fx + 2, deck + 2, fz + 1, fx + 2, deck + 18, fz + 1, "minecraft:ladder", dict(LADDER, facing="south"))
-    b.fill(fx, deck + 2, fz + 2, fx, deck + 3, fz + 2, "minecraft:air")
-    b.fill(fx, deck + 19, fz, fx + 4, deck + 21, fz + 4, "minecraft:glass")
-    b.fill(fx + 1, deck + 19, fz + 1, fx + 3, deck + 21, fz + 3, "minecraft:air")
-    b.set(fx + 2, deck + 20, fz + 2, "minecraft:sea_lantern")
-    b.fill(fx, deck + 22, fz, fx + 4, deck + 22, fz + 4, "minecraft:red_concrete")
-    b.entity(40, deck + 1, 31, soldier("rifle", "high", 180.0))
-    b.entity(22, deck + 1, 16, soldier("rifle", "normal", 180.0))
-    b.entity(58, deck + 1, 16, soldier("pistol", "normal", 180.0))
-    b.jigsaw(40, 0, "north", LINK, LINK, "minecraft:empty", ROAD, y=deck, priority=PRIORITY)
-    b.finish("ariake/harbor")
+            if (x + z) % 6 == 0:
+                b.set(x, 0, z, "minecraft:light_gray_concrete")
+        for x in range(35, 46):
+            b.set(x, 0, z, "minecraft:white_concrete" if (x + z) % 2 else "minecraft:smooth_quartz")
+    # Arco azul com o "1".
+    b.fill(32, 1, 18, 34, 12, 20, "minecraft:white_concrete")
+    b.fill(46, 1, 18, 48, 12, 20, "minecraft:white_concrete")
+    b.fill(32, 13, 18, 48, 15, 20, "minecraft:blue_concrete")
+    digit = ["  #  ", " ##  ", "# #  ", "  #  ", "  #  ", "  #  ", "#####"]
+    for r, line in enumerate(digit):
+        for c, ch in enumerate(line):
+            b.set(38 + c, 20 - r, 21, "minecraft:white_concrete" if ch == "#" else "minecraft:blue_concrete")
+    # Fontes e cerejeiras dos dois lados.
+    for cx in (18, 62):
+        b.fill(cx - 4, 0, 8, cx + 4, 1, 14, "minecraft:quartz_bricks")
+        b.fill(cx - 3, 1, 9, cx + 3, 1, 13, "minecraft:water", {"level": "0"})
+        b.fill(cx, 1, 11, cx, 3, 11, "minecraft:quartz_pillar", {"axis": "y"})
+        b.set(cx, 4, 11, "minecraft:water", {"level": "0"})
+    for x, z in ((4, 4), (28, 4), (52, 4), (76, 4), (4, 18), (76, 18)):
+        b.fill(x, 1, z, x, 4, z, "minecraft:cherry_log", {"axis": "y"})
+        for dx in range(-2, 3):
+            for dz in range(-2, 3):
+                for dy in (4, 5):
+                    if abs(dx) + abs(dz) < 4 and b.get(x + dx, dy, z + dz) is None:
+                        b.set(x + dx, dy, z + dz, "minecraft:cherry_leaves",
+                              {"distance": "1", "persistent": "true", "waterlogged": "false"})
+    for k, color in enumerate(DIVISION_COLORS):
+        flagpole(b, (10, 22, 26, 52, 56, 68)[k], 20, color, 8)
+    for x in (27, 53):
+        b.fill(x - 1, 1, 20, x + 1, 3, 22, "minecraft:white_concrete")
+        b.fill(x - 1, 4, 20, x + 1, 4, 22, "minecraft:blue_concrete")
+        b.entity(x, 1, 19, soldier("rifle", "high", 0.0))
+    for x in (2, 78):
+        street_lamp(b, x, 22)
+    b.jigsaw(40, 0, "north", "kn8:base_wing_l", "kn8:base_core_l", "minecraft:empty", "minecraft:smooth_stone")
+    b.finish("ariake_base/front")
 
 
 # --- lotes ----------------------------------------------------------------------------------------------------------
@@ -650,5 +603,5 @@ ARIAKE_LOTS = [("ariake/lot_bigsight", 2), ("ariake/lot_warehouse", 4), ("ariake
                ("city/lot_parking", 2)]
 
 
-__all__ = ["ariake_station", "base_core", "ariake_harbor", "lot_bigsight", "lot_warehouse", "lot_canal",
+__all__ = ["ariake_station", "base_core", "base_front", "lot_bigsight", "lot_warehouse", "lot_canal",
            "ARIAKE_LOTS"]

@@ -38,6 +38,11 @@
     {
       "structure_set": "minecraft:jungle_temples",
       "chunks": 6
+    },
+    {
+      "structure_set": "kn8:defense_bases",
+      "chunks": 14,
+      "generated": true
     }
   ]
 }

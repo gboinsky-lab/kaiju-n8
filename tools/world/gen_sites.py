@@ -21,8 +21,11 @@
                          da JR ligados pela passarela, praca com fonte
   tachikawa/lot_*        loja de departamentos (GRANDUO), Parque Showa Kinen (flores, lago) e sala de shows (Stage
                          Garden)
-  tachikawa/base_*       BASES-1: Base de Tachikawa dentro da cidade, saida norte da estacao (gen_tachikawa_base.py);
-                         a tachikawa_base avulsa nao nasce mais sozinha (so /place)
+  tachikawa_base/hq      BASES-4 (Miguel, 2026-10-30: "a base tem que ser grande", separada por inteiro, dentro de
+  ariake_base/hq         uma area da cidade): as duas bases viraram estruturas grandes proprias (gen_tachikawa_base.py,
+                         gen_ariake_city.py), cada uma no seu conjunto; a cidade e tres bairros (praca da cidade com
+                         os lotes dela) nascem em volta, ancorados na base (kn8:checked_jigsaw com anchor).
+                         Os centros antigos da C3 (ariake_base/core, tachikawa_base/core) ficam so para o /place.
 
 As ruas das duas cidades sao as da cidade comum com pools proprios (gen_city.street_piece(prefix)); os lotes de cada
 cidade misturam os proprios com os da cidade comum. Onde nascem: worldgen no fim (kn8:checked_jigsaw: longe de vilas,
@@ -31,11 +34,11 @@ Uso: python3 tools/world/gen_sites.py
 Ver no jogo: /place structure kn8:ariake_base_layout (sem conferir o terreno) ou kn8:ariake_base (conferindo).
 """
 from gen_base import Piece, ROAD, element, stairs
-from gen_city import ASPHALT, SIDEWALK, crossing_piece, floors_building, lot, street_end_piece, street_piece, \
-    street_pools, tree, street_lamp
+from gen_city import ASPHALT, SIDEWALK, crossing_piece, floors_building, lot, plaza_piece, street_end_piece, \
+    street_piece, street_pools, tree, street_lamp
 from gen_structures import DATA, dump, item, officer, soldier
 import gen_ariake_city as ariake
-from gen_tachikawa_base import base_core, base_training
+from gen_tachikawa_base import base_core, base_front, base_training
 from nbt_io import Float
 
 BASE_POOL = "kn8:defense_base"
@@ -546,7 +549,8 @@ def tachikawa_airfield():
 def station_jigsaws(b, prefix, size=41, final="minecraft:polished_andesite", district=None):
     """Saidas de rua no meio dos lados e oito lotes perto dos cantos (como a praca da cidade comum). CIDADES: a
     saida norte leva ao distrito da Forca de Defesa (um por cidade, sempre); os lotes do lado norte saem para ele
-    caber. BASES-1: em Tachikawa a saida norte leva a base inteira (district = pool da base), posta antes das ruas."""
+    caber. BASES-4: Tachikawa e Ariake nao tem distrito (a base e uma estrutura propria ao lado); a saida norte e rua
+    (district = pool das ruas)."""
     mid, last = size // 2, size - 1
     b.jigsaw(mid, 0, "north", "kn8:city_link", "kn8:city_street", district or f"kn8:{prefix}/district", final,
              priority=10, selection=10)
@@ -934,7 +938,7 @@ def tachikawa_station():
     b.fill(32, 5, 7, 33, 5, 8, "minecraft:yellow_concrete")
     for x, z in ((1, 1), (39, 1), (1, 39), (39, 39)):
         street_lamp(b, x, z)
-    station_jigsaws(b, "tachikawa", district="kn8:tachikawa/base_core")
+    station_jigsaws(b, "tachikawa", district="kn8:tachikawa/streets")
     b.finish("tachikawa/station")
 
 
@@ -1011,6 +1015,10 @@ def tachikawa_stage_garden():
 BASE_BIOMES = ["minecraft:plains", "minecraft:sunflower_plains", "minecraft:savanna", "minecraft:meadow",
                "minecraft:snowy_plains"]
 CITY_BIOMES = BASE_BIOMES + ["minecraft:forest", "minecraft:birch_forest"]
+# BASES-4: os bairros em volta da base aceitam qualquer terra (a base escolheu o lugar; Toquio tem rio e praia).
+DISTRICT_BIOMES = CITY_BIOMES + ["#minecraft:is_forest", "#minecraft:is_taiga", "#minecraft:is_savanna",
+                                 "#minecraft:is_river", "#minecraft:is_beach", "minecraft:desert",
+                                 "minecraft:stony_shore", "minecraft:swamp", "minecraft:cherry_grove"]
 SHINAGAWA_LOTS = [("shinagawa/lot_tower", 4), ("shinagawa/lot_arcade", 3), ("shinagawa/lot_ant_ruins", 2),
                   ("city/lot_office", 3), ("city/lot_apartment_tall", 2), ("city/lot_apartment", 2),
                   ("city/lot_konbini", 2), ("city/lot_ramen", 2), ("city/lot_parking", 1)]
@@ -1018,28 +1026,63 @@ TACHIKAWA_LOTS = [("tachikawa/lot_department", 3), ("tachikawa/lot_showa_park", 
                   ("tachikawa/lot_stage_garden", 1), ("city/lot_apartment", 4), ("city/lot_apartment_tall", 2),
                   ("city/lot_house", 3), ("city/lot_konbini", 2), ("city/lot_ramen", 2), ("city/lot_park", 1),
                   ("city/lot_parking", 1)]
-# (estrutura, pool inicial, size, distancia max., biomas, raio da checagem, desnivel max.)
+# (estrutura, pool inicial, size, distancia max., biomas, raio da checagem, desnivel max., extra)
+# extra: start_height (Ariake: o chao fica 12 acima do fundo da peca), conjunto proprio (bases) e anchor (bairros).
+# BASES-4: deslocamentos dos bairros em chunks (17 = 272 blocos: a base vai a ~115 do centro e a cidade a ~116; a
+# peca inicial gira ao acaso, por isso todos os lados ficam longe igual). A cidade fica num lado, os bairros nos outros.
+# Os bairros evitam outra base que nasce de verdade a 24 chunks (a propria nao conta; True = so base gerada, porque
+# ponto candidato ha em todo lugar): bairro nunca encosta em outra base nem no bairro dela. E o ponto candidato de
+# Shinagawa/Campo do Exame a 14 chunks.
+DISTRICT_SPACE = [("kn8:defense_bases", 24, True), ("kn8:defense_sites", 14)]
+# Bases: a cidade principal tem que caber junto (companion); terreno um pouco mais solto que o da C3 (com 14 de
+# desnivel e 5% de agua a base mais perto saia a 12-17 mil blocos) [SUPOSICAO].
+BASE_SLOPE = 18
+BASE_WATER = 0.08
+# Terreno dos bairros mais solto (a base ja conferiu o dela; com a regra das cidades quase todo bairro caia no morro ou
+# na agua): desnivel ate 40 no miolo e 15% de agua [SUPOSICAO].
+DISTRICT_SLOPE = 40
+DISTRICT_WATER = 0.15
+TACHIKAWA_CITY_AT = [[0, -17]]
+TACHIKAWA_WARDS_AT = [[0, 17], [17, 0], [-17, 0]]
+ARIAKE_CITY_AT = [[0, -17]]
+ARIAKE_WARDS_AT = [[17, 0], [0, 17], [-17, 0]]
 SITES = [
-    ("ariake_base", "kn8:ariake_base/core", 3, 100, BASE_BIOMES, 104, 14),
-    # BASES-1 (Miguel, 2026-10-30: bases dentro das cidades): a Base de Tachikawa avulsa nao nasce mais sozinha
-    # (a base agora fica dentro da cidade de Tachikawa); continua para o /place (NOT_NATURAL).
-    ("tachikawa_base", "kn8:tachikawa_base/core", 3, 110, BASE_BIOMES, 112, 14),
+    ("ariake_base", "kn8:ariake_base/hq", 5, 116, CITY_BIOMES, 112, BASE_SLOPE,
+     {"start_height": -13, "base": True, "max_water": BASE_WATER,
+      "companion": ("ariake_city", ARIAKE_CITY_AT[0])}),
+    ("tachikawa_base", "kn8:tachikawa_base/hq", 5, 116, CITY_BIOMES, 112, BASE_SLOPE,
+     {"base": True, "max_water": BASE_WATER, "companion": ("tachikawa_city", TACHIKAWA_CITY_AT[0])}),
     # CIDADES: cidades maiores (encaixes 6 -> 8: mais ruas ate a borda; o raio fica em 116 porque o jigsaw nao passa
     # de 128 contando os 12 da adaptacao do terreno).
-    ("shinagawa_city", "kn8:shinagawa/station", 8, 116, CITY_BIOMES, 112, 16),
-    ("tachikawa_city", "kn8:tachikawa/station", 8, 116, CITY_BIOMES, 112, 16),
-    # BASES-2 (Miguel, 2026-10-30, escolha 2): cidade costeira de Ariake (Koto) com a Base Maritima dentro.
-    ("ariake_city", "kn8:ariake/station", 8, 116, CITY_BIOMES, 112, 16),
+    ("shinagawa_city", "kn8:shinagawa/station", 8, 116, CITY_BIOMES, 112, 16,
+     {"avoid": [("kn8:defense_bases", 14, True)]}),
+    ("tachikawa_city", "kn8:tachikawa/station", 8, 116, DISTRICT_BIOMES, 96, DISTRICT_SLOPE,
+     {"anchor": ("tachikawa_base", TACHIKAWA_CITY_AT), "districts": "tachikawa_districts", "max_water": DISTRICT_WATER,
+      "avoid": DISTRICT_SPACE}),
+    ("tachikawa_ward", "kn8:tachikawa/plaza", 7, 116, DISTRICT_BIOMES, 96, DISTRICT_SLOPE,
+     {"anchor": ("tachikawa_base", TACHIKAWA_WARDS_AT), "districts": "tachikawa_districts", "max_water": DISTRICT_WATER,
+      "avoid": DISTRICT_SPACE}),
+    # BASES-2 (Miguel, 2026-10-30, escolha 2): cidade costeira de Ariake (Koto); BASES-4: a Base Maritima ao lado.
+    ("ariake_city", "kn8:ariake/station", 8, 116, DISTRICT_BIOMES, 96, DISTRICT_SLOPE,
+     {"anchor": ("ariake_base", ARIAKE_CITY_AT), "districts": "ariake_districts", "max_water": DISTRICT_WATER,
+      "avoid": DISTRICT_SPACE}),
+    ("ariake_ward", "kn8:ariake/plaza", 7, 116, DISTRICT_BIOMES, 96, DISTRICT_SLOPE,
+     {"anchor": ("ariake_base", ARIAKE_WARDS_AT), "districts": "ariake_districts", "max_water": DISTRICT_WATER,
+      "avoid": DISTRICT_SPACE}),
 ]
 # Fracao das amostras que pode ter agua (riacho ou lagoa pequena, que a construcao cobre; lago e rio largo nao) e
 # raio do miolo em que o desnivel conta (a borda irregular fica com o beard_thin).
-NOT_NATURAL = {"tachikawa_base", "ariake_base"}
 MAX_WATER = 0.05
 SLOPE_RADIUS = 64
 # Conjuntos que os locais evitam (chunks de raio): vilas e as construcoes de superficie do vanilla.
 AVOID = [("minecraft:villages", 14), ("minecraft:pillager_outposts", 8), ("minecraft:desert_pyramids", 6),
          ("minecraft:igloos", 6), ("minecraft:swamp_huts", 6), ("minecraft:woodland_mansions", 10),
          ("minecraft:jungle_temples", 6)]
+# Bairros (BASES-4): a base ja conferiu as vilas com o raio cheio; o bairro so precisa nao cair em cima de uma (raio
+# da cidade + o da vila). Com 14 chunks metade dos bairros sumia.
+# Bases: vilas a 11 chunks (o raio da base + o da vila; com 14 a base mais perto saia a 8-17 mil blocos) [SUPOSICAO].
+BASE_AVOID = [("minecraft:villages", 11)] + AVOID[1:]
+DISTRICT_AVOID = [("minecraft:villages", 9), ("minecraft:pillager_outposts", 6), ("minecraft:woodland_mansions", 8)]
 
 
 def worldgen():
@@ -1049,45 +1092,68 @@ def worldgen():
     dump(wg / "template_pool/tachikawa_base/airfield.json", {"fallback": "minecraft:empty", "elements": [
         {"weight": 1, "element": element("kn8:tachikawa_base/airfield")}]})
     for name, start in (("ariake_base", "core"), ("tachikawa_base", "core"), ("shinagawa", "station"),
-                        ("tachikawa", "station"), ("shinagawa", "district"), ("tachikawa", "base_core"),
-                        ("tachikawa", "base_training"), ("ariake", "station"), ("ariake", "base_core"),
-                        ("ariake", "harbor")):
+                        ("tachikawa", "station"), ("shinagawa", "district"), ("tachikawa", "plaza"),
+                        ("tachikawa_base", "training"), ("tachikawa_base", "training_ruined"),
+                        ("tachikawa_base", "front"), ("ariake", "station"), ("ariake", "plaza"),
+                        ("ariake_base", "front")):
         dump(wg / f"template_pool/{name}/{start}.json", {"fallback": "minecraft:empty", "elements": [
             {"weight": 1, "element": element(f"kn8:{name}/{start}")}]})
     street_pools("shinagawa", SHINAGAWA_LOTS, street_weight=5, crossing_weight=3)
     street_pools("tachikawa", TACHIKAWA_LOTS)
     street_pools("ariake", ariake.ARIAKE_LOTS)
-    # BASES-3: a base de cada cidade nasce inteira (peso 3) ou depois de um ataque (peso 1) [SUPOSICAO pesos]; a
-    # versao atingida leva ao campo de treino atingido.
-    for city in ("tachikawa", "ariake"):
-        dump(wg / f"template_pool/{city}/base_core.json", {"fallback": "minecraft:empty", "elements": [
-            {"weight": 3, "element": element(f"kn8:{city}/base_core")},
-            {"weight": 1, "element": element(f"kn8:{city}/base_core_ruined")}]})
-    dump(wg / "template_pool/tachikawa/base_training_ruined.json", {"fallback": "minecraft:empty", "elements": [
-        {"weight": 1, "element": element("kn8:tachikawa/base_training_ruined")}]})
-    for name, start, size, distance, biomes, radius, slope in SITES:
+    # BASES-3: cada base nasce inteira (peso 3) ou depois de um ataque (peso 1) [SUPOSICAO pesos]; a versao atingida
+    # leva ao campo de treino atingido.
+    for base in ("tachikawa_base", "ariake_base"):
+        dump(wg / f"template_pool/{base}/hq.json", {"fallback": "minecraft:empty", "elements": [
+            {"weight": 3, "element": element(f"kn8:{base}/hq")},
+            {"weight": 1, "element": element(f"kn8:{base}/hq_ruined")}]})
+    for name, start, size, distance, biomes, radius, slope, extra in SITES:
         dump(DATA / f"kn8/tags/worldgen/biome/has_structure/{name}.json", {"values": biomes})
         settings = {"biomes": f"#kn8:has_structure/{name}", "step": "surface_structures", "spawn_overrides": {},
                     "terrain_adaptation": "beard_thin"}
         # Desenho (sem conferir o terreno): usado pelo local abaixo e pelo /place para testar.
         dump(wg / f"structure/{name}_layout.json", dict(settings, **{
-            "type": "minecraft:jigsaw", "start_pool": start, "size": size, "start_height": {"absolute": -1},
+            "type": "minecraft:jigsaw", "start_pool": start, "size": size,
+            "start_height": {"absolute": extra.get("start_height", -1)},
             "project_start_to_heightmap": "WORLD_SURFACE_WG", "max_distance_from_center": distance,
             "use_expansion_hack": False}))
-        dump(wg / f"structure/{name}.json", dict(settings, **{
+        checked = {
             "type": "kn8:checked_jigsaw", "layout": f"kn8:{name}_layout", "check_radius": radius,
             "check_step": 12, "max_slope": slope, "slope_radius": SLOPE_RADIUS,
-            "max_water": MAX_WATER,
-            "avoid": [{"structure_set": s, "chunks": c} for s, c in AVOID]}))
-    # Tag para o /locate achar qualquer um dos quatro (/locate structure #kn8:defense_sites).
-    natural = [name for name, *_ in SITES if name not in NOT_NATURAL]
+            "max_water": extra.get("max_water", MAX_WATER),
+            "avoid": [dict({"structure_set": entry[0], "chunks": entry[1]},
+                           **({"generated": True} if entry[2:] else {}))
+                      for entry in (DISTRICT_AVOID if "anchor" in extra else BASE_AVOID if extra.get("base")
+                                    else AVOID) + extra.get("avoid", [])]}
+        if "companion" in extra:
+            city, offset = extra["companion"]
+            checked["companion"] = {"structure": f"kn8:{city}", "offset": offset}
+        if "anchor" in extra:
+            base, offsets = extra["anchor"]
+            checked["anchor"] = {"structure": f"kn8:{base}", "structure_set": "kn8:defense_bases", "offsets": offsets}
+        dump(wg / f"structure/{name}.json", dict(settings, **checked))
+    # As duas bases grandes num conjunto so: ~1 candidato a cada 384 blocos e pelo menos 16 chunks (256 blocos)
+    # entre dois candidatos [SUPOSICAO] (com 64 chunks a primeira base saiu a ~40.000 blocos). Duas bases perto: a
+    # cidade e os bairros evitam outra base a 24 chunks. Shinagawa e o Campo do Exame evitam as bases geradas a 14
+    # chunks.
+    dump(wg / "structure_set/defense_bases.json", {
+        "structures": [{"structure": f"kn8:{name}", "weight": 1} for name, *_, extra in SITES if extra.get("base")],
+        "placement": {"type": "minecraft:random_spread", "spacing": 24, "separation": 16, "salt": 333_871_201}})
+    # Bairros: espacamento 1 (todo chunk e candidato; o anchor decide). Cidade e bairros no mesmo conjunto: em cada
+    # chunk so um pode bater com o deslocamento.
+    for districts in ("tachikawa_districts", "ariake_districts"):
+        dump(wg / f"structure_set/{districts}.json", {
+            "structures": [{"structure": f"kn8:{name}", "weight": 1}
+                           for name, *_, extra in SITES if extra.get("districts") == districts],
+            "placement": {"type": "minecraft:random_spread", "spacing": 1, "separation": 0, "salt": 333_871_210}})
+    # Tag para o /locate (/locate structure #kn8:defense_sites): as bases e Shinagawa. Os bairros so pelo id (o
+    # /locate de espacamento 1 so procura ate 100 chunks).
+    natural = ["ariake_base", "tachikawa_base", "shinagawa_city"]
     dump(DATA / "kn8/tags/worldgen/structure/defense_sites.json", {"values": [f"kn8:{name}" for name in natural]})
-    # Um conjunto para os quatro: os locais nunca nascem colados um no outro. ~1 candidato a cada 770 blocos
-    # [SUPOSICAO].
-    # Bases com peso 2: os biomas delas sao menos e o terreno delas e maior (sem isso nasciam a ~20.000 blocos).
+    # Conjunto dos outros locais (Shinagawa e o Campo do Exame, que o gen_exam_ground.py poe aqui). ~1 candidato a
+    # cada 770 blocos [SUPOSICAO].
     dump(wg / "structure_set/defense_sites.json", {
-        "structures": [{"structure": f"kn8:{name}", "weight": 2 if name.endswith("_base") else 1}
-                       for name in natural],
+        "structures": [{"structure": "kn8:shinagawa_city", "weight": 1}],
         "placement": {"type": "minecraft:random_spread", "spacing": 48, "separation": 16, "salt": 280_430_031}})
     loot = {
         "ariake_lab": [(3, 6), [item("kn8:core_fragment", 6, 1, 2), item("kn8:kaiju_tissue", 10, 2, 5),
@@ -1123,10 +1189,11 @@ if __name__ == "__main__":
     base_training()
     base_core(ruined=True)
     base_training(ruined=True)
+    base_front()
     ariake.ariake_station()
     ariake.base_core()
     ariake.base_core(ruined=True)
-    ariake.ariake_harbor()
+    ariake.base_front()
     ariake.lot_bigsight()
     ariake.lot_warehouse()
     ariake.lot_canal()
@@ -1135,4 +1202,6 @@ if __name__ == "__main__":
         street_piece(prefix)
         crossing_piece(prefix)
         street_end_piece(prefix)
+    for prefix in ("tachikawa", "ariake"):
+        plaza_piece(prefix)
     worldgen()

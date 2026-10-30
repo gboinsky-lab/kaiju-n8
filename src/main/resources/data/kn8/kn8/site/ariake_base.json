@@ -16,6 +16,14 @@
       "count": 2
     }
   ],
+  "garrison_at": {
+    "piece": "kn8:ariake_base/hq",
+    "pos": [
+      40,
+      13,
+      10
+    ]
+  },
   "invasions": [
     {
       "invasion": "kn8:ariake_assault",

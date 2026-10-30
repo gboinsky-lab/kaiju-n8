@@ -1,0 +1,15 @@
+{
+  "structure": "kn8:ariake_ward",
+  "division": "first",
+  "invasions": [
+    {
+      "invasion": "kn8:primigenius_raid",
+      "weight": 2
+    },
+    {
+      "invasion": "kn8:spider_swarm",
+      "weight": 1
+    }
+  ],
+  "field_missions": true
+}

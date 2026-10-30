@@ -19,6 +19,14 @@
       "count": 1
     }
   ],
+  "garrison_at": {
+    "piece": "kn8:tachikawa_base/hq",
+    "pos": [
+      20,
+      1,
+      47
+    ]
+  },
   "invasions": [
     {
       "invasion": "kn8:tachikawa_raid",

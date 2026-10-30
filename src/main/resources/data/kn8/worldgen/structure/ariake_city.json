@@ -5,39 +5,42 @@
   "terrain_adaptation": "beard_thin",
   "type": "kn8:checked_jigsaw",
   "layout": "kn8:ariake_city_layout",
-  "check_radius": 112,
+  "check_radius": 96,
   "check_step": 12,
-  "max_slope": 16,
+  "max_slope": 40,
   "slope_radius": 64,
-  "max_water": 0.05,
+  "max_water": 0.15,
   "avoid": [
     {
       "structure_set": "minecraft:villages",
-      "chunks": 14
+      "chunks": 9
     },
     {
       "structure_set": "minecraft:pillager_outposts",
-      "chunks": 8
-    },
-    {
-      "structure_set": "minecraft:desert_pyramids",
-      "chunks": 6
-    },
-    {
-      "structure_set": "minecraft:igloos",
-      "chunks": 6
-    },
-    {
-      "structure_set": "minecraft:swamp_huts",
       "chunks": 6
     },
     {
       "structure_set": "minecraft:woodland_mansions",
-      "chunks": 10
+      "chunks": 8
     },
     {
-      "structure_set": "minecraft:jungle_temples",
-      "chunks": 6
+      "structure_set": "kn8:defense_bases",
+      "chunks": 24,
+      "generated": true
+    },
+    {
+      "structure_set": "kn8:defense_sites",
+      "chunks": 14
     }
-  ]
+  ],
+  "anchor": {
+    "structure": "kn8:ariake_base",
+    "structure_set": "kn8:defense_bases",
+    "offsets": [
+      [
+        0,
+        -17
+      ]
+    ]
+  }
 }
