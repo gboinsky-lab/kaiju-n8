@@ -94,6 +94,21 @@
         "slow_ticks": 60,
         "slow_level": 2
       }
+    },
+    "rupture_punch": {
+      "type": "combo",
+      "hits": [
+        3.0
+      ],
+      "windup_ticks": 12,
+      "duration_ticks": 28,
+      "cooldown_ticks": 140,
+      "min_range": 0.0,
+      "max_range": 3.5,
+      "priority": 3,
+      "honju_priority": 3,
+      "dash_in": 1.2,
+      "final_knockback": 3.0
     }
   },
   "dash": {
@@ -135,7 +150,8 @@
     "techniques": [
       "heavy_punch",
       "dash_strike",
-      "ground_smash"
+      "ground_smash",
+      "rupture_punch"
     ],
     "power": 3,
     "radius": 3.0
@@ -150,5 +166,6 @@
     "factor": 0.5,
     "front_arc_degrees": 120.0,
     "cooldown_ticks": 40
-  }
+  },
+  "height": 3.0
 }

@@ -424,6 +424,9 @@ public final class ServerConfig {
     public static final ModConfigSpec.DoubleValue DIVE_SLAM_SPEED;
     public static final ModConfigSpec.DoubleValue DIVE_SLAM_BONUS_PER_BLOCK;
     public static final ModConfigSpec.DoubleValue DIVE_SLAM_MAX_BONUS;
+    public static final ModConfigSpec.IntValue FREEZE_STAGES;
+    public static final ModConfigSpec.IntValue FREEZE_STAGE_TICKS;
+    public static final ModConfigSpec.IntValue FREEZE_MIN_LEVEL;
     public static final ModConfigSpec.IntValue FLURRY_INTERVAL_TICKS;
     public static final ModConfigSpec.DoubleValue CORE_EXPOSED_MULTIPLIER;
     public static final ModConfigSpec.DoubleValue MAX_LIGHT_HIT_FRACTION;
@@ -1182,7 +1185,7 @@ public final class ServerConfig {
         FORM_ENABLED = booleanValue("enabled", "The host can transform.", true);
         FORM_COOLDOWN_TICKS = intValue("cooldownTicks", "Wait after turning back before transforming again.", 200, 0,
                 72000);
-        FORM_HEIGHT = doubleValue("height", "Body height in the form (blocks; the model of Kaiju No. 8 is 2 m).", 2.0,
+        FORM_HEIGHT = doubleValue("height", "Body height in the form (blocks; Miguel 2026-10-30: 3).", 3.0,
                 1.0, 6.0);
         FORM_HEALTH_BONUS = doubleValue("healthBonus", "Extra maximum health in the form.", 180.0, 0.0, 10000.0);
         FORM_HEALTH_PER_RESISTANCE = doubleValue("healthPerResistance", "Extra maximum health per resistance level.",
@@ -1294,6 +1297,13 @@ public final class ServerConfig {
                 + " fallen (0.05 = +5% per block).", 0.05, 0.0, 1.0);
         DIVE_SLAM_MAX_BONUS = doubleValue("diveSlamMaxBonus", "Maximum extra damage of a dive slam from the fall"
                 + " height (0.75 = +75%).", 0.75, 0.0, 5.0);
+        // COMBATE-7: gelo do Reno se espalhando pelo corpo em etapas (a Lentidao sobe ate a do tiro).
+        FREEZE_STAGES = intValue("freezeStages", "Stages a freezing shot takes to cover the target (the slowness"
+                + " grows each stage up to the shot's level; 1 = all at once).", 3, 1, 8);
+        FREEZE_STAGE_TICKS = intValue("freezeStageTicks", "Ticks between two stages of a freezing shot.", 8, 1,
+                40);
+        FREEZE_MIN_LEVEL = intValue("freezeMinLevel", "Slowness level from which a shot counts as freezing (spreads"
+                + " in stages; below it the slowness is applied at once).", 2, 1, 10);
         CORE_EXPOSED_MULTIPLIER = doubleValue("coreExposedMultiplier", "Extra core damage multiplier after a heavy"
                 + " hit exposes the core.", 1.5, 1.0, 5.0);
         // 0.5.0 (Miguel): golpe comum nunca mata kaiju de uma vez; so o golpe especial da arma passa disso.

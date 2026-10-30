@@ -47,5 +47,29 @@
       }
     ],
     "sound": "kn8:weapon.axe_special"
-  }
+  },
+  "techniques": [
+    {
+      "id": "rupture_punch",
+      "type": "lunge",
+      "multiplier": 3.2,
+      "duration_ticks": 24,
+      "impact_tick": 11,
+      "radius": 1.6,
+      "stamina_cost": 25,
+      "heat_cost": 0,
+      "cooldown_ticks": 160,
+      "forward": 1.5,
+      "knockback": 3.0,
+      "stagger_ticks": 30,
+      "camera_shake": 0.45,
+      "vfx": [
+        {
+          "effect": "kn8:technique",
+          "intensity": 1.0
+        }
+      ],
+      "sound": "kn8:weapon.axe_special"
+    }
+  ]
 }

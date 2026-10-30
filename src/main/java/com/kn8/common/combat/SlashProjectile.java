@@ -21,8 +21,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -223,7 +221,7 @@ public class SlashProjectile extends Projectile {
                 struck.add(target.getUUID());
                 target.invulnerableTime = 0;
                 if (target.hurt(damageSource, target instanceof KaijuEntity ? damage * kaijuFactor : damage)) {
-                    slow(target);
+                    slow(target, at);
                 }
             }
         }
@@ -254,10 +252,9 @@ public class SlashProjectile extends Projectile {
      * 0.7-C: municao congelante (Lentidao do JSON) em quem o tiro acertou. 2026-10-15: no kaiju, a area congelada
      * expoe o nucleo e fica vulneravel (todo dano, de qualquer aliado, multiplicado enquanto dura o gelo).
      */
-    private void slow(LivingEntity target) {
-        if (slowTicks > 0) {
-            target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, slowTicks, slowLevel - 1));
-        }
+    private void slow(LivingEntity target, Vec3 hit) {
+        // COMBATE-7: o gelo se espalha pelo corpo em etapas (a Lentidao sobe ate a do tiro).
+        FreezeSpread.apply(target, getOwner(), hit, slowTicks, slowLevel);
         if (target instanceof KaijuEntity kaiju) {
             if (exposeCoreTicks > 0) {
                 kaiju.exposeCore(exposeCoreTicks);
@@ -290,7 +287,7 @@ public class SlashProjectile extends Projectile {
             // Os dois cortes do Kosa-uchi chegam quase juntos: a invulnerabilidade vanilla engoliria o segundo.
             target.invulnerableTime = 0;
             if (target.hurt(damageSource, amount)) {
-                slow(target);
+                slow(target, position());
                 Vec3 center = target.getBoundingBox().getCenter();
                 impact(center, getDeltaMovement());
                 if (first == null) {

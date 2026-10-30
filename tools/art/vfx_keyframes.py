@@ -33,6 +33,8 @@ MARCAS = {
         'kaiju_no8.action.heavy_punch': [(0.4, 'fist_trail', 'item_right')],
         'kaiju_no8.action.dash_strike': [(0.25, 'fist_trail', 'item_right')],
         'kaiju_no8.action.counter': [(0.4, 'fist_trail', 'item_right')],
+        # COMBATE-7: soco de ruptura (impacto no tick 12; linhas convergindo no punho pela receita rupture_punch).
+        'kaiju_no8.action.rupture_punch': [(0.6, 'fist_trail', 'item_right')],
     },
 }
 

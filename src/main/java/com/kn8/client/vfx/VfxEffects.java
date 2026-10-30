@@ -88,6 +88,7 @@ public final class VfxEffects {
         RAW.put(VfxService.TELEGRAPH, VfxEffects::telegraph);
         RAW.put(VfxService.SMOKE, VfxEffects::smoke);
         RAW.put(VfxService.DEBRIS, VfxEffects::debris);
+        RAW.put(VfxService.AIM, VfxEffects::aim);
     }
 
     /** Cor das lascas sem cor de bloco e teto de lascas por evento. */
@@ -458,6 +459,32 @@ public final class VfxEffects {
         }
         DrawnRenderer.add(new Drawn.Beam(from, to, 0.06, Math.min(length, 4.0), keyColor(payload, 0xFFE9A0),
                 0xFFFFFF, 3));
+    }
+
+    /**
+     * COMBATE-7: mira do tiro (linha fina e firme ate o alvo, com um anel pequeno no ponto mirado). Cada pulso vive
+     * ate o proximo ("@ticks"), entao a linha acompanha o alvo que anda durante o preparo.
+     */
+    private static void aim(ClientLevel level, VfxS2C payload) {
+        Vec3 from = payload.position();
+        Vec3 to = from.add(payload.direction());
+        if (from.distanceToSqr(to) < 0.01) {
+            return;
+        }
+        String key = payload.source().key();
+        int life = 4;
+        int at = key.indexOf('@');
+        if (at >= 0) {
+            try {
+                life = Integer.parseInt(key.substring(at + 1)) + 1;
+            } catch (NumberFormatException ignored) {
+                // fica a vida padrao
+            }
+        }
+        int color = keyColor(payload, 0x3FCF5A);
+        double width = Math.max(0.03, payload.intensity());
+        DrawnRenderer.add(new Drawn.Beam(from, to, width, 0.0, color, 0xFFFFFF, life));
+        DrawnRenderer.add(new Drawn.Pulse(to, 0.35 + width * 4.0, width * 1.5, color, life));
     }
 
     /** VFX-R2: tentaculo/fio do No. 9: faixa grossa e escura, quase reta, tremendo (2 ticks por pulso). */

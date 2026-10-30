@@ -16,6 +16,8 @@ public final class PuppetNo8 extends KaijuNo8Entity {
 
     /** Dono sem controle do corpo (T-3): o modelo troca as linhas e os olhos ciano por vermelho. */
     private boolean rampaging;
+    /** Escala do desenho: a altura do jogador transformado ([kaijuForm] height) sobre a do modelo (2 m). */
+    private float scale = 1.0F;
 
     PuppetNo8(ClientLevel level, Player player) {
         super(KN8Entities.KAIJU_NO8.get(), level);
@@ -38,8 +40,14 @@ public final class PuppetNo8 extends KaijuNo8Entity {
         setShiftKeyDown(player.isShiftKeyDown());
         hurtTime = player.hurtTime;
         rampaging = KaijuFormService.isRampaging(player);
+        scale = player.getBbHeight() / getType().getHeight();
         calculateEntityAnimation(false);
         tickCount++;
+    }
+
+    @Override
+    public float getScale() {
+        return scale;
     }
 
     public boolean rampaging() {

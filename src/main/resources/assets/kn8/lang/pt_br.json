@@ -1230,6 +1230,7 @@
   "kn8.host.form.unavailable": "Agora não dá para se transformar.",
   "kn8.command.host.form": "Forma de %s: %s",
   "kn8.weapon.special.ground_smash": "Golpe no Chão",
+  "kn8.weapon.special.rupture_punch": "Soco de Ruptura",
   "kn8.host.form.hud.time": "Forma kaiju %s",
   "kn8.host.form.hud.rampage": "SEM CONTROLE",
   "kn8.host.form.hud.kaiju": "· %s a %s m (%s)",

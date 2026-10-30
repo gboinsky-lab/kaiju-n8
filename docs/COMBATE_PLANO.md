@@ -72,6 +72,9 @@ Regras do documento (valem para toda a etapa):
    separa forma A/B: as duas usam, o No. 1 aprimorado e com acerto garantido). Thunder Fire, Flame Shower e Sky Turner
    entraram depois (Miguel, 2026-10-30: "pode decidir atraves das inspirações"), inferidas pelos nomes:
    tiros com raio rosa, leque de tiros de fogo laranja e corte que sobe girando [INFERÊNCIA].
+9. **COMBATE-7 (Kafka/No. 8, Mina, Reno):** feita. Soco de ruptura do No. 8 (NPC e forma do jogador) em 3 fases; mira
+   da Mina (linha da boca do canhão ao alvo no preparo), clarão e impacto remoto separados; gelo do Reno em 3 etapas
+   (a Lentidão sobe até a do tiro, o gelo anda do ponto atingido pela pele). No. 8 com 3 m (Miguel, 2026-10-30).
 
 ## 5. Perguntas que ficaram (histórico)
 

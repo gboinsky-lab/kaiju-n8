@@ -160,7 +160,10 @@ public final class KaijuFormClient {
             return true;
         }
         String path = animation.getPath();
-        String name = path.endsWith("special") ? "ground_smash"
+        // COMBATE-7: outra tecnica dos punhos (special_<id>, soco de ruptura) toca a acao de mesmo nome do No. 8.
+        int technique = path.lastIndexOf("special_");
+        String name = technique >= 0 ? path.substring(technique + "special_".length())
+                : path.endsWith("special") ? "ground_smash"
                 : path.contains("heavy") || path.contains("charge") ? "heavy_punch"
                 : path.contains("dash") || path.contains("dodge") ? "dash"
                 : path.contains("light") || path.contains("shoot") ? "attack" : null;

@@ -1600,3 +1600,17 @@ Servidor dedicado + 2 clientes. Imagem: `docs/img/combate6_narumi.jpg`.
 | 115.5 | Narumi No. 1 (`kn8:narumi_no1`) contra um kaiju que se mexe | Golpes acertam mesmo com o alvo a alguns blocos; o tiro da baioneta acerta o kaiju andando |
 | 115.6 | Baioneta do Narumi, X ate Thunder Fire, Flame Shower e Sky Turner (4/6 a 6/6) | Thunder Fire: 3 tiros rosa com raio e estouro; Flame Shower: leque de 6 tiros laranja que explodem em fogo; Sky Turner: avanco com cortes subindo e o corpo girando |
 | 115.7 | Narumi e Narumi No. 1 NPC contra um Honju por 1 min | Aparecem tambem as tres novas (animacoes `narumi.action.thunder_fire/flame_shower/sky_turner`) |
+
+## 116. COMBATE-7: Kafka/No. 8, Mina e Reno pela obra
+
+Servidor dedicado + 2 clientes. Imagem: `docs/img/combate7_no8_mina_reno.jpg`.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 116.1 | `/summon kn8:kaiju_no8` ao lado de um Kafka | No. 8 com ~3 blocos (1,5x o modelo antigo) |
+| 116.2 | `/kn8 host infect <jogador>`, tecla B | Forma do jogador tambem com 3 blocos (vista pelo outro cliente) |
+| 116.3 | Transformado, X troca para Soco de Ruptura e R perto de um kaiju | Postura baixa girada, soco com o corpo todo, linhas ciano convergindo, clarao e anel no impacto, alvo empurrado |
+| 116.4 | No. 8 NPC contra um Honju | Usa tambem o soco de ruptura (clarao branco grande com anel) |
+| 116.5 | Mina contra um kaiju parado (`NoAI`), visto de lado | Linha fina da boca do canhao ate o kaiju durante a carga, depois o tiro verde e o impacto com coluna e onda |
+| 116.6 | Rifle do Numbers 6 (criativo), R num Honju parado | Gelo em 3 etapas: cristais no ponto, veios andando, estouro com nevoa na pele; Lentidao III so no fim |
+| 116.7 | Reno No. 6 contra um Honju | Gelo em etapas nos tiros congelantes; supressao (Lentidao I) sem etapas |

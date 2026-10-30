@@ -556,6 +556,36 @@ public class HoshinaEntity extends SoldierEntity {
         return true;
     }
 
+    /**
+     * COMBATE-7 (obra, Mina: estabiliza o canhao, aponta e alinha a mira antes do disparo): no preparo de uma tecnica
+     * com a receita "<tecnica>_aim", a cada {@link #AIM_INTERVAL} ticks uma linha fina da boca da arma (quadril
+     * direito) ate o centro do alvo e a receita no ponto mirado. Separa a mira do clarao do disparo e do impacto.
+     */
+    private void aim(LivingEntity target, long now) {
+        if ((now - techniqueStart) % AIM_INTERVAL != 0 || !(level() instanceof ServerLevel server)
+                || !VfxService.hasRecipe(this, techniqueId + "_aim")) {
+            return;
+        }
+        double yaw = Math.toRadians(getYRot());
+        Vec3 forward = new Vec3(-Math.sin(yaw), 0, Math.cos(yaw));
+        Vec3 right = new Vec3(-forward.z, 0, forward.x);
+        Vec3 muzzle = position().add(0, getBbHeight() * AIM_MUZZLE_HEIGHT, 0).add(forward.scale(getBbWidth()))
+                .add(right.scale(AIM_MUZZLE_SIDE));
+        Vec3 point = target.getBoundingBox().getCenter();
+        int color = VfxService.profileOf(this).map(id -> KN8Data.VFX_PROFILE.server().get(id))
+                .map(def -> def.palette().resolve("accent")).orElse(FORESIGHT_COLOR);
+        VfxService.keyed(server, VfxService.AIM, muzzle, point.subtract(muzzle), AIM_WIDTH,
+                String.format("#%06X@%d", color & 0xFFFFFF, AIM_INTERVAL + 1), getBbHeight());
+        VfxService.play(server, VfxService.TECHNIQUE, point, point.subtract(muzzle), 1.0F, 0.0F, this,
+                techniqueId + "_aim");
+    }
+
+    /** COMBATE-7: pulso da mira, altura da boca do canhao (fracao da altura), lado e largura da linha. */
+    private static final int AIM_INTERVAL = 3;
+    private static final double AIM_MUZZLE_HEIGHT = 0.5;
+    private static final double AIM_MUZZLE_SIDE = 0.35;
+    private static final float AIM_WIDTH = 0.04F;
+
     /** VFX-6: receita da previsao do Numbers 1, meia largura da linha e cor sem perfil. */
     private static final String FORESIGHT = "foresight";
     private static final double FORESIGHT_HALF_WIDTH = 0.06;
@@ -725,6 +755,9 @@ public class HoshinaEntity extends SoldierEntity {
             if (invalid != null) {
                 cancelTechnique(now, invalid);
                 return;
+            }
+            if (nextHit == 0 && elapsed < technique.hitTick(0)) {
+                aim(target, now);
             }
             // MOV-5B (bug 11 da MOV-0): no maximo um golpe por tick, mesmo com o Release acelerando a tecnica; cada
             // corte e um impacto separado.

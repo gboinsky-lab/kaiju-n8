@@ -68,6 +68,11 @@ public final class VfxService {
      * dos grandes, desmonte da carcaca); intensidade = quantidade, chave "#rrggbb" = cor do bloco.
      */
     public static final ResourceLocation DEBRIS = KN8Constants.id("debris");
+    /**
+     * COMBATE-7: mira de quem prepara um tiro (Mina estabiliza o canhao e alinha a mira): linha fina da boca da arma
+     * ({@code position}) ate o alvo ({@code position + direction}); intensidade = largura, chave "#rrggbb@ticks".
+     */
+    public static final ResourceLocation AIM = KN8Constants.id("aim");
 
     /** Distancia em que os jogadores recebem o efeito. */
     public static final double RANGE = 64.0;

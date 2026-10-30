@@ -214,6 +214,40 @@
         "spread": 1.75,
         "lifetime": 40,
         "delay": 2
+      },
+      {
+        "shape": "flash",
+        "color": "core",
+        "pattern": "burst",
+        "count": 1,
+        "size": 1.2,
+        "speed": 0.0,
+        "spread": 1.2,
+        "lifetime": 4,
+        "up": 1.5,
+        "delay": 2
+      },
+      {
+        "shape": "wisp",
+        "color": "accent",
+        "pattern": "rise",
+        "count": 5,
+        "size": 0.4,
+        "speed": 0.35,
+        "spread": 1.0,
+        "lifetime": 16,
+        "delay": 2
+      },
+      {
+        "shape": "wave",
+        "color": "core",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.3,
+        "speed": 0.0,
+        "spread": 3.2,
+        "lifetime": 14,
+        "delay": 4
       }
     ],
     "charged_cannon_charge": [
@@ -504,6 +538,40 @@
         "spread": 2.4499999999999997,
         "lifetime": 40,
         "delay": 2
+      },
+      {
+        "shape": "flash",
+        "color": "core",
+        "pattern": "burst",
+        "count": 1,
+        "size": 1.68,
+        "speed": 0.0,
+        "spread": 1.68,
+        "lifetime": 4,
+        "up": 2.0999999999999996,
+        "delay": 2
+      },
+      {
+        "shape": "wisp",
+        "color": "accent",
+        "pattern": "rise",
+        "count": 5,
+        "size": 0.5599999999999999,
+        "speed": 0.35,
+        "spread": 1.4,
+        "lifetime": 16,
+        "delay": 2
+      },
+      {
+        "shape": "wave",
+        "color": "core",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.3,
+        "speed": 0.0,
+        "spread": 4.4799999999999995,
+        "lifetime": 14,
+        "delay": 4
       }
     ],
     "anti_giant_shot_charge": [
@@ -907,6 +975,128 @@
         "spread": 3.15,
         "lifetime": 40,
         "delay": 2
+      },
+      {
+        "shape": "flash",
+        "color": "core",
+        "pattern": "burst",
+        "count": 1,
+        "size": 2.4,
+        "speed": 0.0,
+        "spread": 2.4,
+        "lifetime": 4,
+        "up": 3.0,
+        "delay": 2
+      },
+      {
+        "shape": "wisp",
+        "color": "accent",
+        "pattern": "rise",
+        "count": 5,
+        "size": 0.8,
+        "speed": 0.35,
+        "spread": 2.0,
+        "lifetime": 16,
+        "delay": 2
+      },
+      {
+        "shape": "wave",
+        "color": "core",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.3,
+        "speed": 0.0,
+        "spread": 6.4,
+        "lifetime": 14,
+        "delay": 4
+      }
+    ],
+    "precision_shot_aim": [
+      {
+        "shape": "pulse",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.25,
+        "speed": 0.0,
+        "spread": 0.25,
+        "lifetime": 4
+      },
+      {
+        "shape": "sparks",
+        "color": "core",
+        "pattern": "burst",
+        "count": 2,
+        "size": 0.05,
+        "speed": 0.0,
+        "spread": 0.25,
+        "lifetime": 3
+      }
+    ],
+    "cannon_shot_aim": [
+      {
+        "shape": "pulse",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.4,
+        "speed": 0.0,
+        "spread": 0.4,
+        "lifetime": 4
+      },
+      {
+        "shape": "sparks",
+        "color": "core",
+        "pattern": "burst",
+        "count": 2,
+        "size": 0.05,
+        "speed": 0.0,
+        "spread": 0.4,
+        "lifetime": 3
+      }
+    ],
+    "charged_cannon_aim": [
+      {
+        "shape": "pulse",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.55,
+        "speed": 0.0,
+        "spread": 0.55,
+        "lifetime": 4
+      },
+      {
+        "shape": "sparks",
+        "color": "core",
+        "pattern": "burst",
+        "count": 2,
+        "size": 0.05,
+        "speed": 0.0,
+        "spread": 0.55,
+        "lifetime": 3
+      }
+    ],
+    "anti_giant_shot_aim": [
+      {
+        "shape": "pulse",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.7,
+        "speed": 0.0,
+        "spread": 0.7,
+        "lifetime": 4
+      },
+      {
+        "shape": "sparks",
+        "color": "core",
+        "pattern": "burst",
+        "count": 2,
+        "size": 0.05,
+        "speed": 0.0,
+        "spread": 0.7,
+        "lifetime": 3
       }
     ]
   }

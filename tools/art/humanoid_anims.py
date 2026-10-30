@@ -593,6 +593,17 @@ def kaiju_no8(profile):
     out[p + "action.heavy_punch"] = timeline(end, [
         (0, guard, BACK), (hit * 0.7, cock_pose("right", lunge(guard, 0.4), 1.8), WIND), (hit, impact, STRIKE),
         (hit + 0.2, offset(impact, {"chest": [4, -6, 0]}), HOLD), (end, guard, BACK)])
+    # COMBATE-7 (obra, cap. 2 e 127: soco direto de ruptura): postura baixa com ombro e quadril girados para tras,
+    # o braco sai de uma vez com o corpo todo e segura no impacto (o alvo e que voa).
+    if "rupture_punch" in profile["techniques"]:
+        (hit,), end = technique(profile, "rupture_punch")
+        coil = offset(guard, {"body": [10, 28, 0], "chest": [10, 32, 0], "head": [-8, -30, 0],
+                              "body_pos": [0, -3.0, 1.0], "leg_left": [-45, 0, -6], "shin_left": [70, 0, 0],
+                              "leg_right": [25, 0, 8], "shin_right": [40, 0, 0], "foot_right": [15, 0, 0]})
+        strike = offset(punch_pose("right", lunge(guard, 1.5), 1.9), {"chest": [6, -30, 0], "body": [4, -18, 0]})
+        out[p + "action.rupture_punch"] = timeline(end, [
+            (0, guard, BACK), (hit * 0.75, cock_pose("right", coil, 2.0), WIND), (hit, strike, STRIKE),
+            (hit + 0.3, offset(strike, {"chest": [2, -4, 0]}), HOLD), (end, guard, BACK)])
     (hit,), end = technique(profile, "dash_strike")
     charge_pose = offset(guard, {"body": [26, 0, 0], "chest": [8, 0, 0], "head": [-20, 0, 0],
                                  "body_pos": [0, -2.5, 0], "leg_left": [-50, 0, 0], "shin_left": [60, 0, 0],

@@ -1230,6 +1230,7 @@
   "kn8.host.form.unavailable": "You cannot transform right now.",
   "kn8.command.host.form": "Form of %s: %s",
   "kn8.weapon.special.ground_smash": "Ground Smash",
+  "kn8.weapon.special.rupture_punch": "Rupture Punch",
   "kn8.host.form.hud.time": "Kaiju form %s",
   "kn8.host.form.hud.rampage": "OUT OF CONTROL",
   "kn8.host.form.hud.kaiju": "· %s at %s m (%s)",

@@ -623,6 +623,13 @@ lançamento (alcance 2-7, recarga 140); No. 1 x1,25, um tiro/golpe a mais (Flame
 Narumi): Thunder Fire `slash_wave` 3 x1,3 (recarga 5 s), Flame Shower `slash_wave` 6 x0,7 (9 s), Sky Turner `lunge`
 5 blocos 3 x0,85 (recarga 6 s); Numbers 1 x1,25 e um a mais (Flame Shower dois).
 
+**COMBATE-7** [SUPOSIÇÃO todos; prévia, refazer na COMBATE-8]: soco de ruptura do No. 8 NPC x3,0 (preparo 12, avanço
+1,2, lançamento 3,0, recarga 140, pesado; com o `kaiju_damage` 0,6 e o punho 11: ~20 em kaiju); da forma do jogador
+`lunge` x3,2 (dano da forma x5 x força, recarga 8 s, 25 de stamina). Gelo em etapas (`[combat] freezeStages` 3,
+`freezeStageTicks` 8, `freezeMinLevel` 2): a Lentidão do tiro chega em 16 ticks (antes na hora); a paralisia do
+No. 6 (nível 7) começa 0,8 s depois. No. 8 com 3 m (Miguel): NPC escala 1,5 (alcance e hitbox maiores; duelos não
+remedidos), forma do jogador `[kaijuForm] height` 3.
+
 **Kōsa-uchi do jogador** (segunda técnica da espada do Hoshina, COMBATE-1, `techniques` do `hoshina_sword.json`): dois
 cortes em X (`roll_degrees` 45, abertos 6 graus) que voam 12 blocos a 1,5 bloco/tick, ×1,5 cada, 18 ticks (corte no 7),
 25 de stamina, 4 de calor, recarga própria de 90 ticks (a do NPC) [SUPOSIÇÃO]. Cada técnica tem a sua recarga.

@@ -22,7 +22,8 @@ public class KaijuNo8Entity extends HoshinaEntity {
     public static final String VARIANT_NO8 = "kaiju_no8";
     /** Tecnicas do JSON e reacoes com animacao propria (kaiju_no8.action.<id>). */
     public static final List<String> ANIMATED_NO8 = List.of(
-            "heavy_punch", "ground_smash", "roar", "dash_strike", "rush_combo", "counter", "dash", "parry");
+            "heavy_punch", "ground_smash", "roar", "dash_strike", "rush_combo", "rupture_punch", "counter", "dash",
+            "parry");
 
     public KaijuNo8Entity(EntityType<? extends KaijuNo8Entity> type, Level level) {
         super(type, level);
