@@ -1057,6 +1057,14 @@ def worldgen():
     street_pools("shinagawa", SHINAGAWA_LOTS, street_weight=5, crossing_weight=3)
     street_pools("tachikawa", TACHIKAWA_LOTS)
     street_pools("ariake", ariake.ARIAKE_LOTS)
+    # BASES-3: a base de cada cidade nasce inteira (peso 3) ou depois de um ataque (peso 1) [SUPOSICAO pesos]; a
+    # versao atingida leva ao campo de treino atingido.
+    for city in ("tachikawa", "ariake"):
+        dump(wg / f"template_pool/{city}/base_core.json", {"fallback": "minecraft:empty", "elements": [
+            {"weight": 3, "element": element(f"kn8:{city}/base_core")},
+            {"weight": 1, "element": element(f"kn8:{city}/base_core_ruined")}]})
+    dump(wg / "template_pool/tachikawa/base_training_ruined.json", {"fallback": "minecraft:empty", "elements": [
+        {"weight": 1, "element": element("kn8:tachikawa/base_training_ruined")}]})
     for name, start, size, distance, biomes, radius, slope in SITES:
         dump(DATA / f"kn8/tags/worldgen/biome/has_structure/{name}.json", {"values": biomes})
         settings = {"biomes": f"#kn8:has_structure/{name}", "step": "surface_structures", "spawn_overrides": {},
@@ -1113,8 +1121,11 @@ if __name__ == "__main__":
     tachikawa_stage_garden()
     base_core()
     base_training()
+    base_core(ruined=True)
+    base_training(ruined=True)
     ariake.ariake_station()
     ariake.base_core()
+    ariake.base_core(ruined=True)
     ariake.ariake_harbor()
     ariake.lot_bigsight()
     ariake.lot_warehouse()

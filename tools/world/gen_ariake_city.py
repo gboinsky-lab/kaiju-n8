@@ -22,6 +22,7 @@ Gerado pelo gen_sites.py.
 from gen_base import Piece, ROAD, stairs
 from gen_city import ASPHALT, SIDEWALK, floors_building, lot, street_lamp, tree
 from gen_structures import Build, Float, officer, soldier
+from gen_ruins import drop_officers, emergency_lights, field_post, ruin
 from gen_tachikawa_base import armor_stand, car, dummy, flagpole, helicopter, helipad, screens
 
 GLASS = "minecraft:light_blue_stained_glass"
@@ -165,7 +166,8 @@ def glass_tower(b, x0, z0, x1, z1):
     return top
 
 
-def base_core():
+def base_core(ruined=False):
+    """ruined (BASES-3): variante depois de um ataque [SUPOSICAO: a obra nao mostra ataque direto a Ariake]."""
     b = Lifted((W, LIFT + UP, D), 362, LIFT)
     # Subsolo macico (o desenho abre as salas) e o chao da base.
     b.fill(0, -LIFT, 0, W - 1, -1, D - 1, "minecraft:stone")
@@ -228,7 +230,14 @@ def base_core():
     underground(b)
     for x, z in ((6, 18), (74, 18), (6, 66), (74, 66), (28, 46), (52, 46)):
         b.lamp_post(x, z)
-    b.finish("ariake/base_core")
+    if ruined:
+        g = LIFT  # coordenadas cruas: o chao fica no y 12
+        ruin(b, [(48, 28 + g, 22, 7), (78, 3 + g, 38, 5), (28, g, 10, 5), (66, 7 + g, 58, 5)], 373, glass=0.7,
+             ground=g)
+        drop_officers(b)
+        field_post(b, 56, 5, ground=g)
+        emergency_lights(b, [(20, 10), (36, 10), (74, 30)], ground=g)
+    b.finish("ariake/base_core" + ("_ruined" if ruined else ""))
 
 
 def hq_rooms(b, x0, z0, x1, z1):

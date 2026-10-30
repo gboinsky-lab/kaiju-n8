@@ -20,6 +20,7 @@ O que a obra nao mostra (planta, salas, posicao de cada coisa) e adaptacao [SUPO
 """
 from gen_base import Piece, ROAD, stairs
 from gen_city import ASPHALT, tree, street_lamp
+from gen_ruins import drop_officers, emergency_lights, field_post, ruin
 from gen_structures import Float, officer, soldier
 
 LANTERN = {"hanging": "true", "waterlogged": "false"}
@@ -95,7 +96,8 @@ FLOOR_H = 5
 FLOORS = 7
 
 
-def base_core():
+def base_core(ruined=False):
+    """ruined (BASES-3): variante depois do raide do No. 10 (obra: ~75% da base destruida)."""
     b = Piece((W, H, D), 351, floor="minecraft:polished_andesite")
     x0, z0, x1, z1 = HQ
     roof = FLOORS * FLOOR_H
@@ -246,9 +248,18 @@ def base_core():
     test_hangar(b)
     for x, z in ((6, 38), (36, 38), (6, 69), (36, 69), (78, 38), (78, 69)):
         b.lamp_post(x, z)
-    b.jigsaw(0, 48, "west", "kn8:tachikawa_base_link", "kn8:tachikawa_base_link", "kn8:tachikawa/base_training",
-             ROAD, priority=PRIORITY)
-    b.finish("tachikawa/base_core")
+    suffix = "_ruined" if ruined else ""
+    b.jigsaw(0, 48, "west", "kn8:tachikawa_base_link", "kn8:tachikawa_base_link",
+             f"kn8:tachikawa/base_training{suffix}", ROAD, priority=PRIORITY)
+    if ruined:
+        # Raide do No. 10 com os kaiju voadores: ala oeste do QG desabada, fachada leste aberta, alto da torre
+        # arrancado, teto do hangar caido, cratera no estacionamento e o muro leste rompido [SUPOSICAO posicoes].
+        ruin(b, [(20, 30, 29, 12), (14, 14, 26, 8), (34, 26, 24, 9), (54, 34, 30, 10), (66, 18, 22, 7),
+                 (4, 46, 25, 5), (60, 16, 54, 9), (18, 0, 10, 5), (80, 2, 30, 4)], 371, glass=0.75)
+        drop_officers(b)
+        field_post(b, 22, 42)
+        emergency_lights(b, [(10, 10), (26, 10), (70, 30)])
+    b.finish(f"tachikawa/base_core{suffix}")
 
 
 def flagpole(b, x, z, color, height=8):
@@ -525,7 +536,7 @@ def apartment(b, x0, z0, x1, z1, floors, damaged=False, seed=0):
         b.set(x0 + 1, 1, z0 - 2, "minecraft:white_terracotta")
 
 
-def base_training():
+def base_training(ruined=False):
     b = Piece((TW, TH, TD), 352, floor="minecraft:polished_andesite")
     wx0, wz0, wx1, wz1 = WALL
     b.jigsaw(32, 0, "north", "kn8:tachikawa_base_link", "kn8:tachikawa_base_link", "minecraft:empty", ROAD,
@@ -610,7 +621,13 @@ def base_training():
         b.set(x + 1, 1, z, "minecraft:gravel")
     for x, z in ((ix0 + 13, iz0 + 1), (ix1 - 13, iz0 + 1), (ix0 + 13, iz1 - 8), (ix1 - 13, iz1 - 8)):
         street_lamp(b, x, z)
-    b.finish("tachikawa/base_training")
+    if ruined:
+        # Muro rompido dos dois lados, predio do treino e estacao atingidos; o muro da frente, a sala de controle,
+        # as comportas e o redstone ficam (keep_box).
+        ruin(b, [(4, 4, 30, 5), (32, 4, 51, 5), (12, 9, 13, 5), (34, 6, 46, 4), (55, 10, 36, 4)], 372, glass=0.5,
+             keep_box=(10, 0, 3, 54, 11, 7))
+        emergency_lights(b, [(9, 30), (32, 42)])
+    b.finish("tachikawa/base_training" + ("_ruined" if ruined else ""))
 
 
 __all__ = ["base_core", "base_training"]

@@ -73,11 +73,12 @@ public final class SiteService {
 
         /**
          * O template do elemento e protegido no {@code SinglePoolElement}; o {@code toString} dele traz o id
-         * ("Single[Left[kn8:tachikawa/base_core]]").
+         * ("Single[Left[kn8:tachikawa/base_core]]"). Comeca com o id: vale tambem a variante pos-ataque
+         * ({@code base_core_ruined}, BASES-3), desenhada no mesmo lugar.
          */
         private static boolean isTemplate(PoolElementStructurePiece piece, ResourceLocation template) {
             return piece.getElement() instanceof SinglePoolElement
-                    && piece.getElement().toString().contains("[" + template + "]");
+                    && piece.getElement().toString().contains("[" + template);
         }
     }
 

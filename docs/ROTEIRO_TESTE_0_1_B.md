@@ -1719,3 +1719,17 @@ desenho, `/place structure kn8:ariake_city_layout` num mundo normal (no mundo pl
 | 123.5 | Guarita vermelha no patio: descer a escada de mao | Corredor do subsolo; abrigo fortificado (porta dupla de ferro, camas, barris) e o treino de trajes (alvos, pesos, bonecos) |
 | 123.6 | Portao oeste | Porto com a bacia, guindastes, conteineres, armazens, pier, barco e farol |
 | 123.7 | Primeira visita num mundo novo | Narumi, Isao e dois soldados de elite aparecem na praca da base |
+
+## 124. BASES-3: bases depois de um ataque
+
+Num mundo novo, cada base de Tachikawa e de Ariake tem 1 chance em 4 de nascer atingida. Para ver direto:
+`/place template kn8:tachikawa/base_core_ruined`, `kn8:tachikawa/base_training_ruined` e `kn8:ariake/base_core_ruined`
+(a de Ariake tem 12 de subsolo: num mundo normal ou mais alto no plano). Imagem: `docs/img/bases3_bases_atingidas.jpg`.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 124.1 | Olhar o QG de Tachikawa atingido | Alas e andares desabados, fachada queimada, vidros quebrados, alto da torre de comunicacao arrancado, cratera no estacionamento com barreira amarela e preta e luzes vermelhas |
+| 124.2 | Fundos | Hangar sem teto; tenda de campanha no patio com os dois oficiais, estacao do esquadrao, terminal, bancada, macas e caixa medica (servicos funcionando) |
+| 124.3 | Campo de treino atingido | Muro rompido dos lados e no fundo, predios atingidos; sala de controle, alavancas, comportas e painel funcionando |
+| 124.4 | Ariake atingida | QG de vidro com os andares de cima abertos, ala de seguranca rompida (contencao exposta), cratera na praca, tenda de campanha |
+| 124.5 | Primeira visita a uma cidade com a base atingida | A guarnicao aparece na praca/patio do mesmo jeito |

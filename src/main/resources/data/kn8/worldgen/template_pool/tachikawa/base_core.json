@@ -2,10 +2,19 @@
   "fallback": "minecraft:empty",
   "elements": [
     {
-      "weight": 1,
+      "weight": 3,
       "element": {
         "element_type": "minecraft:single_pool_element",
         "location": "kn8:tachikawa/base_core",
+        "projection": "rigid",
+        "processors": "minecraft:empty"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "kn8:tachikawa/base_core_ruined",
         "projection": "rigid",
         "processors": "minecraft:empty"
       }

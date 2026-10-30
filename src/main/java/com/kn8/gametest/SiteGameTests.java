@@ -56,7 +56,8 @@ public final class SiteGameTests {
             Map.entry("tachikawa/base_training", 1), Map.entry("shinagawa/district", 1),
             Map.entry("ariake/station", 10), Map.entry("ariake/base_core", 2), Map.entry("ariake/harbor", 1),
             Map.entry("ariake/street", 6), Map.entry("ariake/lot_bigsight", 1), Map.entry("ariake/lot_warehouse", 1),
-            Map.entry("ariake/lot_canal", 1));
+            Map.entry("ariake/lot_canal", 1), Map.entry("tachikawa/base_core_ruined", 2),
+            Map.entry("tachikawa/base_training_ruined", 1), Map.entry("ariake/base_core_ruined", 2));
 
     private SiteGameTests() {
     }
@@ -174,6 +175,51 @@ public final class SiteGameTests {
         helper.assertTrue(city.invasions().stream().anyMatch(entry -> entry.invasion()
                 .equals(KN8Constants.id("ariake_assault"))), "O ataque a Ariake deveria cair na cidade");
         helper.succeed();
+    }
+
+    /**
+     * BASES-3: a base de Tachikawa e a de Ariake tambem nascem na versao depois de um ataque (sorteada no pool):
+     * vidros quebrados, crateras com a barreira amarela e preta, o posto de campanha com os servicos; o circuito das
+     * comportas e o painel da arena continuam inteiros.
+     */
+    @GameTest(template = "empty_3x3")
+    public static void basesHaveAPostAttackVariant(GameTestHelper helper) {
+        var manager = helper.getLevel().getStructureManager();
+        var settings = new StructurePlaceSettings();
+        var pools = helper.getLevel().registryAccess().registryOrThrow(Registries.TEMPLATE_POOL);
+        for (String city : List.of("tachikawa", "ariake")) {
+            var pool = pools.get(KN8Constants.id(city + "/base_core"));
+            helper.assertTrue(pool != null && pool.getShuffledTemplates(helper.getLevel().getRandom()).stream()
+                    .anyMatch(element -> element.toString().contains("base_core_ruined")),
+                    city + ": o pool da base deveria ter a versao atingida");
+            StructureTemplate intact = manager.get(KN8Constants.id(city + "/base_core")).orElseThrow();
+            StructureTemplate ruined = manager.get(KN8Constants.id(city + "/base_core_ruined")).orElseThrow();
+            int glassIntact = glass(intact, settings);
+            int glassRuined = glass(ruined, settings);
+            helper.assertTrue(glassRuined < glassIntact * 0.6, city + ": vidros quebrados (" + glassRuined + " de "
+                    + glassIntact + ")");
+            helper.assertTrue(ruined.filterBlocks(BlockPos.ZERO, settings, Blocks.YELLOW_CONCRETE).size()
+                    > intact.filterBlocks(BlockPos.ZERO, settings, Blocks.YELLOW_CONCRETE).size() + 10,
+                    city + ": zonas interditadas com a barreira");
+            for (Block block : List.of(KN8Blocks.RESEARCH_TERMINAL.get(), KN8Blocks.SQUAD_STATION.get(),
+                    Blocks.WHITE_WOOL)) {
+                helper.assertTrue(!ruined.filterBlocks(BlockPos.ZERO, settings, block).isEmpty(),
+                        city + ": o posto de campanha deveria ter " + block);
+            }
+        }
+        StructureTemplate training = manager.get(KN8Constants.id("tachikawa/base_training_ruined")).orElseThrow();
+        helper.assertTrue(training.filterBlocks(BlockPos.ZERO, settings, Blocks.REDSTONE_WIRE).size() == 20
+                && training.filterBlocks(BlockPos.ZERO, settings, KN8Blocks.TRAINING_CONSOLE.get()).size() == 1,
+                "O campo de treino atingido continua com o painel e as comportas");
+        helper.succeed();
+    }
+
+    private static int glass(StructureTemplate template, StructurePlaceSettings settings) {
+        int count = 0;
+        for (Block block : List.of(Blocks.LIGHT_GRAY_STAINED_GLASS_PANE, Blocks.LIGHT_BLUE_STAINED_GLASS)) {
+            count += template.filterBlocks(BlockPos.ZERO, settings, block).size();
+        }
+        return count;
     }
 
     @GameTest(template = "empty_3x3")
