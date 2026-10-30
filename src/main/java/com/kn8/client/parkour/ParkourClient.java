@@ -75,8 +75,8 @@ public final class ParkourClient {
     /** Slide termina abaixo desta velocidade. */
     private static final double SLIDE_MIN_SPEED = 0.08;
     /** FIX-3: borda agarrada sem a tecla (altura acima dos pes) e subida mais rapida que isso nao agarra. */
-    private static final double AUTO_LEDGE_MIN = 1.2;
-    private static final double AUTO_LEDGE_MAX = 2.0;
+    private static final double AUTO_LEDGE_MIN = 1.0;
+    private static final double AUTO_LEDGE_MAX = 2.4;
     private static final double AUTO_LEDGE_RISE = 0.1;
     /** FIX-3: escalando, o topo dentro desta altura vira borda; com C segurado, sobe depois de tantos ticks. */
     private static final double CLIMB_TOP_MAX = 2.0;
@@ -274,8 +274,10 @@ public final class ParkourClient {
             return;
         }
         if (!key) {
-            // FIX-3 (Miguel: "agarrar bordas"): sem a tecla, no alto do pulo ou caindo contra a borda.
-            if (--retryIn <= 0) {
+            // FIX-3 (Miguel: "agarrar bordas"): sem a tecla, no alto do pulo ou caindo contra a borda. Com parede a
+            // frente confere todo tick: caindo rapido a borda passa da faixa das maos entre duas checagens.
+            boolean wall = ParkourProbe.wallAt(player, forward, WALL_REACH);
+            if (wall || --retryIn <= 0) {
                 retryIn = RETRY_TICKS;
                 double ledge = ParkourProbe.obstacleHeight(player, forward, OBSTACLE_REACH, AUTO_LEDGE_MAX);
                 if (ParkourMath.autoLedge(ledge, player.getDeltaMovement().y, input.forwardImpulse > 0.0F,

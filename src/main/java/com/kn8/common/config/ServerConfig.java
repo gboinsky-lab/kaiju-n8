@@ -1409,7 +1409,7 @@ public final class ServerConfig {
         PARKOUR_LEDGE_MIN_HEIGHT = doubleValue("ledgeMinHeight", "Lowest ledge that can be grabbed (blocks above the"
                 + " feet).", 0.9, 0.0, 3.0);
         PARKOUR_LEDGE_MAX_HEIGHT = doubleValue("ledgeMaxHeight", "Highest ledge that can be grabbed (blocks above"
-                + " the feet).", 2.2, 0.5, 4.0);
+                + " the feet).", 2.6, 0.5, 4.0);
         PARKOUR_LEDGE_HANG_DROP = doubleValue("ledgeHangDrop", "How far below the ledge top the feet hang.",
                 1.7, 0.5, 3.0);
         PARKOUR_LEDGE_MAX_TICKS = intValue("ledgeMaxTicks", "Longest hang from a ledge.", 200, 1, 1200);
