@@ -17,6 +17,7 @@ import com.kn8.common.invasion.InvasionService;
 import com.kn8.common.data.def.MissionDef;
 import com.kn8.common.destruction.ProtectedAreas;
 import com.kn8.common.evacuation.EvacuationService;
+import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.registry.KN8Sounds;
 import com.kn8.common.site.RegionService;
 import com.kn8.common.soldier.SquadService;
@@ -60,8 +61,15 @@ public final class MissionService {
         /** PM-8B: prova so com o Oficial de Provas perto (dentro de uma base). */
         NEEDS_EXAM_OFFICER,
         /** PM-9: a regiao esta em combate (provas fechadas ate passar). */
-        REGION_COMBAT
+        REGION_COMBAT,
+        /** EXAME: a prova so e aceita dentro do local dela ({@code arena.site}, ex. o Campo do Exame de Admissao). */
+        NEEDS_SITE
     }
+
+    /** EXAME: raio onde estao os invocados que nascem junto do chefe da prova. */
+    private static final double BOSS_MINION_RADIUS = 16.0;
+    /** EXAME: pontos sorteados para os alvos da prova (fica o mais longe do jogador). */
+    private static final int EXAM_AREA_TRIES = 8;
 
     /** PM-8B: prova = categoria {@code exam} (curso dentro da base); o resto e missao de campo. */
     public static boolean isExam(MissionDef def) {
@@ -110,6 +118,10 @@ public final class MissionService {
         if (isExam(def.get()) && RegionService.servicesClosed(player.serverLevel(), player.blockPosition())) {
             return Result.REGION_COMBAT;
         }
+        Optional<ResourceLocation> site = def.get().arena().flatMap(MissionDef.Arena::site);
+        if (site.isPresent() && ExamKit.siteCenter(player, site.get()).isEmpty()) {
+            return Result.NEEDS_SITE;
+        }
         int minSquad = def.get().grading().map(MissionDef.Grading::minSquad).orElse(0);
         if (minSquad > 0 && SquadService.members(player).size() < minSquad) {
             return Result.SQUAD_TOO_SMALL;
@@ -126,8 +138,11 @@ public final class MissionService {
         }
         MissionDef def = KN8Data.MISSION.get(id, false).orElseThrow();
         int count = def.objectives().size();
-        // PM-8B: a prova acontece onde foi aceita (na base, junto do oficial); a area nao pode ser quebrada.
-        Optional<BlockPos> origin = isExam(def) ? Optional.of(player.blockPosition()) : Optional.empty();
+        // PM-8B: a prova acontece onde foi aceita (na base, junto do oficial); a area nao pode ser quebrada. EXAME: com
+        // local proprio, no centro dele.
+        Optional<BlockPos> origin = isExam(def) ? Optional.of(def.arena().flatMap(MissionDef.Arena::site)
+                .flatMap(site -> ExamKit.siteCenter(player, site)).orElse(player.blockPosition()))
+                : Optional.empty();
         CareerData.MissionProgress progress = new CareerData.MissionProgress(
                 new ArrayList<>(Collections.nCopies(count, 0)), player.level().getGameTime(),
                 new ArrayList<>(Collections.nCopies(count, CareerView.NO_POINT)), new CareerData.MissionStats(),
@@ -147,6 +162,12 @@ public final class MissionService {
         player.level().playSound(null, player.blockPosition(), SoundEvents.NOTE_BLOCK_CHIME.value(),
                 SoundSource.PLAYERS, 0.8F, 1.2F);
         def.grading().ifPresent(grading -> showRequirements(player, grading));
+        def.arena().filter(arena -> !arena.kit().isEmpty()).ifPresent(arena -> {
+            // EXAME: armas, armadura, municao e itens entregues no inicio.
+            int given = ExamKit.give(player, id, arena.kit());
+            player.sendSystemMessage(Component.translatable(arena.returnKit() ? "kn8.mission.kit_loaned"
+                    : "kn8.mission.kit_given", given).withStyle(ChatFormatting.GREEN));
+        });
         activateObjective(player, id, def, progress, 0);
         CareerService.changed(player);
         return Result.OK;
@@ -382,9 +403,11 @@ public final class MissionService {
         // PM-8B: na prova tudo acontece perto de onde ela foi aceita (dentro da base); na missao, em campo.
         Optional<BlockPos> origin = progress.origin();
         BlockPos center = origin.orElse(player.blockPosition());
-        double areaMin = origin.isPresent() ? ServerConfig.EXAM_AREA_MIN.get() : ServerConfig.MISSION_AREA_MIN.get();
-        double areaMax = origin.isPresent() ? ServerConfig.EXAM_AREA_MAX.get() : ServerConfig.MISSION_AREA_MAX.get();
-        BlockPos area = KaijuSpawner.surfaceAround(level, center, areaMin, areaMax, player.getRandom());
+        double areaMin = origin.isPresent() ? def.arena().map(MissionDef.Arena::minDistance)
+                .orElse(ServerConfig.EXAM_AREA_MIN.get()) : ServerConfig.MISSION_AREA_MIN.get();
+        double areaMax = origin.isPresent() ? def.arena().map(MissionDef.Arena::maxDistance)
+                .orElse(ServerConfig.EXAM_AREA_MAX.get()) : ServerConfig.MISSION_AREA_MAX.get();
+        BlockPos area = targetArea(level, player, center, areaMin, areaMax, origin.isPresent());
         double spread = origin.isPresent() ? 3 : 8;
         switch (objective.type()) {
             case KILL_KAIJU, DISMANTLE -> {
@@ -404,6 +427,10 @@ public final class MissionService {
                 objective.target().ifPresent(boss -> BossService.spawn(level, boss, area).ifPresent(kaiju -> {
                     if (origin.isPresent()) {
                         ExamTargets.mark(kaiju, player.getUUID(), id);
+                        // EXAME: os invocados que nasceram junto do chefe (antes da marca dele) tambem sao da prova.
+                        level.getEntitiesOfClass(KaijuEntity.class, kaiju.getBoundingBox().inflate(BOSS_MINION_RADIUS),
+                                minion -> minion != kaiju && minion.tickCount == 0 && !ExamTargets.isExam(minion))
+                                .forEach(minion -> ExamTargets.copy(kaiju, minion));
                     }
                 }));
                 setPoint(progress, index, area);
@@ -618,6 +645,30 @@ public final class MissionService {
             ProtectedAreas.get(player.serverLevel()).remove(ExamTargets.areaName(player.getUUID(), id));
         });
         EvacuationService.clear(player, id);
+        // EXAME: o kit emprestado volta para a Forca de Defesa quando a prova acaba (de qualquer jeito).
+        KN8Data.MISSION.get(id, false).flatMap(MissionDef::arena).filter(MissionDef.Arena::returnKit)
+                .ifPresent(arena -> {
+                    if (ExamKit.take(player, id) > 0) {
+                        player.sendSystemMessage(Component.translatable("kn8.mission.kit_returned")
+                                .withStyle(ChatFormatting.GRAY));
+                    }
+                });
+    }
+
+    /**
+     * Ponto dos alvos do objetivo. EXAME (visto em jogo: os 3 Primigenius surgiram em cima do candidato e o mataram em
+     * 3 s): na prova, o mais longe do jogador entre alguns sorteados.
+     */
+    private static BlockPos targetArea(ServerLevel level, ServerPlayer player, BlockPos center, double min,
+            double max, boolean exam) {
+        BlockPos area = KaijuSpawner.surfaceAround(level, center, min, max, player.getRandom());
+        for (int i = 0; exam && i < EXAM_AREA_TRIES; i++) {
+            BlockPos other = KaijuSpawner.surfaceAround(level, center, min, max, player.getRandom());
+            if (other.distSqr(player.blockPosition()) > area.distSqr(player.blockPosition())) {
+                area = other;
+            }
+        }
+        return area;
     }
 
     /** Ponto de patrulha: em campo longe do jogador; na prova, perto de onde ela foi aceita. */

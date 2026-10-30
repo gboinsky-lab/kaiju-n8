@@ -18,7 +18,33 @@ import net.minecraft.util.StringRepresentable;
  */
 public record MissionDef(Category category, Optional<ResourceLocation> giver, Requires requires,
         List<Objective> objectives, Fail fail, Rewards rewards, boolean repeatable, int cooldownTicks,
-        Optional<Grading> grading) {
+        Optional<Grading> grading, Optional<Arena> arena) {
+
+    /**
+     * EXAME (Miguel, 2026-10-30: "exame de admissao numa area propria, com armas, armadura, municao e itens entregues
+     * no inicio"): prova que so pode ser aceita dentro do local {@code site} (registro {@code site}, ex. o Campo do
+     * Exame de Admissao); os alvos surgem entre {@code min_distance} e {@code max_distance} do centro do local; o
+     * {@code kit} e entregue ao aceitar (armadura vestida se o slot estiver livre, armas de fogo e pentes cheios) e,
+     * com {@code return_kit}, recolhido no fim (concluida, reprovada ou abandonada).
+     */
+    public record Arena(Optional<ResourceLocation> site, double minDistance, double maxDistance, List<KitItem> kit,
+            boolean returnKit) {
+        public static final Codec<Arena> CODEC = RecordCodecBuilder.create(i -> i.group(
+                ResourceLocation.CODEC.optionalFieldOf("site").forGetter(Arena::site),
+                Codec.doubleRange(0.0, 256.0).optionalFieldOf("min_distance", 6.0).forGetter(Arena::minDistance),
+                Codec.doubleRange(1.0, 256.0).optionalFieldOf("max_distance", 14.0).forGetter(Arena::maxDistance),
+                KitItem.CODEC.listOf().optionalFieldOf("kit", List.of()).forGetter(Arena::kit),
+                Codec.BOOL.optionalFieldOf("return_kit", true).forGetter(Arena::returnKit)
+        ).apply(i, Arena::new));
+    }
+
+    /** Item do kit do exame: id e quantidade. */
+    public record KitItem(ResourceLocation item, int count) {
+        public static final Codec<KitItem> CODEC = RecordCodecBuilder.create(i -> i.group(
+                ResourceLocation.CODEC.fieldOf("item").forGetter(KitItem::item),
+                Codec.intRange(1, 64).optionalFieldOf("count", 1).forGetter(KitItem::count)
+        ).apply(i, KitItem::new));
+    }
 
     /**
      * PM-7: prova de promocao. Requisitos medidos durante a missao (todos opcionais): precisao minima com um minimo
@@ -165,6 +191,7 @@ public record MissionDef(Category category, Optional<ResourceLocation> giver, Re
             Rewards.CODEC.optionalFieldOf("rewards", Rewards.NONE).forGetter(MissionDef::rewards),
             Codec.BOOL.optionalFieldOf("repeatable", false).forGetter(MissionDef::repeatable),
             DefCodecs.TICKS.optionalFieldOf("cooldown_ticks", 0).forGetter(MissionDef::cooldownTicks),
-            Grading.CODEC.optionalFieldOf("grading").forGetter(MissionDef::grading)
+            Grading.CODEC.optionalFieldOf("grading").forGetter(MissionDef::grading),
+            Arena.CODEC.optionalFieldOf("arena").forGetter(MissionDef::arena)
     ).apply(i, MissionDef::new));
 }

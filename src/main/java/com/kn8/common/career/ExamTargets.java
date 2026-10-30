@@ -34,6 +34,18 @@ public final class ExamTargets {
         entity.getPersistentData().put(TAG, tag);
     }
 
+    /** Passa a marca da prova de um kaiju para outro (invocados do chefe da prova). */
+    public static void copy(Entity from, Entity to) {
+        if (isExam(from)) {
+            to.getPersistentData().put(TAG, from.getPersistentData().getCompound(TAG).copy());
+        }
+    }
+
+    /** Tira a marca (testes). */
+    public static void unmark(Entity entity) {
+        entity.getPersistentData().remove(TAG);
+    }
+
     public static boolean isExam(Entity entity) {
         return entity.getPersistentData().contains(TAG);
     }

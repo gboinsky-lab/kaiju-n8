@@ -1657,3 +1657,19 @@ Servidor dedicado + 2 clientes, jogador em sobrevivencia. Imagem: `docs/img/trei
 | 119.8 | Shift + clique num Hoshina (ou outro especial) | Nada acontece (so soldados comuns) |
 | 119.9 | Escalar uma parede de 12 blocos (C + W) | Agilidade e forca ganham XP (pelo `body_xp`) |
 | 119.10 | `/place template kn8:defense_base/wing_training` | Tres suportes de pesos e uma torre de escalada de 7 blocos ao lado dos bonecos |
+
+## 120. EXAME: exame de admissao no Campo do Exame
+
+Servidor dedicado + 2 clientes num mundo novo (o campo nasce com o mapa; `/locate structure kn8:exam_ground`).
+Jogador em sobrevivencia com a patente Candidato (`/kn8 rank set kn8:candidato <jogador>`). Imagem:
+`docs/img/exame_admissao.jpg`.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 120.1 | Ir ao campo | Campo cercado com portao, pavilhao, torre, mata e ruinas; ao entrar, "Campo do Exame de Admissao / Forca de Defesa, Comissao de Selecao" |
+| 120.2 | Oficial de Provas de uma base (fora do campo): aceitar o Exame de Admissao | Recusado: "Este exame acontece no Campo do Exame de Admissao" |
+| 120.3 | No pavilhao, falar com o Oficial de Provas e aceitar o exame | Kit entregue: Mk1 vestido, rifle e 3 pentes cheios, 60 balas, faca, estimulantes, resfriador, pao; dica amarela "Equipamento do exame" nos itens |
+| 120.4 | Seguir a HUD ate a area | Os 3 Primigenius surgem longe do jogador (nao em cima) |
+| 120.5 | Vencer os 3 e o Honju do exame | O Primigenius que o Honju invoca nao deixa carcaca e a regiao nao entra em combate; no fim "PROMOVIDO" a Oficial, nota e o kit sai do inventario |
+| 120.6 | Repetir e morrer durante a prova | "Missao fracassada"; nenhum item do kit fica no chao |
+| 120.7 | Soldado comum perto de um kaiju da prova de outro jogador | O soldado nao ataca esse kaiju |

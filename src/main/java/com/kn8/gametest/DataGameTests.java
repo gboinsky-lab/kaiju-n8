@@ -83,12 +83,13 @@ public final class DataGameTests {
 
     @GameTest(template = TEMPLATE)
     public static void missionChainWithMissingRequirementIsRemoved(GameTestHelper helper) {
-        MissionDef exam = KN8Data.MISSION.server().get(KN8Constants.id("exam"));
-        helper.assertTrue(exam != null, "kn8:exam nao carregou");
-        // O exame exige kn8:first_dismantle; validando o exame sozinho, a dependencia nao existe.
+        // EXAME: o exame de admissao deixou de pedir outra missao; a cadeia usada e a da Ameaca Revivida.
+        MissionDef chained = KN8Data.MISSION.server().get(KN8Constants.id("revived_threat"));
+        helper.assertTrue(chained != null, "kn8:revived_threat nao carregou");
+        // A missao exige outra concluida (requires.completed); validando-a sozinha, a dependencia nao existe.
         DataReport report = new DataReport();
         Map<ResourceLocation, MissionDef> valid = DataValidation.validateMissions(
-                Map.of(KN8Constants.id("exam"), exam), KN8Data.RANK.server().keySet(),
+                Map.of(KN8Constants.id("revived_threat"), chained), KN8Data.RANK.server().keySet(),
                 KN8Data.KAIJU.server().keySet(), KN8Data.BOSS.server().keySet(), report);
         helper.assertTrue(valid.isEmpty(), "Missao com requires.completed inexistente deveria sair");
         helper.assertTrue(!report.errors().isEmpty(), "Deveria haver erro de dependencia");

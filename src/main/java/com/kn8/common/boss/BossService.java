@@ -7,6 +7,7 @@ import java.util.UUID;
 import com.kn8.KN8Constants;
 import com.kn8.common.ai.AiTuning;
 import com.kn8.common.career.CareerService;
+import com.kn8.common.career.ExamTargets;
 import com.kn8.common.career.MissionService;
 import com.kn8.common.data.KN8Data;
 import com.kn8.common.data.def.BossDef;
@@ -190,6 +191,8 @@ public final class BossService {
                     SUMMON_SPREAD, level.random);
             KaijuSpawner.spawn(level, summon.species(), spot).ifPresent(minion -> {
                 minion.setTarget(boss.getTarget());
+                // EXAME: os invocados do chefe da prova tambem sao da prova (sem carcaca, sem alerta da regiao).
+                ExamTargets.copy(boss, minion);
                 VfxService.keyed(level, VfxService.SMOKE, minion.position().add(0, 1, 0), Vec3.ZERO,
                         minion.getBbWidth() * 0.5F + 0.5F, "", 0.0F);
             });

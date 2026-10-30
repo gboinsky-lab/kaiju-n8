@@ -35,7 +35,7 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 public final class SiteGameTests {
 
     private static final List<String> SITES = List.of("ariake_base", "tachikawa_base", "shinagawa_city",
-            "tachikawa_city");
+            "tachikawa_city", "exam_ground");
     /** Peca e quantos encaixes ela tem. */
     private static final Map<String, Integer> PIECES = Map.ofEntries(Map.entry("ariake_base/core", 4),
             Map.entry("ariake_base/harbor", 1), Map.entry("tachikawa_base/core", 4),
@@ -79,7 +79,7 @@ public final class SiteGameTests {
         StructureSet set = helper.getLevel().registryAccess().registryOrThrow(Registries.STRUCTURE_SET)
                 .get(KN8Constants.id("defense_sites"));
         helper.assertTrue(set != null && set.structures().size() == SITES.size(),
-                "kn8:defense_sites deveria ter os 4 locais");
+                "kn8:defense_sites deveria ter os " + SITES.size() + " locais");
         helper.assertTrue(helper.getLevel().registryAccess().registryOrThrow(Registries.STRUCTURE_SET)
                 .get(KN8Constants.id("defense_base_large")) == null, "A base grande generica nao nasce mais sozinha");
         helper.succeed();
@@ -109,9 +109,12 @@ public final class SiteGameTests {
     @GameTest(template = "empty_3x3")
     public static void siteDataIsValid(GameTestHelper helper) {
         Map<net.minecraft.resources.ResourceLocation, SiteDef> sites = KN8Data.SITE.server();
-        helper.assertTrue(sites.size() == SITES.size(), "Deveria haver 4 locais, ha " + sites.size());
+        helper.assertTrue(sites.size() == SITES.size(), "Deveria haver " + SITES.size() + " locais, ha "
+                + sites.size());
         sites.forEach((id, def) -> {
-            helper.assertTrue(!def.invasions().isEmpty(), "Local " + id + " deveria ter invasoes validas");
+            // EXAME: o Campo do Exame de Admissao nao tem invasao propria (o exame e a prova do candidato).
+            helper.assertTrue(!def.invasions().isEmpty() || id.getPath().equals("exam_ground"),
+                    "Local " + id + " deveria ter invasoes validas");
             def.invasions().forEach(entry -> helper.assertTrue(KN8Data.INVASION.server()
                     .containsKey(entry.invasion()), "Invasao " + entry.invasion() + " deveria existir"));
             def.garrison().stream().filter(member -> !member.variant().equals("rifle")).forEach(member ->

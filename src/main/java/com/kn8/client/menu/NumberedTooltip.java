@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.kn8.common.attribute.PowerView;
+import com.kn8.common.career.ExamKit;
 import com.kn8.common.data.KN8Data;
 import com.kn8.common.data.def.NumberedGearDef;
 import com.kn8.common.data.def.RankDef;
@@ -33,6 +34,10 @@ public final class NumberedTooltip {
     }
 
     private static void onTooltip(ItemTooltipEvent event) {
+        if (ExamKit.missionOf(event.getItemStack()).isPresent()) {
+            // EXAME: item emprestado no exame (sai do inventario quando a prova acaba).
+            event.getToolTip().add(Component.translatable("kn8.mission.kit_tooltip").withStyle(ChatFormatting.YELLOW));
+        }
         LocalPlayer player = MenuData.player();
         Optional<Map.Entry<ResourceLocation, NumberedGearDef>> gear = NumberedGearService.of(event.getItemStack(),
                 true);

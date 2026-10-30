@@ -2,10 +2,7 @@
   "category": "exam",
   "giver": "kn8:exam_officer",
   "requires": {
-    "rank": "kn8:candidato",
-    "completed": [
-      "kn8:first_dismantle"
-    ]
+    "rank": "kn8:candidato"
   },
   "objectives": [
     {
@@ -38,5 +35,41 @@
   "grading": {
     "par_ticks": 6000,
     "min_grade": "d"
+  },
+  "arena": {
+    "site": "kn8:exam_ground",
+    "min_distance": 6,
+    "max_distance": 14,
+    "kit": [
+      {
+        "item": "kn8:mk1"
+      },
+      {
+        "item": "kn8:rifle"
+      },
+      {
+        "item": "kn8:rifle_magazine",
+        "count": 3
+      },
+      {
+        "item": "kn8:rifle_ammo",
+        "count": 60
+      },
+      {
+        "item": "kn8:combat_knife"
+      },
+      {
+        "item": "kn8:stamina_stim",
+        "count": 2
+      },
+      {
+        "item": "kn8:suit_coolant"
+      },
+      {
+        "item": "minecraft:bread",
+        "count": 6
+      }
+    ],
+    "return_kit": true
   }
 }

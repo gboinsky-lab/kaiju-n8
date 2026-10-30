@@ -6,6 +6,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.UUID;
 
+import com.kn8.common.career.ExamTargets;
 import com.kn8.common.evacuation.CivilianEntity;
 import com.kn8.common.ai.AiTuning;
 import com.kn8.common.config.ServerConfig;
@@ -115,6 +116,7 @@ public final class SoldierTargetGoal extends Goal {
                 && soldier.tickCount - soldier.getLastHurtByMobTimestamp() <= ServerConfig.SOLDIER_REVENGE_TICKS.get();
         List<KaijuEntity> found = soldier.level().getEntitiesOfClass(KaijuEntity.class,
                 soldier.getBoundingBox().inflate(range), kaiju -> kaiju.isAlive() && soldier.canAttack(kaiju)
+                        && examAllowed(kaiju)
                         && (home == null || kaiju.getUUID().equals(assigned)
                         || kaiju.getBoundingBox().distanceToSqr(home) <= leash * leash));
         List<SoldierTargeting.Candidate> candidates = new ArrayList<>(found.size());
@@ -146,6 +148,18 @@ public final class SoldierTargetGoal extends Goal {
         } else if (current != null && (current instanceof KaijuEntity || !current.isAlive())) {
             soldier.setTarget(null);
         }
+    }
+
+    /**
+     * EXAME: kaiju de prova e do candidato (o exame nao e ganho pelos soldados); so o esquadrao do dono da prova luta
+     * com eles.
+     */
+    private boolean examAllowed(KaijuEntity kaiju) {
+        if (!ExamTargets.isExam(kaiju)) {
+            return true;
+        }
+        UUID owner = ExamTargets.owner(kaiju);
+        return owner != null && soldier.squadLeader().filter(owner::equals).isPresent();
     }
 
     /** IA-3 (protecao de aliados): o alvo do kaiju e outro soldado ou um jogador. */
