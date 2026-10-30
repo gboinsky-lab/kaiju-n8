@@ -293,9 +293,14 @@ public final class ParkourService {
         }
         Vec3 into = new Vec3(-data.normalX, 0.0, -data.normalZ);
         double height = data.hangY + data.ledgeHeight - player.getY();
+        // FIX-3: o topo medido de novo agora (o agarre automatico caindo rapido guarda a altura com a posicao
+        // atrasada do servidor) e margem propria para passar o corpo por cima da beira.
+        double fresh = ParkourProbe.obstacleHeight(player, into, ServerConfig.PARKOUR_PROBE_REACH.get(),
+                ServerConfig.PARKOUR_LEDGE_MAX_HEIGHT.get() * level(player) + 1.0);
+        height = Math.max(height, fresh);
         end(player, data, false);
         data.leftWallState = ParkourState.NONE;
-        double up = ParkourMath.launchSpeedFor(Math.max(0.0, height), ServerConfig.PARKOUR_LAUNCH_MARGIN.get());
+        double up = ParkourMath.launchSpeedFor(Math.max(0.0, height), ServerConfig.PARKOUR_LEDGE_CLIMB_MARGIN.get());
         impulse(player, data, into.scale(ServerConfig.PARKOUR_CLIMB_FORWARD.get()).add(0.0, up, 0.0), "ledge_climb");
         return true;
     }

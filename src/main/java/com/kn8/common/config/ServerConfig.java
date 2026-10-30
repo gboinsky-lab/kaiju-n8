@@ -501,6 +501,7 @@ public final class ServerConfig {
     public static final ModConfigSpec.IntValue PARKOUR_WALL_CLIMB_MAX_TICKS;
     public static final ModConfigSpec.BooleanValue PARKOUR_AUTO_LEDGE_GRAB;
     public static final ModConfigSpec.DoubleValue PARKOUR_LEDGE_SHIMMY_SPEED;
+    public static final ModConfigSpec.DoubleValue PARKOUR_LEDGE_CLIMB_MARGIN;
 
     // --- arena de treino (construcoes C2) ----------------------------------------------------------------------------
     public static final ModConfigSpec.ConfigValue<List<? extends String>> ARENA_KAIJU;
@@ -1439,6 +1440,8 @@ public final class ServerConfig {
                 + " grabs it without the parkour key.", true);
         PARKOUR_LEDGE_SHIMMY_SPEED = doubleValue("ledgeShimmySpeed", "Sideways speed while hanging from a ledge"
                 + " (left/right keys).", 0.12, 0.0, 1.0);
+        PARKOUR_LEDGE_CLIMB_MARGIN = doubleValue("ledgeClimbMargin", "Height over the ledge top reached when"
+                + " climbing up from hanging (blocks; room to move over the edge).", 0.7, 0.0, 2.0);
         BUILDER.pop();
 
         section("trainingArena", "Training arena of the large Defense Force base (C2): the console releases a real kaiju"
