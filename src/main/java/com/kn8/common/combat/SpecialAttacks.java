@@ -29,6 +29,8 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
+import org.jetbrains.annotations.Nullable;
+
 /**
  * Resolvedor dos ataques especiais das armas (0.5), no tick de impacto do JSON. Nao conhece jogador nem soldado:
  * quem chama passa o dano ja calculado (jogador: Release; soldado especial: o nivel dele) e a fonte de dano. Assim o
@@ -39,6 +41,8 @@ public final class SpecialAttacks {
     private static final float SOUND_VOLUME = 2.0F;
     /** Folga da busca: a hitbox de um kaiju largo pode estar com o centro bem fora do raio. */
     private static final double SEARCH_MARGIN = 8.0;
+    /** COMBATE-6: folga (blocos) do corte do Numbers 1 que acerta o inimigo mais perto. */
+    private static final double SURE_FLURRY_EXTRA = 1.5;
     /** COMBATE-3: mergulho do Falling Thunder: deriva para a frente e folga do toque no kaiju (blocos). */
     private static final double DIVE_FORWARD = 0.25;
     private static final double DIVE_TOUCH_BELOW = 0.6;
@@ -62,16 +66,45 @@ public final class SpecialAttacks {
      * PvP) ficam de fora; kaiju levam no corpo (sem nucleo, como os outros golpes de area).
      */
     public static int resolve(LivingEntity source, WeaponDef.Special special, float damage, DamageSource damageSource) {
+        return resolve(source, special, damage, damageSource, false);
+    }
+
+    /**
+     * COMBATE-6: com {@code sureHit} (baioneta do Numbers 1, que preve o movimento) o corte em avanco e a sequencia
+     * de cortes que nao pegariam ninguem acertam o inimigo mais perto ao alcance da tecnica (sem atravessar parede),
+     * e o corte que voa mira onde ele vai estar.
+     */
+    public static int resolve(LivingEntity source, WeaponDef.Special special, float damage, DamageSource damageSource,
+            boolean sureHit) {
         if (!(source.level() instanceof ServerLevel level)) {
             return 0;
         }
         return switch (special.type()) {
             case GROUND_SLAM -> groundSlam(level, source, special, damage, damageSource);
-            case SLASH_WAVE -> slashWave(level, source, special, damage);
-            case LUNGE -> lunge(level, source, special, damage, damageSource);
-            case FLURRY -> flurry(level, source, special, damage, damageSource);
+            case SLASH_WAVE -> slashWave(level, source, special, damage, sureHit);
+            case LUNGE -> lunge(level, source, special, damage, damageSource, sureHit);
+            case FLURRY -> flurry(level, source, special, damage, damageSource, sureHit);
             case DIVE_SLAM -> diveSlam(level, source, special, damage, damageSource);
         };
+    }
+
+    /** COMBATE-6: inimigo mais perto ate {@code reach} (borda), com caminho livre; para o acerto garantido. */
+    @Nullable
+    private static LivingEntity sureTarget(ServerLevel level, LivingEntity source, double reach) {
+        LivingEntity best = null;
+        double bestDistance = Double.MAX_VALUE;
+        for (LivingEntity target : level.getEntitiesOfClass(LivingEntity.class,
+                source.getBoundingBox().inflate(reach + SEARCH_MARGIN),
+                candidate -> candidate != source && candidate.isAlive() && !isAlly(source, candidate))) {
+            AABB box = target.getBoundingBox();
+            double distance = SpecialGeometry.horizontalDistanceToBox(source.getX(), source.getZ(), box.minX, box.minZ,
+                    box.maxX, box.maxZ);
+            if (distance <= reach && distance < bestDistance && clearPath(level, source, box.getCenter())) {
+                best = target;
+                bestDistance = distance;
+            }
+        }
+        return best;
     }
 
     /** COMBATE-3: altura (blocos) dos pes ate o chao logo abaixo, ate {@code max} (sem chao ate la = {@code max}). */
@@ -113,8 +146,16 @@ public final class SpecialAttacks {
      * 0.6-D: corte que voa reto pelo olhar de quem ataca ({@link SlashProjectile}); o dano sai quando o corte cruza
      * cada alvo, nao neste tick. Devolve quantos cortes sairam.
      */
-    private static int slashWave(ServerLevel level, LivingEntity source, WeaponDef.Special special, float damage) {
-        int fired = SlashProjectile.fire(source, source.getLookAngle(), special.slash(), damage, 1.0F);
+    private static int slashWave(ServerLevel level, LivingEntity source, WeaponDef.Special special, float damage,
+            boolean sureHit) {
+        Vec3 direction = source.getLookAngle();
+        LivingEntity sure = sureHit ? sureTarget(level, source, special.slash().range()) : null;
+        if (sure != null && special.slash().speed() > 0) {
+            Vec3 aim = sure.getBoundingBox().getCenter().subtract(source.getEyePosition());
+            Vec3 moving = sure.getDeltaMovement().multiply(1.0, 0.0, 1.0);
+            direction = aim.add(moving.scale(aim.length() / special.slash().speed())).normalize();
+        }
+        int fired = SlashProjectile.fire(source, direction, special.slash(), damage, 1.0F);
         effects(level, special, source.getEyePosition().add(source.getLookAngle()), source);
         return fired;
     }
@@ -152,7 +193,7 @@ public final class SpecialAttacks {
      * leva o golpe uma vez.
      */
     private static int lunge(ServerLevel level, LivingEntity source, WeaponDef.Special special, float damage,
-            DamageSource damageSource) {
+            DamageSource damageSource, boolean sureHit) {
         Vec3 look = source.getLookAngle();
         Vec3 flat = new Vec3(look.x, 0, look.z);
         if (flat.lengthSqr() < 1.0E-4) {
@@ -187,6 +228,16 @@ public final class SpecialAttacks {
                 hits++;
             }
         }
+        LivingEntity sure = hits == 0 && sureHit ? sureTarget(level, source, length + special.radius()) : null;
+        if (sure != null) {
+            // COMBATE-6: o Numbers 1 ja sabia para onde o inimigo ia: o avanco acerta mesmo fora da faixa.
+            boolean struck = false;
+            for (int cut = 0; cut < Math.max(1, special.slash().count()); cut++) {
+                sure.invulnerableTime = 0;
+                struck |= hit(special, sure, damage, damageSource, start);
+            }
+            hits += struck ? 1 : 0;
+        }
         effects(level, special, start.add(direction.scale(length * 0.5)), source);
         return hits;
     }
@@ -198,21 +249,21 @@ public final class SpecialAttacks {
      * das tecnicas): sem isso o segundo corte seria engolido. Devolve os alvos do primeiro corte.
      */
     private static int flurry(ServerLevel level, LivingEntity source, WeaponDef.Special special, float damage,
-            DamageSource damageSource) {
-        int first = flurryCut(level, source, special, damage, damageSource, 0);
+            DamageSource damageSource, boolean sureHit) {
+        int first = flurryCut(level, source, special, damage, damageSource, 0, sureHit);
         KN8Server server = KN8Server.get(level.getServer());
         // COMBATE-3: slash.count > 1 da o numero de cortes da tecnica (Daruma Dropper 4, Ten Hit 10).
         int cuts = special.slash().count() > 1 ? special.slash().count() : ServerConfig.FLURRY_HITS.get();
         for (int cut = 1; cut < cuts; cut++) {
             int index = cut;
             server.schedule(cut * ServerConfig.FLURRY_INTERVAL_TICKS.get(),
-                    () -> flurryCut(level, source, special, damage, damageSource, index));
+                    () -> flurryCut(level, source, special, damage, damageSource, index, sureHit));
         }
         return first;
     }
 
     private static int flurryCut(ServerLevel level, LivingEntity source, WeaponDef.Special special, float damage,
-            DamageSource damageSource, int cut) {
+            DamageSource damageSource, int cut, boolean sureHit) {
         if (!source.isAlive() || source.level() != level) {
             return 0;
         }
@@ -235,6 +286,12 @@ public final class SpecialAttacks {
             if (hit(special, target, damage, damageSource, source.position())) {
                 hits++;
             }
+        }
+        LivingEntity sure = hits == 0 && sureHit ? sureTarget(level, source, reach + SURE_FLURRY_EXTRA) : null;
+        if (sure != null) {
+            // COMBATE-6: corte do Numbers 1 que pegaria o ar acerta o inimigo mais perto (de qualquer lado).
+            sure.invulnerableTime = 0;
+            hits += hit(special, sure, damage, damageSource, source.position()) ? 1 : 0;
         }
         Vec3 center = eye.add(look.scale(Math.min(reach, 1.5)));
         if (cut == 0) {

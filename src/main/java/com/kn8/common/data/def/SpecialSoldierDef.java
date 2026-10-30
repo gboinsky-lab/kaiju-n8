@@ -89,6 +89,15 @@ public record SpecialSoldierDef(float health, float armor, float speed, float fo
         return below == null || health <= maxHealth * below;
     }
 
+    /**
+     * COMBATE-6 (Miguel, 2026-10-29: Narumi com o Numbers 1 "deve acertar de qualquer jeito o alvo pois o numero 1 preve
+     * o futuro"): os golpes das tecnicas valem ate o alcance da tecnica (ele ja esta onde o golpe cai) e o tiro mira
+     * onde o alvo vai estar. Parede continua barrando.
+     */
+    public boolean sureHit() {
+        return growth.sureHit();
+    }
+
     /** Comportamento de atirador que mantem distancia (Mina, Reno); vazio = vai ate o alcance da arma. */
     public Optional<Ranged> ranged() {
         return growth.ranged();
@@ -106,7 +115,8 @@ public record SpecialSoldierDef(float health, float armor, float speed, float fo
     public record Growth(Escalation escalation, Optional<Numbers10> numbers10, Optional<Flight> flight,
             Optional<Transform> transform, Optional<Regeneration> regeneration, float height,
             Optional<Ranged> ranged, Optional<Heavy> heavy, Map<String, Integer> techniqueUses,
-            Optional<HeavyGuard> heavyGuard, Tactics tactics, Rhythm rhythm, Map<String, Float> lowHealth) {
+            Optional<HeavyGuard> heavyGuard, Tactics tactics, Rhythm rhythm, Map<String, Float> lowHealth,
+            boolean sureHit) {
         public static final MapCodec<Growth> MAP_CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
                 Escalation.CODEC.optionalFieldOf("escalation", Escalation.NONE).forGetter(Growth::escalation),
                 Numbers10.CODEC.optionalFieldOf("numbers10").forGetter(Growth::numbers10),
@@ -122,7 +132,8 @@ public record SpecialSoldierDef(float health, float armor, float speed, float fo
                 Tactics.CODEC.optionalFieldOf("tactics", Tactics.DEFAULT).forGetter(Growth::tactics),
                 Rhythm.CODEC.optionalFieldOf("rhythm", Rhythm.NONE).forGetter(Growth::rhythm),
                 Codec.unboundedMap(Codec.STRING, Codec.floatRange(0.0F, 1.0F)).optionalFieldOf("low_health", Map.of())
-                        .forGetter(Growth::lowHealth)
+                        .forGetter(Growth::lowHealth),
+                Codec.BOOL.optionalFieldOf("sure_hit", false).forGetter(Growth::sureHit)
         ).apply(i, Growth::new));
     }
 

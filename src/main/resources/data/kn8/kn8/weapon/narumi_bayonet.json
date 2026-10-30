@@ -25,5 +25,76 @@
     "swing": "kn8:weapon.sword_swing",
     "heavy": "kn8:weapon.sword_heavy",
     "hit": "kn8:weapon.sword_hit"
-  }
+  },
+  "techniques": [
+    {
+      "id": "eruption_slash",
+      "type": "flurry",
+      "multiplier": 0.8,
+      "duration_ticks": 20,
+      "impact_tick": 4,
+      "radius": 3.4,
+      "stamina_cost": 25,
+      "heat_cost": 4,
+      "cooldown_ticks": 110,
+      "camera_shake": 0.12,
+      "vfx": [
+        {
+          "effect": "kn8:technique",
+          "intensity": 1.2
+        }
+      ],
+      "sound": "kn8:weapon.sword_heavy",
+      "slash": {
+        "count": 4
+      }
+    },
+    {
+      "id": "slash_salvo",
+      "type": "lunge",
+      "multiplier": 0.9,
+      "duration_ticks": 16,
+      "impact_tick": 5,
+      "radius": 1.2,
+      "forward": 6.0,
+      "stamina_cost": 25,
+      "heat_cost": 4,
+      "cooldown_ticks": 100,
+      "knockback": 0.3,
+      "camera_shake": 0.15,
+      "vfx": [
+        {
+          "effect": "kn8:technique",
+          "intensity": 1.2
+        }
+      ],
+      "sound": "kn8:weapon.sword_heavy",
+      "slash": {
+        "count": 3
+      }
+    },
+    {
+      "id": "seven_branched_sword",
+      "type": "flurry",
+      "multiplier": 0.7,
+      "duration_ticks": 30,
+      "impact_tick": 4,
+      "radius": 3.6,
+      "stamina_cost": 40,
+      "heat_cost": 7,
+      "cooldown_ticks": 220,
+      "stagger_ticks": 20,
+      "camera_shake": 0.25,
+      "vfx": [
+        {
+          "effect": "kn8:technique",
+          "intensity": 1.2
+        }
+      ],
+      "sound": "kn8:weapon.sword_heavy",
+      "slash": {
+        "count": 7
+      }
+    }
+  ]
 }

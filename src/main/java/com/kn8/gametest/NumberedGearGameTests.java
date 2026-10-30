@@ -21,7 +21,9 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.animal.IronGolem;
 
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -49,6 +51,8 @@ public final class NumberedGearGameTests {
 
     private static final String TEMPLATE = "empty_9x7x9";
     private static final ResourceLocation NUMBERS2 = KN8Constants.id("numbers2");
+    /** Folga para o saque da baioneta (perfil do machado) terminar. */
+    private static final int SAQUE = 25;
     private static final ResourceLocation THEORY = KN8Constants.id("numbered_weapon_theory");
 
     private NumberedGearGameTests() {
@@ -206,5 +210,45 @@ public final class NumberedGearGameTests {
                 "O No. 9 com o Isao tambem");
         player.setHealth(player.getMaxHealth());
         helper.succeed();
+    }
+
+    /**
+     * COMBATE-6 (Miguel: o Numbers 1 "preve o futuro" e as tecnicas sempre acertam): o Eruption Slash da baioneta do
+     * Numbers 1 acerta o golem ao lado (fora da frente); o da baioneta do Narumi, sem o Numbers 1, nao.
+     */
+    @GameTest(template = TEMPLATE, timeoutTicks = 160)
+    public static void numbers1BayonetAlwaysHits(GameTestHelper helper) {
+        FakePlayer player = player(helper, "foresight");
+        CareerService.setRank(player, KN8Constants.id("vice_capitao"));
+        CareerService.data(player).research().add(THEORY);
+        PowerService.setTrainedRelease(player, 40);
+        player.setYRot(0.0F);
+        player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(KN8Items.NARUMI_BAYONET.get()));
+        IronGolem golem = helper.spawn(EntityType.IRON_GOLEM, new BlockPos(2, 1, 4));
+        golem.setNoAi(true);
+        float[] before = new float[1];
+        helper.onEachTick(() -> CombatService.tick(player));
+        // Trocar a arma na mao comeca o saque, que cancela o golpe em andamento: a tecnica so depois dele.
+        helper.runAfterDelay(SAQUE, () -> {
+            PowerService.setStamina(player, 100);
+            before[0] = golem.getHealth();
+            helper.assertTrue(CombatService.selectedTechnique(player, CombatService.heldWeapon(player).orElseThrow())
+                    .map(t -> t.id().equals("eruption_slash")).orElse(false), "Baioneta do Narumi: Eruption Slash");
+            helper.assertTrue(CombatService.special(player), "Eruption Slash sem o Numbers 1");
+        });
+        helper.runAfterDelay(SAQUE + 30, () -> {
+            helper.assertTrue(golem.getHealth() >= before[0], "Sem o Numbers 1, o golem ao lado nao leva");
+            player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(KN8Items.NUMBERS1_BAYONET.get()));
+        });
+        helper.runAfterDelay(2 * SAQUE + 30, () -> {
+            PowerService.setStamina(player, 100);
+            helper.assertTrue(CombatService.cycleTechnique(player, 1), "X para o Eruption Slash do Numbers 1");
+            helper.assertTrue(CombatService.special(player), "Eruption Slash do Numbers 1");
+        });
+        helper.runAfterDelay(2 * SAQUE + 60, () -> {
+            helper.assertTrue(golem.getHealth() < before[0], "Com o Numbers 1 o corte acerta: " + golem.getHealth());
+            golem.discard();
+            helper.succeed();
+        });
     }
 }

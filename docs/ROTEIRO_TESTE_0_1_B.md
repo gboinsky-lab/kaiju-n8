@@ -1586,3 +1586,15 @@ Servidor dedicado + 2 clientes. Imagem: `docs/img/combate5_hoshina.jpg`.
 | 114.4 | Traje Numbers 10 vestido, Release abaixo do limite (G) e depois no limite | Abaixo recusado; no limite saem 12 cortes com o vermelho do No. 10 |
 | 114.5 | Hoshina No. 10 NPC contra um kaiju forte | Juni-hitoe so depois do Full Release (sincronizacao 100%) |
 | 114.6 | Manoplas do Numbers 2: Thunder Emperor com a vida cheia e com 40% ou menos | Cheia: "Ultimo recurso: so com a vida baixa"; baixa: sai a barragem |
+
+## 115. COMBATE-6: Narumi pela obra
+
+Servidor dedicado + 2 clientes. Imagem: `docs/img/combate6_narumi.jpg`.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 115.1 | Baioneta do Narumi (`kn8:narumi_bayonet`), X varias vezes | No. 1 Eruption Slash (1/3), No. 2 Slash Salvo, No. 6 Seven-Branched Sword |
+| 115.2 | R em cada uma perto de um kaiju | Estocadas rosa com clarao de tiro; avanco longo de 6 blocos com 3 cortes; sete estocadas em direcoes diferentes com explosoes subindo; recarga propria de cada uma |
+| 115.3 | Baioneta do Numbers 1 (com os requisitos ou no criativo) | Foreseen Thrust (1/4) e as tres aprimoradas; com um kaiju ao lado (fora da frente) o corte acerta mesmo assim; as recargas sao separadas das da baioneta do Narumi |
+| 115.4 | Narumi (`kn8:narumi`) contra um Honju | Usa as tres da obra mais que as genericas; erra se o alvo sair do alcance |
+| 115.5 | Narumi No. 1 (`kn8:narumi_no1`) contra um kaiju que se mexe | Golpes acertam mesmo com o alvo a alguns blocos; o tiro da baioneta acerta o kaiju andando |

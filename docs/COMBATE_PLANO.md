@@ -66,7 +66,11 @@ Regras do documento (valem para toda a etapa):
 6. **Thunder Emperor (depois da COMBATE-4):** só com a vida baixa, para o jogador e para a NPC (feito: 40%
    [SUPOSIÇÃO]). **Falling Thunder:** altura mínima de 3 blocos aprovada.
 7. **COMBATE-5 (Hoshina):** feita. NPC já batia com a obra (Jūni-hitoe só em Full Release, o último estágio); o
-   jogador ganhou as 7 formas e o Jūni-hitoe só com o traje Numbers 10 na força total [SUPOSIÇÃO].
+   jogador ganhou as 7 formas e o Jūni-hitoe só com o traje Numbers 10 na força total (Miguel: no limite pessoal ou a
+   100%, a regra cobre as duas). Prévia de balanceamento das formas feita; refazer na COMBATE-8.
+8. **COMBATE-6 (Narumi):** feita. Eruption Slash, Slash Salvo e Seven-Branched Sword nas duas formas (o documento não
+   separa forma A/B: as duas usam, o No. 1 aprimorado e com acerto garantido). Thunder Fire, Flame Shower e Sky Turner
+   ficaram de fora (o documento pede confirmar antes).
 
 ## 5. Perguntas que ficaram (histórico)
 

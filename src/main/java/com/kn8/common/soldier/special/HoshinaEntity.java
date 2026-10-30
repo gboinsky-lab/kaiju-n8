@@ -816,6 +816,11 @@ public class HoshinaEntity extends SoldierEntity {
         if (technique.type() == SpecialSoldierDef.TechniqueType.SLASH) {
             lookAt(target, 360.0F, 90.0F);
             Vec3 aim = target.getBoundingBox().getCenter().subtract(getEyePosition());
+            if (profile().map(SpecialSoldierDef::sureHit).orElse(false) && technique.slash().speed() > 0) {
+                // COMBATE-6 (Numbers 1 preve o movimento): mira onde o alvo vai estar quando o tiro chegar.
+                Vec3 moving = target.getDeltaMovement().multiply(1.0, 0.0, 1.0);
+                aim = aim.add(moving.scale(aim.length() / technique.slash().speed()));
+            }
             Optional<SpecialSoldierDef.Heavy> heavy = heavyTechnique();
             SlashProjectile.fire(this, aim, technique.slash(), base * technique.hits().get(0), kaijuDamageMultiplier(),
                     heavy.map(SpecialSoldierDef.Heavy::power).orElse(0),
@@ -864,8 +869,13 @@ public class HoshinaEntity extends SoldierEntity {
      */
     protected boolean strike(LivingEntity target, float multiplier, float knockback, WeaponDef weapon, float slack,
             String vfxKey) {
-        // MOV-4: nada de acertar atraves de parede (antes media so a distancia).
-        if (edgeTo(target) > weapon.reach() + slack || !DangerAvoid.clearReach(this, target)) {
+        // MOV-4: nada de acertar atraves de parede (antes media so a distancia). COMBATE-6: com o acerto garantido
+        // (Numbers 1) o golpe da tecnica vale ate o alcance dela.
+        double reach = weapon.reach() + slack;
+        if (technique != null && profile().map(SpecialSoldierDef::sureHit).orElse(false)) {
+            reach = Math.max(reach, technique.maxRange() + REACH_SLACK);
+        }
+        if (edgeTo(target) > reach || !DangerAvoid.clearReach(this, target)) {
             return false;
         }
         float damage = (float) (weapon.baseDamage() * multiplier * damageMultiplier());

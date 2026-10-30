@@ -621,7 +621,39 @@ HOSHINA_TECHNIQUES = {
     "juni_hitoe": {"moves": _star(11) + [
         _cut("both", ([-175, 25, 40], [-175, -25, -40]), ([-40, -55, 0], [-40, 55, 0]), (-15, 0, 0), (35, 0, 0))]},
 }
-TECHNIQUE_POSES = {**KIKORU_TECHNIQUES, **ISAO_TECHNIQUES, **HOSHINA_TECHNIQUES}
+
+
+# COMBATE-6: tecnicas do Narumi na baioneta do jogador (perfil do machado, duas maos). Item [0, 0, 0] fica
+# perpendicular ao braco (com o braco a frente a lamina aponta para cima, visto em jogo): THRUST_ITEM deita a lamina
+# para a frente. Eruption Slash = estocadas com tiros no mesmo avanco; Slash Salvo = estocada longa passando pelo
+# inimigo; Seven-Branched Sword = sete direcoes, a ultima reta e mais forte [INFERENCIA poses].
+THRUST_ITEM = [85, 0, 0]
+
+
+def _thrust(right, left, lean, leg=True):
+    move = {"wind": {"right_arm": [-60, 15, 0], "left_arm": [-65, 35, 0], "torso": [-5, 10, 0],
+                     "right_item": THRUST_ITEM},
+            "hit": {"right_arm": right, "left_arm": left, "torso": lean, "right_item": THRUST_ITEM,
+                    "body_pos": [0, -1.5, 0]}}
+    if leg:
+        move["hit"].update({"right_leg": [-40, 0, 8], "left_leg": [28, 0, -8]})
+    return move
+
+
+THRUST = _thrust([-92, -5, 0], [-88, 25, 0], [15, -8, 0])
+NARUMI_TECHNIQUES = {
+    "eruption_slash": {"moves": [THRUST, _thrust([-80, -15, 0], [-76, 15, 0], [12, -14, 0], leg=False)]},
+    "slash_salvo": {"moves": [_thrust([-95, 0, 0], [-92, 22, 0], [22, -5, 0])]},
+    "seven_branched_sword": {"moves": [
+        _thrust([-150, -15, 0], [-145, 15, 0], [-12, 15, 0], leg=False),
+        _thrust([-60, -50, 0], [-55, -25, 0], [10, -35, 0], leg=False),
+        _thrust([-95, 40, 0], [-90, 60, 0], [5, 40, 0], leg=False),
+        _thrust([-40, -10, 0], [-35, 20, 0], [28, 0, 0], leg=False),
+        _thrust([-130, 35, 0], [-125, 55, 0], [-8, 30, 0], leg=False),
+        _thrust([-120, -45, 0], [-115, -20, 0], [-5, -35, 0], leg=False),
+        THRUST]},
+}
+TECHNIQUE_POSES = {**KIKORU_TECHNIQUES, **ISAO_TECHNIQUES, **HOSHINA_TECHNIQUES, **NARUMI_TECHNIQUES}
 
 
 def technique_frames(moves, hit_ticks, duration_ticks, start, spin=None):

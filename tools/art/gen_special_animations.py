@@ -168,6 +168,41 @@ def thrusts(stances, hit_ticks, duration_ticks, lunge=False):
     return {"animation_length": round(end, 3), "bones": bones}
 
 
+# COMBATE-6: Seven-Branched Sword do Narumi (No. 6 da obra): golpes em sete direcoes divergentes; cada um estica as
+# duas maos para um lado (alto, baixo, esquerda, direita) e o tronco acompanha [INFERENCIA].
+BRANCHES = [([-150, -20, 0], [-145, 15, 0], [-15, 20, 0]), ([-60, -55, 0], [-55, -30, 0], [10, -40, 0]),
+            ([-95, 40, 0], [-90, 65, 0], [5, 45, 0]), ([-35, -10, 0], [-30, 20, 0], [30, 0, 0]),
+            ([-130, 35, 0], [-125, 60, 0], [-8, 35, 0]), ([-120, -50, 0], [-115, -25, 0], [-5, -40, 0])]
+
+
+def branches(stances, hit_ticks, duration_ticks):
+    """Seven-Branched Sword: um golpe por direcao (BRANCHES em volta) e o setimo, reto e mais forte, para a frente."""
+    ready_right, ready_left, _ = stances["aim"]
+    end = duration_ticks * TICK
+    right, left, body = [(0, ready_right)], [(0, ready_left)], [(0, [0, 0, 0])]
+    previous = 0.0
+    for i, tick in enumerate(hit_ticks):
+        t = tick * TICK
+        out_right, out_left, lean = BRANCHES[i] if i < len(hit_ticks) - 1 and i < len(BRANCHES) else (
+            [-95, -5, 0], [-92, 25, 0], [18, -10, 0])
+        wind = previous + (t - previous) * 0.5
+        right += [(wind, add(ready_right, [25, 10, 0])), (t, out_right)]
+        left += [(wind, add(ready_left, [25, -10, 0])), (t, out_left)]
+        body += [(wind, [-4, 0, 0]), (t, lean)]
+        previous = t
+    tail = previous + (end - previous) * 0.4
+    right += [(tail, right[-1][1]), (end, ready_right)]
+    left += [(tail, left[-1][1]), (end, ready_left)]
+    body += [(tail, body[-1][1]), (end, [0, 0, 0])]
+    t0 = hit_ticks[-1] * TICK
+    return {"animation_length": round(end, 3), "bones": {
+        "arm_right": {"rotation": kf(*right)}, "arm_left": {"rotation": kf(*left)}, "body": {"rotation": kf(*body)},
+        "leg_right": {"rotation": kf((0, [0, 0, 0]), (t0, [-45, 0, 6]), (end - 0.1, [-25, 0, 6]),
+                                     (end, [0, 0, 0]))},
+        "leg_left": {"rotation": kf((0, [0, 0, 0]), (t0, [30, 0, -6]), (end - 0.1, [15, 0, -6]),
+                                    (end, [0, 0, 0]))}}}
+
+
 def sweep(stances, hit_tick, duration_ticks):
     """Varrida larga com a baioneta: carrega para a direita e corta da direita para a esquerda girando o corpo."""
     ready_right, ready_left, _ = stances["aim"]
@@ -284,6 +319,8 @@ def technique_animation(name, technique, family, stances):
         return butt_strike(stances, ticks[0], duration)
     if name == "sweeping_slash":
         return sweep(stances, ticks[0], duration)
+    if name == "seven_branched_sword":
+        return branches(stances, ticks, duration)
     return thrusts(stances, ticks, duration, lunge=technique.get("dash_in", 0) > 0)
 
 
@@ -341,13 +378,23 @@ def kikoru_no4():
 
 
 def main():
-    for species in sys.argv[1:] or ["reno", "mina", "narumi", "reno_no6", "kikoru_no4", "kafka", "kaiju_no8",
+    # COMBATE-6: "--so a,b" grava so essas animacoes (acoes) e deixa o resto do arquivo como esta (o arquivo do
+    # Narumi ja passou pelo humanoid_anims.py e pelo vfx_keyframes.py).
+    args = sys.argv[1:]
+    only = None
+    if "--so" in args:
+        i = args.index("--so")
+        only = set(args[i + 1].split(","))
+        del args[i:i + 2]
+    for species in args or ["reno", "mina", "narumi", "reno_no6", "kikoru_no4", "kafka", "kaiju_no8",
                                    "isao"]:
         path = ASSETS / f"{species}.animation.json"
         raw = path.read_bytes().decode("utf-8")
         newline = "\r\n" if "\r\n" in raw else "\n"
         data = json.loads(raw)
         generated = kikoru_no4() if species == "kikoru_no4" else build(species)
+        if only is not None:
+            generated = {name: anim for name, anim in generated.items() if name.rsplit(".", 1)[-1] in only}
         data["animations"].update(generated)
         path.write_bytes((json.dumps(data, indent=2) + "\n").replace("\n", newline).encode("utf-8"))
         print(species, ", ".join(sorted(name.split(".", 1)[1] for name in generated)))

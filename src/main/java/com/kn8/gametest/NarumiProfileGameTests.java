@@ -3,14 +3,18 @@ package com.kn8.gametest;
 import java.util.Optional;
 
 import com.kn8.KN8Constants;
+import com.kn8.common.data.def.SpecialSoldierDef;
 import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.registry.KN8Entities;
+import com.kn8.common.soldier.special.NarumiEntity;
 import com.kn8.common.soldier.special.NarumiNo1Entity;
 import com.kn8.core.soldier.TechniqueMath;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.animal.IronGolem;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
@@ -70,6 +74,51 @@ public final class NarumiProfileGameTests {
                     "Com o impacto em " + impact + " ticks nenhuma tecnica deveria comecar");
             kaiju.discard();
             narumi.discard();
+        });
+    }
+
+    /**
+     * COMBATE-6 (Miguel: Narumi com o Numbers 1 "deve acertar de qualquer jeito o alvo pois o numero 1 preve o
+     * futuro"): as tecnicas da obra (Eruption Slash, Slash Salvo, Seven-Branched Sword) estao nas duas formas, as do
+     * No. 1 mais fortes; parado a ~7 blocos do alvo, o Slash Salvo do Narumi erra e o do No. 1 acerta.
+     */
+    @GameTest(template = TEMPLATE, timeoutTicks = 80, batch = "kn8_combate6_narumi")
+    public static void narumiNo1TechniquesAlwaysHit(GameTestHelper helper) {
+        NarumiEntity narumi = helper.spawn(KN8Entities.NARUMI.get(), new BlockPos(2, 1, 3));
+        narumi.setNoAi(true);
+        NarumiNo1Entity no1 = helper.spawn(KN8Entities.NARUMI_NO1.get(), new BlockPos(2, 1, 11));
+        no1.setNoAi(true);
+        IronGolem plain = helper.spawn(EntityType.IRON_GOLEM, new BlockPos(10, 1, 3));
+        plain.setNoAi(true);
+        IronGolem foreseen = helper.spawn(EntityType.IRON_GOLEM, new BlockPos(10, 1, 11));
+        foreseen.setNoAi(true);
+        float[] before = new float[2];
+        helper.runAfterDelay(SETTLE, () -> {
+            SpecialSoldierDef base = narumi.profile().orElseThrow();
+            SpecialSoldierDef enhanced = no1.profile().orElseThrow();
+            for (String id : new String[] {"eruption_slash", "slash_salvo", "seven_branched_sword"}) {
+                helper.assertTrue(base.techniques().containsKey(id) && enhanced.techniques().containsKey(id),
+                        "Tecnica da obra nas duas formas: " + id);
+                double plainTotal = base.techniques().get(id).hits().stream().mapToDouble(Float::doubleValue).sum();
+                double foreseenTotal = enhanced.techniques().get(id).hits().stream()
+                        .mapToDouble(Float::doubleValue).sum();
+                helper.assertTrue(foreseenTotal > plainTotal, "No. 1 aprimorado: " + id);
+            }
+            helper.assertTrue(enhanced.sureHit() && !base.sureHit(), "So o No. 1 acerta sempre");
+            before[0] = plain.getHealth();
+            before[1] = foreseen.getHealth();
+            helper.assertTrue(narumi.startTechnique("slash_salvo", plain), "Slash Salvo do Narumi");
+            helper.assertTrue(no1.startTechnique("slash_salvo", foreseen), "Slash Salvo do No. 1");
+        });
+        helper.runAfterDelay(SETTLE + 30, () -> {
+            helper.assertTrue(plain.getHealth() >= before[0], "Parado longe, o Narumi sem o Numbers 1 erra");
+            helper.assertTrue(foreseen.getHealth() < before[1], "O Numbers 1 acerta mesmo longe: "
+                    + foreseen.getHealth());
+            narumi.discard();
+            no1.discard();
+            plain.discard();
+            foreseen.discard();
+            helper.succeed();
         });
     }
 }

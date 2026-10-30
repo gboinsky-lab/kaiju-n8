@@ -257,7 +257,7 @@ public final class CombatService {
             // 0.5.0: a forca do corpo vale tambem no especial (golpe da arma).
             float damage = CombatMath.damage(weapon.baseDamage(), state.currentMultiplier, 1.0F, release)
                     * PowerService.strengthMultiplier(player) * KaijuFormService.damageFactor(player);
-            SpecialAttacks.resolve(player, technique, damage, specialDamage(player));
+            SpecialAttacks.resolve(player, technique, damage, specialDamage(player), weapon.sureHit());
             return;
         }
         strike(player, weapon, state.currentMultiplier, heavy);
@@ -353,8 +353,8 @@ public final class CombatService {
             state.currentTechnique = null;
             SpecialAttacks.startDive(player);
         }
-        state.techniqueCooldownTicks.put(def.id(), def.cooldownTicks());
-        state.techniqueReadyTick.put(def.id(), now + def.cooldownTicks());
+        state.techniqueCooldownTicks.put(cooldownKey(weapon.get(), def.id()), def.cooldownTicks());
+        state.techniqueReadyTick.put(cooldownKey(weapon.get(), def.id()), now + def.cooldownTicks());
         // COMBATE-1: a primeira tecnica toca a animacao "special" de sempre; as outras "special_<id>" (o cliente
         // volta para "special" enquanto a animacao propria nao existe).
         boolean first = weapon.get().special().map(s -> s.id().equals(def.id())).orElse(false);
@@ -425,14 +425,26 @@ public final class CombatService {
 
     /** Ticks que faltam para a tecnica escolhida da arma na mao ficar pronta (0 = pronta ou sem tecnica). */
     public static long specialCooldown(ServerPlayer player) {
-        return heldWeapon(player).flatMap(weapon -> selectedTechnique(player, weapon))
-                .map(technique -> techniqueCooldown(player, technique.id())).orElse(0L);
+        return heldWeapon(player).flatMap(weapon -> selectedTechnique(player, weapon)
+                .map(technique -> techniqueCooldown(player, weapon, technique.id()))).orElse(0L);
     }
 
-    /** COMBATE-1: ticks que faltam para a tecnica {@code id} ficar pronta (0 = pronta). */
+    /** COMBATE-1: ticks que faltam para a tecnica {@code id} da arma na mao ficar pronta (0 = pronta). */
     public static long techniqueCooldown(ServerPlayer player, String id) {
-        Long ready = state(player).techniqueReadyTick.get(id);
+        return heldWeapon(player).map(weapon -> techniqueCooldown(player, weapon, id)).orElse(0L);
+    }
+
+    private static long techniqueCooldown(ServerPlayer player, WeaponDef weapon, String id) {
+        Long ready = state(player).techniqueReadyTick.get(cooldownKey(weapon, id));
         return ready == null ? 0 : Math.max(0, ready - now(player));
+    }
+
+    /**
+     * COMBATE-6: recarga por arma e tecnica (a baioneta do Narumi e a do Numbers 1 tem tecnicas de mesmo nome e
+     * recargas separadas).
+     */
+    private static String cooldownKey(WeaponDef weapon, String id) {
+        return weapon.item() + "#" + id;
     }
 
     /** COMBATE-1: tecnica escolhida da arma (a primeira se nada foi escolhido ou a lista encolheu num reload). */
@@ -480,9 +492,9 @@ public final class CombatService {
 
     /** Resposta do especial: leva a recarga restante e a total da tecnica escolhida (ver {@link CombatStateS2C}). */
     private static void replySpecial(ServerPlayer player, CombatResult result) {
-        int total = heldWeapon(player).flatMap(weapon -> selectedTechnique(player, weapon))
-                .map(technique -> state(player).techniqueCooldownTicks.getOrDefault(technique.id(),
-                        technique.cooldownTicks()))
+        int total = heldWeapon(player).flatMap(weapon -> selectedTechnique(player, weapon)
+                .map(technique -> state(player).techniqueCooldownTicks.getOrDefault(
+                        cooldownKey(weapon, technique.id()), technique.cooldownTicks())))
                 .orElse(0);
         PacketDistributor.sendToPlayer(player, new CombatStateS2C(CombatAction.SPECIAL.ordinal(), result.ordinal(),
                 (int) specialCooldown(player), total));

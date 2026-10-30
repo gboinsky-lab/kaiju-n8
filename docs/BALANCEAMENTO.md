@@ -609,6 +609,14 @@ Twin Blast x1,4, Rising Blast x2,2 (atordoa Yoju 24), Spiral Blast x1,8, Thunder
 no `numbers2_gauntlets.json` e no `isao.json`, `behavior.health_below` 0,4 na `no9_isao_thunder_emperor`)
 [SUPOSIÇÃO 40%]. Duelos não remedidos (COMBATE-8).
 
+**Técnicas do Narumi (COMBATE-6)** [SUPOSIÇÃO todos; prévia, refazer na COMBATE-8]: NPC Narumi Eruption Slash
+[0,7 x3; 1,1] a cada 3 ticks (recarga 80), Slash Salvo [0,9 x2; 1,3] com avanço 2,0 (alcance 2-8, recarga 100),
+Seven-Branched Sword [0,6 x6; 1,6] a cada 2 ticks (recarga 220, pesado); Narumi No. 1: x1,25 e um golpe a mais
+(Seven-Branched com 7 golpes, [0,75 x6; 2,0]) e acerto até o alcance da técnica. Jogador, baioneta do Narumi (base 9):
+Eruption Slash `flurry` 4 x0,8 (28,8 por uso, recarga 5,5 s: 5,2/s), Slash Salvo `lunge` 6 blocos 3 x0,9 (24,3; 5 s:
+4,9/s), Seven-Branched `flurry` 7 x0,7 (44,1; 11 s: 4,0/s, atordoa Yoju 20); baioneta do Numbers 1 (base 8, x domínio):
+5 x0,9 (36), `lunge` 7 blocos 4 x1,0 (32), 7 x0,85 (47,6).
+
 **Kōsa-uchi do jogador** (segunda técnica da espada do Hoshina, COMBATE-1, `techniques` do `hoshina_sword.json`): dois
 cortes em X (`roll_degrees` 45, abertos 6 graus) que voam 12 blocos a 1,5 bloco/tick, ×1,5 cada, 18 ticks (corte no 7),
 25 de stamina, 4 de calor, recarga própria de 90 ticks (a do NPC) [SUPOSIÇÃO]. Cada técnica tem a sua recarga.

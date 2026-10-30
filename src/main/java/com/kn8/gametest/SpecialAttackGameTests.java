@@ -248,11 +248,12 @@ public final class SpecialAttackGameTests {
     @GameTest(template = TEMPLATE)
     public static void weaponWithoutSpecialIsDenied(GameTestHelper helper) {
         FakePlayer player = player(helper, "nospecial");
-        // PM-1: a faca ganhou a sequencia de cortes; a baioneta do Narumi continua sem especial do jogador.
-        player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(KN8Items.NARUMI_BAYONET.get()));
+        // PM-1: a faca ganhou a sequencia de cortes; COMBATE-6: a baioneta do Narumi ganhou as tecnicas dele. Os
+        // punhos do Isao sem o Numbers 2 continuam sem especial.
+        player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(KN8Items.ISAO_FIST.get()));
         helper.runAfterDelay(SETTLE_TICKS, () -> {
             PowerService.setStamina(player, 100);
-            helper.assertTrue(!CombatService.special(player), "A baioneta nao tem ataque especial");
+            helper.assertTrue(!CombatService.special(player), "Os punhos nao tem ataque especial");
             helper.succeed();
         });
     }

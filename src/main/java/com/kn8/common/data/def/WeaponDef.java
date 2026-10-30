@@ -39,11 +39,14 @@ import net.minecraft.util.StringRepresentable;
  *
  * <p>{@code stages} (COMBATE-5, opcional): tecnica -> {@link Stage} (traje e forca total; Juni-hitoe da espada do
  * Hoshina so com o Numbers 10).</p>
+ *
+ * <p>{@code sure_hit} (COMBATE-6, opcional): as tecnicas da arma sempre acertam o inimigo mais perto ao alcance
+ * (baioneta do Numbers 1, que preve o movimento); parede continua barrando.</p>
  */
 public record WeaponDef(ResourceLocation item, float baseDamage, float reach, Style style,
         Map<String, Action> actions, List<Float> combo, Map<String, ResourceLocation> sounds,
         Optional<Special> special, Optional<ResourceLocation> profile, List<Special> techniques,
-        Map<String, Float> lowHealth, Map<String, Stage> stages) {
+        Map<String, Float> lowHealth, Map<String, Stage> stages, boolean sureHit) {
 
     /**
      * COMBATE-5 (Miguel, 2026-10-29: Juni-hitoe "apenas no ultimo estagio do Hoshina"): tecnica que so sai com o traje
@@ -200,6 +203,7 @@ public record WeaponDef(ResourceLocation item, float baseDamage, float reach, St
             Codec.unboundedMap(Codec.STRING, Codec.floatRange(0.0F, 1.0F)).optionalFieldOf("low_health", Map.of())
                     .forGetter(WeaponDef::lowHealth),
             Codec.unboundedMap(Codec.STRING, Stage.CODEC).optionalFieldOf("stages", Map.of())
-                    .forGetter(WeaponDef::stages)
+                    .forGetter(WeaponDef::stages),
+            Codec.BOOL.optionalFieldOf("sure_hit", false).forGetter(WeaponDef::sureHit)
     ).apply(i, WeaponDef::new));
 }
