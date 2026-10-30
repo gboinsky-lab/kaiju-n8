@@ -81,6 +81,12 @@ public final class ParkourClient {
     /** FIX-3: escalando, o topo dentro desta altura vira borda; com C segurado, sobe depois de tantos ticks. */
     private static final double CLIMB_TOP_MAX = 2.0;
     private static final int AUTO_MANTLE_TICKS = 3;
+    /**
+     * FIX-3: subindo a borda, o empurrao para dentro do telhado e zerado pelo vanilla enquanto o corpo bate na
+     * parede; por estes ticks o cliente continua empurrando para dentro (passando da beira, entra).
+     */
+    private static final int MANTLE_PUSH_TICKS = 12;
+    private static final double MANTLE_PUSH = 0.22;
 
     private static LocalPlayer boundPlayer;
     private static ParkourStateS2C active = ParkourStateS2C.NONE;
@@ -96,6 +102,8 @@ public final class ParkourClient {
     /** FIX-3: entrada guardada para a fisica do tick (escalada: para a frente; borda: para o lado). */
     private static float climbInput;
     private static float shimmyInput;
+    private static int mantleTicks;
+    private static Vec3 mantleDir = Vec3.ZERO;
 
     private ParkourClient() {
     }
@@ -167,6 +175,7 @@ public final class ParkourClient {
         if (player != boundPlayer) {
             // Jogador novo (login, respawn, dimensao): nada do anterior vale.
             boundPlayer = player;
+            mantleTicks = 0;
             active = ParkourStateS2C.NONE;
             leftWallTicks = Integer.MAX_VALUE;
         }
@@ -205,6 +214,8 @@ public final class ParkourClient {
             case LEDGE_HANG -> {
                 shimmyInput = input.leftImpulse;
                 if (jumpPressed || key && input.forwardImpulse > 0.0F && activeTicks >= AUTO_MANTLE_TICKS) {
+                    mantleDir = new Vec3(-active.normalX(), 0.0, -active.normalZ());
+                    mantleTicks = MANTLE_PUSH_TICKS;
                     endLocally(player, false);
                     send(ParkourMove.LEDGE_CLIMB, 0);
                 } else if (shiftPressed) {
@@ -323,8 +334,14 @@ public final class ParkourClient {
         }
         ParkourState state = active.parkourState();
         if (state == ParkourState.NONE) {
+            if (mantleTicks > 0) {
+                mantleTicks--;
+                Vec3 motion = player.getDeltaMovement();
+                player.setDeltaMovement(mantleDir.x * MANTLE_PUSH, motion.y, mantleDir.z * MANTLE_PUSH);
+            }
             return;
         }
+        mantleTicks = 0;
         if (activeTicks > active.maxTicks() + LOST_TICKS) {
             endLocally(player, true);
             return;
