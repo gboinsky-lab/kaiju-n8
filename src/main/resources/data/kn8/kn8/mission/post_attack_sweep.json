@@ -1,0 +1,34 @@
+{
+  "category": "extermination",
+  "giver": "kn8:officer",
+  "requires": {
+    "rank": "kn8:oficial"
+  },
+  "objectives": [
+    {
+      "type": "kill_kaiju",
+      "target": "kn8:primigenius",
+      "count": 3
+    },
+    {
+      "type": "kill_kaiju",
+      "target": "kn8:trichonephila",
+      "count": 4
+    }
+  ],
+  "fail": {
+    "time_ticks": 14400
+  },
+  "rewards": {
+    "merit": 140,
+    "training_xp": 220,
+    "items": [
+      "kn8:muscle_fiber"
+    ]
+  },
+  "repeatable": true,
+  "cooldown_ticks": 12000,
+  "arena": {
+    "ruined": true
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "category": "rescue",
+  "giver": "kn8:officer",
+  "requires": {
+    "rank": "kn8:candidato"
+  },
+  "objectives": [
+    {
+      "type": "evacuate",
+      "target": "kn8:primigenius",
+      "count": 5,
+      "max_losses": 1
+    }
+  ],
+  "fail": {
+    "time_ticks": 9600
+  },
+  "rewards": {
+    "merit": 110,
+    "training_xp": 180,
+    "items": [
+      "kn8:stamina_stim"
+    ]
+  },
+  "repeatable": true,
+  "cooldown_ticks": 12000,
+  "arena": {
+    "ruined": true
+  }
+}

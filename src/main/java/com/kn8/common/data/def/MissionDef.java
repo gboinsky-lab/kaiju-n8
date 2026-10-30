@@ -27,17 +27,20 @@ public record MissionDef(Category category, Optional<ResourceLocation> giver, Re
      * {@code kit} e entregue ao aceitar (armadura vestida se o slot estiver livre, armas de fogo e pentes cheios); o
      * aprovado fica com ele (Miguel, 2026-10-30) e, com {@code return_kit}, quem reprova, abandona ou cai devolve.
      * {@code candidates}: soldados que fazem a prova junto com o jogador (Miguel: "implemente alguns soldados para fazer
-     * o exame com o jogador").
+     * o exame com o jogador"). {@code ruined} (POS-ATAQUE, referencias de bases do Miguel: "variante danificada do
+     * exterior para missoes pos-ataque"): a missao so e aceita dentro de uma base que nasceu atingida (BASES-3), de
+     * qualquer local se {@code site} faltar.
      */
     public record Arena(Optional<ResourceLocation> site, double minDistance, double maxDistance, List<KitItem> kit,
-            boolean returnKit, int candidates) {
+            boolean returnKit, int candidates, boolean ruined) {
         public static final Codec<Arena> CODEC = RecordCodecBuilder.create(i -> i.group(
                 ResourceLocation.CODEC.optionalFieldOf("site").forGetter(Arena::site),
                 Codec.doubleRange(0.0, 256.0).optionalFieldOf("min_distance", 6.0).forGetter(Arena::minDistance),
                 Codec.doubleRange(1.0, 256.0).optionalFieldOf("max_distance", 14.0).forGetter(Arena::maxDistance),
                 KitItem.CODEC.listOf().optionalFieldOf("kit", List.of()).forGetter(Arena::kit),
                 Codec.BOOL.optionalFieldOf("return_kit", true).forGetter(Arena::returnKit),
-                Codec.intRange(0, 16).optionalFieldOf("candidates", 0).forGetter(Arena::candidates)
+                Codec.intRange(0, 16).optionalFieldOf("candidates", 0).forGetter(Arena::candidates),
+                Codec.BOOL.optionalFieldOf("ruined", false).forGetter(Arena::ruined)
         ).apply(i, Arena::new));
     }
 

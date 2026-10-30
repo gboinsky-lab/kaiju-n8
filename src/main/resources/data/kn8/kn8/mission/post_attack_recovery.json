@@ -1,0 +1,34 @@
+{
+  "category": "investigation",
+  "giver": "kn8:officer",
+  "requires": {
+    "rank": "kn8:oficial"
+  },
+  "objectives": [
+    {
+      "type": "patrol",
+      "count": 4
+    },
+    {
+      "type": "kill_kaiju",
+      "target": "kn8:primigenius_resurrected",
+      "count": 2
+    }
+  ],
+  "fail": {
+    "time_ticks": 14400
+  },
+  "rewards": {
+    "merit": 150,
+    "training_xp": 240,
+    "items": [
+      "kn8:rifle_magazine",
+      "kn8:suit_coolant"
+    ]
+  },
+  "repeatable": true,
+  "cooldown_ticks": 18000,
+  "arena": {
+    "ruined": true
+  }
+}

@@ -288,8 +288,8 @@ public final class SiteGameTests {
         // base cabe) e e recusada.
         ChunkPos base = new ChunkPos(helper.absolutePos(BlockPos.ZERO).offset(4096, 0, 4096));
         boolean accepted = false;
-        for (int i = 0; i < 40 && !accepted && site != null; i++) {
-            ChunkPos chunk = new ChunkPos(base.x + i * 23, base.z - i * 17);
+        for (int i = 0; i < 64 && !accepted && site != null; i++) {
+            ChunkPos chunk = new ChunkPos(base.x + i * 61, base.z - i * 47);
             Structure.GenerationContext context = new Structure.GenerationContext(level.registryAccess(), generator,
                     generator.getBiomeSource(), level.getChunkSource().randomState(), level.getStructureManager(),
                     level.getSeed(), chunk, level, biome -> true);

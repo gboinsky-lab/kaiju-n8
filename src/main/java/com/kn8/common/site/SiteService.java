@@ -72,6 +72,16 @@ public final class SiteService {
         }
 
         /**
+         * POS-ATAQUE: o local nasceu na versao atingida (BASES-3: alguma peca e a {@code _ruined} do pool, ex.
+         * {@code tachikawa_base/hq_ruined}).
+         */
+        public boolean ruined() {
+            return start.getPieces().stream().anyMatch(piece -> piece instanceof PoolElementStructurePiece pool
+                    && pool.getElement() instanceof SinglePoolElement
+                    && pool.getElement().toString().contains("_ruined]"));
+        }
+
+        /**
          * O template do elemento e protegido no {@code SinglePoolElement}; o {@code toString} dele traz o id
          * ("Single[Left[kn8:tachikawa_base/hq]]"). Comeca com o id: vale tambem a variante pos-ataque
          * ({@code hq_ruined}, BASES-3), desenhada no mesmo lugar.

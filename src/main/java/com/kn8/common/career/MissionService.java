@@ -68,7 +68,9 @@ public final class MissionService {
         /** PM-9: a regiao esta em combate (provas fechadas ate passar). */
         REGION_COMBAT,
         /** EXAME: a prova so e aceita dentro do local dela ({@code arena.site}, ex. o Campo do Exame de Admissao). */
-        NEEDS_SITE
+        NEEDS_SITE,
+        /** POS-ATAQUE: a missao so e aceita dentro de uma base atingida ({@code arena.ruined}). */
+        NEEDS_RUINED_BASE
     }
 
     /** CIDADES: sorteios do ponto do objetivo dentro da cidade. */
@@ -131,6 +133,11 @@ public final class MissionService {
         Optional<ResourceLocation> site = def.get().arena().flatMap(MissionDef.Arena::site);
         if (site.isPresent() && ExamKit.siteCenter(player, site.get()).isEmpty()) {
             return Result.NEEDS_SITE;
+        }
+        if (def.get().arena().filter(MissionDef.Arena::ruined).isPresent()
+                && SiteService.siteAt(player.serverLevel(), player.blockPosition())
+                        .filter(SiteService.Hit::ruined).isEmpty()) {
+            return Result.NEEDS_RUINED_BASE;
         }
         int minSquad = def.get().grading().map(MissionDef.Grading::minSquad).orElse(0);
         if (minSquad > 0 && SquadService.members(player).size() < minSquad) {
@@ -734,11 +741,12 @@ public final class MissionService {
     /**
      * CIDADES (Miguel, 2026-10-30: "invasoes e missoes dentro delas"): dentro de um local com {@code field_missions}
      * (as cidades), o ponto do objetivo fica dentro de uma peca da cidade e na altura de rua mais perto da do
-     * jogador (a superficie da cidade pode ser telhado). Vazio = fora de uma cidade.
+     * jogador (a superficie da cidade pode ser telhado). POS-ATAQUE: numa base atingida tambem (os alvos ficam nas
+     * ruinas dela). Vazio = fora de uma cidade.
      */
     private static Optional<BlockPos> cityArea(ServerLevel level, ServerPlayer player, double min, double max) {
         Optional<SiteService.Hit> hit = SiteService.siteAt(level, player.blockPosition())
-                .filter(site -> site.def().fieldMissions());
+                .filter(site -> site.def().fieldMissions() || site.ruined());
         if (hit.isEmpty()) {
             return Optional.empty();
         }

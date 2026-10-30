@@ -1755,3 +1755,18 @@ kn8:tachikawa_base_layout` (mundo plano) ou `kn8:ariake_base_layout` (mundo norm
 | 125.6 | Norte de Ariake | Cidade costeira de Ariake (monotrilho, via expressa, Big Sight) |
 | 125.7 | Base atingida (1 em 4) | QG atingido com a tenda de campanha; em Tachikawa o campo de treino atingido |
 | 125.8 | Missao de campo dentro da cidade ou dos bairros | Kaiju/pontos dentro das ruas (como na CIDADES) |
+
+## 126. POS-ATAQUE: missoes pos-ataque
+
+Achar uma base atingida (1 em 4; para testar sem sorte: datapack no mundo com o pool `tachikawa_base/hq` so com o
+`hq_ruined`, ver CLAUDE.md). Imagem: `docs/img/pos_ataque_missoes.jpg`.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 126.1 | Fora de uma base atingida, aceitar `Resgate nos Escombros`, `Limpeza da Base` ou `Varredura Pos-Ataque` (menu M ou `/kn8 mission accept`) | Recusada: "aceite dentro de uma base atingida (no posto de campanha)" |
+| 126.2 | Numa base inteira | Recusada igual |
+| 126.3 | Na tenda de campanha da base atingida, com o Oficial de Missoes | Quadro com as tres; aceitar funciona |
+| 126.4 | Limpeza da Base | 3 Primigenius e depois 4 Trichonephila nas ruinas da base (rastreador aponta para dentro dela) |
+| 126.5 | Resgate nos Escombros | 6 civis perto, ponto de extracao, Primigenius ameacando; 5 evacuados concluem |
+| 126.6 | Varredura Pos-Ataque | 4 pontos de patrulha pela base e 2 Primigenius ressurgidos |
+| 126.7 | Concluir | Nota, merito e itens; repetivel depois da espera |
