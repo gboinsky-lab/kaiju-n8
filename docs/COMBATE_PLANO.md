@@ -53,7 +53,7 @@ Regras do documento (valem para toda a etapa):
 | **COMBATE-5 — Hoshina** | Conferir as 7 formas contra o documento (cortes, X, oito pontas); Jūni-hitoe só no último estágio; espada do Hoshina do jogador com as técnicas |
 | **COMBATE-6 — Narumi** | Eruption Slash, Slash Salvo, Seven-Branched Sword (e as outras quando confirmadas); baioneta do jogador e Numbers 1 |
 | **COMBATE-7 — Kafka/No. 8, Mina, Reno** | Soco de ruptura do No. 8 (forma do jogador também), mira/clarão/impacto da Mina, gelo do Reno em etapas |
-| **COMBATE-8 — regressão** | Duelos da matriz (as técnicas mudam o dano), GameTests, efeitos (VFX) e sons de cada técnica nova |
+| **COMBATE-8 — regressão** | GameTests, efeitos (VFX) e sons de cada técnica nova; duelos e números ficam para depois (Miguel, 2026-10-30: "todos os números serão uma prévia, deixamos tudo para depois") |
 
 ## 4. Respostas do Miguel (2026-10-29) aos [DECIDIR]
 
