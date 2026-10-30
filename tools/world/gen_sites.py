@@ -34,6 +34,7 @@ from gen_base import Piece, ROAD, element, stairs
 from gen_city import ASPHALT, SIDEWALK, crossing_piece, floors_building, lot, street_end_piece, street_piece, \
     street_pools, tree, street_lamp
 from gen_structures import DATA, dump, item, officer, soldier
+import gen_ariake_city as ariake
 from gen_tachikawa_base import base_core, base_training
 from nbt_io import Float
 
@@ -1027,10 +1028,12 @@ SITES = [
     # de 128 contando os 12 da adaptacao do terreno).
     ("shinagawa_city", "kn8:shinagawa/station", 8, 116, CITY_BIOMES, 112, 16),
     ("tachikawa_city", "kn8:tachikawa/station", 8, 116, CITY_BIOMES, 112, 16),
+    # BASES-2 (Miguel, 2026-10-30, escolha 2): cidade costeira de Ariake (Koto) com a Base Maritima dentro.
+    ("ariake_city", "kn8:ariake/station", 8, 116, CITY_BIOMES, 112, 16),
 ]
 # Fracao das amostras que pode ter agua (riacho ou lagoa pequena, que a construcao cobre; lago e rio largo nao) e
 # raio do miolo em que o desnivel conta (a borda irregular fica com o beard_thin).
-NOT_NATURAL = {"tachikawa_base"}
+NOT_NATURAL = {"tachikawa_base", "ariake_base"}
 MAX_WATER = 0.05
 SLOPE_RADIUS = 64
 # Conjuntos que os locais evitam (chunks de raio): vilas e as construcoes de superficie do vanilla.
@@ -1047,11 +1050,13 @@ def worldgen():
         {"weight": 1, "element": element("kn8:tachikawa_base/airfield")}]})
     for name, start in (("ariake_base", "core"), ("tachikawa_base", "core"), ("shinagawa", "station"),
                         ("tachikawa", "station"), ("shinagawa", "district"), ("tachikawa", "base_core"),
-                        ("tachikawa", "base_training")):
+                        ("tachikawa", "base_training"), ("ariake", "station"), ("ariake", "base_core"),
+                        ("ariake", "harbor")):
         dump(wg / f"template_pool/{name}/{start}.json", {"fallback": "minecraft:empty", "elements": [
             {"weight": 1, "element": element(f"kn8:{name}/{start}")}]})
     street_pools("shinagawa", SHINAGAWA_LOTS, street_weight=5, crossing_weight=3)
     street_pools("tachikawa", TACHIKAWA_LOTS)
+    street_pools("ariake", ariake.ARIAKE_LOTS)
     for name, start, size, distance, biomes, radius, slope in SITES:
         dump(DATA / f"kn8/tags/worldgen/biome/has_structure/{name}.json", {"values": biomes})
         settings = {"biomes": f"#kn8:has_structure/{name}", "step": "surface_structures", "spawn_overrides": {},
@@ -1092,7 +1097,7 @@ def worldgen():
 
 
 if __name__ == "__main__":
-    for folder in ("ariake_base", "tachikawa_base", "shinagawa", "tachikawa"):
+    for folder in ("ariake_base", "tachikawa_base", "shinagawa", "tachikawa", "ariake"):
         (DATA / f"kn8/structure/{folder}").mkdir(parents=True, exist_ok=True)
     ariake_core()
     ariake_harbor()
@@ -1108,8 +1113,14 @@ if __name__ == "__main__":
     tachikawa_stage_garden()
     base_core()
     base_training()
+    ariake.ariake_station()
+    ariake.base_core()
+    ariake.ariake_harbor()
+    ariake.lot_bigsight()
+    ariake.lot_warehouse()
+    ariake.lot_canal()
     city_district("shinagawa", DIGIT_1, "blue", 342)
-    for prefix in ("shinagawa", "tachikawa"):
+    for prefix in ("shinagawa", "tachikawa", "ariake"):
         street_piece(prefix)
         crossing_piece(prefix)
         street_end_piece(prefix)

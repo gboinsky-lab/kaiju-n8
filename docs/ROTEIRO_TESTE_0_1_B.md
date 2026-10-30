@@ -1703,3 +1703,19 @@ Servidor dedicado + 2 clientes num mundo novo (`/locate structure kn8:tachikawa_
 | 122.5 | Subir a sala de controle (escada de mao dentro do muro) e puxar as alavancas | Cada alavanca abre a comporta de ferro do seu lado; puxar de novo fecha |
 | 122.6 | Usar o painel da sala de controle (Shift + usar troca o kaiju) | O kaiju de treino surge no chao do campo e fica dentro dele; usar de novo encerra |
 | 122.7 | Primeira visita a cidade num mundo novo | Mina, Hoshina, Kikoru e Reno aparecem no patio de formatura da base; a invasao do local pode ser o raide do No. 10 |
+
+## 123. BASES-2: cidade costeira de Ariake com a Base Maritima dentro
+
+Servidor dedicado + 2 clientes num mundo novo normal (`/locate structure kn8:ariake_city`) ou, para olhar so o
+desenho, `/place structure kn8:ariake_city_layout` num mundo normal (no mundo plano a base nao cabe). Imagem:
+`docs/img/bases2_ariake_na_cidade.jpg`. Referencias: `docs/referencias_bases/`.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 123.1 | Chegar a cidade | Ao entrar, "Ariake, Koto (Toquio) / Forca de Defesa, Primeira Divisao"; estacao com o monotrilho branco elevado e a via expressa elevada por cima das ruas; lotes com o Big Sight (piramides invertidas), armazens e canal |
+| 123.2 | Saida norte da estacao | Portao da base, praca cerimonial com o circulo no chao e as seis bandeiras, QG de vidro de 7 andares |
+| 123.3 | Subir o QG pela escada de mao | Saguao com os oficiais, estacao e terminal; 1o: centro de operacoes com telas e consoles; 3o: sala do conselho com a mesa oval de madeira escura; 6o: gabinete do Diretor-Geral |
+| 123.4 | Ala de seguranca (leste) | Antecamara com guarda e porta de ferro (botao), corredor, sala de observacao com o vidro escuro e a sala de contencao com a cadeira |
+| 123.5 | Guarita vermelha no patio: descer a escada de mao | Corredor do subsolo; abrigo fortificado (porta dupla de ferro, camas, barris) e o treino de trajes (alvos, pesos, bonecos) |
+| 123.6 | Portao oeste | Porto com a bacia, guindastes, conteineres, armazens, pier, barco e farol |
+| 123.7 | Primeira visita num mundo novo | Narumi, Isao e dois soldados de elite aparecem na praca da base |

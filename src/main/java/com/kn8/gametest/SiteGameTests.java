@@ -37,10 +37,13 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 public final class SiteGameTests {
 
     private static final List<String> SITES = List.of("ariake_base", "tachikawa_base", "shinagawa_city",
-            "tachikawa_city", "exam_ground");
-    /** BASES-1: a Base de Tachikawa avulsa nao nasce mais sozinha (fica dentro da cidade); so pelo /place. */
-    private static final List<String> NATURAL = List.of("ariake_base", "shinagawa_city", "tachikawa_city",
-            "exam_ground");
+            "tachikawa_city", "exam_ground", "ariake_city");
+    /**
+     * BASES-1 e BASES-2: as bases avulsas de Tachikawa e Ariake nao nascem mais sozinhas (ficam dentro das cidades);
+     * so pelo /place.
+     */
+    private static final List<String> NATURAL = List.of("shinagawa_city", "tachikawa_city", "exam_ground",
+            "ariake_city");
     /** Peca e quantos encaixes ela tem. */
     private static final Map<String, Integer> PIECES = Map.ofEntries(Map.entry("ariake_base/core", 4),
             Map.entry("ariake_base/harbor", 1), Map.entry("tachikawa_base/core", 4),
@@ -50,7 +53,10 @@ public final class SiteGameTests {
             Map.entry("tachikawa/station", 10), Map.entry("tachikawa/lot_department", 1),
             Map.entry("tachikawa/lot_showa_park", 1), Map.entry("tachikawa/lot_stage_garden", 1),
             Map.entry("tachikawa/street", 6), Map.entry("tachikawa/base_core", 2),
-            Map.entry("tachikawa/base_training", 1), Map.entry("shinagawa/district", 1));
+            Map.entry("tachikawa/base_training", 1), Map.entry("shinagawa/district", 1),
+            Map.entry("ariake/station", 10), Map.entry("ariake/base_core", 2), Map.entry("ariake/harbor", 1),
+            Map.entry("ariake/street", 6), Map.entry("ariake/lot_bigsight", 1), Map.entry("ariake/lot_warehouse", 1),
+            Map.entry("ariake/lot_canal", 1));
 
     private SiteGameTests() {
     }
@@ -130,6 +136,46 @@ public final class SiteGameTests {
         helper.succeed();
     }
 
+    /**
+     * BASES-2: a Base Maritima de Ariake dentro da cidade costeira de Ariake (Koto). A estacao leva a base; a base
+     * tem o chao no y 12 com o subsolo embaixo (abrigo e treino de trajes), a ala de seguranca com a sala de
+     * contencao e o porto a oeste com agua; a guarnicao (Narumi, Isao) e as invasoes de Ariake ficam na cidade.
+     */
+    @GameTest(template = "empty_3x3")
+    public static void ariakeBaseIsInsideTheCoastalCity(GameTestHelper helper) {
+        var manager = helper.getLevel().getStructureManager();
+        StructureTemplate station = manager.get(KN8Constants.id("ariake/station")).orElseThrow();
+        helper.assertTrue(station.filterBlocks(BlockPos.ZERO, new StructurePlaceSettings(), Blocks.JIGSAW).stream()
+                .anyMatch(info -> info.nbt() != null && info.nbt().getString("pool").equals("kn8:ariake/base_core")),
+                "A estacao de Ariake deveria levar a base");
+        StructureTemplate core = manager.get(KN8Constants.id("ariake/base_core")).orElseThrow();
+        var settings = new StructurePlaceSettings();
+        int ground = core.filterBlocks(BlockPos.ZERO, settings, Blocks.JIGSAW).get(0).pos().getY();
+        helper.assertTrue(ground == 12, "O chao da base deveria ficar no y 12 (subsolo embaixo), esta no " + ground);
+        helper.assertTrue(core.filterBlocks(BlockPos.ZERO, settings, KN8Blocks.WEIGHT_RACK.get()).stream()
+                .allMatch(info -> info.pos().getY() < ground), "O treino de trajes deveria ficar no subsolo");
+        helper.assertTrue(core.filterBlocks(BlockPos.ZERO, settings, Blocks.REINFORCED_DEEPSLATE).size() > 500,
+                "O abrigo fortificado deveria ter as paredes reforcadas");
+        helper.assertTrue(core.filterBlocks(BlockPos.ZERO, settings, Blocks.TINTED_GLASS).size() > 20,
+                "A sala de observacao da contencao deveria ter o vidro escuro");
+        for (Block block : List.of(KN8Blocks.RESEARCH_TERMINAL.get(), KN8Blocks.SQUAD_STATION.get(),
+                KN8Blocks.DEFENSE_WORKBENCH.get(), Blocks.IRON_DOOR, Blocks.LECTERN)) {
+            helper.assertTrue(!core.filterBlocks(BlockPos.ZERO, settings, block).isEmpty(),
+                    "A base de Ariake deveria ter " + block);
+        }
+        StructureTemplate harbor = manager.get(KN8Constants.id("ariake/harbor")).orElseThrow();
+        helper.assertTrue(harbor.filterBlocks(BlockPos.ZERO, settings, Blocks.WATER).size() > 1000,
+                "O porto de Ariake deveria ter a bacia com agua");
+        SiteDef city = KN8Data.SITE.server().get(KN8Constants.id("ariake_city"));
+        helper.assertTrue(city != null && city.division().equals("first") && city.fieldMissions()
+                && city.garrison().stream().anyMatch(member -> member.variant().equals("narumi"))
+                && city.garrisonAt().map(at -> at.piece().equals(KN8Constants.id("ariake/base_core"))).orElse(false),
+                "Ariake: Primeira Divisao, missoes na cidade e a guarnicao dentro da base");
+        helper.assertTrue(city.invasions().stream().anyMatch(entry -> entry.invasion()
+                .equals(KN8Constants.id("ariake_assault"))), "O ataque a Ariake deveria cair na cidade");
+        helper.succeed();
+    }
+
     @GameTest(template = "empty_3x3")
     public static void sitesCheckTerrainAndAvoidVillages(GameTestHelper helper) {
         var structures = helper.getLevel().registryAccess().registryOrThrow(Registries.STRUCTURE);
@@ -143,8 +189,10 @@ public final class SiteGameTests {
                 .get(KN8Constants.id("defense_sites"));
         helper.assertTrue(set != null && set.structures().size() == NATURAL.size(),
                 "kn8:defense_sites deveria ter os " + NATURAL.size() + " locais que nascem sozinhos");
-        helper.assertTrue(set.structures().stream().noneMatch(entry -> entry.structure()
-                .is(KN8Constants.id("tachikawa_base"))), "A Base de Tachikawa avulsa nao nasce mais sozinha");
+        for (String alone : List.of("tachikawa_base", "ariake_base")) {
+            helper.assertTrue(set.structures().stream().noneMatch(entry -> entry.structure()
+                    .is(KN8Constants.id(alone))), "A base avulsa " + alone + " nao nasce mais sozinha");
+        }
         helper.assertTrue(helper.getLevel().registryAccess().registryOrThrow(Registries.STRUCTURE_SET)
                 .get(KN8Constants.id("defense_base_large")) == null, "A base grande generica nao nasce mais sozinha");
         helper.succeed();

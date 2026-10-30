@@ -1,15 +1,15 @@
 {
   "structures": [
     {
-      "structure": "kn8:ariake_base",
-      "weight": 2
-    },
-    {
       "structure": "kn8:shinagawa_city",
       "weight": 1
     },
     {
       "structure": "kn8:tachikawa_city",
+      "weight": 1
+    },
+    {
+      "structure": "kn8:ariake_city",
       "weight": 1
     },
     {
