@@ -96,7 +96,8 @@ public final class NarumiProfileGameTests {
         helper.runAfterDelay(SETTLE, () -> {
             SpecialSoldierDef base = narumi.profile().orElseThrow();
             SpecialSoldierDef enhanced = no1.profile().orElseThrow();
-            for (String id : new String[] {"eruption_slash", "slash_salvo", "seven_branched_sword"}) {
+            for (String id : new String[] {"eruption_slash", "slash_salvo", "seven_branched_sword", "thunder_fire",
+                    "flame_shower", "sky_turner"}) {
                 helper.assertTrue(base.techniques().containsKey(id) && enhanced.techniques().containsKey(id),
                         "Tecnica da obra nas duas formas: " + id);
                 double plainTotal = base.techniques().get(id).hits().stream().mapToDouble(Float::doubleValue).sum();

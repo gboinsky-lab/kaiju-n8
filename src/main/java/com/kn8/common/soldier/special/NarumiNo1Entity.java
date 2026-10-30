@@ -22,7 +22,7 @@ public class NarumiNo1Entity extends NarumiEntity {
     public static final String VARIANT_NO1 = "narumi_no1";
     public static final List<String> ANIMATED_NO1 = List.of("thrust_combo", "lunge", "bayonet_shot",
             "sweeping_slash", "weak_point_thrust", "predicted_counter", "eruption_slash", "slash_salvo",
-            "seven_branched_sword", "counter", "dash", "parry");
+            "seven_branched_sword", "thunder_fire", "flame_shower", "sky_turner", "counter", "dash", "parry");
 
     public NarumiNo1Entity(EntityType<? extends NarumiNo1Entity> type, Level level) {
         super(type, level);

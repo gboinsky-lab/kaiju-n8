@@ -616,6 +616,12 @@ Seven-Branched Sword [0,6 x6; 1,6] a cada 2 ticks (recarga 220, pesado); Narumi 
 Eruption Slash `flurry` 4 x0,8 (28,8 por uso, recarga 5,5 s: 5,2/s), Slash Salvo `lunge` 6 blocos 3 x0,9 (24,3; 5 s:
 4,9/s), Seven-Branched `flurry` 7 x0,7 (44,1; 11 s: 4,0/s, atordoa Yoju 20); baioneta do Numbers 1 (base 8, x domínio):
 5 x0,9 (36), `lunge` 7 blocos 4 x1,0 (32), 7 x0,85 (47,6).
+Inferidas pelos nomes (Miguel, 2026-10-30: "pode decidir atraves das inspirações") [SUPOSIÇÃO e INFERÊNCIA]: NPC
+**Thunder Fire** 3 tiros explosivos (raio 1,5) x1,4 (alcance 3-24, recarga 90), **Flame Shower** 6 tiros em leque de
+30° x0,7 com explosão 2,0 (alcance 2-16, recarga 160, pesado), **Sky Turner** combo [0,9; 0,9; 1,6] com avanço 2,2 e
+lançamento (alcance 2-7, recarga 140); No. 1 x1,25, um tiro/golpe a mais (Flame Shower dois). Jogador (baioneta do
+Narumi): Thunder Fire `slash_wave` 3 x1,3 (recarga 5 s), Flame Shower `slash_wave` 6 x0,7 (9 s), Sky Turner `lunge`
+5 blocos 3 x0,85 (recarga 6 s); Numbers 1 x1,25 e um a mais (Flame Shower dois).
 
 **Kōsa-uchi do jogador** (segunda técnica da espada do Hoshina, COMBATE-1, `techniques` do `hoshina_sword.json`): dois
 cortes em X (`roll_degrees` 45, abertos 6 graus) que voam 12 blocos a 1,5 bloco/tick, ×1,5 cada, 18 ticks (corte no 7),

@@ -70,7 +70,8 @@ Regras do documento (valem para toda a etapa):
    100%, a regra cobre as duas). Prévia de balanceamento das formas feita; refazer na COMBATE-8.
 8. **COMBATE-6 (Narumi):** feita. Eruption Slash, Slash Salvo e Seven-Branched Sword nas duas formas (o documento não
    separa forma A/B: as duas usam, o No. 1 aprimorado e com acerto garantido). Thunder Fire, Flame Shower e Sky Turner
-   ficaram de fora (o documento pede confirmar antes).
+   entraram depois (Miguel, 2026-10-30: "pode decidir atraves das inspirações"), inferidas pelos nomes:
+   tiros com raio rosa, leque de tiros de fogo laranja e corte que sobe girando [INFERÊNCIA].
 
 ## 5. Perguntas que ficaram (histórico)
 

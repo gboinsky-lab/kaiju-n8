@@ -1598,3 +1598,5 @@ Servidor dedicado + 2 clientes. Imagem: `docs/img/combate6_narumi.jpg`.
 | 115.3 | Baioneta do Numbers 1 (com os requisitos ou no criativo) | Foreseen Thrust (1/4) e as tres aprimoradas; com um kaiju ao lado (fora da frente) o corte acerta mesmo assim; as recargas sao separadas das da baioneta do Narumi |
 | 115.4 | Narumi (`kn8:narumi`) contra um Honju | Usa as tres da obra mais que as genericas; erra se o alvo sair do alcance |
 | 115.5 | Narumi No. 1 (`kn8:narumi_no1`) contra um kaiju que se mexe | Golpes acertam mesmo com o alvo a alguns blocos; o tiro da baioneta acerta o kaiju andando |
+| 115.6 | Baioneta do Narumi, X ate Thunder Fire, Flame Shower e Sky Turner (4/6 a 6/6) | Thunder Fire: 3 tiros rosa com raio e estouro; Flame Shower: leque de 6 tiros laranja que explodem em fogo; Sky Turner: avanco com cortes subindo e o corpo girando |
+| 115.7 | Narumi e Narumi No. 1 NPC contra um Honju por 1 min | Aparecem tambem as tres novas (animacoes `narumi.action.thunder_fire/flame_shower/sky_turner`) |

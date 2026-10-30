@@ -652,6 +652,11 @@ NARUMI_TECHNIQUES = {
         _thrust([-130, 35, 0], [-125, 55, 0], [-8, 30, 0], leg=False),
         _thrust([-120, -45, 0], [-115, -20, 0], [-5, -35, 0], leg=False),
         THRUST]},
+    # Inferidas pelos nomes (Miguel, 2026-10-30): Thunder Fire = tiros retos e firmes; Flame Shower = baioneta
+    # erguida, tiros para cima e para a frente; Sky Turner = corte que sobe girando o corpo inteiro.
+    "thunder_fire": {"moves": [_thrust([-90, 0, 0], [-86, 22, 0], [8, -4, 0], leg=False)]},
+    "flame_shower": {"moves": [_thrust([-125, 10, 0], [-118, 32, 0], [-10, 5, 0], leg=False)]},
+    "sky_turner": {"spin": -360, "moves": [_thrust([-160, -10, 0], [-150, 20, 0], [-15, 0, 0])]},
 }
 TECHNIQUE_POSES = {**KIKORU_TECHNIQUES, **ISAO_TECHNIQUES, **HOSHINA_TECHNIQUES, **NARUMI_TECHNIQUES}
 

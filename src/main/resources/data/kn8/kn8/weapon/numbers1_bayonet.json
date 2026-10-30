@@ -117,6 +117,88 @@
       "slash": {
         "count": 7
       }
+    },
+    {
+      "id": "thunder_fire",
+      "type": "slash_wave",
+      "multiplier": 1.62,
+      "duration_ticks": 16,
+      "impact_tick": 5,
+      "radius": 1.0,
+      "stamina_cost": 25,
+      "heat_cost": 4,
+      "cooldown_ticks": 100,
+      "camera_shake": 0.18,
+      "vfx": [
+        {
+          "effect": "kn8:technique",
+          "intensity": 1.2
+        }
+      ],
+      "sound": "kn8:weapon.sword_heavy",
+      "slash": {
+        "count": 4,
+        "spread_degrees": 4.0,
+        "speed": 4.5,
+        "range": 32.0,
+        "width": 0.4,
+        "color": 16740272,
+        "bullet": true,
+        "explosion_radius": 1.5
+      }
+    },
+    {
+      "id": "flame_shower",
+      "type": "slash_wave",
+      "multiplier": 0.88,
+      "duration_ticks": 22,
+      "impact_tick": 8,
+      "radius": 1.0,
+      "stamina_cost": 35,
+      "heat_cost": 6,
+      "cooldown_ticks": 180,
+      "camera_shake": 0.22,
+      "vfx": [
+        {
+          "effect": "kn8:technique",
+          "intensity": 1.2
+        }
+      ],
+      "sound": "kn8:weapon.sword_heavy",
+      "slash": {
+        "count": 8,
+        "spread_degrees": 30.0,
+        "speed": 3.0,
+        "range": 20.0,
+        "width": 0.5,
+        "color": 16747088,
+        "bullet": true,
+        "explosion_radius": 2.0
+      }
+    },
+    {
+      "id": "sky_turner",
+      "type": "lunge",
+      "multiplier": 1.06,
+      "duration_ticks": 18,
+      "impact_tick": 6,
+      "radius": 1.3,
+      "forward": 5.0,
+      "stamina_cost": 30,
+      "heat_cost": 5,
+      "cooldown_ticks": 140,
+      "knockback": 0.6,
+      "camera_shake": 0.2,
+      "vfx": [
+        {
+          "effect": "kn8:technique",
+          "intensity": 1.2
+        }
+      ],
+      "sound": "kn8:weapon.sword_heavy",
+      "slash": {
+        "count": 4
+      }
     }
   ],
   "sure_hit": true

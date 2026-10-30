@@ -22,7 +22,7 @@ public class NarumiEntity extends HoshinaEntity {
     /** Tecnicas do JSON e reacoes com animacao propria (narumi.action.<id>). */
     public static final List<String> ANIMATED_NARUMI = List.of(
             "thrust_combo", "lunge", "bayonet_shot", "sweeping_slash", "eruption_slash", "slash_salvo",
-            "seven_branched_sword", "counter", "dash", "parry");
+            "seven_branched_sword", "thunder_fire", "flame_shower", "sky_turner", "counter", "dash", "parry");
 
     public NarumiEntity(EntityType<? extends NarumiEntity> type, Level level) {
         super(type, level);
