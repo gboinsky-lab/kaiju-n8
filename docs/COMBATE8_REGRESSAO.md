@@ -40,6 +40,9 @@ ficam para quando ele pedir. O `docs/audio/ELEVENLABS_PROMPTS.md` (AUDIO-0, ante
 de parte delas (formas do Hoshina, Thunder Emperor); as técnicas novas da Kikoru, do Narumi, do Isao e o soco de
 ruptura ainda não têm prompt.
 
+**Decisão do Miguel (2026-10-30):** os sons serão arrumados numa etapa final própria (**SONS**, depois da
+transformação parcial); sem prompts novos por ora.
+
 ## Tabela completa
 
 | Quem | Arma/perfil | Tecnica | Animacao | Nome | Efeito | Som |
