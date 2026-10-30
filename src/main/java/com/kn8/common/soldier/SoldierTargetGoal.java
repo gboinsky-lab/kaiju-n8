@@ -151,15 +151,16 @@ public final class SoldierTargetGoal extends Goal {
     }
 
     /**
-     * EXAME: kaiju de prova e do candidato (o exame nao e ganho pelos soldados); so o esquadrao do dono da prova luta
-     * com eles.
+     * EXAME: kaiju de prova e do candidato (o exame nao e ganho pelos soldados); so o esquadrao do dono da prova e os
+     * candidatos que fazem a prova com ele lutam com eles.
      */
     private boolean examAllowed(KaijuEntity kaiju) {
         if (!ExamTargets.isExam(kaiju)) {
             return true;
         }
         UUID owner = ExamTargets.owner(kaiju);
-        return owner != null && soldier.squadLeader().filter(owner::equals).isPresent();
+        return owner != null && (soldier.squadLeader().filter(owner::equals).isPresent()
+                || owner.equals(ExamTargets.candidateOwner(soldier)));
     }
 
     /** IA-3 (protecao de aliados): o alvo do kaiju e outro soldado ou um jogador. */

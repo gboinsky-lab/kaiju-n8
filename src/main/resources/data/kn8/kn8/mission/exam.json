@@ -70,6 +70,7 @@
         "count": 6
       }
     ],
-    "return_kit": true
+    "return_kit": true,
+    "candidates": 3
   }
 }

@@ -32,7 +32,8 @@ import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
 /**
  * Kit do exame (EXAME): itens emprestados pela Forca de Defesa no inicio da prova ({@link MissionDef.Arena#kit}).
  * Cada item leva a marca {@value #TAG} com o id da missao nos dados do item; no fim da prova (e na morte) os itens
- * marcados saem do inventario. Tambem acha o centro do local da prova ({@link MissionDef.Arena#site}).
+ * marcados saem do inventario de quem nao foi aprovado (o aprovado fica com eles, sem a marca). Tambem acha o centro
+ * do local da prova ({@link MissionDef.Arena#site}).
  */
 @EventBusSubscriber(modid = KN8Constants.MOD_ID)
 public final class ExamKit {
@@ -89,6 +90,24 @@ public final class ExamKit {
             }
         }
         return taken;
+    }
+
+    /** Aprovado (Miguel, 2026-10-30: "o aprovado fica"): os itens do kit perdem a marca e passam a ser do jogador. */
+    public static int release(ServerPlayer player, ResourceLocation mission) {
+        int kept = 0;
+        Inventory inventory = player.getInventory();
+        for (int slot = 0; slot < inventory.getContainerSize(); slot++) {
+            ItemStack stack = inventory.getItem(slot);
+            if (missionOf(stack).filter(mission.toString()::equals).isPresent()) {
+                CustomData.update(DataComponents.CUSTOM_DATA, stack, tag -> tag.remove(TAG));
+                if (stack.get(DataComponents.CUSTOM_DATA) != null
+                        && stack.get(DataComponents.CUSTOM_DATA).isEmpty()) {
+                    stack.remove(DataComponents.CUSTOM_DATA);
+                }
+                kept += stack.getCount();
+            }
+        }
+        return kept;
     }
 
     /** Morte durante a prova: os itens do kit nao caem no chao (voltam para a Forca de Defesa). */

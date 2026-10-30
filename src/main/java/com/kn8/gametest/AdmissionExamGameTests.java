@@ -107,6 +107,37 @@ public final class AdmissionExamGameTests {
         helper.succeed();
     }
 
+    @GameTest(template = TEMPLATE)
+    public static void passedCandidateKeepsTheKit(GameTestHelper helper) {
+        FakePlayer player = player(helper, "keep");
+        MissionDef.Arena arena = KN8Data.MISSION.server().get(EXAM).arena().orElseThrow();
+        helper.assertTrue(arena.candidates() > 0, "O exame de admissao deveria ter outros candidatos");
+        int given = ExamKit.give(player, EXAM, arena.kit());
+        int kept = ExamKit.release(player, EXAM);
+        helper.assertTrue(kept == given, "Aprovado deveria ficar com tudo: " + kept + " de " + given);
+        helper.assertTrue(player.getItemBySlot(EquipmentSlot.CHEST).is(KN8Items.MK1.get())
+                && ExamKit.missionOf(player.getItemBySlot(EquipmentSlot.CHEST)).isEmpty(),
+                "O traje fica vestido e sem a marca do exame");
+        helper.assertTrue(ExamKit.take(player, EXAM) == 0, "Sem a marca nada mais e recolhido");
+        helper.succeed();
+    }
+
+    @GameTest(template = TEMPLATE, timeoutTicks = 120, batch = "kn8_admission_candidate")
+    public static void candidatesFightTheirExamKaiju(GameTestHelper helper) {
+        UUID owner = UUID.randomUUID();
+        SoldierEntity candidate = helper.spawn(KN8Entities.SOLDIER.get(), new BlockPos(2, 1, 2));
+        ExamTargets.markCandidate(candidate, owner, EXAM);
+        KaijuEntity kaiju = helper.spawn(KN8Entities.PRIMIGENIUS.get(), new BlockPos(6, 1, 6));
+        kaiju.setNoAi(true);
+        ExamTargets.mark(kaiju, owner, EXAM);
+        helper.runAfterDelay(60, () -> {
+            helper.assertTrue(candidate.getTarget() == kaiju, "O candidato deveria lutar com o kaiju da prova dele");
+            kaiju.discard();
+            candidate.discard();
+            helper.succeed();
+        });
+    }
+
     @GameTest(template = TEMPLATE, timeoutTicks = 120, batch = "kn8_admission_soldier")
     public static void soldiersLeaveExamKaijuToTheCandidate(GameTestHelper helper) {
         SoldierEntity soldier = helper.spawn(KN8Entities.SOLDIER.get(), new BlockPos(2, 1, 2));

@@ -24,17 +24,20 @@ public record MissionDef(Category category, Optional<ResourceLocation> giver, Re
      * EXAME (Miguel, 2026-10-30: "exame de admissao numa area propria, com armas, armadura, municao e itens entregues
      * no inicio"): prova que so pode ser aceita dentro do local {@code site} (registro {@code site}, ex. o Campo do
      * Exame de Admissao); os alvos surgem entre {@code min_distance} e {@code max_distance} do centro do local; o
-     * {@code kit} e entregue ao aceitar (armadura vestida se o slot estiver livre, armas de fogo e pentes cheios) e,
-     * com {@code return_kit}, recolhido no fim (concluida, reprovada ou abandonada).
+     * {@code kit} e entregue ao aceitar (armadura vestida se o slot estiver livre, armas de fogo e pentes cheios); o
+     * aprovado fica com ele (Miguel, 2026-10-30) e, com {@code return_kit}, quem reprova, abandona ou cai devolve.
+     * {@code candidates}: soldados que fazem a prova junto com o jogador (Miguel: "implemente alguns soldados para fazer
+     * o exame com o jogador").
      */
     public record Arena(Optional<ResourceLocation> site, double minDistance, double maxDistance, List<KitItem> kit,
-            boolean returnKit) {
+            boolean returnKit, int candidates) {
         public static final Codec<Arena> CODEC = RecordCodecBuilder.create(i -> i.group(
                 ResourceLocation.CODEC.optionalFieldOf("site").forGetter(Arena::site),
                 Codec.doubleRange(0.0, 256.0).optionalFieldOf("min_distance", 6.0).forGetter(Arena::minDistance),
                 Codec.doubleRange(1.0, 256.0).optionalFieldOf("max_distance", 14.0).forGetter(Arena::maxDistance),
                 KitItem.CODEC.listOf().optionalFieldOf("kit", List.of()).forGetter(Arena::kit),
-                Codec.BOOL.optionalFieldOf("return_kit", true).forGetter(Arena::returnKit)
+                Codec.BOOL.optionalFieldOf("return_kit", true).forGetter(Arena::returnKit),
+                Codec.intRange(0, 16).optionalFieldOf("candidates", 0).forGetter(Arena::candidates)
         ).apply(i, Arena::new));
     }
 

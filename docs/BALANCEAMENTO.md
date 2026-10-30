@@ -447,7 +447,7 @@ corpo (`[body] xpFromKaiju` false liga de volta). O XP de Release (limite pessoa
 
 **Exame de admissao (EXAME, `mission/exam.json`, bloco `arena`)** [SUPOSICAO]: alvos a 6-14 blocos do centro do
 Campo do Exame; kit Mk1, rifle (30), 3 pentes (90), 60 balas avulsas, faca de combate, 2 estimulantes, resfriador e 6
-paes, devolvido no fim. Objetivos de antes: chegar a area, 3 Primigenius, Honju do exame (x0,444 da vida, invoca
+paes; fica com o aprovado e volta se reprovar. 3 candidatos (soldados comuns de rifle, nivel normal) fazem a prova junto. Objetivos de antes: chegar a area, 3 Primigenius, Honju do exame (x0,444 da vida, invoca
 Primigenius). Medido em jogo: o candidato sem ajuda morre para os 3 Primigenius juntos (duas vezes, em ~3 s e ~20 s,
 inclusive com Resistencia IV); com 120 balas sobrou um Primigenius com 40 de vida (por isso as 60 avulsas). Revisar no
 balanceamento.

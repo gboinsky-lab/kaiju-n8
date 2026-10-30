@@ -1668,8 +1668,8 @@ Jogador em sobrevivencia com a patente Candidato (`/kn8 rank set kn8:candidato <
 |---|---|---|
 | 120.1 | Ir ao campo | Campo cercado com portao, pavilhao, torre, mata e ruinas; ao entrar, "Campo do Exame de Admissao / Forca de Defesa, Comissao de Selecao" |
 | 120.2 | Oficial de Provas de uma base (fora do campo): aceitar o Exame de Admissao | Recusado: "Este exame acontece no Campo do Exame de Admissao" |
-| 120.3 | No pavilhao, falar com o Oficial de Provas e aceitar o exame | Kit entregue: Mk1 vestido, rifle e 3 pentes cheios, 60 balas, faca, estimulantes, resfriador, pao; dica amarela "Equipamento do exame" nos itens |
+| 120.3 | No pavilhao, falar com o Oficial de Provas e aceitar o exame | Kit entregue: Mk1 vestido, rifle e 3 pentes cheios, 60 balas, faca, estimulantes, resfriador, pao; dica amarela "Equipamento do exame" nos itens; 3 soldados "Candidato" nascem e fazem a prova junto |
 | 120.4 | Seguir a HUD ate a area | Os 3 Primigenius surgem longe do jogador (nao em cima) |
-| 120.5 | Vencer os 3 e o Honju do exame | O Primigenius que o Honju invoca nao deixa carcaca e a regiao nao entra em combate; no fim "PROMOVIDO" a Oficial, nota e o kit sai do inventario |
-| 120.6 | Repetir e morrer durante a prova | "Missao fracassada"; nenhum item do kit fica no chao |
+| 120.5 | Vencer os 3 e o Honju do exame | O Primigenius que o Honju invoca nao deixa carcaca e a regiao nao entra em combate; no fim "PROMOVIDO" a Oficial, nota, o kit fica com o jogador (sem a dica amarela) e os candidatos vao embora |
+| 120.6 | Repetir e morrer (ou abandonar) durante a prova | "Missao fracassada"; o kit volta para a Forca de Defesa e nenhum item dele fica no chao |
 | 120.7 | Soldado comum perto de um kaiju da prova de outro jogador | O soldado nao ataca esse kaiju |

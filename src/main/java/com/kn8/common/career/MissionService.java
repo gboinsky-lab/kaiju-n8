@@ -18,8 +18,10 @@ import com.kn8.common.data.def.MissionDef;
 import com.kn8.common.destruction.ProtectedAreas;
 import com.kn8.common.evacuation.EvacuationService;
 import com.kn8.common.kaiju.KaijuEntity;
+import com.kn8.common.registry.KN8Entities;
 import com.kn8.common.registry.KN8Sounds;
 import com.kn8.common.site.RegionService;
+import com.kn8.common.soldier.SoldierEntity;
 import com.kn8.common.soldier.SquadService;
 import com.kn8.common.world.KaijuSpawner;
 import com.kn8.core.career.MissionGrader;
@@ -36,6 +38,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
@@ -66,6 +69,9 @@ public final class MissionService {
         NEEDS_SITE
     }
 
+    /** EXAME: arma e nivel dos soldados que fazem a prova junto [SUPOSICAO]. */
+    private static final String CANDIDATE_VARIANT = "rifle";
+    private static final String CANDIDATE_LEVEL = "normal";
     /** EXAME: raio onde estao os invocados que nascem junto do chefe da prova. */
     private static final double BOSS_MINION_RADIUS = 16.0;
     /** EXAME: pontos sorteados para os alvos da prova (fica o mais longe do jogador). */
@@ -168,6 +174,8 @@ public final class MissionService {
             player.sendSystemMessage(Component.translatable(arena.returnKit() ? "kn8.mission.kit_loaned"
                     : "kn8.mission.kit_given", given).withStyle(ChatFormatting.GREEN));
         });
+        def.arena().filter(arena -> arena.candidates() > 0 && origin.isPresent())
+                .ifPresent(arena -> spawnCandidates(player, id, origin.get(), arena.candidates()));
         activateObjective(player, id, def, progress, 0);
         CareerService.changed(player);
         return Result.OK;
@@ -179,6 +187,7 @@ public final class MissionService {
             return false;
         }
         cleanup(player, id, removed);
+        endKit(player, id, false);
         player.sendSystemMessage(Component.translatable("kn8.mission.abandoned", name(id))
                 .withStyle(ChatFormatting.GRAY));
         CareerService.changed(player);
@@ -457,9 +466,11 @@ public final class MissionService {
         cleanup(player, id, progress);
         MissionGrader.Result result = evaluate(player, def, progress);
         if (def.grading().isPresent() && !result.passed()) {
+            endKit(player, id, false);
             failExam(player, id, def, progress, result);
             return;
         }
+        endKit(player, id, true);
         data.completed().add(id);
         data.addMissionDone();
         if (def.repeatable() && def.cooldownTicks() > 0) {
@@ -624,6 +635,7 @@ public final class MissionService {
         CareerData.MissionProgress removed = CareerService.data(player).active().remove(id);
         if (removed != null) {
             cleanup(player, id, removed);
+            endKit(player, id, false);
         }
         player.sendSystemMessage(Component.translatable("kn8.mission.failed." + reason, name(id))
                 .withStyle(ChatFormatting.RED));
@@ -645,10 +657,48 @@ public final class MissionService {
             ProtectedAreas.get(player.serverLevel()).remove(ExamTargets.areaName(player.getUUID(), id));
         });
         EvacuationService.clear(player, id);
-        // EXAME: o kit emprestado volta para a Forca de Defesa quando a prova acaba (de qualquer jeito).
-        KN8Data.MISSION.get(id, false).flatMap(MissionDef::arena).filter(MissionDef.Arena::returnKit)
+        progress.origin().ifPresent(origin -> ExamTargets.clearCandidates(player.serverLevel(), player.getUUID(), id,
+                origin, ServerConfig.EXAM_LEAVE_DISTANCE.get() + 32));
+    }
+
+    /**
+     * EXAME: outros candidatos fazem a prova junto (soldados comuns de rifle no posto do centro do campo, com o nome
+     * "Candidato"); lutam so com os kaiju desta prova e vao embora quando ela acaba.
+     */
+    private static void spawnCandidates(ServerPlayer player, ResourceLocation id, BlockPos center, int count) {
+        ServerLevel level = player.serverLevel();
+        for (int i = 0; i < count; i++) {
+            SoldierEntity soldier = KN8Entities.SOLDIER.get().create(level);
+            if (soldier == null) {
+                continue;
+            }
+            BlockPos pos = KaijuSpawner.surfaceAround(level, player.blockPosition(), 1.5, 3.5, player.getRandom());
+            soldier.moveTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, player.getYRot(), 0.0F);
+            soldier.setVariant(CANDIDATE_VARIANT);
+            soldier.setPowerLevel(CANDIDATE_LEVEL);
+            soldier.finalizeSpawn(level, level.getCurrentDifficultyAt(pos), MobSpawnType.EVENT, null);
+            soldier.setSquadPost(center);
+            soldier.setCustomName(Component.translatable("kn8.mission.exam_candidate"));
+            ExamTargets.markCandidate(soldier, player.getUUID(), id);
+            level.addFreshEntity(soldier);
+        }
+        player.sendSystemMessage(Component.translatable("kn8.mission.exam_candidates", count)
+                .withStyle(ChatFormatting.AQUA));
+    }
+
+    /**
+     * EXAME: fim do kit. Aprovado fica com ele (Miguel, 2026-10-30); quem reprova, abandona ou cai devolve (com
+     * {@code return_kit}).
+     */
+    private static void endKit(ServerPlayer player, ResourceLocation id, boolean passed) {
+        KN8Data.MISSION.get(id, false).flatMap(MissionDef::arena).filter(arena -> !arena.kit().isEmpty())
                 .ifPresent(arena -> {
-                    if (ExamKit.take(player, id) > 0) {
+                    if (passed) {
+                        if (ExamKit.release(player, id) > 0) {
+                            player.sendSystemMessage(Component.translatable("kn8.mission.kit_kept")
+                                    .withStyle(ChatFormatting.GREEN));
+                        }
+                    } else if (arena.returnKit() && ExamKit.take(player, id) > 0) {
                         player.sendSystemMessage(Component.translatable("kn8.mission.kit_returned")
                                 .withStyle(ChatFormatting.GRAY));
                     }
