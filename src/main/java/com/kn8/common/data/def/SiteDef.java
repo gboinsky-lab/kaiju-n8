@@ -13,9 +13,11 @@ import net.minecraft.resources.ResourceLocation;
  * divisao dona do lugar ({@code division}: chave {@code kn8.division.<division>}), a guarnicao (personagens da obra,
  * mesmo formato dos defensores da invasao; aparece uma vez por mundo, na primeira visita) e as invasoes do lugar
  * (sorteadas pelo peso quando a invasao natural cai num jogador dentro dele). Nome: {@code kn8.site.<id>}.
+ * {@code field_missions} (CIDADES, Miguel 2026-10-30: "invasoes e missoes dentro delas"): missao de campo aceita ou
+ * avancada dentro do local poe os alvos dentro dele (nas cidades).
  */
 public record SiteDef(ResourceLocation structure, String division, List<InvasionDef.Defender> garrison,
-        List<SiteInvasion> invasions) {
+        List<SiteInvasion> invasions, boolean fieldMissions) {
 
     /** Invasao do lugar e o peso no sorteio. */
     public record SiteInvasion(ResourceLocation invasion, int weight) {
@@ -29,6 +31,7 @@ public record SiteDef(ResourceLocation structure, String division, List<Invasion
             ResourceLocation.CODEC.fieldOf("structure").forGetter(SiteDef::structure),
             Codec.STRING.fieldOf("division").forGetter(SiteDef::division),
             InvasionDef.Defender.CODEC.listOf().optionalFieldOf("garrison", List.of()).forGetter(SiteDef::garrison),
-            SiteInvasion.CODEC.listOf().optionalFieldOf("invasions", List.of()).forGetter(SiteDef::invasions)
+            SiteInvasion.CODEC.listOf().optionalFieldOf("invasions", List.of()).forGetter(SiteDef::invasions),
+            Codec.BOOL.optionalFieldOf("field_missions", false).forGetter(SiteDef::fieldMissions)
     ).apply(i, SiteDef::new));
 }

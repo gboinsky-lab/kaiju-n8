@@ -32,6 +32,7 @@ from gen_base import Piece, ROAD, element, stairs
 from gen_city import ASPHALT, SIDEWALK, crossing_piece, floors_building, lot, street_end_piece, street_piece, \
     street_pools, tree, street_lamp
 from gen_structures import DATA, dump, item, officer, soldier
+from nbt_io import Float
 
 BASE_POOL = "kn8:defense_base"
 GLASS = "minecraft:light_blue_stained_glass"
@@ -40,6 +41,7 @@ LANTERN = {"hanging": "true", "waterlogged": "false"}
 DIVISION_COLORS = ["blue", "green", "orange", "red", "purple", "yellow"]
 # "3" da Terceira Divisao (5 x 7, de cima para baixo).
 DIGIT_3 = ["#####", "    #", "    #", " ####", "    #", "    #", "#####"]
+DIGIT_1 = ["  #  ", " ##  ", "# #  ", "  #  ", "  #  ", "  #  ", "#####"]
 
 
 def cross_roads(b, size, lo, hi):
@@ -538,13 +540,161 @@ def tachikawa_airfield():
 # --- cidades ------------------------------------------------------------------------------------------------------
 
 def station_jigsaws(b, prefix, size=41, final="minecraft:polished_andesite"):
-    """Saidas de rua no meio dos lados e oito lotes perto dos cantos (como a praca da cidade comum)."""
+    """Saidas de rua no meio dos lados e oito lotes perto dos cantos (como a praca da cidade comum). CIDADES: a
+    saida norte leva ao distrito da Forca de Defesa (um por cidade, sempre); os lotes do lado norte saem para ele
+    caber."""
     mid, last = size // 2, size - 1
-    for x, z, facing in ((mid, 0, "north"), (mid, last, "south"), (0, mid, "west"), (last, mid, "east")):
+    b.jigsaw(mid, 0, "north", "kn8:city_link", "kn8:city_street", f"kn8:{prefix}/district", final)
+    for x, z, facing in ((mid, last, "south"), (0, mid, "west"), (last, mid, "east")):
         b.jigsaw(x, z, facing, "kn8:city_link", "kn8:city_street", f"kn8:{prefix}/streets", final)
-    for x, z, facing in ((4, 0, "north"), (last - 4, 0, "north"), (4, last, "south"), (last - 4, last, "south"),
+    for x, z, facing in ((4, last, "south"), (last - 4, last, "south"),
                          (0, 4, "west"), (0, last - 4, "west"), (last, 4, "east"), (last, last - 4, "east")):
         b.jigsaw(x, z, facing, "kn8:city_slot", "kn8:city_lot", f"kn8:{prefix}/lots", final)
+
+
+DISTRICT = (41, 32, 61)
+
+
+def city_district(prefix, digit, color, seed):
+    """CIDADES (Miguel, 2026-10-30: "cidades maiores com as bases da Forca de Defesa dentro"; QGs "como os da obra,
+    salas dentro e fora, zonas separadas"): distrito murado de 41 x 61 ligado a estacao pela rua norte. Entrada com
+    portao, guaritas e bandeiras; QG de 3 andares com o numero da divisao na fachada (terreo: recepcao com os
+    oficiais, sala de briefing, enfermaria; 1o: central de comando, arsenal, laboratorio; 2o: alojamento e sala do
+    capitao; heliporto no telhado); atras, separados por grade, o patio de treino (bonecos, pesos, muro de
+    escalada, alvos) e o patio de veiculos (heliporto, helicoptero, caminhoes, suprimentos)."""
+    w, h, d = DISTRICT
+    b = Piece(DISTRICT, seed, floor="minecraft:polished_andesite")
+    stripe = f"minecraft:{color}_concrete"
+    # Entrada a partir da estacao: rua ate o portao.
+    for z in range(0, 8):
+        for x in range(17, 24):
+            b.set(x, 0, z, ASPHALT)
+    b.jigsaw(20, 0, "north", "kn8:city_street", "kn8:city_link", "minecraft:empty", ASPHALT)
+    # Muro externo com o portao no meio da frente.
+    b.wall_line(0, 2, 40, 2, gate=(16, 24))
+    b.wall_line(0, 2, 0, 60)
+    b.wall_line(40, 2, 40, 60)
+    b.wall_line(0, 60, 40, 60)
+    for x in (14, 26):  # guaritas
+        b.fill(x - 1, 1, 3, x + 1, 3, 5, "minecraft:white_concrete")
+        b.set(x, 2, 3, "minecraft:glass_pane")
+        b.set(x, 1, 5, "minecraft:air")
+        b.set(x, 2, 5, "minecraft:air")
+        b.fill(x - 1, 4, 3, x + 1, 4, 5, stripe)
+    flagpole(b, 6, 5, color, 9)
+    flagpole(b, 32, 5, "blue", 9)
+    b.entity(16, 1, 4, soldier("rifle", "normal", 0.0))
+    b.entity(24, 1, 4, soldier("rifle", "normal", 0.0))
+    # QG de 3 andares (z 8-30): andares de 5 blocos, telhado no 15.
+    x0, z0, x1, z1 = 4, 8, 36, 30
+    b.fill(x0, 1, z0, x1, 15, z1, "minecraft:white_concrete")
+    b.fill(x0 + 1, 1, z0 + 1, x1 - 1, 14, z1 - 1, "minecraft:air")
+    for f in range(3):
+        y = f * 5
+        if f:
+            b.fill(x0 + 1, y, z0 + 1, x1 - 1, y, z1 - 1, "minecraft:polished_deepslate")
+        else:
+            b.fill(x0 + 1, 0, z0 + 1, x1 - 1, 0, z1 - 1, "minecraft:smooth_stone")
+        for x in range(x0 + 1, x1):
+            if (x - x0) % 3:
+                for z in (z0, z1):
+                    b.fill(x, y + 2, z, x, y + 3, z, "minecraft:light_gray_stained_glass_pane")
+        for z in range(z0 + 1, z1):
+            if (z - z0) % 3:
+                for x in (x0, x1):
+                    b.fill(x, y + 2, z, x, y + 3, z, "minecraft:light_gray_stained_glass_pane")
+        for x in range(x0, x1 + 1):
+            b.set(x, y + 4, z0, stripe)
+            b.set(x, y + 4, z1, stripe)
+        # Paredes das salas (oeste x 13, leste x 27) com porta para o corredor do meio.
+        for x in (13, 27):
+            b.fill(x, y + 1, z0 + 1, x, y + 4, z1 - 1, "minecraft:light_gray_concrete")
+            b.fill(x, y + 1, 18, x, y + 2, 20, "minecraft:air")
+        for x in (8, 20, 32):
+            for z in (13, 25):
+                b.set(x, y + 4, z, "minecraft:lantern", LANTERN)
+    b.fill(x0, 15, z0, x1, 15, z1, "minecraft:gray_concrete")
+    helipad(b, 16, 15, y=15)
+    # Porta principal (norte) e a dos fundos (sul, para os patios).
+    for z in (z0, z1):
+        b.fill(19, 1, z, 21, 3, z, "minecraft:air")
+    b.fill(18, 4, z0 - 2, 22, 4, z0 - 1, stripe)  # marquise
+    glyph(b, digit, 18, 13, z0, stripe, mirror=True)
+    # Escada de mao em todos os andares (canto sudeste do corredor).
+    b.fill(26, 1, z1 - 1, 26, 15, z1 - 1, "minecraft:ladder", {"facing": "north", "waterlogged": "false"})
+    b.set(26, 15, z1 - 1, "minecraft:air")
+    # Terreo: recepcao (oficiais, estacao, terminal), briefing (oeste) e enfermaria (leste).
+    b.entity(18, 1, 13, officer("officer", 0.0))
+    b.entity(22, 1, 13, officer("exam_officer", 0.0))
+    b.fill(16, 1, 15, 24, 1, 15, "minecraft:smooth_stone_slab", {"type": "top", "waterlogged": "false"})
+    b.set(20, 1, 15, "minecraft:air")
+    b.set(15, 1, 27, "kn8:squad_station", {"facing": "north"})
+    b.set(25, 1, 27, "kn8:research_terminal", {"facing": "north"})
+    b.fill(5, 1, 10, 12, 3, 10, "minecraft:white_concrete")  # quadro do briefing
+    b.fill(6, 2, 10, 11, 2, 10, "minecraft:black_concrete")
+    for z in (14, 17, 20, 23):
+        for x in range(6, 12):
+            b.set(x, 1, z, "minecraft:spruce_stairs", stairs("north"))
+    for z in (11, 15, 19, 23):
+        b.bed(31, z, "west", "white")
+    b.set(34, 1, 27, "minecraft:brewing_stand", {"has_bottle_0": "false", "has_bottle_1": "false",
+                                                 "has_bottle_2": "false"})
+    # 1o andar: central de comando (telas e mesas), arsenal (oeste) e laboratorio (leste).
+    for x in range(15, 26, 2):
+        b.set(x, 6, 10, "minecraft:black_concrete")
+        b.set(x, 7, 9 + 1, "minecraft:light_blue_stained_glass")
+    for z in (16, 20, 24):
+        b.fill(16, 6, z, 24, 6, z, "minecraft:polished_blackstone_slab", {"type": "top", "waterlogged": "false"})
+        b.set(20, 7, z, "minecraft:cartography_table")
+    b.set(6, 6, 12, "kn8:defense_workbench", {"facing": "east"})
+    b.set(6, 6, 16, "kn8:defense_workbench", {"facing": "east"})
+    b.chest(6, 6, 20, "kn8:chests/base_armory", "east")
+    b.chest(6, 6, 24, "kn8:chests/base_armory", "east")
+    for z in range(11, 28, 2):
+        b.set(12, 6, z, "minecraft:barrel", {"facing": "west", "open": "false"})
+    b.set(34, 6, 12, "kn8:research_terminal", {"facing": "west"})
+    b.set(34, 6, 16, "kn8:research_terminal", {"facing": "west"})
+    b.chest(34, 6, 22, "kn8:chests/base_medical", "west")
+    b.fill(30, 6, 26, 33, 6, 26, "minecraft:white_stained_glass")
+    # 2o andar: alojamento (oeste), sala do capitao (leste).
+    for z in (11, 15, 19, 23, 27):
+        b.bed(6, z, "east", color, y=11)
+        b.bed(11, z, "west", color, y=11)
+    b.set(32, 11, 18, "minecraft:lectern", {"facing": "west", "has_book": "false", "powered": "false"})
+    b.fill(35, 11, 11, 35, 13, 26, "minecraft:bookshelf")
+    b.chest(30, 11, 26, "kn8:chests/base_command", "north")
+    # Grade separando os patios (z 33) com portoes; patio de treino (oeste) e de veiculos (leste).
+    for x in range(1, 40):
+        if not (18 <= x <= 22 or x == 20 or 6 <= x <= 8 or 32 <= x <= 34):
+            b.fill(x, 1, 33, x, 2, 33, "minecraft:iron_bars")
+    b.fill(20, 1, 34, 20, 2, 59, "minecraft:iron_bars")
+    b.fill(20, 1, 45, 20, 2, 47, "minecraft:air")
+    for z in range(31, 60):
+        b.set(20, 0, z, "minecraft:gray_concrete")
+    b.fill(1, 0, 34, 19, 0, 59, "minecraft:coarse_dirt")
+    for z in (37, 41, 45):
+        b.entity(4, 1, z, {"id": "kn8:training_dummy", "Rotation": [Float(0.0), Float(0.0)]})
+    for z in (37, 40, 43):
+        b.set(9, 1, z, "kn8:weight_rack", {"facing": "east"})
+    b.fill(2, 1, 56, 10, 7, 57, "minecraft:stone_bricks")  # muro de escalada
+    for x in (14, 16, 18):
+        b.set(x, 1, 58, "minecraft:target", {"power": "0"})
+        b.set(x, 2, 58, "minecraft:hay_block", {"axis": "y"})
+    b.entity(12, 1, 50, soldier("rifle", "normal", 180.0))
+    helipad(b, 26, 36)
+    helicopter(b, 29, 37, color=color if color != "white" else "blue")
+    for x in (23, 33):  # caminhoes
+        b.fill(x, 1, 49, x + 3, 2, 55, "minecraft:green_terracotta")
+        b.fill(x, 1, 49, x + 3, 2, 50, "minecraft:gray_concrete")
+        b.fill(x, 3, 49, x + 3, 3, 50, "minecraft:light_blue_stained_glass")
+        for z in (51, 54):
+            b.set(x - 1, 1, z, "minecraft:black_concrete")
+            b.set(x + 4, 1, z, "minecraft:black_concrete")
+    b.chest(38, 1, 58, "kn8:chests/base_armory", "west")
+    b.fill(36, 1, 35, 38, 2, 37, "minecraft:barrel", {"facing": "up", "open": "false"})
+    for x, z in ((2, 31), (38, 31), (2, 7), (38, 7)):
+        b.lamp_post(x, z)
+    b.finish(f"{prefix}/district")
 
 
 def shinagawa_station():
@@ -867,8 +1017,10 @@ TACHIKAWA_LOTS = [("tachikawa/lot_department", 3), ("tachikawa/lot_showa_park", 
 SITES = [
     ("ariake_base", "kn8:ariake_base/core", 3, 100, BASE_BIOMES, 104, 14),
     ("tachikawa_base", "kn8:tachikawa_base/core", 3, 110, BASE_BIOMES, 112, 14),
-    ("shinagawa_city", "kn8:shinagawa/station", 6, 116, CITY_BIOMES, 96, 16),
-    ("tachikawa_city", "kn8:tachikawa/station", 6, 116, CITY_BIOMES, 96, 16),
+    # CIDADES: cidades maiores (encaixes 6 -> 8: mais ruas ate a borda; o raio fica em 116 porque o jigsaw nao passa
+    # de 128 contando os 12 da adaptacao do terreno).
+    ("shinagawa_city", "kn8:shinagawa/station", 8, 116, CITY_BIOMES, 112, 16),
+    ("tachikawa_city", "kn8:tachikawa/station", 8, 116, CITY_BIOMES, 112, 16),
 ]
 # Fracao das amostras que pode ter agua (riacho ou lagoa pequena, que a construcao cobre; lago e rio largo nao) e
 # raio do miolo em que o desnivel conta (a borda irregular fica com o beard_thin).
@@ -887,7 +1039,7 @@ def worldgen():
     dump(wg / "template_pool/tachikawa_base/airfield.json", {"fallback": "minecraft:empty", "elements": [
         {"weight": 1, "element": element("kn8:tachikawa_base/airfield")}]})
     for name, start in (("ariake_base", "core"), ("tachikawa_base", "core"), ("shinagawa", "station"),
-                        ("tachikawa", "station")):
+                        ("tachikawa", "station"), ("shinagawa", "district"), ("tachikawa", "district")):
         dump(wg / f"template_pool/{name}/{start}.json", {"fallback": "minecraft:empty", "elements": [
             {"weight": 1, "element": element(f"kn8:{name}/{start}")}]})
     street_pools("shinagawa", SHINAGAWA_LOTS, street_weight=5, crossing_weight=3)
@@ -945,6 +1097,8 @@ if __name__ == "__main__":
     tachikawa_department()
     tachikawa_showa_park()
     tachikawa_stage_garden()
+    city_district("tachikawa", DIGIT_3, "orange", 341)
+    city_district("shinagawa", DIGIT_1, "blue", 342)
     for prefix in ("shinagawa", "tachikawa"):
         street_piece(prefix)
         crossing_piece(prefix)

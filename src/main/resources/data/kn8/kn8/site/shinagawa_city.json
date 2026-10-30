@@ -10,5 +10,6 @@
       "invasion": "kn8:spider_swarm",
       "weight": 1
     }
-  ]
+  ],
+  "field_missions": true
 }

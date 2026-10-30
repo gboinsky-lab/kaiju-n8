@@ -21,6 +21,7 @@ import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.registry.KN8Entities;
 import com.kn8.common.registry.KN8Sounds;
 import com.kn8.common.site.RegionService;
+import com.kn8.common.site.SiteService;
 import com.kn8.common.soldier.SoldierEntity;
 import com.kn8.common.soldier.SquadService;
 import com.kn8.common.world.KaijuSpawner;
@@ -41,6 +42,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
 
 /**
  * Missoes (0.2, Etapa 5): aceitar, acompanhar e recompensar. Os objetivos sao feitos EM ORDEM; quando um objetivo
@@ -69,6 +71,8 @@ public final class MissionService {
         NEEDS_SITE
     }
 
+    /** CIDADES: sorteios do ponto do objetivo dentro da cidade. */
+    private static final int CITY_AREA_TRIES = 24;
     /** EXAME: arma e nivel dos soldados que fazem a prova junto [SUPOSICAO]. */
     private static final String CANDIDATE_VARIANT = "rifle";
     private static final String CANDIDATE_LEVEL = "normal";
@@ -711,6 +715,12 @@ public final class MissionService {
      */
     private static BlockPos targetArea(ServerLevel level, ServerPlayer player, BlockPos center, double min,
             double max, boolean exam) {
+        if (!exam) {
+            Optional<BlockPos> city = cityArea(level, player, min, max);
+            if (city.isPresent()) {
+                return city.get();
+            }
+        }
         BlockPos area = KaijuSpawner.surfaceAround(level, center, min, max, player.getRandom());
         for (int i = 0; exam && i < EXAM_AREA_TRIES; i++) {
             BlockPos other = KaijuSpawner.surfaceAround(level, center, min, max, player.getRandom());
@@ -721,13 +731,47 @@ public final class MissionService {
         return area;
     }
 
+    /**
+     * CIDADES (Miguel, 2026-10-30: "invasoes e missoes dentro delas"): dentro de um local com {@code field_missions}
+     * (as cidades), o ponto do objetivo fica dentro de uma peca da cidade e na altura de rua mais perto da do
+     * jogador (a superficie da cidade pode ser telhado). Vazio = fora de uma cidade.
+     */
+    private static Optional<BlockPos> cityArea(ServerLevel level, ServerPlayer player, double min, double max) {
+        Optional<SiteService.Hit> hit = SiteService.siteAt(level, player.blockPosition())
+                .filter(site -> site.def().fieldMissions());
+        if (hit.isEmpty()) {
+            return Optional.empty();
+        }
+        // Dentro de uma peca (rua, lote, estacao, distrito): a caixa da estrutura inteira pega cantos sem cidade
+        // (visto em jogo: a invasao caiu num morro fora das ruas).
+        List<BoundingBox> pieces = hit.get().start().getPieces().stream().map(piece -> piece.getBoundingBox())
+                .toList();
+        BlockPos best = null;
+        int y = player.getBlockY();
+        for (int i = 0; i < CITY_AREA_TRIES; i++) {
+            BlockPos spot = KaijuSpawner.surfaceAround(level, player.blockPosition(), min, max, player.getRandom());
+            boolean inside = pieces.stream().anyMatch(box -> spot.getX() >= box.minX() && spot.getX() <= box.maxX()
+                    && spot.getZ() >= box.minZ() && spot.getZ() <= box.maxZ());
+            if (inside && (best == null || Math.abs(spot.getY() - y) < Math.abs(best.getY() - y))) {
+                best = spot;
+            }
+        }
+        if (best == null) {
+            BoundingBox box = pieces.get(player.getRandom().nextInt(pieces.size()));
+            BlockPos center = new BlockPos((box.minX() + box.maxX()) / 2, y, (box.minZ() + box.maxZ()) / 2);
+            best = KaijuSpawner.surfaceAround(level, center, 0, 2, player.getRandom());
+        }
+        return Optional.of(best);
+    }
+
     /** Ponto de patrulha: em campo longe do jogador; na prova, perto de onde ela foi aceita. */
     private static BlockPos patrolPoint(ServerPlayer player, CareerData.MissionProgress progress) {
         Optional<BlockPos> origin = progress.origin();
-        return KaijuSpawner.surfaceAround(player.serverLevel(), origin.orElse(player.blockPosition()),
+        // CIDADES: a patrulha numa cidade passa pelas ruas dela (targetArea).
+        return targetArea(player.serverLevel(), player, origin.orElse(player.blockPosition()),
                 origin.isPresent() ? ServerConfig.EXAM_AREA_MIN.get() : ServerConfig.MISSION_PATROL_MIN.get(),
                 origin.isPresent() ? ServerConfig.EXAM_AREA_MAX.get() : ServerConfig.MISSION_PATROL_MAX.get(),
-                player.getRandom());
+                origin.isPresent());
     }
 
     /** PM-8B: kaiju de prova abatido: conta so para a prova do dono (sem merito nem XP de abate). */

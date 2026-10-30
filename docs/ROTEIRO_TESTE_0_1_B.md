@@ -1673,3 +1673,17 @@ Jogador em sobrevivencia com a patente Candidato (`/kn8 rank set kn8:candidato <
 | 120.5 | Vencer os 3 e o Honju do exame | O Primigenius que o Honju invoca nao deixa carcaca e a regiao nao entra em combate; no fim "PROMOVIDO" a Oficial, nota, o kit fica com o jogador (sem a dica amarela) e os candidatos vao embora |
 | 120.6 | Repetir e morrer (ou abandonar) durante a prova | "Missao fracassada"; o kit volta para a Forca de Defesa e nenhum item dele fica no chao |
 | 120.7 | Soldado comum perto de um kaiju da prova de outro jogador | O soldado nao ataca esse kaiju |
+
+## 121. CIDADES: base da Forca de Defesa dentro das cidades
+
+Servidor dedicado + 2 clientes num mundo novo (`/locate structure kn8:shinagawa_city` ou `kn8:tachikawa_city`).
+Imagem: `docs/img/cidades_distrito.jpg`.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 121.1 | Ir a cidade e olhar a saida norte da estacao | Distrito murado com portao, guaritas e bandeiras; QG de 3 andares com o "1" (Shinagawa, azul) ou o "3" (Tachikawa, laranja) na fachada e heliporto no telhado |
+| 121.2 | Entrar no QG | Terreo: recepcao com o Oficial de Missoes e o de Provas, estacao do esquadrao, terminal; briefing (oeste) e enfermaria (leste). Escada de mao no canto: 1o andar com a central de comando, arsenal com bancadas e laboratorio com terminais; 2o com alojamento e sala do capitao |
+| 121.3 | Sair pelos fundos | Patio de treino (bonecos, suportes de pesos, muro de escalada, alvos) e patio de veiculos (helicoptero, caminhoes), separados por grade |
+| 121.4 | Aceitar uma missao de campo (Exterminio) com o Oficial de Missoes | Os kaiju surgem dentro da cidade (nas ruas/lotes), nao fora dela |
+| 121.5 | Aceitar a Defesa da Cidade (Oficial Senior) | A invasao comeca dentro da cidade; a faixa da regiao vai a COMBATE |
+| 121.6 | Aceitar a mesma missao fora de uma cidade | Os alvos surgem em volta do jogador, como antes |

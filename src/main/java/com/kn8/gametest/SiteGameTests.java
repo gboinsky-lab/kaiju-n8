@@ -7,6 +7,7 @@ import java.util.Optional;
 import com.kn8.KN8Constants;
 import com.kn8.common.data.KN8Data;
 import com.kn8.common.data.def.SiteDef;
+import com.kn8.common.registry.KN8Blocks;
 import com.kn8.common.registry.KN8Entities;
 import com.kn8.common.world.CheckedJigsawStructure;
 
@@ -16,6 +17,7 @@ import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.Structure;
@@ -39,12 +41,13 @@ public final class SiteGameTests {
     /** Peca e quantos encaixes ela tem. */
     private static final Map<String, Integer> PIECES = Map.ofEntries(Map.entry("ariake_base/core", 4),
             Map.entry("ariake_base/harbor", 1), Map.entry("tachikawa_base/core", 4),
-            Map.entry("tachikawa_base/airfield", 1), Map.entry("shinagawa/station", 12),
+            Map.entry("tachikawa_base/airfield", 1), Map.entry("shinagawa/station", 10),
             Map.entry("shinagawa/lot_tower", 1), Map.entry("shinagawa/lot_arcade", 1),
             Map.entry("shinagawa/lot_ant_ruins", 1), Map.entry("shinagawa/street", 6),
-            Map.entry("tachikawa/station", 12), Map.entry("tachikawa/lot_department", 1),
+            Map.entry("tachikawa/station", 10), Map.entry("tachikawa/lot_department", 1),
             Map.entry("tachikawa/lot_showa_park", 1), Map.entry("tachikawa/lot_stage_garden", 1),
-            Map.entry("tachikawa/street", 6));
+            Map.entry("tachikawa/street", 6), Map.entry("tachikawa/district", 1),
+            Map.entry("shinagawa/district", 1));
 
     private SiteGameTests() {
     }
@@ -64,6 +67,33 @@ public final class SiteGameTests {
                 .orElseThrow();
         helper.assertTrue(harbor.filterBlocks(BlockPos.ZERO, new StructurePlaceSettings(), Blocks.WATER).size()
                 > 1000, "O porto de Ariake deveria ter a bacia com agua");
+        helper.succeed();
+    }
+
+    /**
+     * CIDADES: toda cidade tem o distrito da Forca de Defesa na saida norte da estacao (um so, sempre) com os
+     * servicos do QG dentro; as cidades poem as missoes de campo dentro delas.
+     */
+    @GameTest(template = "empty_3x3")
+    public static void citiesHaveTheDefenseForceDistrict(GameTestHelper helper) {
+        for (String city : List.of("tachikawa", "shinagawa")) {
+            StructureTemplate station = helper.getLevel().getStructureManager()
+                    .get(KN8Constants.id(city + "/station")).orElseThrow();
+            long toDistrict = station.filterBlocks(BlockPos.ZERO, new StructurePlaceSettings(), Blocks.JIGSAW).stream()
+                    .filter(info -> info.nbt() != null && info.nbt().getString("pool")
+                            .equals("kn8:" + city + "/district")).count();
+            helper.assertTrue(toDistrict == 1, city + ": a estacao deveria ter uma saida para o distrito, tem "
+                    + toDistrict);
+            StructureTemplate district = helper.getLevel().getStructureManager()
+                    .get(KN8Constants.id(city + "/district")).orElseThrow();
+            for (Block block : List.of(KN8Blocks.RESEARCH_TERMINAL.get(), KN8Blocks.SQUAD_STATION.get(),
+                    KN8Blocks.WEIGHT_RACK.get(), KN8Blocks.DEFENSE_WORKBENCH.get())) {
+                helper.assertTrue(!district.filterBlocks(BlockPos.ZERO, new StructurePlaceSettings(), block).isEmpty(),
+                        city + ": o distrito deveria ter " + block);
+            }
+            helper.assertTrue(KN8Data.SITE.server().get(KN8Constants.id(city + "_city")).fieldMissions(),
+                    city + ": a cidade deveria por as missoes de campo dentro dela");
+        }
         helper.succeed();
     }
 

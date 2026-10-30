@@ -5,7 +5,7 @@
   "terrain_adaptation": "beard_thin",
   "type": "kn8:checked_jigsaw",
   "layout": "kn8:tachikawa_city_layout",
-  "check_radius": 96,
+  "check_radius": 112,
   "check_step": 12,
   "max_slope": 16,
   "slope_radius": 64,
