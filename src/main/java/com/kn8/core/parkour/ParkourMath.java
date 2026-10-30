@@ -103,4 +103,25 @@ public final class ParkourMath {
     public static double cost(double base, double agilityFactor) {
         return Math.max(0.0, base * agilityFactor);
     }
+
+    /**
+     * FIX-3: borda agarrada sem a tecla: a altura da borda acima dos pes esta entre {@code min} e {@code max}, o
+     * jogador anda para a frente e nao esta subindo rapido (no alto do pulo ou caindo; subindo, o pulo ainda passa
+     * por cima sozinho).
+     */
+    public static boolean autoLedge(double ledgeHeight, double verticalSpeed, boolean forward, double min,
+            double max, double maxRise) {
+        return forward && verticalSpeed <= maxRise && ledgeHeight >= min && ledgeHeight <= max;
+    }
+
+    /**
+     * FIX-3: velocidade vertical na escalada da parede: sobe com a tecla para a frente, fica parado sem ela e desce
+     * devagar com a tecla para tras.
+     */
+    public static double climbVertical(float forwardInput, double speed) {
+        if (forwardInput > 0.0F) {
+            return speed;
+        }
+        return forwardInput < 0.0F ? -speed : 0.0;
+    }
 }

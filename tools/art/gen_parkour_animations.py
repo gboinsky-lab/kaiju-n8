@@ -120,6 +120,16 @@ ANIMATIONS = {
         (1.5, {"right_arm": [-172, 0, 12], "left_arm": [-172, 0, -12], "right_leg": [-8, 0, 0],
                "left_leg": [6, 0, 0], "head": [-15, 0, 0]}),
     ], 1.5, loop=True),
+    # FIX-3 (Miguel: "escalar predios"): escalando a parede de frente: um braco alcanca alto enquanto o outro puxa,
+    # a perna do lado oposto sobe (apoio), cabeca olhando para cima. Laco de duas puxadas.
+    "wall_climb": animate([
+        (0.0, {"right_arm": [-175, 0, 10], "left_arm": [-115, 0, -10], "right_leg": [-10, 0, 0],
+               "left_leg": [-55, 0, 0], "head": [-25, 0, 0]}),
+        (0.3, {"right_arm": [-115, 0, 10], "left_arm": [-175, 0, -10], "right_leg": [-55, 0, 0],
+               "left_leg": [-10, 0, 0], "head": [-25, 0, 0]}),
+        (0.6, {"right_arm": [-175, 0, 10], "left_arm": [-115, 0, -10], "right_leg": [-10, 0, 0],
+               "left_leg": [-55, 0, 0], "head": [-25, 0, 0]}),
+    ], 0.6, loop=True),
     # Subindo a borda: puxa com os bracos, joelho em cima e fica de pe.
     "ledge_climb": animate([
         (0.0, {"right_arm": [-172, 0, 12], "left_arm": [-172, 0, -12]}),

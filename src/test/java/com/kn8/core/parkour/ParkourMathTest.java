@@ -2,6 +2,7 @@
 package com.kn8.core.parkour;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -72,5 +73,21 @@ class ParkourMathTest {
         assertEquals(1.15, ParkourMath.levelFactor(50, 100, 0, 0.3, 0.3), DELTA);
         assertEquals(1.6, ParkourMath.levelFactor(100, 100, 100, 0.3, 0.3), DELTA);
         assertEquals(1.6, ParkourMath.levelFactor(300, 100, 250, 0.3, 0.3), DELTA);
+    }
+
+    @Test
+    void autoLedgeOnlyAtHandHeightMovingForwardAndNotRising() {
+        assertTrue(ParkourMath.autoLedge(1.5, -0.2, true, 1.2, 2.0, 0.1));
+        assertFalse(ParkourMath.autoLedge(1.5, -0.2, false, 1.2, 2.0, 0.1));
+        assertFalse(ParkourMath.autoLedge(1.5, 0.4, true, 1.2, 2.0, 0.1));
+        assertFalse(ParkourMath.autoLedge(0.8, -0.2, true, 1.2, 2.0, 0.1));
+        assertFalse(ParkourMath.autoLedge(2.6, -0.2, true, 1.2, 2.0, 0.1));
+    }
+
+    @Test
+    void climbGoesUpHoldsOrSlidesDown() {
+        assertEquals(0.14, ParkourMath.climbVertical(1.0F, 0.14), 1.0E-9);
+        assertEquals(0.0, ParkourMath.climbVertical(0.0F, 0.14), 1.0E-9);
+        assertEquals(-0.14, ParkourMath.climbVertical(-1.0F, 0.14), 1.0E-9);
     }
 }

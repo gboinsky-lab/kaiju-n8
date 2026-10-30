@@ -18,7 +18,9 @@ public enum ParkourMove {
     LEDGE_CLIMB,
     SLIDE,
     /** Soltar o estado continuo (Shift na parede/borda, fim do slide pelo cliente). */
-    STOP;
+    STOP,
+    /** FIX-3: subir a parede de frente (C segurado com a parede a frente). */
+    WALL_CLIMB;
 
     private static final ParkourMove[] VALUES = values();
 

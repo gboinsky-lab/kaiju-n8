@@ -76,7 +76,8 @@ public final class ParkourService {
             case VAULT, CLIMB -> vaultOrClimb(player, data);
             case WALL_RUN -> wallRun(player, data, sideHint);
             case WALL_SLIDE -> wallSlide(player, data);
-            case LEDGE_GRAB -> ledgeGrab(player, data);
+            case LEDGE_GRAB -> ledgeGrab(player, data, sideHint < 0);
+            case WALL_CLIMB -> wallClimb(player, data);
             case WALL_JUMP -> wallJump(player, data);
             case LEDGE_CLIMB -> ledgeClimb(player, data);
             case SLIDE -> slide(player, data);
@@ -202,9 +203,13 @@ public final class ParkourService {
         return true;
     }
 
-    /** No ar, com uma borda a frente na altura das maos: segura a borda. */
-    static boolean ledgeGrab(ServerPlayer player, ParkourData data) {
-        if (player.onGround() || data.state == ParkourState.LEDGE_HANG || data.state == ParkourState.SLIDE) {
+    /**
+     * No ar, com uma borda a frente na altura das maos: segura a borda. FIX-3: {@code auto} = pedido sem a tecla
+     * (caindo ou pulando contra a borda, ou chegando ao topo escalando), so com {@code autoLedgeGrab}.
+     */
+    static boolean ledgeGrab(ServerPlayer player, ParkourData data, boolean auto) {
+        if (player.onGround() || data.state == ParkourState.LEDGE_HANG || data.state == ParkourState.SLIDE
+                || auto && !ServerConfig.PARKOUR_AUTO_LEDGE_GRAB.get()) {
             return false;
         }
         Vec3 forward = ParkourProbe.forward(player.getYRot());
@@ -218,8 +223,10 @@ public final class ParkourService {
         }
         double hangDrop = ServerConfig.PARKOUR_LEDGE_HANG_DROP.get();
         double hangY = player.getY() + height - hangDrop;
-        start(player, data, ParkourState.LEDGE_HANG, Vec3.ZERO, ParkourProbe.axisAligned(forward.scale(-1.0)), 0.0,
-                hangY, 0.0, ServerConfig.PARKOUR_LEDGE_MAX_TICKS.get());
+        // FIX-3: a velocidade do estado e a de andar de lado pendurado (o cliente move pelas teclas de lado).
+        start(player, data, ParkourState.LEDGE_HANG, Vec3.ZERO, ParkourProbe.axisAligned(forward.scale(-1.0)),
+                ServerConfig.PARKOUR_LEDGE_SHIMMY_SPEED.get() * level(player), hangY, 0.0,
+                ServerConfig.PARKOUR_LEDGE_MAX_TICKS.get());
         data.hangY = hangY;
         data.ledgeHeight = hangDrop;
         player.resetFallDistance();
@@ -227,11 +234,39 @@ public final class ParkourService {
         return true;
     }
 
+    /**
+     * FIX-3 (Miguel, 2026-10-30: "escalar predios"): de frente para uma parede, no chao ou no ar, sobe por ela
+     * enquanto houver stamina (por segundo, com o fator de agilidade). No topo o cliente pede a borda (automatico) e
+     * sobe. A parede sumir, a stamina acabar ou o tempo maximo encerram (cai, com o wall-jump ainda valendo).
+     */
+    static boolean wallClimb(ServerPlayer player, ParkourData data) {
+        if (data.state == ParkourState.CLIMB || data.state == ParkourState.LEDGE_HANG
+                || data.state == ParkourState.SLIDE) {
+            return false;
+        }
+        Vec3 forward = ParkourProbe.forward(player.getYRot());
+        if (!ParkourProbe.wallAt(player, forward, ServerConfig.PARKOUR_PROBE_REACH.get())
+                || !pay(player, ServerConfig.PARKOUR_WALL_CLIMB_COST.get())) {
+            return false;
+        }
+        if (data.state != ParkourState.NONE) {
+            end(player, data, false);
+        }
+        start(player, data, ParkourState.CLIMB, Vec3.ZERO, ParkourProbe.axisAligned(forward.scale(-1.0)), 0.0,
+                ServerConfig.PARKOUR_WALL_CLIMB_SPEED.get() * level(player), 0.0,
+                ServerConfig.PARKOUR_WALL_CLIMB_MAX_TICKS.get());
+        player.resetFallDistance();
+        effects(player, "wall_climb", forward);
+        return true;
+    }
+
     /** Pulo na parede (ou logo depois de sair dela): empurra para longe da parede e para cima. */
     static boolean wallJump(ServerPlayer player, ParkourData data) {
         long now = now(player);
-        boolean onWall = data.state == ParkourState.WALL_RUN || data.state == ParkourState.WALL_SLIDE;
-        boolean coyote = (data.leftWallState == ParkourState.WALL_RUN || data.leftWallState == ParkourState.WALL_SLIDE)
+        boolean onWall = data.state == ParkourState.WALL_RUN || data.state == ParkourState.WALL_SLIDE
+                || data.state == ParkourState.CLIMB;
+        boolean coyote = (data.leftWallState == ParkourState.WALL_RUN || data.leftWallState == ParkourState.WALL_SLIDE
+                || data.leftWallState == ParkourState.CLIMB)
                 && now - data.leftWallTick <= ServerConfig.PARKOUR_WALL_JUMP_COYOTE_TICKS.get();
         if (!onWall && !coyote || data.wallJumpsInAir >= ServerConfig.PARKOUR_MAX_WALL_JUMPS.get()
                 || !pay(player, ServerConfig.PARKOUR_WALL_JUMP_COST.get())) {
@@ -349,7 +384,7 @@ public final class ParkourService {
         Vec3 toWall = new Vec3(-data.normalX, 0.0, -data.normalZ);
         boolean valid = switch (data.state) {
             case WALL_RUN, WALL_SLIDE -> !player.onGround() && ParkourProbe.wallAt(player, toWall, reach);
-            case LEDGE_HANG -> ParkourProbe.wallAt(player, toWall, reach);
+            case LEDGE_HANG, CLIMB -> ParkourProbe.wallAt(player, toWall, reach);
             case SLIDE -> player.onGround();
             case NONE -> false;
         };
@@ -360,6 +395,7 @@ public final class ParkourService {
             case WALL_RUN -> ServerConfig.PARKOUR_WALL_RUN_MAX_TICKS.get();
             case WALL_SLIDE -> ServerConfig.PARKOUR_WALL_SLIDE_MAX_TICKS.get();
             case LEDGE_HANG -> ServerConfig.PARKOUR_LEDGE_MAX_TICKS.get();
+            case CLIMB -> ServerConfig.PARKOUR_WALL_CLIMB_MAX_TICKS.get();
             default -> ServerConfig.PARKOUR_SLIDE_TICKS.get();
         };
         // Folga de alguns ticks: a posicao do servidor chega atrasada em relacao ao cliente.
@@ -371,6 +407,7 @@ public final class ParkourService {
             case WALL_RUN -> ServerConfig.PARKOUR_WALL_RUN_COST_PER_SECOND.get();
             case WALL_SLIDE -> ServerConfig.PARKOUR_WALL_SLIDE_COST_PER_SECOND.get();
             case LEDGE_HANG -> ServerConfig.PARKOUR_LEDGE_COST_PER_SECOND.get();
+            case CLIMB -> ServerConfig.PARKOUR_WALL_CLIMB_COST_PER_SECOND.get();
             default -> 0.0;
         };
         if (perSecond > 0.0 && !pay(player, perSecond / 20.0)) {

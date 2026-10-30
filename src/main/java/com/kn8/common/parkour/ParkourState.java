@@ -7,7 +7,9 @@ public enum ParkourState {
     WALL_RUN,
     WALL_SLIDE,
     LEDGE_HANG,
-    SLIDE;
+    SLIDE,
+    /** FIX-3 (Miguel, 2026-10-30: "escalar predios"): subindo a parede de frente, enquanto houver stamina. */
+    CLIMB;
 
     private static final ParkourState[] VALUES = values();
 
@@ -17,6 +19,6 @@ public enum ParkourState {
 
     /** Agarrado a uma parede ou borda (a queda nao conta e o wall-jump vale). */
     public boolean onWall() {
-        return this == WALL_RUN || this == WALL_SLIDE || this == LEDGE_HANG;
+        return this == WALL_RUN || this == WALL_SLIDE || this == LEDGE_HANG || this == CLIMB;
     }
 }

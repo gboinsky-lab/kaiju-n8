@@ -79,7 +79,7 @@ public final class KN8Network {
     // 35 = COMBATE-3: CombatResult.DENIED_NEEDS_HEIGHT (Falling Thunder vem de cima).
     // 36 = COMBATE-4: CombatResult.DENIED_NEEDS_LOW_HEALTH e weapon.low_health (Thunder Emperor com a vida baixa).
     // 37 = COMBATE-5: CombatResult.DENIED_NEEDS_STAGE e weapon.stages (Juni-hitoe do jogador no ultimo estagio).
-    private static final String PROTOCOL_VERSION = "37";
+    private static final String PROTOCOL_VERSION = "38";
 
     /** Diagnostico: 20 por segundo, rajada de 40. */
     private static final C2SGuard.Limit DEBUG_LIMIT = new C2SGuard.Limit(20, 40);

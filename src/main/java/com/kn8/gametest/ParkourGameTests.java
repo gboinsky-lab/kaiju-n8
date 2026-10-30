@@ -185,4 +185,67 @@ public final class ParkourGameTests {
             helper.succeed();
         });
     }
+
+    /**
+     * FIX-3 (Miguel: "escalar predios"): de frente para um muro alto, no chao, escala; gasta stamina por segundo;
+     * sem parede e recusado; no topo a borda e agarrada sem a tecla e subir leva acima dela.
+     */
+    @GameTest(template = TEMPLATE)
+    public static void wallClimbUpABuildingAndOverTheTop(GameTestHelper helper) {
+        column(helper, 4, 3, 4);
+        FakePlayer player = player(helper, "wallclimb", 1.0, true);
+        player.setSprinting(false);
+        player.setYRot(0.0F);
+        ParkourService.handle(player, ParkourMove.WALL_CLIMB, 0);
+        helper.assertTrue(ParkourService.data(player).state() == ParkourState.NONE, "Sem parede a frente, nada");
+        player.setYRot(FACING_NORTH);
+        ParkourService.handle(player, ParkourMove.WALL_CLIMB, 0);
+        helper.assertTrue(ParkourService.data(player).state() == ParkourState.CLIMB, "De frente para o muro, escala");
+        double before = PowerService.view(player).stamina();
+        for (int i = 0; i < 20; i++) {
+            ParkourService.tick(player);
+        }
+        helper.assertTrue(PowerService.view(player).stamina() < before, "Escalar gasta stamina por segundo");
+        helper.assertTrue(ParkourService.data(player).state() == ParkourState.CLIMB, "Com o muro, continua escalando");
+        // Perto do topo (muro ate y 5, pes em 3,6): a borda fica na altura das maos e e agarrada sem a tecla (o teto do
+        // template fica em 7).
+        Vec3 high = helper.absoluteVec(new Vec3(4.5, 3.6, 4.5));
+        player.moveTo(high.x, high.y, high.z, FACING_NORTH, 0.0F);
+        player.setOnGround(false);
+        ParkourService.handle(player, ParkourMove.LEDGE_GRAB, -1);
+        helper.assertTrue(ParkourService.data(player).state() == ParkourState.LEDGE_HANG,
+                "No topo da escalada a borda e agarrada");
+        ParkourService.handle(player, ParkourMove.LEDGE_CLIMB, 0);
+        helper.assertTrue(ParkourService.data(player).state() == ParkourState.NONE, "Subir solta a borda");
+        helper.assertTrue(ParkourMath.peakHeight(player.getDeltaMovement().y) >= 1.4,
+                "Subir a borda do topo leva acima dela: " + player.getDeltaMovement());
+        helper.succeed();
+    }
+
+    /** FIX-3: escalando, Espaco pula para longe da parede (o wall-jump vale na escalada). */
+    @GameTest(template = TEMPLATE)
+    public static void wallClimbJumpsAwayFromTheWall(GameTestHelper helper) {
+        column(helper, 4, 3, 5);
+        FakePlayer player = player(helper, "climbjump", 2.0, false);
+        player.setSprinting(false);
+        ParkourService.handle(player, ParkourMove.WALL_CLIMB, 0);
+        helper.assertTrue(ParkourService.data(player).state() == ParkourState.CLIMB, "No ar de frente, escala");
+        ParkourService.handle(player, ParkourMove.WALL_JUMP, 0);
+        Vec3 velocity = player.getDeltaMovement();
+        helper.assertTrue(ParkourService.data(player).state() == ParkourState.NONE, "O pulo solta a parede");
+        helper.assertTrue(velocity.z > 0.2 && velocity.y > 0.2, "Pula para tras (sul) e para cima: " + velocity);
+        helper.succeed();
+    }
+
+    /** FIX-3: borda agarrada sem a tecla tambem caindo de um pulo; pendurado, a velocidade de lado vem do servidor. */
+    @GameTest(template = TEMPLATE)
+    public static void autoLedgeGrabWhileFalling(GameTestHelper helper) {
+        column(helper, 4, 3, 3);
+        FakePlayer player = player(helper, "autoledge", 2.4, false);
+        player.setDeltaMovement(0.0, -0.3, 0.0);
+        ParkourService.handle(player, ParkourMove.LEDGE_GRAB, -1);
+        helper.assertTrue(ParkourService.data(player).state() == ParkourState.LEDGE_HANG,
+                "Caindo de frente para a borda, agarra sem a tecla");
+        helper.succeed();
+    }
 }

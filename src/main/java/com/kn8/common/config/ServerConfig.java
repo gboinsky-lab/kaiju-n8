@@ -495,6 +495,12 @@ public final class ServerConfig {
     public static final ModConfigSpec.DoubleValue PARKOUR_ROLL_DAMAGE_REDUCTION;
     public static final ModConfigSpec.DoubleValue PARKOUR_ROLL_COST;
     public static final ModConfigSpec.DoubleValue PARKOUR_ROLL_FORWARD;
+    public static final ModConfigSpec.DoubleValue PARKOUR_WALL_CLIMB_SPEED;
+    public static final ModConfigSpec.DoubleValue PARKOUR_WALL_CLIMB_COST;
+    public static final ModConfigSpec.DoubleValue PARKOUR_WALL_CLIMB_COST_PER_SECOND;
+    public static final ModConfigSpec.IntValue PARKOUR_WALL_CLIMB_MAX_TICKS;
+    public static final ModConfigSpec.BooleanValue PARKOUR_AUTO_LEDGE_GRAB;
+    public static final ModConfigSpec.DoubleValue PARKOUR_LEDGE_SHIMMY_SPEED;
 
     // --- arena de treino (construcoes C2) ----------------------------------------------------------------------------
     public static final ModConfigSpec.ConfigValue<List<? extends String>> ARENA_KAIJU;
@@ -1406,7 +1412,7 @@ public final class ServerConfig {
                 + " the feet).", 2.2, 0.5, 4.0);
         PARKOUR_LEDGE_HANG_DROP = doubleValue("ledgeHangDrop", "How far below the ledge top the feet hang.",
                 1.7, 0.5, 3.0);
-        PARKOUR_LEDGE_MAX_TICKS = intValue("ledgeMaxTicks", "Longest hang from a ledge.", 60, 1, 400);
+        PARKOUR_LEDGE_MAX_TICKS = intValue("ledgeMaxTicks", "Longest hang from a ledge.", 200, 1, 1200);
         PARKOUR_LEDGE_CLIMB_COST = doubleValue("ledgeClimbCost", "Stamina spent climbing up a ledge.", 8.0, 0.0, 100.0);
         PARKOUR_SLIDE_COST = doubleValue("slideCost", "Stamina spent by a slide.", 10.0, 0.0, 100.0);
         PARKOUR_SLIDE_SPEED = doubleValue("slideSpeed", "Speed at the start of a slide (blocks per tick).",
@@ -1420,6 +1426,19 @@ public final class ServerConfig {
                 + " fall (0.6 = 60% less).", 0.6, 0.0, 1.0);
         PARKOUR_ROLL_COST = doubleValue("rollCost", "Stamina spent by a roll.", 8.0, 0.0, 100.0);
         PARKOUR_ROLL_FORWARD = doubleValue("rollForward", "Forward speed of a roll.", 0.35, 0.0, 2.0);
+        // FIX-3 (Miguel, 2026-10-30: parkour refeito: pular em construcoes, agarrar bordas, pular de predio em predio,
+        // escalar predios).
+        PARKOUR_WALL_CLIMB_SPEED = doubleValue("wallClimbSpeed", "Climbing speed up a wall (blocks per tick; x the"
+                + " parkour level).", 0.14, 0.01, 1.0);
+        PARKOUR_WALL_CLIMB_COST = doubleValue("wallClimbCost", "Stamina spent to start climbing a wall.", 4.0, 0.0,
+                100.0);
+        PARKOUR_WALL_CLIMB_COST_PER_SECOND = doubleValue("wallClimbCostPerSecond", "Stamina per second while"
+                + " climbing a wall (100 stamina = about 25 blocks at the base speed).", 7.0, 0.0, 100.0);
+        PARKOUR_WALL_CLIMB_MAX_TICKS = intValue("wallClimbMaxTicks", "Longest wall climb in one go.", 400, 1, 2400);
+        PARKOUR_AUTO_LEDGE_GRAB = booleanValue("autoLedgeGrab", "Falling or jumping toward a ledge at hand height"
+                + " grabs it without the parkour key.", true);
+        PARKOUR_LEDGE_SHIMMY_SPEED = doubleValue("ledgeShimmySpeed", "Sideways speed while hanging from a ledge"
+                + " (left/right keys).", 0.12, 0.0, 1.0);
         BUILDER.pop();
 
         section("trainingArena", "Training arena of the large Defense Force base (C2): the console releases a real kaiju"

@@ -40,6 +40,10 @@ import net.neoforged.neoforge.network.PacketDistributor;
  *   escorrega;</li>
  *   <li>pular na parede: wall-jump; pendurado: sobe; Shift: solta;</li>
  *   <li>Shift correndo: slide; Shift ao cair de 4+ blocos: rolamento (so no servidor).</li>
+ *   <li>FIX-3: C de frente para uma parede (no chao ou no ar): escala o predio (W sobe, S desce, Espaco pula para
+ *   tras, Shift solta); no topo agarra a borda sozinho e, com C ainda segurado, sobe;</li>
+ *   <li>FIX-3: caindo ou no alto do pulo contra uma borda na altura das maos, agarra sem a tecla; pendurado, A/D anda
+ *   de lado.</li>
  * </ul>
  *
  * <p>Os alcances abaixo sao da deteccao do cliente (um pouco menores que o {@code probeReach} do servidor, que
@@ -70,6 +74,13 @@ public final class ParkourClient {
     private static final double HANG_SNAP = 0.5;
     /** Slide termina abaixo desta velocidade. */
     private static final double SLIDE_MIN_SPEED = 0.08;
+    /** FIX-3: borda agarrada sem a tecla (altura acima dos pes) e subida mais rapida que isso nao agarra. */
+    private static final double AUTO_LEDGE_MIN = 1.2;
+    private static final double AUTO_LEDGE_MAX = 2.0;
+    private static final double AUTO_LEDGE_RISE = 0.1;
+    /** FIX-3: escalando, o topo dentro desta altura vira borda; com C segurado, sobe depois de tantos ticks. */
+    private static final double CLIMB_TOP_MAX = 2.0;
+    private static final int AUTO_MANTLE_TICKS = 3;
 
     private static LocalPlayer boundPlayer;
     private static ParkourStateS2C active = ParkourStateS2C.NONE;
@@ -82,6 +93,9 @@ public final class ParkourClient {
     private static boolean lastShift;
     private static boolean lastKey;
     private static boolean wasSprinting;
+    /** FIX-3: entrada guardada para a fisica do tick (escalada: para a frente; borda: para o lado). */
+    private static float climbInput;
+    private static float shimmyInput;
 
     private ParkourClient() {
     }
@@ -189,7 +203,8 @@ public final class ParkourClient {
                 input.jumping = false;
             }
             case LEDGE_HANG -> {
-                if (jumpPressed) {
+                shimmyInput = input.leftImpulse;
+                if (jumpPressed || key && input.forwardImpulse > 0.0F && activeTicks >= AUTO_MANTLE_TICKS) {
                     endLocally(player, false);
                     send(ParkourMove.LEDGE_CLIMB, 0);
                 } else if (shiftPressed) {
@@ -203,6 +218,26 @@ public final class ParkourClient {
                 if (!input.shiftKeyDown || jumpPressed) {
                     endLocally(player, true);
                 }
+            }
+            case CLIMB -> {
+                climbInput = input.forwardImpulse;
+                if (jumpPressed) {
+                    endLocally(player, false);
+                    send(ParkourMove.WALL_JUMP, 0);
+                } else if (shiftPressed) {
+                    endLocally(player, true);
+                } else if (--retryIn <= 0) {
+                    // No topo do predio: a borda aparece na altura das maos e vira o pendurado (depois sobe).
+                    retryIn = RETRY_TICKS;
+                    Vec3 toWall = new Vec3(-active.normalX(), 0.0, -active.normalZ());
+                    double top = ParkourProbe.obstacleHeight(player, toWall, OBSTACLE_REACH, CLIMB_TOP_MAX);
+                    if (top >= LEDGE_MIN) {
+                        send(ParkourMove.LEDGE_GRAB, -1);
+                    }
+                }
+                input.forwardImpulse = 0.0F;
+                input.leftImpulse = 0.0F;
+                input.jumping = false;
             }
             case NONE -> idleInput(player, input, key, keyPressed, jumpPressed, shiftPressed, sprinting);
         }
@@ -221,6 +256,11 @@ public final class ParkourClient {
                     send(ParkourMove.VAULT, 0);
                     groundRetryIn = RETRY_TICKS * 2;
                 }
+            } else if ((keyPressed || key && groundRetryIn <= 0) && ParkourProbe.wallAt(player, forward, WALL_REACH)
+                    && ParkourProbe.obstacleHeight(player, forward, OBSTACLE_REACH, CLIMB_TOP_MAX) < 0.0) {
+                // FIX-3: parede mais alta que a escalada curta: escala o predio (tambem chegando nela com C segurado).
+                send(ParkourMove.WALL_CLIMB, 0);
+                groundRetryIn = RETRY_TICKS * 2;
             } else if (keyPressed && sprinting) {
                 send(ParkourMove.LONG_JUMP, 0);
             } else if (shiftPressed && sprinting) {
@@ -234,6 +274,15 @@ public final class ParkourClient {
             return;
         }
         if (!key) {
+            // FIX-3 (Miguel: "agarrar bordas"): sem a tecla, no alto do pulo ou caindo contra a borda.
+            if (--retryIn <= 0) {
+                retryIn = RETRY_TICKS;
+                double ledge = ParkourProbe.obstacleHeight(player, forward, OBSTACLE_REACH, AUTO_LEDGE_MAX);
+                if (ParkourMath.autoLedge(ledge, player.getDeltaMovement().y, input.forwardImpulse > 0.0F,
+                        AUTO_LEDGE_MIN, AUTO_LEDGE_MAX, AUTO_LEDGE_RISE)) {
+                    send(ParkourMove.LEDGE_GRAB, -1);
+                }
+            }
             return;
         }
         if (!keyPressed && --retryIn > 0) {
@@ -243,6 +292,11 @@ public final class ParkourClient {
         double ledge = ParkourProbe.obstacleHeight(player, forward, OBSTACLE_REACH, LEDGE_MAX);
         if (ledge >= LEDGE_MIN) {
             send(ParkourMove.LEDGE_GRAB, 0);
+            return;
+        }
+        if (input.forwardImpulse > 0.0F && ParkourProbe.wallAt(player, forward, WALL_REACH)) {
+            // FIX-3: no ar de frente para a parede, andando para ela: escala (sem andar, escorrega como antes).
+            send(ParkourMove.WALL_CLIMB, 0);
             return;
         }
         int side = ParkourProbe.wallSide(player, WALL_REACH, 1);
@@ -279,6 +333,7 @@ public final class ParkourClient {
         boolean valid = switch (state) {
             case WALL_RUN, WALL_SLIDE -> !player.onGround() && ParkourProbe.wallAt(player, toWall, WALL_REACH);
             case LEDGE_HANG -> true;
+            case CLIMB -> ParkourProbe.wallAt(player, toWall, WALL_REACH);
             case SLIDE -> true;
             case NONE -> false;
         };
@@ -299,6 +354,13 @@ public final class ParkourClient {
             }
             case LEDGE_HANG -> {
                 double vy = Math.max(-HANG_SNAP, Math.min(HANG_SNAP, active.vertical() - player.getY()));
+                // FIX-3: A/D anda de lado ao longo da parede (a altura do pendurado fica a mesma).
+                Vec3 side = ParkourProbe.right(player.getYRot()).scale(-shimmyInput * active.speed());
+                Vec3 along = side.subtract(toWall.scale(side.dot(toWall)));
+                player.setDeltaMovement(toWall.x * STICK + along.x, vy, toWall.z * STICK + along.z);
+            }
+            case CLIMB -> {
+                double vy = ParkourMath.climbVertical(climbInput, active.vertical());
                 player.setDeltaMovement(toWall.x * STICK, vy, toWall.z * STICK);
             }
             case SLIDE -> {

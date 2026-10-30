@@ -1571,6 +1571,137 @@
         }
       }
     },
+    "player.parkour.wall_climb": {
+      "loop": true,
+      "animation_length": 0.6,
+      "bones": {
+        "head": {
+          "rotation": {
+            "0.0": {
+              "vector": [
+                -25,
+                0,
+                0
+              ]
+            },
+            "0.3": {
+              "vector": [
+                -25,
+                0,
+                0
+              ]
+            },
+            "0.6": {
+              "vector": [
+                -25,
+                0,
+                0
+              ]
+            }
+          }
+        },
+        "left_arm": {
+          "rotation": {
+            "0.0": {
+              "vector": [
+                -115,
+                0,
+                -10
+              ]
+            },
+            "0.3": {
+              "vector": [
+                -175,
+                0,
+                -10
+              ]
+            },
+            "0.6": {
+              "vector": [
+                -115,
+                0,
+                -10
+              ]
+            }
+          }
+        },
+        "left_leg": {
+          "rotation": {
+            "0.0": {
+              "vector": [
+                -55,
+                0,
+                0
+              ]
+            },
+            "0.3": {
+              "vector": [
+                -10,
+                0,
+                0
+              ]
+            },
+            "0.6": {
+              "vector": [
+                -55,
+                0,
+                0
+              ]
+            }
+          }
+        },
+        "right_arm": {
+          "rotation": {
+            "0.0": {
+              "vector": [
+                -175,
+                0,
+                10
+              ]
+            },
+            "0.3": {
+              "vector": [
+                -115,
+                0,
+                10
+              ]
+            },
+            "0.6": {
+              "vector": [
+                -175,
+                0,
+                10
+              ]
+            }
+          }
+        },
+        "right_leg": {
+          "rotation": {
+            "0.0": {
+              "vector": [
+                -10,
+                0,
+                0
+              ]
+            },
+            "0.3": {
+              "vector": [
+                -55,
+                0,
+                0
+              ]
+            },
+            "0.6": {
+              "vector": [
+                -10,
+                0,
+                0
+              ]
+            }
+          }
+        }
+      }
+    },
     "player.parkour.ledge_climb": {
       "animation_length": 0.5,
       "bones": {
