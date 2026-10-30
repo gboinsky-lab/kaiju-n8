@@ -613,7 +613,7 @@ Tecla nova: **C** (Parkour; troca em Opções > Controles > Kaiju No. 8). Númer
 |---|---|---|
 | 43.1 | Área plana carregada (`/forceload add` em volta): `/place structure kn8:city` | Cidade com praça central (fonte, 4 árvores, monumento azul, bancos), ruas que se ramificam com faixa amarela, postes e cruzamentos com faixa de pedestre; dos lados das ruas: loja de conveniência, restaurante de ramen, casas com telhado, prédios de 4 e 8 andares com sacadas, torre de escritório de vidro com heliporto, parque com lago, estacionamento com carros e prédio destruído por kaiju; ruas terminam em barreira listrada |
 | 43.2 | Entrar nas construções da cidade | Portas abertas, escada de mão nos prédios, baús de loja e de casa com loot |
-| 43.3 | `/place structure kn8:defense_base_large` (precisa de ~130 x 130 carregado) | Base grande: centro com o QG, refeitório, garagem com 3 caminhões, torre de rádio e pátio de formatura com soldados; 3 alas duplas (duas alas da base pequena lado a lado + estacionamento); cantos com torre, tanques e heliporto; do 4º lado a arena de treino |
+| 43.3 | `/place structure kn8:defense_base_large_layout` (desde a AJUSTES o `defense_base_large` confere o terreno; precisa de ~130 x 130 carregado) | Base grande: centro com o QG, refeitório, garagem com 3 caminhões, torre de rádio e pátio de formatura com soldados; 3 alas duplas (duas alas da base pequena lado a lado + estacionamento); cantos com torre, tanques e heliporto; do 4º lado a arena de treino |
 | 43.4 | Arena de treino | Arena fechada de paredes escuras (51 x 41, 16 de altura) com luzes, coberturas por dentro, arquibancada com janelas de vidro, laboratório de kaiju (jaulas) e enfermaria; portão listrado para entrar e o Painel da Arena de Treino na frente |
 | 43.5 | Clicar no painel (com ou sem arma na mão) | "Treino começou: Primigenius está na arena!" e o kaiju aparece no centro da arena e persegue quem está dentro |
 | 43.6 | Shift + clique no painel de mão vazia | "Kaiju de treino: ..." troca a cada clique (aranha, Primigenius, formiga, cogumelo, ressurgido, Honju, Tecedeira, Philinosoma, Diclonius, Myxogasterocarp, revivido, No. 9, No. 10 pequeno) |
@@ -1816,3 +1816,16 @@ Imagem: `docs/img/host_release_e_braco.jpg`. Preparo: `/kn8 host infect Dev`, tr
 | 129.6 | Esperar 5 s / Shift + B de novo | Braço volta; outro Shift + B em menos de 20 s: "O braço ainda não responde" |
 | 129.7 | B (forma inteira) logo depois | O tempo-limite começa ~10 s gasto (barra da forma ~1:50) |
 | 129.8 | Shift + B com soldados olhando (Candidato) | -100 de mérito, como na forma inteira; soldados não atacam |
+
+## 130. AJUSTES: base grande no mapa, cor da aura e candidatos do exame
+
+Imagem: `docs/img/ajustes_base_aura_candidatos.jpg`. Mundo normal novo (estruturas ligadas).
+
+| # | Passo | Esperado |
+|---|---|---|
+| 130.1 | `/locate structure kn8:defense_base_large` | Achada (na semente 8008 a ~900 blocos), em terreno seco, longe de vilas, das bases de Tachikawa/Ariake e de Shinagawa/Campo do Exame |
+| 130.2 | Ir até ela | Base grande inteira: QG, heliporto, garagem, torre de rádio, alas e a arena de treino |
+| 130.3 | Menu M, aba Perfil, botão "Aura: ..." embaixo do retrato | Clique esquerdo passa para a próxima cor, direito volta; com traje de aura própria o botão fica apagado ("Aura do traje") |
+| 130.4 | Subir o Release (G) | O outro jogador vê os raios na cor escolhida |
+| 130.5 | Aceitar o Exame de Admissão no Campo do Exame | 4 candidatos nascem no chão ao lado do jogador (não no telhado do pavilhão) |
+| 130.6 | Andar pelo campo | Os candidatos acompanham o jogador e lutam com os kaiju da prova (um Primigenius cai em ~20 s com eles) |

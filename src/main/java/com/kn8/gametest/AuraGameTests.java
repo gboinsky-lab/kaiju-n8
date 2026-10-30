@@ -78,4 +78,23 @@ public final class AuraGameTests {
         player.setData(KN8Attachments.AURA_OVERRIDE, Optional.empty());
         helper.succeed();
     }
+
+    /** AJUSTES (Miguel 2026-10-30): o jogador escolhe a cor da aura, passando pelas auras de jogador e voltando. */
+    @GameTest(template = "empty_9x7x9")
+    public static void playerChoosesTheAuraColor(GameTestHelper helper) {
+        FakePlayer player = player(helper, "choice");
+        player.setData(KN8Attachments.AURA_OVERRIDE, Optional.empty());
+        ResourceLocation start = PowerService.auraOf(player);
+        long pool = KN8Data.AURA.server().keySet().stream().filter(id -> id.getPath().startsWith("player_")).count();
+        ResourceLocation next = PowerService.cyclePlayerAura(player, 1);
+        helper.assertTrue(!next.equals(start) && next.getPath().startsWith("player_")
+                && PowerService.auraOf(player).equals(next), "A proxima cor vale: " + start + " -> " + next);
+        helper.assertTrue(PowerService.cyclePlayerAura(player, -1).equals(start), "A anterior volta a de antes");
+        ResourceLocation around = start;
+        for (int i = 0; i < pool; i++) {
+            around = PowerService.cyclePlayerAura(player, 1);
+        }
+        helper.assertTrue(around.equals(start), "Uma volta inteira passa por todas e volta: " + around);
+        helper.succeed();
+    }
 }

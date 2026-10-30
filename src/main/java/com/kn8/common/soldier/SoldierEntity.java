@@ -21,6 +21,7 @@ import com.kn8.common.data.def.SoldierDef;
 import com.kn8.common.data.def.WeaponDef;
 import com.kn8.common.data.def.WeaponProfileDef;
 import com.kn8.common.config.ServerConfig;
+import com.kn8.common.career.ExamTargets;
 import com.kn8.common.host.KaijuFormService;
 import com.kn8.common.kaiju.CarcassEntity;
 import com.kn8.common.kaiju.KaijuEntity;
@@ -667,6 +668,9 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
                 : ServerConfig.SQUAD_LEASH_RANGE.get();
     }
 
+    /** Candidato do exame segue o dono ate esta distancia (ao quadrado); mais longe, volta ao posto. */
+    private static final double CANDIDATE_FOLLOW_RANGE_SQR = 64.0 * 64.0;
+
     /** Posto de um esquadrao de invasao (sem lider). */
     public void setSquadPost(@Nullable BlockPos post) {
         squadPost = post;
@@ -724,6 +728,13 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
      */
     @Nullable
     public Vec3 squadHome() {
+        // AJUSTES (Miguel 2026-10-30: "candidatos ajudam mais"): o candidato do exame acompanha o dono da prova;
+        // o posto do centro do campo so vale sem ele por perto.
+        UUID examOwner = ExamTargets.candidateOwner(this);
+        Player owner = examOwner == null ? null : level().getPlayerByUUID(examOwner);
+        if (owner != null && owner.isAlive() && owner.distanceToSqr(this) < CANDIDATE_FOLLOW_RANGE_SQR) {
+            return owner.position();
+        }
         if (squadPost != null) {
             return Vec3.atBottomCenterOf(squadPost);
         }

@@ -4,6 +4,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+import com.kn8.common.attribute.AuraChoiceC2S;
 import com.kn8.common.attribute.PowerView;
 import com.kn8.common.career.CareerView;
 import com.kn8.common.data.KN8Data;
@@ -20,6 +21,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 /** Aba PERFIL / STATUS: retrato, patente e merito, Release e treino, traje, armas e estatisticas. */
 final class ProfileTab implements MenuTab {
@@ -45,6 +47,7 @@ final class ProfileTab implements MenuTab {
         MenuStyle.title(g, font, Component.translatable("kn8.menu.profile.title"), x + 5, y + 4);
         Component name = player.getName();
         g.drawString(font, name, x + (portraitW - font.width(name)) / 2, y + h - 13, MenuStyle.TEXT, false);
+        drawAuraChoice(g, font, player, x + 4, y + h - 30, portraitW - 8, mouseX, mouseY);
 
         int cx = x + portraitW + 4;
         MenuStyle.panel(g, cx, y, middleW, h, MenuStyle.PANEL, MenuStyle.OUTLINE);
@@ -52,6 +55,36 @@ final class ProfileTab implements MenuTab {
         MenuStyle.panel(g, rightX, y, rightW, h, MenuStyle.PANEL, MenuStyle.OUTLINE);
         drawLoadout(g, font, player, rightX + 6, y + 6, rightW - 12, h - 12);
     }
+
+    /**
+     * AJUSTES: botao da cor da aura (clique esquerdo = proxima, direito = anterior). Mostra a aura publica do jogador
+     * ({@code kn8:aura}); com traje de aura propria ela vale por cima e o botao fica apagado.
+     */
+    private void drawAuraChoice(GuiGraphics g, Font font, LocalPlayer player, int x, int y, int w, int mouseX,
+            int mouseY) {
+        auraButton = new int[] {x, y, w, 14};
+        ResourceLocation aura = player.getData(KN8Attachments.AURA);
+        boolean own = aura.getPath().startsWith("player_");
+        int color = KN8Data.AURA.get(aura, true).map(def -> 0xFF000000 | def.color()).orElse(MenuStyle.ACCENT);
+        Component label = own ? Component.translatable("kn8.menu.profile.aura",
+                Component.translatable("kn8.aura." + aura.getPath())) : Component.translatable(
+                "kn8.menu.profile.aura_suit");
+        MenuStyle.button(g, font, label, x, y, w, 14, own, MenuStyle.inside(mouseX, mouseY, x, y, w, 14), color);
+        g.fill(x + 3, y + 4, x + 9, y + 10, color);
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (auraButton != null && MenuStyle.inside(mouseX, mouseY, auraButton[0], auraButton[1], auraButton[2],
+                auraButton[3])) {
+            PacketDistributor.sendToServer(new AuraChoiceC2S(button == 1 ? -1 : 1));
+            return true;
+        }
+        return false;
+    }
+
+    /** Area do botao da aura no ultimo quadro (x, y, largura, altura). */
+    private int[] auraButton;
 
     private static void drawCareer(GuiGraphics g, Font font, PowerView view, int x, int y, int w) {
         // Patente (insignia de divisas) e merito.

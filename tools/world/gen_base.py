@@ -726,15 +726,27 @@ def worldgen_large():
         dump(wg / f"template_pool/defense_base/large_corners_{side}.json", {
             "fallback": "minecraft:empty",
             "elements": [{"weight": 1, "element": element(f"kn8:{LARGE}/corner_{side}")}]})
-    # C3: a base grande nao nasce mais sozinha (a de Tachikawa, com a mesma arena, ocupa o lugar dela); fica para o
-    # /place. [DECIDIR] voltar com ela no mundo.
-    (wg / f"structure_set/{LARGE}.json").unlink(missing_ok=True)
-    dump(wg / f"structure/{LARGE}.json", {
+    # AJUSTES (Miguel 2026-10-30: "pode ser"): a base grande volta a nascer no mapa, rara e longe das cidades da obra.
+    # O desenho e o jigsaw de sempre ({LARGE}_layout, tambem o do /place); a estrutura conferida (kn8:checked_jigsaw)
+    # evita vilas e as bases/locais da obra que nascem de verdade, e confere o terreno [SUPOSICAO numeros].
+    dump(wg / f"structure/{LARGE}_layout.json", {
         "type": "minecraft:jigsaw", "biomes": f"#kn8:has_structure/{LARGE}", "step": "surface_structures",
         "spawn_overrides": {}, "terrain_adaptation": "beard_thin", "start_pool": f"{POOL}/large_core",
         "size": 3, "start_height": {"absolute": -1}, "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "max_distance_from_center": 100, "use_expansion_hack": False})
-
+    dump(wg / f"structure/{LARGE}.json", {
+        "biomes": f"#kn8:has_structure/{LARGE}", "step": "surface_structures", "spawn_overrides": {},
+        "terrain_adaptation": "beard_thin", "type": "kn8:checked_jigsaw", "layout": f"kn8:{LARGE}_layout",
+        "check_radius": 72, "check_step": 12, "max_slope": 14, "slope_radius": 48, "max_water": 0.05,
+        "avoid": [
+            {"structure_set": "minecraft:villages", "chunks": 12},
+            {"structure_set": "minecraft:pillager_outposts", "chunks": 8},
+            {"structure_set": "minecraft:woodland_mansions", "chunks": 10},
+            {"structure_set": "kn8:defense_sites", "chunks": 20, "generated": True},
+            {"structure_set": "kn8:defense_bases", "chunks": 32, "generated": True}]})
+    dump(wg / f"structure_set/{LARGE}.json", {
+        "structures": [{"structure": f"kn8:{LARGE}", "weight": 1}],
+        "placement": {"type": "minecraft:random_spread", "spacing": 96, "separation": 40, "salt": 280430051}})
 
 if __name__ == "__main__":
     (DATA / "kn8/structure/defense_base").mkdir(parents=True, exist_ok=True)

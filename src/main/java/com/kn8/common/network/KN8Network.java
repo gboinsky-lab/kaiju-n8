@@ -11,6 +11,7 @@ import com.kn8.common.career.CareerSyncS2C;
 import com.kn8.common.career.MissionActionC2S;
 import com.kn8.common.craft.CraftC2S;
 import com.kn8.common.soldier.SquadCommandC2S;
+import com.kn8.common.attribute.AuraChoiceC2S;
 import com.kn8.common.craft.OpenWorkbenchS2C;
 import com.kn8.common.research.OpenResearchS2C;
 import com.kn8.common.research.ResearchC2S;
@@ -79,8 +80,9 @@ public final class KN8Network {
     // 35 = COMBATE-3: CombatResult.DENIED_NEEDS_HEIGHT (Falling Thunder vem de cima).
     // 36 = COMBATE-4: CombatResult.DENIED_NEEDS_LOW_HEALTH e weapon.low_health (Thunder Emperor com a vida baixa).
     // 37 = COMBATE-5: CombatResult.DENIED_NEEDS_STAGE e weapon.stages (Juni-hitoe do jogador no ultimo estagio).
+    // 41 = AJUSTES: AuraChoiceC2S (o jogador escolhe a cor da aura na aba Perfil).
     // 40 = HOST: PowerView com o Release do hospedeiro (decimos) e KaijuFormC2S.partial (Shift + B).
-    private static final String PROTOCOL_VERSION = "40";
+    private static final String PROTOCOL_VERSION = "41";
 
     /** Diagnostico: 20 por segundo, rajada de 40. */
     private static final C2SGuard.Limit DEBUG_LIMIT = new C2SGuard.Limit(20, 40);
@@ -122,6 +124,7 @@ public final class KN8Network {
         toServer(registrar, CraftC2S.TYPE, CraftC2S.STREAM_CODEC, MENU_LIMIT, CraftC2S::handle);
         // IA-5: esquadrao do jogador (recrutar, dispensar, ordens) pela aba Esquadrao.
         toServer(registrar, SquadCommandC2S.TYPE, SquadCommandC2S.STREAM_CODEC, MENU_LIMIT, SquadCommandC2S::handle);
+        toServer(registrar, AuraChoiceC2S.TYPE, AuraChoiceC2S.STREAM_CODEC, MENU_LIMIT, AuraChoiceC2S::handle);
         toClientHook(registrar, OpenWorkbenchS2C.TYPE, OpenWorkbenchS2C.STREAM_CODEC);
         // PM-8: oficial de missoes abre o quadro de missoes dele.
         toClientHook(registrar, OpenMissionBoardS2C.TYPE, OpenMissionBoardS2C.STREAM_CODEC);

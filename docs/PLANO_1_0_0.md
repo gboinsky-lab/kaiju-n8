@@ -160,3 +160,11 @@ e os modelos provisórios (asas e cauda do jogador, Narumi No. 1, Isao sem o Num
   aos poucos). O corpo continua humano (vida, traje, Release do hospedeiro); a Força de Defesa não ataca, mas a mudança
   vista custa mérito como a forma inteira.
 - Roteiro §129; imagem `docs/img/host_release_e_braco.jpg`.
+
+## AJUSTES — base grande, cor da aura e candidatos (feita, 2026-10-30)
+
+- Base grande genérica de volta ao mapa (rara, conferida, longe das bases e cidades da obra).
+- O jogador escolhe a cor da aura no Perfil (protocolo 41).
+- Exame: 4 candidatos de nível normal que acompanham o jogador e nascem no chão ao lado dele.
+- Próximas: **B-2** (balanceamento final, com o `kaiju_damage` do Reno No. 6 e do Isao sem o Numbers 2), **SONS**
+  (todos os sons e os tamanhos/tempos dos efeitos, sem ElevenLabs), **R-1**, **R-2**.

@@ -1357,3 +1357,11 @@ guarnição da base de Tachikawa.
 | `partialCooldownTicks` | 400 | Espera de 20 s entre parciais |
 | `partialLimitCostTicks` | 200 | Cada parcial gasta 10 s dos 2 min da próxima forma inteira |
 | `partialDebtRecoveryPerTick` | 0,25 | Esse tempo volta a 1/4 da velocidade (10 s em 40 s) enquanto humano |
+
+## AJUSTES: base grande no mapa e candidatos do exame (2026-10-30) [SUPOSIÇÃO todos os números]
+
+| O quê | Valor | Onde |
+|---|---|---|
+| Base grande genérica | `random_spread` 96/40, evita vilas a 12 chunks, postos 8, mansões 10, locais da obra (gerados) 20, bases de Tachikawa/Ariake (geradas) 32; terreno: desnível 14, 5% de água | `worldgen/structure(_set)/defense_base_large.json` (`tools/world/gen_base.py`) |
+| Candidatos do exame | 4 (eram 3), nível normal, acompanham o jogador até 64 blocos (depois voltam ao centro do campo) | `mission/exam.json` (`arena.candidates`), `MissionService.CANDIDATE_LEVEL`, `SoldierEntity.squadHome` |
+| Medido em jogo | 4 normais acompanhando: Primigenius (220) em ~20 s; 4 altos: ~5 s (descartado) | — |

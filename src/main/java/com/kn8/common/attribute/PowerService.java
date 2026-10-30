@@ -245,6 +245,23 @@ public final class PowerService {
         return chosen;
     }
 
+    /**
+     * AJUSTES (Miguel 2026-10-30: "sim e para escolher"): troca a aura de jogador guardada pela proxima/anterior da
+     * lista (a sorteada continua o ponto de partida). A aura do traje e a do comando continuam por cima. Devolve a
+     * escolhida.
+     */
+    public static ResourceLocation cyclePlayerAura(ServerPlayer player, int step) {
+        List<ResourceLocation> pool = KN8Data.AURA.server().keySet().stream()
+                .filter(id -> id.getPath().startsWith(PLAYER_AURA_PREFIX)).sorted().toList();
+        if (pool.isEmpty()) {
+            return KN8Attachments.DEFAULT_AURA;
+        }
+        int index = pool.indexOf(playerAura(player));
+        ResourceLocation chosen = pool.get(Math.floorMod(index + step, pool.size()));
+        player.setData(KN8Attachments.PLAYER_AURA, chosen.toString());
+        return chosen;
+    }
+
     /** Prefixo das auras que podem ser sorteadas para o jogador. */
     private static final String PLAYER_AURA_PREFIX = "player_";
 

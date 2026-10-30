@@ -275,8 +275,10 @@ public final class SiteGameTests {
             helper.assertTrue(districts != null && districts.structures().size() == 2,
                     city + ": a cidade e os bairros deveriam estar no conjunto dos bairros");
         }
-        helper.assertTrue(helper.getLevel().registryAccess().registryOrThrow(Registries.STRUCTURE_SET)
-                .get(KN8Constants.id("defense_base_large")) == null, "A base grande generica nao nasce mais sozinha");
+        // AJUSTES (Miguel 2026-10-30): a base grande generica voltou a nascer, rara, conferida e longe das bases.
+        StructureSet large = sets.get(KN8Constants.id("defense_base_large"));
+        helper.assertTrue(large != null && large.structures().size() == 1 && large.structures().get(0).structure()
+                .value() instanceof CheckedJigsawStructure, "A base grande generica nasce sozinha, conferida");
         helper.succeed();
     }
 

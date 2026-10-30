@@ -80,6 +80,11 @@ public final class MissionService {
     private static final int CITY_AREA_TRIES = 24;
     /** EXAME: arma e nivel dos soldados que fazem a prova junto [SUPOSICAO]. */
     private static final String CANDIDATE_VARIANT = "rifle";
+    /**
+     * AJUSTES (Miguel 2026-10-30: "candidatos ajudam mais"): continuam no nivel normal; o que mudou e que acompanham o
+     * jogador ({@code SoldierEntity.squadHome}) e sao 4. Medido em jogo: 4 normais acompanhando derrubam um
+     * Primigenius em ~20 s; 4 altos em ~5 s (a prova ficava deles).
+     */
     private static final String CANDIDATE_LEVEL = "normal";
     /** EXAME: raio onde estao os invocados que nascem junto do chefe da prova. */
     private static final double BOSS_MINION_RADIUS = 16.0;
@@ -689,7 +694,7 @@ public final class MissionService {
             if (soldier == null) {
                 continue;
             }
-            BlockPos pos = KaijuSpawner.surfaceAround(level, player.blockPosition(), 1.5, 3.5, player.getRandom());
+            BlockPos pos = candidateSpot(level, player, soldier);
             soldier.moveTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, player.getYRot(), 0.0F);
             soldier.setVariant(CANDIDATE_VARIANT);
             soldier.setPowerLevel(CANDIDATE_LEVEL);
@@ -702,6 +707,25 @@ public final class MissionService {
         player.sendSystemMessage(Component.translatable("kn8.mission.exam_candidates", count)
                 .withStyle(ChatFormatting.AQUA));
     }
+
+    /**
+     * AJUSTES: lugar do candidato na altura do jogador (ate 3 blocos ao lado, livre e com chao). Pela superficie do
+     * mapa ele nascia no telhado do pavilhao, 5 blocos acima, e nao descia (o caminho do soldado so desce 3).
+     */
+    private static BlockPos candidateSpot(ServerLevel level, ServerPlayer player, SoldierEntity soldier) {
+        BlockPos base = player.blockPosition();
+        for (int i = 0; i < CANDIDATE_SPOT_TRIES; i++) {
+            BlockPos spot = base.offset(player.getRandom().nextInt(7) - 3, 0, player.getRandom().nextInt(7) - 3);
+            boolean floor = !level.getBlockState(spot.below()).getCollisionShape(level, spot.below()).isEmpty();
+            if (floor && level.noCollision(soldier, soldier.getType().getDimensions().makeBoundingBox(
+                    spot.getX() + 0.5, spot.getY(), spot.getZ() + 0.5))) {
+                return spot;
+            }
+        }
+        return base;
+    }
+
+    private static final int CANDIDATE_SPOT_TRIES = 16;
 
     /**
      * EXAME: fim do kit. Aprovado fica com ele (Miguel, 2026-10-30); quem reprova, abandona ou cai devolve (com
