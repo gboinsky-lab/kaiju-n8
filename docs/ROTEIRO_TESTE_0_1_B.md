@@ -1614,3 +1614,13 @@ Servidor dedicado + 2 clientes. Imagem: `docs/img/combate7_no8_mina_reno.jpg`.
 | 116.5 | Mina contra um kaiju parado (`NoAI`), visto de lado | Linha fina da boca do canhao ate o kaiju durante a carga, depois o tiro verde e o impacto com coluna e onda |
 | 116.6 | Rifle do Numbers 6 (criativo), R num Honju parado | Gelo em 3 etapas: cristais no ponto, veios andando, estouro com nevoa na pele; Lentidao III so no fim |
 | 116.7 | Reno No. 6 contra um Honju | Gelo em etapas nos tiros congelantes; supressao (Lentidao I) sem etapas |
+
+## 117. COMBATE-8: regressão do combate
+
+Servidor dedicado + 2 clientes. Imagem: `docs/img/combate8_regressao.jpg`. Relatório: `docs/COMBATE8_REGRESSAO.md`.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 117.1 | Baioneta do Narumi, R na primeira técnica (No. 1 Eruption Slash) | O jogador faz as estocadas (antes ficava parado) |
+| 117.2 | Cada arma com técnicas (machado, machado do Numbers 4, espada do Hoshina, baionetas, manoplas): X por todas e R em cada uma | Todas saem com animação, nome na HUD e efeito; Falling Thunder só pulando de cima; Thunder Emperor só com a vida baixa; Jūni-hitoe só com o Numbers 10 na força total |
+| 117.3 | Baioneta do Narumi: Thunder Fire, Flame Shower e Sky Turner num kaiju | Tiros com estouro, leque de tiros de fogo, avanço girando |

@@ -75,6 +75,9 @@ Regras do documento (valem para toda a etapa):
 9. **COMBATE-7 (Kafka/No. 8, Mina, Reno):** feita. Soco de ruptura do No. 8 (NPC e forma do jogador) em 3 fases; mira
    da Mina (linha da boca do canhão ao alvo no preparo), clarão e impacto remoto separados; gelo do Reno em 3 etapas
    (a Lentidão sobe até a do tiro, o gelo anda do ponto atingido pela pele). No. 8 com 3 m (Miguel, 2026-10-30).
+10. **COMBATE-8 (regressão):** feita. Auditoria das 133 técnicas (`tools/combat/auditar_tecnicas.py`), Eruption
+    Slash do jogador sem animação corrigida, GameTest com todas as técnicas do jogador; relatório em
+    `docs/COMBATE8_REGRESSAO.md`. Números e duelos ficam para depois.
 
 ## 5. Perguntas que ficaram (histórico)
 

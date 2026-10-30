@@ -976,6 +976,13 @@ def weapon_animations():
             frames, end = technique_frames(moves, hits, technique["duration_ticks"], STANCES[family]["idle"],
                                            spec.get("spin"))
             result[f"player.{item}.special_{technique['id']}"] = animate(frames, end)
+        # COMBATE-8: arma sem "special" (baioneta do Narumi): o servidor manda a primeira tecnica como
+        # player.<item>.special (CombatService: a primeira da lista e o especial); sem esta copia ficava sem
+        # animacao.
+        techniques = weapon.get("techniques", [])
+        first = f"player.{item}.special_{techniques[0]['id']}" if techniques else None
+        if not special and first in result:
+            result[f"player.{item}.special"] = result[first]
     return result
 
 
