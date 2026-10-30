@@ -8,6 +8,7 @@ import com.kn8.common.career.CareerData;
 import com.kn8.common.career.CareerService;
 import com.kn8.common.career.MissionService;
 import com.kn8.common.config.ServerConfig;
+import com.kn8.common.host.KaijuFormService;
 import com.kn8.common.site.RegionService;
 import com.kn8.common.data.def.RankDef;
 import com.kn8.common.soldier.SoldierEntity;
@@ -45,6 +46,10 @@ public final class BaseServices {
 
     /** Briefing da proxima patente no chat e o quadro de missoes do oficial no menu. */
     public static void talk(ServerPlayer player, DefenseOfficerEntity officer) {
+        if (KaijuFormService.refusesServices(player)) {
+            // T-4: o oficial nao atende um kaiju.
+            return;
+        }
         player.sendSystemMessage(Component.translatable("kn8.officer.greeting", officer.getDisplayName())
                 .withStyle(ChatFormatting.AQUA));
         Optional<Map.Entry<ResourceLocation, RankDef>> next = CareerService.nextRank(player);
@@ -72,6 +77,9 @@ public final class BaseServices {
     }
 
     public static StationResult useStation(ServerLevel level, BlockPos pos, ServerPlayer player) {
+        if (KaijuFormService.refusesServices(player)) {
+            return StationResult.NONE;
+        }
         if (RegionService.servicesClosed(level, pos)) {
             RegionService.refuseClosed(player);
             return StationResult.NONE;

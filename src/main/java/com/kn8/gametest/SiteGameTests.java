@@ -4,15 +4,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.google.gson.JsonElement;
 import com.kn8.KN8Constants;
 import com.kn8.common.data.KN8Data;
 import com.kn8.common.data.def.SiteDef;
 import com.kn8.common.registry.KN8Blocks;
 import com.kn8.common.registry.KN8Entities;
 import com.kn8.common.world.CheckedJigsawStructure;
+import com.mojang.serialization.JsonOps;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
@@ -284,16 +287,24 @@ public final class SiteGameTests {
         Structure site = level.registryAccess().registryOrThrow(Registries.STRUCTURE)
                 .get(KN8Constants.id("shinagawa_city"));
         ChunkGenerator generator = level.getChunkSource().getGenerator();
-        // Alguns chunks seguidos: parte cai perto de um ponto candidato de vila (planicie) ou de uma base (no plano toda
-        // base cabe) e e recusada.
+        // No plano toda base cabe (BASES-4) e Shinagawa evita as bases a 14 chunks: com o espacamento 24 delas quase
+        // nao sobra chao, e o teste dependia da sorte da posicao (T-4). O avoid tem teste proprio; aqui a copia da
+        // estrutura sem ele confere so bioma, terreno e desenho.
+        RegistryOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, level.registryAccess());
+        Structure checked = site == null ? null : Structure.DIRECT_CODEC.encodeStart(ops, site).result()
+                .map(json -> {
+                    json.getAsJsonObject().remove("avoid");
+                    return json;
+                }).flatMap(json -> Structure.DIRECT_CODEC.parse(ops, json).result()).orElse(null);
+        helper.assertTrue(checked instanceof CheckedJigsawStructure, "Copia da cidade sem o avoid");
         ChunkPos base = new ChunkPos(helper.absolutePos(BlockPos.ZERO).offset(4096, 0, 4096));
         boolean accepted = false;
-        for (int i = 0; i < 64 && !accepted && site != null; i++) {
+        for (int i = 0; i < 16 && !accepted; i++) {
             ChunkPos chunk = new ChunkPos(base.x + i * 61, base.z - i * 47);
             Structure.GenerationContext context = new Structure.GenerationContext(level.registryAccess(), generator,
                     generator.getBiomeSource(), level.getChunkSource().randomState(), level.getStructureManager(),
                     level.getSeed(), chunk, level, biome -> true);
-            accepted = site.findValidGenerationPoint(context).isPresent();
+            accepted = checked.findValidGenerationPoint(context).isPresent();
         }
         helper.assertTrue(accepted, "No chao plano e seco a cidade de Shinagawa deveria passar na checagem do terreno");
         helper.succeed();

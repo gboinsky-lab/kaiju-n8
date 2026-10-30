@@ -4,6 +4,7 @@ package com.kn8.common.combat;
 import java.util.List;
 
 import com.kn8.common.evacuation.CivilianEntity;
+import com.kn8.common.host.KaijuFormService;
 import com.kn8.common.config.ServerConfig;
 import com.kn8.common.data.def.AbilityDef;
 import com.kn8.common.data.def.KaijuClass;
@@ -343,6 +344,10 @@ public final class SpecialAttacks {
             return true;
         }
         if (target instanceof Player) {
+            if (source instanceof SoldierEntity && KaijuFormService.hostileToForce(target)) {
+                // T-4: o hospedeiro transformado e alvo dos cortes e tiros da Forca de Defesa.
+                return false;
+            }
             return !(source instanceof Player) || !ServerConfig.PVP_ENABLED.get();
         }
         return false;

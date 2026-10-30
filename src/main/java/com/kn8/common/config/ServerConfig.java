@@ -398,6 +398,11 @@ public final class ServerConfig {
     public static final ModConfigSpec.IntValue FORM_RAMPAGE_COOLDOWN_TICKS;
     public static final ModConfigSpec.IntValue FORM_EXHAUST_TICKS;
     public static final ModConfigSpec.DoubleValue FORM_DETECT_RADIUS;
+    public static final ModConfigSpec.IntValue FORM_TRUSTED_RANK_ORDER;
+    public static final ModConfigSpec.DoubleValue FORM_WITNESS_RADIUS;
+    public static final ModConfigSpec.IntValue FORM_WITNESS_MERIT_PENALTY;
+    public static final ModConfigSpec.BooleanValue FORM_CLOSES_SERVICES;
+    public static final ModConfigSpec.BooleanValue FORM_ALERTS_REGION;
     public static final ModConfigSpec.ConfigValue<String> SUPPORT_RECON_RANK;
     public static final ModConfigSpec.IntValue SUPPORT_RECON_USES;
     public static final ModConfigSpec.IntValue SUPPORT_RECON_COOLDOWN;
@@ -1283,6 +1288,17 @@ public final class ServerConfig {
                 72000);
         FORM_DETECT_RADIUS = doubleValue("detectRadius", "T-3: kaiju detection of the form (nearest kaiju"
                 + " shown).", 64.0, 0.0, 256.0);
+        FORM_TRUSTED_RANK_ORDER = intValue("trustedRankOrder", "T-4: Defense Force soldiers attack a transformed host"
+                + " below this rank order (rank JSON \"order\", 4 = Vice-Captain); from it on they hold fire. Out of"
+                + " control the host is always attacked.", 4, 0, 100);
+        FORM_WITNESS_RADIUS = doubleValue("witnessRadius", "T-4: soldiers this close (with line of sight) see the"
+                + " transformation.", 32.0, 0.0, 128.0);
+        FORM_WITNESS_MERIT_PENALTY = intValue("witnessMeritPenalty", "T-4: merit lost when soldiers see a host below"
+                + " trustedRankOrder transform (once per transformation).", 100, 0, 100000);
+        FORM_CLOSES_SERVICES = booleanValue("closesServices", "T-4: while transformed, officers, squad station,"
+                + " research terminal and mission board refuse the host.", true);
+        FORM_ALERTS_REGION = booleanValue("alertsRegion", "T-4: a transformed host inside a place raises the region"
+                + " alert like a kaiju.", true);
         BUILDER.pop();
 
         section("sites", "Places from the series (C3): Ariake, Tachikawa base and city, Shinagawa.");

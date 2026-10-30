@@ -7,9 +7,13 @@ import javax.annotation.Nullable;
 import com.kn8.KN8Constants;
 import com.kn8.core.power.BodyStat;
 import com.kn8.common.attribute.PowerService;
+import com.kn8.common.base.DefenseOfficerEntity;
+import com.kn8.common.career.CareerService;
 import com.kn8.common.config.ServerConfig;
 import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.registry.KN8Attachments;
+import com.kn8.common.site.RegionService;
+import com.kn8.common.soldier.SoldierEntity;
 import com.kn8.common.vfx.VfxService;
 
 import net.minecraft.ChatFormatting;
@@ -95,6 +99,68 @@ public final class KaijuFormService {
         return isTransformed(entity) ? (float) ServerConfig.FORM_DAMAGE_MULTIPLIER.get().doubleValue() : 1.0F;
     }
 
+    // --- T-4: reacao da Forca de Defesa --------------------------------------------------------------------------
+
+    /**
+     * T-4 (Miguel 2026-10-24: "os soldados atacam o jogador transformado; a partir de certa patente nao atacam mais"):
+     * a Forca de Defesa trata este jogador como kaiju. Sem controle, sempre (ataca todos em volta); no controle, so
+     * abaixo da patente {@code [kaijuForm] trustedRankOrder}. Criativo e espectador nunca. So no servidor (a patente
+     * nao vai ao cliente de outros jogadores).
+     */
+    public static boolean hostileToForce(@Nullable Entity entity) {
+        if (!(entity instanceof ServerPlayer player) || !isTransformed(player) || player.isCreative()
+                || player.isSpectator()) {
+            return false;
+        }
+        return isRampaging(player) || !trusted(player);
+    }
+
+    /** T-4: patente a partir da qual os soldados confiam no hospedeiro transformado (no controle). */
+    public static boolean trusted(ServerPlayer player) {
+        int order = CareerService.rank(player).map(entry -> entry.getValue().order()).orElse(0);
+        return order >= ServerConfig.FORM_TRUSTED_RANK_ORDER.get();
+    }
+
+    /** T-4: transformado, a base nao atende (sem aviso: quem chama decide a mensagem). */
+    public static boolean servicesClosed(ServerPlayer player) {
+        return ServerConfig.FORM_CLOSES_SERVICES.get() && isTransformed(player);
+    }
+
+    /** T-4: transformado, oficiais, estacao, terminal e quadro de missoes recusam (com o aviso na barra). */
+    public static boolean refusesServices(ServerPlayer player) {
+        if (!servicesClosed(player)) {
+            return false;
+        }
+        player.displayClientMessage(Component.translatable("kn8.host.form.services_refused")
+                .withStyle(ChatFormatting.RED), true);
+        return true;
+    }
+
+    /**
+     * T-4: soldados a ate {@code witnessRadius} com linha de visao viram a transformacao. Abaixo da patente de
+     * confianca o hospedeiro perde merito uma vez por transformacao (e a partir dela ninguem estranha).
+     */
+    private static void witnessed(ServerPlayer player) {
+        double radius = ServerConfig.FORM_WITNESS_RADIUS.get();
+        int penalty = ServerConfig.FORM_WITNESS_MERIT_PENALTY.get();
+        if (radius <= 0 || penalty <= 0 || player.isCreative() || trusted(player)) {
+            return;
+        }
+        long witnesses = player.level().getEntitiesOfClass(SoldierEntity.class,
+                player.getBoundingBox().inflate(radius), soldier -> soldier.isAlive()
+                        && !(soldier instanceof DefenseOfficerEntity) && soldier.hasLineOfSight(player)
+                        && soldier.distanceToSqr(player) <= radius * radius).size();
+        if (witnesses == 0) {
+            return;
+        }
+        int lost = Math.min(penalty, CareerService.data(player).merit());
+        CareerService.addMerit(player, -lost);
+        player.sendSystemMessage(Component.translatable("kn8.host.form.witnessed", witnesses, lost)
+                .withStyle(ChatFormatting.RED));
+        KN8Constants.LOGGER.info("[kn8] {} se transformou na frente de {} soldado(s): -{} de merito",
+                player.getGameProfile().getName(), witnesses, lost);
+    }
+
     /** Comando de operador ({@code /kn8 host clear}): tira a espera para transformar de novo. */
     public static void resetWait(ServerPlayer player) {
         player.getPersistentData().remove(TAG_READY);
@@ -158,6 +224,7 @@ public final class KaijuFormService {
         effect(player, PROFILE, 1.0F);
         player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.RAVAGER_ROAR,
                 SoundSource.PLAYERS, 1.5F, 0.8F);
+        witnessed(player);
         KN8Constants.LOGGER.info("[kn8] {} virou o Kaiju No. 8", player.getGameProfile().getName());
         return Result.TRANSFORMED;
     }
@@ -217,6 +284,7 @@ public final class KaijuFormService {
         if (isRampaging(player)) {
             Rampage.tick(player);
         }
+        RegionService.hostTick(player);
         if (player.tickCount % REFRESH_TICKS == 0) {
             regenerate(player);
             status(player, elapsed, limit);

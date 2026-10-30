@@ -1334,3 +1334,13 @@ Missões novas: `philinosoma_hunt` (Oficial Sênior; 2 Primigenius + Philinosoma
 Especiais acrescentados: Hoshina No. 10 e Kikoru No. 4 na `no10_assault` (no lugar do Hoshina), Kikoru No. 4 na
 `shinagawa_ants`, Reno No. 6 na `mass_resurrection`, Narumi No. 1 na `ariake_assault`, Kafka na `tachikawa_raid` e na
 guarnição da base de Tachikawa.
+
+## T-4: reação da Força de Defesa ao jogador transformado (2026-10-30) [SUPOSIÇÃO todos os números]
+
+| Chave `[kaijuForm]` | Valor | Efeito |
+|---|---|---|
+| `trustedRankOrder` | 4 (Vice-Capitão) | Abaixo desta ordem de patente os soldados atacam o hospedeiro transformado; a partir dela só sem controle |
+| `witnessRadius` | 32 | Soldados a esta distância, com linha de visão, veem a transformação |
+| `witnessMeritPenalty` | 100 | Mérito perdido por transformação vista (abaixo da patente de confiança) |
+| `closesServices` | true | Transformado: oficiais, estação, terminal de pesquisa e missões recusam |
+| `alertsRegion` | true | Transformado (alvo da Força) dentro de um local: região em alerta; sem controle, combate |

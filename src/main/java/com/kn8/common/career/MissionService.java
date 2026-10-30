@@ -12,6 +12,7 @@ import com.kn8.common.attribute.PowerService;
 import com.kn8.common.base.DefenseOfficerEntity;
 import com.kn8.common.boss.BossService;
 import com.kn8.common.config.ServerConfig;
+import com.kn8.common.host.KaijuFormService;
 import com.kn8.common.data.KN8Data;
 import com.kn8.common.invasion.InvasionService;
 import com.kn8.common.data.def.MissionDef;
@@ -70,7 +71,9 @@ public final class MissionService {
         /** EXAME: a prova so e aceita dentro do local dela ({@code arena.site}, ex. o Campo do Exame de Admissao). */
         NEEDS_SITE,
         /** POS-ATAQUE: a missao so e aceita dentro de uma base atingida ({@code arena.ruined}). */
-        NEEDS_RUINED_BASE
+        NEEDS_RUINED_BASE,
+        /** T-4: transformado, nenhum oficial da missao a um kaiju. */
+        TRANSFORMED
     }
 
     /** CIDADES: sorteios do ponto do objetivo dentro da cidade. */
@@ -123,6 +126,9 @@ public final class MissionService {
         }
         if (!data.completed().containsAll(def.get().requires().completed())) {
             return Result.MISSING_PREREQUISITE;
+        }
+        if (KaijuFormService.servicesClosed(player)) {
+            return Result.TRANSFORMED;
         }
         if (isExam(def.get()) && !nearExamOfficer(player)) {
             return Result.NEEDS_EXAM_OFFICER;

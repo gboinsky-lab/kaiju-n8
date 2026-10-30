@@ -5,6 +5,7 @@ import java.util.Optional;
 import com.kn8.common.career.CareerData;
 import com.kn8.common.career.CareerService;
 import com.kn8.common.config.ServerConfig;
+import com.kn8.common.host.KaijuFormService;
 import com.kn8.common.craft.WorkbenchService;
 import com.kn8.common.data.KN8Data;
 import com.kn8.common.data.def.KaijuClass;
@@ -39,7 +40,9 @@ public final class ResearchService {
     public enum Result {
         OK, UNKNOWN, NO_TERMINAL, ALREADY_DONE, BUSY, RANK_TOO_LOW, MISSING_PREREQUISITE, MISSING,
         /** PM-9: regiao em combate (laboratorio fechado). */
-        REGION_COMBAT
+        REGION_COMBAT,
+        /** T-4: o hospedeiro transformado nao usa o laboratorio. */
+        TRANSFORMED
     }
 
     public static Result check(ServerPlayer player, ResourceLocation id) {
@@ -65,6 +68,9 @@ public final class ResearchService {
         }
         if (RegionService.servicesClosed(player.serverLevel(), player.blockPosition())) {
             return Result.REGION_COMBAT;
+        }
+        if (KaijuFormService.servicesClosed(player)) {
+            return Result.TRANSFORMED;
         }
         if (!player.getAbilities().instabuild) {
             for (WorkbenchRecipeDef.Ingredient ingredient : def.get().cost()) {

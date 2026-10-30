@@ -132,3 +132,18 @@ e os modelos provisórios (asas e cauda do jogador, Narumi No. 1, Isao sem o Num
   dono trava a entrada de movimento e vira a câmera para o alvo publicado (`kn8:rampage_target`). 15 s depois volta
   humano, exausto, com 2 min de espera. Soldados e civis aceitam dano só do hospedeiro sem controle.
 - Não feito: Roar e Grab/Throw na mão do jogador (só no NPC), arremesso; reação da Força de Defesa = T-4.
+
+## T-4 — Reação da Força de Defesa (feita, 2026-10-30)
+
+- **Soldados atacam o hospedeiro transformado** abaixo da patente `[kaijuForm] trustedRankOrder` (4, Vice-Capitão
+  [SUPOSIÇÃO]); a partir dela só quando ele está sem controle (`KaijuFormService.hostileToForce`). Comuns e especiais:
+  ele entra na escolha de alvo como um kaiju grande (`SoldierTargetGoal`), os golpes, cortes e tiros o atingem
+  (`SoldierEntity.canAttack`, raio do golpe, `SpecialAttacks.isAlly`) e ele pode revidar. Voltou a ser humano ou subiu
+  de patente: o soldado larga na hora. O próprio esquadrão também ataca [SUPOSIÇÃO].
+- **Carreira:** transformar com soldados olhando (a até `witnessRadius` 32, linha de visão) tira `witnessMeritPenalty`
+  100 de mérito, uma vez por transformação; com a patente de confiança, nada.
+- **Base e missões:** transformado, oficiais, estação do esquadrão, terminal de pesquisa e o aceite de missões recusam
+  (`closesServices`; `MissionService.Result.TRANSFORMED`, `ResearchService.Result.TRANSFORMED`).
+- **Mundo:** civis fogem do jogador transformado como de um kaiju; dentro de um local da obra a região entra em alerta
+  (sem controle, combate) (`alertsRegion`).
+- Números em `docs/BALANCEAMENTO.md`; roteiro §128; imagem `docs/img/t4_reacao_forca_de_defesa.jpg`.

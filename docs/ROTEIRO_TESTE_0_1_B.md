@@ -1785,3 +1785,19 @@ Imagem: `docs/img/b1_onde_cada_um_aparece.jpg`. Pelo comando: `/kn8 invasion sta
 | 127.5 | Primeira visita à base de Tachikawa | Kafka junto da guarnição (Mina, Hoshina, Kikoru, Reno) |
 | 127.6 | Quadro do Oficial de Missões | Caçada ao Philinosoma, Caçada ao Diclonius e Limpeza dos Esporos (pela patente) |
 | 127.7 | Invasão natural nas cidades e bairros | Shinagawa, Tachikawa e Ariake (e os bairros) também sorteiam as invasões novas |
+
+## 128. T-4: reação da Força de Defesa ao jogador transformado
+
+Imagem: `docs/img/t4_reacao_forca_de_defesa.jpg`. Preparo: `/kn8 host infect Dev`, `/kn8 rank set kn8:candidato Dev`,
+alguns soldados (`/summon kn8:soldier`) e um civil (`/summon kn8:civilian`) a ~10 blocos.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 128.1 | Tecla B com soldados olhando (Candidato) | Chat: "N soldado(s) viram você se transformar: -100 de mérito"; mérito cai 100 |
+| 128.2 | Ficar perto dos soldados transformado | Eles miram e atiram no Dev (vida da forma caindo); o Dev pode revidar e fere os soldados |
+| 128.3 | Civil por perto | Foge do Dev como de um kaiju |
+| 128.4 | Oficial, estação, terminal, aceitar missão | Recusados: "A Força de Defesa não atende um kaiju" / missão `TRANSFORMED` |
+| 128.5 | Dentro de Shinagawa/Tachikawa/Ariake transformado | Faixa da região em ALERTA (sem controle: COMBATE) |
+| 128.6 | `/kn8 rank set kn8:vice_capitao Dev` | Os soldados param de atirar na hora; transformar de novo não tira mérito |
+| 128.7 | `/kn8 host rampage Dev` (Vice-Capitão) | Sem controle: os soldados voltam a atacar |
+| 128.8 | Tecla B de volta (ou fim do surto) | Soldados largam o alvo; serviços e missões voltam |

@@ -8,6 +8,7 @@ import com.kn8.KN8Constants;
 import com.kn8.common.arena.TrainingArenaService;
 import com.kn8.common.career.ExamTargets;
 import com.kn8.common.config.ServerConfig;
+import com.kn8.common.host.KaijuFormService;
 import com.kn8.common.host.LarvaService;
 import com.kn8.common.invasion.InvasionService;
 import com.kn8.common.kaiju.KaijuEntity;
@@ -96,6 +97,20 @@ public final class RegionService {
         }
         report(level, kaiju.blockPosition(), kaiju.getTarget() != null ? Event.FIGHTING : Event.KAIJU_SEEN,
                 kaiju.kaijuId().toString());
+    }
+
+    /**
+     * T-4: o hospedeiro transformado dentro de um local alarma a regiao como um kaiju (sem controle = combate). Quem a
+     * Forca de Defesa ja aceita (patente de confianca, no controle) nao alarma [SUPOSICAO].
+     */
+    public static void hostTick(ServerPlayer player) {
+        if (!ServerConfig.FORM_ALERTS_REGION.get()
+                || player.tickCount % ServerConfig.REGION_KAIJU_CHECK_TICKS.get() != 0
+                || !KaijuFormService.hostileToForce(player)) {
+            return;
+        }
+        report(player.serverLevel(), player.blockPosition(), KaijuFormService.isRampaging(player) ? Event.FIGHTING
+                : Event.KAIJU_SEEN, KaijuFormService.PROFILE.toString());
     }
 
     /** Invasao comecou ou terminou: o centro dela decide a regiao. */

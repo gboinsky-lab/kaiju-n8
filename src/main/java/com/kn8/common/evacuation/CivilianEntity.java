@@ -90,6 +90,9 @@ public class CivilianEntity extends PathfinderMob {
         goalSelector.addGoal(0, new FloatGoal(this));
         if (panic > 0) {
             goalSelector.addGoal(1, new AvoidEntityGoal<>(this, KaijuEntity.class, panic, 1.0, 1.4));
+            // T-4: o civil nao sabe quem e o hospedeiro: foge do jogador transformado como de qualquer kaiju.
+            goalSelector.addGoal(1, new AvoidEntityGoal<>(this, Player.class, panic, 1.0, 1.4,
+                    KaijuFormService::isTransformed));
         }
         goalSelector.addGoal(2, new EvacuateGoal(this));
         goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
