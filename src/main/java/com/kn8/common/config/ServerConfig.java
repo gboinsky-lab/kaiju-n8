@@ -197,6 +197,22 @@ public final class ServerConfig {
     public static final ModConfigSpec.DoubleValue BODY_XP_SPEED_PER_BLOCK;
     public static final ModConfigSpec.DoubleValue BODY_XP_RESISTANCE_PER_DAMAGE;
     public static final ModConfigSpec.IntValue BODY_XP_AGILITY_PER_ACTION;
+    public static final ModConfigSpec.BooleanValue BODY_XP_FROM_KAIJU;
+    public static final ModConfigSpec.DoubleValue BODY_XP_CLIMB_AGILITY_PER_BLOCK;
+    public static final ModConfigSpec.DoubleValue BODY_XP_CLIMB_STRENGTH_PER_BLOCK;
+    public static final ModConfigSpec.DoubleValue LIFT_STAMINA_COST;
+    public static final ModConfigSpec.DoubleValue LIFT_XP;
+    public static final ModConfigSpec.IntValue LIFT_INTERVAL_TICKS;
+    public static final ModConfigSpec.IntValue LIFT_REPS_PER_MINUTE;
+    public static final ModConfigSpec.IntValue SPAR_MAX_TICKS;
+    public static final ModConfigSpec.DoubleValue SPAR_MAX_DISTANCE;
+    public static final ModConfigSpec.DoubleValue SPAR_PLAYER_DAMAGE_FACTOR;
+    public static final ModConfigSpec.DoubleValue SPAR_YIELD_FRACTION;
+    public static final ModConfigSpec.DoubleValue SPAR_STRENGTH_XP_PER_DAMAGE;
+    public static final ModConfigSpec.DoubleValue SPAR_RESISTANCE_XP_PER_DAMAGE;
+    public static final ModConfigSpec.IntValue SPAR_WIN_XP;
+    public static final ModConfigSpec.IntValue SPAR_COOLDOWN_TICKS;
+    public static final ModConfigSpec.DoubleValue SPAR_KAIJU_RANGE;
 
     // --- kaiju AI (M7a) -------------------------------------------------------------------------------------------
     public static final ModConfigSpec.DoubleValue FOLLOW_RANGE_BASE;
@@ -842,6 +858,36 @@ public final class ServerConfig {
                 + " taken in combat.", 1.0, 0.0, 100.0);
         BODY_XP_AGILITY_PER_ACTION = intValue("xpAgilityPerAction", "Agility XP per dodge, dash or parry.", 3, 0,
                 1000);
+        BODY_XP_FROM_KAIJU = booleanValue("xpFromKaiju", "Fighting kaiju (hitting or being hit) also trains the body"
+                + " (TREINO, Miguel 2026-10-30: off, the body is trained by exercise).", false);
+        BODY_XP_CLIMB_AGILITY_PER_BLOCK = doubleValue("xpClimbAgilityPerBlock", "Agility XP per block climbed on a"
+                + " wall.", 0.6, 0.0, 100.0);
+        BODY_XP_CLIMB_STRENGTH_PER_BLOCK = doubleValue("xpClimbStrengthPerBlock", "Strength XP per block climbed on a"
+                + " wall.", 0.3, 0.0, 100.0);
+        BUILDER.pop();
+
+        section("exercise", "Exercise (TREINO): weight rack and sparring against soldiers.");
+        LIFT_STAMINA_COST = doubleValue("liftStaminaCost", "Stamina per repetition on the weight rack.", 10.0, 0.0,
+                100.0);
+        LIFT_XP = doubleValue("liftXp", "Strength XP per repetition.", 2.0, 0.0, 1000.0);
+        LIFT_INTERVAL_TICKS = intValue("liftIntervalTicks", "Minimum ticks between repetitions.", 12, 1, 200);
+        LIFT_REPS_PER_MINUTE = intValue("liftRepsPerMinute", "Repetitions per minute that give XP.", 24, 0, 1200);
+        SPAR_MAX_TICKS = intValue("sparMaxTicks", "Longest sparring session.", 2400, 20, 72000);
+        SPAR_MAX_DISTANCE = doubleValue("sparMaxDistance", "Sparring ends if the two are farther apart than this.",
+                24.0, 4.0, 128.0);
+        SPAR_PLAYER_DAMAGE_FACTOR = doubleValue("sparPlayerDamageFactor", "Damage the soldier deals to the player"
+                + " while sparring (multiplier).", 0.35, 0.0, 1.0);
+        SPAR_YIELD_FRACTION = doubleValue("sparYieldFraction", "Whoever drops to this fraction of max health loses"
+                + " the sparring (nobody dies).", 0.25, 0.05, 0.9);
+        SPAR_STRENGTH_XP_PER_DAMAGE = doubleValue("sparStrengthXpPerDamage", "Strength XP per point of melee damage"
+                + " dealt to the sparring partner.", 1.0, 0.0, 100.0);
+        SPAR_RESISTANCE_XP_PER_DAMAGE = doubleValue("sparResistanceXpPerDamage", "Resistance XP per point of damage"
+                + " taken from the sparring partner.", 1.5, 0.0, 100.0);
+        SPAR_WIN_XP = intValue("sparWinXp", "XP in every body attribute for winning a sparring.", 15, 0, 10000);
+        SPAR_COOLDOWN_TICKS = intValue("sparCooldownTicks", "Ticks before the same soldier spars again.", 600, 0,
+                72000);
+        SPAR_KAIJU_RANGE = doubleValue("sparKaijuRange", "A kaiju this close ends the sparring (real fight).", 32.0,
+                0.0, 128.0);
         BUILDER.pop();
 
         section("kaiju", "Kaiju behaviour (M7a). Strength comes from the fortitude curve and the multipliers above.");

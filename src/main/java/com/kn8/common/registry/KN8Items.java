@@ -149,6 +149,8 @@ public final class KN8Items {
             "research_terminal", KN8Blocks.RESEARCH_TERMINAL);
     public static final DeferredItem<BlockItem> BASE_CORE = ITEMS.registerSimpleBlockItem("base_core",
             KN8Blocks.BASE_CORE);
+    public static final DeferredItem<BlockItem> WEIGHT_RACK = ITEMS.registerSimpleBlockItem("weight_rack",
+            KN8Blocks.WEIGHT_RACK);
     /** PM-9: Rastreador de Kaiju (investiga o rastro de destruicao). */
     public static final DeferredItem<TrailScannerItem> TRAIL_SCANNER = ITEMS.register("trail_scanner",
             () -> new TrailScannerItem(new Item.Properties().stacksTo(1)));
@@ -211,6 +213,7 @@ public final class KN8Items {
                         output.accept(ISAO_SPAWN_EGG.get());
                         output.accept(ISAO_BASE_SPAWN_EGG.get());
                         output.accept(TRAINING_DUMMY.get());
+                        output.accept(WEIGHT_RACK.get());
                         output.accept(DEFENSE_WORKBENCH.get());
                         output.accept(TRAINING_CONSOLE.get());
                         output.accept(SQUAD_STATION.get());

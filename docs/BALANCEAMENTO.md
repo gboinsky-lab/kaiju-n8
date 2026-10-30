@@ -424,12 +424,26 @@ Sem traje vale so o corpo. Numeros [SUPOSICAO].
 
 | Atributo | Treina com | Bonus no nivel 100 |
 |---|---|---|
-| Forca | 0,5 XP por ponto de dano corpo a corpo em kaiju ou no boneco (o boneco respeita o limite por minuto) | +30% de dano corpo a corpo (nao vale na arma de fogo) |
+| Forca | 0,5 XP por ponto de dano corpo a corpo no boneco (limite por minuto); 2 XP por repeticao no suporte de pesos; 1 XP por ponto de dano no parceiro do treino de combate; 0,3 XP por bloco escalado | +30% de dano corpo a corpo (nao vale na arma de fogo) |
 | Velocidade | 0,2 XP por bloco corrido no chao | +15% de velocidade |
-| Resistencia | 1 XP por ponto de dano recebido de alguem (nao do traje) | -20% de dano recebido |
-| Agilidade | 3 XP por esquiva, dash ou parry | -30% de stamina na esquiva e no dash |
+| Resistencia | 1 XP por ponto de dano recebido de alguem (nao do traje, nao de kaiju); 1,5 XP por ponto de dano do parceiro do treino | -20% de dano recebido |
+| Agilidade | 3 XP por esquiva, dash, parry ou movimento de parkour; 0,6 XP por bloco escalado | -30% de stamina na esquiva e no dash |
 
 Cada nivel custa 20 + 4 x nivel de XP (do 0 ao 100: ~21.800).
+
+**TREINO (Miguel, 2026-10-30): o corpo se treina por exercicio.** Bater em kaiju e apanhar de kaiju nao dao XP do
+corpo (`[body] xpFromKaiju` false liga de volta). O XP de Release (limite pessoal) dos abates continua [DECIDIR].
+
+| Exercicio (`[exercise]`) | Numero [SUPOSICAO] |
+|---|---|
+| Suporte de pesos: stamina por repeticao / XP / intervalo / repeticoes com XP por minuto | 10 / 2 de forca / 12 ticks / 24 |
+| Treino de combate: duracao maxima / distancia maxima | 2.400 ticks (2 min) / 24 blocos |
+| Dano do soldado no jogador durante o treino | x0,35 (com 0,5 o jogador sem reagir perdia em ~3 s) |
+| Quem cai a esta fracao da vida perde (ninguem morre: o golpe para em 1) | 0,25 |
+| XP de forca por dano no parceiro / de resistencia por dano do parceiro | 1,0 / 1,5 |
+| Vitoria: XP em todos os atributos | 15 |
+| Espera do soldado para treinar de novo / kaiju a esta distancia encerra | 600 ticks / 32 blocos |
+| Escalada: XP de agilidade / de forca por bloco subido (`[body]`) | 0,6 / 0,3 |
 
 ### Parkour do jogador (0.5.0-E, `[parkour]`)
 

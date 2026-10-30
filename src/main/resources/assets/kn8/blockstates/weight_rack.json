@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "kn8:block/weight_rack"
+    },
+    "facing=east": {
+      "model": "kn8:block/weight_rack",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "kn8:block/weight_rack",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "kn8:block/weight_rack",
+      "y": 270
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/orientable_with_bottom",
+  "textures": {
+    "top": "kn8:block/weight_rack_top",
+    "front": "kn8:block/weight_rack_front",
+    "side": "kn8:block/weight_rack_side",
+    "bottom": "kn8:block/weight_rack_bottom"
+  }
+}

@@ -4,6 +4,7 @@
     "kn8:training_console",
     "kn8:squad_station",
     "kn8:research_terminal",
-    "kn8:base_core"
+    "kn8:base_core",
+    "kn8:weight_rack"
   ]
 }

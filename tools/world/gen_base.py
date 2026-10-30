@@ -306,6 +306,10 @@ def content_training(b):
     for z in (12, 14, 16):
         b.set(1, 1, z, "minecraft:target", {"power": "0"})
         b.set(1, 2, z, "minecraft:hay_block", {"axis": "y"})
+    # TREINO: suportes de pesos (forca) e torre de escalada de 7 blocos (agilidade e forca por bloco subido).
+    for z in (3, 6, 9):
+        b.set(7, 1, z, "kn8:weight_rack", {"facing": "east"})
+    b.fill(10, 1, 2, 12, 7, 3, "minecraft:stone_bricks")
     # Pista de parkour (0.5.0-E): muro de 1 (vault), muro de 2 (escalada), corredor de parede (wall-run e
     # wall-jump), borda de 3 (segurar e subir) e barra baixa (slide).
     b.fill(15, 0, 1, 23, 0, 17, "minecraft:smooth_stone")

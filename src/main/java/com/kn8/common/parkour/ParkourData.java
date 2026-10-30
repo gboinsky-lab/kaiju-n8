@@ -20,6 +20,8 @@ public final class ParkourData {
     /** Segurar a borda: Y dos pes enquanto pendurado e altura que falta para subir. */
     double hangY;
     double ledgeHeight;
+    /** TREINO: altura do corpo no ultimo tick da escalada (XP por bloco subido). */
+    double climbY = Double.NaN;
     long startTick = NEVER;
     /** Ultimo tick em que a parede/chao do estado foi confirmado (folga para o atraso da rede). */
     long lastValidTick = NEVER;

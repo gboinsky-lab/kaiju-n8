@@ -422,6 +422,27 @@ public final class ParkourService {
         if (data.state.onWall()) {
             player.resetFallDistance();
         }
+        trainClimb(player, data);
+    }
+
+    /** TREINO: escalar a parede treina agilidade e forca por bloco subido (descer nao conta). */
+    private static void trainClimb(ServerPlayer player, ParkourData data) {
+        if (data.state != ParkourState.CLIMB || player.isCreative()) {
+            data.climbY = Double.NaN;
+            return;
+        }
+        double y = player.getY();
+        if (!Double.isNaN(data.climbY)) {
+            double risen = y - data.climbY;
+            // Teleporte nao conta: a escalada nunca passa de ~0,5 bloco por tick.
+            if (risen > 0.0 && risen < 1.0) {
+                PowerService.addBodyXp(player, BodyStat.AGILITY,
+                        risen * ServerConfig.BODY_XP_CLIMB_AGILITY_PER_BLOCK.get());
+                PowerService.addBodyXp(player, BodyStat.STRENGTH,
+                        risen * ServerConfig.BODY_XP_CLIMB_STRENGTH_PER_BLOCK.get());
+            }
+        }
+        data.climbY = y;
     }
 
     /** Morte, troca de dimensao, saida: some o estado (o cliente recebe NONE se ainda estiver conectado). */

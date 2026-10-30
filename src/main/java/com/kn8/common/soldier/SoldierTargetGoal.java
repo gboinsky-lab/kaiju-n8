@@ -13,6 +13,7 @@ import com.kn8.common.data.def.KaijuClass;
 import com.kn8.common.data.def.SpecialSoldierDef;
 import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.soldier.special.HoshinaEntity;
+import com.kn8.common.training.SparringService;
 import com.kn8.core.soldier.SoldierTargeting;
 import com.kn8.core.soldier.SquadRules;
 
@@ -60,6 +61,11 @@ public final class SoldierTargetGoal extends Goal {
         // IA-7: alvo morto ou removido reavalia na hora (longe dos jogadores o intervalo e maior e o soldado ficava
         // parado preso a um alvo morto).
         LivingEntity held = soldier.getTarget();
+        if (SparringService.partnerOf(soldier) != null) {
+            // TREINO: no treino de combate so o parceiro (o servico encerra por tempo, distancia ou kaiju perto).
+            soldier.setTarget(SparringService.tickSoldier(soldier));
+            return;
+        }
         if (soldier.duelOpponent().isPresent() && soldier.level() instanceof ServerLevel server) {
             // Duelo de teste: so o oponente marcado, sem kaiju nem esquadrao.
             Entity foe = server.getEntity(soldier.duelOpponent().get());

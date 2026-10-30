@@ -95,6 +95,9 @@ def training():
         b.entity(x, 1, 3, {"id": "kn8:training_dummy", "Rotation": [Float(0.0), Float(0.0)]})
     b.fill(2, 1, 8, 3, 1, 8, "minecraft:hay_block", {"axis": "y"})
     b.set(7, 1, 8, "minecraft:target")
+    # TREINO: suportes de pesos.
+    b.set(8, 1, 4, "kn8:weight_rack", {"facing": "west"})
+    b.set(8, 1, 5, "kn8:weight_rack", {"facing": "west"})
     b.set(8, 1, 8, "minecraft:target")
     b.fill(4, 0, 6, 6, 0, 8, "minecraft:gravel")
     b.finish("base_module/training")

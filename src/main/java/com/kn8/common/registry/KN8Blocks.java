@@ -7,6 +7,7 @@ import com.kn8.common.base.BaseCoreBlock;
 import com.kn8.common.base.SquadStationBlock;
 import com.kn8.common.craft.DefenseWorkbenchBlock;
 import com.kn8.common.research.ResearchTerminalBlock;
+import com.kn8.common.training.WeightRackBlock;
 
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -37,6 +38,11 @@ public final class KN8Blocks {
     /** PM-8C: terminal de pesquisa do laboratorio (material de kaiju vira receitas e bonus contra kaiju). */
     public static final DeferredBlock<ResearchTerminalBlock> RESEARCH_TERMINAL = BLOCKS.register("research_terminal",
             () -> new ResearchTerminalBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL)
+                    .strength(3.5F, 6.0F).sound(SoundType.METAL).requiresCorrectToolForDrops()));
+
+    /** TREINO: suporte de pesos (cada uso e uma repeticao que treina a forca). */
+    public static final DeferredBlock<WeightRackBlock> WEIGHT_RACK = BLOCKS.register("weight_rack",
+            () -> new WeightRackBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL)
                     .strength(3.5F, 6.0F).sound(SoundType.METAL).requiresCorrectToolForDrops()));
 
     /** PM-8D: Nucleo da Base (funda a base do jogador e abre a construcao de modulos). */

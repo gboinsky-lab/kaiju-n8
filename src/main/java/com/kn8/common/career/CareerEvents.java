@@ -14,6 +14,7 @@ import com.kn8.common.config.ServerConfig;
 import com.kn8.common.data.def.KaijuClass;
 import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.soldier.SoldierEntity;
+import com.kn8.common.training.SparringService;
 import com.kn8.core.power.BodyStat;
 
 import net.minecraft.server.level.ServerPlayer;
@@ -64,14 +65,15 @@ public final class CareerEvents {
     public static void onDamage(LivingDamageEvent.Post event) {
         // PM-7: dano recebido conta na avaliacao das missoes ativas.
         if (event.getEntity() instanceof ServerPlayer hurt && event.getNewDamage() > 0
-                && ServerConfig.SPEC.isLoaded()) {
+                && ServerConfig.SPEC.isLoaded() && !SparringService.isPartner(event.getSource().getEntity(), hurt)) {
             MissionService.onDamageTaken(hurt, event.getNewDamage());
         }
         if (event.getEntity() instanceof KaijuEntity && event.getSource().getEntity() instanceof ServerPlayer player
                 && ServerConfig.SPEC.isLoaded()) {
             CareerService.onKaijuDamaged(player, event.getNewDamage());
-            // 0.5.0: golpe corpo a corpo (o jogador e a entidade direta, nao um projetil) treina a forca.
-            if (event.getSource().getDirectEntity() == player) {
+            // 0.5.0: golpe corpo a corpo (o jogador e a entidade direta, nao um projetil) treina a forca. TREINO
+            // (Miguel, 2026-10-30): o corpo se treina por exercicio, nao lutando com kaiju (so com xpFromKaiju).
+            if (event.getSource().getDirectEntity() == player && ServerConfig.BODY_XP_FROM_KAIJU.get()) {
                 PowerService.addBodyXp(player, BodyStat.STRENGTH,
                         event.getNewDamage() * ServerConfig.BODY_XP_STRENGTH_PER_DAMAGE.get());
             }

@@ -1639,3 +1639,21 @@ prédios de 8 blocos com um vão de 5 entre eles.
 | 118.5 | Pendurado: A/D | Anda de lado ao longo da borda, na mesma altura |
 | 118.6 | Pendurado: Espaço (ou C + W) | Sobe para o telhado |
 | 118.7 | Pendurado: Shift | Solta |
+
+## 119. TREINO: atributos do corpo por exercicio
+
+Servidor dedicado + 2 clientes, jogador em sobrevivencia. Imagem: `docs/img/treino_exercicios.jpg`. Para ver o XP:
+`/kn8 power <jogador>` (nivel) ou `/data get entity <jogador> neoforge:attachments` (`body_xp`).
+
+| # | Passo | Esperado |
+|---|---|---|
+| 119.1 | Bater num kaiju com a espada | O kaiju perde vida; o XP de forca nao muda |
+| 119.2 | Suporte de Pesos (bancada, Treino): clique direito varias vezes | "Repeticao N/24 · +2 XP de Forca", stamina cai; clicar rapido demais nao conta; depois de 24 no minuto "Musculos cansados" |
+| 119.3 | Shift + clique direito de mao vazia num soldado comum | "Treino de combate com ..."; o soldado ataca o jogador (dano reduzido) |
+| 119.4 | Pegar a arma e vencer | O soldado para a 25% da vida, sai curado e aparece "+15 XP em todos os atributos" |
+| 119.5 | Comecar de novo e deixar o soldado bater | O jogador para a 25% da vida (nao morre), "Voce perdeu o treino"; a resistencia sobe |
+| 119.6 | Comecar de novo com o mesmo soldado logo depois | "O soldado ainda esta descansando" |
+| 119.7 | Comecar com um kaiju a menos de 32 blocos / trazer um kaiju durante o treino | Recusado / "interrompido: kaiju por perto!" |
+| 119.8 | Shift + clique num Hoshina (ou outro especial) | Nada acontece (so soldados comuns) |
+| 119.9 | Escalar uma parede de 12 blocos (C + W) | Agilidade e forca ganham XP (pelo `body_xp`) |
+| 119.10 | `/place template kn8:defense_base/wing_training` | Tres suportes de pesos e uma torre de escalada de 7 blocos ao lado dos bonecos |

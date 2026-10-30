@@ -26,6 +26,7 @@ import com.kn8.common.kaiju.CarcassEntity;
 import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.registry.KN8Items;
 import com.kn8.common.registry.KN8Sounds;
+import com.kn8.common.training.SparringService;
 import com.kn8.common.vfx.VfxService;
 import com.kn8.core.combat.ActionTimeline;
 import com.kn8.core.power.PowerMath;
@@ -40,11 +41,14 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -808,7 +812,22 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
     public static boolean isDuelFoe(Entity attacker, Entity target) {
         return attacker instanceof SoldierEntity soldier && target instanceof SoldierEntity
                 && soldier.getPersistentData().hasUUID(DUEL_TAG)
-                && soldier.getPersistentData().getUUID(DUEL_TAG).equals(target.getUUID());
+                && soldier.getPersistentData().getUUID(DUEL_TAG).equals(target.getUUID())
+                // TREINO: no treino de combate o jogador e o soldado tambem podem se ferir.
+                || SparringService.isPartner(attacker, target);
+    }
+
+    /** TREINO: Shift + clique de mao vazia comeca (ou encerra) o treino de combate com este soldado. */
+    @Override
+    protected InteractionResult mobInteract(Player player, InteractionHand hand) {
+        if (hand == InteractionHand.MAIN_HAND && player.isShiftKeyDown() && player.getMainHandItem().isEmpty()
+                && SparringService.canSpar(this)) {
+            if (player instanceof ServerPlayer server && ServerConfig.SPEC.isLoaded()) {
+                SparringService.toggle(server, this);
+            }
+            return InteractionResult.sidedSuccess(level().isClientSide());
+        }
+        return super.mobInteract(player, hand);
     }
 
     /** Oponente do duelo de teste, se houver (UUID nos dados persistentes). */
