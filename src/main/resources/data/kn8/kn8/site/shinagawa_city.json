@@ -9,6 +9,10 @@
     {
       "invasion": "kn8:spider_swarm",
       "weight": 1
+    },
+    {
+      "invasion": "kn8:fungal_bloom",
+      "weight": 1
     }
   ],
   "field_missions": true

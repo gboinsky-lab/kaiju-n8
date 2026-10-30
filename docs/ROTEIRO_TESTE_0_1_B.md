@@ -1770,3 +1770,18 @@ Achar uma base atingida (1 em 4; para testar sem sorte: datapack no mundo com o 
 | 126.5 | Resgate nos Escombros | 6 civis perto, ponto de extracao, Primigenius ameacando; 5 evacuados concluem |
 | 126.6 | Varredura Pos-Ataque | 4 pontos de patrulha pela base e 2 Primigenius ressurgidos |
 | 126.7 | Concluir | Nota, merito e itens; repetivel depois da espera |
+
+
+## 127. B-1: onde cada kaiju e especial aparece
+
+Imagem: `docs/img/b1_onde_cada_um_aparece.jpg`. Pelo comando: `/kn8 invasion start kn8:<id>` e `/kn8 invasion next`.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 127.1 | `diclonius_attack` | Formigas, depois o Diclonius com formigas revividas; Hoshina e Isao sem o Numbers 2 entre os defensores |
+| 127.2 | `fungal_bloom` | Phaneroplasmodium em duas ondas e o Myxogasterocarp na terceira |
+| 127.3 | `honju_rampage` | Primigenius, depois o Philinosoma com dois ressurgidos; Reno defende |
+| 127.4 | `no10_assault` | Hoshina com o Numbers 10 e Kikoru com o Numbers 4 defendendo (sem o Hoshina normal) |
+| 127.5 | Primeira visita à base de Tachikawa | Kafka junto da guarnição (Mina, Hoshina, Kikoru, Reno) |
+| 127.6 | Quadro do Oficial de Missões | Caçada ao Philinosoma, Caçada ao Diclonius e Limpeza dos Esporos (pela patente) |
+| 127.7 | Invasão natural nas cidades e bairros | Shinagawa, Tachikawa e Ariake (e os bairros) também sorteiam as invasões novas |

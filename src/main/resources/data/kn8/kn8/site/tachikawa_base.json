@@ -17,6 +17,10 @@
     {
       "variant": "reno",
       "count": 1
+    },
+    {
+      "variant": "kafka",
+      "count": 1
     }
   ],
   "garrison_at": {

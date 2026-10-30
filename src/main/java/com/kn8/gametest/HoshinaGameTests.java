@@ -11,6 +11,7 @@ import com.kn8.common.registry.KN8Entities;
 import com.kn8.common.registry.KN8Items;
 import com.kn8.common.soldier.SoldierEntity;
 import com.kn8.common.soldier.special.HoshinaEntity;
+import com.kn8.common.soldier.special.HoshinaNo10Entity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
@@ -92,7 +93,9 @@ public final class HoshinaGameTests {
     @GameTest(template = TEMPLATE)
     public static void onlyTheHardestInvasionsCallHoshina(GameTestHelper helper) {
         KN8Data.INVASION.server().forEach((id, invasion) -> {
-            boolean calls = invasion.defenders().stream().anyMatch(d -> HoshinaEntity.VARIANT.equals(d.variant()));
+            // B-1: na ofensiva do No. 10 o Hoshina vem com o Numbers 10 (a mesma pessoa, outro perfil).
+            boolean calls = invasion.defenders().stream().anyMatch(d -> HoshinaEntity.VARIANT.equals(d.variant())
+                    || HoshinaNo10Entity.VARIANT_NO10.equals(d.variant()));
             helper.assertTrue(calls == (invasion.level() >= 4), "Hoshina so nas invasoes de nivel 4-5: " + id
                     + " (nivel " + invasion.level() + ")");
         });

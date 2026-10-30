@@ -1,0 +1,75 @@
+{
+  "level": 4,
+  "warning_ticks": 600,
+  "spawn_min": 44,
+  "spawn_max": 64,
+  "radius": 128,
+  "time_limit_ticks": 30000,
+  "waves": [
+    {
+      "kaiju": [
+        {
+          "species": "kn8:camponotus",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "kaiju": [
+        {
+          "species": "kn8:camponotus_reborn",
+          "count": 2
+        },
+        {
+          "species": "kn8:diclonius",
+          "count": 1
+        }
+      ],
+      "delay_ticks": 600
+    },
+    {
+      "kaiju": [
+        {
+          "species": "kn8:diclonius",
+          "count": 1,
+          "chance": 0.4
+        },
+        {
+          "species": "kn8:camponotus",
+          "count": 3
+        }
+      ],
+      "delay_ticks": 600
+    }
+  ],
+  "defenders": [
+    {
+      "variant": "random",
+      "level": "high",
+      "count": 4
+    },
+    {
+      "variant": "rifle",
+      "level": "elite",
+      "count": 2
+    },
+    {
+      "variant": "hoshina",
+      "count": 1
+    },
+    {
+      "variant": "isao_base",
+      "count": 1
+    }
+  ],
+  "rewards": {
+    "merit": 900,
+    "training_xp": 1200,
+    "items": [
+      "kn8:intact_core",
+      "kn8:core_fragment",
+      "kn8:core_fragment"
+    ]
+  },
+  "natural_weight": 1
+}

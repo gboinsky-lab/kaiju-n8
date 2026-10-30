@@ -1,0 +1,57 @@
+{
+  "warning_ticks": 600,
+  "spawn_min": 44,
+  "spawn_max": 64,
+  "radius": 120,
+  "time_limit_ticks": 24000,
+  "waves": [
+    {
+      "kaiju": [
+        {
+          "species": "kn8:primigenius",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "kaiju": [
+        {
+          "species": "kn8:philinosoma",
+          "count": 1
+        },
+        {
+          "species": "kn8:primigenius_resurrected",
+          "count": 2
+        }
+      ],
+      "delay_ticks": 600
+    }
+  ],
+  "defenders": [
+    {
+      "variant": "rifle",
+      "level": "high",
+      "count": 4
+    },
+    {
+      "variant": "pistol",
+      "level": "high",
+      "count": 2
+    },
+    {
+      "variant": "reno",
+      "count": 1
+    }
+  ],
+  "rewards": {
+    "merit": 420,
+    "training_xp": 620,
+    "items": [
+      "kn8:core_fragment",
+      "kn8:core_fragment",
+      "kn8:muscle_fiber"
+    ]
+  },
+  "natural_weight": 1,
+  "level": 3
+}

@@ -1,0 +1,32 @@
+{
+  "category": "extermination",
+  "giver": "kn8:officer",
+  "requires": {
+    "rank": "kn8:oficial_senior"
+  },
+  "objectives": [
+    {
+      "type": "kill_kaiju",
+      "target": "kn8:primigenius",
+      "count": 2
+    },
+    {
+      "type": "kill_kaiju",
+      "target": "kn8:philinosoma",
+      "count": 1
+    }
+  ],
+  "fail": {
+    "time_ticks": 24000,
+    "on_death": true
+  },
+  "rewards": {
+    "merit": 380,
+    "training_xp": 560,
+    "items": [
+      "kn8:intact_core"
+    ]
+  },
+  "repeatable": true,
+  "cooldown_ticks": 36000
+}

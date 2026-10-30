@@ -1,0 +1,62 @@
+{
+  "warning_ticks": 400,
+  "spawn_min": 40,
+  "spawn_max": 60,
+  "radius": 110,
+  "time_limit_ticks": 21000,
+  "waves": [
+    {
+      "kaiju": [
+        {
+          "species": "kn8:phaneroplasmodium",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "kaiju": [
+        {
+          "species": "kn8:phaneroplasmodium",
+          "count": 3
+        }
+      ],
+      "delay_ticks": 500
+    },
+    {
+      "kaiju": [
+        {
+          "species": "kn8:myxogasterocarp",
+          "count": 1
+        },
+        {
+          "species": "kn8:phaneroplasmodium",
+          "count": 2
+        }
+      ],
+      "delay_ticks": 600
+    }
+  ],
+  "defenders": [
+    {
+      "variant": "random",
+      "level": "normal",
+      "count": 4
+    },
+    {
+      "variant": "rifle",
+      "level": "high",
+      "count": 2
+    }
+  ],
+  "rewards": {
+    "merit": 260,
+    "training_xp": 420,
+    "items": [
+      "kn8:muscle_fiber",
+      "kn8:core_fragment",
+      "kn8:suit_coolant"
+    ]
+  },
+  "natural_weight": 2,
+  "level": 2
+}

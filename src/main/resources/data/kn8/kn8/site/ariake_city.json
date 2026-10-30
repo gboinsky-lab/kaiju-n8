@@ -9,6 +9,10 @@
     {
       "invasion": "kn8:no9_resurrection",
       "weight": 1
+    },
+    {
+      "invasion": "kn8:diclonius_attack",
+      "weight": 1
     }
   ],
   "field_missions": true

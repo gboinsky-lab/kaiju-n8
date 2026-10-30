@@ -9,6 +9,14 @@
     {
       "invasion": "kn8:primigenius_raid",
       "weight": 1
+    },
+    {
+      "invasion": "kn8:fungal_bloom",
+      "weight": 2
+    },
+    {
+      "invasion": "kn8:honju_rampage",
+      "weight": 1
     }
   ],
   "field_missions": true

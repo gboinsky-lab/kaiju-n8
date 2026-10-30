@@ -1,0 +1,31 @@
+{
+  "category": "extermination",
+  "giver": "kn8:officer",
+  "requires": {
+    "rank": "kn8:oficial"
+  },
+  "objectives": [
+    {
+      "type": "kill_kaiju",
+      "target": "kn8:phaneroplasmodium",
+      "count": 4
+    },
+    {
+      "type": "kill_kaiju",
+      "target": "kn8:myxogasterocarp",
+      "count": 1
+    }
+  ],
+  "fail": {
+    "time_ticks": 18000
+  },
+  "rewards": {
+    "merit": 200,
+    "training_xp": 320,
+    "items": [
+      "kn8:muscle_fiber"
+    ]
+  },
+  "repeatable": true,
+  "cooldown_ticks": 12000
+}

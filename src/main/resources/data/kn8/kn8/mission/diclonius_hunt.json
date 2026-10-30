@@ -1,0 +1,33 @@
+{
+  "category": "extermination",
+  "giver": "kn8:officer",
+  "requires": {
+    "rank": "kn8:lider_pelotao"
+  },
+  "objectives": [
+    {
+      "type": "kill_kaiju",
+      "target": "kn8:camponotus",
+      "count": 3
+    },
+    {
+      "type": "kill_kaiju",
+      "target": "kn8:diclonius",
+      "count": 1
+    }
+  ],
+  "fail": {
+    "time_ticks": 24000,
+    "on_death": true
+  },
+  "rewards": {
+    "merit": 520,
+    "training_xp": 760,
+    "items": [
+      "kn8:intact_core",
+      "kn8:core_fragment"
+    ]
+  },
+  "repeatable": true,
+  "cooldown_ticks": 48000
+}

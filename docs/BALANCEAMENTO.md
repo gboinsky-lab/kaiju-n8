@@ -1320,3 +1320,17 @@ recarga 200 ticks, 30 de stamina).
 | `detectRadius` | 64 | Detecção de kaiju na barra de ação |
 
 Medido em jogo: Primigenius 220 → 124 com o combo e → 23 com o Golpe no Chão (Dev sem força treinada).
+
+## B-1: onde cada kaiju e especial aparece (2026-10-30) [SUPOSIÇÃO todos os números]
+
+| Invasão nova | Nível | Peso natural | Ondas | Defensores | Recompensa |
+|---|---|---|---|---|---|
+| `honju_rampage` (Fúria do Philinosoma) | 3 | 1 | 3 Primigenius; 1 Philinosoma + 2 ressurgidos | 4 rifle alto, 2 pistola alto, Reno | 420 de mérito, 620 de XP |
+| `diclonius_attack` (Ataque do Diclonius) | 4 | 1 | 4 formigas; 2 revividas + 1 Diclonius; 3 formigas + Diclonius (40%) | 4 sorteados alto, 2 rifle elite, Hoshina, Isao sem o Numbers 2 | 900 de mérito, 1.200 de XP |
+| `fungal_bloom` (Infestação de Esporos) | 2 | 2 | 3 + 3 Phaneroplasmodium; 1 Myxogasterocarp + 2 | 4 sorteados normal, 2 rifle alto | 260 de mérito, 420 de XP |
+
+Missões novas: `philinosoma_hunt` (Oficial Sênior; 2 Primigenius + Philinosoma; 380 de mérito), `diclonius_hunt`
+(Líder de Pelotão; 3 formigas + Diclonius; 520), `fungal_purge` (Oficial; 4 Phaneroplasmodium + Myxogasterocarp; 200).
+Especiais acrescentados: Hoshina No. 10 e Kikoru No. 4 na `no10_assault` (no lugar do Hoshina), Kikoru No. 4 na
+`shinagawa_ants`, Reno No. 6 na `mass_resurrection`, Narumi No. 1 na `ariake_assault`, Kafka na `tachikawa_raid` e na
+guarnição da base de Tachikawa.
