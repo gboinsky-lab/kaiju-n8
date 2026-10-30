@@ -205,6 +205,10 @@ public final class PowerService {
      * Miguel, 2026-10-23), senao a padrao.
      */
     public static ResourceLocation auraOf(ServerPlayer player) {
+        if (KaijuFormService.isRampaging(player)) {
+            // Sem controle (Miguel 2026-10-30): raios vermelhos, como as linhas e o olho da textura.
+            return KaijuFormService.RAMPAGE_AURA;
+        }
         if (KaijuFormService.isTransformed(player)) {
             return KaijuFormService.PROFILE;
         }

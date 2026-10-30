@@ -344,7 +344,7 @@ public final class SpecialAttacks {
             return true;
         }
         if (target instanceof Player) {
-            if (source instanceof SoldierEntity && KaijuFormService.hostileToForce(target)) {
+            if (source instanceof SoldierEntity soldier && KaijuFormService.hostileTo(soldier, target)) {
                 // T-4: o hospedeiro transformado e alvo dos cortes e tiros da Forca de Defesa.
                 return false;
             }

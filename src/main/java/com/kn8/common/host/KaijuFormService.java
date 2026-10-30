@@ -48,6 +48,8 @@ public final class KaijuFormService {
 
     /** Perfil visual e aura da forma (os mesmos do No. 8 aliado). */
     public static final ResourceLocation PROFILE = KN8Constants.id("kaiju_no8");
+    /** Aura da forma sem controle (vermelha). */
+    public static final ResourceLocation RAMPAGE_AURA = KN8Constants.id("kaiju_no8_rampage");
     /** T-3: arma da forma (so os punhos): a mesma do No. 8 aliado, com o Golpe no Chao na tecla R. */
     public static final ResourceLocation FIST = KN8Constants.id("kaiju_no8_fist");
     /** Perfil visual da forma humana (o Kafka): efeito da volta. */
@@ -113,6 +115,15 @@ public final class KaijuFormService {
             return false;
         }
         return isRampaging(player) || !trusted(player);
+    }
+
+    /**
+     * T-4 por soldado: o esquadrao do proprio hospedeiro nao o ataca enquanto ele esta no controle (Miguel
+     * 2026-10-30); sem controle, ataca como os outros.
+     */
+    public static boolean hostileTo(SoldierEntity soldier, @Nullable Entity entity) {
+        return hostileToForce(entity) && (isRampaging(entity)
+                || soldier.squadLeader().filter(entity.getUUID()::equals).isEmpty());
     }
 
     /** T-4: patente a partir da qual os soldados confiam no hospedeiro transformado (no controle). */

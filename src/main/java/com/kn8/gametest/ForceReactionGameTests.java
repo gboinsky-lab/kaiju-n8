@@ -4,6 +4,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 import com.kn8.KN8Constants;
+import com.kn8.common.attribute.PowerService;
 import com.kn8.common.base.BaseServices;
 import com.kn8.common.career.CareerService;
 import com.kn8.common.career.MissionService;
@@ -61,6 +62,9 @@ public final class ForceReactionGameTests {
         CareerService.addMerit(host, 300 - CareerService.data(host).merit());
         SoldierEntity soldier = helper.spawn(KN8Entities.SOLDIER.get(), new BlockPos(1, 1, 1));
         soldier.setNoAi(true);
+        SoldierEntity member = helper.spawn(KN8Entities.SOLDIER.get(), new BlockPos(7, 1, 7));
+        member.setNoAi(true);
+        member.joinSquad(host.getUUID());
         try {
             helper.assertTrue(LarvaService.infect(host), "Hospedeiro");
             helper.assertFalse(KaijuFormService.hostileToForce(host), "Humano nao e alvo");
@@ -72,6 +76,7 @@ public final class ForceReactionGameTests {
             helper.assertTrue(KaijuFormService.hostileToForce(host), "Candidato transformado e kaiju para a Forca");
             helper.assertTrue(soldier.canAttack(host), "Soldado mira o hospedeiro transformado");
             helper.assertFalse(SpecialAttacks.isAlly(soldier, host), "Cortes e tiros do soldado o atingem");
+            helper.assertFalse(member.canAttack(host), "O proprio esquadrao nao ataca o lider no controle");
             helper.assertTrue(MissionService.canAccept(host, KN8Constants.id("extermination"))
                     == MissionService.Result.TRANSFORMED, "Sem missoes transformado");
             helper.assertTrue(BaseServices.useStation(level, helper.absolutePos(new BlockPos(4, 1, 4)), host)
@@ -85,6 +90,9 @@ public final class ForceReactionGameTests {
             helper.assertTrue(KaijuFormService.isRampaging(host), "Sem controle");
             helper.assertTrue(KaijuFormService.hostileToForce(host) && soldier.canAttack(host),
                     "Sem controle e alvo em qualquer patente");
+            helper.assertTrue(member.canAttack(host), "Sem controle o proprio esquadrao tambem ataca");
+            helper.assertTrue(KaijuFormService.RAMPAGE_AURA.equals(PowerService.auraOf(host)),
+                    "Aura vermelha sem controle");
             KaijuFormService.revert(host);
             helper.assertFalse(KaijuFormService.hostileToForce(host), "De volta a forma humana");
             helper.assertTrue(MissionService.canAccept(host, KN8Constants.id("extermination"))

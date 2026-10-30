@@ -800,7 +800,7 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
     /** Aliado: nunca mira em jogadores nem em outros soldados (salvo o oponente do duelo de teste). */
     @Override
     public boolean canAttack(LivingEntity target) {
-        return (isDuelFoe(this, target) || KaijuFormService.hostileToForce(target)
+        return (isDuelFoe(this, target) || KaijuFormService.hostileTo(this, target)
                 || !(target instanceof Player) && !(target instanceof SoldierEntity)) && super.canAttack(target);
     }
 
@@ -951,7 +951,7 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
                     aim.normalize(), 1.0F, 0.0F, this);
         }
         Optional<Entity> hit = MeleeRaycast.findTarget(level, this, eye, aim, reach,
-                entity -> isDuelFoe(this, rootOf(entity)) || KaijuFormService.hostileToForce(rootOf(entity))
+                entity -> isDuelFoe(this, rootOf(entity)) || KaijuFormService.hostileTo(this, rootOf(entity))
                         || !(rootOf(entity) instanceof Player) && !(rootOf(entity) instanceof SoldierEntity));
         if (hit.isEmpty()) {
             return;
