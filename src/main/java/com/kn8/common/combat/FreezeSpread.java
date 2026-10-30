@@ -62,8 +62,9 @@ public final class FreezeSpread {
 
     private static void stage(ServerLevel level, LivingEntity target, Entity owner, Vec3 offset, int stage,
             int stages, int stageTicks, int slowTicks, int slowLevel) {
+        int amount = FreezeStages.level(stage, stages, slowLevel);
         target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,
-                FreezeStages.duration(stage, stageTicks, slowTicks), FreezeStages.level(stage, stages, slowLevel) - 1));
+                FreezeStages.duration(stage, stageTicks, slowTicks), amount - 1));
         // O gelo cresce no tamanho de quem congela (um kaiju de 8 m fica coberto, nao so o ponto do tiro).
         Vec3 center = target.getBoundingBox().getCenter();
         Vec3 start = target.position().add(offset);
