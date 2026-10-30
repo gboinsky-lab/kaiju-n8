@@ -113,7 +113,8 @@ public final class CombatService {
      * No. 8 e sempre o punho do No. 8 ({@code weapon/kaiju_no8_fist.json}), qualquer que seja o item na mao.
      */
     public static Optional<WeaponDef> heldWeapon(Player player) {
-        if (KaijuFormService.isTransformed(player)) {
+        if (KaijuFormService.isTransformed(player) || KaijuFormService.isPartial(player)) {
+            // HOST: na transformacao parcial o braco do No. 8 tambem luta so com o punho.
             return KN8Data.WEAPON.get(KaijuFormService.FIST, player.level().isClientSide());
         }
         return WeaponIndex.find(player.getMainHandItem(), player.level().isClientSide());

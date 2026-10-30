@@ -15,10 +15,15 @@ import net.minecraft.network.codec.StreamCodec;
 public record PowerView(int trained, int effective, int cap, int excess, float stamina, float maxStamina, float heat,
         int heatMax, int heatStage, float energy, int control, int releaseXp, int xpToNext, boolean panic,
         boolean winded, int active, boolean suit, boolean talentRare, int strength, int speed, int resistance,
-        int agility, boolean fatigued) {
+        int agility, boolean fatigued, int hostCapTenths, int hostActiveTenths) {
 
     public static final PowerView EMPTY = new PowerView(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, false, false, 0,
-            false, false, 0, 0, 0, 0, false);
+            false, false, 0, 0, 0, 0, false, 0, 0);
+
+    /** HOST: hospedeiro humano, Release travado entre 0,1% e 1% (em decimos; 0 = nao e hospedeiro). */
+    public boolean host() {
+        return hostCapTenths > 0;
+    }
 
     // StreamCodec.composite aceita no maximo 6 campos por vez: grupos aninhados.
     private record Release(int trained, int effective, int cap, int excess, int releaseXp, int xpToNext) {
@@ -54,6 +59,11 @@ public record PowerView(int trained, int effective, int cap, int excess, float s
                 Body::new);
     }
 
+    private record Host(int capTenths, int activeTenths) {
+        static final StreamCodec<ByteBuf, Host> CODEC = StreamCodec.composite(
+                ByteBufCodecs.VAR_INT, Host::capTenths, ByteBufCodecs.VAR_INT, Host::activeTenths, Host::new);
+    }
+
     public static final StreamCodec<ByteBuf, PowerView> STREAM_CODEC = StreamCodec.composite(
             Release.CODEC, view -> new Release(view.trained(), view.effective(), view.cap(), view.excess(),
                     view.releaseXp(), view.xpToNext()),
@@ -63,10 +73,11 @@ public record PowerView(int trained, int effective, int cap, int excess, float s
                     view.talentRare()),
             Body.CODEC, view -> new Body(view.strength(), view.speed(), view.resistance(), view.agility(),
                     view.fatigued()),
-            (release, resources, flags, body) -> new PowerView(release.trained(), release.effective(),
+            Host.CODEC, view -> new Host(view.hostCapTenths(), view.hostActiveTenths()),
+            (release, resources, flags, body, host) -> new PowerView(release.trained(), release.effective(),
                     release.cap(), release.excess(), resources.stamina(), resources.maxStamina(), resources.heat(),
                     flags.heatMax(), resources.heatStage(), resources.energy(), resources.control(),
                     release.releaseXp(), release.xpToNext(), flags.panic(), flags.winded(), flags.active(),
                     flags.suit(), flags.talentRare(), body.strength(), body.speed(), body.resistance(),
-                    body.agility(), body.fatigued()));
+                    body.agility(), body.fatigued(), host.capTenths(), host.activeTenths()));
 }

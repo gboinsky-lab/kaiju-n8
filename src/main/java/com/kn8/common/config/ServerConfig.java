@@ -403,6 +403,15 @@ public final class ServerConfig {
     public static final ModConfigSpec.IntValue FORM_WITNESS_MERIT_PENALTY;
     public static final ModConfigSpec.BooleanValue FORM_CLOSES_SERVICES;
     public static final ModConfigSpec.BooleanValue FORM_ALERTS_REGION;
+    public static final ModConfigSpec.BooleanValue HOST_RELEASE_ENABLED;
+    public static final ModConfigSpec.DoubleValue HOST_RELEASE_MIN;
+    public static final ModConfigSpec.DoubleValue HOST_RELEASE_MAX;
+    public static final ModConfigSpec.IntValue HOST_RELEASE_FULL_BODY_LEVEL;
+    public static final ModConfigSpec.IntValue PARTIAL_TICKS;
+    public static final ModConfigSpec.DoubleValue PARTIAL_DAMAGE_MULTIPLIER;
+    public static final ModConfigSpec.IntValue PARTIAL_COOLDOWN_TICKS;
+    public static final ModConfigSpec.IntValue PARTIAL_LIMIT_COST_TICKS;
+    public static final ModConfigSpec.DoubleValue PARTIAL_DEBT_RECOVERY;
     public static final ModConfigSpec.ConfigValue<String> SUPPORT_RECON_RANK;
     public static final ModConfigSpec.IntValue SUPPORT_RECON_USES;
     public static final ModConfigSpec.IntValue SUPPORT_RECON_COOLDOWN;
@@ -1299,6 +1308,24 @@ public final class ServerConfig {
                 + " research terminal and mission board refuse the host.", true);
         FORM_ALERTS_REGION = booleanValue("alertsRegion", "T-4: a transformed host inside a place raises the region"
                 + " alert like a kaiju.", true);
+        HOST_RELEASE_ENABLED = booleanValue("hostRelease", "HOST: in human form the larva host's suit is stuck at a"
+                + " tiny Release (like Kafka), from hostReleaseMin up to hostReleaseMax with body training.", true);
+        HOST_RELEASE_MIN = doubleValue("hostReleaseMin", "HOST: suit Release of an untrained host (percent).", 0.1,
+                0.0, 100.0);
+        HOST_RELEASE_MAX = doubleValue("hostReleaseMax", "HOST: suit Release of a fully trained host (percent).", 1.0,
+                0.0, 100.0);
+        HOST_RELEASE_FULL_BODY_LEVEL = intValue("hostReleaseFullBodyLevel", "HOST: average body level (strength,"
+                + " speed, resistance, agility) that reaches hostReleaseMax.", 50, 1, 1000);
+        PARTIAL_TICKS = intValue("partialTicks", "HOST: partial transformation (Shift + form key): the right arm"
+                + " becomes Kaiju No. 8's for this long.", 100, 20, 72000);
+        PARTIAL_DAMAGE_MULTIPLIER = doubleValue("partialDamageMultiplier", "HOST: the No. 8 arm hits this many times"
+                + " the fist JSON damage (strength level multiplies on top).", 3.0, 0.1, 100.0);
+        PARTIAL_COOLDOWN_TICKS = intValue("partialCooldownTicks", "HOST: wait after a partial transformation.", 400,
+                0, 720000);
+        PARTIAL_LIMIT_COST_TICKS = intValue("partialLimitCostTicks", "HOST: each partial transformation spends this"
+                + " much of the 2 minute limit of the next full transformation.", 200, 0, 72000);
+        PARTIAL_DEBT_RECOVERY = doubleValue("partialDebtRecoveryPerTick", "HOST: that spent time comes back at this"
+                + " rate (ticks per tick) while human.", 0.25, 0.0, 100.0);
         BUILDER.pop();
 
         section("sites", "Places from the series (C3): Ariake, Tachikawa base and city, Shinagawa.");

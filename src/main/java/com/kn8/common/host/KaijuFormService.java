@@ -56,6 +56,10 @@ public final class KaijuFormService {
     private static final ResourceLocation HUMAN_PROFILE = KN8Constants.id("kafka");
     private static final String TAG_READY = "kn8_form_ready";
     private static final String TAG_SINCE = "kn8_form_since";
+    private static final String TAG_PARTIAL_UNTIL = "kn8_partial_until";
+    private static final String TAG_PARTIAL_READY = "kn8_partial_ready";
+    private static final String TAG_DEBT = "kn8_form_debt";
+    private static final String TAG_DEBT_TICK = "kn8_form_debt_tick";
     /** Altura do jogador no vanilla (o atributo de escala multiplica por ela). */
     private static final double PLAYER_HEIGHT = 1.8;
     private static final int REFRESH_TICKS = 20;
@@ -82,10 +86,16 @@ public final class KaijuFormService {
     public static final int HUMAN = 0;
     public static final int FORM = 1;
     public static final int RAMPAGE = 2;
+    /** HOST: so o braco direito (transformacao parcial). */
+    public static final int PARTIAL = 3;
 
     /** Esta na forma do No. 8 (no controle ou nao)? Vale no servidor e no cliente (dado publico). */
     public static boolean isTransformed(Entity entity) {
-        return entity instanceof Player player && player.getData(KN8Attachments.KAIJU_FORM.get()) != HUMAN;
+        if (!(entity instanceof Player player)) {
+            return false;
+        }
+        int form = player.getData(KN8Attachments.KAIJU_FORM.get());
+        return form == FORM || form == RAMPAGE;
     }
 
     /** T-3: passou do tempo limite e perdeu o controle do corpo (servidor e cliente). */
@@ -98,6 +108,9 @@ public final class KaijuFormService {
      * corpo multiplica por cima, no CombatService); o Release nao entra (Miguel 2026-10-24). Humano: 1.
      */
     public static float damageFactor(Entity entity) {
+        if (isPartial(entity)) {
+            return (float) ServerConfig.PARTIAL_DAMAGE_MULTIPLIER.get().doubleValue();
+        }
         return isTransformed(entity) ? (float) ServerConfig.FORM_DAMAGE_MULTIPLIER.get().doubleValue() : 1.0F;
     }
 
@@ -172,9 +185,114 @@ public final class KaijuFormService {
                 player.getGameProfile().getName(), witnesses, lost);
     }
 
+    // --- HOST: transformacao parcial (so o braco direito) ----------------------------------------------------------
+
+    /** HOST: so o braco direito virou o do No. 8 (servidor e cliente: dado publico). */
+    public static boolean isPartial(Entity entity) {
+        return entity instanceof Player player && player.getData(KN8Attachments.KAIJU_FORM.get()) == PARTIAL;
+    }
+
+    /**
+     * HOST (Miguel 2026-10-30): Shift + tecla da forma. O braco direito vira o do No. 8 por {@code partialTicks}: os
+     * golpes saem com o punho do No. 8 x {@code partialDamageMultiplier}, sem mudar o resto do corpo (Release
+     * humano, traje, patente). Gasta {@code partialLimitCostTicks} do tempo-limite da proxima forma inteira e tem
+     * espera propria. Soldados que veem a mudanca reagem como na forma inteira (merito).
+     */
+    public static Result togglePartial(ServerPlayer player) {
+        if (isTransformed(player)) {
+            player.displayClientMessage(Component.translatable("kn8.host.partial.in_form")
+                    .withStyle(ChatFormatting.GRAY), true);
+            return Result.UNAVAILABLE;
+        }
+        if (isPartial(player)) {
+            endPartial(player);
+            return Result.REVERTED;
+        }
+        Result result = startPartial(player);
+        if (result == Result.COOLDOWN) {
+            Object seconds = (player.getPersistentData().getLong(TAG_PARTIAL_READY) - player.level().getGameTime()
+                    + 19) / 20;
+            player.displayClientMessage(Component.translatable("kn8.host.partial.cooldown", seconds)
+                    .withStyle(ChatFormatting.GRAY), true);
+        } else if (result != Result.TRANSFORMED) {
+            player.displayClientMessage(Component.translatable(result == Result.NOT_HOST ? "kn8.host.form.not_host"
+                    : "kn8.host.form.unavailable").withStyle(ChatFormatting.GRAY), true);
+        }
+        return result;
+    }
+
+    public static Result startPartial(ServerPlayer player) {
+        if (!ServerConfig.FORM_ENABLED.get()) {
+            return Result.DISABLED;
+        }
+        if (!LarvaService.isHost(player)) {
+            return Result.NOT_HOST;
+        }
+        if (!player.isAlive() || player.isSpectator() || isTransformed(player)) {
+            return Result.UNAVAILABLE;
+        }
+        long now = player.level().getGameTime();
+        if (now < player.getPersistentData().getLong(TAG_PARTIAL_READY)) {
+            return Result.COOLDOWN;
+        }
+        player.setData(KN8Attachments.KAIJU_FORM.get(), PARTIAL);
+        player.getPersistentData().putLong(TAG_PARTIAL_UNTIL, now + ServerConfig.PARTIAL_TICKS.get());
+        addDebt(player, ServerConfig.PARTIAL_LIMIT_COST_TICKS.get());
+        if (player.level() instanceof ServerLevel level) {
+            Vec3 arm = player.position().add(0, player.getBbHeight() * 0.7, 0)
+                    .add(player.getLookAngle().yRot((float) Math.toRadians(-60)).scale(0.4));
+            VfxService.play(level, VfxService.TRANSFORM, arm, player.getLookAngle(), 0.4F, 0.2F,
+                    Optional.of(PROFILE), "transform", (float) PLAYER_HEIGHT);
+        }
+        player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.RAVAGER_STUNNED,
+                SoundSource.PLAYERS, 0.8F, 1.2F);
+        witnessed(player);
+        KN8Constants.LOGGER.info("[kn8] {} transformou o braco (parcial)", player.getGameProfile().getName());
+        return Result.TRANSFORMED;
+    }
+
+    /** HOST: o braco volta (fim do tempo, tecla de novo ou forma inteira) e comeca a espera da parcial. */
+    public static void endPartial(ServerPlayer player) {
+        if (!isPartial(player)) {
+            return;
+        }
+        player.setData(KN8Attachments.KAIJU_FORM.get(), HUMAN);
+        player.getPersistentData().remove(TAG_PARTIAL_UNTIL);
+        player.getPersistentData().putLong(TAG_PARTIAL_READY, player.level().getGameTime()
+                + ServerConfig.PARTIAL_COOLDOWN_TICKS.get());
+        effect(player, HUMAN_PROFILE, 0.3F);
+    }
+
+    private static void tickPartial(ServerPlayer player) {
+        long left = player.getPersistentData().getLong(TAG_PARTIAL_UNTIL) - player.level().getGameTime();
+        if (!LarvaService.isHost(player) || !player.isAlive() || left <= 0) {
+            endPartial(player);
+            return;
+        }
+        if (player.tickCount % REFRESH_TICKS == 0) {
+            player.displayClientMessage(Component.translatable("kn8.host.partial.hud", (left + 19) / 20)
+                    .withStyle(ChatFormatting.AQUA), true);
+        }
+    }
+
+    /** HOST: tempo da forma inteira ja gasto pelas parciais (volta aos poucos enquanto humano). */
+    public static long debt(ServerPlayer player) {
+        double stored = player.getPersistentData().getDouble(TAG_DEBT);
+        long since = player.level().getGameTime() - player.getPersistentData().getLong(TAG_DEBT_TICK);
+        return (long) Math.max(0.0, stored - Math.max(0, since) * ServerConfig.PARTIAL_DEBT_RECOVERY.get());
+    }
+
+    private static void addDebt(ServerPlayer player, int ticks) {
+        long total = Math.min(ServerConfig.FORM_LIMIT_TICKS.get(), debt(player) + ticks);
+        player.getPersistentData().putDouble(TAG_DEBT, total);
+        player.getPersistentData().putLong(TAG_DEBT_TICK, player.level().getGameTime());
+    }
+
     /** Comando de operador ({@code /kn8 host clear}): tira a espera para transformar de novo. */
     public static void resetWait(ServerPlayer player) {
         player.getPersistentData().remove(TAG_READY);
+        player.getPersistentData().remove(TAG_PARTIAL_READY);
+        player.getPersistentData().remove(TAG_DEBT);
     }
 
     /** Comando de teste: leva o tempo na forma ao limite (perde o controle no proximo tick). */
@@ -228,8 +346,11 @@ public final class KaijuFormService {
         if (player.level().getGameTime() < readyTick(player)) {
             return Result.COOLDOWN;
         }
+        endPartial(player);
         player.setData(KN8Attachments.KAIJU_FORM.get(), FORM);
-        player.getPersistentData().putLong(TAG_SINCE, player.level().getGameTime());
+        // HOST: as parciais recentes ja gastaram parte do tempo-limite.
+        player.getPersistentData().putLong(TAG_SINCE, player.level().getGameTime() - debt(player));
+        player.getPersistentData().remove(TAG_DEBT);
         applyModifiers(player, true);
         player.setHealth(player.getMaxHealth());
         effect(player, PROFILE, 1.0F);
@@ -270,6 +391,10 @@ public final class KaijuFormService {
      * entao a forma reaplica os numeros de tempos em tempos. Quem deixou de ser hospedeiro (comando) volta.
      */
     public static void tick(ServerPlayer player) {
+        if (isPartial(player)) {
+            tickPartial(player);
+            return;
+        }
         if (!isTransformed(player)) {
             return;
         }

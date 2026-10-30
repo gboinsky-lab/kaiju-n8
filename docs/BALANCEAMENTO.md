@@ -1344,3 +1344,16 @@ guarnição da base de Tachikawa.
 | `witnessMeritPenalty` | 100 | Mérito perdido por transformação vista (abaixo da patente de confiança) |
 | `closesServices` | true | Transformado: oficiais, estação, terminal de pesquisa e missões recusam |
 | `alertsRegion` | true | Transformado (alvo da Força) dentro de um local: região em alerta; sem controle, combate |
+
+## HOST: Release humano do hospedeiro e transformação parcial (2026-10-30) [SUPOSIÇÃO todos os números]
+
+| Chave `[kaijuForm]` | Valor | Efeito |
+|---|---|---|
+| `hostRelease` | true | Hospedeiro humano com traje fica com o Release travado (decisão do Miguel) |
+| `hostReleaseMin` / `hostReleaseMax` | 0,1 / 1,0 | Teto do Release do hospedeiro sem treino / com o corpo treinado |
+| `hostReleaseFullBodyLevel` | 50 | Média dos 4 atributos do corpo que leva ao 1% (em passos de 0,1) |
+| `partialTicks` | 100 | Braço do No. 8 dura 5 s |
+| `partialDamageMultiplier` | 3,0 | Punho do No. 8 x 3 (a forma inteira é x 5) x força treinada |
+| `partialCooldownTicks` | 400 | Espera de 20 s entre parciais |
+| `partialLimitCostTicks` | 200 | Cada parcial gasta 10 s dos 2 min da próxima forma inteira |
+| `partialDebtRecoveryPerTick` | 0,25 | Esse tempo volta a 1/4 da velocidade (10 s em 40 s) enquanto humano |

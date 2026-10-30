@@ -19,22 +19,27 @@ import com.mojang.math.Axis;
 
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.Input;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.player.PlayerRenderer;
+import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.PlayerModelPart;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.MovementInputUpdateEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RenderHandEvent;
@@ -53,8 +58,8 @@ public final class KaijuFormClient {
     public static final KeyMapping FORM_KEY = new KeyMapping("key.kn8.kaiju_form", InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_B, "key.categories.kn8");
 
-    private static final ResourceLocation SPECIES = KN8Constants.id("kaiju_no8");
-    private static final ResourceLocation TEXTURE = KN8Constants.id("textures/entity/kaiju_no8.png");
+    static final ResourceLocation SPECIES = KN8Constants.id("kaiju_no8");
+    static final ResourceLocation TEXTURE = KN8Constants.id("textures/entity/kaiju_no8.png");
     /** Sem controle do corpo: linhas e olhos vermelhos (mesma textura do fantoche). */
     private static final ResourceLocation RAMPAGE_TEXTURE = KN8Constants.id("textures/entity/kaiju_no8_rampage.png");
     /** RIG-2: o braco tem tres pecas (ombro, antebraco, mao); em repouso ficam no lugar, desenhadas juntas. */
@@ -78,6 +83,16 @@ public final class KaijuFormClient {
         event.register(FORM_KEY);
     }
 
+    /** Mod bus (HOST): braco do No. 8 da transformacao parcial nos dois modelos de jogador. */
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public static void addLayers(EntityRenderersEvent.AddLayers event) {
+        for (PlayerSkin.Model skin : event.getSkins()) {
+            if (event.getSkin(skin) instanceof PlayerRenderer player) {
+                player.addLayer(new PartialArmLayer(player));
+            }
+        }
+    }
+
     @SubscribeEvent
     public static void onClientTick(ClientTickEvent.Post event) {
         Minecraft minecraft = Minecraft.getInstance();
@@ -88,7 +103,7 @@ public final class KaijuFormClient {
         }
         while (FORM_KEY.consumeClick()) {
             if (minecraft.screen == null && minecraft.getConnection() != null) {
-                PacketDistributor.sendToServer(KaijuFormC2S.INSTANCE);
+                PacketDistributor.sendToServer(new KaijuFormC2S(minecraft.player.isShiftKeyDown()));
             }
         }
         PUPPETS.entrySet().removeIf(entry -> {
@@ -125,9 +140,18 @@ public final class KaijuFormClient {
         player.setXRot(Mth.clamp(player.getXRot() + pitchStep, -90.0F, 90.0F));
     }
 
-    /** Jogador transformado: o fantoche do No. 8 no lugar do modelo do jogador (com o nome de quem e). */
+    /**
+     * Jogador transformado: o fantoche do No. 8 no lugar do modelo do jogador (com o nome de quem e). HOST:
+     * transformacao parcial esconde o braco direito (e a manga); o {@link PartialArmLayer} desenha o do No. 8.
+     */
     @SubscribeEvent
     public static void onRenderLiving(RenderLivingEvent.Pre<?, ?> event) {
+        if (event.getEntity() instanceof AbstractClientPlayer partial && KaijuFormService.isPartial(partial)
+                && event.getRenderer().getModel() instanceof PlayerModel<?> model) {
+            model.rightArm.visible = false;
+            model.rightSleeve.visible = false;
+            return;
+        }
         if (!(event.getEntity() instanceof AbstractClientPlayer player) || !KaijuFormService.isTransformed(player)) {
             return;
         }
@@ -147,12 +171,29 @@ public final class KaijuFormClient {
                 event.getMultiBufferSource(), event.getPackedLight());
     }
 
+    /** HOST: devolve o braco direito ao modelo (o mesmo modelo serve a todos os jogadores). */
+    @SubscribeEvent
+    public static void onRenderLivingPost(RenderLivingEvent.Post<?, ?> event) {
+        if (event.getEntity() instanceof AbstractClientPlayer player && KaijuFormService.isPartial(player)
+                && event.getRenderer().getModel() instanceof PlayerModel<?> model) {
+            model.rightArm.visible = true;
+            model.rightSleeve.visible = player.isModelPartShown(PlayerModelPart.RIGHT_SLEEVE);
+        }
+    }
+
     /**
      * T-3: golpe do jogador transformado (animacao do servidor, {@code AnimTriggerS2C}) vira a animacao do No. 8 no
      * fantoche: soco do combo, soco pesado, Golpe no Chao (especial), investida (dash/esquiva). Em 1a pessoa o braco
      * balanca como o vanilla. Devolve se tratou (a PAL fica de fora).
      */
     public static boolean onAnimation(AbstractClientPlayer player, ResourceLocation animation, boolean stop) {
+        if (KaijuFormService.isPartial(player)) {
+            // HOST: o braco do No. 8 golpeia com o balanco do braco do vanilla (o punho nao tem animacao da PAL).
+            if (!stop) {
+                player.swing(InteractionHand.MAIN_HAND);
+            }
+            return true;
+        }
         if (!KaijuFormService.isTransformed(player)) {
             return false;
         }
@@ -201,7 +242,8 @@ public final class KaijuFormClient {
     @SubscribeEvent
     public static void onRenderHand(RenderHandEvent event) {
         Minecraft minecraft = Minecraft.getInstance();
-        if (minecraft.player == null || !KaijuFormService.isTransformed(minecraft.player)) {
+        if (minecraft.player == null || !KaijuFormService.isTransformed(minecraft.player)
+                && !(KaijuFormService.isPartial(minecraft.player) && event.getHand() == InteractionHand.MAIN_HAND)) {
             return;
         }
         event.setCanceled(true);
@@ -228,23 +270,35 @@ public final class KaijuFormClient {
         pose.mulPose(Axis.XP.rotationDegrees(200.0F));
         pose.mulPose(Axis.YP.rotationDegrees(-135.0F));
         pose.translate(5.6F, 0.0F, 0.0F);
-        // Ombro direito do jogador (ModelPart rightArm: -5, 2, 0 px; Y para baixo) e o braco da GeckoLib (Y para
-        // cima, X invertido em relacao ao vanilla): vira de cabeca para baixo e poe o pivo do osso no ombro.
+        // Ombro direito do jogador (ModelPart rightArm: -5, 2, 0 px).
         pose.translate(-5.0F / 16.0F, 2.0F / 16.0F, 0.0F);
-        pose.scale(-ARM_SCALE, -ARM_SCALE, ARM_SCALE);
-        pose.translate(-ARM_PIVOT_X, -ARM_PIVOT_Y, -ARM_PIVOT_Z);
+        toArmPivot(pose);
         VertexConsumer buffer = event.getMultiBufferSource().getBuffer(RenderType.entityCutoutNoCull(
                 KaijuFormService.isRampaging(minecraft.player) ? RAMPAGE_TEXTURE : TEXTURE));
-        for (String bone : ARM_BONES) {
-            float[] mesh = model.bone(bone);
-            if (mesh != null) {
-                drawMesh(pose.last(), buffer, mesh, event.getPackedLight());
-            }
-        }
+        drawArm(pose.last(), buffer, model, event.getPackedLight());
         pose.popPose();
     }
 
-    private static void drawMesh(PoseStack.Pose pose, VertexConsumer buffer, float[] data, int light) {
+    /**
+     * Do ombro direito do jogador (ModelPart {@code rightArm}, Y para baixo) ao braco da GeckoLib (Y para cima, X
+     * invertido em relacao ao vanilla): vira de cabeca para baixo e poe o pivo do osso no ombro.
+     */
+    static void toArmPivot(PoseStack pose) {
+        pose.scale(-ARM_SCALE, -ARM_SCALE, ARM_SCALE);
+        pose.translate(-ARM_PIVOT_X, -ARM_PIVOT_Y, -ARM_PIVOT_Z);
+    }
+
+    /** As tres pecas do braco do No. 8 (RIG-2), em repouso. */
+    static void drawArm(PoseStack.Pose pose, VertexConsumer buffer, MeshModel model, int light) {
+        for (String bone : ARM_BONES) {
+            float[] mesh = model.bone(bone);
+            if (mesh != null) {
+                drawMesh(pose, buffer, mesh, light);
+            }
+        }
+    }
+
+    static void drawMesh(PoseStack.Pose pose, VertexConsumer buffer, float[] data, int light) {
         int stride = MeshModel.FLOATS_PER_VERTEX;
         for (int triangle = 0; triangle < data.length; triangle += stride * 3) {
             for (int corner = 0; corner < 4; corner++) {

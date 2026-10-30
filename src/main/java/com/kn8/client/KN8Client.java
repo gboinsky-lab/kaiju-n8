@@ -72,6 +72,8 @@ public final class KN8Client {
         modEventBus.addListener(VfxEffects::registerProviders);
         // 0.6-C: traje 3D da Forca de Defesa no jogador.
         modEventBus.addListener(SuitRendering::addLayers);
+        // HOST: braco do No. 8 da transformacao parcial.
+        modEventBus.addListener(KaijuFormClient::addLayers);
         // 0.1-B: pose de mira (dois bracos) ao segurar rifle/pistola.
         modEventBus.addListener(HeldWeaponPoses::register);
         // M9: camada de animacao do jogador na PAL.

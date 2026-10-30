@@ -99,6 +99,8 @@ public final class KN8Hud {
     private static final int COLOR_CAP = 0xFFFFFFFF;
     private static final int COLOR_XP = 0xFF42A5F5;
     private static final int COLOR_ALERT = 0xFFFF1744;
+    /** HOST: Release do hospedeiro (ciano do No. 8). */
+    private static final int COLOR_HOST = 0xFF3FF2E0;
     private static final int COLOR_ALERT_ALT = 0xFFFFFFFF;
     private static final int VIGNETTE_RED = 0xFF1744;
 
@@ -198,6 +200,13 @@ public final class KN8Hud {
 
     /** "efetiva% / limite%" em neon (laranja acima do limite) e "MAX" piscando no teto do treino. */
     private static void drawReleaseText(GuiGraphics graphics, Font font, PowerView view, int x, int y) {
+        if (view.host()) {
+            // HOST: Release do hospedeiro em decimos (0,1% a 1%); o atlas de digitos nao tem a virgula.
+            Component host = Component.translatable("kn8.hud.host_release", view.hostActiveTenths() / 10,
+                    view.hostActiveTenths() % 10, view.hostCapTenths() / 10, view.hostCapTenths() % 10);
+            graphics.drawString(font, host, x + VALUE_X, y + VALUE_Y + 2, COLOR_HOST, true);
+            return;
+        }
         String value = Math.round(shownRelease) + "% / " + Math.min(view.trained(), view.cap()) + "%";
         int row = view.excess() > 0 ? 1 : 0;
         float cellScale = VALUE_CELL_HEIGHT / DIGIT_CELL_HEIGHT;

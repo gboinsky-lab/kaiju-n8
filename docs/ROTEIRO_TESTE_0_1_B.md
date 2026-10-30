@@ -1801,3 +1801,18 @@ alguns soldados (`/summon kn8:soldier`) e um civil (`/summon kn8:civilian`) a ~1
 | 128.6 | `/kn8 rank set kn8:vice_capitao Dev` | Os soldados param de atirar na hora; transformar de novo não tira mérito |
 | 128.7 | `/kn8 host rampage Dev` (Vice-Capitão) | Sem controle: os soldados voltam a atacar |
 | 128.8 | Tecla B de volta (ou fim do surto) | Soldados largam o alvo; serviços e missões voltam |
+
+## 129. HOST: Release humano do hospedeiro e transformação parcial
+
+Imagem: `docs/img/host_release_e_braco.jpg`. Preparo: `/kn8 host infect Dev`, traje Mk1 vestido, um husk perto.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 129.1 | Segurar G (hospedeiro, corpo sem treino) | HUD do Release em ciano "0,1% / 0,1%": não passa disso |
+| 129.2 | `/kn8 body set` (ou treinar) até média 25 / 50 nos 4 atributos | Teto ~0,5% / 1,0%; nunca acima de 1% |
+| 129.3 | Outro jogador (não hospedeiro) com traje | Release normal (até o limite dele) |
+| 129.4 | Shift + B | Braço direito vira o do No. 8 (1ª pessoa e para o Dev2 em 3ª), barra "Braço do No. 8: 5 s" |
+| 129.5 | Socar o husk com o braço | Soco forte (o husk cai de uma vez) |
+| 129.6 | Esperar 5 s / Shift + B de novo | Braço volta; outro Shift + B em menos de 20 s: "O braço ainda não responde" |
+| 129.7 | B (forma inteira) logo depois | O tempo-limite começa ~10 s gasto (barra da forma ~1:50) |
+| 129.8 | Shift + B com soldados olhando (Candidato) | -100 de mérito, como na forma inteira; soldados não atacam |

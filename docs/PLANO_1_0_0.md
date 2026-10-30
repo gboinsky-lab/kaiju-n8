@@ -147,3 +147,16 @@ e os modelos provisórios (asas e cauda do jogador, Narumi No. 1, Isao sem o Num
 - **Mundo:** civis fogem do jogador transformado como de um kaiju; dentro de um local da obra a região entra em alerta
   (sem controle, combate) (`alertsRegion`).
 - Números em `docs/BALANCEAMENTO.md`; roteiro §128; imagem `docs/img/t4_reacao_forca_de_defesa.jpg`.
+
+## HOST — Release humano e transformação parcial (feita, 2026-10-30)
+
+- **Release humano** (Miguel: "começa em 0,1 e sobe até 1% com treino"): o hospedeiro em forma humana, de traje,
+  fica com o Release travado de `hostReleaseMin` 0,1% a `hostReleaseMax` 1% pela média dos atributos do corpo
+  (`PowerService.hostRelease/hostCap`); só o 1% inteiro conta nas regras de número inteiro (dano, stamina, calor),
+  desespero incluído. HUD em décimos e ciano (`PowerView.hostCapTenths/hostActiveTenths`, protocolo 40).
+- **Transformação parcial** (Shift + B, `KaijuFormC2S.partial`): `kn8:kaiju_form` = 3; o braço direito vira o do
+  No. 8 por 5 s (camada `PartialArmLayer` em 3ª pessoa, braço vanilla escondido; 1ª pessoa com a malha do braço),
+  golpes com o punho do No. 8 x 3 x força, espera de 20 s, gasta 10 s do tempo-limite da próxima forma inteira (volta
+  aos poucos). O corpo continua humano (vida, traje, Release do hospedeiro); a Força de Defesa não ataca, mas a mudança
+  vista custa mérito como a forma inteira.
+- Roteiro §129; imagem `docs/img/host_release_e_braco.jpg`.

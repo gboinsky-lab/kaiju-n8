@@ -246,6 +246,7 @@ public final class LarvaService {
         if (KaijuFormService.isTransformed(player)) {
             KaijuFormService.revert(player);
         }
+        KaijuFormService.endPartial(player);
         player.setData(KN8Attachments.KAIJU_HOST.get(), -1L);
         KaijuHostData data = KaijuHostData.get(player.getServer());
         if (player.getUUID().equals(data.host())) {

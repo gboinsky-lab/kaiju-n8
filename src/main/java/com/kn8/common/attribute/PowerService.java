@@ -10,6 +10,7 @@ import com.kn8.common.data.KN8Data;
 import com.kn8.common.craft.SuitEvents;
 import com.kn8.common.data.def.SuitDef;
 import com.kn8.common.host.KaijuFormService;
+import com.kn8.common.host.LarvaService;
 import com.kn8.common.network.NetworkSync;
 import com.kn8.common.registry.KN8Attachments;
 import com.kn8.common.registry.KN8Sounds;
@@ -125,6 +126,10 @@ public final class PowerService {
 
     /** % liberada na tecla (0 sem traje). */
     public static int activeRelease(ServerPlayer player) {
+        if (suitWorn(player) && hostRelease(player)) {
+            // HOST: 0,1% a 1%; so o 1% inteiro conta nas regras de numero inteiro (dano, stamina, calor).
+            return (int) Math.floor(data(player).active() + 1.0E-6);
+        }
         return suitWorn(player) ? (int) Math.round(data(player).active()) : 0;
     }
 
@@ -142,6 +147,10 @@ public final class PowerService {
         // 0.5: com a vida baixa a % sobe sozinha (desperationHealth/desperationMaxPoints), sem calor.
         int desperation = PowerMath.desperationBonus(player.getHealth() / Math.max(1.0F, player.getMaxHealth()),
                 ServerConfig.DESPERATION_HEALTH.get(), ServerConfig.DESPERATION_MAX_POINTS.get());
+        if (hostRelease(player)) {
+            // HOST: nem o desespero passa do teto do hospedeiro.
+            return Math.min(activeRelease(player), (int) Math.floor(hostCap(player) + 1.0E-6));
+        }
         return PowerMath.effectiveRelease(activeRelease(player), desperation);
     }
 
@@ -380,8 +389,9 @@ public final class PowerService {
         ensureTalent(player, data);
         boolean suit = suitWorn(player);
         if (suit && !fatigued(player) && !KaijuFormService.isTransformed(player)) {
-            data.setActive(Math.min(maxActive(player),
-                    PowerMath.releaseAfterInput(data.active(), data.releaseInput(), params)));
+            double next = Math.min(maxActive(player),
+                    PowerMath.releaseAfterInput(data.active(), data.releaseInput(), params));
+            data.setActive(hostRelease(player) ? Math.min(hostCap(player), next) : next);
         } else {
             // Sem traje (ou com fadiga) nao ha Release: a % zera e a tecla e ignorada.
             data.setActive(0);
@@ -476,7 +486,33 @@ public final class PowerService {
                 params.heatMax(), heatStage(player).ordinal(), (float) Math.max(0, data.energy()), data.control(),
                 data.releaseXp(), xpToNext, inPanic(player), data.winded(), activeRelease(player), suitWorn(player),
                 data.talentRare(), data.bodyLevel(BodyStat.STRENGTH), data.bodyLevel(BodyStat.SPEED),
-                data.bodyLevel(BodyStat.RESISTANCE), data.bodyLevel(BodyStat.AGILITY), fatigued(player));
+                data.bodyLevel(BodyStat.RESISTANCE), data.bodyLevel(BodyStat.AGILITY), fatigued(player),
+                hostRelease(player) ? (int) Math.round(hostCap(player) * 10) : 0,
+                hostRelease(player) && suitWorn(player) ? (int) Math.round(data.active() * 10) : 0);
+    }
+
+    /**
+     * HOST (Miguel 2026-10-30: "comeca em 0,1 e sobe ate 1% com treino"): o hospedeiro da larva em forma humana tem o
+     * traje travado num Release minimo, como o Kafka (o traje nao sincroniza com o corpo infectado). Transformado
+     * vale a regra da forma (Release 0).
+     */
+    public static boolean hostRelease(ServerPlayer player) {
+        return ServerConfig.HOST_RELEASE_ENABLED.get() && LarvaService.isHost(player)
+                && !KaijuFormService.isTransformed(player);
+    }
+
+    /**
+     * HOST: teto do Release do hospedeiro, de {@code [host] releaseMin} 0,1 ate {@code releaseMax} 1,0 pela media dos
+     * atributos do corpo ate {@code releaseFullBodyLevel}; em passos de 0,1.
+     */
+    public static double hostCap(ServerPlayer player) {
+        PowerData data = data(player);
+        double average = (data.bodyLevel(BodyStat.STRENGTH) + data.bodyLevel(BodyStat.SPEED)
+                + data.bodyLevel(BodyStat.RESISTANCE) + data.bodyLevel(BodyStat.AGILITY)) / 4.0;
+        double progress = Math.min(1.0, average / Math.max(1, ServerConfig.HOST_RELEASE_FULL_BODY_LEVEL.get()));
+        double min = ServerConfig.HOST_RELEASE_MIN.get();
+        double max = Math.max(min, ServerConfig.HOST_RELEASE_MAX.get());
+        return Math.floor((min + (max - min) * progress) * 10.0 + 1.0E-6) / 10.0;
     }
 
     private static void ensureInitialized(ServerPlayer player, PowerData data) {
