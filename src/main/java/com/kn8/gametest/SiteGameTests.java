@@ -38,6 +38,9 @@ public final class SiteGameTests {
 
     private static final List<String> SITES = List.of("ariake_base", "tachikawa_base", "shinagawa_city",
             "tachikawa_city", "exam_ground");
+    /** BASES-1: a Base de Tachikawa avulsa nao nasce mais sozinha (fica dentro da cidade); so pelo /place. */
+    private static final List<String> NATURAL = List.of("ariake_base", "shinagawa_city", "tachikawa_city",
+            "exam_ground");
     /** Peca e quantos encaixes ela tem. */
     private static final Map<String, Integer> PIECES = Map.ofEntries(Map.entry("ariake_base/core", 4),
             Map.entry("ariake_base/harbor", 1), Map.entry("tachikawa_base/core", 4),
@@ -46,8 +49,8 @@ public final class SiteGameTests {
             Map.entry("shinagawa/lot_ant_ruins", 1), Map.entry("shinagawa/street", 6),
             Map.entry("tachikawa/station", 10), Map.entry("tachikawa/lot_department", 1),
             Map.entry("tachikawa/lot_showa_park", 1), Map.entry("tachikawa/lot_stage_garden", 1),
-            Map.entry("tachikawa/street", 6), Map.entry("tachikawa/district", 1),
-            Map.entry("shinagawa/district", 1));
+            Map.entry("tachikawa/street", 6), Map.entry("tachikawa/base_core", 2),
+            Map.entry("tachikawa/base_training", 1), Map.entry("shinagawa/district", 1));
 
     private SiteGameTests() {
     }
@@ -76,16 +79,18 @@ public final class SiteGameTests {
      */
     @GameTest(template = "empty_3x3")
     public static void citiesHaveTheDefenseForceDistrict(GameTestHelper helper) {
+        // BASES-1: em Tachikawa o distrito virou a base inteira (QG da obra e o campo de treino urbano).
+        Map<String, String> districts = Map.of("tachikawa", "tachikawa/base_core", "shinagawa", "shinagawa/district");
         for (String city : List.of("tachikawa", "shinagawa")) {
             StructureTemplate station = helper.getLevel().getStructureManager()
                     .get(KN8Constants.id(city + "/station")).orElseThrow();
             long toDistrict = station.filterBlocks(BlockPos.ZERO, new StructurePlaceSettings(), Blocks.JIGSAW).stream()
                     .filter(info -> info.nbt() != null && info.nbt().getString("pool")
-                            .equals("kn8:" + city + "/district")).count();
+                            .equals("kn8:" + districts.get(city))).count();
             helper.assertTrue(toDistrict == 1, city + ": a estacao deveria ter uma saida para o distrito, tem "
                     + toDistrict);
             StructureTemplate district = helper.getLevel().getStructureManager()
-                    .get(KN8Constants.id(city + "/district")).orElseThrow();
+                    .get(KN8Constants.id(districts.get(city))).orElseThrow();
             for (Block block : List.of(KN8Blocks.RESEARCH_TERMINAL.get(), KN8Blocks.SQUAD_STATION.get(),
                     KN8Blocks.WEIGHT_RACK.get(), KN8Blocks.DEFENSE_WORKBENCH.get())) {
                 helper.assertTrue(!district.filterBlocks(BlockPos.ZERO, new StructurePlaceSettings(), block).isEmpty(),
@@ -94,6 +99,34 @@ public final class SiteGameTests {
             helper.assertTrue(KN8Data.SITE.server().get(KN8Constants.id(city + "_city")).fieldMissions(),
                     city + ": a cidade deveria por as missoes de campo dentro dela");
         }
+        helper.succeed();
+    }
+
+    /**
+     * BASES-1: a Base de Tachikawa dentro da cidade tem o campo de treino urbano com o painel da arena na sala de
+     * controle no alto e as comportas de ferro ligadas as alavancas pelo redstone; a guarnicao da base (Mina,
+     * Hoshina, Kikoru, Reno) e as invasoes dela passaram para a cidade.
+     */
+    @GameTest(template = "empty_3x3")
+    public static void tachikawaBaseIsInsideTheCity(GameTestHelper helper) {
+        StructureTemplate training = helper.getLevel().getStructureManager()
+                .get(KN8Constants.id("tachikawa/base_training")).orElseThrow();
+        var consoles = training.filterBlocks(BlockPos.ZERO, new StructurePlaceSettings(),
+                KN8Blocks.TRAINING_CONSOLE.get());
+        helper.assertTrue(consoles.size() == 1 && consoles.get(0).pos().getY() > 5,
+                "O painel deveria ficar na sala de controle no alto");
+        helper.assertTrue(training.filterBlocks(BlockPos.ZERO, new StructurePlaceSettings(), Blocks.IRON_DOOR)
+                .size() == 4, "Duas comportas de ferro (porta de duas metades)");
+        helper.assertTrue(training.filterBlocks(BlockPos.ZERO, new StructurePlaceSettings(), Blocks.LEVER).size() == 2,
+                "Duas alavancas na sala de controle");
+        helper.assertTrue(training.filterBlocks(BlockPos.ZERO, new StructurePlaceSettings(), Blocks.REDSTONE_WIRE)
+                .size() == 20, "Redstone das duas comportas (10 cada)");
+        SiteDef city = KN8Data.SITE.server().get(KN8Constants.id("tachikawa_city"));
+        helper.assertTrue(city.garrison().size() == 4 && city.garrisonAt().isPresent()
+                && city.garrisonAt().get().piece().equals(KN8Constants.id("tachikawa/base_core")),
+                "A guarnicao de Tachikawa deveria aparecer dentro da base da cidade");
+        helper.assertTrue(city.invasions().stream().anyMatch(entry -> entry.invasion()
+                .equals(KN8Constants.id("tachikawa_raid"))), "O raide a base (No. 10) deveria cair na cidade");
         helper.succeed();
     }
 
@@ -108,8 +141,10 @@ public final class SiteGameTests {
         }
         StructureSet set = helper.getLevel().registryAccess().registryOrThrow(Registries.STRUCTURE_SET)
                 .get(KN8Constants.id("defense_sites"));
-        helper.assertTrue(set != null && set.structures().size() == SITES.size(),
-                "kn8:defense_sites deveria ter os " + SITES.size() + " locais");
+        helper.assertTrue(set != null && set.structures().size() == NATURAL.size(),
+                "kn8:defense_sites deveria ter os " + NATURAL.size() + " locais que nascem sozinhos");
+        helper.assertTrue(set.structures().stream().noneMatch(entry -> entry.structure()
+                .is(KN8Constants.id("tachikawa_base"))), "A Base de Tachikawa avulsa nao nasce mais sozinha");
         helper.assertTrue(helper.getLevel().registryAccess().registryOrThrow(Registries.STRUCTURE_SET)
                 .get(KN8Constants.id("defense_base_large")) == null, "A base grande generica nao nasce mais sozinha");
         helper.succeed();

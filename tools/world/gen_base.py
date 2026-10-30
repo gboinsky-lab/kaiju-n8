@@ -38,11 +38,13 @@ class Piece(Build):
     def entity(self, x, y, z, nbt):
         super().entity(x + self.origin[0], y, z + self.origin[1], nbt)
 
-    def jigsaw(self, x, z, facing, name, target, pool, final=FLOOR, y=0):
-        """Encaixe no chao (y 0); y > 0 deixa a peca mais baixa que a vizinha (porto de Ariake, C3)."""
+    def jigsaw(self, x, z, facing, name, target, pool, final=FLOOR, y=0, priority=0, selection=0):
+        """Encaixe no chao (y 0); y > 0 deixa a peca mais baixa que a vizinha (porto de Ariake, C3). BASES-1: a base
+        dentro da cidade vem antes das ruas e lotes: selection = selection_priority (encaixe da peca tentado
+        primeiro) e priority = placement_priority (os encaixes da peca nova sao tentados antes dos outros)."""
         entry = (x + self.origin[0], z + self.origin[1], {"orientation": f"{facing}_up"},
                  {"id": "minecraft:jigsaw", "name": name, "target": target, "pool": pool, "final_state": final,
-                  "joint": "aligned", "placement_priority": 0, "selection_priority": 0}, y)
+                  "joint": "aligned", "placement_priority": priority, "selection_priority": selection}, y)
         self.jigsaws.append(entry)
         Build.set(self, entry[0], y, entry[1], "minecraft:jigsaw", entry[2], entry[3])
 

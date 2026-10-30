@@ -525,6 +525,7 @@ public final class ServerConfig {
     public static final ModConfigSpec.IntValue ARENA_HALF_WIDTH;
     public static final ModConfigSpec.IntValue ARENA_HALF_LENGTH;
     public static final ModConfigSpec.IntValue ARENA_HEIGHT;
+    public static final ModConfigSpec.IntValue ARENA_BELOW;
     public static final ModConfigSpec.IntValue ARENA_PROTECT_MARGIN;
     public static final ModConfigSpec.IntValue ARENA_LEASH_CHECK_TICKS;
     public static final ModConfigSpec.IntValue ARENA_IDLE_RANGE;
@@ -1506,6 +1507,8 @@ public final class ServerConfig {
         ARENA_HALF_LENGTH = intValue("arenaHalfLength", "Half length of the arena, along the console front.", 20, 2,
                 64);
         ARENA_HEIGHT = intValue("arenaHeight", "Arena height above the floor.", 16, 4, 64);
+        ARENA_BELOW = intValue("arenaBelow", "How far below the console the arena reaches (console in a raised"
+                + " control room, BASES-1).", 12, 0, 64);
         ARENA_PROTECT_MARGIN = intValue("arenaProtectMargin", "Extra blocks around the arena protected from"
                 + " destruction (walls).", 3, 0, 16);
         ARENA_LEASH_CHECK_TICKS = intValue("arenaLeashCheckTicks", "How often a training kaiju outside the arena is"

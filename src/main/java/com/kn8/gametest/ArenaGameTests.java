@@ -82,6 +82,32 @@ public final class ArenaGameTests {
         helper.succeed();
     }
 
+    /**
+     * BASES-1: painel na sala de controle no alto (5 acima do chao). O kaiju nasce no chao, a arena desce ate ele
+     * ({@code below}) e, fora dela, volta para o chao da arena.
+     */
+    @GameTest(template = TEMPLATE, batch = "kn8_arena_raised")
+    public static void raisedConsoleArenaReachesTheGround(GameTestHelper helper) {
+        BlockPos console = helper.absolutePos(new BlockPos(7, 6, 1));
+        TrainingArenaService.Geometry raised = new TrainingArenaService.Geometry(6, 5, 5, 4, 1, 6);
+        KaijuEntity kaiju = TrainingArenaService.start(helper.getLevel(), console, Direction.SOUTH,
+                KN8Constants.id("camponotus"), raised).orElseThrow();
+        kaiju.setNoAi(true);
+        BoundingBox box = TrainingArenaService.boxOf(kaiju).orElseThrow();
+        // O chao do template fica no y 0 ou logo abaixo dele: basta estar la embaixo (o painel esta 6 acima).
+        int ground = helper.absolutePos(new BlockPos(0, 1, 0)).getY();
+        helper.assertTrue(kaiju.getBlockY() <= ground, "Kaiju deveria nascer no chao, esta em y " + kaiju.getBlockY()
+                + " (painel " + console.getY() + ")");
+        helper.assertTrue(box.isInside(kaiju.blockPosition()), "O chao deveria estar dentro da arena");
+        kaiju.teleportTo(box.maxX() + 6.0, kaiju.getY(), box.maxZ() + 6.0);
+        TrainingArenaService.leash(kaiju, box);
+        helper.assertTrue(box.isInside(kaiju.blockPosition()) && kaiju.getBlockY() <= ground,
+                "Deveria voltar ao chao da arena, esta em " + kaiju.blockPosition().toShortString());
+        kaiju.discard();
+        ProtectedAreas.get(helper.getLevel()).remove(TrainingArenaService.areaName(console));
+        helper.succeed();
+    }
+
     /** Kaiju de treino morto some sem carcaca (nem desmonte, nem material). */
     @GameTest(template = TEMPLATE, batch = "kn8_arena")
     public static void trainingKaijuLeavesNoCarcass(GameTestHelper helper) {

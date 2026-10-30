@@ -1687,3 +1687,19 @@ Imagem: `docs/img/cidades_distrito.jpg`.
 | 121.4 | Aceitar uma missao de campo (Exterminio) com o Oficial de Missoes | Os kaiju surgem dentro da cidade (nas ruas/lotes), nao fora dela |
 | 121.5 | Aceitar a Defesa da Cidade (Oficial Senior) | A invasao comeca dentro da cidade; a faixa da regiao vai a COMBATE |
 | 121.6 | Aceitar a mesma missao fora de uma cidade | Os alvos surgem em volta do jogador, como antes |
+
+## 122. BASES-1: Base de Tachikawa dentro da cidade
+
+Servidor dedicado + 2 clientes num mundo novo (`/locate structure kn8:tachikawa_city`) ou, para olhar so o desenho,
+`/place structure kn8:tachikawa_city_layout` (carregar antes a area com `forceload`). Imagem:
+`docs/img/bases1_tachikawa_na_cidade.jpg`. Referencias: `docs/referencias_bases/`.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 122.1 | Sair da estacao pela saida norte | Portao com guaritas, estacionamento cheio de carros e o QG largo de 7 andares com a entrada no meio (como o painel do manga); torre de comunicacao com radomes a oeste |
+| 122.2 | Entrar no QG e subir pela escada de mao | Terreo: recepcao com os dois oficiais, refeitorio e enfermaria; 1o: briefing e arsenal; 2o: sala de monitoramento escura com a parede de telas e o dojo; 3o: vestiario com as baias dos trajes e laboratorio; 4o e 5o: alojamentos e sala de descanso; 6o: salas da capita e do vice-capitao e a reuniao; heliporto no telhado |
+| 122.3 | Fundos do QG | Patio de formatura com a tropa, helicoptero e caminhoes, hangar de teste do traje (plataforma com pesos, cabos, tela de diagnostico, passarela) |
+| 122.4 | Portao oeste: campo de treino urbano | Muro alto e grosso; dentro, ruas, estacao, predios brancos de faixas vermelhas, carros e entulho |
+| 122.5 | Subir a sala de controle (escada de mao dentro do muro) e puxar as alavancas | Cada alavanca abre a comporta de ferro do seu lado; puxar de novo fecha |
+| 122.6 | Usar o painel da sala de controle (Shift + usar troca o kaiju) | O kaiju de treino surge no chao do campo e fica dentro dele; usar de novo encerra |
+| 122.7 | Primeira visita a cidade num mundo novo | Mina, Hoshina, Kikoru e Reno aparecem no patio de formatura da base; a invasao do local pode ser o raide do No. 10 |

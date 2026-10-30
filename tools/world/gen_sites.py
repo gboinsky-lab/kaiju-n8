@@ -21,6 +21,8 @@
                          da JR ligados pela passarela, praca com fonte
   tachikawa/lot_*        loja de departamentos (GRANDUO), Parque Showa Kinen (flores, lago) e sala de shows (Stage
                          Garden)
+  tachikawa/base_*       BASES-1: Base de Tachikawa dentro da cidade, saida norte da estacao (gen_tachikawa_base.py);
+                         a tachikawa_base avulsa nao nasce mais sozinha (so /place)
 
 As ruas das duas cidades sao as da cidade comum com pools proprios (gen_city.street_piece(prefix)); os lotes de cada
 cidade misturam os proprios com os da cidade comum. Onde nascem: worldgen no fim (kn8:checked_jigsaw: longe de vilas,
@@ -32,6 +34,7 @@ from gen_base import Piece, ROAD, element, stairs
 from gen_city import ASPHALT, SIDEWALK, crossing_piece, floors_building, lot, street_end_piece, street_piece, \
     street_pools, tree, street_lamp
 from gen_structures import DATA, dump, item, officer, soldier
+from gen_tachikawa_base import base_core, base_training
 from nbt_io import Float
 
 BASE_POOL = "kn8:defense_base"
@@ -539,12 +542,13 @@ def tachikawa_airfield():
 
 # --- cidades ------------------------------------------------------------------------------------------------------
 
-def station_jigsaws(b, prefix, size=41, final="minecraft:polished_andesite"):
+def station_jigsaws(b, prefix, size=41, final="minecraft:polished_andesite", district=None):
     """Saidas de rua no meio dos lados e oito lotes perto dos cantos (como a praca da cidade comum). CIDADES: a
     saida norte leva ao distrito da Forca de Defesa (um por cidade, sempre); os lotes do lado norte saem para ele
-    caber."""
+    caber. BASES-1: em Tachikawa a saida norte leva a base inteira (district = pool da base), posta antes das ruas."""
     mid, last = size // 2, size - 1
-    b.jigsaw(mid, 0, "north", "kn8:city_link", "kn8:city_street", f"kn8:{prefix}/district", final)
+    b.jigsaw(mid, 0, "north", "kn8:city_link", "kn8:city_street", district or f"kn8:{prefix}/district", final,
+             priority=10, selection=10)
     for x, z, facing in ((mid, last, "south"), (0, mid, "west"), (last, mid, "east")):
         b.jigsaw(x, z, facing, "kn8:city_link", "kn8:city_street", f"kn8:{prefix}/streets", final)
     for x, z, facing in ((4, last, "south"), (last - 4, last, "south"),
@@ -929,7 +933,7 @@ def tachikawa_station():
     b.fill(32, 5, 7, 33, 5, 8, "minecraft:yellow_concrete")
     for x, z in ((1, 1), (39, 1), (1, 39), (39, 39)):
         street_lamp(b, x, z)
-    station_jigsaws(b, "tachikawa")
+    station_jigsaws(b, "tachikawa", district="kn8:tachikawa/base_core")
     b.finish("tachikawa/station")
 
 
@@ -1016,6 +1020,8 @@ TACHIKAWA_LOTS = [("tachikawa/lot_department", 3), ("tachikawa/lot_showa_park", 
 # (estrutura, pool inicial, size, distancia max., biomas, raio da checagem, desnivel max.)
 SITES = [
     ("ariake_base", "kn8:ariake_base/core", 3, 100, BASE_BIOMES, 104, 14),
+    # BASES-1 (Miguel, 2026-10-30: bases dentro das cidades): a Base de Tachikawa avulsa nao nasce mais sozinha
+    # (a base agora fica dentro da cidade de Tachikawa); continua para o /place (NOT_NATURAL).
     ("tachikawa_base", "kn8:tachikawa_base/core", 3, 110, BASE_BIOMES, 112, 14),
     # CIDADES: cidades maiores (encaixes 6 -> 8: mais ruas ate a borda; o raio fica em 116 porque o jigsaw nao passa
     # de 128 contando os 12 da adaptacao do terreno).
@@ -1024,6 +1030,7 @@ SITES = [
 ]
 # Fracao das amostras que pode ter agua (riacho ou lagoa pequena, que a construcao cobre; lago e rio largo nao) e
 # raio do miolo em que o desnivel conta (a borda irregular fica com o beard_thin).
+NOT_NATURAL = {"tachikawa_base"}
 MAX_WATER = 0.05
 SLOPE_RADIUS = 64
 # Conjuntos que os locais evitam (chunks de raio): vilas e as construcoes de superficie do vanilla.
@@ -1039,7 +1046,8 @@ def worldgen():
     dump(wg / "template_pool/tachikawa_base/airfield.json", {"fallback": "minecraft:empty", "elements": [
         {"weight": 1, "element": element("kn8:tachikawa_base/airfield")}]})
     for name, start in (("ariake_base", "core"), ("tachikawa_base", "core"), ("shinagawa", "station"),
-                        ("tachikawa", "station"), ("shinagawa", "district"), ("tachikawa", "district")):
+                        ("tachikawa", "station"), ("shinagawa", "district"), ("tachikawa", "base_core"),
+                        ("tachikawa", "base_training")):
         dump(wg / f"template_pool/{name}/{start}.json", {"fallback": "minecraft:empty", "elements": [
             {"weight": 1, "element": element(f"kn8:{name}/{start}")}]})
     street_pools("shinagawa", SHINAGAWA_LOTS, street_weight=5, crossing_weight=3)
@@ -1059,13 +1067,14 @@ def worldgen():
             "max_water": MAX_WATER,
             "avoid": [{"structure_set": s, "chunks": c} for s, c in AVOID]}))
     # Tag para o /locate achar qualquer um dos quatro (/locate structure #kn8:defense_sites).
-    dump(DATA / "kn8/tags/worldgen/structure/defense_sites.json", {"values": [f"kn8:{name}" for name, *_ in SITES]})
+    natural = [name for name, *_ in SITES if name not in NOT_NATURAL]
+    dump(DATA / "kn8/tags/worldgen/structure/defense_sites.json", {"values": [f"kn8:{name}" for name in natural]})
     # Um conjunto para os quatro: os locais nunca nascem colados um no outro. ~1 candidato a cada 770 blocos
     # [SUPOSICAO].
     # Bases com peso 2: os biomas delas sao menos e o terreno delas e maior (sem isso nasciam a ~20.000 blocos).
     dump(wg / "structure_set/defense_sites.json", {
         "structures": [{"structure": f"kn8:{name}", "weight": 2 if name.endswith("_base") else 1}
-                       for name, *_ in SITES],
+                       for name in natural],
         "placement": {"type": "minecraft:random_spread", "spacing": 48, "separation": 16, "salt": 280_430_031}})
     loot = {
         "ariake_lab": [(3, 6), [item("kn8:core_fragment", 6, 1, 2), item("kn8:kaiju_tissue", 10, 2, 5),
@@ -1097,7 +1106,8 @@ if __name__ == "__main__":
     tachikawa_department()
     tachikawa_showa_park()
     tachikawa_stage_garden()
-    city_district("tachikawa", DIGIT_3, "orange", 341)
+    base_core()
+    base_training()
     city_district("shinagawa", DIGIT_1, "blue", 342)
     for prefix in ("shinagawa", "tachikawa"):
         street_piece(prefix)

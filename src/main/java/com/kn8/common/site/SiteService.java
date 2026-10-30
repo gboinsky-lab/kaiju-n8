@@ -31,9 +31,13 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.level.levelgen.structure.PoolElementStructurePiece;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
+import net.minecraft.world.level.levelgen.structure.pools.SinglePoolElement;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 
 /**
  * Locais da obra no mundo (construcoes C3): o servidor confere a cada {@code [sites] checkIntervalTicks} em que
@@ -49,6 +53,31 @@ public final class SiteService {
         public BlockPos gate() {
             BoundingBox box = start.getPieces().get(0).getBoundingBox();
             return new BlockPos(box.minX() + 3, box.minY() + 1, (box.minZ() + box.maxZ()) / 2);
+        }
+
+        /**
+         * Onde a guarnicao aparece: o ponto {@code garrison_at} dentro da peca pedida (BASES-1: o patio da base dentro
+         * da cidade), girado como a peca; sem ele (ou sem a peca gerada), {@link #gate()}.
+         */
+        public BlockPos garrisonPos() {
+            return def.garrisonAt().flatMap(at -> start.getPieces().stream()
+                    .filter(piece -> piece instanceof PoolElementStructurePiece pool
+                            && isTemplate(pool, at.piece()))
+                    .findFirst()
+                    .map(piece -> {
+                        PoolElementStructurePiece pool = (PoolElementStructurePiece) piece;
+                        return pool.getPosition().offset(StructureTemplate.transform(at.pos(), Mirror.NONE,
+                                pool.getRotation(), BlockPos.ZERO));
+                    })).orElseGet(this::gate);
+        }
+
+        /**
+         * O template do elemento e protegido no {@code SinglePoolElement}; o {@code toString} dele traz o id
+         * ("Single[Left[kn8:tachikawa/base_core]]").
+         */
+        private static boolean isTemplate(PoolElementStructurePiece piece, ResourceLocation template) {
+            return piece.getElement() instanceof SinglePoolElement
+                    && piece.getElement().toString().contains("[" + template + "]");
         }
     }
 
@@ -125,7 +154,7 @@ public final class SiteService {
             return;
         }
         data.markGarrisoned(key);
-        BlockPos gate = hit.gate();
+        BlockPos gate = hit.garrisonPos();
         int spawned = 0;
         for (InvasionDef.Defender member : hit.def().garrison()) {
             Optional<EntityType<? extends SoldierEntity>> special = KN8Entities.specialSoldier(member.variant());

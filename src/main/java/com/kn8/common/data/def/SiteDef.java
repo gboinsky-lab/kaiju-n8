@@ -2,10 +2,12 @@
 package com.kn8.common.data.def;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 
 /**
@@ -17,7 +19,19 @@ import net.minecraft.resources.ResourceLocation;
  * avancada dentro do local poe os alvos dentro dele (nas cidades).
  */
 public record SiteDef(ResourceLocation structure, String division, List<InvasionDef.Defender> garrison,
-        List<SiteInvasion> invasions, boolean fieldMissions) {
+        List<SiteInvasion> invasions, boolean fieldMissions, Optional<GarrisonAt> garrisonAt) {
+
+    /**
+     * BASES-1 (Miguel, 2026-10-30: bases dentro das cidades): onde a guarnicao aparece, pela peca do jigsaw
+     * ({@code piece}, id do template) e a posicao dentro dela ({@code pos}, coordenadas do template, antes de girar).
+     * Sem isso, na saida oeste da peca inicial.
+     */
+    public record GarrisonAt(ResourceLocation piece, BlockPos pos) {
+        public static final Codec<GarrisonAt> CODEC = RecordCodecBuilder.create(i -> i.group(
+                ResourceLocation.CODEC.fieldOf("piece").forGetter(GarrisonAt::piece),
+                BlockPos.CODEC.fieldOf("pos").forGetter(GarrisonAt::pos)
+        ).apply(i, GarrisonAt::new));
+    }
 
     /** Invasao do lugar e o peso no sorteio. */
     public record SiteInvasion(ResourceLocation invasion, int weight) {
@@ -32,6 +46,7 @@ public record SiteDef(ResourceLocation structure, String division, List<Invasion
             Codec.STRING.fieldOf("division").forGetter(SiteDef::division),
             InvasionDef.Defender.CODEC.listOf().optionalFieldOf("garrison", List.of()).forGetter(SiteDef::garrison),
             SiteInvasion.CODEC.listOf().optionalFieldOf("invasions", List.of()).forGetter(SiteDef::invasions),
-            Codec.BOOL.optionalFieldOf("field_missions", false).forGetter(SiteDef::fieldMissions)
+            Codec.BOOL.optionalFieldOf("field_missions", false).forGetter(SiteDef::fieldMissions),
+            GarrisonAt.CODEC.optionalFieldOf("garrison_at").forGetter(SiteDef::garrisonAt)
     ).apply(i, SiteDef::new));
 }

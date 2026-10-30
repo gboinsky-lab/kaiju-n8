@@ -138,7 +138,8 @@ public final class DataValidation {
             def.invasions().stream().filter(entry -> !invasions.contains(entry.invasion())).forEach(entry ->
                     report.warning("site " + id + ": invasao inexistente " + entry.invasion()));
             valid.put(id, new SiteDef(def.structure(), def.division(), def.garrison(), def.invasions().stream()
-                    .filter(entry -> invasions.contains(entry.invasion())).toList(), def.fieldMissions()));
+                    .filter(entry -> invasions.contains(entry.invasion())).toList(), def.fieldMissions(),
+                    def.garrisonAt()));
         });
         return valid;
     }

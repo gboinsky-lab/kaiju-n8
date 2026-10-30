@@ -39,13 +39,21 @@ public final class TrainingArenaService {
     private static final String BOX = "box";
     private static final String IDLE = "idle";
 
-    /** Geometria da arena em relacao ao painel (a frente aponta para o centro). */
-    public record Geometry(int distance, int halfWidth, int halfLength, int height, int margin) {
+    /**
+     * Geometria da arena em relacao ao painel (a frente aponta para o centro). {@code below}: quanto a arena desce
+     * abaixo do painel (BASES-1: o painel fica na sala de controle no alto, como no campo de treino urbano da obra;
+     * o kaiju nasce no chao).
+     */
+    public record Geometry(int distance, int halfWidth, int halfLength, int height, int margin, int below) {
+
+        public Geometry(int distance, int halfWidth, int halfLength, int height, int margin) {
+            this(distance, halfWidth, halfLength, height, margin, 0);
+        }
 
         public static Geometry fromConfig() {
             return new Geometry(ServerConfig.ARENA_DISTANCE.get(), ServerConfig.ARENA_HALF_WIDTH.get(),
                     ServerConfig.ARENA_HALF_LENGTH.get(), ServerConfig.ARENA_HEIGHT.get(),
-                    ServerConfig.ARENA_PROTECT_MARGIN.get());
+                    ServerConfig.ARENA_PROTECT_MARGIN.get(), ServerConfig.ARENA_BELOW.get());
         }
 
         public BlockPos center(BlockPos console, Direction facing) {
@@ -58,8 +66,8 @@ public final class TrainingArenaService {
             boolean alongX = facing.getAxis() == Direction.Axis.X;
             int hx = alongX ? halfLength : halfWidth;
             int hz = alongX ? halfWidth : halfLength;
-            return new BoundingBox(c.getX() - hx, c.getY() - 2, c.getZ() - hz, c.getX() + hx, c.getY() + height,
-                    c.getZ() + hz);
+            return new BoundingBox(c.getX() - hx, c.getY() - 2 - below, c.getZ() - hz, c.getX() + hx,
+                    c.getY() + height, c.getZ() + hz);
         }
     }
 
@@ -193,11 +201,14 @@ public final class TrainingArenaService {
         }
     }
 
-    /** Volta ao centro da arena (salto do kaiju, empurrao, fuga do No. 9). */
+    /**
+     * Volta ao centro da arena (salto do kaiju, empurrao, fuga do No. 9), na altura do painel: com a arena descendo
+     * abaixo dele ({@code below}) o fundo da caixa fica dentro do chao; de la desce ate o chao.
+     */
     public static void leash(KaijuEntity kaiju, BoundingBox box) {
         double x = (box.minX() + box.maxX()) / 2.0 + 0.5;
         double z = (box.minZ() + box.maxZ()) / 2.0 + 0.5;
-        kaiju.teleportTo(x, box.minY() + 2.0, z);
+        kaiju.teleportTo(x, Math.max(box.minY() + 2.0, box.maxY() - ServerConfig.ARENA_HEIGHT.get()), z);
         kaiju.setDeltaMovement(0.0, 0.0, 0.0);
         KaijuSpawner.placeOnFreeGround((ServerLevel) kaiju.level(), kaiju);
     }
