@@ -198,9 +198,12 @@ public final class SiteGameTests {
             int glassRuined = glass(ruined, settings);
             helper.assertTrue(glassRuined < glassIntact * 0.6, city + ": vidros quebrados (" + glassRuined + " de "
                     + glassIntact + ")");
+            // Zona interditada: barreira (onde os carros e o entulho deixam) e as luzes vermelhas de emergencia.
             helper.assertTrue(ruined.filterBlocks(BlockPos.ZERO, settings, Blocks.YELLOW_CONCRETE).size()
-                    > intact.filterBlocks(BlockPos.ZERO, settings, Blocks.YELLOW_CONCRETE).size() + 10,
-                    city + ": zonas interditadas com a barreira");
+                    > intact.filterBlocks(BlockPos.ZERO, settings, Blocks.YELLOW_CONCRETE).size()
+                    && ruined.filterBlocks(BlockPos.ZERO, settings, Blocks.REDSTONE_LAMP).size()
+                    >= intact.filterBlocks(BlockPos.ZERO, settings, Blocks.REDSTONE_LAMP).size() + 3,
+                    city + ": zonas interditadas com a barreira e as luzes de emergencia");
             for (Block block : List.of(KN8Blocks.RESEARCH_TERMINAL.get(), KN8Blocks.SQUAD_STATION.get(),
                     Blocks.WHITE_WOOL)) {
                 helper.assertTrue(!ruined.filterBlocks(BlockPos.ZERO, settings, block).isEmpty(),
