@@ -1624,3 +1624,18 @@ Servidor dedicado + 2 clientes. Imagem: `docs/img/combate8_regressao.jpg`. Relat
 | 117.1 | Baioneta do Narumi, R na primeira técnica (No. 1 Eruption Slash) | O jogador faz as estocadas (antes ficava parado) |
 | 117.2 | Cada arma com técnicas (machado, machado do Numbers 4, espada do Hoshina, baionetas, manoplas): X por todas e R em cada uma | Todas saem com animação, nome na HUD e efeito; Falling Thunder só pulando de cima; Thunder Emperor só com a vida baixa; Jūni-hitoe só com o Numbers 10 na força total |
 | 117.3 | Baioneta do Narumi: Thunder Fire, Flame Shower e Sky Turner num kaiju | Tiros com estouro, leque de tiros de fogo, avanço girando |
+
+## 118. FIX-3: parkour refeito
+
+Servidor dedicado + 2 clientes. Imagem: `docs/img/fix3_parkour.jpg`. Construir uma torre de ~14 blocos e dois
+prédios de 8 blocos com um vão de 5 entre eles.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 118.1 | De frente para a torre, segurar C e W | Escala (animação de escalada), sobe ~3,5 blocos/s; no topo agarra a borda e sobe sozinho com C segurado |
+| 118.2 | Escalando: soltar W, depois S, depois Espaço, depois Shift | Para na parede; desce; pula para trás; solta e cai |
+| 118.3 | No telhado, correndo (Ctrl+W), C na beira | Salto longo atravessa o vão de 5 blocos |
+| 118.4 | Pular de mais longe (curto) | Bate na parede do outro prédio e fica pendurado sozinho (sem apertar nada) |
+| 118.5 | Pendurado: A/D | Anda de lado ao longo da borda, na mesma altura |
+| 118.6 | Pendurado: Espaço (ou C + W) | Sobe para o telhado |
+| 118.7 | Pendurado: Shift | Solta |

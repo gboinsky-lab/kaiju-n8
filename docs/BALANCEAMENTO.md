@@ -445,7 +445,8 @@ corpo (treinado gasta ate 60% menos) e cada movimento da 3 XP de agilidade (`[bo
 | Wall-run | no ar, correndo, C com parede ao lado | 14/s (1/4 para comecar) | 0,36/tick ao longo, sobe 0,16 e cai ate -0,16; ate 30 ticks |
 | Wall-slide | no ar, C de frente para a parede | 4/s | queda maxima 0,12/tick, sem dano; ate 60 ticks |
 | Wall-jump | Espaco na parede (ate 5 ticks depois de sair) | 10 | 0,5 para longe, 0,25 ao longo, 0,55 para cima; ate 4 (wall-runs + wall-jumps) sem pousar; a mesma parede so depois de 4 ticks no chao (`landingTicks`) |
-| Segurar a borda | no ar, C com borda de 0,9 a 2,2 acima dos pes | 3/s | pes 1,7 abaixo da borda; ate 60 ticks; subir 8 |
+| Segurar a borda | no ar, C com borda de 0,9 a 2,6 acima dos pes; FIX-3: sem a tecla caindo/no alto do pulo andando para a frente (1,0 a 2,4) | 3/s | pes 1,7 abaixo da borda; ate 200 ticks (FIX-3, era 60); A/D anda de lado 0,12/tick; subir 8, passando 0,7 acima do topo e empurrado 0,22/tick para dentro por 12 ticks |
+| Escalar a parede (FIX-3) | C de frente para parede mais alta que 2 blocos (chao ou ar); W sobe, S desce, Espaco pula para tras, Shift solta | 4 + 7/s | 0,14/tick para cima x nivel (medido: torre de 14 blocos em ~4 s); ate 400 ticks; no topo agarra a borda e, com C, sobe |
 | Slide | correndo, Shift | 10 | 0,6/tick, atrito 0,93 por tick, ate 20 ticks, deitado (vao de 1 bloco) |
 | Rolamento | Shift ao cair de 4+ blocos | 8 | ate 7 blocos sem dano; acima, -60% |
 
