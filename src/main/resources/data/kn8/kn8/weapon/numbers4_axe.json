@@ -35,7 +35,7 @@
     "forward": 2.5,
     "stamina_cost": 35,
     "heat_cost": 6,
-    "cooldown_ticks": 200,
+    "cooldown_ticks": 230,
     "knockback": 1.2,
     "stagger_ticks": 34,
     "camera_shake": 0.45,
@@ -65,7 +65,7 @@
       "radius": 3.0,
       "stamina_cost": 30,
       "heat_cost": 5,
-      "cooldown_ticks": 140,
+      "cooldown_ticks": 160,
       "forward": 3.0,
       "knockback": 0.6,
       "stagger_ticks": 36,
@@ -91,7 +91,7 @@
       "radius": 1.4,
       "stamina_cost": 22,
       "heat_cost": 3,
-      "cooldown_ticks": 70,
+      "cooldown_ticks": 80,
       "camera_shake": 0.15,
       "vfx": [
         {
@@ -118,7 +118,7 @@
       "radius": 3.4,
       "stamina_cost": 25,
       "heat_cost": 3,
-      "cooldown_ticks": 80,
+      "cooldown_ticks": 90,
       "forward": 0.0,
       "knockback": 0.9,
       "camera_shake": 0.2,
@@ -143,7 +143,7 @@
       "radius": 1.6,
       "stamina_cost": 24,
       "heat_cost": 3,
-      "cooldown_ticks": 90,
+      "cooldown_ticks": 105,
       "forward": 2.5,
       "knockback": 1.6,
       "stagger_ticks": 24,
@@ -165,7 +165,7 @@
       "radius": 1.5,
       "stamina_cost": 26,
       "heat_cost": 3,
-      "cooldown_ticks": 80,
+      "cooldown_ticks": 90,
       "forward": 4.0,
       "camera_shake": 0.15,
       "vfx": [
@@ -192,7 +192,7 @@
       "radius": 3.2,
       "stamina_cost": 30,
       "heat_cost": 4,
-      "cooldown_ticks": 110,
+      "cooldown_ticks": 125,
       "camera_shake": 0.1,
       "vfx": [
         {
@@ -218,7 +218,7 @@
       "radius": 3.4,
       "stamina_cost": 40,
       "heat_cost": 6,
-      "cooldown_ticks": 220,
+      "cooldown_ticks": 255,
       "camera_shake": 0.15,
       "vfx": [
         {
