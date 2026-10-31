@@ -1365,3 +1365,15 @@ guarnição da base de Tachikawa.
 | Base grande genérica | `random_spread` 96/40, evita vilas a 12 chunks, postos 8, mansões 10, locais da obra (gerados) 20, bases de Tachikawa/Ariake (geradas) 32; terreno: desnível 14, 5% de água | `worldgen/structure(_set)/defense_base_large.json` (`tools/world/gen_base.py`) |
 | Candidatos do exame | 4 (eram 3), nível normal, acompanham o jogador até 64 blocos (depois voltam ao centro do campo) | `mission/exam.json` (`arena.candidates`), `MissionService.CANDIDATE_LEVEL`, `SoldierEntity.squadHome` |
 | Medido em jogo | 4 normais acompanhando: Primigenius (220) em ~20 s; 4 altos: ~5 s (descartado) | — |
+
+## B-2: balanceamento final (2026-10-31)
+
+Matriz de 30 confrontos x 5 duelos (retirada do No. 9 = empate), jogador por patente e técnicas do jogador:
+`docs/B2_BALANCEAMENTO_FINAL.md` e `docs/B2_JOGADOR_POR_PATENTE.md` (`tools/balance/jogador_por_patente.py`).
+
+| O quê | Antes | Agora | Por quê |
+|---|---|---|---|
+| Reno No. 6 `kaiju_damage` | 0,80 | **0,90** | x No. 9 1/5 -> 6/8 (meta 70%); com 0,80 o No. 9 escapava na retirada |
+| Isao sem o Numbers 2 `kaiju_damage` | 1,2 | 1,2 | confirmado: x No. 10 pequeno 2/5 (meta 45%) |
+| Recargas das técnicas do machado e do machado do Numbers 4 | - | x 1,15 | rajada do machado (Líder) acima da espada do Hoshina (Vice) |
+| Stamina das técnicas das manoplas do Numbers 2 | - | -4 cada | dano por stamina 0,95 -> 1,1 (igual às outras) |

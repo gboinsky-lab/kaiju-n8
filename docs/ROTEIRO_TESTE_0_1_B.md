@@ -1829,3 +1829,14 @@ Imagem: `docs/img/ajustes_base_aura_candidatos.jpg`. Mundo normal novo (estrutur
 | 130.4 | Subir o Release (G) | O outro jogador vê os raios na cor escolhida |
 | 130.5 | Aceitar o Exame de Admissão no Campo do Exame | 4 candidatos nascem no chão ao lado do jogador (não no telhado do pavilhão) |
 | 130.6 | Andar pelo campo | Os candidatos acompanham o jogador e lutam com os kaiju da prova (um Primigenius cai em ~20 s com eles) |
+
+## 131. B-2: balanceamento final
+
+Matriz, contas e ajustes em `docs/B2_BALANCEAMENTO_FINAL.md`; jogador por patente em `docs/B2_JOGADOR_POR_PATENTE.md`.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 131.1 | `/summon kn8:reno_no6` e `/summon kn8:kaiju_no9` a 14 blocos num campo plano (desligar o `transform`/`absorb` por pacote de dados, ou só observar) | Reno No. 6 leva o No. 9 a zero na maioria das vezes (~45-55 s), antes de ele escapar na retirada |
+| 131.2 | `/summon kn8:isao_base` contra `kn8:kaiju_no10_small` | Disputado: o Isao sem o Numbers 2 vence cerca de 2 em 5 |
+| 131.3 | Jogador Líder de Pelotão com o machado: X e R em todas as técnicas | Recargas um pouco maiores que antes (Golpe Sísmico 11,5 s, Water Skimmer 4 s) |
+| 131.4 | Jogador com as manoplas do Numbers 2 | Cada técnica gasta 4 de stamina a menos (Barrage Blast 16, Thunder Emperor 41) |

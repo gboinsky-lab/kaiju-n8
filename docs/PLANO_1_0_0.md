@@ -168,3 +168,11 @@ e os modelos provisórios (asas e cauda do jogador, Narumi No. 1, Isao sem o Num
 - Exame: 4 candidatos de nível normal que acompanham o jogador e nascem no chão ao lado dele.
 - Próximas: **B-2** (balanceamento final, com o `kaiju_damage` do Reno No. 6 e do Isao sem o Numbers 2), **SONS**
   (todos os sons e os tamanhos/tempos dos efeitos, sem ElevenLabs), **R-1**, **R-2**.
+
+## B-2 — balanceamento final (feita, 2026-10-31)
+
+- Matriz de 30 confrontos x 5 duelos com a retirada do No. 9; jogador por patente; técnicas e armas numeradas do
+  jogador; apoio militar (`docs/B2_BALANCEAMENTO_FINAL.md`).
+- Reno No. 6 `kaiju_damage` 0,90 (era 0,80); Isao sem o Numbers 2 1,2 confirmado; machado e Numbers 4 com recargas
+  x 1,15; manoplas do Numbers 2 com 4 a menos de stamina por técnica.
+- Próximas: **SONS**, **R-1**, **R-2**.
