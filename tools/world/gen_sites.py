@@ -1018,7 +1018,11 @@ CITY_BIOMES = BASE_BIOMES + ["minecraft:forest", "minecraft:birch_forest"]
 # BASES-4: os bairros em volta da base aceitam qualquer terra (a base escolheu o lugar; Toquio tem rio e praia).
 DISTRICT_BIOMES = CITY_BIOMES + ["#minecraft:is_forest", "#minecraft:is_taiga", "#minecraft:is_savanna",
                                  "#minecraft:is_river", "#minecraft:is_beach", "minecraft:desert",
-                                 "minecraft:stony_shore", "minecraft:swamp", "minecraft:cherry_grove"]
+                                 "minecraft:stony_shore", "minecraft:swamp", "minecraft:cherry_grove",
+                                 # AJUSTES-3: a base no meio da cidade (Miguel): o anel aceita qualquer terra.
+                                 "#minecraft:is_mountain", "#minecraft:is_hill", "#minecraft:is_badlands",
+                                 "#minecraft:is_jungle", "minecraft:snowy_slopes", "minecraft:ice_spikes",
+                                 "minecraft:mangrove_swamp", "minecraft:mushroom_fields"]
 SHINAGAWA_LOTS = [("shinagawa/lot_tower", 4), ("shinagawa/lot_arcade", 3), ("shinagawa/lot_ant_ruins", 2),
                   ("city/lot_office", 3), ("city/lot_apartment_tall", 2), ("city/lot_apartment", 2),
                   ("city/lot_konbini", 2), ("city/lot_ramen", 2), ("city/lot_parking", 1)]
@@ -1040,12 +1044,21 @@ BASE_SLOPE = 18
 BASE_WATER = 0.08
 # Terreno dos bairros mais solto (a base ja conferiu o dela; com a regra das cidades quase todo bairro caia no morro ou
 # na agua): desnivel ate 40 no miolo e 15% de agua [SUPOSICAO].
-DISTRICT_SLOPE = 40
-DISTRICT_WATER = 0.15
-TACHIKAWA_CITY_AT = [[0, -17]]
-TACHIKAWA_WARDS_AT = [[0, 17], [17, 0], [-17, 0]]
-ARIAKE_CITY_AT = [[0, -17]]
-ARIAKE_WARDS_AT = [[17, 0], [0, 17], [-17, 0]]
+# AJUSTES-3: no mundo de teste (semente 8008) so 2 das 8 pecas do anel de Tachikawa nasciam (montanha nevada com
+# lago): desnivel sem limite (128 = o maximo do codec; o beard_thin acerta o chao) e ate 40% de agua.
+DISTRICT_SLOPE = 128
+DISTRICT_WATER = 0.4
+# AJUSTES-3 (Miguel 2026-11-05: "as cidades nao estao com as bases dentro delas ... nao e possivel aumentar as cidades
+# e bases?"): o jigsaw so gera pecas ate 8 chunks da peca inicial (as referencias da estrutura vao so ate ai), entao
+# uma estrutura nao passa de ~128 blocos de raio. A cidade cresce por pecas ancoradas: a cidade e os bairros encostam
+# na base (15 chunks = 240 blocos: base ~115 + cidade ~116 + folga) e entram quatro bairros nas diagonais: um anel de
+# 8 pecas (~720 x 720 blocos) com a base no meio.
+RING = 15
+TACHIKAWA_CITY_AT = [[0, -RING]]
+TACHIKAWA_WARDS_AT = [[0, RING], [RING, 0], [-RING, 0], [RING, RING], [-RING, RING], [RING, -RING],
+                      [-RING, -RING]]
+ARIAKE_CITY_AT = [[0, -RING]]
+ARIAKE_WARDS_AT = [[RING, 0], [0, RING], [-RING, 0], [RING, RING], [-RING, RING], [RING, -RING], [-RING, -RING]]
 SITES = [
     ("ariake_base", "kn8:ariake_base/hq", 5, 116, CITY_BIOMES, 112, BASE_SLOPE,
      {"start_height": -13, "base": True, "max_water": BASE_WATER,

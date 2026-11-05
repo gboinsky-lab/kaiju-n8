@@ -8,8 +8,8 @@
     "scale": 11.0
   },
   "overrides": {
-    "health": 6000.0,
-    "damage": 72.0,
+    "health": 4500.0,
+    "damage": 66.0,
     "armor": 20.0
   },
   "speed": 0.3,

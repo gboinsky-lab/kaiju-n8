@@ -15,6 +15,14 @@
     "minecraft:desert",
     "minecraft:stony_shore",
     "minecraft:swamp",
-    "minecraft:cherry_grove"
+    "minecraft:cherry_grove",
+    "#minecraft:is_mountain",
+    "#minecraft:is_hill",
+    "#minecraft:is_badlands",
+    "#minecraft:is_jungle",
+    "minecraft:snowy_slopes",
+    "minecraft:ice_spikes",
+    "minecraft:mangrove_swamp",
+    "minecraft:mushroom_fields"
   ]
 }

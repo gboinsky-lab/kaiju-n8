@@ -128,7 +128,7 @@ public final class HostGameTests {
             helper.assertTrue(Math.abs(host.getMaxHealth() - (humanHealth + bonus)) < 0.01,
                     "Vida da forma: " + host.getMaxHealth());
             helper.assertTrue(host.getHealth() == host.getMaxHealth(), "Nasce com a vida cheia");
-            helper.assertTrue(Math.abs(host.getBbHeight() - ServerConfig.FORM_HEIGHT.get()) < 0.05,
+            helper.assertTrue(Math.abs(host.getBbHeight() - KaijuFormService.formHeight()) < 0.05,
                     "Altura do No. 8: " + host.getBbHeight() + " (humano " + humanHeight + ")");
             helper.assertTrue(host.getAttributeValue(Attributes.ARMOR) >= ServerConfig.FORM_ARMOR.get(),
                     "Armadura da forma");

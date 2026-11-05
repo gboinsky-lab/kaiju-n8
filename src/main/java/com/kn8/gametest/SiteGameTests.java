@@ -313,12 +313,14 @@ public final class SiteGameTests {
     }
 
     /**
-     * BASES-4: a cidade de Tachikawa so pode nascer a 17 chunks ao norte do ponto candidato do conjunto das bases
+     * BASES-4/AJUSTES-3: a cidade de Tachikawa so pode nascer a 15 chunks ao norte do ponto candidato do conjunto das
+     * bases
      * (nunca um chunk ao lado nem no proprio chunk da base); e onde a ancora aceita, a base de Tachikawa cabe. No mundo
      * plano toda base cabe e a cidade sempre tem outra base a menos de 24 chunks: a cidade inteira so em jogo.
      */
     @GameTest(template = "empty_3x3", timeoutTicks = 600)
     public static void districtsOnlyAroundTheirBase(GameTestHelper helper) {
+        final int ring = 15;
         ServerLevel level = helper.getLevel();
         var structures = level.registryAccess().registryOrThrow(Registries.STRUCTURE);
         Structure city = structures.get(KN8Constants.id("tachikawa_city"));
@@ -330,17 +332,22 @@ public final class SiteGameTests {
         var anchor = ((CheckedJigsawStructure) city).anchor().orElseThrow();
         helper.assertTrue(anchor.set().is(KN8Constants.id("defense_bases"))
                 && anchor.structure().is(KN8Constants.id("tachikawa_base")), "A cidade se ancora na base de Tachikawa");
+        // AJUSTES-3: cidade + 7 bairros = anel de 8 pecas em volta da base (a base fica dentro da cidade).
+        for (String ward : List.of("tachikawa_ward", "ariake_ward")) {
+            helper.assertTrue(structures.get(KN8Constants.id(ward)) instanceof CheckedJigsawStructure checked
+                    && checked.anchor().orElseThrow().offsets().size() == 7, "Sete bairros em volta: " + ward);
+        }
         ChunkPos start = new ChunkPos(helper.absolutePos(BlockPos.ZERO).offset(8192, 0, 8192));
         for (int i = 0; i < 8; i++) {
             ChunkPos at = spread.getPotentialStructureChunk(level.getSeed(), start.x + i * spread.spacing(),
                     start.z);
             helper.assertTrue(CheckedJigsawStructure.anchorCandidateHere(context(level, new ChunkPos(at.x,
-                    at.z - 17)), anchor), "17 chunks ao norte do ponto da base e lugar da cidade");
+                    at.z - ring)), anchor), "15 chunks ao norte do ponto da base e lugar da cidade");
             helper.assertTrue(!CheckedJigsawStructure.anchorCandidateHere(context(level, new ChunkPos(at.x + 1,
-                    at.z - 17)), anchor), "Um chunk ao lado nao e");
+                    at.z - ring)), anchor), "Um chunk ao lado nao e");
             helper.assertTrue(!CheckedJigsawStructure.anchorCandidateHere(context(level, at), anchor),
                     "O chunk da base nao e");
-            ChunkPos north = new ChunkPos(at.x, at.z - 17);
+            ChunkPos north = new ChunkPos(at.x, at.z - ring);
             if (CheckedJigsawStructure.anchoredHere(context(level, north), anchor)) {
                 helper.assertTrue(structures.get(KN8Constants.id("tachikawa_base"))
                         .findValidGenerationPoint(context(level, at)).isPresent(),

@@ -7,9 +7,9 @@
   "layout": "kn8:tachikawa_ward_layout",
   "check_radius": 96,
   "check_step": 12,
-  "max_slope": 40,
+  "max_slope": 128,
   "slope_radius": 64,
-  "max_water": 0.15,
+  "max_water": 0.4,
   "avoid": [
     {
       "structure_set": "minecraft:villages",
@@ -39,15 +39,31 @@
     "offsets": [
       [
         0,
-        17
+        15
       ],
       [
-        17,
+        15,
         0
       ],
       [
-        -17,
+        -15,
         0
+      ],
+      [
+        15,
+        15
+      ],
+      [
+        -15,
+        15
+      ],
+      [
+        15,
+        -15
+      ],
+      [
+        -15,
+        -15
       ]
     ]
   }

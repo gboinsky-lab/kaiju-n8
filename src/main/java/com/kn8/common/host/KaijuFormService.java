@@ -12,6 +12,8 @@ import com.kn8.common.attribute.PowerService;
 import com.kn8.common.base.DefenseOfficerEntity;
 import com.kn8.common.career.CareerService;
 import com.kn8.common.config.ServerConfig;
+import com.kn8.common.data.def.SpecialSoldierDef;
+import com.kn8.common.data.KN8Data;
 import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.registry.KN8Attachments;
 import com.kn8.common.site.RegionService;
@@ -65,6 +67,16 @@ public final class KaijuFormService {
     private static final String TAG_DEBT_TICK = "kn8_form_debt_tick";
     /** Altura do jogador no vanilla (o atributo de escala multiplica por ela). */
     private static final double PLAYER_HEIGHT = 1.8;
+
+    /**
+     * AJUSTES-3 (Miguel 2026-11-05: "a forma kaiju n8 do jogador tem que ficar com o mesmo tamanho do npc"): altura
+     * do corpo na forma = a do No. 8 NPC ({@code height} do {@code special_soldier/kaiju_no8.json}). O config
+     * {@code [kaijuForm] height} so vale sem o perfil (o arquivo de config antigo guardava 2 e o jogador ficava menor).
+     */
+    public static double formHeight() {
+        SpecialSoldierDef npc = KN8Data.SPECIAL_SOLDIER.server().get(PROFILE);
+        return npc != null && npc.height() > 0.0F ? npc.height() : ServerConfig.FORM_HEIGHT.get();
+    }
     private static final int REFRESH_TICKS = 20;
 
     private static final ResourceLocation HEALTH = KN8Constants.id("kaiju_form_health");
@@ -437,7 +449,7 @@ public final class KaijuFormService {
                 SoundSource.PLAYERS, 2.0F, 0.6F);
         if (player.level() instanceof ServerLevel level) {
             VfxService.play(level, VfxService.ROAR, player.getEyePosition(), player.getLookAngle(), 1.4F, 0.4F,
-                    Optional.of(PROFILE), "roar", (float) ServerConfig.FORM_HEIGHT.get().doubleValue());
+                    Optional.of(PROFILE), "roar", (float) formHeight());
         }
         player.displayClientMessage(Component.translatable("kn8.host.form.lost_control")
                 .withStyle(ChatFormatting.DARK_RED, ChatFormatting.BOLD), false);
@@ -536,7 +548,7 @@ public final class KaijuFormService {
         set(player, Attributes.FALL_DAMAGE_MULTIPLIER, FALL, on ? ServerConfig.FORM_FALL_DAMAGE_MULTIPLIER.get() - 1.0
                 : 0, base);
         set(player, Attributes.STEP_HEIGHT, STEP, on ? ServerConfig.FORM_STEP_HEIGHT_BONUS.get() : 0, add);
-        set(player, Attributes.SCALE, SCALE, on ? ServerConfig.FORM_HEIGHT.get() / PLAYER_HEIGHT - 1.0 : 0, base);
+        set(player, Attributes.SCALE, SCALE, on ? formHeight() / PLAYER_HEIGHT - 1.0 : 0, base);
         // O vanilla so refaz a caixa no proximo tick (atributos sujos); a forma ja nasce com o tamanho certo.
         player.refreshDimensions();
     }
@@ -568,7 +580,7 @@ public final class KaijuFormService {
         if (player.level() instanceof ServerLevel level) {
             Vec3 at = player.position().add(0, player.getBbHeight() * 0.5, 0);
             VfxService.play(level, VfxService.TRANSFORM, at, player.getLookAngle(), intensity, 0.3F,
-                    Optional.of(profile), "transform", (float) ServerConfig.FORM_HEIGHT.get().doubleValue());
+                    Optional.of(profile), "transform", (float) formHeight());
         }
     }
 }

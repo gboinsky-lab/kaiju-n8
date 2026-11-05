@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.kn8.KN8Constants;
+import com.kn8.common.config.ServerConfig;
 import com.kn8.common.data.KN8Data;
 import com.kn8.common.data.def.InvasionDef;
 import com.kn8.common.data.def.MissionDef;
@@ -29,10 +30,13 @@ public final class WorldPresenceGameTests {
      * nas invasoes grandes desde a AJUSTES-2 (Miguel 2026-11-05).
      */
     private static final List<String> BY_TRANSITION_KAIJU = List.of("kaiju_no10_giant", "kaiju_larva");
-    /** AJUSTES-2: as formas do No. 9 e o No. 8 sem controle surgem de surpresa nas invasoes grandes (nivel 4+). */
+    /** AJUSTES-2/3: as formas do No. 9 surgem de surpresa (1%, Miguel 2026-11-05) nas invasoes grandes (nivel 4+). */
     private static final List<String> BIG_INVASION_SURPRISES = List.of("kaiju_no9_black", "kaiju_no9_fusion",
-            "kaiju_no9_fusion_giant", "kaiju_no9_camponotus", "kaiju_no9_isao", "kaiju_no8_rampage",
+            "kaiju_no9_fusion_giant", "kaiju_no9_camponotus", "kaiju_no9_isao");
+    /** AJUSTES-3: o No. 8 sem controle entra em qualquer invasao com {@code [invasion] rampageNo8Chance}. */
+    private static final List<String> ANY_INVASION_SURPRISES = List.of("kaiju_no8_rampage",
             "kaiju_no8_rampage_giant");
+    private static final float FORM_SURPRISE_CHANCE = 0.01F;
     private static final int BIG_INVASION_LEVEL = 4;
     /** Especiais que nascem pela troca de forma de outro (Kafka -> No. 8). */
     private static final List<String> BY_TRANSITION_SPECIAL = List.of("kaiju_no8");
@@ -63,7 +67,8 @@ public final class WorldPresenceGameTests {
         KN8Data.SITE.server().values().forEach(site -> site.garrison().forEach(member -> specials.add(
                 member.variant())));
         for (ResourceLocation id : KN8Data.KAIJU.server().keySet()) {
-            helper.assertTrue(kaiju.contains(id.getPath()) || BY_TRANSITION_KAIJU.contains(id.getPath()),
+            helper.assertTrue(kaiju.contains(id.getPath()) || BY_TRANSITION_KAIJU.contains(id.getPath())
+                    || ANY_INVASION_SURPRISES.contains(id.getPath()),
                     "Kaiju sem lugar no mundo (so /summon): " + id);
         }
         for (ResourceLocation id : KN8Data.SPECIAL_SOLDIER.server().keySet()) {
@@ -81,12 +86,21 @@ public final class WorldPresenceGameTests {
                 continue;
             }
             invasion.waves().forEach(wave -> wave.kaiju().stream().filter(spawn -> spawn.chance() < 1.0F)
-                    .forEach(spawn -> surprises.add(spawn.species().getPath())));
+                    .forEach(spawn -> {
+                        surprises.add(spawn.species().getPath());
+                        if (BIG_INVASION_SURPRISES.contains(spawn.species().getPath())) {
+                            helper.assertTrue(spawn.chance() <= FORM_SURPRISE_CHANCE, "Forma do No. 9 com mais de"
+                                    + " 1%: " + spawn.species() + " " + spawn.chance());
+                        }
+                    }));
         }
         for (String id : BIG_INVASION_SURPRISES) {
             helper.assertTrue(surprises.contains(id), "Sem surpresa numa invasao grande: " + id);
             helper.assertTrue(KN8Data.KAIJU.server().containsKey(KN8Constants.id(id)), "Kaiju sem dados: " + id);
         }
+        helper.assertTrue(ServerConfig.INVASION_RAMPAGE_NO8_CHANCE.get() > 0.0, "No. 8 sem controle sem chance");
+        ANY_INVASION_SURPRISES.forEach(id -> helper.assertTrue(KN8Data.KAIJU.server().containsKey(KN8Constants.id(id)),
+                "Kaiju sem dados: " + id));
         helper.succeed();
     }
 }

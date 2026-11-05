@@ -1873,3 +1873,16 @@ Imagem: `docs/img/ajustes2_no8_vermelho_e_sons.jpg`. Ligar as legendas (Opções
 | 133.8 | Hoshina No. 10 ou jogador com o traje Numbers 10 perto de um kaiju | Cauda corta com "Cauda corta"; guarda da cauda com "Cauda defende" (sem a bigorna) |
 | 133.9 | Kafka NPC ferido | Sem aura nenhuma |
 | 133.10 | `/kn8 vfx play kn8:technique kn8:narumi 1 seven_branched_sword/7` | Estouros rosa (antes liam brancos) |
+
+## 134. AJUSTES-3: respostas de 2026-11-05, sons potentes, armas no tamanho real, forma do jogador, base dentro da cidade
+
+Imagem: `docs/img/ajustes3_armas_forma_cidade.jpg`. Prévia dos sons (antes -> depois): `docs/audio/previa_sons2_antes_depois.mp3`.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 134.1 | `/summon kn8:kaiju_no8_rampage` | Vida 1.800 e armadura 19 (os números do No. 8 aliado) |
+| 134.2 | Várias invasões (`/kn8 invasion start`) | Raramente (1%) entra um No. 8 sem controle na última onda; formas do No. 9 de surpresa também a 1%; se um numerado de surpresa vier, toca "Ameaça grande se aproxima" na hora |
+| 134.3 | Mina carregando o canhão, Isao socando, Kikoru no Falling Thunder, No. 8 socando, Honju atirando o raio | Carga que cresce grave e trava com um baque; Falling Thunder com raio caindo (rasgo, estalo e trovão rolando); socos e tiros com estalo e grave forte |
+| 134.4 | Segurar o canhão da Mina, o machado, as espadas do Hoshina e a baioneta do Narumi em 3ª pessoa | ~3 m, ~1,7 m, ~0,7 m e ~1,1 m; os NPC com o mesmo tamanho |
+| 134.5 | `/kn8 host infect` + `/kn8 host form` ao lado de um `kn8:kaiju_no8` | Os dois com 3 m (mesmo com um `kn8-server.toml` antigo com `height = 2`) |
+| 134.6 | Mundo novo, `/locate structure kn8:tachikawa_base` e voar em volta | Cidade ao norte e bairros nos lados e diagonais encostados na base (anel de até 8 peças, ~720 x 720 blocos); em terreno muito ruim (lago, oceano) algum bairro pode faltar |

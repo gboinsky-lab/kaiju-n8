@@ -61,7 +61,7 @@ public final class AjustesTwoGameTests {
                     .getBbHeight());
             helper.assertTrue(Math.abs(giant.getBbHeight() - 22.0F) < 0.2F, "Gigante com 22 m: " + giant
                     .getBbHeight());
-            helper.assertTrue(small.getMaxHealth() == 2400.0F && giant.getMaxHealth() == 6000.0F,
+            helper.assertTrue(small.getMaxHealth() == 1800.0F && giant.getMaxHealth() == 4500.0F,
                     "Vida " + small.getMaxHealth() + " / " + giant.getMaxHealth());
             small.discard();
             giant.discard();
@@ -72,11 +72,12 @@ public final class AjustesTwoGameTests {
     @GameTest(template = "empty_3x3")
     public static void bigInvasionsWithNumberedSoundTheMajorThreat(GameTestHelper helper) {
         for (String big : List.of("no10_assault", "mass_resurrection", "ariake_assault", "tachikawa_raid",
-                "kaiju_horde", "shinagawa_ants")) {
+                "shinagawa_ants")) {
             helper.assertTrue(InvasionService.isMajorThreat(KN8Data.INVASION.server().get(KN8Constants.id(big))),
                     "Sem aviso de ameaca grande: " + big);
         }
-        for (String small : List.of("honju_assault", "no9_resurrection", "spider_swarm", "diclonius_attack")) {
+        for (String small : List.of("honju_assault", "no9_resurrection", "spider_swarm", "diclonius_attack",
+                "kaiju_horde")) {
             helper.assertFalse(InvasionService.isMajorThreat(KN8Data.INVASION.server().get(KN8Constants.id(small))),
                     "Aviso de ameaca grande sem precisar: " + small);
         }

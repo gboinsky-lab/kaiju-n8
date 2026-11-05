@@ -45,6 +45,8 @@ public final class Invasion {
     int wave;
     long phaseEndsTick;
     int killed;
+    /** AJUSTES-3: o aviso de ameaca grande ja tocou nesta invasao (na abertura ou com uma surpresa numerada). */
+    boolean majorThreatSounded;
 
     Invasion(ResourceLocation id, InvasionDef def, BlockPos center, long now, ServerBossEvent bar) {
         this.id = id;

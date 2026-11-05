@@ -78,7 +78,20 @@ de intenção. Os sons de antes (27 eventos) continuam; os novos entram por cima
 - **Aviso de ameaça grande** (`alert.major_threat`): invasão de nível 4+ com numerado, ~3 s depois da abertura.
 - Sem alarme de aproximação (A11) e sem som de fundo nas lutas comuns (decisão do Miguel de 2026-11-05).
 
-## 6. O que ficou de fora
+## 6. SONS-2 (AJUSTES-3, Miguel 2026-11-05: "alguns sons estao muito fofinhos")
+
+Refeitos com estalo de banda larga no ataque, sub-grave de 30-60 Hz, corpo distorcido e cauda longa
+(`transient`, `sub_hit`, `rolling`, `power`, `power_charge`, `lightning_strike`, `impact` no `gen_sounds_sons.py`):
+cargas (`technique.charge`, `mina_charge`, `kaiju.energy_charge`, `kaiju.windup`), socos (`fist_swing`, `fist_hit`,
+`no8_punch`, `no8_rupture`, `kaiju.punch`, `isao_punch`, `isao_blast`, `isao_thunder`), machado e o **raio caindo**
+do Falling Thunder/Half-Moon (`kikoru_thunder`: rasgo do canal, estalo, chiado e trovão rolando por 3 s), tiros
+(`cannon_shot`, `narumi_shot`, `reno_shot`, `finger_gun`), energia (`energy_beam`), explosões (`mina_explosion`,
+`narumi_blast`, `self_destruct`, `ice_shatter`) e o corte que voa (`hoshina_release`). Medido (1ª variação, antes ->
+depois): pico de 50 ms subiu 1-10 dB (fist_swing -12,5 -> -6,1; kikoru_swing -13,2 -> -5,0; hoshina_release -15,5 ->
+-5,4; mina_charge -8,2 -> -5,6) e a fração de energia abaixo de 120 Hz da carga do canhão foi de 3% para 71%.
+Prévia antes -> depois: `docs/audio/previa_sons2_antes_depois.mp3`.
+
+## 7. O que ficou de fora
 
 - Os sons são síntese: julgados por medida (volume, duração, faixa de frequência) e pelas legendas. Ouvir e
   aprovar é do Miguel.

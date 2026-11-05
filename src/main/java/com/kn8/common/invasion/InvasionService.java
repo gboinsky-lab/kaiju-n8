@@ -81,6 +81,10 @@ public final class InvasionService {
     private static final ResourceLocation ALARM_MAJOR_THREAT = KN8Constants.id("alert.major_threat");
     private static final int MAJOR_THREAT_LEVEL = 4;
     private static final int MAJOR_THREAT_DELAY_TICKS = 60;
+    /** AJUSTES-3: numerado com chance menor que esta e surpresa: o aviso toca so se ele vier (na hora da onda). */
+    private static final float MAJOR_THREAT_MIN_CHANCE = 0.25F;
+    private static final ResourceLocation RAMPAGE_NO8 = KN8Constants.id("kaiju_no8_rampage");
+    private static final ResourceLocation RAMPAGE_NO8_GIANT = KN8Constants.id("kaiju_no8_rampage_giant");
     private static final double MARCH_SPEED = 1.0;
     /** Kaiju sem alvo a menos disso do centro param de marchar (passeiam/atacam na area). */
     private static final double MARCH_STOP = 10.0;
@@ -120,7 +124,9 @@ public final class InvasionService {
         alarm(level, invasion, ALARM_START);
         if (isMajorThreat(def.get())) {
             KN8Server.get(level.getServer()).schedule(MAJOR_THREAT_DELAY_TICKS, () -> {
-                if (KN8Server.get(level.getServer()).invasions().get(level.dimension()) == invasion) {
+                if (KN8Server.get(level.getServer()).invasions().get(level.dimension()) == invasion
+                        && !invasion.majorThreatSounded) {
+                    invasion.majorThreatSounded = true;
                     alarm(level, invasion, ALARM_MAJOR_THREAT);
                 }
             });
@@ -241,14 +247,19 @@ public final class InvasionService {
                 }
                 BlockPos pos = KaijuSpawner.surfaceAround(level, invasion.center, invasion.def.spawnMin(),
                         invasion.def.spawnMax(), level.random);
+                boolean surprise = spawn.chance() < 1.0F;
                 KaijuSpawner.spawn(level, spawn.species(), pos).ifPresent(kaiju -> {
                     enlist(invasion, kaiju);
+                    if (surprise) {
+                        surpriseThreat(level, invasion, kaiju);
+                    }
                     if (wave.massRevive() && kaiju instanceof KaijuNo9Entity) {
                         kaiju.getPersistentData().putBoolean(No9Service.MASS_TAG, true);
                     }
                 });
             }
         }
+        rampageNo8(level, invasion);
         wave.boss().ifPresent(boss -> BossService.spawn(level, boss, KaijuSpawner.surfaceAround(level,
                 invasion.center, invasion.def.spawnMin(), invasion.def.spawnMax(), level.random))
                 .ifPresent(kaiju -> enlist(invasion, kaiju)));
@@ -523,13 +534,50 @@ public final class InvasionService {
         }
     }
 
-    /** AJUSTES-2: invasao grande (nivel 4+) com algum kaiju numerado nas ondas, inclusive os de surpresa. */
+    /**
+     * AJUSTES-2/3: invasao grande (nivel 4+) com kaiju numerado que vem com certeza ou com boa chance (25%+). As
+     * surpresas raras (1%) tocam o aviso so quando aparecem ({@link #surpriseThreat}).
+     */
     public static boolean isMajorThreat(InvasionDef def) {
         if (def.level() < MAJOR_THREAT_LEVEL) {
             return false;
         }
-        return def.waves().stream().flatMap(wave -> wave.kaiju().stream()).anyMatch(spawn -> KN8Data.KAIJU
-                .get(spawn.species(), false).map(KaijuDef::kaijuClass).orElse(KaijuClass.YOJU) == KaijuClass.NUMBERED);
+        return def.waves().stream().flatMap(wave -> wave.kaiju().stream())
+                .filter(spawn -> spawn.chance() >= MAJOR_THREAT_MIN_CHANCE)
+                .anyMatch(spawn -> numbered(spawn.species()));
+    }
+
+    private static boolean numbered(ResourceLocation species) {
+        return KN8Data.KAIJU.get(species, false).map(KaijuDef::kaijuClass).orElse(KaijuClass.YOJU)
+                == KaijuClass.NUMBERED;
+    }
+
+    /** AJUSTES-3: surpresa numerada que de fato veio: o aviso de ameaca grande toca agora (uma vez por invasao). */
+    private static void surpriseThreat(ServerLevel level, Invasion invasion, KaijuEntity kaiju) {
+        if (!invasion.majorThreatSounded && numbered(kaiju.kaijuId())) {
+            invasion.majorThreatSounded = true;
+            alarm(level, invasion, ALARM_MAJOR_THREAT);
+        }
+    }
+
+    /**
+     * AJUSTES-3 (Miguel 2026-11-05: o No. 8 sem controle "deve aparecer em uma invasao aleatoria mas tem pouca
+     * chance"): na ultima onda de qualquer invasao, com {@code [invasion] rampageNo8Chance}, entra um No. 8 sem
+     * controle (o colossal a partir de {@code rampageNo8GiantLevel}).
+     */
+    private static void rampageNo8(ServerLevel level, Invasion invasion) {
+        if (invasion.wave != invasion.def.waves().size() - 1
+                || level.random.nextDouble() >= ServerConfig.INVASION_RAMPAGE_NO8_CHANCE.get()) {
+            return;
+        }
+        ResourceLocation species = invasion.def.level() >= ServerConfig.INVASION_RAMPAGE_NO8_GIANT_LEVEL.get()
+                ? RAMPAGE_NO8_GIANT : RAMPAGE_NO8;
+        BlockPos pos = KaijuSpawner.surfaceAround(level, invasion.center, invasion.def.spawnMin(),
+                invasion.def.spawnMax(), level.random);
+        KaijuSpawner.spawn(level, species, pos).ifPresent(kaiju -> {
+            enlist(invasion, kaiju);
+            surpriseThreat(level, invasion, kaiju);
+        });
     }
 
     /** Alerta da onda pela maior ameaca dela: chefe ou nivel 5+ = critico, depois numerado, Honju e Yoju. */

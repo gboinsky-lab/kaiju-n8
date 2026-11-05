@@ -168,40 +168,6 @@ def defeat(rng):
 
 
 # ------------------------------------------------------------------------------------------------- kaiju
-def kaiju_windup(rng):
-    """Preparo de golpe pesado: rosnado crescendo por cima de um ronco do chao (no lugar do Warden)."""
-    s = 1.3
-    t = t_axis(s)
-    growl = roar_voice(s, rng, [(0, 38), (1, 52)], [(0, 0.0), (1, 0.6)], rasp=0.7, rough_hz=24, sub=0.9)
-    rumble = lowpass_steep(noise(s, rng), 90, 3) * 30 * (t / s)
-    return normalize(drive(growl * (0.3 + t / s) + rumble, 1.5)) * 0.9
-
-
-def energy_charge(rng):
-    """Carga de raio de energia na boca: zumbido grave subindo com descargas."""
-    s = 1.4
-    t = t_axis(s)
-    hum = saw(sweep(s, 60, 180, 1.4)) * 0.5 + np.sin(sweep(s, 120, 420, 1.6)) * 0.5
-    return normalize(drive(lowpass_steep(hum, 1500, 2) * (t / s) + electric(s, rng, 0.002) * (t / s) * 0.8, 1.6))
-
-
-def energy_beam(rng):
-    """Disparo do raio: estouro grave + feixe chiando que vai sumindo."""
-    s = 1.3
-    t = t_axis(s)
-    blast = thump(s, 120, 40, rng, 0.6) * 0.9
-    beam = (saw(sweep(s, 220, 140)) * 0.3 + bandpass(noise(s, rng), 800, 5000) * 0.8) * np.exp(-t * 2.5)
-    return normalize(drive(blast + lowpass_steep(beam, 6000, 2) + electric(s, rng, 0.003) * np.exp(-t * 3), 1.8))
-
-
-def finger_gun(rng):
-    """Finger Gun do No. 9: estalo supersonico seco (bala), sem cauda de polvora."""
-    s = 0.4
-    t = t_axis(s)
-    snap = bandpass(noise(s, rng), 2500, 11000) * np.exp(-t * 160) * 3
-    whip = np.sin(sweep(s, 2200, 600)) * np.exp(-t * 40) * 0.5
-    body = lowpass_steep(noise(s, rng), 900, 2) * 8 * np.exp(-t * 35)
-    return normalize(drive(snap + whip + body, 2.0)) * 0.85
 
 
 def acid_spray(rng):
@@ -252,12 +218,6 @@ def tail_swipe(rng):
     return normalize(whoosh(s, 180, 700, rng, low=1.4) * (1 + 0.3 * np.sin(2 * np.pi * 6 * t)))
 
 
-def kaiju_punch(rng):
-    """Soco de kaiju (No. 9, No. 10, No. 13): baque de carne grande."""
-    s = 0.7
-    return normalize(drive(thump(s, 100, 35, rng, 0.5) * 1.4 + flesh(s, rng, 300, 1800, 12), 1.8))
-
-
 def charge_rush(rng):
     """Investida: galope pesado acelerando (4 passos) e o sopro do corpo."""
     s = 1.2
@@ -281,20 +241,9 @@ def grab(rng):
     return normalize(drive(snap + flesh(s, rng, 400, 2000, 20), 1.6)) * 0.85
 
 
-def self_destruct(rng):
-    """Autodestruicao do Preondactyl: explosao enorme com cauda longa."""
-    s = 2.4
-    t = t_axis(s)
-    boom = thump(s, 55, 20, rng, 1.0) * 1.6
-    roar = lowpass_steep(noise(s, rng), 600, 2) * 10 * np.exp(-t * 1.6)
-    return normalize(drive(boom + roar, 2.0))
 
 
 # ------------------------------------------------------------------------------------------------- tecnicas
-def technique_charge(rng):
-    """Carga generica de tecnica (Release subindo no traje): zumbido curto subindo."""
-    s = 0.6
-    return normalize(charge_up(s, rng, 300, 900, 0.4) * env(s, 0.05, 0.6, 0.4)) * 0.7
 
 
 def hoshina_slash(rng):
@@ -302,15 +251,6 @@ def hoshina_slash(rng):
     s = rng.uniform(0.22, 0.26)
     blades = ring(s, [4200, 6100, 8300], 14, rng) * 0.35
     return tame(whoosh(s, rng.uniform(2200, 2600), rng.uniform(5200, 6200), rng) + blades, 9000) * 0.85
-
-
-def hoshina_release(rng):
-    """Kuuchi e cortes que voam: estalo de ar cortado e o assobio do corte saindo."""
-    s = 0.6
-    t = t_axis(s)
-    crack = bandpass(noise(s, rng), 3000, 9000) * np.exp(-t * 90) * 2
-    fly = np.sin(sweep(s, 3200, 1400)) * np.exp(-t * 6) * 0.25
-    return tame(crack + whoosh(s, 1800, 4800, rng) + fly + ring(s, [4400, 6600], 10, rng) * 0.2, 9500)
 
 
 def tail_slash(rng):
@@ -321,135 +261,12 @@ def tail_slash(rng):
     return tame(whoosh(s, 700, 2600, rng, low=0.3) + crack + ring(s, [2900, 4100], 12, rng) * 0.2, 8000)
 
 
-def kikoru_swing(rng):
-    """Machado da Kikoru: giro grave e um chiado eletrico dourado no fim."""
-    s = 0.7
-    t = t_axis(s)
-    spin = 1 + 0.5 * np.sin(2 * np.pi * np.interp(t, [0, s], [8, 13]) * t)
-    zap = electric(s, rng, 0.003) * np.clip((t - 0.35) / 0.1, 0, 1) * np.exp(-np.maximum(t - 0.45, 0) * 8)
-    return normalize(whoosh(s, 260, 1100, rng, low=1.1) * spin + zap * 0.6)
-
-
-def kikoru_thunder(rng):
-    """Falling Thunder/Half-Moon: trovao (estalo + ronco) e o machado cravando."""
-    s = 1.8
-    t = t_axis(s)
-    bolt = bandpass(noise(s, rng), 1500, 9000) * np.exp(-t * 40) * 2.5
-    rumble = lowpass_steep(noise(s, rng), 160, 3) * 40 * np.exp(-t * 1.8) * np.clip(t / 0.05, 0, 1)
-    hit = at(axe_hit(rng), 0.04, s) * 0.8
-    return normalize(drive(bolt + rumble + hit + electric(s, rng, 0.002) * np.exp(-t * 3), 1.8))
-
-
 def narumi_thrust(rng):
     """Estocada da baioneta: perfuracao reta (ar subindo rapido) e o 'tsk' da ponta."""
     s = 0.25
     t = t_axis(s)
     tip = bandpass(noise(s, rng), 5000, 11000) * np.exp(-np.maximum(t - 0.16, 0) * 70) * (t > 0.16) * 2
     return tame(whoosh(s, 1800, 5200, rng) + tip + ring(s, [3600, 5200], 18, rng) * 0.2, 9500) * 0.85
-
-
-def narumi_shot(rng):
-    """Tiro da baioneta: disparo seco e alto, mais curto que o rifle."""
-    return gunshot(rng, 0.45, 2000, 1300, 12)
-
-
-def narumi_blast(rng):
-    """Seven-Branched Sword/Thunder Fire: rajada de explosoes pequenas em sequencia."""
-    s = 1.6
-    out = np.zeros(int(s * RATE))
-    for k in range(5):
-        out += at(thump(0.5, 140, 50, rng, 0.8) * (1.0 - k * 0.1), k * 0.17 + rng.uniform(0, 0.03), s)
-    return normalize(drive(out, 1.7))
-
-
-def isao_punch(rng):
-    """Soco das manoplas: estampido de ar comprimido + baque metalico."""
-    s = 0.5
-    t = t_axis(s)
-    pop = air_burst(s, rng, 400, 3500, 25) * 2
-    clank = clang(rng, s, [900, 1450, 2100], 18) * 0.35
-    return normalize(drive(thump(s, 130, 50, rng, 0.4) + pop + clank, 1.8))
-
-
-def isao_blast(rng):
-    """Onda de choque das manoplas (Force/Spiral Blast): estouro e o ar rasgando a frente."""
-    s = 1.1
-    t = t_axis(s)
-    burst = air_burst(s, rng, 200, 3000, 6) * 2.2
-    return normalize(drive(thump(s, 85, 30, rng, 0.7) + burst + whoosh(s, 500, 2200, rng) * 0.5, 1.9))
-
-
-def isao_thunder(rng):
-    """Thunder Emperor: barragem de socos fortes em rajada (9 golpes) e o ultimo enorme."""
-    s = 2.0
-    out = np.zeros(int(s * RATE))
-    for k in range(8):
-        out += at(isao_punch(rng) * 0.6, k * 0.11, s)
-    out += at(isao_blast(rng) * 1.2, 0.95, s)
-    return normalize(drive(out, 1.4))
-
-
-def fist_swing(rng):
-    """Soco comum (punho do No. 8, do Isao e da forma do jogador): sopro curto e grave."""
-    return normalize(whoosh(0.22, rng.uniform(500, 650), rng.uniform(1500, 1900), rng, low=0.6)) * 0.8
-
-
-def fist_hit(rng):
-    """Soco que acerta: carne e osso."""
-    s = 0.35
-    return normalize(drive(thump(s, 140, 55, rng, 0.3) + flesh(s, rng, 400, 2500, 22) * 1.5, 1.8)) * 0.9
-
-
-def no8_punch(rng):
-    """Soco do No. 8: muito grave, com o ar estourando e um eco de bicho grande."""
-    s = 0.9
-    t = t_axis(s)
-    body = thump(s, 75, 25, rng, 0.6) * 1.5 + air_burst(s, rng, 250, 2500, 10) * 1.6
-    return normalize(drive(room(body, 1.4), 1.9))
-
-
-def no8_rupture(rng):
-    """Soco de ruptura: carga de ar sugado, estouro enorme e destrocos."""
-    s = 2.0
-    t = t_axis(s)
-    suck = at(whoosh(0.35, 3000, 600, rng) * 0.6, 0.0, s)
-    blast = at(no8_punch(rng) * 1.3, 0.3, s)
-    debris = bandpass(noise(s, rng), 300, 2500) * (rng.uniform(0, 1, len(t)) > 0.97) * np.exp(-np.maximum(
-        t - 0.35, 0) * 2.5) * (t > 0.35)
-    return normalize(drive(suck + blast + lowpass_steep(debris, 1800, 2) * 7, 1.5))
-
-
-def mina_charge(rng):
-    """Carga do canhao da Mina: capacitor subindo ate um apito alto (1,6 s)."""
-    s = 1.6
-    t = t_axis(s)
-    cap = charge_up(s, rng, 180, 2600, 0.25) + saw(sweep(s, 50, 110)) * 0.15
-    return normalize(lowpass_steep(cap, 7000, 2) * env(s, 0.05, 0.3, 1.45)) * 0.75
-
-
-def cannon_shot(rng):
-    """Canhao da Mina: estrondo enorme com coice e eco longo."""
-    s = 1.6
-    t = t_axis(s)
-    crack = bandpass(noise(s, rng), 900, 8000) * np.exp(-t * 60) * 2
-    boom = thump(s, 65, 22, rng, 0.8) * 1.6
-    tail = lowpass_steep(noise(s, rng), 500, 2) * 6 * np.exp(-t * 2.2) * (t > 0.08)
-    return normalize(drive(room(crack + boom + tail, 1.8), 2.2))
-
-
-def mina_explosion(rng):
-    """Explosao do tiro da Mina no alvo."""
-    s = 1.8
-    t = t_axis(s)
-    return normalize(drive(thump(s, 60, 20, rng, 1.0) * 1.5 + lowpass_steep(noise(s, rng), 900, 2) * 9
-                           * np.exp(-t * 2.4), 2.0))
-
-
-def reno_shot(rng):
-    """Tiro do Reno: rifle limpo com uma cauda de gelo trincando."""
-    s = 0.8
-    shot = gunshot(rng, s, 1300, 800, 7)
-    return normalize(shot + at(ice_crack(0.5, rng, 6) * 0.5, 0.12, s))
 
 
 def ice_freeze(rng):
@@ -460,12 +277,6 @@ def ice_freeze(rng):
     return tame(ice_crack(s, rng, 22) + frost, 11000) * 0.85
 
 
-def ice_shatter(rng):
-    """Gelo estilhacando (explosao congelante do No. 6)."""
-    s = 1.2
-    t = t_axis(s)
-    burst = bandpass(noise(s, rng), 2000, 10000) * np.exp(-t * 10) * 1.5
-    return normalize(drive(burst + ice_crack(s, rng, 30) + thump(s, 110, 50, rng, 0.3) * 0.6, 1.5))
 
 
 # ------------------------------------------------------------------------------------------------- jogador
@@ -590,6 +401,279 @@ def tail_guard(rng):
     hit = bandpass(noise(s, rng), 1500, 7000) * np.exp(-t * 70) * 2
     metal = ring(s, [1750, 2650, 4100, 5600], 7, rng) * 0.6
     return normalize(drive(hit + metal + thump(s, 220, 90, rng, 0.2) * 0.5, 1.5)) * 0.85
+
+
+# ------------------------------------------------------------------------------------------------- SONS-2
+# Miguel 2026-11-05: "alguns sons estao muito fofinhos ... ataques de carregamento tem que ser potentes e fortes; o
+# Falling Thunder deveria ter som de raio caindo; vale para soco, energia, tiro e tudo mais". Pecas de impacto com
+# sub-grave (30-60 Hz), estalo de banda larga no ataque, corpo distorcido e cauda longa; cargas que crescem em
+# grave, aspereza e descargas ate travar com um baque.
+def transient(seconds, rng, low=1500, high=12000, rate=220, gain=3.0):
+    """Estalo do ataque (o 'tapa' que da forca ao golpe): ruido largo que some em poucos ms."""
+    t = t_axis(seconds)
+    return bandpass(noise(seconds, rng), low, high) * np.exp(-t * rate) * gain
+
+
+def sub_hit(seconds, f0, f1, decay=4.0, gain=1.6):
+    """Sub-grave do impacto: senoide descendo devagar, sentida mais do que ouvida."""
+    t = t_axis(seconds)
+    return np.sin(sweep(seconds, f0, f1, 0.4)) * np.exp(-t * decay) * np.clip(t / 0.004, 0, 1) * gain
+
+
+def rolling(seconds, rng, cutoff=180, decay=1.2, start=0.0, wobble=2.5, gain=30.0):
+    """Ronco que rola (trovao, desabamento): grave filtrado com ondas lentas de volume."""
+    t = t_axis(seconds)
+    swell = 0.55 + 0.45 * lowpass_steep(noise(seconds, rng), wobble, 2) * 60
+    body = lowpass_steep(noise(seconds, rng), cutoff, 3) * gain * np.clip(swell, 0.15, 1.6)
+    return body * np.exp(-np.maximum(t - start, 0) * decay) * np.clip((t - start) / 0.03, 0, 1)
+
+
+def power(signal, amount=2.4, peak=0.95):
+    """Compressao forte (tanh) e volume no talo: o som 'empurra'."""
+    return normalize(drive(signal, amount), peak)
+
+
+def power_charge(seconds, rng, f0, f1, whine0, whine1, grit=0.6, lock=True):
+    """Carga potente: dente-de-serra grave desafinado subindo e distorcendo, ronco de turbina que abre o filtro,
+    apito aspero subindo, descargas cada vez mais densas e, no fim, o baque da trava."""
+    t = t_axis(seconds)
+    rise = (t / seconds) ** 1.3
+    low = (saw(sweep(seconds, f0, f1, 1.3)) + saw(sweep(seconds, f0 * 1.012, f1 * 1.012, 1.3)) * 0.8
+           + np.sin(sweep(seconds, f0 / 2, f1 / 2, 1.3)) * 0.9)
+    low = lowpass(low, 200 + 2600 * rise) * (0.35 + 0.9 * rise)
+    turbine = lowpass(bandpass(noise(seconds, rng), 80, 2000), 300 + 4000 * rise) * 4 * rise
+    whine = saw(sweep(seconds, whine0, whine1, 1.6)) * 0.22 * rise ** 1.5
+    sparks = electric(seconds, rng, 0.001 + 0.006 * rise[-1] * 0.5) * rise * grit
+    out = drive(low + turbine + lowpass_steep(whine, 6000, 2) + sparks, 2.2)
+    if lock:
+        out = out + at(sub_hit(0.35, 90, 40, 9) + transient(0.35, rng, 800, 6000, 120, 1.2), seconds - 0.08,
+                       seconds + 0.3)[:len(out)]
+    return normalize(out, 0.95)
+
+
+def lightning_strike(rng, seconds=3.2):
+    """Raio caindo: rasgo agudo em rajada (o canal abrindo), estalo enorme, chiado eletrico e o trovao rolando."""
+    t = t_axis(seconds)
+    rip = np.zeros(len(t))
+    for k in range(6):
+        start = 0.012 * k + rng.uniform(0, 0.006)
+        g = t >= start
+        rip[g] += bandpass(noise(seconds, rng), 1800, 14000)[g] * np.exp(-(t[g] - start) * 160) * (1.6 - k * 0.15)
+    crack = transient(seconds, rng, 500, 14000, 45, 4.0)
+    sizzle = bandpass(noise(seconds, rng), 2500, 8000) * (rng.uniform(0, 1, len(t)) > 0.6) * np.exp(-t * 6) * 0.9
+    boom = sub_hit(seconds, 70, 28, 1.6, 2.2)
+    thunder = rolling(seconds, rng, 220, 0.9, 0.08, 2.0, 45.0)
+    return power(room(rip + crack + sizzle + boom, 2.2) + thunder, 2.6)
+
+
+def impact(rng, seconds, sub0, sub1, body_low, body_high, crack_gain=3.0, tail=1.5, size=1.4):
+    """Impacto pesado generico (soco, onda, explosao pequena)."""
+    t = t_axis(seconds)
+    body = bandpass(noise(seconds, rng), body_low, body_high) * np.exp(-t * 14) * 3
+    return room(transient(seconds, rng, 1200, 11000, 200, crack_gain) + sub_hit(seconds, sub0, sub1, tail * 2.5)
+                + body + rolling(seconds, rng, 160, tail * 2, 0.0, 3.0, 18.0), size)
+
+
+# --- cargas
+def technique_charge(rng):
+    """Carga de tecnica (Release subindo no traje): turbina grave subindo e travando em 0,8 s."""
+    return power_charge(0.8, rng, 45, 110, 500, 2200, 0.7) * 0.9
+
+
+def mina_charge(rng):
+    """Carga do canhao da Mina: canhao enorme energizando (1,6 s) ate travar com um baque metalico."""
+    s = 1.6
+    out = power_charge(s, rng, 32, 95, 300, 2600, 0.9)
+    clunk = at(clang(rng, 0.5, [420, 640, 980], 9) * 0.5, s - 0.08, s + 0.4)[:len(out)]
+    return power(out + clunk, 1.6)
+
+
+def energy_charge(rng):
+    """Carga do raio de energia na boca do kaiju: ronco de plasma subindo com descargas fortes."""
+    s = 1.4
+    out = power_charge(s, rng, 28, 80, 200, 1400, 1.2, lock=False)
+    t = t_axis(s)
+    roar = rolling(s, rng, 300, 0.0, 0.0, 6.0, 20.0) * (t / s)
+    return power(out + roar, 1.8)
+
+
+def kaiju_windup(rng):
+    """Preparo de golpe pesado: rosnado crescendo por cima de um ronco do chao que sobe ate tremer."""
+    s = 1.3
+    t = t_axis(s)
+    growl = roar_voice(s, rng, [(0, 36), (1, 50)], [(0, 0.1), (1, 0.8)], rasp=0.9, rough_hz=24, sub=1.0)
+    ground = rolling(s, rng, 110, 0.0, 0.0, 4.0, 40.0) * (t / s) ** 1.2
+    return power(growl * (0.4 + t / s) + ground + sub_hit(s, 40, 55, 0.2, 0.6) * (t / s), 2.0)
+
+
+# --- golpes
+def fist_swing(rng):
+    """Soco comum: ar deslocado pesado (punho grande, nao um sopro)."""
+    s = 0.28
+    t = t_axis(s)
+    air = whoosh(s, rng.uniform(380, 480), rng.uniform(1300, 1600), rng, low=1.2)
+    return power(air + sub_hit(s, 90, 60, 8, 0.5) * np.sin(np.pi * t / s), 1.6, 0.85)
+
+
+def fist_hit(rng):
+    """Soco que acerta: estalo, carne e o baque grave do corpo."""
+    s = 0.5
+    return power(impact(rng, s, 110, 45, 300, 2200, 2.5, 3.0, 0.8) + flesh(s, rng, 400, 2500, 22) * 1.2, 2.2)
+
+
+def no8_punch(rng):
+    """Soco do No. 8: estalo enorme, sub-grave que treme e o ar estourando, com eco de bicho grande."""
+    s = 1.2
+    t = t_axis(s)
+    burst = air_burst(s, rng, 200, 3000, 9) * 2.0
+    return power(impact(rng, s, 75, 30, 150, 1500, 4.0, 1.2, 1.6) + burst, 2.6)
+
+
+def no8_rupture(rng):
+    """Soco de ruptura: ar sugado em carga, estouro brutal, sub-grave longo e destrocos caindo."""
+    s = 2.6
+    t = t_axis(s)
+    suck = power_charge(0.45, rng, 60, 160, 2400, 700, 0.5, lock=False) * 0.7
+    blast = impact(rng, s - 0.4, 60, 22, 120, 1800, 5.0, 0.8, 2.2) * 1.4
+    debris = bandpass(noise(s, rng), 300, 3000) * (rng.uniform(0, 1, len(t)) > 0.97) * np.exp(
+        -np.maximum(t - 0.5, 0) * 2.0) * (t > 0.5) * 8
+    return power(at(suck, 0.0, s) + at(blast, 0.4, s) + lowpass_steep(debris, 2200, 2), 2.4)
+
+
+def kaiju_punch(rng):
+    """Soco de kaiju (No. 9, No. 10, No. 13): estalo de couraca e baque enorme."""
+    s = 1.0
+    return power(impact(rng, s, 70, 28, 200, 1600, 3.5, 1.4, 1.6) + flesh(s, rng, 300, 1800, 10) * 0.8, 2.4)
+
+
+def isao_punch(rng):
+    """Soco das manoplas: disparo pneumatico (estampido) com baque metalico pesado."""
+    s = 0.7
+    pop = air_burst(s, rng, 300, 5000, 22) * 3
+    clank = clang(rng, s, [700, 1150, 1750], 14) * 0.5
+    return power(impact(rng, s, 95, 38, 250, 2500, 3.5, 2.0, 1.0) + pop + clank, 2.4)
+
+
+def isao_blast(rng):
+    """Onda de choque das manoplas: estouro de pressao, ar rasgando e o chao tremendo."""
+    s = 1.5
+    burst = air_burst(s, rng, 150, 4000, 5) * 3
+    return power(impact(rng, s, 60, 25, 120, 2000, 4.0, 1.0, 1.8) + burst + whoosh(s, 400, 2400, rng) * 0.7, 2.5)
+
+
+def isao_thunder(rng):
+    """Thunder Emperor: barragem de 8 socos pneumaticos e o ultimo como uma explosao."""
+    s = 2.6
+    out = np.zeros(int(s * RATE))
+    for k in range(8):
+        out += at(isao_punch(rng) * 0.7, k * 0.11, s)
+    out += at(isao_blast(rng) * 1.3, 0.95, s)
+    return power(out, 1.6)
+
+
+def kikoru_swing(rng):
+    """Machado da Kikoru: lamina enorme cortando o ar e descargas eletricas estalando no fim."""
+    s = 0.75
+    t = t_axis(s)
+    spin = 1 + 0.5 * np.sin(2 * np.pi * np.interp(t, [0, s], [7, 12]) * t)
+    zap = electric(s, rng, 0.006) * np.clip((t - 0.3) / 0.06, 0, 1) * np.exp(-np.maximum(t - 0.45, 0) * 6) * 1.6
+    return power(whoosh(s, 220, 1000, rng, low=1.6) * spin + zap + transient(s, rng, 2000, 9000, 50, 0.6) * (t > 0.35),
+                 2.0, 0.9)
+
+
+def kikoru_thunder(rng):
+    """Falling Thunder/Half-Moon/golpe no chao: o raio caindo (rasgo, estalo, trovao rolando) e o machado cravando."""
+    s = 3.2
+    strike = lightning_strike(rng, s)
+    hit = at(axe_hit(rng) * 0.9, 0.03, s) + at(sub_hit(0.8, 60, 25, 4, 1.4), 0.03, s)
+    return power(strike + hit, 1.8)
+
+
+# --- tiros e energia
+def cannon_shot(rng):
+    """Canhao da Mina: estalo supersonico, estrondo que bate no peito, coice metalico e eco longo rolando."""
+    s = 2.6
+    t = t_axis(s)
+    blast = transient(s, rng, 600, 12000, 80, 5.0) + sub_hit(s, 55, 22, 1.8, 2.6)
+    body = lowpass_steep(noise(s, rng), 900, 2) * 14 * np.exp(-t * 7)
+    clank = clang(rng, s, [380, 610, 900], 10) * 0.3
+    echo = rolling(s, rng, 400, 1.1, 0.1, 1.5, 35.0)
+    return power(room(blast + body + clank, 2.4) + echo, 2.8)
+
+
+def mina_explosion(rng):
+    """Explosao do tiro da Mina: detonacao enorme, sub-grave e destrocos rolando."""
+    s = 2.4
+    t = t_axis(s)
+    debris = bandpass(noise(s, rng), 400, 3000) * (rng.uniform(0, 1, len(t)) > 0.985) * np.exp(-t * 1.8) * 6
+    return power(impact(rng, s, 50, 20, 100, 2500, 5.0, 0.7, 2.2) + lowpass_steep(debris, 2500, 2), 2.8)
+
+
+def narumi_shot(rng):
+    """Tiro da baioneta: disparo pesado e seco com coice grave."""
+    s = 0.7
+    return power(gunshot(rng, s, 1600, 1100, 9) + sub_hit(s, 110, 45, 9, 0.9) + transient(s, rng, 1500, 12000, 260,
+                                                                                                  2.0), 2.0)
+
+
+def narumi_blast(rng):
+    """Seven-Branched Sword/Thunder Fire: explosoes fortes em sequencia, cada uma com estalo e sub-grave."""
+    s = 2.0
+    out = np.zeros(int(s * RATE))
+    for k in range(5):
+        out += at(impact(rng, 0.7, 90, 35, 150, 2500, 3.0, 2.0, 1.0) * (1.0 - k * 0.08), k * 0.17
+                  + rng.uniform(0, 0.03), s)
+    return power(out, 2.0)
+
+
+def reno_shot(rng):
+    """Tiro do Reno: rifle pesado com coice e a cauda de gelo trincando."""
+    s = 0.9
+    shot = gunshot(rng, s, 1300, 800, 7) + sub_hit(s, 100, 45, 8, 0.8) + transient(s, rng, 1500, 12000, 240, 1.6)
+    return power(shot + at(ice_crack(0.5, rng, 8) * 0.6, 0.12, s), 2.0)
+
+
+def finger_gun(rng):
+    """Finger Gun do No. 9: estalo supersonico violento, como uma bala grossa, e o baque do ar."""
+    s = 0.6
+    t = t_axis(s)
+    snap = transient(s, rng, 1200, 14000, 160, 4.0) + sub_hit(s, 120, 50, 10, 0.9)
+    whip = bandpass(noise(s, rng), 3000, 10000) * np.exp(-np.maximum(t - 0.01, 0) * 40) * 0.8
+    return power(room(snap + whip, 1.2), 2.4)
+
+
+def energy_beam(rng):
+    """Disparo do raio de energia: estouro, plasma rugindo e descargas, sumindo devagar."""
+    s = 1.8
+    t = t_axis(s)
+    blast = transient(s, rng, 400, 9000, 50, 3.5) + sub_hit(s, 70, 30, 1.6, 2.0)
+    plasma = (saw(sweep(s, 110, 70)) * 0.6 + saw(sweep(s, 111.5, 71)) * 0.5) * np.exp(-t * 1.4)
+    roar = bandpass(noise(s, rng), 300, 4000) * 2.4 * np.exp(-t * 1.8)
+    return power(lowpass_steep(plasma, 2500, 2) + roar + blast + electric(s, rng, 0.006) * np.exp(-t * 2) * 1.5, 2.6)
+
+
+def self_destruct(rng):
+    """Autodestruicao do Preondactyl: explosao gigante com o chao tremendo por segundos."""
+    s = 3.2
+    return power(impact(rng, s, 45, 18, 80, 2500, 5.0, 0.5, 2.8) + rolling(s, rng, 160, 0.8, 0.1, 1.5, 40.0), 2.8)
+
+
+def ice_shatter(rng):
+    """Explosao congelante do No. 6: estouro de cristal enorme, gelo voando e baque grave."""
+    s = 1.4
+    t = t_axis(s)
+    burst = bandpass(noise(s, rng), 2000, 12000) * np.exp(-t * 8) * 2.0
+    return power(burst + ice_crack(s, rng, 40) * 1.3 + impact(rng, s, 90, 35, 200, 2000, 2.5, 2.0, 1.2), 2.2)
+
+
+def hoshina_release(rng):
+    """Kuuchi e cortes que voam: estalo de ar cortado violento e o corte assobiando para longe."""
+    s = 0.7
+    t = t_axis(s)
+    crack = transient(s, rng, 2500, 13000, 110, 3.5)
+    fly = np.sin(sweep(s, 3400, 1200)) * np.exp(-t * 5) * 0.3
+    return power(crack + whoosh(s, 1600, 5000, rng) * 1.3 + fly + ring(s, [4400, 6600], 9, rng) * 0.3
+                 + sub_hit(s, 140, 70, 12, 0.5), 2.0, 0.9)
 
 
 

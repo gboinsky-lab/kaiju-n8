@@ -194,3 +194,11 @@ e os modelos provisórios (asas e cauda do jogador, Narumi No. 1, Isao sem o Num
 - Estouros do Narumi rosa; efeitos pequenos maiores (cotovelada/uppercut do Isao, Seven-Branched, canhão da Mina,
   asas do Numbers 4) e o X do Kosa-uchi mais aberto.
 - Próximas: **R-1**, **R-2**.
+
+## AJUSTES-3 — respostas e pontos de melhora de 2026-11-05 (feita, 2026-11-05)
+
+- No. 8 sem controle com os números do aliado; surpresas a 1%; No. 8 sem controle em qualquer invasão (1%).
+- SONS-2: cargas, socos, tiros, energia e o raio do Falling Thunder refeitos potentes.
+- Armas no tamanho da tabela do Miguel (jogador e NPC iguais); forma do jogador com a altura do No. 8 NPC.
+- Base dentro da cidade: anel de até 8 peças encostadas na base.
+- Próximas: **R-1**, **R-2**.

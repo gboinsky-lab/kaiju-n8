@@ -79,6 +79,8 @@ public final class ServerConfig {
     public static final ModConfigSpec.DoubleValue INVASION_NATURAL_CHANCE;
     public static final ModConfigSpec.DoubleValue INVASION_REWARD_MIN_FACTOR;
     public static final ModConfigSpec.DoubleValue INVASION_REWARD_MAX_FACTOR;
+    public static final ModConfigSpec.DoubleValue INVASION_RAMPAGE_NO8_CHANCE;
+    public static final ModConfigSpec.IntValue INVASION_RAMPAGE_NO8_GIANT_LEVEL;
 
     // --- spawn -----------------------------------------------------------------------------------------------
     public static final ModConfigSpec.BooleanValue NATURAL_SPAWN;
@@ -662,6 +664,10 @@ public final class ServerConfig {
                 + " player who dealt any damage (0.3: rewards follow each player's contribution).", 0.25, 0.0, 10.0);
         INVASION_REWARD_MAX_FACTOR = doubleValue("rewardMaxFactor", "Largest share of the invasion reward for the"
                 + " player who carried the fight (1.0 = an even share).", 1.5, 0.0, 10.0);
+        INVASION_RAMPAGE_NO8_CHANCE = doubleValue("rampageNo8Chance", "Chance that a rampaging Kaiju No. 8 joins the"
+                + " last wave of any invasion (Miguel 2026-11-05: random invasion, low chance).", 0.01, 0.0, 1.0);
+        INVASION_RAMPAGE_NO8_GIANT_LEVEL = intValue("rampageNo8GiantLevel", "From this invasion level the rampaging"
+                + " No. 8 that joins is the colossal one.", 5, 1, 7);
         BUILDER.pop();
 
         section("spawn", "Natural spawning and kaiju count limits.");

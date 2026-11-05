@@ -6,7 +6,9 @@ jogador sem controle). Golpes = os do No. 8 aliado (socos, combo, investida, gol
 sem guarda nem contra-ataque: so ataca o mais perto.
 
 Pequeno: 3 m (escala 1,5, como o No. 8 NPC). Gigante: 22 m (escala 11; "No. 8 colossal" da tabela mestra).
-Numeros [SUPOSICAO] na faixa dos numerados (No. 13 / No. 10 gigante); balanceamento em docs/BALANCEAMENTO.md.
+AJUSTES-3 (Miguel 2026-11-05: "numero 8 sem controle nao deve mudar muita coisa"): o pequeno tem os numeros do
+No. 8 aliado (vida 1.800, armadura 19, velocidade 0,40 + 5%); o colossal, a vida do No. 10 gigante (4.500).
+Balanceamento em docs/BALANCEAMENTO.md.
 Uso: python3 tools/data/gen_no8_rampage.py
 """
 import copy
@@ -18,8 +20,8 @@ DATA = ROOT / "src/main/resources/data/kn8/kn8"
 
 FORMS = {
     # id: (escala, vida, dano, armadura, velocidade, tamanho, prefixo das habilidades, fator de area)
-    "kaiju_no8_rampage": (1.5, 2400.0, 46.0, 17.0, 0.44, "medium", "no8r", 1.0),
-    "kaiju_no8_rampage_giant": (11.0, 6000.0, 72.0, 20.0, 0.30, "supergiant", "no8rg", 4.0),
+    "kaiju_no8_rampage": (1.5, 1800.0, 44.0, 19.0, 0.42, "medium", "no8r", 1.0),
+    "kaiju_no8_rampage_giant": (11.0, 4500.0, 66.0, 20.0, 0.30, "supergiant", "no8rg", 4.0),
 }
 
 RED = {"#18E3E3": "#E3241A", "#E8FFFF": "#FFE6E0", "#405C5B": "#5C3A38", "#3A4040": "#403030",

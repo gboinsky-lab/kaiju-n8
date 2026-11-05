@@ -18,8 +18,11 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import software.bernie.geckolib.animation.AnimationState;
@@ -59,6 +62,13 @@ public class SoldierRenderer<T extends SoldierEntity> extends GeoEntityRenderer<
      * que na mao do jogador.
      */
     private static final float SOLDIER_ITEM_SCALE = 0.85F;
+    /**
+     * AJUSTES-3 (tabela do Miguel 2026-11-05: canhao da Mina 2,5-3,5 m, machado da Kikoru 1,5-1,9 m, espadas do
+     * Hoshina 0,6-0,8 m, baioneta do Narumi 1,0-1,2 m): armas com tamanho real no display ({@code real_length_m} em
+     * tools/art/meshy_assets.json) ficam do mesmo tamanho na mao do jogador e do personagem, sem o teto de 0,85.
+     */
+    private static final TagKey<Item> REAL_SIZE_WEAPONS = TagKey.create(Registries.ITEM,
+            KN8Constants.id("real_size_weapons"));
 
     public SoldierRenderer(EntityRendererProvider.Context context) {
         this(context, "soldier");
@@ -138,7 +148,7 @@ public class SoldierRenderer<T extends SoldierEntity> extends GeoEntityRenderer<
                         animatable, animatable.getId());
                 float displayScale = model.getTransforms().getTransform(ItemDisplayContext.THIRD_PERSON_RIGHT_HAND)
                         .scale.x();
-                if (displayScale > 1.0E-4F) {
+                if (displayScale > 1.0E-4F && !stack.is(REAL_SIZE_WEAPONS)) {
                     float scale = Math.min(SOLDIER_ITEM_SCALE, displayScale) / displayScale;
                     poseStack.scale(scale, scale, scale);
                 }

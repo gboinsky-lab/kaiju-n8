@@ -1388,3 +1388,27 @@ Matriz de 30 confrontos x 5 duelos (retirada do No. 9 = empate), jogador por pat
 | Surpresas nas invasões (última onda) | `shinagawa_ants`: No. 9 formiga 25% (já havia); `mass_resurrection`: No. 9 preto 35%; `no10_assault`: fusão 25%; `ariake_assault`: No. 9 com o Isao 15% e No. 8 sem controle 25%; `tachikawa_raid`: No. 8 colossal 15% e fusão gigante 10%; `kaiju_horde`: No. 8 sem controle 20% | `invasion/*.json` (`chance`) |
 | Aviso de ameaça grande | nível 4+ com algum numerado nas ondas (os de surpresa contam), 3 s depois da abertura | `InvasionService.MAJOR_THREAT_*` |
 | Medido em jogo | Hoshina + Kikoru (Resistência III) x No. 8 sem controle: 2.400 -> 1.088 em ~15 s | — |
+
+## AJUSTES-3: respostas do Miguel de 2026-11-05 [SUPOSIÇÃO onde marcado]
+
+| O quê | Antes | Agora | Onde |
+|---|---|---|---|
+| No. 8 sem controle (pequeno) | vida 2.400, dano 46, armadura 17, vel. 0,44 | **vida 1.800, dano 44, armadura 19, vel. 0,42** (os números do No. 8 aliado; Miguel: "não deve mudar muita coisa") | `tools/data/gen_no8_rampage.py` |
+| No. 8 sem controle (colossal) | vida 6.000, dano 72 | vida 4.500 (a do No. 10 gigante), dano 66 [SUPOSIÇÃO] | idem |
+| Formas do No. 9 de surpresa nas invasões grandes | 10-35% | **1%** cada (Miguel) | `invasion/*.json` (`chance`) |
+| No. 8 sem controle nas invasões | só nas grandes, 15-25% | **qualquer invasão, 1%** na última onda (Miguel: "invasão aleatória, pouca chance"); colossal a partir do nível 5 [SUPOSIÇÃO] | `[invasion] rampageNo8Chance`, `rampageNo8GiantLevel` |
+| Aviso de ameaça grande | nível 4+ com numerado (contava as surpresas) | nível 4+ com numerado que vem com 25%+; surpresa rara toca o aviso quando aparece | `InvasionService.MAJOR_THREAT_*` |
+| Forma do No. 8 do jogador | `[kaijuForm] height` (o arquivo de config antigo guardava 2) | altura do No. 8 NPC (`special_soldier/kaiju_no8.json`, 3 m) | `KaijuFormService.formHeight` |
+
+### Tamanho das armas na mão (tabela do Miguel, 2026-11-05)
+
+Jogador e personagem com o mesmo tamanho (`real_length_m` e `held_scale` em `tools/art/meshy_assets.json`, tag
+`kn8:real_size_weapons`).
+
+| Arma | Tabela | Antes (jogador / NPC) | Agora |
+|---|---|---|---|
+| Machado da Kikoru (e do Numbers 4) | 150-190 cm | 2,72 m / 1,70 m | 1,70 m |
+| Espadas curtas do Hoshina (cada) | 60-80 cm | 1,38 m / 1,15 m | 0,70 m |
+| Canhão da Mina | 250-350 cm | 2,43 m / 1,87 m | 3,0 m |
+| Baioneta do Narumi (e do Numbers 1) | 100-120 cm | 2,87 m / 2,21 m | 1,10 m |
+| Katana longa do Hoshina (SW-1083), canhão eletromagnético antidaikaiju | 100-120 cm, 500-700 cm | não existem no mod | — |

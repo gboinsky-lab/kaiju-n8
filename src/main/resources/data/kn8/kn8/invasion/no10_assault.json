@@ -53,7 +53,7 @@
         {
           "species": "kn8:kaiju_no9_fusion",
           "count": 1,
-          "chance": 0.25
+          "chance": 0.01
         }
       ],
       "delay_ticks": 600
