@@ -1421,6 +1421,15 @@ Jogador e personagem com o mesmo tamanho (`real_length_m` e `held_scale` em `too
 | Numbers 6 (armadura do Reno) | armadura 16, dureza 2,5, resistência ao calor 0,45, aura `reno_no6_ice` | `suit/numbers6_suit.json`, `workbench/numbers6_suit.json` |
 | Katana longa (Soshiro/Soichiro) | dano 10, alcance 3,8, combo da espada; especial Iai (`lunge` x2,2, 6 blocos, recarga 140); 1,0 m na mão; patente Vice-Capitão | `weapon/katana.json`, `rank/vice_capitao.json` |
 
+### MIGUEL-CAMILLY: personagens originais (2026-11-05) [SUPOSIÇÃO]
+
+| Personagem | Vida / armadura / vel. | Release | `kaiju_damage` | Arma | Técnicas (multiplicador; recarga em ticks) |
+|---|---|---|---|---|---|
+| Miguel | 560 / 20 / 0,33 | 40–85 | 1,05 | foice-armamento (2,2 blocos) | Corte Orbital Rubro (1,6; 70), Disparo pelo Eixo (1,8; 60), Gancho do Ceifador (1,2 com avanço; 140), Arco Ascendente (1,8; 110), Tiro Perfurante de Núcleo (3,0, vulnerável 1,15; 220), Dança de Dupla Ceifa (1,0 + 1,1 + 1,3; 150), Chuva de Estilhaços Rubros (6 x 0,8, explode 1,5; 240), Eclipse do Ceifador (4,2, pesado, vulnerável 1,2; 420) |
+| Camilly | 420 / 17 / 0,33 | 30–70 | 0,75 | rifle rosa (1,7 blocos) | Tiro de Precisão Rosa (1,6; 50), Rajada Pétala (5 x 0,6, Lentidão I; 110), Corte Lateral Rosa (1,3; 60), Investida de Baioneta Rosa (1,7; 130), Disparo Perfurante Rosa (2,8, vulnerável 1,15; 200), Sequência Cruzada Rosa (1,0 + 1,5; 140), Fogo de Cobertura Rosa (6 x 0,6, Resistência I a 10 blocos por 5 s; 320), Tempestade Rosa (7 x 1,1, vulnerável 1,2; 420); aparar 30% |
+| Foice-Armamento (jogador) | dano 12, alcance 4,2, perfil da espada | — | — | Capitão | Eclipse do Ceifador (`ground_slam` 2,6, raio 4; 240) |
+| Rifle Rosa (jogador) | dano 6, alcance 48, perfil do rifle | — | — | Capitão | tiro preciso x2,3 |
+
 ### ESPECIAIS-2: Aoi, Hakua, Kota, Tae, Ryo e Konomi (2026-11-05) [SUPOSIÇÃO]
 
 Vida, armadura e velocidade da tabela v1.2; técnicas do dossiê (THE GAME; cânone só o Pile Driver PB-3115 do Aoi).

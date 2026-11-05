@@ -1449,5 +1449,15 @@
   "item.kn8.aoi_pile_bunker": "Pile Driver PB-3115 do Aoi",
   "kn8.weapon.special.pile_driver": "Pile Driver",
   "kn8.weapon.special.pile_driver.desc": "Avanca e crava a estaca com toda a forca no alvo a frente.",
-  "kn8.konomi.greeting": "Konomi: Posso ajudar com as pesquisas e melhorias. Escolha um projeto."
+  "kn8.konomi.greeting": "Konomi: Posso ajudar com as pesquisas e melhorias. Escolha um projeto.",
+  "entity.kn8.miguel": "Miguel",
+  "entity.kn8.camilly": "Camilly",
+  "kn8.soldier.variant.miguel": "Miguel",
+  "kn8.soldier.variant.camilly": "Camilly",
+  "item.kn8.miguel_spawn_egg": "Ovo do Miguel",
+  "item.kn8.camilly_spawn_egg": "Ovo da Camilly",
+  "item.kn8.miguel_scythe": "Foice-Armamento do Miguel",
+  "item.kn8.camilly_rifle": "Rifle Rosa da Camilly",
+  "kn8.weapon.special.reaper_eclipse": "Eclipse do Ceifador",
+  "kn8.weapon.special.reaper_eclipse.desc": "Gira a foice, crava a ponta no chao e abala tudo em volta."
 }

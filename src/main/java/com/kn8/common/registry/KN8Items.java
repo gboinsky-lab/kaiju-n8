@@ -57,6 +57,11 @@ public final class KN8Items {
             ITEMS.register("haruichi_bow", () -> new WeaponItem(new Item.Properties()));
     public static final DeferredItem<WeaponItem> AOI_PILE_BUNKER =
             ITEMS.register("aoi_pile_bunker", () -> new WeaponItem(new Item.Properties()));
+    /** MIGUEL-CAMILLY: foice-armamento do Miguel e rifle com lamina lateral da Camilly (rosa). */
+    public static final DeferredItem<WeaponItem> MIGUEL_SCYTHE =
+            ITEMS.register("miguel_scythe", () -> new WeaponItem(new Item.Properties()));
+    public static final DeferredItem<WeaponItem> CAMILLY_RIFLE =
+            ITEMS.register("camilly_rifle", () -> new WeaponItem(new Item.Properties()));
     /** 0.7-C: canhao pesado da Mina e baioneta longa do Narumi (armas dos soldados especiais; modelos do Miguel). */
     public static final DeferredItem<WeaponItem> MINA_CANNON =
             ITEMS.register("mina_cannon", () -> new WeaponItem(new Item.Properties()));
@@ -176,6 +181,12 @@ public final class KN8Items {
     public static final DeferredItem<DeferredSpawnEggItem> KONOMI_SPAWN_EGG = ITEMS.register(
             "konomi_spawn_egg", () -> new DeferredSpawnEggItem(KN8Entities.KONOMI, 0xEDEDED, 0x3A2A24,
                     new Item.Properties()));
+    public static final DeferredItem<DeferredSpawnEggItem> MIGUEL_SPAWN_EGG = ITEMS.register(
+            "miguel_spawn_egg", () -> new DeferredSpawnEggItem(KN8Entities.MIGUEL, 0x1A1A1C, 0xD0202A,
+                    new Item.Properties()));
+    public static final DeferredItem<DeferredSpawnEggItem> CAMILLY_SPAWN_EGG = ITEMS.register(
+            "camilly_spawn_egg", () -> new DeferredSpawnEggItem(KN8Entities.CAMILLY, 0x1C1418, 0xFF6FB0,
+                    new Item.Properties()));
     public static final DeferredItem<DeferredSpawnEggItem> ISAO_BASE_SPAWN_EGG = ITEMS.register(
             "isao_base_spawn_egg", () -> new DeferredSpawnEggItem(KN8Entities.ISAO_BASE, 0x2A2A2A, 0xC8C8C8,
                     new Item.Properties()));
@@ -237,6 +248,8 @@ public final class KN8Items {
                         output.accept(SHOTGUN.get());
                         output.accept(HARUICHI_BOW.get());
                         output.accept(AOI_PILE_BUNKER.get());
+                        output.accept(MIGUEL_SCYTHE.get());
+                        output.accept(CAMILLY_RIFLE.get());
                         output.accept(MINA_CANNON.get());
                         output.accept(NARUMI_BAYONET.get());
                         output.accept(NUMBERS1_BAYONET.get());
@@ -278,6 +291,8 @@ public final class KN8Items {
                         output.accept(TAE_SPAWN_EGG.get());
                         output.accept(RYO_SPAWN_EGG.get());
                         output.accept(KONOMI_SPAWN_EGG.get());
+                        output.accept(MIGUEL_SPAWN_EGG.get());
+                        output.accept(CAMILLY_SPAWN_EGG.get());
                         output.accept(TRAINING_DUMMY.get());
                         output.accept(WEIGHT_RACK.get());
                         output.accept(DEFENSE_WORKBENCH.get());

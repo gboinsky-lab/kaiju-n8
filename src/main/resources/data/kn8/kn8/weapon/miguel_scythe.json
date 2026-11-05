@@ -1,0 +1,51 @@
+{
+  "item": "kn8:miguel_scythe",
+  "base_damage": 12,
+  "reach": 4.2,
+  "style": "heavy",
+  "profile": "kn8:sword",
+  "actions": {
+    "light": {
+      "multiplier": 1.0,
+      "duration_ticks": 16,
+      "impact_tick": 7
+    },
+    "heavy": {
+      "multiplier": 2.4,
+      "duration_ticks": 30,
+      "impact_tick": 14
+    }
+  },
+  "combo": [
+    1.0,
+    1.1,
+    1.25
+  ],
+  "sounds": {
+    "swing": "kn8:weapon.axe_swing",
+    "heavy": "kn8:weapon.axe_heavy",
+    "hit": "kn8:weapon.sword_hit"
+  },
+  "special": {
+    "id": "reaper_eclipse",
+    "type": "ground_slam",
+    "multiplier": 2.6,
+    "duration_ticks": 28,
+    "impact_tick": 14,
+    "radius": 4.0,
+    "forward": 1.5,
+    "stamina_cost": 35,
+    "heat_cost": 6,
+    "cooldown_ticks": 240,
+    "knockback": 1.2,
+    "stagger_ticks": 25,
+    "camera_shake": 0.4,
+    "vfx": [
+      {
+        "effect": "kn8:technique",
+        "intensity": 1.0
+      }
+    ],
+    "sound": "kn8:technique.isao_thunder"
+  }
+}

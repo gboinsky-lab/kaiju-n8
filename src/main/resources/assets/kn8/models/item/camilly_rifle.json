@@ -1,0 +1,131 @@
+{
+  "loader": "neoforge:obj",
+  "model": "kn8:models/item/camilly_rifle.obj",
+  "flip_v": true,
+  "automatic_culling": false,
+  "textures": {
+    "texture": "kn8:item/camilly_rifle",
+    "particle": "kn8:item/camilly_rifle"
+  },
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [
+        0,
+        90,
+        0
+      ],
+      "translation": [
+        0.0,
+        1.398,
+        -4.098
+      ],
+      "scale": [
+        1.062,
+        1.062,
+        1.062
+      ]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [
+        0,
+        -90,
+        0
+      ],
+      "translation": [
+        0.0,
+        1.398,
+        -4.098
+      ],
+      "scale": [
+        1.062,
+        1.062,
+        1.062
+      ]
+    },
+    "firstperson_righthand": {
+      "rotation": [
+        0,
+        93,
+        0
+      ],
+      "translation": [
+        -1.203,
+        4.586,
+        -1.873
+      ],
+      "scale": [
+        0.808,
+        0.808,
+        0.808
+      ]
+    },
+    "firstperson_lefthand": {
+      "rotation": [
+        0,
+        -93,
+        0
+      ],
+      "translation": [
+        -1.203,
+        4.586,
+        -1.873
+      ],
+      "scale": [
+        0.808,
+        0.808,
+        0.808
+      ]
+    },
+    "ground": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        2,
+        0
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ]
+    },
+    "gui": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0.248,
+        1.171,
+        0
+      ],
+      "scale": [
+        0.562,
+        0.562,
+        0.562
+      ]
+    },
+    "fixed": {
+      "rotation": [
+        0,
+        180,
+        0
+      ],
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    }
+  }
+}

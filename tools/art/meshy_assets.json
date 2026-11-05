@@ -259,6 +259,50 @@
         1.337
       ],
       "real_length_m": 2.0
+    },
+    "miguel_scythe": {
+      "_comment": "MIGUEL-CAMILLY: foice-armamento do Miguel (modelo dele, 2026-11-05), em pe em Y com a lamina para +Y; mao no cabo de baixo",
+      "source": "arma_miguel.glb",
+      "length_axis": "y",
+      "tip": "+",
+      "up_axis": "x",
+      "length_m": 1.9,
+      "grip_from_tip": 0.75,
+      "grip_from_bottom": 0.5,
+      "texture": 512,
+      "orientation": "diagonal",
+      "item_length": 1.6,
+      "thickness": 1.0,
+      "held_scale": [
+        1.618,
+        1.5
+      ],
+      "real_length_m": 2.2
+    },
+    "camilly_rifle": {
+      "_comment": "MIGUEL-CAMILLY: rifle com lamina lateral da Camilly (modelo dela, retingido em rosa)",
+      "source": "arma_camilly.glb",
+      "length_axis": "x",
+      "tip": "-",
+      "up_axis": "y",
+      "length_m": 1.0,
+      "grip_from_tip": 0.6,
+      "grip_from_bottom": 0.35,
+      "texture": 512,
+      "orientation": "horizontal",
+      "hand_grip": [
+        0.2,
+        0.3,
+        0.5
+      ],
+      "first_person_scale": 0.7,
+      "item_length": 1.6,
+      "thickness": 1.0,
+      "held_scale": [
+        1.25,
+        1.154
+      ],
+      "real_length_m": 1.7
     }
   },
   "entities": {
@@ -584,6 +628,18 @@
       "_comment": "ESPECIAIS-2: modelo do Miguel com o rig do Meshy (rig_from_skin.py importar, new_mesh); altura [SUPOSICAO]",
       "source": "Konomi_Okonogi.glb",
       "height_m": 1.55,
+      "texture": 1024
+    },
+    "miguel": {
+      "_comment": "MIGUEL-CAMILLY: personagem original do Miguel com o rig do Meshy",
+      "source": "miguel.glb",
+      "height_m": 1.8,
+      "texture": 1024
+    },
+    "camilly": {
+      "_comment": "MIGUEL-CAMILLY: personagem original (Camilly) com o rig do Meshy",
+      "source": "camilly.glb",
+      "height_m": 1.65,
       "texture": 1024
     }
   },

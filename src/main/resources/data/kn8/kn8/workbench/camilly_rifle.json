@@ -1,0 +1,23 @@
+{
+  "result": "kn8:camilly_rifle",
+  "category": "weapon",
+  "order": 22,
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 8
+    },
+    {
+      "item": "kn8:muscle_fiber",
+      "count": 5
+    },
+    {
+      "item": "kn8:core_fragment",
+      "count": 3
+    },
+    {
+      "item": "minecraft:pink_dye",
+      "count": 2
+    }
+  ]
+}

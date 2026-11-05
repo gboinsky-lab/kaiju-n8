@@ -1,0 +1,131 @@
+{
+  "loader": "neoforge:obj",
+  "model": "kn8:models/item/miguel_scythe.obj",
+  "flip_v": true,
+  "automatic_culling": false,
+  "textures": {
+    "texture": "kn8:item/miguel_scythe",
+    "particle": "kn8:item/miguel_scythe"
+  },
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [
+        0,
+        -90,
+        55
+      ],
+      "translation": [
+        -0.0,
+        6.194,
+        0.113
+      ],
+      "scale": [
+        1.375,
+        1.375,
+        1.375
+      ]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [
+        0,
+        90,
+        -55
+      ],
+      "translation": [
+        -0.0,
+        6.194,
+        0.113
+      ],
+      "scale": [
+        1.375,
+        1.375,
+        1.375
+      ]
+    },
+    "firstperson_righthand": {
+      "rotation": [
+        0,
+        -90,
+        25
+      ],
+      "translation": [
+        1.13,
+        4.556,
+        1.623
+      ],
+      "scale": [
+        1.02,
+        1.02,
+        1.02
+      ]
+    },
+    "firstperson_lefthand": {
+      "rotation": [
+        0,
+        90,
+        -25
+      ],
+      "translation": [
+        1.13,
+        4.556,
+        1.623
+      ],
+      "scale": [
+        1.02,
+        1.02,
+        1.02
+      ]
+    },
+    "ground": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        2,
+        0
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ]
+    },
+    "gui": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        -0.908,
+        -1.893,
+        0
+      ],
+      "scale": [
+        0.72,
+        0.72,
+        0.72
+      ]
+    },
+    "fixed": {
+      "rotation": [
+        0,
+        180,
+        0
+      ],
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    }
+  }
+}

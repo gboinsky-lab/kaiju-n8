@@ -31,6 +31,8 @@ import com.kn8.common.soldier.special.KotaEntity;
 import com.kn8.common.soldier.special.TaeEntity;
 import com.kn8.common.soldier.special.RyoEntity;
 import com.kn8.common.soldier.special.KonomiEntity;
+import com.kn8.common.soldier.special.MiguelEntity;
+import com.kn8.common.soldier.special.CamillyEntity;
 import com.kn8.common.soldier.special.IsaoEntity;
 import com.kn8.common.soldier.special.KikoruEntity;
 import com.kn8.common.soldier.special.KafkaEntity;
@@ -340,6 +342,20 @@ public final class KN8Entities {
                     .eyeHeight(1.40F)
                     .clientTrackingRange(KAIJU_TRACKING_RANGE_CHUNKS)
                     .build("konomi"));
+    /** MIGUEL-CAMILLY: Miguel (personagem original; special_soldier/miguel.json). */
+    public static final DeferredHolder<EntityType<?>, EntityType<MiguelEntity>> MIGUEL = ENTITY_TYPES.register(
+            "miguel", () -> EntityType.Builder.<MiguelEntity>of(MiguelEntity::new, MobCategory.CREATURE)
+                    .sized(0.6F, 1.80F)
+                    .eyeHeight(1.62F)
+                    .clientTrackingRange(KAIJU_TRACKING_RANGE_CHUNKS)
+                    .build("miguel"));
+    /** MIGUEL-CAMILLY: Camilly (personagem original; special_soldier/camilly.json). */
+    public static final DeferredHolder<EntityType<?>, EntityType<CamillyEntity>> CAMILLY = ENTITY_TYPES.register(
+            "camilly", () -> EntityType.Builder.<CamillyEntity>of(CamillyEntity::new, MobCategory.CREATURE)
+                    .sized(0.6F, 1.65F)
+                    .eyeHeight(1.48F)
+                    .clientTrackingRange(KAIJU_TRACKING_RANGE_CHUNKS)
+                    .build("camilly"));
     /** MOV-5G: Isao sem a arma numerada 2 (modelo do Isao; special_soldier/isao_base.json). */
     public static final DeferredHolder<EntityType<?>, EntityType<IsaoBaseEntity>> ISAO_BASE = ENTITY_TYPES.register(
             "isao_base", () -> EntityType.Builder.<IsaoBaseEntity>of(IsaoBaseEntity::new, MobCategory.CREATURE)
@@ -479,6 +495,12 @@ public final class KN8Entities {
         if (KonomiEntity.VARIANT.equals(name)) {
             return Optional.of(KONOMI.get());
         }
+        if (MiguelEntity.VARIANT.equals(name)) {
+            return Optional.of(MIGUEL.get());
+        }
+        if (CamillyEntity.VARIANT.equals(name)) {
+            return Optional.of(CAMILLY.get());
+        }
         return HoshinaEntity.VARIANT.equals(name) ? Optional.of(HOSHINA.get()) : Optional.empty();
     }
 
@@ -556,6 +578,8 @@ public final class KN8Entities {
         event.put(TAE.get(), SoldierEntity.createAttributes().build());
         event.put(RYO.get(), SoldierEntity.createAttributes().build());
         event.put(KONOMI.get(), SoldierEntity.createAttributes().build());
+        event.put(MIGUEL.get(), SoldierEntity.createAttributes().build());
+        event.put(CAMILLY.get(), SoldierEntity.createAttributes().build());
         event.put(TRAINING_DUMMY.get(), LivingEntity.createLivingAttributes().build());
         KAIJU.forEach(type -> event.put(type.get(), KaijuEntity.baseAttributes().build()));
     }

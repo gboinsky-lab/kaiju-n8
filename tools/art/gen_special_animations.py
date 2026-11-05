@@ -88,11 +88,12 @@ STANCES["calm"] = {
 FAMILY = {"reno": "rifle", "mina": "cannon", "narumi": "spear", "reno_no6": "rifle", "kafka": "rifle",
           "kaiju_no8": "fists", "isao": "fists", "soichiro": "katana", "jura": "flail", "rin": "rifle",
           "iharu": "rifle", "haruichi": "rifle", "aoi": "spear", "hakua": "rifle", "kota": "rifle",
-          "tae": "rifle", "ryo": "rifle", "konomi": "calm"}
+          "tae": "rifle", "ryo": "rifle", "konomi": "calm", "miguel": "spear", "camilly": "rifle"}
 # Golpes por nome nas familias novas: corte final de cima para baixo e o mergulho da bola = golpe no chao;
 # arremesso/impacto da bola e o corte que voa do Soichiro = varrida larga.
-OVERHEAD = {"finishing_masterstroke", "zenith_plunge", "fortified_crushing_blow"}
-SWEEPS = {"herculean_toss", "hot_blooded_impact", "astute_strike"}
+OVERHEAD = {"finishing_masterstroke", "zenith_plunge", "fortified_crushing_blow", "reapers_hook"}
+SWEEPS = {"herculean_toss", "hot_blooded_impact", "astute_strike", "crimson_orbital_cut", "double_reap_dance",
+          "rose_side_cut"}
 # 0.8-A: tecnicas de onda do Isao (manoplas Numbers 2) com a animacao dos punhos: Force Blast abre os bracos como o
 # rugido e solta a onda em leque; Spiral Blast e um soco para a frente que dispara a onda.
 FIST_WAVES = {"roar": "roar", "force_blast": "roar", "ground_smash": "ground_smash"}

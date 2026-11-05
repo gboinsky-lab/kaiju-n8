@@ -1,0 +1,30 @@
+{
+  "techniques": {
+    "rose_precision_shot": {
+      "release": "kn8:weapon.rifle_shot"
+    },
+    "petal_burst": {
+      "release": "kn8:weapon.rifle_shot"
+    },
+    "rose_side_cut": {
+      "release": "kn8:weapon.sword_swing"
+    },
+    "rose_bayonet_charge": {
+      "release": "kn8:weapon.dash_cut"
+    },
+    "pink_piercing_shot": {
+      "windup": "kn8:technique.charge",
+      "release": "kn8:technique.reno_shot"
+    },
+    "pink_cross_sequence": {
+      "release": "kn8:technique.hoshina_slash"
+    },
+    "rose_cover_fire": {
+      "release": "kn8:weapon.rifle_shot"
+    },
+    "rose_storm": {
+      "windup": "kn8:technique.charge",
+      "release": "kn8:technique.narumi_shot"
+    }
+  }
+}

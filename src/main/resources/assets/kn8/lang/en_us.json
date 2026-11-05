@@ -1449,5 +1449,15 @@
   "item.kn8.aoi_pile_bunker": "Aoi's Pile Driver PB-3115",
   "kn8.weapon.special.pile_driver": "Pile Driver",
   "kn8.weapon.special.pile_driver.desc": "Lunges forward and drives the stake into the target ahead with full force.",
-  "kn8.konomi.greeting": "Konomi: I can help with research and upgrades. Pick a project."
+  "kn8.konomi.greeting": "Konomi: I can help with research and upgrades. Pick a project.",
+  "entity.kn8.miguel": "Miguel",
+  "entity.kn8.camilly": "Camilly",
+  "kn8.soldier.variant.miguel": "Miguel",
+  "kn8.soldier.variant.camilly": "Camilly",
+  "item.kn8.miguel_spawn_egg": "Miguel Spawn Egg",
+  "item.kn8.camilly_spawn_egg": "Camilly Spawn Egg",
+  "item.kn8.miguel_scythe": "Miguel's Scythe Arm",
+  "item.kn8.camilly_rifle": "Camilly's Rose Rifle",
+  "kn8.weapon.special.reaper_eclipse": "Reaper's Eclipse",
+  "kn8.weapon.special.reaper_eclipse.desc": "Spins the scythe, plants its tip in the ground and shakes everything around."
 }

@@ -4,7 +4,9 @@
   "max_health": 30,
   "npc_squad_size": 8,
   "unlocks": [
-    "kn8:jura_flail"
+    "kn8:jura_flail",
+    "kn8:miguel_scythe",
+    "kn8:camilly_rifle"
   ],
   "promotion_mission": "kn8:exam_captain"
 }

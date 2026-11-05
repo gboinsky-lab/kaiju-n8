@@ -1931,3 +1931,15 @@ Imagem: `docs/img/especiais2_aoi_hakua_kota_tae_ryo_konomi.jpg`. Modelos do Migu
 | 137.8 | Rifle, espada e espadas do Hoshina refeitos | Modelos novos do Miguel na mao, mesma pegada |
 | 137.9 | Segundo cliente olhando | Os mesmos modelos, armas, auras e efeitos |
 
+
+## 138. MIGUEL-CAMILLY: os personagens originais
+
+Imagem: `docs/img/miguel_camilly.jpg`. Modelos do Miguel e o dossie (kits [PROPOSTA ORIGINAL]).
+
+| # | Passo | Esperado |
+|---|---|---|
+| 138.1 | Ovos do Miguel e da Camilly | Miguel com a foice-armamento vermelha (aura vermelha); Camilly com o rifle de lamina lateral em tons de rosa (aura rosa) |
+| 138.2 | Os dois contra um Primigenius Honju | Miguel: Corte Orbital Rubro (varrida larga), Disparo pelo Eixo, Gancho do Ceifador, Arco Ascendente, Tiro Perfurante de Nucleo (carga), Danca de Dupla Ceifa, Chuva de Estilhacos Rubros (explosoes) e o Eclipse do Ceifador (tiro grosso); Camilly fica longe: Tiro de Precisao Rosa, Rajada Petala, Disparo Perfurante Rosa, Fogo de Cobertura Rosa (aliados com Resistencia) e a Tempestade Rosa; de perto corta com a lamina (Corte Lateral, Investida e Sequencia Cruzada Rosa) e apara mais |
+| 138.3 | Invasoes `no9_resurrection` (Miguel), `honju_rampage` e `tachikawa_city_raid` (Camilly) | Eles entram como defensores |
+| 138.4 | Bancada com patente Capitao | Foice-Armamento do Miguel (especial Eclipse do Ceifador na tecla R) e Rifle Rosa da Camilly fabricaveis |
+| 138.5 | Segundo cliente olhando | Os mesmos modelos, armas, auras e efeitos |

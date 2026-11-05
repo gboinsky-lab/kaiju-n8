@@ -1,0 +1,23 @@
+{
+  "result": "kn8:miguel_scythe",
+  "category": "weapon",
+  "order": 21,
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 10
+    },
+    {
+      "item": "kn8:muscle_fiber",
+      "count": 6
+    },
+    {
+      "item": "kn8:core_fragment",
+      "count": 4
+    },
+    {
+      "item": "kn8:intact_core",
+      "count": 1
+    }
+  ]
+}

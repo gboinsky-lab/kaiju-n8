@@ -90,6 +90,8 @@ SPECIES = {
     "tae": {"items": True, "new_mesh": True, "arms_down": 12},
     "ryo": {"items": True, "new_mesh": True, "arms_down": 12},
     "konomi": {"items": True, "new_mesh": True, "arms_down": 10},
+    "miguel": {"items": True, "new_mesh": True, "arms_down": 13},
+    "camilly": {"items": True, "new_mesh": True, "arms_down": 12},
 }
 # FIX-2: "legs_on_body" = pernas filhas do tronco, como no rig de antes (No. 10 e fusao): as animacoes deles inclinam o
 # tronco contando que as pernas vao junto; com as pernas na raiz a bacia abria ("o modelo parte no meio").

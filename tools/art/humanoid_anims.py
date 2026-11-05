@@ -953,7 +953,8 @@ ARTICULATE = {"soldier": False, "hoshina": False, "hoshina_no10": False, "kikoru
               "mina": False, "reno": False, "reno_no6": False, "narumi": False, "kafka": False,
               "kaiju_no9_fusion": True, "kaiju_no10_small": True, "kaiju_no10_giant": True,
               "soichiro": False, "jura": False, "rin": False, "iharu": False, "haruichi": False,
-              "aoi": False, "hakua": False, "kota": False, "tae": False, "ryo": False, "konomi": False}
+              "aoi": False, "hakua": False, "kota": False, "tae": False, "ryo": False, "konomi": False,
+              "miguel": False, "camilly": False}
 
 
 SPECIES = {"isao": isao, "kaiju_no13": kaiju_no13, "kaiju_no9_isao": kaiju_no9_isao, "kaiju_no8": kaiju_no8,
