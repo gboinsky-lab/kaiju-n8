@@ -1,0 +1,22 @@
+{
+  "item": "kn8:shotgun",
+  "base_damage": 9,
+  "reach": 20.0,
+  "style": "firearm",
+  "profile": "kn8:rifle",
+  "actions": {
+    "light": {
+      "multiplier": 1.0,
+      "duration_ticks": 14,
+      "impact_tick": 1
+    },
+    "heavy": {
+      "multiplier": 2.0,
+      "duration_ticks": 26,
+      "impact_tick": 6
+    }
+  },
+  "sounds": {
+    "shot": "kn8:weapon.rifle_shot"
+  }
+}

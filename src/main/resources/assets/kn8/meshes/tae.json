@@ -1,0 +1,19 @@
+{
+  "bones": {
+    "body": "kn8:meshes/tae/body.obj",
+    "chest": "kn8:meshes/tae/chest.obj",
+    "head": "kn8:meshes/tae/head.obj",
+    "arm_left": "kn8:meshes/tae/arm_left.obj",
+    "forearm_left": "kn8:meshes/tae/forearm_left.obj",
+    "hand_left": "kn8:meshes/tae/hand_left.obj",
+    "leg_left": "kn8:meshes/tae/leg_left.obj",
+    "shin_left": "kn8:meshes/tae/shin_left.obj",
+    "foot_left": "kn8:meshes/tae/foot_left.obj",
+    "arm_right": "kn8:meshes/tae/arm_right.obj",
+    "forearm_right": "kn8:meshes/tae/forearm_right.obj",
+    "hand_right": "kn8:meshes/tae/hand_right.obj",
+    "leg_right": "kn8:meshes/tae/leg_right.obj",
+    "shin_right": "kn8:meshes/tae/shin_right.obj",
+    "foot_right": "kn8:meshes/tae/foot_right.obj"
+  }
+}

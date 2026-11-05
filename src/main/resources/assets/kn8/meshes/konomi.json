@@ -1,0 +1,16 @@
+{
+  "bones": {
+    "body": "kn8:meshes/konomi/body.obj",
+    "chest": "kn8:meshes/konomi/chest.obj",
+    "head": "kn8:meshes/konomi/head.obj",
+    "arm_left": "kn8:meshes/konomi/arm_left.obj",
+    "forearm_left": "kn8:meshes/konomi/forearm_left.obj",
+    "leg_left": "kn8:meshes/konomi/leg_left.obj",
+    "shin_left": "kn8:meshes/konomi/shin_left.obj",
+    "arm_right": "kn8:meshes/konomi/arm_right.obj",
+    "forearm_right": "kn8:meshes/konomi/forearm_right.obj",
+    "hand_right": "kn8:meshes/konomi/hand_right.obj",
+    "leg_right": "kn8:meshes/konomi/leg_right.obj",
+    "shin_right": "kn8:meshes/konomi/shin_right.obj"
+  }
+}

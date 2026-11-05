@@ -50,6 +50,13 @@ public final class KN8Items {
     /** ESPECIAIS-1: bola de ferro em chamas da Jura Igarashi, segurada pela corda (modelo do Miguel). */
     public static final DeferredItem<WeaponItem> JURA_FLAIL =
             ITEMS.register("jura_flail", () -> new WeaponItem(new Item.Properties()));
+    /** ESPECIAIS-2: espingarda do Iharu e do Kota, arco AW-0027 do Haruichi e Pile Driver PB-3115 do Aoi. */
+    public static final DeferredItem<WeaponItem> SHOTGUN =
+            ITEMS.register("shotgun", () -> new WeaponItem(new Item.Properties()));
+    public static final DeferredItem<WeaponItem> HARUICHI_BOW =
+            ITEMS.register("haruichi_bow", () -> new WeaponItem(new Item.Properties()));
+    public static final DeferredItem<WeaponItem> AOI_PILE_BUNKER =
+            ITEMS.register("aoi_pile_bunker", () -> new WeaponItem(new Item.Properties()));
     /** 0.7-C: canhao pesado da Mina e baioneta longa do Narumi (armas dos soldados especiais; modelos do Miguel). */
     public static final DeferredItem<WeaponItem> MINA_CANNON =
             ITEMS.register("mina_cannon", () -> new WeaponItem(new Item.Properties()));
@@ -151,6 +158,24 @@ public final class KN8Items {
     public static final DeferredItem<DeferredSpawnEggItem> HARUICHI_SPAWN_EGG = ITEMS.register(
             "haruichi_spawn_egg", () -> new DeferredSpawnEggItem(KN8Entities.HARUICHI, 0x121614, 0x3FBFA8,
                     new Item.Properties()));
+    public static final DeferredItem<DeferredSpawnEggItem> AOI_SPAWN_EGG = ITEMS.register(
+            "aoi_spawn_egg", () -> new DeferredSpawnEggItem(KN8Entities.AOI, 0x22262C, 0x7FA8D8,
+                    new Item.Properties()));
+    public static final DeferredItem<DeferredSpawnEggItem> HAKUA_SPAWN_EGG = ITEMS.register(
+            "hakua_spawn_egg", () -> new DeferredSpawnEggItem(KN8Entities.HAKUA, 0x141212, 0xFFC24A,
+                    new Item.Properties()));
+    public static final DeferredItem<DeferredSpawnEggItem> KOTA_SPAWN_EGG = ITEMS.register(
+            "kota_spawn_egg", () -> new DeferredSpawnEggItem(KN8Entities.KOTA, 0x141618, 0x8FD8FF,
+                    new Item.Properties()));
+    public static final DeferredItem<DeferredSpawnEggItem> TAE_SPAWN_EGG = ITEMS.register(
+            "tae_spawn_egg", () -> new DeferredSpawnEggItem(KN8Entities.TAE, 0x161212, 0xFF4A2A,
+                    new Item.Properties()));
+    public static final DeferredItem<DeferredSpawnEggItem> RYO_SPAWN_EGG = ITEMS.register(
+            "ryo_spawn_egg", () -> new DeferredSpawnEggItem(KN8Entities.RYO, 0x1C1E22, 0xE0304A,
+                    new Item.Properties()));
+    public static final DeferredItem<DeferredSpawnEggItem> KONOMI_SPAWN_EGG = ITEMS.register(
+            "konomi_spawn_egg", () -> new DeferredSpawnEggItem(KN8Entities.KONOMI, 0xEDEDED, 0x3A2A24,
+                    new Item.Properties()));
     public static final DeferredItem<DeferredSpawnEggItem> ISAO_BASE_SPAWN_EGG = ITEMS.register(
             "isao_base_spawn_egg", () -> new DeferredSpawnEggItem(KN8Entities.ISAO_BASE, 0x2A2A2A, 0xC8C8C8,
                     new Item.Properties()));
@@ -209,6 +234,9 @@ public final class KN8Items {
                         output.accept(HOSHINA_SWORD.get());
                         output.accept(KATANA.get());
                         output.accept(JURA_FLAIL.get());
+                        output.accept(SHOTGUN.get());
+                        output.accept(HARUICHI_BOW.get());
+                        output.accept(AOI_PILE_BUNKER.get());
                         output.accept(MINA_CANNON.get());
                         output.accept(NARUMI_BAYONET.get());
                         output.accept(NUMBERS1_BAYONET.get());
@@ -244,6 +272,12 @@ public final class KN8Items {
                         output.accept(RIN_SPAWN_EGG.get());
                         output.accept(IHARU_SPAWN_EGG.get());
                         output.accept(HARUICHI_SPAWN_EGG.get());
+                        output.accept(AOI_SPAWN_EGG.get());
+                        output.accept(HAKUA_SPAWN_EGG.get());
+                        output.accept(KOTA_SPAWN_EGG.get());
+                        output.accept(TAE_SPAWN_EGG.get());
+                        output.accept(RYO_SPAWN_EGG.get());
+                        output.accept(KONOMI_SPAWN_EGG.get());
                         output.accept(TRAINING_DUMMY.get());
                         output.accept(WEIGHT_RACK.get());
                         output.accept(DEFENSE_WORKBENCH.get());

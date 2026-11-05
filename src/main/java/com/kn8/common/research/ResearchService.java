@@ -13,6 +13,7 @@ import com.kn8.common.data.def.ResearchDef;
 import com.kn8.common.data.def.WorkbenchRecipeDef;
 import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.registry.KN8Blocks;
+import com.kn8.common.soldier.special.KonomiEntity;
 import com.kn8.common.site.RegionService;
 import com.kn8.common.vfx.VfxService;
 
@@ -170,6 +171,10 @@ public final class ResearchService {
             return true;
         }
         int reach = ServerConfig.RESEARCH_TERMINAL_RANGE.get();
+        // ESPECIAIS-2: a Konomi (pesquisadora) vale como terminal.
+        if (!player.level().getEntitiesOfClass(KonomiEntity.class, player.getBoundingBox().inflate(reach)).isEmpty()) {
+            return true;
+        }
         BlockPos center = player.blockPosition();
         for (BlockPos pos : BlockPos.betweenClosed(center.offset(-reach, -reach, -reach),
                 center.offset(reach, reach, reach))) {

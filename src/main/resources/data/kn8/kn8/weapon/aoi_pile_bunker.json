@@ -1,0 +1,50 @@
+{
+  "item": "kn8:aoi_pile_bunker",
+  "base_damage": 12,
+  "reach": 3.4,
+  "style": "heavy",
+  "profile": "kn8:sword",
+  "actions": {
+    "light": {
+      "multiplier": 1.0,
+      "duration_ticks": 18,
+      "impact_tick": 8
+    },
+    "heavy": {
+      "multiplier": 2.4,
+      "duration_ticks": 32,
+      "impact_tick": 15
+    }
+  },
+  "combo": [
+    1.0,
+    1.15
+  ],
+  "sounds": {
+    "swing": "kn8:weapon.axe_swing",
+    "heavy": "kn8:weapon.axe_heavy",
+    "hit": "kn8:weapon.axe_hit"
+  },
+  "special": {
+    "id": "pile_driver",
+    "type": "lunge",
+    "multiplier": 3.0,
+    "duration_ticks": 22,
+    "impact_tick": 10,
+    "radius": 1.2,
+    "forward": 3.0,
+    "stamina_cost": 35,
+    "heat_cost": 6,
+    "cooldown_ticks": 220,
+    "knockback": 1.4,
+    "stagger_ticks": 30,
+    "camera_shake": 0.4,
+    "vfx": [
+      {
+        "effect": "kn8:technique",
+        "intensity": 1.0
+      }
+    ],
+    "sound": "kn8:technique.isao_thunder"
+  }
+}

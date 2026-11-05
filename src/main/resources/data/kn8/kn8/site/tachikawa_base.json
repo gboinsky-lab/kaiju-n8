@@ -21,6 +21,10 @@
     {
       "variant": "kafka",
       "count": 1
+    },
+    {
+      "variant": "konomi",
+      "count": 1
     }
   ],
   "garrison_at": {

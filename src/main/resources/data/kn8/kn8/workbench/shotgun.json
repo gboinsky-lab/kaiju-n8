@@ -1,0 +1,19 @@
+{
+  "result": "kn8:shotgun",
+  "category": "weapon",
+  "order": 18,
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 8
+    },
+    {
+      "item": "kn8:muscle_fiber",
+      "count": 3
+    },
+    {
+      "item": "minecraft:gunpowder",
+      "count": 4
+    }
+  ]
+}

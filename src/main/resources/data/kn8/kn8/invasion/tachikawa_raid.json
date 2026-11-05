@@ -72,6 +72,14 @@
     {
       "variant": "kafka",
       "count": 1
+    },
+    {
+      "variant": "hakua",
+      "count": 1
+    },
+    {
+      "variant": "tae",
+      "count": 1
     }
   ],
   "rewards": {

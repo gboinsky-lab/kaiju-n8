@@ -1,0 +1,17 @@
+{
+  "techniques": {
+    "sincere_shot": {
+      "release": "kn8:weapon.rifle_shot"
+    },
+    "direct_encouragement": {
+      "windup": "kn8:technique.charge",
+      "release": "kn8:weapon.rifle_shot"
+    },
+    "determination_barrage": {
+      "release": "kn8:technique.narumi_blast"
+    },
+    "advanced_pursuit": {
+      "release": "kn8:technique.reno_shot"
+    }
+  }
+}

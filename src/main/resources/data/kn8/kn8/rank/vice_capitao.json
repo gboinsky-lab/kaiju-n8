@@ -5,7 +5,9 @@
   "npc_squad_size": 6,
   "unlocks": [
     "kn8:hoshina_sword",
-    "kn8:katana"
+    "kn8:katana",
+    "kn8:haruichi_bow",
+    "kn8:aoi_pile_bunker"
   ],
   "promotion_mission": "kn8:exam_command"
 }

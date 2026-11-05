@@ -145,13 +145,17 @@ public record SpecialSoldierDef(float health, float armor, float speed, float fo
      * ESPECIAIS-1 (bola em chamas da Jura, Hot-Blooded, Postura de supressao do Haruichi, Flash Adapter do Iharu):
      * no inicio da tecnica, Forca ({@code strength}, nivel) e Velocidade ({@code speed}, nivel) por
      * {@code duration_ticks} em quem usa e nos aliados a {@code radius} (0 = so em quem usa) [SUPOSICAO numeros].
+     * ESPECIAIS-2: {@code resistance} (Postura inabalavel do Aoi, escudo da equipe) e {@code regeneration}
+     * (Incentivo Direto da Hakua, cura aos poucos), tambem em niveis.
      */
-    public record Rally(float radius, int durationTicks, int strength, int speed) {
+    public record Rally(float radius, int durationTicks, int strength, int speed, int resistance, int regeneration) {
         public static final Codec<Rally> CODEC = RecordCodecBuilder.create(i -> i.group(
                 Codec.floatRange(0.0F, 32.0F).optionalFieldOf("radius", 0.0F).forGetter(Rally::radius),
                 DefCodecs.TICKS.fieldOf("duration_ticks").forGetter(Rally::durationTicks),
                 Codec.intRange(0, 4).optionalFieldOf("strength", 0).forGetter(Rally::strength),
-                Codec.intRange(0, 4).optionalFieldOf("speed", 0).forGetter(Rally::speed)
+                Codec.intRange(0, 4).optionalFieldOf("speed", 0).forGetter(Rally::speed),
+                Codec.intRange(0, 4).optionalFieldOf("resistance", 0).forGetter(Rally::resistance),
+                Codec.intRange(0, 4).optionalFieldOf("regeneration", 0).forGetter(Rally::regeneration)
         ).apply(i, Rally::new));
     }
 

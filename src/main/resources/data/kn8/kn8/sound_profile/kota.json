@@ -1,0 +1,20 @@
+{
+  "techniques": {
+    "steady_shot": {
+      "release": "kn8:weapon.rifle_shot",
+      "pitch": 0.8
+    },
+    "menacing_blow": {
+      "release": "kn8:weapon.rifle_shot",
+      "pitch": 0.7
+    },
+    "freeze_grenade": {
+      "windup": "kn8:technique.charge",
+      "release": "kn8:technique.reno_shot"
+    },
+    "solid_shot": {
+      "release": "kn8:weapon.rifle_shot",
+      "pitch": 0.8
+    }
+  }
+}

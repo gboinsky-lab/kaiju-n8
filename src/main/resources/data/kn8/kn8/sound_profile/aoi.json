@@ -1,0 +1,21 @@
+{
+  "techniques": {
+    "steadfast_swing": {
+      "release": "kn8:weapon.axe_heavy"
+    },
+    "skillful_bash": {
+      "release": "kn8:weapon.fist_swing"
+    },
+    "stalwart_stance": {
+      "release": "kn8:technique.charge"
+    },
+    "fortified_crushing_blow": {
+      "windup": "kn8:technique.charge",
+      "release": "kn8:weapon.axe_special"
+    },
+    "pile_driver": {
+      "windup": "kn8:technique.charge",
+      "release": "kn8:technique.isao_thunder"
+    }
+  }
+}

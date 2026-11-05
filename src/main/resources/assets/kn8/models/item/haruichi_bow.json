@@ -1,0 +1,131 @@
+{
+  "loader": "neoforge:obj",
+  "model": "kn8:models/item/haruichi_bow.obj",
+  "flip_v": true,
+  "automatic_culling": false,
+  "textures": {
+    "texture": "kn8:item/haruichi_bow",
+    "particle": "kn8:item/haruichi_bow"
+  },
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [
+        0,
+        -90,
+        55
+      ],
+      "translation": [
+        0.0,
+        3.327,
+        0.619
+      ],
+      "scale": [
+        0.689,
+        0.689,
+        0.689
+      ]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [
+        0,
+        90,
+        -55
+      ],
+      "translation": [
+        0.0,
+        3.327,
+        0.619
+      ],
+      "scale": [
+        0.689,
+        0.689,
+        0.689
+      ]
+    },
+    "firstperson_righthand": {
+      "rotation": [
+        0,
+        -90,
+        25
+      ],
+      "translation": [
+        1.13,
+        2.415,
+        0.844
+      ],
+      "scale": [
+        0.483,
+        0.483,
+        0.483
+      ]
+    },
+    "firstperson_lefthand": {
+      "rotation": [
+        0,
+        90,
+        -25
+      ],
+      "translation": [
+        1.13,
+        2.415,
+        0.844
+      ],
+      "scale": [
+        0.483,
+        0.483,
+        0.483
+      ]
+    },
+    "ground": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        2,
+        0
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ]
+    },
+    "gui": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        4.118,
+        -0.701,
+        0
+      ],
+      "scale": [
+        0.612,
+        0.612,
+        0.612
+      ]
+    },
+    "fixed": {
+      "rotation": [
+        0,
+        180,
+        0
+      ],
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    }
+  }
+}

@@ -83,6 +83,13 @@ SPECIES = {
     "rin": {"items": True, "new_mesh": True, "arms_down": 12},
     "iharu": {"items": True, "new_mesh": True, "arms_down": 12},
     "haruichi": {"items": True, "new_mesh": True, "arms_down": 12},
+    # ESPECIAIS-2: o grupo 2 (Hakua, Kota e Tae vieram em pose A; os outros em pose T: todos vao a 12-14 graus).
+    "aoi": {"items": True, "new_mesh": True, "arms_down": 14},
+    "hakua": {"items": True, "new_mesh": True, "arms_down": 12},
+    "kota": {"items": True, "new_mesh": True, "arms_down": 13},
+    "tae": {"items": True, "new_mesh": True, "arms_down": 12},
+    "ryo": {"items": True, "new_mesh": True, "arms_down": 12},
+    "konomi": {"items": True, "new_mesh": True, "arms_down": 10},
 }
 # FIX-2: "legs_on_body" = pernas filhas do tronco, como no rig de antes (No. 10 e fusao): as animacoes deles inclinam o
 # tronco contando que as pernas vao junto; com as pernas na raiz a bacia abria ("o modelo parte no meio").

@@ -38,6 +38,10 @@
     {
       "variant": "kikoru",
       "count": 1
+    },
+    {
+      "variant": "ryo",
+      "count": 1
     }
   ],
   "rewards": {

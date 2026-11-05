@@ -1,0 +1,22 @@
+{
+  "item": "kn8:haruichi_bow",
+  "base_damage": 7,
+  "reach": 50.0,
+  "style": "firearm",
+  "profile": "kn8:rifle",
+  "actions": {
+    "light": {
+      "multiplier": 1.0,
+      "duration_ticks": 12,
+      "impact_tick": 2
+    },
+    "heavy": {
+      "multiplier": 2.4,
+      "duration_ticks": 28,
+      "impact_tick": 8
+    }
+  },
+  "sounds": {
+    "shot": "kn8:technique.narumi_shot"
+  }
+}

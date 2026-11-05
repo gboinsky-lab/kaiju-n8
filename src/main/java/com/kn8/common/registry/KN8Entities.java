@@ -25,6 +25,12 @@ import com.kn8.common.soldier.special.JuraEntity;
 import com.kn8.common.soldier.special.RinEntity;
 import com.kn8.common.soldier.special.IharuEntity;
 import com.kn8.common.soldier.special.HaruichiEntity;
+import com.kn8.common.soldier.special.AoiEntity;
+import com.kn8.common.soldier.special.HakuaEntity;
+import com.kn8.common.soldier.special.KotaEntity;
+import com.kn8.common.soldier.special.TaeEntity;
+import com.kn8.common.soldier.special.RyoEntity;
+import com.kn8.common.soldier.special.KonomiEntity;
 import com.kn8.common.soldier.special.IsaoEntity;
 import com.kn8.common.soldier.special.KikoruEntity;
 import com.kn8.common.soldier.special.KafkaEntity;
@@ -292,6 +298,48 @@ public final class KN8Entities {
                     .eyeHeight(1.60F)
                     .clientTrackingRange(KAIJU_TRACKING_RANGE_CHUNKS)
                     .build("haruichi"));
+    /** ESPECIAIS-2: Aoi (modelo do Miguel com o rig do Meshy; special_soldier/aoi.json). */
+    public static final DeferredHolder<EntityType<?>, EntityType<AoiEntity>> AOI = ENTITY_TYPES.register(
+            "aoi", () -> EntityType.Builder.<AoiEntity>of(AoiEntity::new, MobCategory.CREATURE)
+                    .sized(0.6F, 1.83F)
+                    .eyeHeight(1.65F)
+                    .clientTrackingRange(KAIJU_TRACKING_RANGE_CHUNKS)
+                    .build("aoi"));
+    /** ESPECIAIS-2: Hakua (modelo do Miguel com o rig do Meshy; special_soldier/hakua.json). */
+    public static final DeferredHolder<EntityType<?>, EntityType<HakuaEntity>> HAKUA = ENTITY_TYPES.register(
+            "hakua", () -> EntityType.Builder.<HakuaEntity>of(HakuaEntity::new, MobCategory.CREATURE)
+                    .sized(0.6F, 1.62F)
+                    .eyeHeight(1.46F)
+                    .clientTrackingRange(KAIJU_TRACKING_RANGE_CHUNKS)
+                    .build("hakua"));
+    /** ESPECIAIS-2: Kota (modelo do Miguel com o rig do Meshy; special_soldier/kota.json). */
+    public static final DeferredHolder<EntityType<?>, EntityType<KotaEntity>> KOTA = ENTITY_TYPES.register(
+            "kota", () -> EntityType.Builder.<KotaEntity>of(KotaEntity::new, MobCategory.CREATURE)
+                    .sized(0.6F, 1.76F)
+                    .eyeHeight(1.58F)
+                    .clientTrackingRange(KAIJU_TRACKING_RANGE_CHUNKS)
+                    .build("kota"));
+    /** ESPECIAIS-2: Tae (modelo do Miguel com o rig do Meshy; special_soldier/tae.json). */
+    public static final DeferredHolder<EntityType<?>, EntityType<TaeEntity>> TAE = ENTITY_TYPES.register(
+            "tae", () -> EntityType.Builder.<TaeEntity>of(TaeEntity::new, MobCategory.CREATURE)
+                    .sized(0.6F, 1.66F)
+                    .eyeHeight(1.49F)
+                    .clientTrackingRange(KAIJU_TRACKING_RANGE_CHUNKS)
+                    .build("tae"));
+    /** ESPECIAIS-2: Ryo (modelo do Miguel com o rig do Meshy; special_soldier/ryo.json). */
+    public static final DeferredHolder<EntityType<?>, EntityType<RyoEntity>> RYO = ENTITY_TYPES.register(
+            "ryo", () -> EntityType.Builder.<RyoEntity>of(RyoEntity::new, MobCategory.CREATURE)
+                    .sized(0.6F, 1.73F)
+                    .eyeHeight(1.56F)
+                    .clientTrackingRange(KAIJU_TRACKING_RANGE_CHUNKS)
+                    .build("ryo"));
+    /** ESPECIAIS-2: Konomi (modelo do Miguel com o rig do Meshy; special_soldier/konomi.json). */
+    public static final DeferredHolder<EntityType<?>, EntityType<KonomiEntity>> KONOMI = ENTITY_TYPES.register(
+            "konomi", () -> EntityType.Builder.<KonomiEntity>of(KonomiEntity::new, MobCategory.CREATURE)
+                    .sized(0.6F, 1.55F)
+                    .eyeHeight(1.40F)
+                    .clientTrackingRange(KAIJU_TRACKING_RANGE_CHUNKS)
+                    .build("konomi"));
     /** MOV-5G: Isao sem a arma numerada 2 (modelo do Isao; special_soldier/isao_base.json). */
     public static final DeferredHolder<EntityType<?>, EntityType<IsaoBaseEntity>> ISAO_BASE = ENTITY_TYPES.register(
             "isao_base", () -> EntityType.Builder.<IsaoBaseEntity>of(IsaoBaseEntity::new, MobCategory.CREATURE)
@@ -413,6 +461,24 @@ public final class KN8Entities {
         if (HaruichiEntity.VARIANT.equals(name)) {
             return Optional.of(HARUICHI.get());
         }
+        if (AoiEntity.VARIANT.equals(name)) {
+            return Optional.of(AOI.get());
+        }
+        if (HakuaEntity.VARIANT.equals(name)) {
+            return Optional.of(HAKUA.get());
+        }
+        if (KotaEntity.VARIANT.equals(name)) {
+            return Optional.of(KOTA.get());
+        }
+        if (TaeEntity.VARIANT.equals(name)) {
+            return Optional.of(TAE.get());
+        }
+        if (RyoEntity.VARIANT.equals(name)) {
+            return Optional.of(RYO.get());
+        }
+        if (KonomiEntity.VARIANT.equals(name)) {
+            return Optional.of(KONOMI.get());
+        }
         return HoshinaEntity.VARIANT.equals(name) ? Optional.of(HOSHINA.get()) : Optional.empty();
     }
 
@@ -484,6 +550,12 @@ public final class KN8Entities {
         event.put(RIN.get(), SoldierEntity.createAttributes().build());
         event.put(IHARU.get(), SoldierEntity.createAttributes().build());
         event.put(HARUICHI.get(), SoldierEntity.createAttributes().build());
+        event.put(AOI.get(), SoldierEntity.createAttributes().build());
+        event.put(HAKUA.get(), SoldierEntity.createAttributes().build());
+        event.put(KOTA.get(), SoldierEntity.createAttributes().build());
+        event.put(TAE.get(), SoldierEntity.createAttributes().build());
+        event.put(RYO.get(), SoldierEntity.createAttributes().build());
+        event.put(KONOMI.get(), SoldierEntity.createAttributes().build());
         event.put(TRAINING_DUMMY.get(), LivingEntity.createLivingAttributes().build());
         KAIJU.forEach(type -> event.put(type.get(), KaijuEntity.baseAttributes().build()));
     }

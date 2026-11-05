@@ -46,6 +46,10 @@
       "variant": "rifle",
       "level": "high",
       "count": 2
+    },
+    {
+      "variant": "tae",
+      "count": 1
     }
   ],
   "rewards": {

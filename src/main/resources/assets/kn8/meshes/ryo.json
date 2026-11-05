@@ -1,0 +1,19 @@
+{
+  "bones": {
+    "body": "kn8:meshes/ryo/body.obj",
+    "chest": "kn8:meshes/ryo/chest.obj",
+    "head": "kn8:meshes/ryo/head.obj",
+    "arm_left": "kn8:meshes/ryo/arm_left.obj",
+    "forearm_left": "kn8:meshes/ryo/forearm_left.obj",
+    "hand_left": "kn8:meshes/ryo/hand_left.obj",
+    "leg_left": "kn8:meshes/ryo/leg_left.obj",
+    "shin_left": "kn8:meshes/ryo/shin_left.obj",
+    "foot_left": "kn8:meshes/ryo/foot_left.obj",
+    "arm_right": "kn8:meshes/ryo/arm_right.obj",
+    "forearm_right": "kn8:meshes/ryo/forearm_right.obj",
+    "hand_right": "kn8:meshes/ryo/hand_right.obj",
+    "leg_right": "kn8:meshes/ryo/leg_right.obj",
+    "shin_right": "kn8:meshes/ryo/shin_right.obj",
+    "foot_right": "kn8:meshes/ryo/foot_right.obj"
+  }
+}

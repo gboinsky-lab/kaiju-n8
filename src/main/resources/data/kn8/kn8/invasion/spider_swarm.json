@@ -28,6 +28,10 @@
       "variant": "random",
       "level": "normal",
       "count": 3
+    },
+    {
+      "variant": "aoi",
+      "count": 1
     }
   ],
   "rewards": {

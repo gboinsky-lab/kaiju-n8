@@ -1,0 +1,17 @@
+{
+  "techniques": {
+    "aggressive_shot": {
+      "release": "kn8:weapon.rifle_shot"
+    },
+    "blazing_fire_shot": {
+      "release": "kn8:technique.narumi_blast"
+    },
+    "heat_grenade": {
+      "windup": "kn8:technique.charge",
+      "release": "kn8:technique.narumi_blast"
+    },
+    "passionate_shot": {
+      "release": "kn8:weapon.rifle_shot"
+    }
+  }
+}

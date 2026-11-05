@@ -1,0 +1,18 @@
+{
+  "techniques": {
+    "hot_blooded_shot": {
+      "release": "kn8:weapon.rifle_shot"
+    },
+    "firing_command": {
+      "windup": "kn8:technique.charge",
+      "release": "kn8:technique.reno_shot"
+    },
+    "contagious_zeal": {
+      "windup": "kn8:technique.charge",
+      "release": "kn8:weapon.rifle_shot"
+    },
+    "passionate_shot": {
+      "release": "kn8:weapon.rifle_shot"
+    }
+  }
+}

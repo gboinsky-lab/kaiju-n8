@@ -258,6 +258,14 @@ public class HoshinaEntity extends SoldierEntity {
                 ally.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, value.durationTicks(),
                         value.speed() - 1, false, false, true));
             }
+            if (value.resistance() > 0) {
+                ally.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, value.durationTicks(),
+                        value.resistance() - 1, false, false, true));
+            }
+            if (value.regeneration() > 0) {
+                ally.addEffect(new MobEffectInstance(MobEffects.REGENERATION, value.durationTicks(),
+                        value.regeneration() - 1, false, false, true));
+            }
         }
         AiTuning.logMove(this, "incentivo " + id + ": " + allies.size() + " aliado(s)");
     }

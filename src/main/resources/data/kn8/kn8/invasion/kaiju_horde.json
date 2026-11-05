@@ -50,6 +50,14 @@
     {
       "variant": "jura",
       "count": 1
+    },
+    {
+      "variant": "ryo",
+      "count": 1
+    },
+    {
+      "variant": "hakua",
+      "count": 1
     }
   ],
   "rewards": {

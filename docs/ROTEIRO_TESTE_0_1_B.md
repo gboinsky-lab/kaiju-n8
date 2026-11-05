@@ -1914,3 +1914,20 @@ Imagem: `docs/img/especiais1_soichiro_jura_rin_iharu_haruichi.jpg`. Modelos do M
 | 136.4 | Invasoes `mass_resurrection` (Soichiro), `kaiju_horde` (Jura), `ariake_assault`/`shinagawa_ants` (Rin), `tachikawa_city_raid` (Iharu e Haruichi), `honju_rampage` (Iharu), `web_queen` (Haruichi) | Eles entram como defensores |
 | 136.5 | Bancada com patente Capitao | Bola de Ferro da Jura fabricavel; na mao, golpes pesados e o especial Mergulho do Zenite (R) |
 | 136.6 | Segundo cliente olhando a mesma luta | Os mesmos modelos, armas, auras e efeitos |
+
+## 137. ESPECIAIS-2: Aoi, Hakua, Kota, Tae, Ryo e Konomi (e modelos/armas refeitos)
+
+Imagem: `docs/img/especiais2_aoi_hakua_kota_tae_ryo_konomi.jpg`. Modelos do Miguel de 2026-11-05 (segunda leva) e o dossie de habilidades.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 137.1 | Ovos novos (Aoi Kaguragi, Hakua Igarashi, Kota Tachibana, Tae Nakanoshima, Ryo Ikaruga, Konomi Okonogi) | Modelos do Miguel com os bracos baixos; Aoi com o Pile Driver, Kota com a espingarda, Hakua/Tae/Ryo com o rifle novo, Konomi de jaleco sem arma; auras aco, dourada, gelo, vermelho-fogo e carmim (Konomi sem aura) |
+| 137.2 | Soichiro, Iharu e Haruichi | Soichiro com o modelo novo; Iharu com a espingarda; Haruichi com o arco AW-0027 |
+| 137.3 | Os 5 combatentes contra um Primigenius Honju | Aoi golpeia de perto (Pile Driver com preparo longo e estaca enorme; Postura inabalavel: aliados com Resistencia II); Hakua: Incentivo Direto (aliados com Regeneracao II) e rajada incendiaria; Kota: chumbo em leque e granada congelante (explosao azul, Lentidao IV); Tae: tiro incendiario e granada termica (o alvo pega fogo); Ryo: Ordem de disparo e Zelo contagiante (Forca II e Velocidade nos aliados) |
+| 137.4 | Usar a Konomi | Mensagem dela no chat e a secao Pesquisa do Arsenal abre; perto dela da para pesquisar sem terminal; ela nao luta, nao entra no esquadrao e nao toma dano |
+| 137.5 | Guarnicao da Base de Tachikawa | A Konomi aparece no patio com os outros |
+| 137.6 | Invasoes `ariake_assault` (Aoi, Kota), `tachikawa_raid` (Hakua, Tae), `honju_assault` (Ryo), `kaiju_horde` (Ryo, Hakua), `fungal_bloom` (Tae), `spider_swarm` (Aoi), `mass_resurrection` (Kota) | Eles entram como defensores |
+| 137.7 | Bancada: Espingarda (Oficial Senior), Arco e Pile Driver (Vice-Capitao) | Fabricaveis; espingarda e arco atiram como o rifle (pentes de rifle) [SUPOSICAO]; Pile Driver com o especial Pile Driver (R, avanco e estaca) |
+| 137.8 | Rifle, espada e espadas do Hoshina refeitos | Modelos novos do Miguel na mao, mesma pegada |
+| 137.9 | Segundo cliente olhando | Os mesmos modelos, armas, auras e efeitos |
+

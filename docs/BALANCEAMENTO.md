@@ -1421,6 +1421,22 @@ Jogador e personagem com o mesmo tamanho (`real_length_m` e `held_scale` em `too
 | Numbers 6 (armadura do Reno) | armadura 16, dureza 2,5, resistência ao calor 0,45, aura `reno_no6_ice` | `suit/numbers6_suit.json`, `workbench/numbers6_suit.json` |
 | Katana longa (Soshiro/Soichiro) | dano 10, alcance 3,8, combo da espada; especial Iai (`lunge` x2,2, 6 blocos, recarga 140); 1,0 m na mão; patente Vice-Capitão | `weapon/katana.json`, `rank/vice_capitao.json` |
 
+### ESPECIAIS-2: Aoi, Hakua, Kota, Tae, Ryo e Konomi (2026-11-05) [SUPOSIÇÃO]
+
+Vida, armadura e velocidade da tabela v1.2; técnicas do dossiê (THE GAME; cânone só o Pile Driver PB-3115 do Aoi).
+
+| Personagem | Vida / armadura / vel. | Release | `kaiju_damage` | Arma | Técnicas (multiplicador; recarga em ticks) |
+|---|---|---|---|---|---|
+| Aoi Kaguragi | 330 / 16 / 0,28 | 15–35 | 0,75 | Pile Driver | Steadfast Swing (1,4; 60), Skillful Bash (0,9 + 1,1; 90), Stalwart Stance (1,0, Resistência II a 10 blocos por 8 s; 360), Fortified Crushing Blow (2,6, pesado; 220), Pile Driver (3,4, pesado; 300) |
+| Hakua Igarashi | 300 / 14 / 0,31 | 18–36 | 0,6 | rifle | Sincere Shot (1,4; 45), Direct Encouragement (1,0, Regeneração II a 12 blocos por 5 s; 360), Determination Barrage (5 x 0,7, fogo 4 s; 200), Advanced Pursuit (1,8; 120) |
+| Kota Tachibana | 310 / 15 / 0,30 | 16–34 | 0,65 | espingarda | Steady Shot (5 x 0,45; 45), Menacing Blow (6 x 0,7, Lentidão I; 140), Freeze Grenade (1,8, explode 2,5, Lentidão IV; 260), Solid Shot (5 x 0,55; 110) |
+| Tae Nakanoshima | 260 / 12 / 0,29 | 15–32 | 0,6 | rifle | Aggressive Shot (1,4; 45), Blazing Fire Shot (1,3, fogo 6 s; 140), Heat Grenade (2,0, explode 2,5, fogo 5 s, Força I em si; 240), Passionate Shot (1,6; 110) |
+| Ryo Ikaruga | 310 / 15 / 0,31 | 18–36 | 0,6 | rifle | Hot-Blooded Shot (1,4; 45), Firing Command (2,4, Força I a 10 blocos por 5 s; 160), Contagious Zeal (1,0, Força II e Velocidade I a 14 blocos por 10 s; 400), Passionate Shot (1,6; 110) |
+| Konomi Okonogi | 220 / 10 / 0,28 | — | 0 | — | não luta (pesquisa e melhorias) |
+| Espingarda (jogador) | dano 9, alcance 20, perfil do rifle | — | — | Oficial Sênior | tiro preciso x2,0 |
+| Arco AW-0027 (jogador) | dano 7, alcance 50, perfil do rifle | — | — | Vice-Capitão | tiro preciso x2,4 |
+| Pile Driver PB-3115 (jogador) | dano 12, alcance 3,4, perfil da espada | — | — | Vice-Capitão | Pile Driver (`lunge` 3,0, 3 blocos; 220) |
+
 ### ESPECIAIS-1: Soichiro, Jura, Rin, Iharu e Haruichi (2026-11-05) [SUPOSIÇÃO]
 
 Nomes das técnicas do dossiê do Miguel (unidades de KAIJU NO. 8 THE GAME e cânone); multiplicadores do jogo convertidos para golpes do mod.

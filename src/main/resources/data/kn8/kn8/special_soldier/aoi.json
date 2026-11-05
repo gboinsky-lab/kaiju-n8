@@ -1,0 +1,136 @@
+{
+  "health": 330,
+  "armor": 16,
+  "speed": 0.28,
+  "follow_range": 48,
+  "knockback_resistance": 0.5,
+  "dash": {
+    "cooldown_ticks": 100,
+    "speed": 1.0,
+    "invulnerable_ticks": 6,
+    "react_ticks": 5,
+    "gap_close_distance": 8.0
+  },
+  "counter": {
+    "multiplier": 2.2,
+    "cooldown_ticks": 200,
+    "dash_speed": 0.9,
+    "invulnerable_ticks": 10,
+    "strike_delay_ticks": 8,
+    "react_ticks": 6
+  },
+  "parry": {
+    "chance": 0.15,
+    "damage_factor": 0.4,
+    "cooldown_ticks": 25,
+    "counter_window_ticks": 10
+  },
+  "escalation": {
+    "points_per_second": 2.0,
+    "max_points": 40,
+    "decay_per_second": 2.0,
+    "cooldown_reduction_at_max": 0.3
+  },
+  "release": 15,
+  "max_release": 35,
+  "kaiju_damage": 0.75,
+  "aura": "kn8:aoi_steel",
+  "weapon": "kn8:aoi_pile_bunker",
+  "height": 1.83,
+  "techniques": {
+    "steadfast_swing": {
+      "type": "combo",
+      "hits": [
+        1.4
+      ],
+      "windup_ticks": 8,
+      "duration_ticks": 18,
+      "cooldown_ticks": 60,
+      "max_range": 4.0,
+      "priority": 1,
+      "dash_in": 0.6
+    },
+    "skillful_bash": {
+      "type": "combo",
+      "hits": [
+        0.9,
+        1.1
+      ],
+      "windup_ticks": 4,
+      "duration_ticks": 14,
+      "cooldown_ticks": 90,
+      "max_range": 3.8,
+      "priority": 2,
+      "final_knockback": 0.6
+    },
+    "stalwart_stance": {
+      "type": "combo",
+      "hits": [
+        1.0
+      ],
+      "windup_ticks": 10,
+      "duration_ticks": 22,
+      "cooldown_ticks": 360,
+      "max_range": 4.0,
+      "priority": 2
+    },
+    "fortified_crushing_blow": {
+      "type": "combo",
+      "hits": [
+        2.6
+      ],
+      "windup_ticks": 16,
+      "duration_ticks": 30,
+      "cooldown_ticks": 220,
+      "max_range": 4.2,
+      "priority": 3,
+      "honju_priority": 1,
+      "final_knockback": 1.0
+    },
+    "pile_driver": {
+      "type": "combo",
+      "hits": [
+        3.4
+      ],
+      "windup_ticks": 22,
+      "duration_ticks": 36,
+      "cooldown_ticks": 300,
+      "max_range": 4.2,
+      "priority": 4,
+      "honju_priority": 2,
+      "dash_in": 1.0,
+      "final_knockback": 1.6
+    }
+  },
+  "tactics": {
+    "aggression": 0.85,
+    "preferred_distance": 3.2,
+    "lateral_step": false,
+    "damage_tolerance": 0.15,
+    "safety_distance": 8.0,
+    "heavy_vs_big": 1,
+    "dodge_chance": 0.5,
+    "protect_ally": 10.0,
+    "exploit_openings": 2
+  },
+  "heavy": {
+    "techniques": [
+      "pile_driver",
+      "fortified_crushing_blow"
+    ],
+    "power": 3,
+    "radius": 2.0
+  },
+  "heavy_guard": {
+    "factor": 0.5,
+    "front_arc_degrees": 120.0,
+    "cooldown_ticks": 40
+  },
+  "rally": {
+    "stalwart_stance": {
+      "radius": 10.0,
+      "duration_ticks": 160,
+      "resistance": 2
+    }
+  }
+}

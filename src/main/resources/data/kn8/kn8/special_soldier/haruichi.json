@@ -45,7 +45,7 @@
   "max_release": 36,
   "kaiju_damage": 0.6,
   "aura": "kn8:haruichi_teal",
-  "weapon": "kn8:rifle",
+  "weapon": "kn8:haruichi_bow",
   "height": 1.78,
   "techniques": {
     "personal_style_shot": {

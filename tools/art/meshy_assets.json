@@ -37,7 +37,8 @@
       ],
       "first_person_scale": 0.7,
       "item_length": 1.6,
-      "thickness": 1.0
+      "thickness": 1.0,
+      "_comment": "ESPECIAIS-2: modelo novo do Miguel (2026-11-05); empunhadura medida de novo no OBJ convertido (mesmo ponto do antigo)"
     },
     "pistol": {
       "source": "pistol.glb",
@@ -64,12 +65,13 @@
       "tip": "-",
       "up_axis": "y",
       "length_m": 0.95,
-      "grip_from_tip": 0.72,
+      "grip_from_tip": 0.8,
       "grip_from_bottom": 0.5,
       "texture": 512,
       "orientation": "diagonal",
       "item_length": 1.6,
-      "thickness": 1.0
+      "thickness": 1.0,
+      "_comment": "ESPECIAIS-2: espada nova do Miguel (2026-11-05), pegada no centro do cabo"
     },
     "axe": {
       "held_scale": [
@@ -96,16 +98,17 @@
       ],
       "source": "hoshina_sword.glb",
       "length_axis": "y",
-      "tip": "-",
+      "tip": "+",
       "up_axis": "x",
       "length_m": 0.78,
-      "grip_from_tip": 0.818,
+      "grip_from_tip": 0.8,
       "grip_from_bottom": 0.5,
       "texture": 512,
       "orientation": "diagonal",
       "item_length": 1.35,
       "thickness": 1.0,
-      "real_length_m": 0.7
+      "real_length_m": 0.7,
+      "_comment": "ESPECIAIS-2: espada nova do Miguel (2026-11-05: lamina para +Y), pegada no centro do cabo como a antiga"
     },
     "mina_cannon": {
       "_comment": "0.7-C: canhao pesado da Mina (modelo do Miguel), deitado em X com o cano para -X; punho embaixo, a ~63% da boca do cano",
@@ -182,6 +185,64 @@
         0.71
       ],
       "real_length_m": 1.1
+    },
+    "shotgun": {
+      "_comment": "ESPECIAIS-2: espingarda SG-1108 do Iharu e do Kota (modelo do Miguel), 1,0 m",
+      "source": "shotgun.glb",
+      "length_axis": "x",
+      "tip": "-",
+      "up_axis": "y",
+      "length_m": 1.0,
+      "grip_from_tip": 0.7,
+      "grip_from_bottom": 0.35,
+      "texture": 512,
+      "orientation": "horizontal",
+      "hand_grip": [
+        -0.1,
+        0.3,
+        0.5
+      ],
+      "first_person_scale": 0.7,
+      "item_length": 1.6,
+      "thickness": 1.0
+    },
+    "haruichi_bow": {
+      "_comment": "ESPECIAIS-2: arco AW-0027 do Haruichi (modelo do Miguel), segurado pelo meio, 1,1 m [SUPOSICAO]",
+      "source": "haruichi_bow.glb",
+      "length_axis": "y",
+      "tip": "+",
+      "up_axis": "x",
+      "length_m": 1.1,
+      "grip_from_tip": 0.5,
+      "grip_from_bottom": 0.5,
+      "texture": 512,
+      "orientation": "diagonal",
+      "item_length": 1.6,
+      "thickness": 1.0,
+      "held_scale": [
+        0.81,
+        0.71
+      ],
+      "real_length_m": 1.1
+    },
+    "aoi_pile_bunker": {
+      "_comment": "ESPECIAIS-2: Pile Driver PB-3115 do Aoi (modelo do Miguel), segurado pelas alcas, a estaca para a frente, 0,9 m [SUPOSICAO]",
+      "source": "aoi_pile_bunker.glb",
+      "length_axis": "y",
+      "tip": "-",
+      "up_axis": "x",
+      "length_m": 0.9,
+      "grip_from_tip": 0.4,
+      "grip_from_bottom": 0.5,
+      "texture": 512,
+      "orientation": "diagonal",
+      "item_length": 1.6,
+      "thickness": 1.0,
+      "held_scale": [
+        0.66,
+        0.6
+      ],
+      "real_length_m": 0.9
     }
   },
   "entities": {
@@ -444,7 +505,7 @@
       "max_triangles": 5000
     },
     "soichiro": {
-      "_comment": "ESPECIAIS-1: modelo do Miguel com o rig do Meshy (rig_from_skin.py importar, new_mesh)",
+      "_comment": "ESPECIAIS-1/2: modelo do Miguel com o rig do Meshy (segunda versao de 2026-11-05, com a tranca)",
       "source": "Soichiro_Hoshina.glb",
       "height_m": 1.8,
       "texture": 1024
@@ -471,6 +532,42 @@
       "_comment": "ESPECIAIS-1: modelo do Miguel com o rig do Meshy (rig_from_skin.py importar, new_mesh)",
       "source": "Haruichi_Izumo.glb",
       "height_m": 1.78,
+      "texture": 1024
+    },
+    "aoi": {
+      "_comment": "ESPECIAIS-2: modelo do Miguel com o rig do Meshy (rig_from_skin.py importar, new_mesh); altura [SUPOSICAO]",
+      "source": "Aoi_Kaguragi.glb",
+      "height_m": 1.83,
+      "texture": 1024
+    },
+    "hakua": {
+      "_comment": "ESPECIAIS-2: modelo do Miguel com o rig do Meshy (rig_from_skin.py importar, new_mesh); altura [SUPOSICAO]",
+      "source": "Hakua_Igarashi.glb",
+      "height_m": 1.62,
+      "texture": 1024
+    },
+    "kota": {
+      "_comment": "ESPECIAIS-2: modelo do Miguel com o rig do Meshy (rig_from_skin.py importar, new_mesh); altura [SUPOSICAO]",
+      "source": "Kota_Tachibana.glb",
+      "height_m": 1.76,
+      "texture": 1024
+    },
+    "tae": {
+      "_comment": "ESPECIAIS-2: modelo do Miguel com o rig do Meshy (rig_from_skin.py importar, new_mesh); altura [SUPOSICAO]",
+      "source": "Tae_Nakanoshima.glb",
+      "height_m": 1.66,
+      "texture": 1024
+    },
+    "ryo": {
+      "_comment": "ESPECIAIS-2: modelo do Miguel com o rig do Meshy (rig_from_skin.py importar, new_mesh); altura [SUPOSICAO]",
+      "source": "Ryo_Ikaruga.glb",
+      "height_m": 1.73,
+      "texture": 1024
+    },
+    "konomi": {
+      "_comment": "ESPECIAIS-2: modelo do Miguel com o rig do Meshy (rig_from_skin.py importar, new_mesh); altura [SUPOSICAO]",
+      "source": "Konomi_Okonogi.glb",
+      "height_m": 1.55,
       "texture": 1024
     }
   },

@@ -141,9 +141,9 @@ public final class SiteGameTests {
         helper.assertTrue(training.filterBlocks(BlockPos.ZERO, settings, Blocks.REDSTONE_WIRE).size() == 20,
                 "Redstone das duas comportas (10 cada)");
         SiteDef base = KN8Data.SITE.server().get(KN8Constants.id("tachikawa_base"));
-        helper.assertTrue(base.garrison().size() == 5 && base.garrisonAt().isPresent()
+        helper.assertTrue(base.garrison().size() == 6 && base.garrisonAt().isPresent()
                 && base.garrisonAt().get().piece().equals(KN8Constants.id("tachikawa_base/hq")),
-                "A guarnicao de Tachikawa (com o Kafka, B-1) deveria aparecer no patio da base");
+                "A guarnicao de Tachikawa (com o Kafka e a Konomi) deveria aparecer no patio da base");
         helper.assertTrue(base.invasions().stream().anyMatch(entry -> entry.invasion()
                 .equals(KN8Constants.id("tachikawa_raid"))), "O raide (No. 10) deveria cair na base");
         StructureTemplate station = manager.get(KN8Constants.id("tachikawa/station")).orElseThrow();

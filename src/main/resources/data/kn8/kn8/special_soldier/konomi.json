@@ -1,0 +1,44 @@
+{
+  "health": 220,
+  "armor": 10,
+  "speed": 0.28,
+  "follow_range": 48,
+  "knockback_resistance": 0.5,
+  "dash": {
+    "cooldown_ticks": 100,
+    "speed": 1.0,
+    "invulnerable_ticks": 6,
+    "react_ticks": 5,
+    "gap_close_distance": 8.0
+  },
+  "counter": {
+    "multiplier": 2.2,
+    "cooldown_ticks": 200,
+    "dash_speed": 0.9,
+    "invulnerable_ticks": 10,
+    "strike_delay_ticks": 8,
+    "react_ticks": 6
+  },
+  "parry": {
+    "chance": 0.15,
+    "damage_factor": 0.4,
+    "cooldown_ticks": 25,
+    "counter_window_ticks": 10
+  },
+  "escalation": {
+    "points_per_second": 2.0,
+    "max_points": 40,
+    "decay_per_second": 2.0,
+    "cooldown_reduction_at_max": 0.3
+  },
+  "release": 1,
+  "max_release": 1,
+  "kaiju_damage": 0.0,
+  "aura": "kn8:none",
+  "weapon": "kn8:isao_fist",
+  "height": 1.55,
+  "techniques": {},
+  "tactics": {
+    "melee_counter": false
+  }
+}

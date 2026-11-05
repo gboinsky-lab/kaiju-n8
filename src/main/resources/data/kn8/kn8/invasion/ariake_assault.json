@@ -90,6 +90,14 @@
     {
       "variant": "rin",
       "count": 1
+    },
+    {
+      "variant": "aoi",
+      "count": 1
+    },
+    {
+      "variant": "kota",
+      "count": 1
     }
   ],
   "rewards": {
