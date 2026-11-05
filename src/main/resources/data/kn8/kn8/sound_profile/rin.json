@@ -1,0 +1,20 @@
+{
+  "techniques": {
+    "focused_shot": {
+      "release": "kn8:weapon.rifle_shot"
+    },
+    "thorough_sweep_fire": {
+      "release": "kn8:weapon.rifle_shot"
+    },
+    "incinerating_barrage": {
+      "release": "kn8:technique.narumi_blast"
+    },
+    "circular_barrage": {
+      "windup": "kn8:technique.charge",
+      "release": "kn8:weapon.rifle_shot"
+    },
+    "baton_strike": {
+      "release": "kn8:weapon.fist_swing"
+    }
+  }
+}

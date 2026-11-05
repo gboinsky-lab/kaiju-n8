@@ -42,6 +42,14 @@
       "variant": "rifle",
       "level": "high",
       "count": 2
+    },
+    {
+      "variant": "iharu",
+      "count": 1
+    },
+    {
+      "variant": "haruichi",
+      "count": 1
     }
   ],
   "rewards": {

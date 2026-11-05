@@ -1,0 +1,137 @@
+{
+  "health": 640,
+  "armor": 23,
+  "speed": 0.32,
+  "follow_range": 48,
+  "knockback_resistance": 0.5,
+  "dash": {
+    "cooldown_ticks": 100,
+    "speed": 1.0,
+    "invulnerable_ticks": 6,
+    "react_ticks": 5,
+    "gap_close_distance": 8.0
+  },
+  "counter": {
+    "multiplier": 2.2,
+    "cooldown_ticks": 200,
+    "dash_speed": 0.9,
+    "invulnerable_ticks": 10,
+    "strike_delay_ticks": 8,
+    "react_ticks": 6
+  },
+  "parry": {
+    "chance": 0.15,
+    "damage_factor": 0.4,
+    "cooldown_ticks": 25,
+    "counter_window_ticks": 10
+  },
+  "escalation": {
+    "points_per_second": 2.0,
+    "max_points": 45,
+    "decay_per_second": 2.0,
+    "cooldown_reduction_at_max": 0.35
+  },
+  "release": 50,
+  "max_release": 90,
+  "kaiju_damage": 1.15,
+  "aura": "kn8:jura_flame",
+  "weapon": "kn8:jura_flail",
+  "height": 1.93,
+  "techniques": {
+    "herculean_toss": {
+      "type": "slash",
+      "hits": [
+        1.6
+      ],
+      "windup_ticks": 10,
+      "duration_ticks": 20,
+      "cooldown_ticks": 70,
+      "min_range": 3.0,
+      "max_range": 14.0,
+      "priority": 2,
+      "slash": {
+        "count": 1,
+        "speed": 1.4,
+        "range": 16.0,
+        "width": 1.0,
+        "color": 16734751,
+        "bullet": true,
+        "explosion_radius": 1.5
+      }
+    },
+    "hot_blooded_impact": {
+      "type": "combo",
+      "hits": [
+        1.5
+      ],
+      "windup_ticks": 12,
+      "duration_ticks": 24,
+      "cooldown_ticks": 240,
+      "max_range": 4.5,
+      "priority": 3,
+      "final_knockback": 1.0
+    },
+    "zenith_plunge": {
+      "type": "combo",
+      "hits": [
+        3.0
+      ],
+      "windup_ticks": 18,
+      "duration_ticks": 32,
+      "cooldown_ticks": 220,
+      "max_range": 4.5,
+      "priority": 4,
+      "honju_priority": 2,
+      "final_knockback": 1.5
+    },
+    "blazing_slugger": {
+      "type": "combo",
+      "hits": [
+        1.4
+      ],
+      "windup_ticks": 6,
+      "duration_ticks": 16,
+      "cooldown_ticks": 60,
+      "max_range": 4.0,
+      "priority": 1,
+      "dash_in": 0.8
+    }
+  },
+  "heavy": {
+    "techniques": [
+      "zenith_plunge",
+      "hot_blooded_impact"
+    ],
+    "power": 3,
+    "radius": 2.5
+  },
+  "tactics": {
+    "aggression": 0.9,
+    "preferred_distance": 3.5,
+    "lateral_step": false,
+    "damage_tolerance": 0.12,
+    "safety_distance": 8.0,
+    "heavy_vs_big": 1,
+    "dodge_chance": 0.7,
+    "exploit_openings": 2
+  },
+  "heavy_guard": {
+    "factor": 0.5,
+    "front_arc_degrees": 120.0,
+    "cooldown_ticks": 40
+  },
+  "burn": {
+    "herculean_toss": 4,
+    "hot_blooded_impact": 4,
+    "zenith_plunge": 6,
+    "blazing_slugger": 3
+  },
+  "rally": {
+    "hot_blooded_impact": {
+      "radius": 12.0,
+      "duration_ticks": 200,
+      "strength": 1,
+      "speed": 1
+    }
+  }
+}

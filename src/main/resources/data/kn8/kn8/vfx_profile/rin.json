@@ -1,0 +1,309 @@
+{
+  "palette": {
+    "primary": "#2E3A2A",
+    "secondary": "#121612",
+    "accent": "#FF7A2A",
+    "core": "#FFF0D0"
+  },
+  "material": "suit",
+  "effects": {
+    "focused_shot": [
+      {
+        "shape": "flash",
+        "color": "core",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.25,
+        "speed": 0.0,
+        "spread": 0.25,
+        "lifetime": 2,
+        "forward": 0.9,
+        "up": 1.35
+      },
+      {
+        "shape": "sparks",
+        "color": "accent",
+        "pattern": "line",
+        "count": 3,
+        "size": 0.06,
+        "speed": 0.5,
+        "spread": 1.0,
+        "lifetime": 4,
+        "forward": 0.9,
+        "up": 1.35
+      },
+      {
+        "shape": "smoke",
+        "color": "#9A9A9A",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.2,
+        "speed": 0.02,
+        "spread": 0.2,
+        "lifetime": 12,
+        "forward": 0.9,
+        "up": 1.35
+      }
+    ],
+    "focused_shot_impact": [
+      {
+        "shape": "sparks",
+        "color": "core",
+        "pattern": "burst",
+        "count": 4,
+        "size": 0.07,
+        "speed": 0.4,
+        "spread": 1.0,
+        "lifetime": 5,
+        "forward": 0,
+        "up": 0
+      }
+    ],
+    "thorough_sweep_fire": [
+      {
+        "shape": "flash",
+        "color": "core",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.25,
+        "speed": 0.0,
+        "spread": 0.25,
+        "lifetime": 2,
+        "forward": 0.9,
+        "up": 1.35
+      },
+      {
+        "shape": "sparks",
+        "color": "core",
+        "pattern": "line",
+        "count": 3,
+        "size": 0.06,
+        "speed": 0.5,
+        "spread": 1.0,
+        "lifetime": 4,
+        "forward": 0.9,
+        "up": 1.35
+      },
+      {
+        "shape": "smoke",
+        "color": "#9A9A9A",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.2,
+        "speed": 0.02,
+        "spread": 0.2,
+        "lifetime": 12,
+        "forward": 0.9,
+        "up": 1.35
+      },
+      {
+        "shape": "sparks",
+        "color": "accent",
+        "pattern": "arc",
+        "count": 6,
+        "size": 0.06,
+        "speed": 0.6,
+        "spread": 1.6,
+        "lifetime": 4,
+        "forward": 0.9,
+        "up": 1.35
+      }
+    ],
+    "thorough_sweep_fire_impact": [
+      {
+        "shape": "sparks",
+        "color": "core",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.06,
+        "speed": 0.4,
+        "spread": 1.0,
+        "lifetime": 4,
+        "forward": 0,
+        "up": 0
+      }
+    ],
+    "incinerating_barrage": [
+      {
+        "shape": "flash",
+        "color": "core",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.25,
+        "speed": 0.0,
+        "spread": 0.25,
+        "lifetime": 2,
+        "forward": 0.9,
+        "up": 1.35
+      },
+      {
+        "shape": "sparks",
+        "color": "accent",
+        "pattern": "line",
+        "count": 3,
+        "size": 0.06,
+        "speed": 0.5,
+        "spread": 1.0,
+        "lifetime": 4,
+        "forward": 0.9,
+        "up": 1.35
+      },
+      {
+        "shape": "smoke",
+        "color": "#5A4A40",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.2,
+        "speed": 0.02,
+        "spread": 0.2,
+        "lifetime": 12,
+        "forward": 0.9,
+        "up": 1.35
+      }
+    ],
+    "incinerating_barrage_trail": [
+      {
+        "shape": "wisp",
+        "color": "accent",
+        "pattern": "rise",
+        "count": 1,
+        "size": 0.2,
+        "speed": 0.05,
+        "spread": 0.2,
+        "lifetime": 6,
+        "forward": 0,
+        "up": 0
+      }
+    ],
+    "incinerating_barrage_impact": [
+      {
+        "shape": "flash",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.35,
+        "speed": 0.0,
+        "spread": 0.35,
+        "lifetime": 2,
+        "forward": 0,
+        "up": 0
+      },
+      {
+        "shape": "wisp",
+        "color": "accent",
+        "pattern": "rise",
+        "count": 3,
+        "size": 0.3,
+        "speed": 0.2,
+        "spread": 0.6,
+        "lifetime": 12,
+        "forward": 0,
+        "up": 0
+      }
+    ],
+    "circular_barrage": [
+      {
+        "shape": "flash",
+        "color": "core",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.25,
+        "speed": 0.0,
+        "spread": 0.25,
+        "lifetime": 2,
+        "forward": 0.9,
+        "up": 1.35
+      },
+      {
+        "shape": "sparks",
+        "color": "core",
+        "pattern": "line",
+        "count": 3,
+        "size": 0.06,
+        "speed": 0.5,
+        "spread": 1.0,
+        "lifetime": 4,
+        "forward": 0.9,
+        "up": 1.35
+      },
+      {
+        "shape": "smoke",
+        "color": "#9A9A9A",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.2,
+        "speed": 0.02,
+        "spread": 0.2,
+        "lifetime": 12,
+        "forward": 0.9,
+        "up": 1.35
+      },
+      {
+        "shape": "wave",
+        "color": "accent",
+        "pattern": "ring",
+        "count": 1,
+        "size": 0.2,
+        "speed": 0.0,
+        "spread": 3.0,
+        "lifetime": 10,
+        "forward": 0,
+        "up": 0.05
+      }
+    ],
+    "circular_barrage_impact": [
+      {
+        "shape": "sparks",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.06,
+        "speed": 0.4,
+        "spread": 1.0,
+        "lifetime": 4,
+        "forward": 0,
+        "up": 0
+      }
+    ],
+    "baton_strike": [
+      {
+        "shape": "sparks",
+        "color": "core",
+        "pattern": "burst",
+        "count": 4,
+        "size": 0.07,
+        "speed": 0.5,
+        "spread": 1.0,
+        "lifetime": 5,
+        "forward": 1.0,
+        "up": 1.1
+      },
+      {
+        "shape": "pulse",
+        "color": "core",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.5,
+        "speed": 0.0,
+        "spread": 0.5,
+        "lifetime": 5,
+        "forward": 1.0,
+        "up": 1.1
+      }
+    ],
+    "counter": [
+      {
+        "shape": "sparks",
+        "color": "core",
+        "pattern": "burst",
+        "count": 4,
+        "size": 0.07,
+        "speed": 0.5,
+        "spread": 1.0,
+        "lifetime": 5,
+        "forward": 1.0,
+        "up": 1.1
+      }
+    ]
+  }
+}

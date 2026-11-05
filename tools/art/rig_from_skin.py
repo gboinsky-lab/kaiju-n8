@@ -76,6 +76,13 @@ SPECIES = {
     "kaiju_no9_fusion": {"items": False, "keep": TAIL + ["jaw", "fin_left", "fin_right"], "legs_on_body": True},
     "kaiju_no10_small": {"items": False, "keep": TAIL + ["jaw", "fin_left", "fin_right"], "legs_on_body": True},
     "kaiju_no10_giant": {"items": False, "keep": TAIL + ["jaw", "fin_left", "fin_right"], "legs_on_body": True},
+    # ESPECIAIS-1 (modelos do Miguel de 2026-11-05, ja com o rig): vieram em pose T; "arms_down" = angulo do braco
+    # com a vertical depois de abaixar (pose A dos outros personagens), pelos pesos do proprio rig.
+    "soichiro": {"items": True, "new_mesh": True, "arms_down": 14},
+    "jura": {"items": True, "new_mesh": True, "arms_down": 14},
+    "rin": {"items": True, "new_mesh": True, "arms_down": 12},
+    "iharu": {"items": True, "new_mesh": True, "arms_down": 12},
+    "haruichi": {"items": True, "new_mesh": True, "arms_down": 12},
 }
 # FIX-2: "legs_on_body" = pernas filhas do tronco, como no rig de antes (No. 10 e fusao): as animacoes deles inclinam o
 # tronco contando que as pernas vao junto; com as pernas na raiz a bacia abria ("o modelo parte no meio").
@@ -200,6 +207,11 @@ def import_skin(species, glb, new_mesh=False):
     bind = np.array([np.linalg.inv(m)[:3, 3] for m in inverse])
     # O Meshy olha para +Z; o jogo para -Z: giro de 180 graus.
     flip = np.array([-1.0, 1.0, -1.0])
+    down = SPECIES.get(species, {}).get("arms_down")
+    mesh_normals = None
+    if down is not None:
+        _, _, mesh_normals, _ = glb_mesh(doc, accessor)
+        positions, mesh_normals, bind = lower_arms(positions, mesh_normals, joints, weights, names, bind, down)
     if new_mesh:
         assets = json.loads((ROOT / "tools/art/meshy_assets.json").read_text(encoding="utf-8"))["entities"]
         height = assets[species]["height_m"]
@@ -210,6 +222,8 @@ def import_skin(species, glb, new_mesh=False):
         def place(points):
             return points * scale * flip - center
         _, uvs, normals, faces = glb_mesh(doc, accessor)
+        if mesh_normals is not None:
+            normals = mesh_normals
         vertices, normals = place(positions), normals * flip
         labels = np.array(["body"] * len(faces), dtype=object)
         write_new_mesh(species, glb, doc, vertices, uvs, normals, faces)
@@ -236,6 +250,41 @@ def import_skin(species, glb, new_mesh=False):
                         bind=place(bind), vertices=vertices.astype(np.float32), uvs=uvs.astype(np.float32),
                         normals=normals.astype(np.float32), faces=faces.astype(np.int32),
                         old_labels=labels.astype(str))
+
+
+def lower_arms(positions, normals, joints, weights, names, bind, degrees):
+    """Pose T -> pose A: cada braco (Arm, ForeArm, Hand e dedos) gira no plano da frente em volta do ombro ate ficar a
+    'degrees' da vertical. Pele pelos pesos do rig (o ombro dobra macio; a clavicula nao gira)."""
+    rotations = [np.eye(3)] * len(names)
+    pivots = [np.zeros(3)] * len(names)
+    for side in ("Left", "Right"):
+        try:
+            shoulder = bind[names.index(f"{side}Arm")]
+            hand = bind[names.index(f"{side}Hand")]
+        except ValueError:
+            continue
+        direction = hand - shoulder
+        current = np.arctan2(direction[0], -direction[1])
+        target = np.radians(degrees) * np.sign(direction[0])
+        angle = target - current
+        c, s = np.cos(angle), np.sin(angle)
+        rot = np.array([[c, -s, 0], [s, c, 0], [0, 0, 1]])
+        for i, name in enumerate(names):
+            if name.startswith(side) and ("Arm" in name or "Hand" in name):
+                rotations[i], pivots[i] = rot, shoulder
+        print(f"  braco {side} abaixado {np.degrees(angle):.0f} graus")
+    rotations, pivots = np.array(rotations), np.array(pivots)
+    w = weights / np.maximum(weights.sum(axis=1, keepdims=True), 1e-9)
+    out = np.zeros_like(positions)
+    out_normals = np.zeros_like(normals)
+    for k in range(joints.shape[1]):
+        j = joints[:, k]
+        moved = np.einsum("nij,nj->ni", rotations[j], positions - pivots[j]) + pivots[j]
+        out += w[:, k:k + 1] * moved
+        out_normals += w[:, k:k + 1] * np.einsum("nij,nj->ni", rotations[j], normals)
+    out_normals /= np.maximum(np.linalg.norm(out_normals, axis=1, keepdims=True), 1e-9)
+    new_bind = np.array([rotations[i] @ (b - pivots[i]) + pivots[i] for i, b in enumerate(bind)])
+    return out, out_normals, new_bind
 
 
 def write_new_mesh(species, glb, doc, vertices, uvs, normals, faces):

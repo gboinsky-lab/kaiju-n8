@@ -1,0 +1,21 @@
+{
+  "techniques": {
+    "personal_style_shot": {
+      "release": "kn8:weapon.rifle_shot"
+    },
+    "precision_snipe": {
+      "windup": "kn8:technique.charge",
+      "release": "kn8:technique.reno_shot"
+    },
+    "clearance": {
+      "release": "kn8:weapon.rifle_shot"
+    },
+    "suppressive_stance": {
+      "release": "kn8:technique.reno_shot"
+    },
+    "manifold_arrow_salvo": {
+      "windup": "kn8:technique.charge",
+      "release": "kn8:technique.narumi_shot"
+    }
+  }
+}

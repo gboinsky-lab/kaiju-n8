@@ -116,7 +116,7 @@ public record SpecialSoldierDef(float health, float armor, float speed, float fo
             Optional<Transform> transform, Optional<Regeneration> regeneration, float height,
             Optional<Ranged> ranged, Optional<Heavy> heavy, Map<String, Integer> techniqueUses,
             Optional<HeavyGuard> heavyGuard, Tactics tactics, Rhythm rhythm, Map<String, Float> lowHealth,
-            boolean sureHit) {
+            boolean sureHit, Map<String, Integer> burn, Map<String, Rally> rally) {
         public static final MapCodec<Growth> MAP_CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
                 Escalation.CODEC.optionalFieldOf("escalation", Escalation.NONE).forGetter(Growth::escalation),
                 Numbers10.CODEC.optionalFieldOf("numbers10").forGetter(Growth::numbers10),
@@ -133,8 +133,36 @@ public record SpecialSoldierDef(float health, float armor, float speed, float fo
                 Rhythm.CODEC.optionalFieldOf("rhythm", Rhythm.NONE).forGetter(Growth::rhythm),
                 Codec.unboundedMap(Codec.STRING, Codec.floatRange(0.0F, 1.0F)).optionalFieldOf("low_health", Map.of())
                         .forGetter(Growth::lowHealth),
-                Codec.BOOL.optionalFieldOf("sure_hit", false).forGetter(Growth::sureHit)
+                Codec.BOOL.optionalFieldOf("sure_hit", false).forGetter(Growth::sureHit),
+                Codec.unboundedMap(Codec.STRING, Codec.intRange(1, 30)).optionalFieldOf("burn", Map.of())
+                        .forGetter(Growth::burn),
+                Codec.unboundedMap(Codec.STRING, Rally.CODEC).optionalFieldOf("rally", Map.of())
+                        .forGetter(Growth::rally)
         ).apply(i, Growth::new));
+    }
+
+    /**
+     * ESPECIAIS-1 (bola em chamas da Jura, Hot-Blooded, Postura de supressao do Haruichi, Flash Adapter do Iharu):
+     * no inicio da tecnica, Forca ({@code strength}, nivel) e Velocidade ({@code speed}, nivel) por
+     * {@code duration_ticks} em quem usa e nos aliados a {@code radius} (0 = so em quem usa) [SUPOSICAO numeros].
+     */
+    public record Rally(float radius, int durationTicks, int strength, int speed) {
+        public static final Codec<Rally> CODEC = RecordCodecBuilder.create(i -> i.group(
+                Codec.floatRange(0.0F, 32.0F).optionalFieldOf("radius", 0.0F).forGetter(Rally::radius),
+                DefCodecs.TICKS.fieldOf("duration_ticks").forGetter(Rally::durationTicks),
+                Codec.intRange(0, 4).optionalFieldOf("strength", 0).forGetter(Rally::strength),
+                Codec.intRange(0, 4).optionalFieldOf("speed", 0).forGetter(Rally::speed)
+        ).apply(i, Rally::new));
+    }
+
+    /** ESPECIAIS-1: segundos de fogo no alvo atingido pela tecnica (bloco {@code burn}; 0 = sem fogo). */
+    public int burnSeconds(String techniqueId) {
+        return growth.burn().getOrDefault(techniqueId, 0);
+    }
+
+    /** ESPECIAIS-1: incentivo aos aliados no inicio da tecnica (bloco {@code rally}). */
+    public Optional<Rally> rally(String techniqueId) {
+        return Optional.ofNullable(growth.rally().get(techniqueId));
     }
 
     /**

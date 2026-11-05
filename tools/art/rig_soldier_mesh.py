@@ -113,6 +113,18 @@ SPECIES = {
     # 0.8-A: Isao Shinomiya (1,85 m, traje preto, manoplas da arma numerada 2 nos dois bracos abertos em A): o tronco
     # vai ate |x| 0,20 (bolsas do cinto ate 0,22), as manoplas descem ate y 0,77 por fora; o cabelo e mais largo que
     # o pescoco (acima de 1,52 nada e braco).
+    # ESPECIAIS-1 (modelos do Miguel de 2026-11-05 com o rig do Meshy, bracos abaixados da pose T pelo
+    # rig_from_skin.py): estes cortes so servem de partida; os ossos e pivos vem do rig (.npz).
+    "soichiro": {"stem": "soichiro", "hip_y": 0.80, "neck_y": 1.44, "hand_min_y": 0.66,
+                 "arm_inner_x": [(0.0, 0.20)], "arm_max_y": 1.44, "back_items": None, "leg_pivot_center": True},
+    "jura": {"stem": "jura", "hip_y": 0.85, "neck_y": 1.55, "hand_min_y": 0.70,
+             "arm_inner_x": [(0.0, 0.24)], "arm_max_y": 1.55, "back_items": None, "leg_pivot_center": True},
+    "rin": {"stem": "rin", "hip_y": 0.72, "neck_y": 1.30, "hand_min_y": 0.60,
+            "arm_inner_x": [(0.0, 0.18)], "arm_max_y": 1.30, "back_items": None, "leg_pivot_center": True},
+    "iharu": {"stem": "iharu", "hip_y": 0.75, "neck_y": 1.30, "hand_min_y": 0.62,
+              "arm_inner_x": [(0.0, 0.20)], "arm_max_y": 1.30, "back_items": None, "leg_pivot_center": True},
+    "haruichi": {"stem": "haruichi", "hip_y": 0.80, "neck_y": 1.42, "hand_min_y": 0.64,
+                 "arm_inner_x": [(0.0, 0.20)], "arm_max_y": 1.42, "back_items": None, "leg_pivot_center": True},
     "isao": {"stem": "isao", "hip_y": 0.85, "neck_y": 1.50, "hand_min_y": 0.74,
              "arm_inner_x": [(1.0, 0.205), (0.0, 0.25)], "arm_max_y": 1.52, "back_items": None,
              "leg_pivot_center": True},

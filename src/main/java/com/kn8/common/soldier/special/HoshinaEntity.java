@@ -12,6 +12,8 @@ import org.jetbrains.annotations.Nullable;
 
 import com.kn8.KN8Constants;
 import com.kn8.common.ai.AiTuning;
+import com.kn8.common.combat.SpecialAttacks;
+import com.kn8.common.evacuation.CivilianEntity;
 import com.kn8.common.anim.Locomotion;
 import com.kn8.common.attribute.PowerService;
 import com.kn8.common.combat.CombatService;
@@ -60,6 +62,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.SpawnGroupData;
@@ -224,6 +228,38 @@ public class HoshinaEntity extends SoldierEntity {
      * do Release. A Kikoru salta no Falling Thunder.
      */
     protected void onTechniqueStart(String id, LivingEntity target, int firstHitTicks) {
+    }
+
+    /** ESPECIAIS-1: segundos de fogo da tecnica (golpe e tiro; {@code burn} do perfil). */
+    public int burnSeconds(String id) {
+        return id == null ? 0 : profile().map(def -> def.burnSeconds(id)).orElse(0);
+    }
+
+    /**
+     * ESPECIAIS-1: incentivo no inicio da tecnica ({@code rally} do perfil): Forca e Velocidade em quem usa e nos
+     * aliados no raio (soldados, civis nao, jogadores que o especial nao fere).
+     */
+    private void rally(String id) {
+        Optional<SpecialSoldierDef.Rally> rally = profile().flatMap(def -> def.rally(id));
+        if (rally.isEmpty()) {
+            return;
+        }
+        SpecialSoldierDef.Rally value = rally.get();
+        List<LivingEntity> allies = value.radius() <= 0.0F ? List.of(this)
+                : level().getEntitiesOfClass(LivingEntity.class, getBoundingBox().inflate(value.radius()),
+                        living -> living == this || living.isAlive() && !(living instanceof CivilianEntity)
+                                && SpecialAttacks.isAlly(this, living));
+        for (LivingEntity ally : allies) {
+            if (value.strength() > 0) {
+                ally.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, value.durationTicks(),
+                        value.strength() - 1, false, false, true));
+            }
+            if (value.speed() > 0) {
+                ally.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, value.durationTicks(),
+                        value.speed() - 1, false, false, true));
+            }
+        }
+        AiTuning.logMove(this, "incentivo " + id + ": " + allies.size() + " aliado(s)");
     }
 
     /** Tecnicas e reacoes com animacao propria ({@code <prefixo>.action.<id>}); as outras tocam o golpe basico. */
@@ -545,6 +581,7 @@ public class HoshinaEntity extends SoldierEntity {
             dashSafe(target.position().subtract(position()), technique.dashIn(), "avanco da tecnica " + id);
         }
         onTechniqueStart(id, target, CombatMath.faster(technique.windupTicks(), techniqueSpeed));
+        rally(id);
         triggerAnim("action", animatedTechniques().contains(id) ? id : "attack");
         // VFX-5: carga no preparo (canhao da Mina, cristal do Reno No. 6): so com a receita "<tecnica>_charge"; as
         // camadas dela usam o "delay" para acompanhar o preparo inteiro.
@@ -942,6 +979,11 @@ public class HoshinaEntity extends SoldierEntity {
         }
         if (!hurt) {
             return false;
+        }
+        // ESPECIAIS-1: tecnica com fogo (bola em chamas da Jura) incendeia quem leva o golpe.
+        int burn = burnSeconds(techniqueId);
+        if (burn > 0) {
+            target.igniteForSeconds(burn);
         }
         ServerLevel level = (ServerLevel) level();
         // IA-2 (Miguel): golpe pesado dos especiais pesados quebra o que estiver em volta do ponto do golpe.

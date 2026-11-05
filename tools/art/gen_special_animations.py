@@ -63,8 +63,28 @@ STANCES["fists"] = {
     "run": ([20, -10, 0], [20, 10, 0], None),
     "aim": ([-85, -30, 0], [-80, 35, 0], None),
 }
+# ESPECIAIS-1: katana longa do Soichiro com as duas maos, lamina para cima e para a frente [SUPOSICAO]; bola de
+# ferro da Jura segurada pela corda na mao direita, baixa ao lado do corpo, a esquerda livre (Miguel: "ela usa
+# segurando pela corda").
+STANCES["katana"] = {
+    "ready": ([-45, -20, 0], [-52, 38, 0], None),
+    "walk": ([-40, -18, 0], [-48, 35, 0], None),
+    "run": ([-25, -10, 0], [-35, 28, 0], None),
+    "aim": ([-55, -22, 0], [-62, 40, 0], None),
+}
+STANCES["flail"] = {
+    "ready": ([-25, -8, 12], [-15, 10, -10], None),
+    "walk": ([-22, -8, 12], [-10, 10, -10], None),
+    "run": ([-15, -5, 10], [20, 5, -5], None),
+    "aim": ([-40, -10, 15], [-30, 20, -10], None),
+}
 FAMILY = {"reno": "rifle", "mina": "cannon", "narumi": "spear", "reno_no6": "rifle", "kafka": "rifle",
-          "kaiju_no8": "fists", "isao": "fists"}
+          "kaiju_no8": "fists", "isao": "fists", "soichiro": "katana", "jura": "flail", "rin": "rifle",
+          "iharu": "rifle", "haruichi": "rifle"}
+# Golpes por nome nas familias novas: corte final de cima para baixo e o mergulho da bola = golpe no chao;
+# arremesso/impacto da bola e o corte que voa do Soichiro = varrida larga.
+OVERHEAD = {"finishing_masterstroke", "zenith_plunge"}
+SWEEPS = {"herculean_toss", "hot_blooded_impact", "astute_strike"}
 # 0.8-A: tecnicas de onda do Isao (manoplas Numbers 2) com a animacao dos punhos: Force Blast abre os bracos como o
 # rugido e solta a onda em leque; Spiral Blast e um soco para a frente que dispara a onda.
 FIST_WAVES = {"roar": "roar", "force_blast": "roar", "ground_smash": "ground_smash"}
@@ -304,6 +324,10 @@ def technique_animation(name, technique, family, stances):
         if wave is None:
             return thrusts(stances, ticks, duration)
         return (roar if wave == "roar" else ground_smash)(stances, ticks[0], duration)
+    if name in OVERHEAD:
+        return ground_smash(stances, ticks[0], duration)
+    if name in SWEEPS:
+        return sweep(stances, ticks[0], duration)
     if technique["type"] == "slash":
         slash = technique.get("slash", {})
         big = slash.get("explosion_radius", 0) >= 3.0
@@ -339,7 +363,8 @@ def build(species):
     for name, technique in profile["techniques"].items():
         out[f"{p}action.{name}"] = technique_animation(name, technique, family, stances)
     counter_tick = profile["counter"]["strike_delay_ticks"]
-    out[p + "action.counter"] = (thrusts(stances, [counter_tick], counter_tick + 8) if family == "spear"
+    out[p + "action.counter"] = (thrusts(stances, [counter_tick], counter_tick + 8)
+                                 if family in ("spear", "katana", "flail")
                                  else butt_strike(stances, counter_tick, counter_tick + 8))
     out[p + "action.dash"] = dash(stances)
     out[p + "action.parry"] = parry(stances)

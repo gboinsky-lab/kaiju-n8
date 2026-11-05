@@ -951,7 +951,8 @@ def hoshina_no10_kneel(data):
 # Especies so com a passada automatica (animacoes de arma medidas, Blockbench do Miguel, caudas): o que ja existe fica.
 ARTICULATE = {"soldier": False, "hoshina": False, "hoshina_no10": False, "kikoru": False, "kikoru_no4": False,
               "mina": False, "reno": False, "reno_no6": False, "narumi": False, "kafka": False,
-              "kaiju_no9_fusion": True, "kaiju_no10_small": True, "kaiju_no10_giant": True}
+              "kaiju_no9_fusion": True, "kaiju_no10_small": True, "kaiju_no10_giant": True,
+              "soichiro": False, "jura": False, "rin": False, "iharu": False, "haruichi": False}
 
 
 SPECIES = {"isao": isao, "kaiju_no13": kaiju_no13, "kaiju_no9_isao": kaiju_no9_isao, "kaiju_no8": kaiju_no8,

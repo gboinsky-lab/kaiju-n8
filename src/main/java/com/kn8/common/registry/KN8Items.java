@@ -47,6 +47,9 @@ public final class KN8Items {
     /** EQUIP-1: katana longa do Soshiro e do Soichiro Hoshina (modelo do Miguel), tambem para o jogador. */
     public static final DeferredItem<WeaponItem> KATANA =
             ITEMS.register("katana", () -> new WeaponItem(new Item.Properties()));
+    /** ESPECIAIS-1: bola de ferro em chamas da Jura Igarashi, segurada pela corda (modelo do Miguel). */
+    public static final DeferredItem<WeaponItem> JURA_FLAIL =
+            ITEMS.register("jura_flail", () -> new WeaponItem(new Item.Properties()));
     /** 0.7-C: canhao pesado da Mina e baioneta longa do Narumi (armas dos soldados especiais; modelos do Miguel). */
     public static final DeferredItem<WeaponItem> MINA_CANNON =
             ITEMS.register("mina_cannon", () -> new WeaponItem(new Item.Properties()));
@@ -133,6 +136,21 @@ public final class KN8Items {
     public static final DeferredItem<DeferredSpawnEggItem> ISAO_SPAWN_EGG = ITEMS.register("isao_spawn_egg",
             () -> new DeferredSpawnEggItem(KN8Entities.ISAO, 0x2A2A2A, 0xFFB347, new Item.Properties()));
     /** MOV-5G: Isao Shinomiya sem o Numbers 2. */
+    public static final DeferredItem<DeferredSpawnEggItem> SOICHIRO_SPAWN_EGG = ITEMS.register(
+            "soichiro_spawn_egg", () -> new DeferredSpawnEggItem(KN8Entities.SOICHIRO, 0x16141A, 0xC9A8E8,
+                    new Item.Properties()));
+    public static final DeferredItem<DeferredSpawnEggItem> JURA_SPAWN_EGG = ITEMS.register(
+            "jura_spawn_egg", () -> new DeferredSpawnEggItem(KN8Entities.JURA, 0x2A2624, 0xFF5A1F,
+                    new Item.Properties()));
+    public static final DeferredItem<DeferredSpawnEggItem> RIN_SPAWN_EGG = ITEMS.register(
+            "rin_spawn_egg", () -> new DeferredSpawnEggItem(KN8Entities.RIN, 0x1E2A1E, 0xFF7A2A,
+                    new Item.Properties()));
+    public static final DeferredItem<DeferredSpawnEggItem> IHARU_SPAWN_EGG = ITEMS.register(
+            "iharu_spawn_egg", () -> new DeferredSpawnEggItem(KN8Entities.IHARU, 0x141414, 0xFFE14A,
+                    new Item.Properties()));
+    public static final DeferredItem<DeferredSpawnEggItem> HARUICHI_SPAWN_EGG = ITEMS.register(
+            "haruichi_spawn_egg", () -> new DeferredSpawnEggItem(KN8Entities.HARUICHI, 0x121614, 0x3FBFA8,
+                    new Item.Properties()));
     public static final DeferredItem<DeferredSpawnEggItem> ISAO_BASE_SPAWN_EGG = ITEMS.register(
             "isao_base_spawn_egg", () -> new DeferredSpawnEggItem(KN8Entities.ISAO_BASE, 0x2A2A2A, 0xC8C8C8,
                     new Item.Properties()));
@@ -190,6 +208,7 @@ public final class KN8Items {
                         output.accept(AXE.get());
                         output.accept(HOSHINA_SWORD.get());
                         output.accept(KATANA.get());
+                        output.accept(JURA_FLAIL.get());
                         output.accept(MINA_CANNON.get());
                         output.accept(NARUMI_BAYONET.get());
                         output.accept(NUMBERS1_BAYONET.get());
@@ -220,6 +239,11 @@ public final class KN8Items {
                         output.accept(KAIJU_NO8_SPAWN_EGG.get());
                         output.accept(ISAO_SPAWN_EGG.get());
                         output.accept(ISAO_BASE_SPAWN_EGG.get());
+                        output.accept(SOICHIRO_SPAWN_EGG.get());
+                        output.accept(JURA_SPAWN_EGG.get());
+                        output.accept(RIN_SPAWN_EGG.get());
+                        output.accept(IHARU_SPAWN_EGG.get());
+                        output.accept(HARUICHI_SPAWN_EGG.get());
                         output.accept(TRAINING_DUMMY.get());
                         output.accept(WEIGHT_RACK.get());
                         output.accept(DEFENSE_WORKBENCH.get());

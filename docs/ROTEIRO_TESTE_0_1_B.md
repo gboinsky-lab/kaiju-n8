@@ -1901,3 +1901,16 @@ Imagem: `docs/img/equip1_armaduras_asas_manoplas_katana.jpg`. Modelos do Miguel 
 | 135.6 | Segurar `kn8:katana` (aba do mod) | Katana longa de ~1 m na mão, postura de espada; R = Iai (avança cortando) |
 | 135.7 | Bancada: Numbers 4, Numbers 6 e Katana | Armaduras liberadas pela pesquisa Teoria das Armas Numeradas (como o Numbers 10); katana pela patente Vice-Capitão |
 | 135.8 | Segundo cliente olhando o primeiro | Mesmas armaduras, cauda, asas, manoplas e katana |
+
+## 136. ESPECIAIS-1: Soichiro, Jura, Rin, Iharu e Haruichi
+
+Imagem: `docs/img/especiais1_soichiro_jura_rin_iharu_haruichi.jpg`. Modelos do Miguel de 2026-11-05 e o dossie de habilidades.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 136.1 | Ovos novos na aba do mod (Soichiro Hoshina, Jura Igarashi, Rin Shinonome, Iharu Furuhashi, Haruichi Izumo) | Os 5 com o modelo do Miguel, bracos baixos (o modelo veio em pose T), arma na mao e aura propria (lilas, laranja em chamas, laranja, amarelo eletrico, teal); Jura com 1,93 m |
+| 136.2 | Cada um contra um Primigenius Honju (`/summon kn8:primigenius_honju`) | Soichiro: tiro de pistola, cortes da katana e o golpe final vertical com onda; Jura: arremessa a bola (explode em chamas), Hot-Blooded (aneis de calor e os aliados ganham Forca e Velocidade), Mergulho do Zenite racha o chao; o alvo pega fogo |
+| 136.3 | Rin, Iharu e Haruichi | Ficam longe e atiram: rajadas e a rajada incendiaria da Rin (o alvo pega fogo), bastao de perto; Iharu com tiros eletricos (Lentidao = choque) e o Flash Adapter (avanco com pico de forca); Haruichi com o tiro de precisao, a Postura de supressao (anel no chao, aliados mais fortes) e a salva de flechas verdes |
+| 136.4 | Invasoes `mass_resurrection` (Soichiro), `kaiju_horde` (Jura), `ariake_assault`/`shinagawa_ants` (Rin), `tachikawa_city_raid` (Iharu e Haruichi), `honju_rampage` (Iharu), `web_queen` (Haruichi) | Eles entram como defensores |
+| 136.5 | Bancada com patente Capitao | Bola de Ferro da Jura fabricavel; na mao, golpes pesados e o especial Mergulho do Zenite (R) |
+| 136.6 | Segundo cliente olhando a mesma luta | Os mesmos modelos, armas, auras e efeitos |

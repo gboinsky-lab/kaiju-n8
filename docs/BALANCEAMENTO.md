@@ -1420,3 +1420,17 @@ Jogador e personagem com o mesmo tamanho (`real_length_m` e `held_scale` em `too
 | Numbers 4 (armadura da Kikoru, com asas) | armadura 17, dureza 3,0, resistência ao calor 0,35, aura `kikoru_no4_wind`; receita igual à do Numbers 10; pesquisa Teoria das Armas Numeradas | `suit/numbers4_suit.json`, `workbench/numbers4_suit.json` |
 | Numbers 6 (armadura do Reno) | armadura 16, dureza 2,5, resistência ao calor 0,45, aura `reno_no6_ice` | `suit/numbers6_suit.json`, `workbench/numbers6_suit.json` |
 | Katana longa (Soshiro/Soichiro) | dano 10, alcance 3,8, combo da espada; especial Iai (`lunge` x2,2, 6 blocos, recarga 140); 1,0 m na mão; patente Vice-Capitão | `weapon/katana.json`, `rank/vice_capitao.json` |
+
+### ESPECIAIS-1: Soichiro, Jura, Rin, Iharu e Haruichi (2026-11-05) [SUPOSIÇÃO]
+
+Nomes das técnicas do dossiê do Miguel (unidades de KAIJU NO. 8 THE GAME e cânone); multiplicadores do jogo convertidos para golpes do mod.
+
+| Personagem | Vida / armadura / vel. | Release | `kaiju_damage` | Arma | Técnicas (multiplicador; recarga em ticks) |
+|---|---|---|---|---|---|
+| Soichiro Hoshina | 560 / 21 / 0,34 | 50–90 | 1,1 | katana | Poised Marksmanship (tiro 1,3; 70), Adaptive Stance (1,0 + 1,3; 110), Prodigious Swordsmanship (4 golpes até 1,2; 90), Astute Strike (corte que voa 0,9, Lentidão II e vulnerável 1,15; 100), Finishing Masterstroke (4,0, pesado; 320) |
+| Jura Igarashi | 640 / 23 / 0,32 | 50–90 | 1,15 | bola de ferro | Herculean Toss (1,6, explode 1,5, fogo 4 s; 70), Hot-Blooded Impact (1,5, pesado, fogo 4 s, Força I e Velocidade I a 12 blocos por 10 s; 240), Zenith Plunge (3,0, pesado, fogo 6 s; 220), Blazing Slugger (1,4, fogo 3 s; 60) |
+| Rin Shinonome | 360 / 16 / 0,32 | 30–70 | 0,55 | rifle | Focused Shot (1,6; 50), Thorough Sweep Fire (8 x 0,5; 90), Incinerating Barrage (6 x 0,9, fogo 3 s; 160), Circular Barrage (12 x 0,6; 280), bastão (0,9 + 0,9; 40) |
+| Iharu Furuhashi | 380 / 17 / 0,34 | 24–42 | 0,6 | rifle | Single-Minded Shot (1,5; 50), Thunderbolt Blast (1,9, Lentidão III; 110), Conduct Round Sweep (5 x 0,8; 140), Rapid Thunderbolt (3,0, Lentidão IV, vulnerável 1,2; 220), Flash Adapter (1,2 + 1,6 com avanço, Força I e Velocidade II em si por 3 s; 160) |
+| Haruichi Izumo | 350 / 16 / 0,31 | 18–36 | 0,6 | rifle | Personal Style Shot (1,5; 50), Precision Snipe (2,8 até 48 blocos; 140), Clearance (6 x 0,8; 160), Suppressive Stance (1,0, Força I e Velocidade I a 10 blocos por 6 s; 300), Manifold Arrow Salvo (9 flechas x 0,8, Lentidão II, vulnerável 1,1; 300) |
+| Bola de Ferro da Jura (jogador) | dano 12, alcance 3,6, perfil da espada | — | — | patente Capitão | Mergulho do Zênite (`ground_slam` 2,8, raio 4; 240) |
+

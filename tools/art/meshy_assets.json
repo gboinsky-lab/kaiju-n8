@@ -163,6 +163,25 @@
         0.765
       ],
       "real_length_m": 1.0
+    },
+    "jura_flail": {
+      "_comment": "ESPECIAIS-1: bola de ferro da Jura Igarashi (modelo do Miguel; o laco grande da corda solta saiu: bola, corda curta e cabo). Segurada pelo cabo da corda (Miguel), a bola a frente; 1,1 m [SUPOSICAO]",
+      "source": "jura_flail.glb",
+      "length_axis": "x",
+      "tip": "-",
+      "up_axis": "y",
+      "length_m": 1.1,
+      "grip_from_tip": 0.95,
+      "grip_from_bottom": 0.22,
+      "texture": 512,
+      "orientation": "diagonal",
+      "item_length": 1.6,
+      "thickness": 1.0,
+      "held_scale": [
+        0.81,
+        0.71
+      ],
+      "real_length_m": 1.1
     }
   },
   "entities": {
@@ -423,6 +442,36 @@
       "height_m": 0.32,
       "texture": 512,
       "max_triangles": 5000
+    },
+    "soichiro": {
+      "_comment": "ESPECIAIS-1: modelo do Miguel com o rig do Meshy (rig_from_skin.py importar, new_mesh)",
+      "source": "Soichiro_Hoshina.glb",
+      "height_m": 1.8,
+      "texture": 1024
+    },
+    "jura": {
+      "_comment": "ESPECIAIS-1: modelo do Miguel com o rig do Meshy (rig_from_skin.py importar, new_mesh)",
+      "source": "Jura_Igarashi.glb",
+      "height_m": 1.93,
+      "texture": 1024
+    },
+    "rin": {
+      "_comment": "ESPECIAIS-1: modelo do Miguel com o rig do Meshy (rig_from_skin.py importar, new_mesh)",
+      "source": "Rin_Shinonome.glb",
+      "height_m": 1.62,
+      "texture": 1024
+    },
+    "iharu": {
+      "_comment": "ESPECIAIS-1: modelo do Miguel com o rig do Meshy (rig_from_skin.py importar, new_mesh)",
+      "source": "Iharu_Furuhashi.glb",
+      "height_m": 1.7,
+      "texture": 1024
+    },
+    "haruichi": {
+      "_comment": "ESPECIAIS-1: modelo do Miguel com o rig do Meshy (rig_from_skin.py importar, new_mesh)",
+      "source": "Haruichi_Izumo.glb",
+      "height_m": 1.78,
+      "texture": 1024
     }
   },
   "_comment_weapons": "hand_grip (armas de fogo): ponto do cabo no OBJ convertido (unidades do item) que vai para o centro do punho; first_person_scale: escala em 1a pessoa. orientation: 'diagonal' (lamina, como espada vanilla) ou 'horizontal' (arma de fogo, cano para a frente). item_length: comprimento no item, em unidades (1 = um bloco; a mao do jogador tem ~0,25). thickness: multiplica a espessura (eixos 'up' e lateral) em volta da empunhadura. blade_fraction + blade_thickness: engrossa so a lamina (da ponta ate essa fracao do comprimento), sem mexer no cabo. real_length_m (AJUSTES-3, tabela do Miguel 2026-11-05): comprimento real na mao em metros; held_scale de 3a pessoa = real_length_m / (item_length x 0,85).",

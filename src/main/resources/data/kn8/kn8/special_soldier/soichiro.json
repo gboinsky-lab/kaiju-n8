@@ -1,0 +1,150 @@
+{
+  "health": 560,
+  "armor": 21,
+  "speed": 0.34,
+  "follow_range": 48,
+  "knockback_resistance": 0.5,
+  "dash": {
+    "cooldown_ticks": 100,
+    "speed": 1.0,
+    "invulnerable_ticks": 6,
+    "react_ticks": 5,
+    "gap_close_distance": 10.0
+  },
+  "counter": {
+    "multiplier": 2.2,
+    "cooldown_ticks": 200,
+    "dash_speed": 0.9,
+    "invulnerable_ticks": 10,
+    "strike_delay_ticks": 8,
+    "react_ticks": 6
+  },
+  "parry": {
+    "chance": 0.15,
+    "damage_factor": 0.4,
+    "cooldown_ticks": 25,
+    "counter_window_ticks": 10
+  },
+  "escalation": {
+    "points_per_second": 2.0,
+    "max_points": 45,
+    "decay_per_second": 2.0,
+    "cooldown_reduction_at_max": 0.35
+  },
+  "release": 50,
+  "max_release": 90,
+  "kaiju_damage": 1.1,
+  "aura": "kn8:soichiro_lilac",
+  "weapon": "kn8:katana",
+  "height": 1.8,
+  "techniques": {
+    "poised_marksmanship": {
+      "type": "slash",
+      "hits": [
+        1.3
+      ],
+      "windup_ticks": 8,
+      "duration_ticks": 16,
+      "cooldown_ticks": 70,
+      "min_range": 5.0,
+      "max_range": 24.0,
+      "priority": 1,
+      "slash": {
+        "count": 1,
+        "speed": 3.5,
+        "range": 40.0,
+        "width": 0.35,
+        "color": 15261936,
+        "bullet": true
+      }
+    },
+    "adaptive_stance": {
+      "type": "combo",
+      "hits": [
+        1.0,
+        1.3
+      ],
+      "windup_ticks": 6,
+      "duration_ticks": 20,
+      "cooldown_ticks": 110,
+      "max_range": 4.0,
+      "priority": 2,
+      "hit_interval": 4,
+      "dash_in": 1.0
+    },
+    "prodigious_swordsmanship": {
+      "type": "combo",
+      "hits": [
+        0.8,
+        0.8,
+        0.8,
+        1.2
+      ],
+      "windup_ticks": 6,
+      "duration_ticks": 24,
+      "cooldown_ticks": 90,
+      "max_range": 4.0,
+      "priority": 3,
+      "hit_interval": 3,
+      "dash_in": 0.8
+    },
+    "astute_strike": {
+      "type": "slash",
+      "hits": [
+        0.9
+      ],
+      "windup_ticks": 5,
+      "duration_ticks": 14,
+      "cooldown_ticks": 100,
+      "max_range": 8.0,
+      "priority": 2,
+      "slash": {
+        "count": 1,
+        "speed": 2.2,
+        "range": 10.0,
+        "width": 1.4,
+        "color": 13215976,
+        "slow_ticks": 40,
+        "slow_level": 2,
+        "vulnerable": 1.15
+      }
+    },
+    "finishing_masterstroke": {
+      "type": "combo",
+      "hits": [
+        4.0
+      ],
+      "windup_ticks": 16,
+      "duration_ticks": 30,
+      "cooldown_ticks": 320,
+      "max_range": 4.5,
+      "priority": 4,
+      "honju_priority": 2,
+      "dash_in": 1.2,
+      "final_knockback": 1.4
+    }
+  },
+  "heavy": {
+    "techniques": [
+      "finishing_masterstroke"
+    ],
+    "power": 3,
+    "radius": 2.0
+  },
+  "tactics": {
+    "aggression": 0.75,
+    "preferred_distance": 4.0,
+    "lateral_step": true,
+    "damage_tolerance": 0.15,
+    "safety_distance": 10.0,
+    "heavy_vs_big": 1,
+    "dodge_chance": 0.9,
+    "exploit_openings": 3,
+    "miss_cooldown_ticks": 40
+  },
+  "heavy_guard": {
+    "factor": 0.5,
+    "front_arc_degrees": 120.0,
+    "cooldown_ticks": 40
+  }
+}

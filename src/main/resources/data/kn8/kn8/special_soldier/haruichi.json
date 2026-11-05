@@ -1,0 +1,178 @@
+{
+  "health": 350,
+  "armor": 16,
+  "speed": 0.31,
+  "follow_range": 48,
+  "knockback_resistance": 0.5,
+  "dash": {
+    "cooldown_ticks": 100,
+    "speed": 1.0,
+    "invulnerable_ticks": 6,
+    "react_ticks": 5,
+    "gap_close_distance": 40.0
+  },
+  "counter": {
+    "multiplier": 2.2,
+    "cooldown_ticks": 200,
+    "dash_speed": 0.9,
+    "invulnerable_ticks": 10,
+    "strike_delay_ticks": 8,
+    "react_ticks": 6
+  },
+  "parry": {
+    "chance": 0.15,
+    "damage_factor": 0.4,
+    "cooldown_ticks": 25,
+    "counter_window_ticks": 10
+  },
+  "escalation": {
+    "points_per_second": 2.0,
+    "max_points": 45,
+    "decay_per_second": 2.0,
+    "cooldown_reduction_at_max": 0.35
+  },
+  "ranged": {
+    "keep_distance": 20.0,
+    "retreat_distance": 10.0,
+    "orbit": true,
+    "orbit_switch_ticks": 80,
+    "retreat_speed": 1.3,
+    "orbit_speed": 1.15,
+    "chase_speed": 1.3,
+    "cover_health": 0.5
+  },
+  "release": 18,
+  "max_release": 36,
+  "kaiju_damage": 0.6,
+  "aura": "kn8:haruichi_teal",
+  "weapon": "kn8:rifle",
+  "height": 1.78,
+  "techniques": {
+    "personal_style_shot": {
+      "type": "slash",
+      "hits": [
+        1.5
+      ],
+      "windup_ticks": 8,
+      "duration_ticks": 16,
+      "cooldown_ticks": 50,
+      "min_range": 5.0,
+      "max_range": 36.0,
+      "priority": 1,
+      "slash": {
+        "count": 1,
+        "speed": 3.5,
+        "range": 40.0,
+        "width": 0.35,
+        "color": 14218478,
+        "bullet": true
+      }
+    },
+    "precision_snipe": {
+      "type": "slash",
+      "hits": [
+        2.8
+      ],
+      "windup_ticks": 16,
+      "duration_ticks": 24,
+      "cooldown_ticks": 140,
+      "min_range": 8.0,
+      "max_range": 48.0,
+      "priority": 3,
+      "honju_priority": 1,
+      "slash": {
+        "count": 1,
+        "speed": 3.5,
+        "range": 50.0,
+        "width": 0.4,
+        "color": 4177832,
+        "bullet": true,
+        "slow_ticks": 40,
+        "slow_level": 1
+      }
+    },
+    "clearance": {
+      "type": "slash",
+      "hits": [
+        0.8
+      ],
+      "windup_ticks": 10,
+      "duration_ticks": 20,
+      "cooldown_ticks": 160,
+      "min_range": 4.0,
+      "max_range": 28.0,
+      "priority": 2,
+      "slash": {
+        "count": 6,
+        "speed": 3.5,
+        "range": 40.0,
+        "width": 0.35,
+        "color": 4177832,
+        "bullet": true,
+        "spread_degrees": 25.0
+      }
+    },
+    "suppressive_stance": {
+      "type": "slash",
+      "hits": [
+        1.0
+      ],
+      "windup_ticks": 8,
+      "duration_ticks": 18,
+      "cooldown_ticks": 300,
+      "min_range": 4.0,
+      "max_range": 30.0,
+      "priority": 2,
+      "slash": {
+        "count": 1,
+        "speed": 3.5,
+        "range": 40.0,
+        "width": 0.35,
+        "color": 14218478,
+        "bullet": true,
+        "slow_ticks": 40,
+        "slow_level": 2
+      }
+    },
+    "manifold_arrow_salvo": {
+      "type": "slash",
+      "hits": [
+        0.8
+      ],
+      "windup_ticks": 12,
+      "duration_ticks": 26,
+      "cooldown_ticks": 300,
+      "min_range": 4.0,
+      "max_range": 30.0,
+      "priority": 4,
+      "slash": {
+        "count": 9,
+        "speed": 2.4,
+        "range": 34.0,
+        "width": 0.4,
+        "color": 8377166,
+        "bullet": true,
+        "spread_degrees": 30.0,
+        "slow_ticks": 60,
+        "slow_level": 2,
+        "vulnerable": 1.1
+      }
+    }
+  },
+  "tactics": {
+    "damage_tolerance": 0.3,
+    "safety_distance": 18.0,
+    "dodge_chance": 0.8,
+    "melee_counter": false,
+    "protect_ally": 12.0,
+    "exploit_openings": 2
+  },
+  "rally": {
+    "suppressive_stance": {
+      "radius": 10.0,
+      "duration_ticks": 120,
+      "strength": 1,
+      "speed": 1
+    }
+  }
+}

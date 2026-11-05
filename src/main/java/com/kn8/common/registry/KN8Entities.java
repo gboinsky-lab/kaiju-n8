@@ -20,6 +20,11 @@ import com.kn8.common.soldier.SoldierEntity;
 import com.kn8.common.soldier.special.HoshinaEntity;
 import com.kn8.common.soldier.special.HoshinaNo10Entity;
 import com.kn8.common.soldier.special.IsaoBaseEntity;
+import com.kn8.common.soldier.special.SoichiroEntity;
+import com.kn8.common.soldier.special.JuraEntity;
+import com.kn8.common.soldier.special.RinEntity;
+import com.kn8.common.soldier.special.IharuEntity;
+import com.kn8.common.soldier.special.HaruichiEntity;
 import com.kn8.common.soldier.special.IsaoEntity;
 import com.kn8.common.soldier.special.KikoruEntity;
 import com.kn8.common.soldier.special.KafkaEntity;
@@ -252,6 +257,41 @@ public final class KN8Entities {
                     .eyeHeight(1.62F)
                     .clientTrackingRange(KAIJU_TRACKING_RANGE_CHUNKS)
                     .build("isao"));
+    /** ESPECIAIS-1: Soichiro Hoshina (modelo do Miguel com o rig do Meshy; special_soldier/soichiro.json). */
+    public static final DeferredHolder<EntityType<?>, EntityType<SoichiroEntity>> SOICHIRO = ENTITY_TYPES.register(
+            "soichiro", () -> EntityType.Builder.<SoichiroEntity>of(SoichiroEntity::new, MobCategory.CREATURE)
+                    .sized(0.6F, 1.80F)
+                    .eyeHeight(1.62F)
+                    .clientTrackingRange(KAIJU_TRACKING_RANGE_CHUNKS)
+                    .build("soichiro"));
+    /** ESPECIAIS-1: Jura Igarashi (modelo do Miguel com o rig do Meshy; special_soldier/jura.json). */
+    public static final DeferredHolder<EntityType<?>, EntityType<JuraEntity>> JURA = ENTITY_TYPES.register(
+            "jura", () -> EntityType.Builder.<JuraEntity>of(JuraEntity::new, MobCategory.CREATURE)
+                    .sized(0.6F, 1.93F)
+                    .eyeHeight(1.74F)
+                    .clientTrackingRange(KAIJU_TRACKING_RANGE_CHUNKS)
+                    .build("jura"));
+    /** ESPECIAIS-1: Rin Shinonome (modelo do Miguel com o rig do Meshy; special_soldier/rin.json). */
+    public static final DeferredHolder<EntityType<?>, EntityType<RinEntity>> RIN = ENTITY_TYPES.register(
+            "rin", () -> EntityType.Builder.<RinEntity>of(RinEntity::new, MobCategory.CREATURE)
+                    .sized(0.6F, 1.62F)
+                    .eyeHeight(1.46F)
+                    .clientTrackingRange(KAIJU_TRACKING_RANGE_CHUNKS)
+                    .build("rin"));
+    /** ESPECIAIS-1: Iharu Furuhashi (modelo do Miguel com o rig do Meshy; special_soldier/iharu.json). */
+    public static final DeferredHolder<EntityType<?>, EntityType<IharuEntity>> IHARU = ENTITY_TYPES.register(
+            "iharu", () -> EntityType.Builder.<IharuEntity>of(IharuEntity::new, MobCategory.CREATURE)
+                    .sized(0.6F, 1.70F)
+                    .eyeHeight(1.53F)
+                    .clientTrackingRange(KAIJU_TRACKING_RANGE_CHUNKS)
+                    .build("iharu"));
+    /** ESPECIAIS-1: Haruichi Izumo (modelo do Miguel com o rig do Meshy; special_soldier/haruichi.json). */
+    public static final DeferredHolder<EntityType<?>, EntityType<HaruichiEntity>> HARUICHI = ENTITY_TYPES.register(
+            "haruichi", () -> EntityType.Builder.<HaruichiEntity>of(HaruichiEntity::new, MobCategory.CREATURE)
+                    .sized(0.6F, 1.78F)
+                    .eyeHeight(1.60F)
+                    .clientTrackingRange(KAIJU_TRACKING_RANGE_CHUNKS)
+                    .build("haruichi"));
     /** MOV-5G: Isao sem a arma numerada 2 (modelo do Isao; special_soldier/isao_base.json). */
     public static final DeferredHolder<EntityType<?>, EntityType<IsaoBaseEntity>> ISAO_BASE = ENTITY_TYPES.register(
             "isao_base", () -> EntityType.Builder.<IsaoBaseEntity>of(IsaoBaseEntity::new, MobCategory.CREATURE)
@@ -358,6 +398,21 @@ public final class KN8Entities {
         if (IsaoBaseEntity.VARIANT_BASE.equals(name)) {
             return Optional.of(ISAO_BASE.get());
         }
+        if (SoichiroEntity.VARIANT.equals(name)) {
+            return Optional.of(SOICHIRO.get());
+        }
+        if (JuraEntity.VARIANT.equals(name)) {
+            return Optional.of(JURA.get());
+        }
+        if (RinEntity.VARIANT.equals(name)) {
+            return Optional.of(RIN.get());
+        }
+        if (IharuEntity.VARIANT.equals(name)) {
+            return Optional.of(IHARU.get());
+        }
+        if (HaruichiEntity.VARIANT.equals(name)) {
+            return Optional.of(HARUICHI.get());
+        }
         return HoshinaEntity.VARIANT.equals(name) ? Optional.of(HOSHINA.get()) : Optional.empty();
     }
 
@@ -424,6 +479,11 @@ public final class KN8Entities {
         event.put(KAIJU_NO8.get(), SoldierEntity.createAttributes().build());
         event.put(ISAO.get(), SoldierEntity.createAttributes().build());
         event.put(ISAO_BASE.get(), SoldierEntity.createAttributes().build());
+        event.put(SOICHIRO.get(), SoldierEntity.createAttributes().build());
+        event.put(JURA.get(), SoldierEntity.createAttributes().build());
+        event.put(RIN.get(), SoldierEntity.createAttributes().build());
+        event.put(IHARU.get(), SoldierEntity.createAttributes().build());
+        event.put(HARUICHI.get(), SoldierEntity.createAttributes().build());
         event.put(TRAINING_DUMMY.get(), LivingEntity.createLivingAttributes().build());
         KAIJU.forEach(type -> event.put(type.get(), KaijuEntity.baseAttributes().build()));
     }

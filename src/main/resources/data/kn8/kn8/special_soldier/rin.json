@@ -1,0 +1,160 @@
+{
+  "health": 360,
+  "armor": 16,
+  "speed": 0.32,
+  "follow_range": 48,
+  "knockback_resistance": 0.5,
+  "dash": {
+    "cooldown_ticks": 100,
+    "speed": 1.0,
+    "invulnerable_ticks": 6,
+    "react_ticks": 5,
+    "gap_close_distance": 40.0
+  },
+  "counter": {
+    "multiplier": 2.2,
+    "cooldown_ticks": 200,
+    "dash_speed": 0.9,
+    "invulnerable_ticks": 10,
+    "strike_delay_ticks": 8,
+    "react_ticks": 6
+  },
+  "parry": {
+    "chance": 0.15,
+    "damage_factor": 0.4,
+    "cooldown_ticks": 25,
+    "counter_window_ticks": 10
+  },
+  "escalation": {
+    "points_per_second": 2.0,
+    "max_points": 45,
+    "decay_per_second": 2.0,
+    "cooldown_reduction_at_max": 0.35
+  },
+  "ranged": {
+    "keep_distance": 16.0,
+    "retreat_distance": 9.0,
+    "orbit": true,
+    "orbit_switch_ticks": 80,
+    "retreat_speed": 1.3,
+    "orbit_speed": 1.15,
+    "chase_speed": 1.3,
+    "cover_health": 0.5
+  },
+  "release": 30,
+  "max_release": 70,
+  "kaiju_damage": 0.55,
+  "aura": "kn8:rin_ember",
+  "weapon": "kn8:rifle",
+  "height": 1.62,
+  "techniques": {
+    "focused_shot": {
+      "type": "slash",
+      "hits": [
+        1.6
+      ],
+      "windup_ticks": 8,
+      "duration_ticks": 16,
+      "cooldown_ticks": 50,
+      "min_range": 4.0,
+      "max_range": 32.0,
+      "priority": 1,
+      "slash": {
+        "count": 1,
+        "speed": 3.5,
+        "range": 40.0,
+        "width": 0.35,
+        "color": 15918800,
+        "bullet": true
+      }
+    },
+    "thorough_sweep_fire": {
+      "type": "slash",
+      "hits": [
+        0.5
+      ],
+      "windup_ticks": 6,
+      "duration_ticks": 20,
+      "cooldown_ticks": 90,
+      "min_range": 3.0,
+      "max_range": 26.0,
+      "priority": 2,
+      "slash": {
+        "count": 8,
+        "speed": 3.5,
+        "range": 40.0,
+        "width": 0.35,
+        "color": 15918800,
+        "bullet": true,
+        "spread_degrees": 20.0
+      }
+    },
+    "incinerating_barrage": {
+      "type": "slash",
+      "hits": [
+        0.9
+      ],
+      "windup_ticks": 8,
+      "duration_ticks": 22,
+      "cooldown_ticks": 160,
+      "min_range": 3.0,
+      "max_range": 26.0,
+      "priority": 3,
+      "slash": {
+        "count": 6,
+        "speed": 3.5,
+        "range": 40.0,
+        "width": 0.35,
+        "color": 16742954,
+        "bullet": true,
+        "spread_degrees": 6.0
+      }
+    },
+    "circular_barrage": {
+      "type": "slash",
+      "hits": [
+        0.6
+      ],
+      "windup_ticks": 10,
+      "duration_ticks": 24,
+      "cooldown_ticks": 280,
+      "min_range": 3.0,
+      "max_range": 22.0,
+      "priority": 4,
+      "honju_priority": 1,
+      "slash": {
+        "count": 12,
+        "speed": 3.5,
+        "range": 40.0,
+        "width": 0.35,
+        "color": 15918800,
+        "bullet": true,
+        "spread_degrees": 45.0
+      }
+    },
+    "baton_strike": {
+      "type": "combo",
+      "hits": [
+        0.9,
+        0.9
+      ],
+      "windup_ticks": 4,
+      "duration_ticks": 14,
+      "cooldown_ticks": 40,
+      "max_range": 2.5,
+      "priority": 5,
+      "hit_interval": 4,
+      "final_knockback": 0.8
+    }
+  },
+  "tactics": {
+    "damage_tolerance": 0.3,
+    "safety_distance": 18.0,
+    "dodge_chance": 0.8,
+    "melee_counter": false,
+    "exploit_openings": 2
+  },
+  "burn": {
+    "incinerating_barrage": 3
+  }
+}

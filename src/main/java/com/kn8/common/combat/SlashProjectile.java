@@ -12,6 +12,7 @@ import com.kn8.common.data.def.SlashSpec;
 import com.kn8.common.destruction.DestructionService;
 import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.registry.KN8Entities;
+import com.kn8.common.soldier.special.HoshinaEntity;
 import com.kn8.common.sound.SoundCues;
 import com.kn8.common.sound.TravelSoundSource;
 import com.kn8.common.vfx.VfxService;
@@ -238,6 +239,7 @@ public class SlashProjectile extends Projectile implements TravelSoundSource {
                 target.invulnerableTime = 0;
                 if (target.hurt(damageSource, target instanceof KaijuEntity ? damage * kaijuFactor : damage)) {
                     slow(target, at);
+                    ignite(target);
                 }
             }
         }
@@ -304,6 +306,7 @@ public class SlashProjectile extends Projectile implements TravelSoundSource {
             target.invulnerableTime = 0;
             if (target.hurt(damageSource, amount)) {
                 slow(target, position());
+                ignite(target);
                 Vec3 center = target.getBoundingBox().getCenter();
                 impact(center, getDeltaMovement());
                 if (first == null) {
@@ -312,6 +315,16 @@ public class SlashProjectile extends Projectile implements TravelSoundSource {
             }
         }
         return first;
+    }
+
+    /** ESPECIAIS-1: tiro de tecnica com fogo ({@code burn} do perfil de quem atirou: bola da Jura, rajada da Rin). */
+    private void ignite(LivingEntity target) {
+        if (getOwner() instanceof HoshinaEntity special) {
+            int seconds = special.burnSeconds(vfxKey);
+            if (seconds > 0) {
+                target.igniteForSeconds(seconds);
+            }
+        }
     }
 
     /** VFX-5: impacto pela receita "<tecnica>_impact" de quem atirou (geada do gelo); sem ela, o comum. */

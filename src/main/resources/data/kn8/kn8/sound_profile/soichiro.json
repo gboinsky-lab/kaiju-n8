@@ -1,0 +1,20 @@
+{
+  "techniques": {
+    "poised_marksmanship": {
+      "release": "kn8:weapon.pistol_shot"
+    },
+    "adaptive_stance": {
+      "release": "kn8:technique.hoshina_slash"
+    },
+    "prodigious_swordsmanship": {
+      "release": "kn8:technique.hoshina_slash"
+    },
+    "astute_strike": {
+      "release": "kn8:technique.hoshina_release"
+    },
+    "finishing_masterstroke": {
+      "windup": "kn8:technique.charge",
+      "release": "kn8:weapon.sword_heavy"
+    }
+  }
+}

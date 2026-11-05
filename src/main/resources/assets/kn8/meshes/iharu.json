@@ -1,0 +1,19 @@
+{
+  "bones": {
+    "body": "kn8:meshes/iharu/body.obj",
+    "chest": "kn8:meshes/iharu/chest.obj",
+    "head": "kn8:meshes/iharu/head.obj",
+    "arm_left": "kn8:meshes/iharu/arm_left.obj",
+    "forearm_left": "kn8:meshes/iharu/forearm_left.obj",
+    "hand_left": "kn8:meshes/iharu/hand_left.obj",
+    "leg_left": "kn8:meshes/iharu/leg_left.obj",
+    "shin_left": "kn8:meshes/iharu/shin_left.obj",
+    "foot_left": "kn8:meshes/iharu/foot_left.obj",
+    "arm_right": "kn8:meshes/iharu/arm_right.obj",
+    "forearm_right": "kn8:meshes/iharu/forearm_right.obj",
+    "hand_right": "kn8:meshes/iharu/hand_right.obj",
+    "leg_right": "kn8:meshes/iharu/leg_right.obj",
+    "shin_right": "kn8:meshes/iharu/shin_right.obj",
+    "foot_right": "kn8:meshes/iharu/foot_right.obj"
+  }
+}

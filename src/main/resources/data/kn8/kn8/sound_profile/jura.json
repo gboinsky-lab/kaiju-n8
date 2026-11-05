@@ -1,0 +1,18 @@
+{
+  "techniques": {
+    "herculean_toss": {
+      "release": "kn8:weapon.axe_heavy"
+    },
+    "hot_blooded_impact": {
+      "windup": "kn8:technique.charge",
+      "release": "kn8:weapon.axe_special"
+    },
+    "zenith_plunge": {
+      "windup": "kn8:technique.charge",
+      "release": "kn8:technique.kikoru_thunder"
+    },
+    "blazing_slugger": {
+      "release": "kn8:weapon.axe_swing"
+    }
+  }
+}

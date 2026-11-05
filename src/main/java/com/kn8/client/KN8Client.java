@@ -119,6 +119,11 @@ public final class KN8Client {
         event.registerEntityRenderer(KN8Entities.ISAO.get(), context -> new SoldierRenderer<>(context, "isao"));
         // MOV-5G: o Isao sem o Numbers 2 usa o modelo do Isao (mesmas animacoes, prefixo "isao").
         event.registerEntityRenderer(KN8Entities.ISAO_BASE.get(), context -> new SoldierRenderer<>(context, "isao"));
+        event.registerEntityRenderer(KN8Entities.SOICHIRO.get(), context -> new SoldierRenderer<>(context, "soichiro"));
+        event.registerEntityRenderer(KN8Entities.JURA.get(), context -> new SoldierRenderer<>(context, "jura"));
+        event.registerEntityRenderer(KN8Entities.RIN.get(), context -> new SoldierRenderer<>(context, "rin"));
+        event.registerEntityRenderer(KN8Entities.IHARU.get(), context -> new SoldierRenderer<>(context, "iharu"));
+        event.registerEntityRenderer(KN8Entities.HARUICHI.get(), context -> new SoldierRenderer<>(context, "haruichi"));
         event.registerEntityRenderer(KN8Entities.TRAINING_DUMMY.get(), ArmorStandRenderer::new);
     }
 

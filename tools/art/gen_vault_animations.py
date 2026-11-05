@@ -16,7 +16,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 ASSETS = ROOT / "src/main/resources/assets/kn8/animations/entity"
 SPECIES = ["soldier", "hoshina", "hoshina_no10", "kikoru", "kikoru_no4", "reno", "reno_no6", "mina", "narumi",
-           "kafka", "kaiju_no8", "isao"]
+           "kafka", "kaiju_no8", "isao", "soichiro", "jura", "rin", "iharu", "haruichi"]
 LENGTH = 0.7
 
 

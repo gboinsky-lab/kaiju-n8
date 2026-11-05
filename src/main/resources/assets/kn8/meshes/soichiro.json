@@ -1,0 +1,19 @@
+{
+  "bones": {
+    "body": "kn8:meshes/soichiro/body.obj",
+    "chest": "kn8:meshes/soichiro/chest.obj",
+    "head": "kn8:meshes/soichiro/head.obj",
+    "arm_left": "kn8:meshes/soichiro/arm_left.obj",
+    "forearm_left": "kn8:meshes/soichiro/forearm_left.obj",
+    "hand_left": "kn8:meshes/soichiro/hand_left.obj",
+    "leg_left": "kn8:meshes/soichiro/leg_left.obj",
+    "shin_left": "kn8:meshes/soichiro/shin_left.obj",
+    "foot_left": "kn8:meshes/soichiro/foot_left.obj",
+    "arm_right": "kn8:meshes/soichiro/arm_right.obj",
+    "forearm_right": "kn8:meshes/soichiro/forearm_right.obj",
+    "hand_right": "kn8:meshes/soichiro/hand_right.obj",
+    "leg_right": "kn8:meshes/soichiro/leg_right.obj",
+    "shin_right": "kn8:meshes/soichiro/shin_right.obj",
+    "foot_right": "kn8:meshes/soichiro/foot_right.obj"
+  }
+}

@@ -46,6 +46,10 @@
     {
       "variant": "kikoru",
       "count": 1
+    },
+    {
+      "variant": "jura",
+      "count": 1
     }
   ],
   "rewards": {
