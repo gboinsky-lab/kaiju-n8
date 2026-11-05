@@ -39,6 +39,7 @@ public final class SuitRendering {
             EntityRenderer<?> renderer = event.getSkin(skin);
             if (renderer instanceof PlayerRenderer player) {
                 player.addLayer(new SuitLayer(player));
+                player.addLayer(new SuitAccessoryLayer(player));
             }
         }
     }

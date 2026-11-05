@@ -26,6 +26,9 @@ public final class KN8ArmorMaterials {
     public static final DeferredHolder<ArmorMaterial, ArmorMaterial> MK1_REINFORCED = suit("mk1_reinforced");
     /** PM-11B: traje numerado 10 (requisitos e cauda no numbered_gear/numbers10.json). */
     public static final DeferredHolder<ArmorMaterial, ArmorMaterial> NUMBERS10_SUIT = suit("numbers10_suit");
+    /** EQUIP-1: armaduras da Kikoru (Numbers 4) e do Reno (Numbers 6) para o jogador. */
+    public static final DeferredHolder<ArmorMaterial, ArmorMaterial> NUMBERS4_SUIT = suit("numbers4_suit");
+    public static final DeferredHolder<ArmorMaterial, ArmorMaterial> NUMBERS6_SUIT = suit("numbers6_suit");
 
     private static final int ENCHANTABILITY = 10;
 

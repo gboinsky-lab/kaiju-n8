@@ -64,8 +64,16 @@ public final class MeshModels {
                 }
                 bones.put(entry.getKey(), readObj(obj.get()));
             }
+            Map<String, float[]> pivots = new HashMap<>();
+            if (json.has("pivots")) {
+                for (Map.Entry<String, JsonElement> entry : json.getAsJsonObject("pivots").entrySet()) {
+                    var array = entry.getValue().getAsJsonArray();
+                    pivots.put(entry.getKey(), new float[] {array.get(0).getAsFloat(), array.get(1).getAsFloat(),
+                            array.get(2).getAsFloat()});
+                }
+            }
             KN8Constants.LOGGER.info("[kn8] Malha de {} carregada: {} ossos.", species, bones.size());
-            return Optional.of(new MeshModel(Map.copyOf(bones)));
+            return Optional.of(new MeshModel(Map.copyOf(bones), Map.copyOf(pivots)));
         } catch (IOException | RuntimeException exception) {
             KN8Constants.LOGGER.error("[kn8] Malha de {} invalida: {}", species, exception.getMessage());
             return Optional.empty();

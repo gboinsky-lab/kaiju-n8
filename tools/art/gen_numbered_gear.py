@@ -5,8 +5,8 @@
 - Numbers 6: o OBJ do rifle com a textura puxada para o azul-gelo do traje do Reno No. 6 (#8FD8FF).
 - Numbers 2: icone 16x16 das manoplas (preto com placas laranja, a cor do Isao) segurado como item.
 - Numbers 4 (PM-11B): o OBJ do machado com a textura puxada para o ciano das asas da Kikoru No. 4 (#3CC5EC).
-- Numbers 10 (PM-11B): o traje 3D do Mk1 Reforcado (mesma malha) com textura, camada de armadura e icone escurecidos
-  e puxados para o vermelho-arroxeado do traje do Hoshina No. 10 (#9A2A5A).
+- Trajes Numbers 10, 4 e 6: icone e camada de armadura tingidos (vermelho-arroxeado #9A2A5A, ciano #3CC5EC,
+  azul #4A8FC0); a malha 3D de cada um e o modelo do Miguel (EQUIP-1, rig_suit_mesh.py).
 
 Uso: python3 tools/art/gen_numbered_gear.py
 """
@@ -57,18 +57,15 @@ def wing_axe():
     (ASSETS / "models/item/numbers4_axe.json").write_text(json.dumps(model, indent=2) + "\n")
 
 
-def no10_suit():
-    red = (154, 42, 90)
-    tint(ASSETS / "textures/models/suit/mk1_reinforced.png", red, 0.45, 0.8).save(
-        ASSETS / "textures/models/suit/numbers10_suit.png")
-    tint(ASSETS / "textures/models/armor/mk1_reinforced_layer_1.png", red, 0.45, 0.8).save(
-        ASSETS / "textures/models/armor/numbers10_suit_layer_1.png")
-    tint(ASSETS / "textures/item/mk1_reinforced.png", red, 0.5, 0.85).save(
-        ASSETS / "textures/item/numbers10_suit.png")
-    (ASSETS / "models/item/numbers10_suit.json").write_text(json.dumps(
-        {"parent": "minecraft:item/generated", "textures": {"layer0": "kn8:item/numbers10_suit"}}, indent=2) + "\n")
-    mesh = json.loads((ASSETS / "meshes/suit/mk1_reinforced.json").read_text())
-    (ASSETS / "meshes/suit/numbers10_suit.json").write_text(json.dumps(mesh, indent=2) + "\n")
+def numbered_suit(name, color):
+    """Camada de armadura (transparente como a do Mk1 Reforcado) e icone tingido. A malha 3D e a textura dela vem do
+    modelo do Miguel (EQUIP-1: rig_suit_mesh.py <traje>)."""
+    tint(ASSETS / "textures/models/armor/mk1_reinforced_layer_1.png", color, 0.45, 0.8).save(
+        ASSETS / f"textures/models/armor/{name}_layer_1.png")
+    tint(ASSETS / "textures/item/mk1_reinforced.png", color, 0.5, 0.85).save(
+        ASSETS / f"textures/item/{name}.png")
+    (ASSETS / f"models/item/{name}.json").write_text(json.dumps(
+        {"parent": "minecraft:item/generated", "textures": {"layer0": f"kn8:item/{name}"}}, indent=2) + "\n")
 
 
 def gauntlets():
@@ -82,13 +79,18 @@ def gauntlets():
     d.line([(5, 8), (10, 8)], fill=(255, 196, 96, 255))
     d.line([(4, 13), (11, 13)], fill=(240, 140, 40, 255))
     img.save(ASSETS / "textures/item/numbers2_gauntlets.png")
+    # EQUIP-1: em 3a pessoa as manoplas sao a malha 3D nos antebracos (SuitAccessoryLayer): o item segurado some.
+    hidden = {"rotation": [0, 0, 0], "translation": [0, 0, 0], "scale": [0, 0, 0]}
     (ASSETS / "models/item/numbers2_gauntlets.json").write_text(json.dumps(
-        {"parent": "minecraft:item/handheld", "textures": {"layer0": "kn8:item/numbers2_gauntlets"}}, indent=2) + "\n")
+        {"parent": "minecraft:item/handheld", "textures": {"layer0": "kn8:item/numbers2_gauntlets"},
+         "display": {"thirdperson_righthand": hidden, "thirdperson_lefthand": hidden}}, indent=2) + "\n")
 
 
 if __name__ == "__main__":
     ice_rifle()
     gauntlets()
     wing_axe()
-    no10_suit()
+    numbered_suit("numbers10_suit", (154, 42, 90))
+    numbered_suit("numbers4_suit", (60, 197, 236))
+    numbered_suit("numbers6_suit", (74, 143, 192))
     print("armas numeradas do jogador geradas")

@@ -1,0 +1,6 @@
+{
+  "bones": {
+    "right_arm": "kn8:meshes/suit/numbers2_gauntlets/right_arm.obj",
+    "left_arm": "kn8:meshes/suit/numbers2_gauntlets/left_arm.obj"
+  }
+}

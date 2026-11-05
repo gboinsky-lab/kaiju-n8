@@ -1886,3 +1886,18 @@ Imagem: `docs/img/ajustes3_armas_forma_cidade.jpg`. Prévia dos sons (antes -> d
 | 134.4 | Segurar o canhão da Mina, o machado, as espadas do Hoshina e a baioneta do Narumi em 3ª pessoa | ~3 m, ~1,7 m, ~0,7 m e ~1,1 m; os NPC com o mesmo tamanho |
 | 134.5 | `/kn8 host infect` + `/kn8 host form` ao lado de um `kn8:kaiju_no8` | Os dois com 3 m (mesmo com um `kn8-server.toml` antigo com `height = 2`) |
 | 134.6 | Mundo novo, `/locate structure kn8:tachikawa_base` e voar em volta | Cidade ao norte e bairros nos lados e diagonais encostados na base (anel de até 8 peças, ~720 x 720 blocos); em terreno muito ruim (lago, oceano) algum bairro pode faltar |
+
+## 135. EQUIP-1: armaduras Numbers 4, 6 e 10, asas, manoplas do Isao e katana
+
+Imagem: `docs/img/equip1_armaduras_asas_manoplas_katana.jpg`. Modelos do Miguel de 2026-11-05.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 135.1 | Vestir `kn8:numbers4_suit` (Numbers 4 da Kikoru) e andar/correr em 3ª pessoa | Armadura branca com o casaco longo no tronco (as pernas andam por dentro), gola alta presa à cabeça; asas ciano dobradas para trás nas costas; aura de vento ciano com Release |
+| 135.2 | Com ela (ou com o `kn8:numbers4_axe` na mão), pular ou cair de um lugar alto | As asas abrem em X atrás das costas enquanto está no ar, batem de leve, e fecham ao tocar o chão |
+| 135.3 | Vestir `kn8:numbers6_suit` (Numbers 6 do Reno) | Armadura azul com o "006" no peito e as placas de gelo; aura de gelo |
+| 135.4 | Vestir `kn8:numbers10_suit` e ficar parado/andar | Armadura vermelha do Hoshina No. 10 com a cauda saindo das costas e passando por cima da cabeça, balançando devagar e mais ao andar; cauda que corta e guarda continua igual (PM-11B) |
+| 135.5 | Segurar `kn8:numbers2_gauntlets` e olhar em 3ª pessoa (F5) | As manoplas pretas e brancas do Isao nos dois antebraços (o ícone some da mão); em 1ª pessoa continua o ícone |
+| 135.6 | Segurar `kn8:katana` (aba do mod) | Katana longa de ~1 m na mão, postura de espada; R = Iai (avança cortando) |
+| 135.7 | Bancada: Numbers 4, Numbers 6 e Katana | Armaduras liberadas pela pesquisa Teoria das Armas Numeradas (como o Numbers 10); katana pela patente Vice-Capitão |
+| 135.8 | Segundo cliente olhando o primeiro | Mesmas armaduras, cauda, asas, manoplas e katana |

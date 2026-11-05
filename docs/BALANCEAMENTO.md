@@ -1412,3 +1412,11 @@ Jogador e personagem com o mesmo tamanho (`real_length_m` e `held_scale` em `too
 | Canhão da Mina | 250-350 cm | 2,43 m / 1,87 m | 3,0 m |
 | Baioneta do Narumi (e do Numbers 1) | 100-120 cm | 2,87 m / 2,21 m | 1,10 m |
 | Katana longa do Hoshina (SW-1083), canhão eletromagnético antidaikaiju | 100-120 cm, 500-700 cm | não existem no mod | — |
+
+### EQUIP-1: armaduras numeradas e katana do jogador (2026-11-05) [SUPOSIÇÃO]
+
+| Item | Números | Onde |
+|---|---|---|
+| Numbers 4 (armadura da Kikoru, com asas) | armadura 17, dureza 3,0, resistência ao calor 0,35, aura `kikoru_no4_wind`; receita igual à do Numbers 10; pesquisa Teoria das Armas Numeradas | `suit/numbers4_suit.json`, `workbench/numbers4_suit.json` |
+| Numbers 6 (armadura do Reno) | armadura 16, dureza 2,5, resistência ao calor 0,45, aura `reno_no6_ice` | `suit/numbers6_suit.json`, `workbench/numbers6_suit.json` |
+| Katana longa (Soshiro/Soichiro) | dano 10, alcance 3,8, combo da espada; especial Iai (`lunge` x2,2, 6 blocos, recarga 140); 1,0 m na mão; patente Vice-Capitão | `weapon/katana.json`, `rank/vice_capitao.json` |

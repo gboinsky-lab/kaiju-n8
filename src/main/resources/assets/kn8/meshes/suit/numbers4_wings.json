@@ -1,0 +1,18 @@
+{
+  "bones": {
+    "wing_right": "kn8:meshes/suit/numbers4_wings/wing_right.obj",
+    "wing_left": "kn8:meshes/suit/numbers4_wings/wing_left.obj"
+  },
+  "pivots": {
+    "wing_right": [
+      0.0,
+      0.34375,
+      0.1625
+    ],
+    "wing_left": [
+      0.0,
+      0.34375,
+      0.1625
+    ]
+  }
+}

@@ -44,6 +44,9 @@ public final class KN8Items {
     /** 0.6-D: espada do Hoshina (uma; ele usa o par). Arma especial: especial = corte a distancia (Kuuchi). */
     public static final DeferredItem<WeaponItem> HOSHINA_SWORD =
             ITEMS.register("hoshina_sword", () -> new WeaponItem(new Item.Properties()));
+    /** EQUIP-1: katana longa do Soshiro e do Soichiro Hoshina (modelo do Miguel), tambem para o jogador. */
+    public static final DeferredItem<WeaponItem> KATANA =
+            ITEMS.register("katana", () -> new WeaponItem(new Item.Properties()));
     /** 0.7-C: canhao pesado da Mina e baioneta longa do Narumi (armas dos soldados especiais; modelos do Miguel). */
     public static final DeferredItem<WeaponItem> MINA_CANNON =
             ITEMS.register("mina_cannon", () -> new WeaponItem(new Item.Properties()));
@@ -163,6 +166,10 @@ public final class KN8Items {
             KN8ArmorMaterials.MK1_REINFORCED);
     public static final DeferredItem<ArmorItem> NUMBERS10_SUIT = suit("numbers10_suit",
             KN8ArmorMaterials.NUMBERS10_SUIT);
+    public static final DeferredItem<ArmorItem> NUMBERS4_SUIT = suit("numbers4_suit",
+            KN8ArmorMaterials.NUMBERS4_SUIT);
+    public static final DeferredItem<ArmorItem> NUMBERS6_SUIT = suit("numbers6_suit",
+            KN8ArmorMaterials.NUMBERS6_SUIT);
     public static final DeferredItem<SupplyItem> SUIT_COOLANT = ITEMS.register("suit_coolant",
             () -> new SupplyItem(SupplyItem.Kind.COOLANT, new Item.Properties().stacksTo(16)));
     public static final DeferredItem<SupplyItem> STAMINA_STIM = ITEMS.register("stamina_stim",
@@ -182,6 +189,7 @@ public final class KN8Items {
                         output.accept(SWORD.get());
                         output.accept(AXE.get());
                         output.accept(HOSHINA_SWORD.get());
+                        output.accept(KATANA.get());
                         output.accept(MINA_CANNON.get());
                         output.accept(NARUMI_BAYONET.get());
                         output.accept(NUMBERS1_BAYONET.get());
@@ -225,6 +233,8 @@ public final class KN8Items {
                         output.accept(MK1.get());
                         output.accept(MK1_REINFORCED.get());
                         output.accept(NUMBERS10_SUIT.get());
+                        output.accept(NUMBERS4_SUIT.get());
+                        output.accept(NUMBERS6_SUIT.get());
                         output.accept(SUIT_COOLANT.get());
                         output.accept(STAMINA_STIM.get());
                         output.accept(RELEASE_CATALYST.get());

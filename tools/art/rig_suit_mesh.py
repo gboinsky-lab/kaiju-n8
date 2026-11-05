@@ -20,6 +20,7 @@ from pathlib import Path
 
 import numpy as np
 from PIL import Image
+from scipy.spatial import cKDTree
 
 sys.path.insert(0, str(Path(__file__).parent))
 from pad_texture import DILATE_STEPS, dilate, uv_mask  # noqa: E402
@@ -58,19 +59,78 @@ SUITS = {
     # Luvas grandes descem ate ~0,64, por fora das coxas (|x| > 0,38).
     "mk1_reinforced": {"arm_inner_x": [(1.22, 0.24), (0.90, 0.30), (0.0, 0.38)], "hand_min_y": 0.62,
                        "hip_y": 0.80, "liner": True},
+    # EQUIP-1 (modelos do Miguel de 2026-11-05): armaduras numeradas do jogador (bracos e tronco do Meshy finos:
+    # com o limite de 1,8 a segunda pele escura cobria as placas, visto em jogo). Escala do meshy_assets.json = gola
+    # aos pes em 1,5 m. "drop" tira o pino marrom do manequim do Meshy no pescoco; "head" vai no osso da cabeca
+    # (capacete); "leg_core" = so as botas vao nas pernas (o casaco longo fica no tronco: pernas andam por
+    # dentro dele); "tail" = acima da gola ou sem par espelhado no lado esquerdo (osso proprio preso ao tronco, balanca).
+    "numbers4_suit": {"max_stretch": 3.2, "arm_inner_x": [(1.30, 0.235), (0.0, 0.26)], "hand_min_y": 0.90, "hip_y": 1.02,
+                      "head": {"min_y": 1.57, "max_abs_x": 0.20}, "head_box": (9.5 / 16, 9.5 / 16),
+                      "leg_core": {"boot_y": 0.26}, "liner": True},
+    "numbers6_suit": {"max_stretch": 3.2, "arm_inner_x": [(1.30, 0.205), (0.0, 0.22)], "hand_min_y": 0.86, "hip_y": 0.86,
+                      "drop": [{"min_y": 1.50, "max_abs_x": 0.10}], "liner": True},
+    "numbers10_suit": {"max_stretch": 3.2, "arm_inner_x": [(1.30, 0.235), (0.0, 0.26)], "hand_min_y": 0.86, "hip_y": 0.86,
+                       "drop": [{"min_y": 1.48, "max_abs_x": 0.08, "max_z": 0.10}],
+                       "tail": {"above_y": 1.62, "asym": 0.03, "from_y": 0.70, "max_x": -0.15, "tip_x": -0.28},
+                       "liner": True},
 }
+
+
+def polyline_distance(points, line):
+    """Menor distancia de cada ponto ate a linha quebrada (segmentos entre os pontos de line)."""
+    line = np.asarray(line, dtype=float)
+    best = np.full(len(points), np.inf)
+    for a, b in zip(line[:-1], line[1:]):
+        ab = b - a
+        t = np.clip(((points - a) @ ab) / max(ab @ ab, 1e-12), 0.0, 1.0)
+        best = np.minimum(best, np.linalg.norm(points - (a + t[:, None] * ab), axis=1))
+    return best
+
+
+def drop_faces(vertices, faces, cfg):
+    """Tira as faces das caixas do "drop" (pino do manequim no pescoco)."""
+    if not cfg.get("drop"):
+        return faces
+    c = vertices[faces].mean(axis=1)
+    keep = np.ones(len(faces), dtype=bool)
+    for box in cfg["drop"]:
+        sel = (c[:, 1] >= box["min_y"]) & (np.abs(c[:, 0]) <= box["max_abs_x"])
+        if "max_z" in box:
+            sel &= c[:, 2] <= box["max_z"]
+        keep &= ~sel
+    print(f"  {np.count_nonzero(~keep)} faces do pino tiradas")
+    return faces[keep]
 
 
 def split(vertices, faces, cfg):
     """Bracos: fora do tronco e acima da ponta dos dedos; corpo: acima do quadril; abaixo, perna do lado. Lado do
-    personagem: direita em +X (meshy_convert gira o modelo de frente para -Z)."""
+    personagem: direita em +X (meshy_convert gira o modelo de frente para -Z). Opcionais (EQUIP-1): capacete,
+    cauda e casaco longo no tronco."""
     c = vertices[faces].mean(axis=1)
     inner = np.select([c[:, 1] >= y for y, _ in cfg["arm_inner_x"]], [x for _, x in cfg["arm_inner_x"]])
-    arm = (c[:, 1] >= cfg["hand_min_y"]) & (np.abs(c[:, 0]) > inner)
-    body = ~arm & (c[:, 1] > cfg["hip_y"])
-    leg = ~arm & ~body
+    tail = np.zeros(len(faces), dtype=bool)
+    if "tail" in cfg:
+        # Cauda = o que esta acima da gola (a volta por cima da cabeca); medido na vista de lado do traje.
+        # A cauda desce pelo lado esquerdo, colada ao braco: la vale o que nao tem par espelhado no lado direito
+        # (o traje e simetrico, a cauda nao).
+        t = cfg["tail"]
+        mirror, _ = cKDTree(c).query(c * [-1, 1, 1])
+        tail = (c[:, 1] > t["above_y"]) | ((mirror > t["asym"]) & (c[:, 1] > t["from_y"]) & (c[:, 0] < t["max_x"]))
+        # Ponta da cauda: abaixo dos dedos, por fora da perna (espelhada na mao direita, nao sai pela simetria).
+        tail |= (c[:, 1] > t["from_y"]) & (c[:, 1] < cfg["hand_min_y"]) & (c[:, 0] < t["tip_x"])
+    head = np.zeros(len(faces), dtype=bool)
+    if "head" in cfg:
+        head = ~tail & (c[:, 1] >= cfg["head"]["min_y"]) & (np.abs(c[:, 0]) <= cfg["head"]["max_abs_x"])
+    arm = ~tail & ~head & (c[:, 1] >= cfg["hand_min_y"]) & (np.abs(c[:, 0]) > inner)
+    body = ~tail & ~head & ~arm & (c[:, 1] > cfg["hip_y"])
+    leg = ~tail & ~head & ~arm & ~body
+    if "leg_core" in cfg:
+        core = cfg["leg_core"]
+        coat = leg & (c[:, 1] > core["boot_y"])
+        body |= coat
+        leg &= ~coat
     groups = {"body": body, "right_arm": arm & (c[:, 0] > 0), "left_arm": arm & (c[:, 0] <= 0),
-              "right_leg": leg & (c[:, 0] > 0), "left_leg": leg & (c[:, 0] <= 0)}
+              "right_leg": leg & (c[:, 0] > 0), "left_leg": leg & (c[:, 0] <= 0), "head": head, "tail": tail}
     labels = np.empty(len(faces), dtype=object)
     for name, sel in groups.items():
         labels[sel] = name
@@ -136,6 +196,7 @@ def main():
     cfg = SUITS[name]
     source = ROOT / "tools/art/converted" / name
     vertices, uvs, normals, faces = read_obj(source / f"{name}.obj")
+    faces = drop_faces(vertices, faces, cfg)
     labels = split(vertices, faces, cfg)
     vertices, uvs, normals, faces, labels = cap_holes(vertices, uvs, normals, faces, labels)
     model = to_model(vertices)
@@ -145,17 +206,30 @@ def main():
         shutil.rmtree(out_dir)
     index = {"bones": {}}
     image_rgb = np.asarray(Image.open(source / f"{name}.png").convert("RGB")).astype(float)
-    for part, pivot in PIVOTS.items():
+    parts = dict(PIVOTS)
+    if "head" in cfg:
+        parts["head"] = (0.0, 0.0, 0.0)
+    if "tail" in cfg:
+        parts["tail"] = tail_root(model, faces[labels == "tail"])
+        index["pivots"] = {"tail": [round(float(v), 5) for v in parts["tail"]]}
+    for part, pivot in parts.items():
         part_faces = faces[labels == part]
         if not len(part_faces):
             print(f"AVISO: {part} vazio")
             continue
         used = np.unique(part_faces)
         points, part_normals = model.copy(), model_normals.copy()
+        if part == "tail":
+            # Cauda: sem ajuste de largura, no espaco do tronco com origem na raiz (o SuitLayer balanca em volta).
+            write_obj(out_dir / f"{part}.obj", points - np.array(pivot), uvs, part_normals, part_faces)
+            index["bones"][part] = f"kn8:meshes/suit/{name}/{part}.obj"
+            print(f"{part}: {len(part_faces)} triangulos, raiz {np.round(pivot, 3)}")
+            continue
         if part.endswith("_arm"):
             points[used], part_normals[used] = straighten(model[used], model_normals[used], np.array(pivot))
         local = points - np.array(pivot)
-        local[used] = fit_box(local[used], *MIN_BOX[part], cfg.get("max_stretch", MAX_STRETCH))
+        box = (*cfg["head_box"], 0.0) if part == "head" else MIN_BOX[part]
+        local[used] = fit_box(local[used], *box, cfg.get("max_stretch", MAX_STRETCH))
         reach = cfg.get("arm_reach")
         if reach and part.endswith("_arm"):
             # 0.5.0-B: a manga do Mk1 novo terminava antes da mao do jogador (a mao da skin aparecia): estica o braco
@@ -164,7 +238,7 @@ def main():
             if bottom < reach:
                 local[used, 1] *= reach / bottom
                 print(f"  braco esticado {reach / bottom:.2f}x ate a mao")
-        if cfg.get("liner"):
+        if cfg.get("liner") and part in LINER_BOXES:
             local, liner_uvs, part_normals, part_faces = add_liner(part, local, uvs, part_normals, part_faces,
                                                                   dark_uv(image_rgb, uvs, part_faces))
         else:
@@ -181,6 +255,13 @@ def main():
     Image.fromarray(np.clip(padded, 0, 255).astype(np.uint8)).convert("RGBA").save(texture)
 
 
+def tail_root(model, tail_faces):
+    """Raiz da cauda (espaco do modelo): o ponto da cauda mais perto do meio das costas, na altura da cintura."""
+    points = model[np.unique(tail_faces)]
+    waist = np.array([0.0, COLLAR - 0.95, 0.10])
+    return points[np.argmin(np.linalg.norm(points - waist, axis=1))]
+
+
 def dark_uv(image, uvs, faces):
     """UV do ponto mais escuro (preto do macacao) entre os centros das faces da parte, para pintar a segunda pele."""
     height, width = image.shape[:2]
@@ -192,9 +273,9 @@ def dark_uv(image, uvs, faces):
     return centers[darkest[len(darkest) // 2]]
 
 
-def add_liner(part, local, uvs, normals, faces, uv):
-    """Soma a caixa da segunda pele (dos dois lados, 24 triangulos) a malha da parte."""
-    x0, y0, z0, w, h, d = LINER_BOXES[part]
+def add_liner(part, local, uvs, normals, faces, uv, box=None):
+    """Soma a caixa da segunda pele (dos dois lados, 24 triangulos) a malha da parte (box: outra caixa, em px)."""
+    x0, y0, z0, w, h, d = box or LINER_BOXES[part]
     pad = LINER_INFLATE_PX
     lo = np.array([x0 - pad, y0 - pad, z0 - pad]) / 16
     hi = np.array([x0 + w + pad, y0 + h + pad, z0 + d + pad]) / 16

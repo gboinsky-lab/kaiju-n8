@@ -4,7 +4,8 @@
   "max_health": 28,
   "npc_squad_size": 6,
   "unlocks": [
-    "kn8:hoshina_sword"
+    "kn8:hoshina_sword",
+    "kn8:katana"
   ],
   "promotion_mission": "kn8:exam_command"
 }

@@ -1,9 +1,17 @@
 {
   "bones": {
-    "body": "kn8:meshes/suit/mk1_reinforced/body.obj",
-    "right_arm": "kn8:meshes/suit/mk1_reinforced/right_arm.obj",
-    "left_arm": "kn8:meshes/suit/mk1_reinforced/left_arm.obj",
-    "right_leg": "kn8:meshes/suit/mk1_reinforced/right_leg.obj",
-    "left_leg": "kn8:meshes/suit/mk1_reinforced/left_leg.obj"
+    "body": "kn8:meshes/suit/numbers10_suit/body.obj",
+    "right_arm": "kn8:meshes/suit/numbers10_suit/right_arm.obj",
+    "left_arm": "kn8:meshes/suit/numbers10_suit/left_arm.obj",
+    "right_leg": "kn8:meshes/suit/numbers10_suit/right_leg.obj",
+    "left_leg": "kn8:meshes/suit/numbers10_suit/left_leg.obj",
+    "tail": "kn8:meshes/suit/numbers10_suit/tail.obj"
+  },
+  "pivots": {
+    "tail": [
+      0.04227,
+      0.57688,
+      0.19161
+    ]
   }
 }
