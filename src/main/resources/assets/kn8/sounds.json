@@ -784,5 +784,60 @@
     "sounds": [
       "kn8:combat/perfect_dodge_1"
     ]
+  },
+  "alert.major_threat": {
+    "subtitle": "subtitles.kn8.alert.major_threat",
+    "sounds": [
+      "kn8:alert/major_threat_1"
+    ]
+  },
+  "travel.energy_beam": {
+    "subtitle": "subtitles.kn8.travel.energy_beam",
+    "sounds": [
+      {
+        "name": "kn8:travel/energy_beam_1",
+        "attenuation_distance": 40
+      }
+    ]
+  },
+  "travel.slash": {
+    "subtitle": "subtitles.kn8.travel.slash",
+    "sounds": [
+      "kn8:travel/slash_1"
+    ]
+  },
+  "travel.spiral": {
+    "subtitle": "subtitles.kn8.travel.spiral",
+    "sounds": [
+      "kn8:travel/spiral_1"
+    ]
+  },
+  "travel.shell": {
+    "subtitle": "subtitles.kn8.travel.shell",
+    "sounds": [
+      {
+        "name": "kn8:travel/shell_1",
+        "attenuation_distance": 40
+      }
+    ]
+  },
+  "travel.ice": {
+    "subtitle": "subtitles.kn8.travel.ice",
+    "sounds": [
+      "kn8:travel/ice_1"
+    ]
+  },
+  "travel.organic": {
+    "subtitle": "subtitles.kn8.travel.organic",
+    "sounds": [
+      "kn8:travel/organic_1"
+    ]
+  },
+  "technique.tail_guard": {
+    "subtitle": "subtitles.kn8.technique.tail_guard",
+    "sounds": [
+      "kn8:technique/tail_guard_1",
+      "kn8:technique/tail_guard_2"
+    ]
   }
 }

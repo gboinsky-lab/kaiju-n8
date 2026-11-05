@@ -54,6 +54,20 @@ public final class SoundCues {
                 .orElse(false);
     }
 
+    /** AJUSTES-2: laco de voo do tiro da tecnica (perfil ativo de quem atirou), se o perfil tiver. */
+    public static Optional<ResourceLocation> techniqueTravel(ResourceLocation profile, String technique) {
+        return Optional.ofNullable(KN8Data.SOUND_PROFILE.server().get(profile))
+                .flatMap(def -> def.technique(technique)).flatMap(SoundProfileDef.Cue::travel);
+    }
+
+    /** AJUSTES-2: laco de voo do projetil da habilidade (perfil da especie e depois o geral). */
+    public static Optional<ResourceLocation> abilityTravel(KaijuEntity kaiju, String ability) {
+        return Optional.ofNullable(KN8Data.SOUND_PROFILE.server().get(kaiju.kaijuId()))
+                .flatMap(def -> def.ability(ability)).flatMap(SoundProfileDef.Cue::travel)
+                .or(() -> Optional.ofNullable(KN8Data.SOUND_PROFILE.server().get(KAIJU))
+                        .flatMap(def -> def.ability(ability)).flatMap(SoundProfileDef.Cue::travel));
+    }
+
     private static Optional<ResourceLocation> sound(SoundProfileDef.Cue cue, Stage stage) {
         return stage == Stage.WINDUP ? cue.windup() : cue.release();
     }

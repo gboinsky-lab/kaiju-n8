@@ -1856,3 +1856,20 @@ Ligar as legendas (Opções > Acessibilidade) ajuda a conferir qual som tocou.
 | 132.6 | Hoshina, Kikoru, Narumi, Isao, Kaiju No. 8, Reno No. 6 contra um Honju | Cada um com o próprio som (cortes agudos, machado elétrico e trovão, estocada e tiro seco, socos de ar comprimido, socos graves, tiro com gelo); nenhuma técnica começa com o corte de espada |
 | 132.7 | No. 9 atirando (Finger Gun), formiga cuspindo ácido, aranha soltando teia | Som de saída do tiro de cada um (antes só o impacto) |
 | 132.8 | Jogador: esquiva perfeita, especial da faca e da espada, punhos da forma do No. 8 | Sons próprios; o soco não toca mais o som do machado |
+
+## 133. AJUSTES-2: No. 8 sem controle, formas do No. 9 nas invasões, aviso de ameaça grande, sons de voo
+
+Imagem: `docs/img/ajustes2_no8_vermelho_e_sons.jpg`. Ligar as legendas (Opções > Acessibilidade).
+
+| # | Passo | Esperado |
+|---|---|---|
+| 133.1 | `/summon kn8:kaiju_no8_rampage` e `/summon kn8:kaiju_no8_rampage_giant` | No. 8 com as linhas e os olhos vermelhos, 3 m e 22 m; barra "Kaiju No. 8 sem controle" / "colossal", numerado |
+| 133.2 | Um Hoshina e uma Kikoru perto do pequeno | Ele ataca o mais perto: socos, combo, investida (som de arranque), golpe no chão com cratera, rugido, soco de ruptura abaixo de 60% da vida; efeitos vermelhos |
+| 133.3 | `/kn8 invasion start kn8:no10_assault ~ ~ ~` | Abertura, sirene e ~3 s depois "Ameaça grande se aproxima" (buzina grave e três batidas) |
+| 133.4 | `/kn8 invasion start kn8:honju_assault ~ ~ ~` | Sem o aviso de ameaça grande (nível 3) |
+| 133.5 | Invasões de nível 4+ algumas vezes (`ariake_assault`, `tachikawa_raid`, `kaiju_horde`, `mass_resurrection`, `shinagawa_ants`, `no10_assault`) | De vez em quando surge na última onda uma forma do No. 9 ou o No. 8 sem controle (chances na tabela do `BALANCEAMENTO.md`) |
+| 133.6 | Mina contra um Primigenius Honju | "Canhão carregando", "Tiro de canhão", "Projétil do canhão assobia" enquanto voa; o Honju: "Raio de energia zumbe" |
+| 133.7 | Hoshina (Kuuchi), Isao (Spiral Blast), Reno No. 6 (lança de gelo), formiga (ácido), aranha (teia) | "Corte voando", "Espiral girando", "Gelo voando", "Projétil de kaiju voando" seguindo o projétil; bala comum sem laço |
+| 133.8 | Hoshina No. 10 ou jogador com o traje Numbers 10 perto de um kaiju | Cauda corta com "Cauda corta"; guarda da cauda com "Cauda defende" (sem a bigorna) |
+| 133.9 | Kafka NPC ferido | Sem aura nenhuma |
+| 133.10 | `/kn8 vfx play kn8:technique kn8:narumi 1 seven_branched_sword/7` | Estouros rosa (antes liam brancos) |

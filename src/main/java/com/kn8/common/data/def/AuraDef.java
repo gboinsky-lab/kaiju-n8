@@ -7,6 +7,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
 
 /**
@@ -19,6 +20,12 @@ import net.minecraft.util.StringRepresentable;
  * multiplica o raio em volta do corpo.</p>
  */
 public record AuraDef(int color, int secondary, Style style, int minRelease, float size, Optional<Bolts> bolts) {
+
+    /**
+     * AJUSTES-2 (Miguel 2026-11-05: Kafka NPC "pode deixar sem aura"): id sem arquivo que quer dizer "sem aura". O
+     * cliente nao acha a aura e nao desenha nada; a validacao nao avisa.
+     */
+    public static final ResourceLocation NONE = ResourceLocation.fromNamespaceAndPath("kn8", "none");
 
     /**
      * VFX-4A (Miguel, 2026-10-22: "sair raios igual no anime"): descargas saindo do corpo e do traje. Cada raio nasce

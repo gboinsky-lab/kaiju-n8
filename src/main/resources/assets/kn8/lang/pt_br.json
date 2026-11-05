@@ -1012,6 +1012,8 @@
   "item.kn8.numbers2_gauntlet": "Manoplas Numbers 2",
   "entity.kn8.kaiju_no9_isao": "Kaiju No. 9 (Após Absorver o Isao)",
   "entity.kn8.kaiju_no13": "Kaiju No. 13",
+  "entity.kn8.kaiju_no8_rampage": "Kaiju No. 8 sem controle",
+  "entity.kn8.kaiju_no8_rampage_giant": "Kaiju No. 8 colossal sem controle",
   "kn8.no9.isao_form": "O Kaiju No. 9 absorveu o Isao Shinomiya e a arma numerada 2!",
   "kn8.command.duel.invalid": "Escolha dois soldados diferentes para o duelo.",
   "kn8.command.duel.started": "Duelo de teste: %s contra %s.",
@@ -1392,5 +1394,13 @@
   "subtitles.kn8.weapon.cannon_shot": "Tiro de canhão",
   "subtitles.kn8.weapon.knife_flurry": "Sequência de cortes",
   "subtitles.kn8.weapon.dash_cut": "Corte em avanço",
-  "subtitles.kn8.combat.perfect_dodge": "Esquiva perfeita"
+  "subtitles.kn8.combat.perfect_dodge": "Esquiva perfeita",
+  "subtitles.kn8.alert.major_threat": "Ameaça grande se aproxima",
+  "subtitles.kn8.travel.energy_beam": "Raio de energia zumbe",
+  "subtitles.kn8.travel.slash": "Corte voando",
+  "subtitles.kn8.travel.spiral": "Espiral girando",
+  "subtitles.kn8.travel.shell": "Projétil do canhão assobia",
+  "subtitles.kn8.travel.ice": "Gelo voando",
+  "subtitles.kn8.travel.organic": "Projétil de kaiju voando",
+  "subtitles.kn8.technique.tail_guard": "Cauda defende"
 }

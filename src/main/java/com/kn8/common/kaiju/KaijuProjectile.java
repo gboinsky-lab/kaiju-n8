@@ -6,6 +6,8 @@ import java.util.Optional;
 import com.kn8.common.data.KN8Data;
 import com.kn8.common.data.def.AbilityDef;
 import com.kn8.common.registry.KN8Entities;
+import com.kn8.common.sound.SoundCues;
+import com.kn8.common.sound.TravelSoundSource;
 import com.kn8.common.vfx.AbilityEffects;
 
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -35,9 +37,12 @@ import net.minecraft.world.phys.Vec3;
  * <p>So o id da habilidade vai ao cliente (dado sincronizado): o rastro e desenhado la, na cor {@code color} do
  * JSON (o registro de habilidades e sincronizado; VFX-R2: {@code KaijuProjectileRenderer}, sem particulas).</p>
  */
-public class KaijuProjectile extends Projectile {
+public class KaijuProjectile extends Projectile implements TravelSoundSource {
 
     private static final EntityDataAccessor<String> ABILITY =
+            SynchedEntityData.defineId(KaijuProjectile.class, EntityDataSerializers.STRING);
+    /** AJUSTES-2: laco do voo ({@code travel} do perfil de som da habilidade); vazio = sem laco. */
+    private static final EntityDataAccessor<String> TRAVEL =
             SynchedEntityData.defineId(KaijuProjectile.class, EntityDataSerializers.STRING);
     private static final double FORWARD_SPAWN = 0.6;
 
@@ -62,6 +67,8 @@ public class KaijuProjectile extends Projectile {
         Vec3 dir = direction.normalize();
         projectile.setOwner(owner);
         projectile.entityData.set(ABILITY, abilityId.toString());
+        projectile.entityData.set(TRAVEL, SoundCues.abilityTravel(owner, abilityId.getPath())
+                .map(ResourceLocation::toString).orElse(""));
         projectile.damage = damage;
         projectile.heavy = ability.heavy();
         projectile.setPos(from.add(dir.scale(FORWARD_SPAWN)));
@@ -73,6 +80,13 @@ public class KaijuProjectile extends Projectile {
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         builder.define(ABILITY, "");
+        builder.define(TRAVEL, "");
+    }
+
+    @Override
+    public Optional<ResourceLocation> travelSound() {
+        String id = entityData.get(TRAVEL);
+        return id.isEmpty() ? Optional.empty() : Optional.ofNullable(ResourceLocation.tryParse(id));
     }
 
     private Optional<AbilityDef> ability() {

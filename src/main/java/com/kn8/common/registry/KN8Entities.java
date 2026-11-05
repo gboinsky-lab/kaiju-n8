@@ -11,6 +11,7 @@ import com.kn8.common.base.DefenseOfficerEntity;
 import com.kn8.common.combat.SlashProjectile;
 import com.kn8.common.kaiju.CarcassEntity;
 import com.kn8.common.kaiju.KaijuEntity;
+import com.kn8.common.kaiju.KaijuNo8RampageEntity;
 import com.kn8.common.kaiju.KaijuProjectile;
 import com.kn8.common.kaiju.PreondactylEntity;
 import com.kn8.common.numbered.KaijuNo10Entity;
@@ -114,6 +115,14 @@ public final class KN8Entities {
     /** 0.8-A: Kaiju No. 13 (criado pelo No. 9; humanoide palido de 2,2 m, rapido, agarra e soca). */
     public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> KAIJU_NO13 = kaiju(
             "kaiju_no13", 0.8F, 2.2F);
+    /**
+     * AJUSTES-2 (Miguel 2026-11-05): Kaiju No. 8 sem controle, inimigo, pequeno (3 m) e gigante (22 m). Arte do
+     * No. 8 com a textura vermelha ({@link #MODEL_ALIASES}, {@link #textureSpecies}); escala no kaiju/*.json.
+     */
+    public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> KAIJU_NO8_RAMPAGE = no8Rampage(
+            "kaiju_no8_rampage");
+    public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> KAIJU_NO8_RAMPAGE_GIANT = no8Rampage(
+            "kaiju_no8_rampage_giant");
     /** 0.6-E: Kaiju No. 10, forma pequena (4 m) e gigante (24 m); comportamento extra no No10Service. */
     public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> KAIJU_NO10_SMALL = numbered(
             "kaiju_no10_small", 2.0F, 4.0F);
@@ -281,12 +290,23 @@ public final class KN8Entities {
      * Especies que reaproveitam a arte (geo, textura, malha e animacoes) de outra, so com outra escala: a fusao
      * gigante usa a da fusao de 5 m. Os nomes das animacoes tambem sao os da especie da arte.
      */
-    private static final Map<String, String> MODEL_ALIASES = Map.of("kaiju_no9_fusion_giant", "kaiju_no9_fusion");
+    private static final Map<String, String> MODEL_ALIASES = Map.of("kaiju_no9_fusion_giant", "kaiju_no9_fusion",
+            "kaiju_no8_rampage", "kaiju_no8", "kaiju_no8_rampage_giant", "kaiju_no8");
+
+    /** AJUSTES-2: especies com a arte de outra mas textura propria (o No. 8 sem controle e vermelho). */
+    private static final Map<String, String> TEXTURE_ALIASES = Map.of("kaiju_no8_rampage", "kaiju_no8_rampage",
+            "kaiju_no8_rampage_giant", "kaiju_no8_rampage");
 
     /** Especie cuja arte desenha {@code id} (ela mesma, salvo as de {@link #MODEL_ALIASES}). */
     public static ResourceLocation modelSpecies(ResourceLocation id) {
         String alias = MODEL_ALIASES.get(id.getPath());
         return alias == null ? id : id.withPath(alias);
+    }
+
+    /** Textura de {@code id}: a da especie da arte, salvo as de {@link #TEXTURE_ALIASES}. */
+    public static ResourceLocation textureSpecies(ResourceLocation id) {
+        String alias = TEXTURE_ALIASES.get(id.getPath());
+        return alias == null ? modelSpecies(id) : id.withPath(alias);
     }
 
     /** Todas as especies, para atributos, renderers e comandos. */
@@ -295,7 +315,7 @@ public final class KN8Entities {
                     TRICHONEPHILA_HONJU, KAIJU_NO9, KAIJU_NO10_SMALL, KAIJU_NO10_GIANT,
                     PREONDACTYL, PHILINOSOMA, DICLONIUS, CAMPONOTUS, CAMPONOTUS_REBORN, PHANEROPLASMODIUM,
                     MYXOGASTEROCARP, KAIJU_LARVA, KAIJU_NO9_BLACK, KAIJU_NO9_FUSION, KAIJU_NO9_CAMPONOTUS,
-                    KAIJU_NO9_FUSION_GIANT, KAIJU_NO9_ISAO, KAIJU_NO13);
+                    KAIJU_NO9_FUSION_GIANT, KAIJU_NO9_ISAO, KAIJU_NO13, KAIJU_NO8_RAMPAGE, KAIJU_NO8_RAMPAGE_GIANT);
 
     private KN8Entities() {
     }
@@ -355,6 +375,15 @@ public final class KN8Entities {
         return ENTITY_TYPES.register(name, () -> EntityType.Builder.<KaijuEntity>of(KaijuNo9Entity::new,
                         MobCategory.MONSTER)
                 .sized(width, height)
+                .clientTrackingRange(KAIJU_TRACKING_RANGE_CHUNKS)
+                .build(name));
+    }
+
+    /** Hitbox do modelo do No. 8 (2 m); a escala do JSON leva ao tamanho de cada forma. */
+    private static DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> no8Rampage(String name) {
+        return ENTITY_TYPES.register(name, () -> EntityType.Builder.<KaijuEntity>of(KaijuNo8RampageEntity::new,
+                        MobCategory.MONSTER)
+                .sized(0.9F, 2.0F)
                 .clientTrackingRange(KAIJU_TRACKING_RANGE_CHUNKS)
                 .build(name));
     }

@@ -2,7 +2,8 @@
   "techniques": {
     "ice_spear": {
       "windup": "kn8:technique.charge",
-      "release": "kn8:technique.reno_shot"
+      "release": "kn8:technique.reno_shot",
+      "travel": "kn8:travel.ice"
     },
     "freeze_burst": {
       "windup": "kn8:technique.charge",

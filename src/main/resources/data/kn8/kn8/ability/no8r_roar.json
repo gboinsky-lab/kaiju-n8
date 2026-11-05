@@ -1,0 +1,23 @@
+{
+  "type": "kn8:area_melee",
+  "damage_multiplier": 0.3,
+  "radius": 6.0,
+  "windup_ticks": 12,
+  "active_ticks": 4,
+  "cooldown_ticks": 240,
+  "animation": "action.roar",
+  "vfx": [
+    {
+      "effect": "kn8:roar",
+      "intensity": 1.2
+    }
+  ],
+  "camera_shake": 0.35,
+  "sound": "kn8:kaiju.roar",
+  "behavior": {
+    "priority": 1,
+    "max_range": 6.0,
+    "slow_ticks": 40,
+    "slow_level": 1
+  }
+}

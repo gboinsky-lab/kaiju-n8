@@ -4,7 +4,8 @@
       "release": "kn8:technique.isao_punch"
     },
     "spiral_blast": {
-      "release": "kn8:technique.isao_blast"
+      "release": "kn8:technique.isao_blast",
+      "travel": "kn8:travel.spiral"
     },
     "force_blast": {
       "release": "kn8:technique.isao_blast"

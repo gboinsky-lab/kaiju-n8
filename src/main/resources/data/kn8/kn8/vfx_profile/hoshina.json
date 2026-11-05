@@ -89,7 +89,7 @@
         "lifetime": 6,
         "forward": 1.2,
         "up": 1.1,
-        "tilt": 40
+        "tilt": 55
       },
       {
         "shape": "glow",
@@ -102,7 +102,7 @@
         "lifetime": 6,
         "forward": 1.2,
         "up": 1.1,
-        "tilt": 40
+        "tilt": 55
       },
       {
         "shape": "glow",
@@ -116,7 +116,7 @@
         "forward": 1.2,
         "up": 1.1,
         "delay": 2,
-        "tilt": -40
+        "tilt": -55
       },
       {
         "shape": "glow",
@@ -130,7 +130,7 @@
         "forward": 1.2,
         "up": 1.1,
         "delay": 2,
-        "tilt": -40
+        "tilt": -55
       }
     ],
     "ran_uchi/1": [

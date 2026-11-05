@@ -1,29 +1,35 @@
 {
   "abilities": {
     "camponotus_acid_spray": {
-      "release": "kn8:kaiju.acid_spray"
+      "release": "kn8:kaiju.acid_spray",
+      "travel": "kn8:travel.organic"
     },
     "camponotus_reborn_acid_spray": {
-      "release": "kn8:kaiju.acid_spray"
+      "release": "kn8:kaiju.acid_spray",
+      "travel": "kn8:travel.organic"
     },
     "diclonius_atomic_breath": {
       "windup": "kn8:kaiju.energy_charge",
-      "release": "kn8:kaiju.energy_beam"
+      "release": "kn8:kaiju.energy_beam",
+      "travel": "kn8:travel.energy_beam"
     },
     "energy_blast": {
       "windup": "kn8:kaiju.energy_charge",
-      "release": "kn8:kaiju.energy_beam"
+      "release": "kn8:kaiju.energy_beam",
+      "travel": "kn8:travel.energy_beam"
     },
     "energy_blast_revived": {
       "windup": "kn8:kaiju.energy_charge",
-      "release": "kn8:kaiju.energy_beam"
+      "release": "kn8:kaiju.energy_beam",
+      "travel": "kn8:travel.energy_beam"
     },
     "finger_gun": {
       "release": "kn8:kaiju.finger_gun"
     },
     "myxogasterocarp_spore_bomb": {
       "windup": "kn8:kaiju.energy_charge",
-      "release": "kn8:kaiju.spore"
+      "release": "kn8:kaiju.spore",
+      "travel": "kn8:travel.organic"
     },
     "no10_finger_cannon": {
       "release": "kn8:kaiju.finger_gun"
@@ -35,7 +41,8 @@
       "release": "kn8:kaiju.grab"
     },
     "no9_ant_acid_spray": {
-      "release": "kn8:kaiju.acid_spray"
+      "release": "kn8:kaiju.acid_spray",
+      "travel": "kn8:travel.organic"
     },
     "no9_black_multi_finger_gun": {
       "release": "kn8:kaiju.finger_gun"
@@ -45,7 +52,8 @@
     },
     "no9_fusion_hybrid_beam": {
       "windup": "kn8:kaiju.energy_charge",
-      "release": "kn8:kaiju.energy_beam"
+      "release": "kn8:kaiju.energy_beam",
+      "travel": "kn8:travel.energy_beam"
     },
     "no9_fusion_multi_finger_cannon": {
       "release": "kn8:kaiju.finger_gun"
@@ -54,20 +62,25 @@
       "release": "kn8:technique.isao_blast"
     },
     "phaneroplasmodium_spore_shot": {
-      "release": "kn8:kaiju.spore"
+      "release": "kn8:kaiju.spore",
+      "travel": "kn8:travel.organic"
     },
     "philinosoma_spine_shot": {
-      "release": "kn8:kaiju.spine_shot"
+      "release": "kn8:kaiju.spine_shot",
+      "travel": "kn8:travel.organic"
     },
     "preondactyl_energy_beam": {
       "windup": "kn8:kaiju.energy_charge",
-      "release": "kn8:kaiju.energy_beam"
+      "release": "kn8:kaiju.energy_beam",
+      "travel": "kn8:travel.energy_beam"
     },
     "web_burst": {
-      "release": "kn8:kaiju.web_shot"
+      "release": "kn8:kaiju.web_shot",
+      "travel": "kn8:travel.organic"
     },
     "web_shot": {
-      "release": "kn8:kaiju.web_shot"
+      "release": "kn8:kaiju.web_shot",
+      "travel": "kn8:travel.organic"
     }
   }
 }

@@ -1377,3 +1377,14 @@ Matriz de 30 confrontos x 5 duelos (retirada do No. 9 = empate), jogador por pat
 | Isao sem o Numbers 2 `kaiju_damage` | 1,2 | 1,2 | confirmado: x No. 10 pequeno 2/5 (meta 45%) |
 | Recargas das técnicas do machado e do machado do Numbers 4 | - | x 1,15 | rajada do machado (Líder) acima da espada do Hoshina (Vice) |
 | Stamina das técnicas das manoplas do Numbers 2 | - | -4 cada | dano por stamina 0,95 -> 1,1 (igual às outras) |
+
+## AJUSTES-2: No. 8 sem controle e surpresas nas invasões (2026-11-05) [SUPOSIÇÃO todos os números]
+
+| O quê | Valor | Onde |
+|---|---|---|
+| No. 8 sem controle (pequeno) | 3 m (escala 1,5), vida 2.400, dano 46, armadura 17, velocidade 0,44, fortitude 9,0, persegue x1,3, fúria abaixo de 35% | `kaiju/kaiju_no8_rampage.json` (`tools/data/gen_no8_rampage.py`) |
+| No. 8 sem controle (colossal) | 22 m (escala 11), vida 6.000, dano 72, armadura 20, velocidade 0,30, fortitude 9,6; golpes com alcance e área x4 | `kaiju/kaiju_no8_rampage_giant.json` |
+| Golpes dos dois | combo de 4 x0,55, soco pesado x1,8, investida x1,3, golpe no chão x1,6, soco de ruptura x3,0 (abaixo de 60%), rugido x0,3 com lentidão | `ability/no8r_*`, `ability/no8rg_*` |
+| Surpresas nas invasões (última onda) | `shinagawa_ants`: No. 9 formiga 25% (já havia); `mass_resurrection`: No. 9 preto 35%; `no10_assault`: fusão 25%; `ariake_assault`: No. 9 com o Isao 15% e No. 8 sem controle 25%; `tachikawa_raid`: No. 8 colossal 15% e fusão gigante 10%; `kaiju_horde`: No. 8 sem controle 20% | `invasion/*.json` (`chance`) |
+| Aviso de ameaça grande | nível 4+ com algum numerado nas ondas (os de surpresa contam), 3 s depois da abertura | `InvasionService.MAJOR_THREAT_*` |
+| Medido em jogo | Hoshina + Kikoru (Resistência III) x No. 8 sem controle: 2.400 -> 1.088 em ~15 s | — |

@@ -19,6 +19,9 @@ import net.minecraft.resources.ResourceLocation;
  *   <li>{@code techniques}/{@code abilities}: por nome ({@code kuuchi}, {@code slam}); a chave {@code *} vale para os
  *   que nao tem a propria. {@code windup} toca no inicio do preparo, {@code release} no tick do golpe/disparo do
  *   JSON (nunca no inicio da animacao);</li>
+ *   <li>{@code travel} (AJUSTES-2): laco que segue o projetil da tecnica/habilidade enquanto ele voa (raio,
+ *   corte que voa, espiral, granada do canhao, lanca de gelo); toca no cliente, pelo id sincronizado no
+ *   projetil;</li>
  *   <li>{@code volume}/{@code pitch}: da etapa (o kaiju ainda multiplica o tom pela voz do tamanho dele).</li>
  * </ul>
  * Sem perfil, sem a etapa ou sem a chave, fica o som de antes (golpe de espada, aviso generico).
@@ -28,13 +31,14 @@ public record SoundProfileDef(Map<String, Cue> techniques, Map<String, Cue> abil
     public static final String ANY = "*";
 
     public record Cue(Optional<ResourceLocation> windup, Optional<ResourceLocation> release, float volume,
-            float pitch) {
+            float pitch, Optional<ResourceLocation> travel) {
 
         public static final Codec<Cue> CODEC = RecordCodecBuilder.create(i -> i.group(
                 ResourceLocation.CODEC.optionalFieldOf("windup").forGetter(Cue::windup),
                 ResourceLocation.CODEC.optionalFieldOf("release").forGetter(Cue::release),
                 Codec.floatRange(0.0F, 16.0F).optionalFieldOf("volume", 1.0F).forGetter(Cue::volume),
-                Codec.floatRange(0.25F, 4.0F).optionalFieldOf("pitch", 1.0F).forGetter(Cue::pitch)
+                Codec.floatRange(0.25F, 4.0F).optionalFieldOf("pitch", 1.0F).forGetter(Cue::pitch),
+                ResourceLocation.CODEC.optionalFieldOf("travel").forGetter(Cue::travel)
         ).apply(i, Cue::new));
     }
 

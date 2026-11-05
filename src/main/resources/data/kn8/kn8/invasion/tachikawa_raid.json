@@ -44,6 +44,16 @@
         {
           "species": "kn8:preondactyl",
           "count": 2
+        },
+        {
+          "species": "kn8:kaiju_no8_rampage_giant",
+          "count": 1,
+          "chance": 0.15
+        },
+        {
+          "species": "kn8:kaiju_no9_fusion_giant",
+          "count": 1,
+          "chance": 0.1
         }
       ],
       "delay_ticks": 600

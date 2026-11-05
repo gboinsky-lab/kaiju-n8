@@ -93,6 +93,7 @@ public final class KN8Client {
     private static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         KN8Entities.KAIJU.forEach(type -> event.registerEntityRenderer(type.get(),
                 context -> new KaijuRenderer(context, KN8Entities.modelSpecies(type.getId()),
+                        KN8Entities.textureSpecies(type.getId()),
                         type.get().getWidth() / 2.0F)));
         event.registerEntityRenderer(KN8Entities.CARCASS.get(), CarcassRenderer::new);
         event.registerEntityRenderer(KN8Entities.KAIJU_PROJECTILE.get(), ProjectileRenderers.Kaiju::new);

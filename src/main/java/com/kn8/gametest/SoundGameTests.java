@@ -60,6 +60,7 @@ public final class SoundGameTests {
             for (SoundProfileDef.Cue cue : cues) {
                 cue.windup().ifPresent(sound -> check(sound, bundled, "sound_profile " + entry.getKey(), missing));
                 cue.release().ifPresent(sound -> check(sound, bundled, "sound_profile " + entry.getKey(), missing));
+                cue.travel().ifPresent(sound -> check(sound, bundled, "sound_profile " + entry.getKey(), missing));
             }
         }
         helper.assertTrue(missing.isEmpty(), "Sons inexistentes: " + missing);

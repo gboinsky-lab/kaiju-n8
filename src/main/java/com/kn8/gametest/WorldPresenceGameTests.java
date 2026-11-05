@@ -24,9 +24,16 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 @PrefixGameTestTemplate(false)
 public final class WorldPresenceGameTests {
 
-    /** Kaiju que nascem de outro (transform/absorb do numbered) ou pelo servico da larva. */
-    private static final List<String> BY_TRANSITION_KAIJU = List.of("kaiju_no10_giant", "kaiju_no9_fusion",
-            "kaiju_no9_fusion_giant", "kaiju_no9_isao", "kaiju_larva");
+    /**
+     * Kaiju que nascem de outro (forma gigante do No. 10) ou pelo servico da larva. As formas do No. 9 tambem surgem
+     * nas invasoes grandes desde a AJUSTES-2 (Miguel 2026-11-05).
+     */
+    private static final List<String> BY_TRANSITION_KAIJU = List.of("kaiju_no10_giant", "kaiju_larva");
+    /** AJUSTES-2: as formas do No. 9 e o No. 8 sem controle surgem de surpresa nas invasoes grandes (nivel 4+). */
+    private static final List<String> BIG_INVASION_SURPRISES = List.of("kaiju_no9_black", "kaiju_no9_fusion",
+            "kaiju_no9_fusion_giant", "kaiju_no9_camponotus", "kaiju_no9_isao", "kaiju_no8_rampage",
+            "kaiju_no8_rampage_giant");
+    private static final int BIG_INVASION_LEVEL = 4;
     /** Especiais que nascem pela troca de forma de outro (Kafka -> No. 8). */
     private static final List<String> BY_TRANSITION_SPECIAL = List.of("kaiju_no8");
 
@@ -62,6 +69,23 @@ public final class WorldPresenceGameTests {
         for (ResourceLocation id : KN8Data.SPECIAL_SOLDIER.server().keySet()) {
             helper.assertTrue(specials.contains(id.getPath()) || BY_TRANSITION_SPECIAL.contains(id.getPath()),
                     "Soldado especial sem lugar no mundo (so ovo): " + id);
+        }
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty_3x3")
+    public static void no9FormsAndRampageNo8SurpriseBigInvasions(GameTestHelper helper) {
+        Set<String> surprises = new HashSet<>();
+        for (InvasionDef invasion : KN8Data.INVASION.server().values()) {
+            if (invasion.level() < BIG_INVASION_LEVEL) {
+                continue;
+            }
+            invasion.waves().forEach(wave -> wave.kaiju().stream().filter(spawn -> spawn.chance() < 1.0F)
+                    .forEach(spawn -> surprises.add(spawn.species().getPath())));
+        }
+        for (String id : BIG_INVASION_SURPRISES) {
+            helper.assertTrue(surprises.contains(id), "Sem surpresa numa invasao grande: " + id);
+            helper.assertTrue(KN8Data.KAIJU.server().containsKey(KN8Constants.id(id)), "Kaiju sem dados: " + id);
         }
         helper.succeed();
     }

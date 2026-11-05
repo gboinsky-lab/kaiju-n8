@@ -184,3 +184,13 @@ e os modelos provisórios (asas e cauda do jogador, Narumi No. 1, Isao sem o Num
 - Registro `sound_profile` (preparo e golpe/disparo por técnica e habilidade); sem pacote novo.
 - Ficou para depois: som de voo dos projéteis, cauda do Numbers 10, tamanhos e tempos dos efeitos.
 - Próximas: **R-1**, **R-2**.
+
+## AJUSTES-2 — decisões de 2026-11-05 (feita, 2026-11-05)
+
+- No. 8 sem controle como kaiju inimigo, pequeno (3 m) e colossal (22 m), com a arte do No. 8 e a textura vermelha.
+- Formas do No. 9 e o No. 8 sem controle surgem de surpresa nas invasões de nível 4+.
+- Aviso de ameaça grande nas invasões de nível 4+ com numerado; Kafka NPC sem aura.
+- Sons de voo dos projéteis, cauda do Numbers 10 (corte e guarda), arranque da investida e do salto dos kaiju.
+- Estouros do Narumi rosa; efeitos pequenos maiores (cotovelada/uppercut do Isao, Seven-Branched, canhão da Mina,
+  asas do Numbers 4) e o X do Kosa-uchi mais aberto.
+- Próximas: **R-1**, **R-2**.

@@ -97,6 +97,21 @@ ABILITIES = [
     (("hooved",), None, None, "kn8:kaiju.punch"),
 ]
 
+# AJUSTES-2: laco do voo ("travel") dos projeteis. Kaiju: pelo nome da habilidade de tiro. Tecnicas de tiro dos
+# especiais: so as que fogem do padrao do Java (corte = assobio, tiro que explode = granada, que congela = gelo).
+TRAVEL_ABILITIES = [
+    (("energy_blast", "energy_beam", "atomic_breath", "hybrid_beam", "beam"), "kn8:travel.energy_beam"),
+    (("acid", "web", "spine", "spore"), "kn8:travel.organic"),
+]
+TRAVEL_TECHNIQUES = [(("spiral",), "kn8:travel.spiral"), (("ice_spear",), "kn8:travel.ice")]
+# Habilidades com som proprio fora das regras (No. 8 sem controle: os socos e a ruptura do No. 8).
+SKIP_ABILITIES = ("no8r_", "no8rg_")
+
+
+def travel_of(rules, name):
+    return next((sound for words, sound in rules if any(word in name for word in words)), None)
+
+
 # Armas: chave "sounds" e "sound" por tecnica (mesmas regras dos perfis, pelo nome da tecnica).
 WEAPON_SOUNDS = {
     "kaiju_no8_fist": {"swing": "kn8:weapon.fist_swing", "heavy": "kn8:technique.no8_punch",
@@ -140,19 +155,27 @@ def main():
         spec = json.loads((DATA / "special_soldier" / f"{profile}.json").read_text(encoding="utf-8"))
         techniques = {}
         for name, technique in spec.get("techniques", {}).items():
-            value = pick(rules, name, technique.get("type"))
+            value = dict(pick(rules, name, technique.get("type")))
+            travel = travel_of(TRAVEL_TECHNIQUES, name) if technique.get("type") == "slash" else None
+            if travel:
+                value["travel"] = travel
             if value:
                 techniques[name] = value
         write(DATA / "sound_profile" / f"{profile}.json", {"techniques": techniques})
     abilities = {}
     for path in sorted(glob.glob(str(DATA / "ability" / "*.json"))):
         name = Path(path).stem
+        if name.startswith(SKIP_ABILITIES):
+            continue
         data = json.loads(Path(path).read_text(encoding="utf-8"))
+        travel = travel_of(TRAVEL_ABILITIES, name) if data["type"] == "kn8:projectile" else None
+        if travel:
+            abilities.setdefault(name, {})["travel"] = travel
         for words, windup, release, impact in ABILITIES:
             if any(word in name for word in words):
                 entry = cue(windup, release if data["type"] == "kn8:projectile" else None)
                 if entry:
-                    abilities[name] = entry
+                    abilities[name] = {**entry, **abilities.get(name, {})}
                 if impact and data.get("sound") != impact:
                     data["sound"] = impact
                     write(Path(path), data)

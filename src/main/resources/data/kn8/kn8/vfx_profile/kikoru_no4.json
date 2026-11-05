@@ -392,9 +392,9 @@
         "color": "accent",
         "pattern": "ring",
         "count": 6,
-        "size": 0.04,
+        "size": 0.072,
         "speed": 0.35,
-        "spread": 0.6,
+        "spread": 0.84,
         "lifetime": 6
       },
       {
@@ -402,9 +402,9 @@
         "color": "#D5E3E3",
         "pattern": "burst",
         "count": 3,
-        "size": 0.035,
+        "size": 0.063,
         "speed": 0.25,
-        "spread": 0.4,
+        "spread": 0.56,
         "lifetime": 5,
         "up": -0.3
       }

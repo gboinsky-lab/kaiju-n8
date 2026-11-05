@@ -378,7 +378,8 @@ public final class DataValidation {
         cues.forEach((name, cue) -> out.put(name, new SoundProfileDef.Cue(
                 checkSound(id, group + "." + name + ".windup", cue.windup(), bundled, report),
                 checkSound(id, group + "." + name + ".release", cue.release(), bundled, report),
-                cue.volume(), cue.pitch())));
+                cue.volume(), cue.pitch(),
+                checkSound(id, group + "." + name + ".travel", cue.travel(), bundled, report))));
         return out;
     }
 
@@ -495,7 +496,7 @@ public final class DataValidation {
             }
             def.offhand().filter(item -> !BuiltInRegistries.ITEM.containsKey(item))
                     .ifPresent(item -> report.warning(where + ": arma da mao esquerda nao registrada " + item));
-            if (!auras.contains(def.aura())) {
+            if (!auras.contains(def.aura()) && !AuraDef.NONE.equals(def.aura())) {
                 report.warning(where + ": aura inexistente " + def.aura());
             }
             if (def.techniques().isEmpty()) {

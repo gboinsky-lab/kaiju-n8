@@ -14,6 +14,8 @@ import com.kn8.common.data.KN8Data;
 import com.kn8.common.data.def.NumberedGearDef;
 import com.kn8.common.host.KaijuFormService;
 import com.kn8.common.kaiju.KaijuEntity;
+import com.kn8.common.soldier.special.HoshinaNo10Entity;
+import com.kn8.common.sound.SoundCues;
 import com.kn8.common.vfx.VfxService;
 
 import net.minecraft.ChatFormatting;
@@ -243,8 +245,8 @@ public final class NumberedGearService {
                 .add(0, player.getBbHeight() * 0.5, 0);
         VfxService.play(level, VfxService.TECHNIQUE, from, aim, 1.0F, 0.0F, Optional.of(NO10_VFX), "tail",
                 player.getBbHeight());
-        level.playSound(null, player.getX(), player.getEyeY(), player.getZ(), SoundEvents.PLAYER_ATTACK_SWEEP,
-                SoundSource.PLAYERS, 0.7F, 0.7F);
+        level.playSound(null, player.getX(), player.getEyeY(), player.getZ(),
+                SoundCues.event(HoshinaNo10Entity.TAIL_SLASH_SOUND), SoundSource.PLAYERS, 1.0F, 1.0F);
     }
 
     /**
@@ -310,8 +312,8 @@ public final class NumberedGearService {
                 * 0.6, 0);
         VfxService.play(player.serverLevel(), VfxService.IMPACT, at, from.subtract(player.position()), 0.8F, 0.0F,
                 Optional.of(NO10_VFX), "tail_guard", player.getBbHeight());
-        player.level().playSound(null, player.getX(), player.getEyeY(), player.getZ(), SoundEvents.ANVIL_LAND,
-                SoundSource.PLAYERS, 0.6F, 1.6F);
+        player.level().playSound(null, player.getX(), player.getEyeY(), player.getZ(),
+                SoundCues.event(HoshinaNo10Entity.TAIL_GUARD_SOUND), SoundSource.PLAYERS, 1.0F, 1.0F);
         return (float) (amount * factor);
     }
 

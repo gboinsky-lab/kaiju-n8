@@ -8,6 +8,7 @@ import com.kn8.KN8Constants;
 import com.kn8.common.combat.SlashProjectile;
 import com.kn8.common.config.ServerConfig;
 import com.kn8.common.data.KN8Data;
+import com.kn8.common.data.def.AuraDef;
 import com.kn8.common.data.def.SlashSpec;
 import com.kn8.common.data.def.VfxProfileDef;
 import com.kn8.common.kaiju.KaijuEntity;
@@ -150,7 +151,7 @@ public final class VfxGameTests {
             helper.assertTrue(no10.recipe(key).isPresent(), "Hoshina No. 10 sem a receita " + key);
         }
         helper.assertTrue(KN8Data.SPECIAL_SOLDIER.server().get(KN8Constants.id("kafka")).aura()
-                .equals(KN8Constants.id("kafka_gray")), "Kafka com a aura cinza (Miguel, 2026-10-22)");
+                .equals(AuraDef.NONE), "Kafka sem aura (Miguel, 2026-11-05)");
         helper.succeed();
     }
 

@@ -73,6 +73,14 @@ public final class InvasionService {
     private static final ResourceLocation ALARM_DEFEAT = KN8Constants.id("alert.defeat");
     /** Nivel de invasao a partir do qual toda onda e ameaca critica. */
     private static final int CRITICAL_LEVEL = 5;
+    /**
+     * AJUSTES-2 (Miguel 2026-11-05: "em invasoes grandes com kaijus numerados pode colocar um som para avisar que esta
+     * comecando algo grande"): nivel a partir do qual a invasao com numerado (mesmo os que podem vir de surpresa) toca
+     * o aviso de ameaca grande, depois da abertura (que dura ~2,6 s).
+     */
+    private static final ResourceLocation ALARM_MAJOR_THREAT = KN8Constants.id("alert.major_threat");
+    private static final int MAJOR_THREAT_LEVEL = 4;
+    private static final int MAJOR_THREAT_DELAY_TICKS = 60;
     private static final double MARCH_SPEED = 1.0;
     /** Kaiju sem alvo a menos disso do centro param de marchar (passeiam/atacam na area). */
     private static final double MARCH_STOP = 10.0;
@@ -110,6 +118,13 @@ public final class InvasionService {
         }
         // SONS: toque de abertura; a sirene em laco e do cliente (InvasionAlarmClient, pela fase sincronizada).
         alarm(level, invasion, ALARM_START);
+        if (isMajorThreat(def.get())) {
+            KN8Server.get(level.getServer()).schedule(MAJOR_THREAT_DELAY_TICKS, () -> {
+                if (KN8Server.get(level.getServer()).invasions().get(level.dimension()) == invasion) {
+                    alarm(level, invasion, ALARM_MAJOR_THREAT);
+                }
+            });
+        }
         RegionService.onInvasion(level, center, id, false);
         KN8Constants.LOGGER.info("[kn8] Invasao {} em {} ({})", id, center.toShortString(), level.dimension()
                 .location());
@@ -506,6 +521,15 @@ public final class InvasionService {
                 player.playNotifySound(SoundCues.event(sound), SoundSource.HOSTILE, 0.9F, 1.0F);
             }
         }
+    }
+
+    /** AJUSTES-2: invasao grande (nivel 4+) com algum kaiju numerado nas ondas, inclusive os de surpresa. */
+    public static boolean isMajorThreat(InvasionDef def) {
+        if (def.level() < MAJOR_THREAT_LEVEL) {
+            return false;
+        }
+        return def.waves().stream().flatMap(wave -> wave.kaiju().stream()).anyMatch(spawn -> KN8Data.KAIJU
+                .get(spawn.species(), false).map(KaijuDef::kaijuClass).orElse(KaijuClass.YOJU) == KaijuClass.NUMBERED);
     }
 
     /** Alerta da onda pela maior ameaca dela: chefe ou nivel 5+ = critico, depois numerado, Honju e Yoju. */

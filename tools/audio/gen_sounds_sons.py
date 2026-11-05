@@ -495,6 +495,103 @@ def dash_cut(rng):
     cut = at(whoosh(0.32, 1100, 3400, rng) + ring(0.32, [3150, 4870], 9, rng) * 0.3, 0.2, s)
     return tame(at(dash, 0, s) + cut, 6000)
 
+# ------------------------------------------------------------------------------------------------- AJUSTES-2
+def seamless(make, seconds, fade=0.25, peak=0.75):
+    """Laco sem estalo: gera um pouco a mais, joga fora o comeco (partida dos filtros) e funde o fim no comeco."""
+    f = int(fade * RATE)
+    n = int(seconds * RATE)
+    sig = make(seconds + 2 * fade)[f:]
+    sig = sig - np.mean(sig)
+    out = sig[:n].copy()
+    ramp = np.linspace(0.0, 1.0, f)
+    out[:f] = out[:f] * ramp + sig[n:n + f] * (1.0 - ramp)
+    return out / np.max(np.abs(out)) * peak  # sem normalize: o fade do fim estalaria o laco
+
+
+def major_threat(rng):
+    """Invasao grande com numerado: buzina grave que cresce, tres batidas pesadas e um tritono agudo no fim."""
+    s = 4.2
+    t = t_axis(s)
+    horn = (saw(sweep(s, 55, 49, 1.0)) + saw(sweep(s, 55.8, 49.6, 1.0)) * 0.8) * env(s, 1.2, 1.0, 2.2)
+    horn = lowpass_steep(horn, 700, 3) * 0.6
+    drums = np.zeros(len(t))
+    for off in (1.3, 1.9, 2.5):
+        drums += at(thump(1.2, 70, 30, rng, 0.4), off, s) * 1.2
+    sting = (tone(1.4, 740, (1.0, 0.4)) + tone(1.4, 1047, (0.7, 0.3))) * env(1.4, 0.02, 1.4, 0.3)
+    return normalize(drive(horn + drums + at(sting, 2.7, s) * 0.35, 1.5)) * 0.9
+
+
+def travel_energy_beam(rng):
+    """Raio de energia voando: zumbido grave pulsando com chiado eletrico (laco de 2 s)."""
+    def make(seconds):
+        t = t_axis(seconds)
+        pulse = 1 + 0.25 * np.sin(2 * np.pi * 9 * t)
+        hum = (saw(2 * np.pi * 72 * t) * 0.5 + np.sin(2 * np.pi * 144 * t) * 0.4) * pulse
+        fizz = bandpass(noise(seconds, rng), 1500, 5000) * 0.6
+        return lowpass_steep(hum, 1400, 2) + fizz + electric(seconds, rng, 0.002) * 0.7
+    return seamless(make, 2.0)
+
+
+def travel_slash(rng):
+    """Corte que voa: assobio de ar fino tremendo (laco de 1,5 s)."""
+    def make(seconds):
+        t = t_axis(seconds)
+        air = bandpass(noise(seconds, rng), 2400, 6500) * (1 + 0.45 * np.sin(2 * np.pi * 17 * t))
+        whistle = np.sin(2 * np.pi * 3100 * t + 0.6 * np.sin(2 * np.pi * 5 * t)) * 0.12
+        return lowpass_steep(air * 3 + whistle, 9000, 2)
+    return seamless(make, 1.5, peak=0.6)
+
+
+def travel_spiral(rng):
+    """Espiral do Isao: ar girando (duas faixas que se alternam) e um ronco de pressao (laco de 1,5 s)."""
+    def make(seconds):
+        t = t_axis(seconds)
+        spin = 0.5 + 0.5 * np.sin(2 * np.pi * 6 * t)
+        low = bandpass(noise(seconds, rng), 400, 1200) * spin
+        high = bandpass(noise(seconds, rng), 1500, 4000) * (1 - spin)
+        roar = np.sin(2 * np.pi * 110 * t) * 0.25
+        return (low + high) * 3 + roar
+    return seamless(make, 1.5)
+
+
+def travel_shell(rng):
+    """Granada do canhao da Mina: assobio que treme e ronco grave do projetil grande (laco de 2 s)."""
+    def make(seconds):
+        t = t_axis(seconds)
+        whistle = np.sin(2 * np.pi * 1350 * t + 2.0 * np.sin(2 * np.pi * 7 * t)) * 0.25
+        air = bandpass(noise(seconds, rng), 800, 2600) * 1.6
+        rumble = lowpass_steep(noise(seconds, rng), 180, 3) * 22
+        return whistle + air + rumble
+    return seamless(make, 2.0)
+
+
+def travel_ice(rng):
+    """Lanca/bala de gelo: chiado frio com cristais tilintando (laco de 1,5 s)."""
+    def make(seconds):
+        hiss = bandpass(noise(seconds, rng), 4500, 10000) * 1.4
+        return hiss + ice_crack(seconds, rng, int(seconds * 14)) * 0.8 + ring(seconds, [6200, 8800], 0.2, rng) * 0.1
+    return seamless(make, 1.5, peak=0.6)
+
+
+def travel_organic(rng):
+    """Acido, teia, espinhos e esporos voando: sopro umido borbulhando (laco de 1,2 s)."""
+    def make(seconds):
+        t = t_axis(seconds)
+        bubbles = (rng.uniform(0, 1, len(t)) < 0.0015) * rng.uniform(-1, 1, len(t))
+        flutter = 1 + 0.5 * np.sin(2 * np.pi * 9 * t)
+        return lowpass(bubbles, 900) * 10 + bandpass(noise(seconds, rng), 300, 1300) * flutter
+    return seamless(make, 1.2, peak=0.55)
+
+
+def tail_guard(rng):
+    """Guarda da cauda do Numbers 10: estalo metalico duro com batida (no lugar da bigorna vanilla)."""
+    s = 0.6
+    t = t_axis(s)
+    hit = bandpass(noise(s, rng), 1500, 7000) * np.exp(-t * 70) * 2
+    metal = ring(s, [1750, 2650, 4100, 5600], 7, rng) * 0.6
+    return normalize(drive(hit + metal + thump(s, 220, 90, rng, 0.2) * 0.5, 1.5)) * 0.85
+
+
 
 # nome do evento -> (pasta, funcao, variacoes, legenda pt, legenda en)
 SOUNDS = {
@@ -507,6 +604,14 @@ SOUNDS = {
     "alert.wave_cleared": ("alert", wave_cleared, 1, "Onda eliminada", "Wave cleared"),
     "alert.victory": ("alert", victory, 1, "Invasão contida", "Invasion repelled"),
     "alert.defeat": ("alert", defeat, 1, "Invasão perdida", "Invasion lost"),
+    "alert.major_threat": ("alert", major_threat, 1, "Ameaça grande se aproxima", "Major threat approaching"),
+    "travel.energy_beam": ("travel", travel_energy_beam, 1, "Raio de energia zumbe", "Energy beam hums"),
+    "travel.slash": ("travel", travel_slash, 1, "Corte voando", "Slash flies"),
+    "travel.spiral": ("travel", travel_spiral, 1, "Espiral girando", "Spiral whirls"),
+    "travel.shell": ("travel", travel_shell, 1, "Projétil do canhão assobia", "Cannon shell whistles"),
+    "travel.ice": ("travel", travel_ice, 1, "Gelo voando", "Ice flies"),
+    "travel.organic": ("travel", travel_organic, 1, "Projétil de kaiju voando", "Kaiju projectile flies"),
+    "technique.tail_guard": ("technique", tail_guard, 2, "Cauda defende", "Tail guards"),
     "kaiju.windup": ("kaiju", kaiju_windup, 2, "Kaiju prepara um golpe", "Kaiju winds up"),
     "kaiju.energy_charge": ("kaiju", energy_charge, 2, "Kaiju carrega energia", "Kaiju charges energy"),
     "kaiju.energy_beam": ("kaiju", energy_beam, 2, "Raio de energia", "Energy beam"),
@@ -551,7 +656,7 @@ SOUNDS = {
 # Alcance em blocos (attenuation_distance) dos que precisam ser ouvidos de longe.
 RANGE = {"weapon.cannon_shot": 80, "technique.mina_explosion": 64, "kaiju.energy_beam": 64,
          "kaiju.self_destruct": 96, "technique.kikoru_thunder": 48, "technique.no8_rupture": 48,
-         "technique.isao_thunder": 40, "kaiju.windup": 40}
+         "technique.isao_thunder": 40, "kaiju.windup": 40, "travel.energy_beam": 40, "travel.shell": 40}
 STREAM = {"alert.siren_loop"}
 
 

@@ -1012,6 +1012,8 @@
   "item.kn8.numbers2_gauntlet": "Numbers 2 Gauntlets",
   "entity.kn8.kaiju_no9_isao": "Kaiju No. 9 (Isao Absorbed)",
   "entity.kn8.kaiju_no13": "Kaiju No. 13",
+  "entity.kn8.kaiju_no8_rampage": "Rampaging Kaiju No. 8",
+  "entity.kn8.kaiju_no8_rampage_giant": "Colossal Rampaging Kaiju No. 8",
   "kn8.no9.isao_form": "Kaiju No. 9 absorbed Isao Shinomiya and Numbers Weapon 2!",
   "kn8.command.duel.invalid": "Pick two different soldiers for the duel.",
   "kn8.command.duel.started": "Test duel: %s versus %s.",
@@ -1392,5 +1394,13 @@
   "subtitles.kn8.weapon.cannon_shot": "Cannon shot",
   "subtitles.kn8.weapon.knife_flurry": "Knife flurry",
   "subtitles.kn8.weapon.dash_cut": "Dash cut",
-  "subtitles.kn8.combat.perfect_dodge": "Perfect dodge"
+  "subtitles.kn8.combat.perfect_dodge": "Perfect dodge",
+  "subtitles.kn8.alert.major_threat": "Major threat approaching",
+  "subtitles.kn8.travel.energy_beam": "Energy beam hums",
+  "subtitles.kn8.travel.slash": "Slash flies",
+  "subtitles.kn8.travel.spiral": "Spiral whirls",
+  "subtitles.kn8.travel.shell": "Cannon shell whistles",
+  "subtitles.kn8.travel.ice": "Ice flies",
+  "subtitles.kn8.travel.organic": "Kaiju projectile flies",
+  "subtitles.kn8.technique.tail_guard": "Tail guards"
 }

@@ -13,6 +13,7 @@ import com.kn8.common.destruction.DestructionService;
 import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.registry.KN8Entities;
 import com.kn8.common.sound.SoundCues;
+import com.kn8.common.sound.TravelSoundSource;
 import com.kn8.common.vfx.VfxService;
 
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -42,10 +43,14 @@ import net.minecraft.world.phys.Vec3;
  * <p>Cor, inclinacao e largura vao ao cliente como dados sincronizados; o arco do corte e desenhado la
  * ({@code SlashProjectileRenderer}, VFX-R2: forma desenhada, sem particulas; sem pacote por tick).</p>
  */
-public class SlashProjectile extends Projectile {
+public class SlashProjectile extends Projectile implements TravelSoundSource {
 
     /** SONS: explosao dos tiros que explodem. */
     private static final ResourceLocation EXPLOSION_SOUND = KN8Constants.id("technique.mina_explosion");
+    /** AJUSTES-2: voo pelo tipo do tiro quando o perfil de som da tecnica nao diz outro. */
+    private static final ResourceLocation TRAVEL_SLASH = KN8Constants.id("travel.slash");
+    private static final ResourceLocation TRAVEL_SHELL = KN8Constants.id("travel.shell");
+    private static final ResourceLocation TRAVEL_ICE = KN8Constants.id("travel.ice");
     private static final EntityDataAccessor<Integer> COLOR =
             SynchedEntityData.defineId(SlashProjectile.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Float> ROLL =
@@ -60,6 +65,9 @@ public class SlashProjectile extends Projectile {
      * risco/arco do renderer. So vai quando o perfil visual de quem atirou tem a receita.
      */
     private static final EntityDataAccessor<String> TRAIL =
+            SynchedEntityData.defineId(SlashProjectile.class, EntityDataSerializers.STRING);
+    /** AJUSTES-2: laco do voo ({@link TravelSoundSource}); vazio = sem laco. */
+    private static final EntityDataAccessor<String> TRAVEL =
             SynchedEntityData.defineId(SlashProjectile.class, EntityDataSerializers.STRING);
     private static final double FORWARD_SPAWN = 0.8;
 
@@ -112,6 +120,7 @@ public class SlashProjectile extends Projectile {
             int destructionPower, float destructionRadius, String vfxKey) {
         String trail = !vfxKey.isEmpty() && VfxService.hasRecipe(owner, vfxKey + "_trail")
                 ? VfxService.profileOf(owner).map(id -> id + "|" + vfxKey + "_trail").orElse("") : "";
+        String travel = travelFor(owner, spec, vfxKey).map(ResourceLocation::toString).orElse("");
         Vec3 dir = direction.normalize();
         float yaw = (float) Math.toDegrees(Math.atan2(-dir.x, dir.z));
         float pitch = (float) Math.toDegrees(-Math.asin(Mth.clamp(dir.y, -1.0, 1.0)));
@@ -137,6 +146,7 @@ public class SlashProjectile extends Projectile {
             slash.destructionRadius = Math.max(destructionRadius, spec.explosionRadius());
             slash.vfxKey = vfxKey;
             slash.entityData.set(TRAIL, trail);
+            slash.entityData.set(TRAVEL, travel);
             slash.setPos(owner.getEyePosition().subtract(0, 0.3, 0).add(heading.scale(FORWARD_SPAWN)));
             slash.setDeltaMovement(heading.scale(spec.speed()));
             slash.setYRot(yaw + offset);
@@ -153,6 +163,7 @@ public class SlashProjectile extends Projectile {
         builder.define(WIDTH, 1.2F);
         builder.define(BULLET, false);
         builder.define(TRAIL, "");
+        builder.define(TRAVEL, "");
     }
 
     @Override
@@ -315,6 +326,32 @@ public class SlashProjectile extends Projectile {
 
     private boolean hasRecipe(String suffix) {
         return !vfxKey.isEmpty() && getOwner() != null && VfxService.hasRecipe(getOwner(), vfxKey + suffix);
+    }
+
+    /**
+     * AJUSTES-2: som do voo. O perfil de som da tecnica manda ({@code travel}: espiral do Isao, lanca de gelo);
+     * sem ele, pelo tipo: tiro que explode = granada, tiro que congela = gelo, bala comum = nada (rapida demais), corte
+     * que voa = assobio do corte.
+     */
+    private static Optional<ResourceLocation> travelFor(LivingEntity owner, SlashSpec spec, String technique) {
+        Optional<ResourceLocation> profiled = technique.isEmpty() ? Optional.empty()
+                : VfxService.profileOf(owner).flatMap(profile -> SoundCues.techniqueTravel(profile, technique));
+        if (profiled.isPresent()) {
+            return profiled;
+        }
+        if (!spec.bullet()) {
+            return Optional.of(TRAVEL_SLASH);
+        }
+        if (spec.explosionRadius() > 0.0F) {
+            return Optional.of(TRAVEL_SHELL);
+        }
+        return spec.slowTicks() > 0 ? Optional.of(TRAVEL_ICE) : Optional.empty();
+    }
+
+    @Override
+    public Optional<ResourceLocation> travelSound() {
+        return Optional.ofNullable(ResourceLocation.tryParse(entityData.get(TRAVEL))).filter(id -> !entityData
+                .get(TRAVEL).isEmpty());
     }
 
     /** VFX-5: receita do rastro: perfil e chave ("mina", "cannon_shot_trail"); vazio sem receita. */

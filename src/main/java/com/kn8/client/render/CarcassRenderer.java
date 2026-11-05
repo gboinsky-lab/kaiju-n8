@@ -70,7 +70,7 @@ public class CarcassRenderer extends GeoEntityRenderer<CarcassEntity> {
 
         @Override
         public ResourceLocation getTextureResource(CarcassEntity animatable) {
-            return KN8Entities.modelSpecies(animatable.species())
+            return KN8Entities.textureSpecies(animatable.species())
                     .withPath(path -> "textures/entity/" + path + ".png");
         }
 

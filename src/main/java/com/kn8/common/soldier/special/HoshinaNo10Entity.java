@@ -11,11 +11,11 @@ import com.kn8.common.config.ServerConfig;
 import com.kn8.common.data.def.SpecialSoldierDef;
 import com.kn8.common.data.def.WeaponDef;
 import com.kn8.common.kaiju.KaijuEntity;
+import com.kn8.common.sound.SoundCues;
 import com.kn8.common.vfx.VfxService;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
@@ -46,6 +46,9 @@ import software.bernie.geckolib.animation.RawAnimation;
 public class HoshinaNo10Entity extends HoshinaEntity {
 
     public static final ResourceLocation PROFILE_NO10 = KN8Constants.id("hoshina_no10");
+    /** AJUSTES-2: corte e guarda da cauda com som proprio (antes a guarda tocava a bigorna e o corte, a espada). */
+    public static final ResourceLocation TAIL_SLASH_SOUND = KN8Constants.id("technique.tail_slash");
+    public static final ResourceLocation TAIL_GUARD_SOUND = KN8Constants.id("technique.tail_guard");
     public static final String VARIANT_NO10 = "hoshina_no10";
     private static final double TAIL_SEARCH_MARGIN = 3.0;
     private static final double SIDE_COSINE = 0.5;
@@ -140,6 +143,8 @@ public class HoshinaNo10Entity extends HoshinaEntity {
             tailAttacks++;
         }
         triggerAnim("tail", "slash");
+        level().playSound(null, getX(), getEyeY(), getZ(), SoundCues.event(TAIL_SLASH_SOUND), SoundSource.NEUTRAL,
+                1.0F, 1.0F);
         double factor = isFullRelease() ? n10.get().fullRelease().tailCooldownMultiplier() : 1.0;
         tailReadyAt = now + Math.round(tail.cooldownTicks() * factor);
     }
@@ -201,8 +206,8 @@ public class HoshinaNo10Entity extends HoshinaEntity {
                 // VFX-3: faisca vermelha no ponto guardado (receita "tail_guard"; sem ela, o impacto comum).
                 VfxService.play((ServerLevel) level(), VfxService.IMPACT, at,
                         source.getSourcePosition().subtract(position()), 0.8F, 0.0F, this, "tail_guard");
-                level().playSound(null, getX(), getEyeY(), getZ(), SoundEvents.ANVIL_LAND, SoundSource.NEUTRAL, 0.6F,
-                        1.6F);
+                level().playSound(null, getX(), getEyeY(), getZ(), SoundCues.event(TAIL_GUARD_SOUND),
+                        SoundSource.NEUTRAL, 1.0F, 1.0F);
             }
         }
         return super.hurt(source, amount);

@@ -63,13 +63,22 @@ de intenção. Os sons de antes (27 eventos) continuam; os novos entram por cima
   punch/Rupture punch"; Narumi No. 1 "Thrust/Explosive burst"; Reno No. 6 "Freezing shot/Ice spreads/Ice shatters";
   Honju "Energy beam", "Kaiju winds up" (`docs/img/sons_legendas_em_jogo.jpg`).
 
-## 5. O que ficou de fora
+## 5. AJUSTES-2 (2026-11-05: "acrescente os sons de voo e etc")
 
-- Som de **voo** preso ao projétil (raio contínuo, espiral do Isao, Anti-Giant): precisa do perfil no cliente.
-- Cauda e guarda da cauda do Hoshina No. 10 e do Numbers 10 do jogador com som próprio (o `tail_slash` existe, não
-  está ligado).
-- `kaiju.charge_rush` e `kaiju.leap` prontos, sem gancho (a investida e o salto começam pelo movimento).
-- Alarme de aproximação (A11) e cama da luta (A09): [DECIDIR] do AUDIO-0.
-- **Tamanhos e tempos dos efeitos** e os estouros do Narumi que leem brancos: não entraram nesta etapa.
+- **Voo dos projéteis** (`travel` no `sound_profile`, `common/sound/TravelSoundSource`, `client/sound/ProjectileFlightSounds`):
+  o servidor escolhe o laço no disparo e o grava num dado sincronizado do projétil; cada cliente toca o laço preso a
+  ele e para quando ele some (até 12 ao mesmo tempo). Kaiju: raio (`travel.energy_beam`) e ácido/teia/espinhos/esporos
+  (`travel.organic`) pelo nome da habilidade. Tiros e cortes dos especiais e do jogador: o perfil da técnica manda
+  (espiral do Isao `travel.spiral`, lança de gelo `travel.ice`); sem ele, pelo tipo: corte que voa `travel.slash`,
+  tiro que explode `travel.shell`, tiro que congela `travel.ice`, bala comum sem laço. Laços de 1,2 a 2 s com o fim
+  fundido no começo (`seamless` no `gen_sounds_sons.py`).
+- **Cauda do Numbers 10** (Hoshina No. 10 e o traje do jogador): corte com `technique.tail_slash`, guarda com o novo
+  `technique.tail_guard` (antes a bigorna vanilla e o golpe de varrer).
+- **Investida e salto dos kaiju**: `kaiju.charge_rush` no arranque e `kaiju.leap` no impulso, no tom da voz do tamanho.
+- **Aviso de ameaça grande** (`alert.major_threat`): invasão de nível 4+ com numerado, ~3 s depois da abertura.
+- Sem alarme de aproximação (A11) e sem som de fundo nas lutas comuns (decisão do Miguel de 2026-11-05).
+
+## 6. O que ficou de fora
+
 - Os sons são síntese: julgados por medida (volume, duração, faixa de frequência) e pelas legendas. Ouvir e
   aprovar é do Miguel.

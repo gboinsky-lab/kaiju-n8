@@ -20,8 +20,30 @@ import software.bernie.geckolib.renderer.GeoEntityRenderer;
 public final class KaijuRenderer extends GeoEntityRenderer<KaijuEntity> {
 
     public KaijuRenderer(EntityRendererProvider.Context context, ResourceLocation species, float shadowRadius) {
-        super(context, new DefaultedEntityGeoModel<>(species, false));
+        this(context, species, species, shadowRadius);
+    }
+
+    /**
+     * AJUSTES-2: arte de {@code species} com a textura de outra especie (No. 8 sem controle: malha do No. 8, textura
+     * vermelha). A malha usa o render type do modelo, entao trocar a textura do modelo basta.
+     */
+    public KaijuRenderer(EntityRendererProvider.Context context, ResourceLocation species, ResourceLocation texture,
+            float shadowRadius) {
+        super(context, model(species, texture));
         this.shadowRadius = shadowRadius;
         addRenderLayer(new MeshRenderLayer<>(this, species));
+    }
+
+    private static DefaultedEntityGeoModel<KaijuEntity> model(ResourceLocation species, ResourceLocation texture) {
+        if (species.equals(texture)) {
+            return new DefaultedEntityGeoModel<>(species, false);
+        }
+        ResourceLocation path = texture.withPath("textures/entity/" + texture.getPath() + ".png");
+        return new DefaultedEntityGeoModel<>(species, false) {
+            @Override
+            public ResourceLocation getTextureResource(KaijuEntity animatable) {
+                return path;
+            }
+        };
     }
 }

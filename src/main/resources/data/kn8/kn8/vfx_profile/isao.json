@@ -13,9 +13,9 @@
         "color": "#FFD640",
         "pattern": "burst",
         "count": 1,
-        "size": 0.9,
+        "size": 1.26,
         "speed": 0,
-        "spread": 0.9,
+        "spread": 1.26,
         "lifetime": 6,
         "forward": -0.5
       },
@@ -24,7 +24,7 @@
         "color": "#FFF4B0",
         "pattern": "burst",
         "count": 1,
-        "size": 0.5,
+        "size": 0.7,
         "speed": 0,
         "spread": 0,
         "lifetime": 4,
@@ -35,9 +35,9 @@
         "color": "#FFD640",
         "pattern": "line",
         "count": 6,
-        "size": 0.07,
+        "size": 0.098,
         "speed": 0.5,
-        "spread": 0.6,
+        "spread": 0.84,
         "lifetime": 5
       },
       {
@@ -45,9 +45,9 @@
         "color": "#8C8270",
         "pattern": "burst",
         "count": 2,
-        "size": 0.35,
+        "size": 0.49,
         "speed": 0.03,
-        "spread": 0.4,
+        "spread": 0.56,
         "lifetime": 14
       }
     ],
@@ -57,9 +57,9 @@
         "color": "accent",
         "pattern": "burst",
         "count": 1,
-        "size": 0.55,
+        "size": 0.77,
         "speed": 0,
-        "spread": 0.55,
+        "spread": 0.77,
         "lifetime": 4,
         "forward": -0.5
       },
@@ -68,7 +68,7 @@
         "color": "core",
         "pattern": "burst",
         "count": 1,
-        "size": 0.3,
+        "size": 0.42,
         "speed": 0,
         "spread": 0,
         "lifetime": 4,
@@ -79,9 +79,9 @@
         "color": "accent",
         "pattern": "line",
         "count": 3,
-        "size": 0.07,
+        "size": 0.098,
         "speed": 0.5,
-        "spread": 0.6,
+        "spread": 0.84,
         "lifetime": 5
       },
       {
@@ -89,9 +89,9 @@
         "color": "#8C8270",
         "pattern": "burst",
         "count": 1,
-        "size": 0.35,
+        "size": 0.49,
         "speed": 0.03,
-        "spread": 0.4,
+        "spread": 0.56,
         "lifetime": 14
       }
     ],
@@ -101,9 +101,9 @@
         "color": "accent",
         "pattern": "burst",
         "count": 1,
-        "size": 0.55,
+        "size": 0.77,
         "speed": 0,
-        "spread": 0.55,
+        "spread": 0.77,
         "lifetime": 4,
         "forward": -0.5
       },
@@ -112,7 +112,7 @@
         "color": "core",
         "pattern": "burst",
         "count": 1,
-        "size": 0.3,
+        "size": 0.42,
         "speed": 0,
         "spread": 0,
         "lifetime": 4,
@@ -123,9 +123,9 @@
         "color": "accent",
         "pattern": "line",
         "count": 3,
-        "size": 0.07,
+        "size": 0.098,
         "speed": 0.5,
-        "spread": 0.6,
+        "spread": 0.84,
         "lifetime": 5
       },
       {
@@ -133,9 +133,9 @@
         "color": "#8C8270",
         "pattern": "burst",
         "count": 1,
-        "size": 0.35,
+        "size": 0.49,
         "speed": 0.03,
-        "spread": 0.4,
+        "spread": 0.56,
         "lifetime": 14
       }
     ],
@@ -145,9 +145,9 @@
         "color": "accent",
         "pattern": "burst",
         "count": 1,
-        "size": 0.55,
+        "size": 0.77,
         "speed": 0,
-        "spread": 0.55,
+        "spread": 0.77,
         "lifetime": 4,
         "forward": -0.5
       },
@@ -156,7 +156,7 @@
         "color": "core",
         "pattern": "burst",
         "count": 1,
-        "size": 0.3,
+        "size": 0.42,
         "speed": 0,
         "spread": 0,
         "lifetime": 4,
@@ -167,9 +167,9 @@
         "color": "accent",
         "pattern": "line",
         "count": 3,
-        "size": 0.07,
+        "size": 0.098,
         "speed": 0.5,
-        "spread": 0.6,
+        "spread": 0.84,
         "lifetime": 5
       },
       {
@@ -177,9 +177,9 @@
         "color": "#8C8270",
         "pattern": "burst",
         "count": 1,
-        "size": 0.35,
+        "size": 0.49,
         "speed": 0.03,
-        "spread": 0.4,
+        "spread": 0.56,
         "lifetime": 14
       }
     ],
@@ -189,9 +189,9 @@
         "color": "accent",
         "pattern": "burst",
         "count": 1,
-        "size": 0.9,
+        "size": 1.26,
         "speed": 0,
-        "spread": 0.9,
+        "spread": 1.26,
         "lifetime": 6,
         "forward": -0.5
       },
@@ -200,7 +200,7 @@
         "color": "core",
         "pattern": "burst",
         "count": 1,
-        "size": 0.5,
+        "size": 0.7,
         "speed": 0,
         "spread": 0,
         "lifetime": 4,
@@ -211,9 +211,9 @@
         "color": "accent",
         "pattern": "line",
         "count": 6,
-        "size": 0.07,
+        "size": 0.098,
         "speed": 0.5,
-        "spread": 0.6,
+        "spread": 0.84,
         "lifetime": 5
       },
       {
@@ -221,9 +221,9 @@
         "color": "#8C8270",
         "pattern": "burst",
         "count": 2,
-        "size": 0.35,
+        "size": 0.49,
         "speed": 0.03,
-        "spread": 0.4,
+        "spread": 0.56,
         "lifetime": 14
       }
     ],
@@ -621,9 +621,9 @@
         "color": "#FFD640",
         "pattern": "burst",
         "count": 1,
-        "size": 0.9,
+        "size": 1.26,
         "speed": 0,
-        "spread": 0.9,
+        "spread": 1.26,
         "lifetime": 6,
         "forward": -0.5
       },
@@ -632,7 +632,7 @@
         "color": "#FFF4B0",
         "pattern": "burst",
         "count": 1,
-        "size": 0.5,
+        "size": 0.7,
         "speed": 0,
         "spread": 0,
         "lifetime": 4,
@@ -643,9 +643,9 @@
         "color": "#FFD640",
         "pattern": "line",
         "count": 6,
-        "size": 0.07,
+        "size": 0.098,
         "speed": 0.5,
-        "spread": 0.6,
+        "spread": 0.84,
         "lifetime": 5
       },
       {
@@ -653,9 +653,9 @@
         "color": "#8C8270",
         "pattern": "burst",
         "count": 2,
-        "size": 0.35,
+        "size": 0.49,
         "speed": 0.03,
-        "spread": 0.4,
+        "spread": 0.56,
         "lifetime": 14
       },
       {
@@ -663,9 +663,9 @@
         "color": "#FFD640",
         "pattern": "rise",
         "count": 6,
-        "size": 0.1,
+        "size": 0.14,
         "speed": 0.6,
-        "spread": 1.0,
+        "spread": 1.4,
         "lifetime": 7
       }
     ],

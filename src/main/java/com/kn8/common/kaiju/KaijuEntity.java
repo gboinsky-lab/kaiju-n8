@@ -142,6 +142,9 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
     // Atributos base so valem ate o JSON ser aplicado (primeiro tick no servidor).
     /** SONS: volume do preparo e do disparo das habilidades (como o impacto, que ja era 2). */
     public static final float ABILITY_SOUND_VOLUME = 2.0F;
+    /** AJUSTES-2: arranque da investida e impulso do salto (antes os dois comecavam so pelo movimento). */
+    private static final ResourceLocation CHARGE_RUSH_SOUND = KN8Constants.id("kaiju.charge_rush");
+    private static final ResourceLocation LEAP_SOUND = KN8Constants.id("kaiju.leap");
     private static final double BASE_HEALTH = 20.0;
     private static final double BASE_DAMAGE = 2.0;
     private static final double BASE_SPEED = 0.25;
@@ -889,6 +892,7 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
             case KaijuAbilities.TYPE_LEAP -> {
                 if (KaijuAbilities.leapClear(this, abilityTarget)) {
                     KaijuAbilities.leap(this, abilityTarget);
+                    playMovementSound(LEAP_SOUND);
                     leapAbility = id;
                     leapStartTick = level().getGameTime();
                 } else {
@@ -985,7 +989,14 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
                 ? new Vec3(target.getX() - getX(), 0, target.getZ() - getZ()) : bodyForward();
         chargeDirection = direction.lengthSqr() < 1.0E-4 ? bodyForward() : direction.normalize();
         chargeHits.clear();
+        playMovementSound(CHARGE_RUSH_SOUND);
         tickCharge();
+    }
+
+    /** AJUSTES-2: som do arranque (investida, salto) no tom da voz do tamanho, junto do movimento. */
+    private void playMovementSound(ResourceLocation sound) {
+        level().playSound(null, getX(), getY(), getZ(), SoundCues.event(sound), SoundSource.HOSTILE,
+                ABILITY_SOUND_VOLUME, getVoicePitch());
     }
 
     /** Um tick da investida: anda reto e acerta cada alvo no caminho uma unica vez. Para ao bater numa parede. */

@@ -37,6 +37,11 @@
         {
           "species": "kn8:kaiju_no9",
           "count": 1
+        },
+        {
+          "species": "kn8:kaiju_no9_black",
+          "count": 1,
+          "chance": 0.35
         }
       ],
       "delay_ticks": 300,
