@@ -36,7 +36,7 @@
         "intensity": 1.2
       }
     ],
-    "sound": "kn8:weapon.rifle_shot",
+    "sound": "kn8:technique.reno_shot",
     "slash": {
       "count": 1,
       "speed": 3.0,

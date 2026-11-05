@@ -19,7 +19,7 @@
     }
   ],
   "camera_shake": 0.15,
-  "sound": "kn8:kaiju.bite",
+  "sound": "kn8:kaiju.web_shot",
   "behavior": {
     "priority": 5,
     "min_range": 6,

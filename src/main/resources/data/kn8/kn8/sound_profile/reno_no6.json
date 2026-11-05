@@ -1,0 +1,22 @@
+{
+  "techniques": {
+    "ice_spear": {
+      "windup": "kn8:technique.charge",
+      "release": "kn8:technique.reno_shot"
+    },
+    "freeze_burst": {
+      "windup": "kn8:technique.charge",
+      "release": "kn8:technique.ice_shatter"
+    },
+    "ice_field": {
+      "windup": "kn8:technique.charge",
+      "release": "kn8:technique.ice_freeze"
+    },
+    "multi_freeze": {
+      "release": "kn8:technique.reno_shot"
+    },
+    "auxiliary_cannons": {
+      "release": "kn8:technique.reno_shot"
+    }
+  }
+}

@@ -19,6 +19,7 @@ import com.kn8.common.data.def.NumberedDef;
 import com.kn8.common.data.def.RankDef;
 import com.kn8.common.data.def.ResearchDef;
 import com.kn8.common.data.def.SiteDef;
+import com.kn8.common.data.def.SoundProfileDef;
 import com.kn8.common.data.def.FlyerDef;
 import com.kn8.common.data.def.SoldierDef;
 import com.kn8.common.data.def.SpecialSoldierDef;
@@ -103,12 +104,17 @@ public final class KN8Data {
     public static final DataRegistry<NumberedGearDef> NUMBERED_GEAR =
             new DataRegistry<>("numbered_gear", NumberedGearDef.CODEC, true);
 
+    /** SONS: sons por etapa das tecnicas dos especiais e das habilidades dos kaiju (so o servidor toca). */
+    public static final DataRegistry<SoundProfileDef> SOUND_PROFILE =
+            new DataRegistry<>("sound_profile", SoundProfileDef.CODEC, false);
+
     /** Ordem = ordem de validacao (cada um so referencia os anteriores). */
     public static final List<DataRegistry<?>> ALL =
             List.of(RANK, ABILITY, DISMANTLE, KAIJU, BOSS, WEAPON_PROFILE, WEAPON, AURA, SUIT, MISSION, SOLDIER, WORKBENCH,
                     INVASION,
                     NUMBERED, SPECIAL_SOLDIER, FLYER, LOCOMOTION, KAIJU_AI, SITE, VFX_PROFILE,
-                    RESEARCH, BASE_MODULE, NUMBERED_GEAR);
+                    RESEARCH, BASE_MODULE, NUMBERED_GEAR,
+                    SOUND_PROFILE);
 
     private KN8Data() {
     }

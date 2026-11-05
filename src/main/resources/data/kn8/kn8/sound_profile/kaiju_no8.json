@@ -1,0 +1,26 @@
+{
+  "techniques": {
+    "rush_combo": {
+      "release": "kn8:technique.no8_punch"
+    },
+    "heavy_punch": {
+      "release": "kn8:technique.no8_punch"
+    },
+    "dash_strike": {
+      "release": "kn8:technique.no8_punch"
+    },
+    "ground_smash": {
+      "release": "kn8:kaiju.slam",
+      "volume": 1.5
+    },
+    "roar": {
+      "release": "kn8:kaiju.roar",
+      "volume": 1.5
+    },
+    "rupture_punch": {
+      "windup": "kn8:technique.charge",
+      "release": "kn8:technique.no8_rupture",
+      "volume": 1.5
+    }
+  }
+}

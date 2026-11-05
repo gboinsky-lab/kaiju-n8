@@ -5,6 +5,8 @@ import java.util.Optional;
 import javax.annotation.Nullable;
 
 import com.kn8.KN8Constants;
+import com.kn8.common.registry.KN8Sounds;
+import com.kn8.common.sound.SoundCues;
 import com.kn8.core.power.BodyStat;
 import com.kn8.common.attribute.PowerService;
 import com.kn8.common.base.DefenseOfficerEntity;
@@ -22,7 +24,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -47,6 +48,8 @@ import net.minecraft.world.phys.Vec3;
 public final class KaijuFormService {
 
     /** Perfil visual e aura da forma (os mesmos do No. 8 aliado). */
+    /** SONS: o braco do No. 8 surgindo (parcial). */
+    private static final ResourceLocation PARTIAL_SOUND = KN8Constants.id("technique.charge");
     public static final ResourceLocation PROFILE = KN8Constants.id("kaiju_no8");
     /** Aura da forma sem controle (vermelha). */
     public static final ResourceLocation RAMPAGE_AURA = KN8Constants.id("kaiju_no8_rampage");
@@ -244,8 +247,8 @@ public final class KaijuFormService {
             VfxService.play(level, VfxService.TRANSFORM, arm, player.getLookAngle(), 0.4F, 0.2F,
                     Optional.of(PROFILE), "transform", (float) PLAYER_HEIGHT);
         }
-        player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.RAVAGER_STUNNED,
-                SoundSource.PLAYERS, 0.8F, 1.2F);
+        player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundCues.event(PARTIAL_SOUND),
+                SoundSource.PLAYERS, 0.8F, 1.0F);
         witnessed(player);
         KN8Constants.LOGGER.info("[kn8] {} transformou o braco (parcial)", player.getGameProfile().getName());
         return Result.TRANSFORMED;
@@ -354,7 +357,7 @@ public final class KaijuFormService {
         applyModifiers(player, true);
         player.setHealth(player.getMaxHealth());
         effect(player, PROFILE, 1.0F);
-        player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.RAVAGER_ROAR,
+        player.level().playSound(null, player.getX(), player.getY(), player.getZ(), KN8Sounds.KAIJU_ROAR.get(),
                 SoundSource.PLAYERS, 1.5F, 0.8F);
         witnessed(player);
         KN8Constants.LOGGER.info("[kn8] {} virou o Kaiju No. 8", player.getGameProfile().getName());
@@ -430,7 +433,7 @@ public final class KaijuFormService {
     /** T-3 (Miguel: "caso fique mais que isso ... perca o controle do corpo e saia atacando todos em volta"). */
     private static void startRampage(ServerPlayer player) {
         player.setData(KN8Attachments.KAIJU_FORM.get(), RAMPAGE);
-        player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.RAVAGER_ROAR,
+        player.level().playSound(null, player.getX(), player.getY(), player.getZ(), KN8Sounds.KAIJU_ROAR.get(),
                 SoundSource.PLAYERS, 2.0F, 0.6F);
         if (player.level() instanceof ServerLevel level) {
             VfxService.play(level, VfxService.ROAR, player.getEyePosition(), player.getLookAngle(), 1.4F, 0.4F,

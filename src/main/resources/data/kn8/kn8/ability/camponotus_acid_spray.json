@@ -11,7 +11,7 @@
       "intensity": 0.4
     }
   ],
-  "sound": "kn8:kaiju.bite",
+  "sound": "kn8:kaiju.acid_spray",
   "behavior": {
     "priority": 4,
     "min_range": 4,

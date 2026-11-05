@@ -11,7 +11,7 @@
       "intensity": 0.6
     }
   ],
-  "sound": "kn8:kaiju.bite",
+  "sound": "kn8:kaiju.punch",
   "behavior": {
     "priority": 1
   }

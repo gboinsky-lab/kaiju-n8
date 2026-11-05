@@ -14,6 +14,8 @@ import com.kn8.common.career.MissionService;
 import com.kn8.common.config.ServerConfig;
 import com.kn8.common.data.KN8Data;
 import com.kn8.common.data.def.InvasionDef;
+import com.kn8.common.data.def.KaijuClass;
+import com.kn8.common.data.def.KaijuDef;
 import com.kn8.common.data.def.MissionDef;
 import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.numbered.KaijuNo9Entity;
@@ -24,6 +26,7 @@ import com.kn8.common.server.KN8Server;
 import com.kn8.common.site.RegionService;
 import com.kn8.common.site.SiteService;
 import com.kn8.common.soldier.SoldierEntity;
+import com.kn8.common.sound.SoundCues;
 import com.kn8.common.world.KaijuSpawner;
 import com.kn8.core.soldier.SquadRules;
 
@@ -37,7 +40,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.BossEvent;
@@ -60,7 +62,17 @@ public final class InvasionService {
     public static final String TAG = KN8Constants.MOD_ID + "_invasion";
     private static final int LOGIC_INTERVAL = 20;
     private static final String RANDOM_VARIANT = "random";
-    private static final int SIREN_INTERVAL = 100;
+    /** SONS: toques de alarme (o laco da sirene e do cliente). */
+    private static final ResourceLocation ALARM_START = KN8Constants.id("alert.invasion_start");
+    private static final ResourceLocation ALARM_YOJU = KN8Constants.id("alert.wave_yoju");
+    private static final ResourceLocation ALARM_HONJU = KN8Constants.id("alert.wave_honju");
+    private static final ResourceLocation ALARM_NUMBERED = KN8Constants.id("alert.wave_numbered");
+    private static final ResourceLocation ALARM_CRITICAL = KN8Constants.id("alert.critical");
+    private static final ResourceLocation ALARM_WAVE_CLEARED = KN8Constants.id("alert.wave_cleared");
+    private static final ResourceLocation ALARM_VICTORY = KN8Constants.id("alert.victory");
+    private static final ResourceLocation ALARM_DEFEAT = KN8Constants.id("alert.defeat");
+    /** Nivel de invasao a partir do qual toda onda e ameaca critica. */
+    private static final int CRITICAL_LEVEL = 5;
     private static final double MARCH_SPEED = 1.0;
     /** Kaiju sem alvo a menos disso do centro param de marchar (passeiam/atacam na area). */
     private static final double MARCH_STOP = 10.0;
@@ -96,7 +108,8 @@ public final class InvasionService {
             player.sendSystemMessage(Component.translatable("kn8.invasion.alert", name(id), center.getX(),
                     center.getZ()).withStyle(ChatFormatting.RED, ChatFormatting.BOLD));
         }
-        siren(level, invasion);
+        // SONS: toque de abertura; a sirene em laco e do cliente (InvasionAlarmClient, pela fase sincronizada).
+        alarm(level, invasion, ALARM_START);
         RegionService.onInvasion(level, center, id, false);
         KN8Constants.LOGGER.info("[kn8] Invasao {} em {} ({})", id, center.toShortString(), level.dimension()
                 .location());
@@ -127,10 +140,6 @@ public final class InvasionService {
         }
         Invasion invasion = found.get();
         long now = level.getGameTime();
-        if ((now - invasion.startTick) % SIREN_INTERVAL == 0 && (invasion.phase == Invasion.Phase.WARNING
-                || invasion.phase == Invasion.Phase.BREAK)) {
-            siren(level, invasion);
-        }
         if ((now - invasion.startTick) % LOGIC_INTERVAL != 0) {
             return;
         }
@@ -152,6 +161,7 @@ public final class InvasionService {
                     invasion.wave++;
                     invasion.phase = Invasion.Phase.BREAK;
                     invasion.phaseEndsTick = now + invasion.def.waves().get(invasion.wave).delayTicks();
+                    alarm(level, invasion, ALARM_WAVE_CLEARED);
                     announce(level, invasion, Component.translatable("kn8.invasion.wave_cleared", invasion.wave,
                             invasion.def.waves().size()).withStyle(ChatFormatting.GREEN));
                     sync(level, invasion);
@@ -231,6 +241,7 @@ public final class InvasionService {
         announce(level, invasion, Component.translatable("kn8.invasion.wave", invasion.wave + 1,
                 invasion.def.waves().size()).withStyle(ChatFormatting.RED));
         level.playSound(null, invasion.center, KN8Sounds.KAIJU_ROAR.get(), SoundSource.HOSTILE, 6.0F, 0.6F);
+        alarm(level, invasion, waveAlarm(invasion, wave));
         sync(level, invasion);
     }
 
@@ -431,9 +442,10 @@ public final class InvasionService {
                 }
             }
         }
-        if (victory) {
-            level.playSound(null, invasion.center, SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, SoundSource.PLAYERS,
-                    2.0F, 1.0F);
+        // SONS: vitoria e derrota proprias (antes so o toque de conquista vanilla na vitoria); parada pelo comando
+        // (sem recompensa) nao toca nada.
+        if (rewards) {
+            alarm(level, invasion, victory ? ALARM_VICTORY : ALARM_DEFEAT);
         }
         KN8Constants.LOGGER.info("[kn8] Invasao {} terminou: {} ({} recompensado(s))", invasion.id, result,
                 rewarded.size());
@@ -482,14 +494,38 @@ public final class InvasionService {
         return true;
     }
 
-    private static void siren(ServerLevel level, Invasion invasion) {
+    /**
+     * SONS: toque de alarme no ouvido de quem esta ate 2x o raio (o alarme "da cidade" se ouve em toda a area), uma
+     * vez por evento: nao acumula copias como a sirene antiga repetida a cada 5 s.
+     */
+    private static void alarm(ServerLevel level, Invasion invasion, ResourceLocation sound) {
         double reach = invasion.def.radius() * 2.0;
         for (ServerPlayer player : level.players()) {
-            if (player.distanceToSqr(invasion.center.getCenter()) <= reach * reach) {
-                // Toca perto do jogador (a sirene "da cidade" se ouve em toda a area).
-                player.playNotifySound(KN8Sounds.SIREN.get(), SoundSource.HOSTILE, 0.9F, 1.0F);
+            if (player.distanceToSqr(invasion.center.getCenter()) <= reach * reach
+                    || invasion.participants.contains(player.getUUID())) {
+                player.playNotifySound(SoundCues.event(sound), SoundSource.HOSTILE, 0.9F, 1.0F);
             }
         }
+    }
+
+    /** Alerta da onda pela maior ameaca dela: chefe ou nivel 5+ = critico, depois numerado, Honju e Yoju. */
+    private static ResourceLocation waveAlarm(Invasion invasion, InvasionDef.Wave wave) {
+        if (wave.boss().isPresent() || invasion.def.level() >= CRITICAL_LEVEL) {
+            return ALARM_CRITICAL;
+        }
+        KaijuClass top = KaijuClass.YOJU;
+        for (InvasionDef.Spawn spawn : wave.kaiju()) {
+            KaijuClass kind = KN8Data.KAIJU.get(spawn.species(), false).map(KaijuDef::kaijuClass)
+                    .orElse(KaijuClass.YOJU);
+            if (kind.ordinal() > top.ordinal()) {
+                top = kind;
+            }
+        }
+        return switch (top) {
+            case NUMBERED -> ALARM_NUMBERED;
+            case HONJU, DAIKAIJU -> ALARM_HONJU;
+            default -> ALARM_YOJU;
+        };
     }
 
     private static void announce(ServerLevel level, Invasion invasion, Component message) {

@@ -11,7 +11,7 @@
       "intensity": 0.5
     }
   ],
-  "sound": "kn8:kaiju.bite",
+  "sound": "kn8:kaiju.spore",
   "behavior": {
     "priority": 4,
     "min_range": 4,

@@ -12,7 +12,7 @@
       "intensity": 0.6
     }
   ],
-  "sound": "kn8:kaiju.bite",
+  "sound": "kn8:kaiju.claw",
   "behavior": {
     "priority": 2,
     "arc_degrees": 200,

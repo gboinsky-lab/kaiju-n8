@@ -4,12 +4,14 @@ package com.kn8.common.kaiju;
 import java.util.List;
 import java.util.Optional;
 
+import com.kn8.KN8Constants;
 import com.kn8.common.ai.AiTuning;
 import com.kn8.common.config.ServerConfig;
 import com.kn8.common.data.KN8Data;
 import com.kn8.common.data.def.AbilityDef;
 import com.kn8.common.data.def.FlyerDef;
 import com.kn8.common.destruction.DestructionService;
+import com.kn8.common.sound.SoundCues;
 import com.kn8.common.vfx.VfxService;
 import com.kn8.core.kaiju.FlightSteer;
 
@@ -18,6 +20,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -59,6 +62,8 @@ import software.bernie.geckolib.animation.RawAnimation;
  */
 public class PreondactylEntity extends KaijuEntity {
 
+    /** SONS: autodestruicao do voador. */
+    private static final ResourceLocation SELF_DESTRUCT_SOUND = KN8Constants.id("kaiju.self_destruct");
     private static final EntityDataAccessor<Boolean> FLYING =
             SynchedEntityData.defineId(PreondactylEntity.class, EntityDataSerializers.BOOLEAN);
     private static final int MAX_TURN_DEGREES = 20;
@@ -399,7 +404,7 @@ public class PreondactylEntity extends KaijuEntity {
         } else {
             VfxService.play(level, VfxService.EXPLOSION, center, Vec3.ZERO, (float) radius * 0.6F, 1.0F);
         }
-        level.playSound(null, blockPosition(), SoundEvents.GENERIC_EXPLODE.value(), SoundSource.HOSTILE, 6.0F, 0.7F);
+        level.playSound(null, blockPosition(), SoundCues.event(SELF_DESTRUCT_SOUND), SoundSource.HOSTILE, 6.0F, 1.0F);
         if (destruct.destructionRadius() > 0) {
             DestructionService.request(level, center, new AbilityDef.Destruction(destruct.destructionRadius(),
                     SELF_DESTRUCT_POWER, true, 1.5F), this);

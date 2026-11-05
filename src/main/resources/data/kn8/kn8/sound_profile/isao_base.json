@@ -1,0 +1,13 @@
+{
+  "techniques": {
+    "jab_combo": {
+      "release": "kn8:weapon.fist_swing"
+    },
+    "elbow_strike": {
+      "release": "kn8:weapon.fist_swing"
+    },
+    "heavy_straight": {
+      "release": "kn8:weapon.fist_swing"
+    }
+  }
+}

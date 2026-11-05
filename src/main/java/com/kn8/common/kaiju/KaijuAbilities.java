@@ -12,6 +12,7 @@ import com.kn8.common.config.ServerConfig;
 import com.kn8.common.data.KN8Data;
 import com.kn8.common.data.def.AbilityDef;
 import com.kn8.common.data.def.KaijuAiDef;
+import com.kn8.common.sound.SoundCues;
 import com.kn8.common.vfx.AbilityEffects;
 import com.kn8.common.vfx.VfxService;
 import com.kn8.core.kaiju.AbilitySelection;
@@ -198,6 +199,8 @@ final class KaijuAbilities {
             float yaw = shots > 1 ? fan * (i / (float) (shots - 1) - 0.5F) : 0.0F;
             KaijuProjectile.shoot(kaiju, id, ability, mouth, aim.yRot(yaw * Mth.DEG_TO_RAD), damage).volley = volley;
         }
+        // SONS: o tiro sai com som proprio (antes so o impacto tinha som).
+        SoundCues.ability(kaiju, id.getPath(), SoundCues.Stage.RELEASE, KaijuEntity.ABILITY_SOUND_VOLUME);
         // VFX-7: clarao na saida do tiro pela receita "<habilidade>_muzzle" da especie (Finger Gun do No. 9), so
         // quando ela existe (o impacto continua pelos "vfx" do JSON).
         String muzzle = id.getPath() + "_muzzle";

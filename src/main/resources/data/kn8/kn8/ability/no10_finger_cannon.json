@@ -13,7 +13,7 @@
     }
   ],
   "camera_shake": 0.2,
-  "sound": "kn8:kaiju.slam",
+  "sound": "kn8:weapon.fist_hit",
   "behavior": {
     "priority": 4,
     "min_range": 5,

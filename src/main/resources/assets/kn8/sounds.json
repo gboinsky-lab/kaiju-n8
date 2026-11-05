@@ -401,5 +401,388 @@
         "attenuation_distance": 128
       }
     ]
+  },
+  "alert.invasion_start": {
+    "subtitle": "subtitles.kn8.alert.invasion_start",
+    "sounds": [
+      "kn8:alert/invasion_start_1"
+    ]
+  },
+  "alert.siren_loop": {
+    "subtitle": "subtitles.kn8.alert.siren_loop",
+    "sounds": [
+      {
+        "name": "kn8:alert/siren_loop_1",
+        "stream": true
+      }
+    ]
+  },
+  "alert.wave_yoju": {
+    "subtitle": "subtitles.kn8.alert.wave_yoju",
+    "sounds": [
+      "kn8:alert/wave_yoju_1"
+    ]
+  },
+  "alert.wave_honju": {
+    "subtitle": "subtitles.kn8.alert.wave_honju",
+    "sounds": [
+      "kn8:alert/wave_honju_1"
+    ]
+  },
+  "alert.wave_numbered": {
+    "subtitle": "subtitles.kn8.alert.wave_numbered",
+    "sounds": [
+      "kn8:alert/wave_numbered_1"
+    ]
+  },
+  "alert.critical": {
+    "subtitle": "subtitles.kn8.alert.critical",
+    "sounds": [
+      "kn8:alert/critical_1"
+    ]
+  },
+  "alert.wave_cleared": {
+    "subtitle": "subtitles.kn8.alert.wave_cleared",
+    "sounds": [
+      "kn8:alert/wave_cleared_1"
+    ]
+  },
+  "alert.victory": {
+    "subtitle": "subtitles.kn8.alert.victory",
+    "sounds": [
+      "kn8:alert/victory_1"
+    ]
+  },
+  "alert.defeat": {
+    "subtitle": "subtitles.kn8.alert.defeat",
+    "sounds": [
+      "kn8:alert/defeat_1"
+    ]
+  },
+  "kaiju.windup": {
+    "subtitle": "subtitles.kn8.kaiju.windup",
+    "sounds": [
+      {
+        "name": "kn8:kaiju/windup_1",
+        "attenuation_distance": 40
+      },
+      {
+        "name": "kn8:kaiju/windup_2",
+        "attenuation_distance": 40
+      }
+    ]
+  },
+  "kaiju.energy_charge": {
+    "subtitle": "subtitles.kn8.kaiju.energy_charge",
+    "sounds": [
+      "kn8:kaiju/energy_charge_1",
+      "kn8:kaiju/energy_charge_2"
+    ]
+  },
+  "kaiju.energy_beam": {
+    "subtitle": "subtitles.kn8.kaiju.energy_beam",
+    "sounds": [
+      {
+        "name": "kn8:kaiju/energy_beam_1",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "kn8:kaiju/energy_beam_2",
+        "attenuation_distance": 64
+      }
+    ]
+  },
+  "kaiju.finger_gun": {
+    "subtitle": "subtitles.kn8.kaiju.finger_gun",
+    "sounds": [
+      "kn8:kaiju/finger_gun_1",
+      "kn8:kaiju/finger_gun_2",
+      "kn8:kaiju/finger_gun_3"
+    ]
+  },
+  "kaiju.acid_spray": {
+    "subtitle": "subtitles.kn8.kaiju.acid_spray",
+    "sounds": [
+      "kn8:kaiju/acid_spray_1",
+      "kn8:kaiju/acid_spray_2"
+    ]
+  },
+  "kaiju.web_shot": {
+    "subtitle": "subtitles.kn8.kaiju.web_shot",
+    "sounds": [
+      "kn8:kaiju/web_shot_1",
+      "kn8:kaiju/web_shot_2"
+    ]
+  },
+  "kaiju.spine_shot": {
+    "subtitle": "subtitles.kn8.kaiju.spine_shot",
+    "sounds": [
+      "kn8:kaiju/spine_shot_1",
+      "kn8:kaiju/spine_shot_2"
+    ]
+  },
+  "kaiju.spore": {
+    "subtitle": "subtitles.kn8.kaiju.spore",
+    "sounds": [
+      "kn8:kaiju/spore_1",
+      "kn8:kaiju/spore_2"
+    ]
+  },
+  "kaiju.claw": {
+    "subtitle": "subtitles.kn8.kaiju.claw",
+    "sounds": [
+      "kn8:kaiju/claw_1",
+      "kn8:kaiju/claw_2",
+      "kn8:kaiju/claw_3"
+    ]
+  },
+  "kaiju.tail_swipe": {
+    "subtitle": "subtitles.kn8.kaiju.tail_swipe",
+    "sounds": [
+      "kn8:kaiju/tail_swipe_1",
+      "kn8:kaiju/tail_swipe_2"
+    ]
+  },
+  "kaiju.punch": {
+    "subtitle": "subtitles.kn8.kaiju.punch",
+    "sounds": [
+      "kn8:kaiju/punch_1",
+      "kn8:kaiju/punch_2",
+      "kn8:kaiju/punch_3"
+    ]
+  },
+  "kaiju.charge_rush": {
+    "subtitle": "subtitles.kn8.kaiju.charge_rush",
+    "sounds": [
+      "kn8:kaiju/charge_rush_1",
+      "kn8:kaiju/charge_rush_2"
+    ]
+  },
+  "kaiju.leap": {
+    "subtitle": "subtitles.kn8.kaiju.leap",
+    "sounds": [
+      "kn8:kaiju/leap_1",
+      "kn8:kaiju/leap_2"
+    ]
+  },
+  "kaiju.grab": {
+    "subtitle": "subtitles.kn8.kaiju.grab",
+    "sounds": [
+      "kn8:kaiju/grab_1",
+      "kn8:kaiju/grab_2"
+    ]
+  },
+  "kaiju.self_destruct": {
+    "subtitle": "subtitles.kn8.kaiju.self_destruct",
+    "sounds": [
+      {
+        "name": "kn8:kaiju/self_destruct_1",
+        "attenuation_distance": 96
+      }
+    ]
+  },
+  "technique.charge": {
+    "subtitle": "subtitles.kn8.technique.charge",
+    "sounds": [
+      "kn8:technique/charge_1",
+      "kn8:technique/charge_2"
+    ]
+  },
+  "technique.hoshina_slash": {
+    "subtitle": "subtitles.kn8.technique.hoshina_slash",
+    "sounds": [
+      "kn8:technique/hoshina_slash_1",
+      "kn8:technique/hoshina_slash_2",
+      "kn8:technique/hoshina_slash_3"
+    ]
+  },
+  "technique.hoshina_release": {
+    "subtitle": "subtitles.kn8.technique.hoshina_release",
+    "sounds": [
+      "kn8:technique/hoshina_release_1",
+      "kn8:technique/hoshina_release_2"
+    ]
+  },
+  "technique.tail_slash": {
+    "subtitle": "subtitles.kn8.technique.tail_slash",
+    "sounds": [
+      "kn8:technique/tail_slash_1",
+      "kn8:technique/tail_slash_2"
+    ]
+  },
+  "technique.kikoru_swing": {
+    "subtitle": "subtitles.kn8.technique.kikoru_swing",
+    "sounds": [
+      "kn8:technique/kikoru_swing_1",
+      "kn8:technique/kikoru_swing_2",
+      "kn8:technique/kikoru_swing_3"
+    ]
+  },
+  "technique.kikoru_thunder": {
+    "subtitle": "subtitles.kn8.technique.kikoru_thunder",
+    "sounds": [
+      {
+        "name": "kn8:technique/kikoru_thunder_1",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "kn8:technique/kikoru_thunder_2",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "technique.narumi_thrust": {
+    "subtitle": "subtitles.kn8.technique.narumi_thrust",
+    "sounds": [
+      "kn8:technique/narumi_thrust_1",
+      "kn8:technique/narumi_thrust_2",
+      "kn8:technique/narumi_thrust_3"
+    ]
+  },
+  "technique.narumi_shot": {
+    "subtitle": "subtitles.kn8.technique.narumi_shot",
+    "sounds": [
+      "kn8:technique/narumi_shot_1",
+      "kn8:technique/narumi_shot_2",
+      "kn8:technique/narumi_shot_3"
+    ]
+  },
+  "technique.narumi_blast": {
+    "subtitle": "subtitles.kn8.technique.narumi_blast",
+    "sounds": [
+      "kn8:technique/narumi_blast_1",
+      "kn8:technique/narumi_blast_2"
+    ]
+  },
+  "technique.isao_punch": {
+    "subtitle": "subtitles.kn8.technique.isao_punch",
+    "sounds": [
+      "kn8:technique/isao_punch_1",
+      "kn8:technique/isao_punch_2",
+      "kn8:technique/isao_punch_3"
+    ]
+  },
+  "technique.isao_blast": {
+    "subtitle": "subtitles.kn8.technique.isao_blast",
+    "sounds": [
+      "kn8:technique/isao_blast_1",
+      "kn8:technique/isao_blast_2"
+    ]
+  },
+  "technique.isao_thunder": {
+    "subtitle": "subtitles.kn8.technique.isao_thunder",
+    "sounds": [
+      {
+        "name": "kn8:technique/isao_thunder_1",
+        "attenuation_distance": 40
+      }
+    ]
+  },
+  "technique.no8_punch": {
+    "subtitle": "subtitles.kn8.technique.no8_punch",
+    "sounds": [
+      "kn8:technique/no8_punch_1",
+      "kn8:technique/no8_punch_2",
+      "kn8:technique/no8_punch_3"
+    ]
+  },
+  "technique.no8_rupture": {
+    "subtitle": "subtitles.kn8.technique.no8_rupture",
+    "sounds": [
+      {
+        "name": "kn8:technique/no8_rupture_1",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "technique.mina_charge": {
+    "subtitle": "subtitles.kn8.technique.mina_charge",
+    "sounds": [
+      "kn8:technique/mina_charge_1"
+    ]
+  },
+  "technique.mina_explosion": {
+    "subtitle": "subtitles.kn8.technique.mina_explosion",
+    "sounds": [
+      {
+        "name": "kn8:technique/mina_explosion_1",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "kn8:technique/mina_explosion_2",
+        "attenuation_distance": 64
+      }
+    ]
+  },
+  "technique.reno_shot": {
+    "subtitle": "subtitles.kn8.technique.reno_shot",
+    "sounds": [
+      "kn8:technique/reno_shot_1",
+      "kn8:technique/reno_shot_2",
+      "kn8:technique/reno_shot_3"
+    ]
+  },
+  "technique.ice_freeze": {
+    "subtitle": "subtitles.kn8.technique.ice_freeze",
+    "sounds": [
+      "kn8:technique/ice_freeze_1",
+      "kn8:technique/ice_freeze_2"
+    ]
+  },
+  "technique.ice_shatter": {
+    "subtitle": "subtitles.kn8.technique.ice_shatter",
+    "sounds": [
+      "kn8:technique/ice_shatter_1",
+      "kn8:technique/ice_shatter_2"
+    ]
+  },
+  "weapon.fist_swing": {
+    "subtitle": "subtitles.kn8.weapon.fist_swing",
+    "sounds": [
+      "kn8:weapon/fist_swing_1",
+      "kn8:weapon/fist_swing_2",
+      "kn8:weapon/fist_swing_3"
+    ]
+  },
+  "weapon.fist_hit": {
+    "subtitle": "subtitles.kn8.weapon.fist_hit",
+    "sounds": [
+      "kn8:weapon/fist_hit_1",
+      "kn8:weapon/fist_hit_2",
+      "kn8:weapon/fist_hit_3"
+    ]
+  },
+  "weapon.cannon_shot": {
+    "subtitle": "subtitles.kn8.weapon.cannon_shot",
+    "sounds": [
+      {
+        "name": "kn8:weapon/cannon_shot_1",
+        "attenuation_distance": 80
+      },
+      {
+        "name": "kn8:weapon/cannon_shot_2",
+        "attenuation_distance": 80
+      }
+    ]
+  },
+  "weapon.knife_flurry": {
+    "subtitle": "subtitles.kn8.weapon.knife_flurry",
+    "sounds": [
+      "kn8:weapon/knife_flurry_1",
+      "kn8:weapon/knife_flurry_2"
+    ]
+  },
+  "weapon.dash_cut": {
+    "subtitle": "subtitles.kn8.weapon.dash_cut",
+    "sounds": [
+      "kn8:weapon/dash_cut_1",
+      "kn8:weapon/dash_cut_2"
+    ]
+  },
+  "combat.perfect_dodge": {
+    "subtitle": "subtitles.kn8.combat.perfect_dodge",
+    "sounds": [
+      "kn8:combat/perfect_dodge_1"
+    ]
   }
 }

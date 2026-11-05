@@ -1,0 +1,22 @@
+{
+  "techniques": {
+    "precision_shot": {
+      "release": "kn8:weapon.rifle_shot"
+    },
+    "cannon_shot": {
+      "windup": "kn8:technique.mina_charge",
+      "release": "kn8:weapon.cannon_shot",
+      "volume": 2.0
+    },
+    "charged_cannon": {
+      "windup": "kn8:technique.mina_charge",
+      "release": "kn8:weapon.cannon_shot",
+      "volume": 2.0
+    },
+    "anti_giant_shot": {
+      "windup": "kn8:technique.mina_charge",
+      "release": "kn8:weapon.cannon_shot",
+      "volume": 2.0
+    }
+  }
+}

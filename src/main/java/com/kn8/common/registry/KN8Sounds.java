@@ -43,6 +43,8 @@ public final class KN8Sounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> DASH = register("suit.dash");
     public static final DeferredHolder<SoundEvent, SoundEvent> OVERHEAT_ALARM = register("suit.overheat_alarm");
     public static final DeferredHolder<SoundEvent, SoundEvent> DISMANTLE = register("carcass.dismantle");
+    /** SONS: aviso do preparo de golpe pesado de kaiju (no lugar da carga do Warden). */
+    public static final DeferredHolder<SoundEvent, SoundEvent> KAIJU_WINDUP = register("kaiju.windup");
     /** Sirene dos alertas de invasao (Etapa 7); registrada desde ja para o datapack poder usar. */
     public static final DeferredHolder<SoundEvent, SoundEvent> SIREN = register("alert.siren");
 

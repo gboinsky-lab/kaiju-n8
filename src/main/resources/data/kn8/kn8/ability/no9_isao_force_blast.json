@@ -20,7 +20,7 @@
     }
   ],
   "camera_shake": 0.4,
-  "sound": "kn8:kaiju.roar",
+  "sound": "kn8:technique.isao_blast",
   "behavior": {
     "priority": 6,
     "health_below": 0.8

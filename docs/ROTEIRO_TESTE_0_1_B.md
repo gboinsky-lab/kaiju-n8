@@ -1840,3 +1840,19 @@ Matriz, contas e ajustes em `docs/B2_BALANCEAMENTO_FINAL.md`; jogador por patent
 | 131.2 | `/summon kn8:isao_base` contra `kn8:kaiju_no10_small` | Disputado: o Isao sem o Numbers 2 vence cerca de 2 em 5 |
 | 131.3 | Jogador Líder de Pelotão com o machado: X e R em todas as técnicas | Recargas um pouco maiores que antes (Golpe Sísmico 11,5 s, Water Skimmer 4 s) |
 | 131.4 | Jogador com as manoplas do Numbers 2 | Cada técnica gasta 4 de stamina a menos (Barrage Blast 16, Thunder Emperor 41) |
+
+## 132. SONS: sons feitos pelo Claude
+
+O que foi feito e onde cada som toca: `docs/audio/SONS_FEITOS.md`. Imagem: `docs/img/sons_legendas_em_jogo.jpg`.
+Ligar as legendas (Opções > Acessibilidade) ajuda a conferir qual som tocou.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 132.1 | `/kn8 invasion start kn8:primigenius_raid ~ ~ ~` | Toque de abertura e a sirene em laço contínua (sem cortes a cada 5 s) durante o aviso |
+| 132.2 | `/kn8 invasion next` | A sirene cala aos poucos; toca o alerta da onda ("Alerta: Yoju") e o rugido |
+| 132.3 | Matar os kaiju da onda | "Onda eliminada" e a sirene volta no intervalo |
+| 132.4 | Terminar a invasão | "Invasão contida" no lugar do toque de conquista; afastar-se 180 blocos durante o aviso: a sirene some |
+| 132.5 | `/summon kn8:mina` e `kn8:primigenius_honju` a 20 blocos | Carga do canhão subindo antes do tiro, tiro enorme e a explosão; o Honju carrega o raio com zumbido antes de disparar |
+| 132.6 | Hoshina, Kikoru, Narumi, Isao, Kaiju No. 8, Reno No. 6 contra um Honju | Cada um com o próprio som (cortes agudos, machado elétrico e trovão, estocada e tiro seco, socos de ar comprimido, socos graves, tiro com gelo); nenhuma técnica começa com o corte de espada |
+| 132.7 | No. 9 atirando (Finger Gun), formiga cuspindo ácido, aranha soltando teia | Som de saída do tiro de cada um (antes só o impacto) |
+| 132.8 | Jogador: esquiva perfeita, especial da faca e da espada, punhos da forma do No. 8 | Sons próprios; o soco não toca mais o som do machado |

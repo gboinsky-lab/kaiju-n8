@@ -35,6 +35,7 @@ import com.kn8.common.soldier.MoveSafety;
 import com.kn8.common.soldier.SoldierEntity;
 import com.kn8.common.soldier.SoldierTargetGoal;
 import com.kn8.common.soldier.SquadMoveGoal;
+import com.kn8.common.sound.SoundCues;
 import com.kn8.common.vfx.VfxKeyframes;
 import com.kn8.common.vfx.VfxService;
 import com.kn8.core.combat.CombatMath;
@@ -551,8 +552,11 @@ public class HoshinaEntity extends SoldierEntity {
             VfxService.play((ServerLevel) level(), VfxService.TECHNIQUE, position(),
                     target.position().subtract(position()), 1.0F, 0.0F, this, id + "_charge");
         }
-        level().playSound(null, getX(), getEyeY(), getZ(), KN8Sounds.SWORD_SWING.get(), SoundSource.NEUTRAL,
-                SWING_VOLUME, 1.2F);
+        // SONS: preparo da tecnica pelo sound_profile do perfil ativo; sem ele, o corte de espada de antes.
+        if (!SoundCues.technique(this, activeProfileId(), id, SoundCues.Stage.WINDUP, SWING_VOLUME)) {
+            level().playSound(null, getX(), getEyeY(), getZ(), KN8Sounds.SWORD_SWING.get(), SoundSource.NEUTRAL,
+                    SWING_VOLUME, 1.2F);
+        }
         return true;
     }
 
@@ -682,7 +686,7 @@ public class HoshinaEntity extends SoldierEntity {
         // VFX-2: o efeito e da forma que surge (receita "transform" do perfil dela: Kafka -> No. 8 racha em ciano e
         // fecha com o anel de choque; No. 8 -> Kafka apaga as linhas); sem receita, estouro e fumaca.
         VfxService.play(server, VfxService.TRANSFORM, position(), getLookAngle(), 1.0F, 0.3F, other, "transform");
-        server.playSound(null, getX(), getY(), getZ(), SoundEvents.RAVAGER_ROAR, SoundSource.NEUTRAL, 1.5F, 0.8F);
+        server.playSound(null, getX(), getY(), getZ(), KN8Sounds.KAIJU_ROAR.get(), SoundSource.NEUTRAL, 1.5F, 0.8F);
         discard();
     }
 
@@ -862,11 +866,18 @@ public class HoshinaEntity extends SoldierEntity {
             // visual tiver receita para ela (o rastro do corte continua o do SlashProjectile).
             VfxService.play((ServerLevel) level(), VfxService.TECHNIQUE, position(), aim, 1.0F, 0.0F, this,
                     techniqueId == null ? "" : techniqueId);
-            level().playSound(null, getX(), getEyeY(), getZ(), KN8Sounds.SWORD_HEAVY.get(), SoundSource.NEUTRAL,
-                    SWING_VOLUME, 1.1F);
+            // SONS: disparo no tick do JSON (tiro, onda, corte que voa) pelo perfil; sem ele, o de antes.
+            if (!SoundCues.technique(this, activeProfileId(), techniqueId == null ? "" : techniqueId,
+                    SoundCues.Stage.RELEASE, SWING_VOLUME)) {
+                level().playSound(null, getX(), getEyeY(), getZ(), KN8Sounds.SWORD_HEAVY.get(),
+                        SoundSource.NEUTRAL, SWING_VOLUME, 1.1F);
+            }
             return;
         }
         boolean last = index == count - 1;
+        // SONS: cada golpe corpo a corpo da tecnica com o som dela (no tick do golpe, junto do efeito).
+        SoundCues.technique(this, activeProfileId(), techniqueId == null ? "" : techniqueId, SoundCues.Stage.RELEASE,
+                SWING_VOLUME);
         // VFX-3: cada golpe com a propria receita ("yae_uchi/3"; sem ela, a da tecnica).
         if (strike(target, technique.hits().get(index), last ? technique.finalKnockback() : 0.0F, weapon.get(),
                 REACH_SLACK, techniqueId + "/" + (index + 1))) {

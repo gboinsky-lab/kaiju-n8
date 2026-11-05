@@ -19,6 +19,7 @@ import com.kn8.common.kaiju.KaijuProjectile;
 import com.kn8.common.registry.KN8Attachments;
 import com.kn8.common.registry.KN8Sounds;
 import com.kn8.common.soldier.special.HoshinaEntity;
+import com.kn8.common.sound.SoundCues;
 import com.kn8.common.vfx.VfxService;
 import com.kn8.core.combat.CombatMath;
 import com.kn8.core.combat.TechniqueSelection;
@@ -69,7 +70,7 @@ public final class CombatService {
     /** PM-1: receita do perfil visual do jogador para a esquiva perfeita (sem ela, o efeito comum do parry). */
     private static final String PERFECT_DODGE_RECIPE = "perfect_dodge";
     /** Som do parry mais agudo: a esquiva perfeita soa diferente do parry. */
-    private static final float PERFECT_DODGE_PITCH = 1.5F;
+    private static final ResourceLocation PERFECT_DODGE_SOUND = KN8Constants.id("combat.perfect_dodge");
 
     /**
      * 0.5.0: tipo de dano do golpe especial de arma (tecla R). E o unico golpe do jogador que pode passar do teto por
@@ -663,8 +664,9 @@ public final class CombatService {
             VfxService.play(level, VfxService.PARRY, player.position().add(0, player.getBbHeight() * 0.5, 0),
                     toAttacker, 0.8F, 0.0F, player, PERFECT_DODGE_RECIPE);
         }
-        player.level().playSound(null, player.blockPosition(), KN8Sounds.PARRY.get(), SoundSource.PLAYERS, 0.8F,
-                PERFECT_DODGE_PITCH);
+        // SONS: som proprio da esquiva perfeita (o tempo "dobra" e um brilho), antes o aparar mais agudo.
+        player.level().playSound(null, player.blockPosition(), SoundCues.event(PERFECT_DODGE_SOUND),
+                SoundSource.PLAYERS, 0.9F, 1.0F);
         reply(player, CombatAction.DODGE, CombatResult.PERFECT_DODGE);
     }
 

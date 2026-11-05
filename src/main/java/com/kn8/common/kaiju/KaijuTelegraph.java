@@ -6,13 +6,13 @@ import java.util.Optional;
 
 import com.kn8.common.config.ServerConfig;
 import com.kn8.common.data.def.AbilityDef;
+import com.kn8.common.registry.KN8Sounds;
 import com.kn8.common.vfx.VfxService;
 import com.kn8.core.kaiju.AbilityGeometry;
 import com.kn8.core.kaiju.DangerZone;
 import com.kn8.core.kaiju.TelegraphShapes;
 
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
@@ -46,8 +46,8 @@ final class KaijuTelegraph {
     /** Inicio do preparo: som de aviso. */
     static void start(KaijuEntity kaiju, AbilityDef ability) {
         if (applies(ability) && kaiju.level() instanceof ServerLevel level) {
-            level.playSound(null, kaiju.blockPosition(), SoundEvents.WARDEN_SONIC_CHARGE, SoundSource.HOSTILE,
-                    2.0F, 0.6F);
+            level.playSound(null, kaiju.blockPosition(), KN8Sounds.KAIJU_WINDUP.get(), SoundSource.HOSTILE,
+                    2.0F, kaiju.getVoicePitch());
         }
     }
 

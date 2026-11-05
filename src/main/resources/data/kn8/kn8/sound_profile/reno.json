@@ -1,0 +1,19 @@
+{
+  "techniques": {
+    "precision_shot": {
+      "release": "kn8:technique.reno_shot"
+    },
+    "burst_fire": {
+      "release": "kn8:technique.reno_shot"
+    },
+    "freeze_round": {
+      "release": "kn8:technique.reno_shot"
+    },
+    "suppression": {
+      "release": "kn8:technique.reno_shot"
+    },
+    "butt_strike": {
+      "release": "kn8:weapon.fist_swing"
+    }
+  }
+}

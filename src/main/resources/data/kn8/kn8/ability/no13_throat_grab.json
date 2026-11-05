@@ -12,7 +12,7 @@
     }
   ],
   "camera_shake": 0.15,
-  "sound": "kn8:kaiju.bite",
+  "sound": "kn8:kaiju.grab",
   "behavior": {
     "priority": 4,
     "min_range": 1.5,

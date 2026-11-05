@@ -44,7 +44,7 @@
         "intensity": 1.2
       }
     ],
-    "sound": "kn8:weapon.sword_heavy",
+    "sound": "kn8:technique.hoshina_release",
     "slash": {
       "count": 1,
       "speed": 1.6,
@@ -71,7 +71,7 @@
           "intensity": 1.3
         }
       ],
-      "sound": "kn8:weapon.sword_heavy",
+      "sound": "kn8:technique.hoshina_release",
       "slash": {
         "count": 2,
         "spread_degrees": 6.0,
@@ -99,7 +99,7 @@
           "intensity": 1.2
         }
       ],
-      "sound": "kn8:weapon.sword_heavy",
+      "sound": "kn8:technique.hoshina_slash",
       "slash": {
         "count": 10
       }
@@ -121,7 +121,7 @@
           "intensity": 1.2
         }
       ],
-      "sound": "kn8:weapon.sword_heavy",
+      "sound": "kn8:technique.hoshina_slash",
       "slash": {
         "count": 3
       }
@@ -144,7 +144,7 @@
           "intensity": 1.3
         }
       ],
-      "sound": "kn8:weapon.sword_heavy",
+      "sound": "kn8:technique.hoshina_slash",
       "slash": {
         "count": 2
       }
@@ -167,7 +167,7 @@
           "intensity": 1.4
         }
       ],
-      "sound": "kn8:weapon.sword_heavy",
+      "sound": "kn8:technique.hoshina_slash",
       "slash": {
         "count": 8
       }
@@ -190,7 +190,7 @@
           "intensity": 1.6
         }
       ],
-      "sound": "kn8:weapon.sword_heavy",
+      "sound": "kn8:technique.hoshina_slash",
       "slash": {
         "count": 12
       }

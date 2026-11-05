@@ -176,3 +176,11 @@ e os modelos provisórios (asas e cauda do jogador, Narumi No. 1, Isao sem o Num
 - Reno No. 6 `kaiju_damage` 0,90 (era 0,80); Isao sem o Numbers 2 1,2 confirmado; machado e Numbers 4 com recargas
   x 1,15; manoplas do Numbers 2 com 4 a menos de stamina por técnica.
 - Próximas: **SONS**, **R-1**, **R-2**.
+
+## SONS — sons feitos pelo Claude (feita, 2026-11-05)
+
+- 50 eventos novos (112 arquivos) por síntese: alarmes com sirene em laço no cliente, técnicas de cada especial,
+  preparo e saída dos tiros dos kaiju, punhos, canhão, esquiva perfeita (`docs/audio/SONS_FEITOS.md`).
+- Registro `sound_profile` (preparo e golpe/disparo por técnica e habilidade); sem pacote novo.
+- Ficou para depois: som de voo dos projéteis, cauda do Numbers 10, tamanhos e tempos dos efeitos.
+- Próximas: **R-1**, **R-2**.

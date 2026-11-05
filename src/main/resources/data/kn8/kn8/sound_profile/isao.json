@@ -1,0 +1,23 @@
+{
+  "techniques": {
+    "barrage_blast": {
+      "release": "kn8:technique.isao_punch"
+    },
+    "spiral_blast": {
+      "release": "kn8:technique.isao_blast"
+    },
+    "force_blast": {
+      "release": "kn8:technique.isao_blast"
+    },
+    "thunder_emperor": {
+      "windup": "kn8:technique.charge",
+      "release": "kn8:technique.isao_punch"
+    },
+    "twin_blast": {
+      "release": "kn8:technique.isao_blast"
+    },
+    "rising_blast": {
+      "release": "kn8:technique.isao_punch"
+    }
+  }
+}

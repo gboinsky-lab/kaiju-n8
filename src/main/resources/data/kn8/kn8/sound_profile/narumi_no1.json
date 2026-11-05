@@ -1,0 +1,43 @@
+{
+  "techniques": {
+    "thrust_combo": {
+      "release": "kn8:technique.narumi_thrust"
+    },
+    "lunge": {
+      "release": "kn8:technique.narumi_thrust"
+    },
+    "bayonet_shot": {
+      "release": "kn8:technique.narumi_shot"
+    },
+    "sweeping_slash": {
+      "release": "kn8:technique.narumi_thrust"
+    },
+    "weak_point_thrust": {
+      "release": "kn8:technique.narumi_thrust"
+    },
+    "predicted_counter": {
+      "release": "kn8:technique.narumi_thrust"
+    },
+    "eruption_slash": {
+      "release": "kn8:technique.narumi_thrust"
+    },
+    "slash_salvo": {
+      "release": "kn8:technique.narumi_thrust"
+    },
+    "seven_branched_sword": {
+      "windup": "kn8:technique.charge",
+      "release": "kn8:technique.narumi_thrust"
+    },
+    "thunder_fire": {
+      "windup": "kn8:technique.charge",
+      "release": "kn8:technique.narumi_blast"
+    },
+    "flame_shower": {
+      "windup": "kn8:technique.charge",
+      "release": "kn8:technique.narumi_blast"
+    },
+    "sky_turner": {
+      "release": "kn8:technique.narumi_thrust"
+    }
+  }
+}

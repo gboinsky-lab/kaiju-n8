@@ -3,8 +3,8 @@ package com.kn8.common.vfx;
 
 import com.kn8.common.data.KN8Data;
 import com.kn8.common.data.def.AbilityDef;
+import com.kn8.common.sound.SoundCues;
 
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -40,7 +40,8 @@ public final class AbilityEffects {
                     first ? ability.cameraShake() : 0.0F, source, first ? key : "");
             first = false;
         }
-        ability.sound().flatMap(BuiltInRegistries.SOUND_EVENT::getOptional).ifPresent(sound ->
+        // SONS: o som do impacto vale tambem para ids que so existem no sounds.json (sons novos sem registro).
+        ability.sound().map(SoundCues::event).ifPresent(sound ->
                 level.playSound(null, where.x, where.y, where.z, sound, SoundSource.HOSTILE, SOUND_VOLUME, 1.0F));
     }
 }

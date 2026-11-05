@@ -13,7 +13,7 @@
     }
   ],
   "camera_shake": 0.15,
-  "sound": "kn8:kaiju.bite",
+  "sound": "kn8:kaiju.claw",
   "behavior": {
     "priority": 4,
     "arc_degrees": 150,

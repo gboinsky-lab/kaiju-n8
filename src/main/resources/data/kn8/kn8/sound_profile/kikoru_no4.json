@@ -1,0 +1,43 @@
+{
+  "techniques": {
+    "high_speed_axe": {
+      "release": "kn8:technique.kikoru_swing"
+    },
+    "dive_strike": {
+      "windup": "kn8:technique.charge",
+      "release": "kn8:technique.kikoru_thunder"
+    },
+    "vertical_assault": {
+      "windup": "kn8:technique.charge",
+      "release": "kn8:technique.kikoru_thunder"
+    },
+    "air_combo": {
+      "release": "kn8:technique.kikoru_swing"
+    },
+    "aerial_dash": {
+      "release": "kn8:technique.kikoru_swing"
+    },
+    "falling_thunder": {
+      "windup": "kn8:technique.charge",
+      "release": "kn8:technique.kikoru_thunder"
+    },
+    "water_skimmer": {
+      "release": "kn8:technique.kikoru_swing"
+    },
+    "half_moon": {
+      "release": "kn8:technique.kikoru_thunder"
+    },
+    "rising_thunder": {
+      "release": "kn8:technique.kikoru_swing"
+    },
+    "twin_swallows": {
+      "release": "kn8:technique.kikoru_swing"
+    },
+    "daruma_dropper": {
+      "release": "kn8:technique.kikoru_swing"
+    },
+    "daruma_dropper_ten_hit": {
+      "release": "kn8:technique.kikoru_swing"
+    }
+  }
+}

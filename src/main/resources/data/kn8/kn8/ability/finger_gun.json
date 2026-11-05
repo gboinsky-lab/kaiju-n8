@@ -11,7 +11,7 @@
       "intensity": 0.8
     }
   ],
-  "sound": "kn8:weapon.pistol_shot",
+  "sound": "kn8:weapon.fist_hit",
   "behavior": {
     "priority": 3,
     "min_range": 4,

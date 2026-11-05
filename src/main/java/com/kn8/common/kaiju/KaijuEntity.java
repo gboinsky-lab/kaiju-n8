@@ -29,6 +29,7 @@ import com.kn8.common.destruction.DestructionService;
 import com.kn8.common.registry.KN8Entities;
 import com.kn8.common.registry.KN8Sounds;
 import com.kn8.common.soldier.SoldierEntity;
+import com.kn8.common.sound.SoundCues;
 import com.kn8.common.vfx.AbilityEffects;
 import com.kn8.common.vfx.VfxKeyframes;
 import com.kn8.common.vfx.VfxService;
@@ -139,6 +140,8 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
             SynchedEntityData.defineId(KaijuEntity.class, EntityDataSerializers.INT);
 
     // Atributos base so valem ate o JSON ser aplicado (primeiro tick no servidor).
+    /** SONS: volume do preparo e do disparo das habilidades (como o impacto, que ja era 2). */
+    public static final float ABILITY_SOUND_VOLUME = 2.0F;
     private static final double BASE_HEALTH = 20.0;
     private static final double BASE_DAMAGE = 2.0;
     private static final double BASE_SPEED = 0.25;
@@ -716,8 +719,11 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
         cooldown *= BossService.cooldownMultiplier(this);
         abilityReadyAt.put(id, now + duration + Math.round(cooldown));
         triggerAnim("action", ability.animation());
-        // IA-6: golpe pesado avisa com som e marca a area ameacada durante o preparo (KaijuTelegraph).
-        KaijuTelegraph.start(this, ability);
+        // IA-6: golpe pesado avisa com som e marca a area ameacada durante o preparo (KaijuTelegraph). SONS: o
+        // preparo do sound_profile (carga do raio, inspiracao do sopro) substitui o aviso generico.
+        if (!SoundCues.ability(this, id.getPath(), SoundCues.Stage.WINDUP, ABILITY_SOUND_VOLUME)) {
+            KaijuTelegraph.start(this, ability);
+        }
         // 0.6 (telegraph): o efeito de aviso ("particles" do JSON) sai no inicio do preparo, para dar tempo de reagir.
         ability.particles().ifPresent(effect -> {
             if (level() instanceof ServerLevel server) {

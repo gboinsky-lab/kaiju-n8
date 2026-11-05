@@ -13,7 +13,7 @@
     }
   ],
   "camera_shake": 0.25,
-  "sound": "kn8:weapon.pistol_shot",
+  "sound": "kn8:weapon.fist_hit",
   "behavior": {
     "priority": 5,
     "min_range": 5,

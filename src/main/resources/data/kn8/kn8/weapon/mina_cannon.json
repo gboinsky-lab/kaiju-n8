@@ -12,6 +12,6 @@
     }
   },
   "sounds": {
-    "shot": "kn8:weapon.rifle_shot"
+    "shot": "kn8:weapon.cannon_shot"
   }
 }

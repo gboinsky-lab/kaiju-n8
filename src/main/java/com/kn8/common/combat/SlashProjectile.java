@@ -6,18 +6,20 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+import com.kn8.KN8Constants;
 import com.kn8.common.data.def.AbilityDef;
 import com.kn8.common.data.def.SlashSpec;
 import com.kn8.common.destruction.DestructionService;
 import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.registry.KN8Entities;
+import com.kn8.common.sound.SoundCues;
 import com.kn8.common.vfx.VfxService;
 
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
@@ -42,6 +44,8 @@ import net.minecraft.world.phys.Vec3;
  */
 public class SlashProjectile extends Projectile {
 
+    /** SONS: explosao dos tiros que explodem. */
+    private static final ResourceLocation EXPLOSION_SOUND = KN8Constants.id("technique.mina_explosion");
     private static final EntityDataAccessor<Integer> COLOR =
             SynchedEntityData.defineId(SlashProjectile.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Float> ROLL =
@@ -207,7 +211,8 @@ public class SlashProjectile extends Projectile {
         } else {
             VfxService.play(server, VfxService.EXPLOSION, at, getDeltaMovement(), explosionRadius, 0.3F);
         }
-        server.playSound(null, at.x, at.y, at.z, SoundEvents.GENERIC_EXPLODE, SoundSource.HOSTILE, 1.5F, 1.1F);
+        // SONS: explosao do tiro (canhao da Mina, rajadas do Narumi) com som proprio no lugar da explosao vanilla.
+        server.playSound(null, at.x, at.y, at.z, SoundCues.event(EXPLOSION_SOUND), SoundSource.HOSTILE, 1.5F, 1.0F);
         destroyAt(at);
         if (getOwner() instanceof LivingEntity source) {
             DamageSource damageSource = damageSources().explosion(this, source);

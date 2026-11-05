@@ -1,0 +1,22 @@
+{
+  "techniques": {
+    "kuuchi": {
+      "windup": "kn8:technique.hoshina_slash",
+      "release": "kn8:technique.hoshina_release"
+    },
+    "kosa_uchi": {
+      "windup": "kn8:technique.hoshina_slash",
+      "release": "kn8:technique.hoshina_release"
+    },
+    "ran_uchi": {
+      "release": "kn8:technique.hoshina_slash"
+    },
+    "kasumi_uchi": {
+      "release": "kn8:technique.hoshina_slash"
+    },
+    "yae_uchi": {
+      "windup": "kn8:technique.charge",
+      "release": "kn8:technique.hoshina_slash"
+    }
+  }
+}

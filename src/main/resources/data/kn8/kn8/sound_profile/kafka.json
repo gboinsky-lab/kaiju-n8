@@ -1,0 +1,7 @@
+{
+  "techniques": {
+    "punch_combo": {
+      "release": "kn8:weapon.fist_swing"
+    }
+  }
+}

@@ -25,7 +25,7 @@
     }
   ],
   "camera_shake": 0.8,
-  "sound": "kn8:kaiju.slam",
+  "sound": "kn8:kaiju.tail_swipe",
   "behavior": {
     "priority": 3,
     "health_below": 0.75

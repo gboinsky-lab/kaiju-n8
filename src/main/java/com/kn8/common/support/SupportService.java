@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.kn8.KN8Constants;
 import com.kn8.common.career.CareerData;
 import com.kn8.common.career.CareerService;
 import com.kn8.common.career.MissionService;
@@ -16,6 +17,7 @@ import com.kn8.common.invasion.InvasionService;
 import com.kn8.common.kaiju.KaijuEntity;
 import com.kn8.common.server.KN8Server;
 import com.kn8.common.soldier.SoldierEntity;
+import com.kn8.common.sound.SoundCues;
 import com.kn8.common.vfx.VfxService;
 
 import net.minecraft.ChatFormatting;
@@ -58,6 +60,8 @@ import net.minecraft.world.phys.Vec3;
  */
 public final class SupportService {
 
+    /** SONS: explosao do bombardeio. */
+    private static final ResourceLocation STRIKE_SOUND = KN8Constants.id("technique.mina_explosion");
     private static final String TAG = "kn8_support";
     private static final String OPERATION = "op";
     private static final String SELECTED = "sel";
@@ -349,8 +353,7 @@ public final class SupportService {
             }
         }
         VfxService.play(level, VfxService.EXPLOSION, at.add(0, 1.0, 0), Vec3.ZERO, (float) radius, 0.6F);
-        level.playSound(null, BlockPos.containing(at), SoundEvents.GENERIC_EXPLODE.value(), SoundSource.BLOCKS, 2.0F,
-                0.8F);
+        level.playSound(null, BlockPos.containing(at), SoundCues.event(STRIKE_SOUND), SoundSource.BLOCKS, 2.0F, 0.8F);
         return hit;
     }
 }

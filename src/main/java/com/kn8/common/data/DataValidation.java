@@ -1,6 +1,9 @@
 // src/main/java/com/kn8/common/data/DataValidation.java
 package com.kn8.common.data;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -27,6 +30,7 @@ import com.kn8.common.data.def.NumberedDef;
 import com.kn8.common.data.def.RankDef;
 import com.kn8.common.data.def.ResearchDef;
 import com.kn8.common.data.def.SiteDef;
+import com.kn8.common.data.def.SoundProfileDef;
 import com.kn8.common.data.def.FlyerDef;
 import com.kn8.common.data.def.SoldierDef;
 import com.kn8.common.data.def.SpecialSoldierDef;
@@ -37,6 +41,9 @@ import com.kn8.common.data.def.VfxProfileDef;
 import com.kn8.common.data.def.WorkbenchRecipeDef;
 import com.kn8.common.registry.KN8Particles;
 import com.kn8.core.vfx.VfxPatterns;
+
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -108,6 +115,7 @@ public final class DataValidation {
                 report);
         publish(KN8Data.NUMBERED_GEAR, validateNumberedGear(KN8Data.NUMBERED_GEAR.loaded(), ranks.keySet(),
                 KN8Data.RESEARCH.server().keySet(), report), report);
+        publish(KN8Data.SOUND_PROFILE, validateSoundProfiles(KN8Data.SOUND_PROFILE.loaded(), report), report);
         // Patentes apontam para missoes de avaliacao, que so foram validadas agora: confere no fim (so aviso).
         ranks.forEach((id, rank) -> rank.promotionMission().filter(mission -> !missions.containsKey(mission))
                 .ifPresent(mission -> report.warning("rank " + id + ": promotion_mission inexistente " + mission)));
@@ -346,6 +354,65 @@ public final class DataValidation {
             valid.put(id, def);
         });
         return valid;
+    }
+
+    /**
+     * SONS: som inexistente vira aviso e a etapa fica com o som de antes (o cliente nao toca id sem entrada no
+     * sounds.json). Os ids {@code kn8:} sao conferidos no sounds.json que vai no jar (o servidor dedicado tambem o
+     * tem); os outros, no registro de sons.
+     */
+    public static Map<ResourceLocation, SoundProfileDef> validateSoundProfiles(
+            Map<ResourceLocation, SoundProfileDef> input, DataReport report) {
+        Set<String> bundled = bundledSounds();
+        Map<ResourceLocation, SoundProfileDef> valid = new LinkedHashMap<>();
+        input.forEach((id, def) -> {
+            valid.put(id, new SoundProfileDef(checkCues(id, "techniques", def.techniques(), bundled, report),
+                    checkCues(id, "abilities", def.abilities(), bundled, report)));
+        });
+        return valid;
+    }
+
+    private static Map<String, SoundProfileDef.Cue> checkCues(ResourceLocation id, String group,
+            Map<String, SoundProfileDef.Cue> cues, Set<String> bundled, DataReport report) {
+        Map<String, SoundProfileDef.Cue> out = new LinkedHashMap<>();
+        cues.forEach((name, cue) -> out.put(name, new SoundProfileDef.Cue(
+                checkSound(id, group + "." + name + ".windup", cue.windup(), bundled, report),
+                checkSound(id, group + "." + name + ".release", cue.release(), bundled, report),
+                cue.volume(), cue.pitch())));
+        return out;
+    }
+
+    private static Optional<ResourceLocation> checkSound(ResourceLocation id, String where,
+            Optional<ResourceLocation> sound, Set<String> bundled, DataReport report) {
+        if (sound.isEmpty() || knownSound(sound.get(), bundled)) {
+            return sound;
+        }
+        report.warning("sound_profile " + id + ": " + where + " com som inexistente " + sound.get());
+        return Optional.empty();
+    }
+
+    /** Som que o cliente sabe tocar: entrada no sounds.json do mod ou som registrado (vanilla e outros mods). */
+    public static boolean knownSound(ResourceLocation sound, Set<String> bundled) {
+        if (KN8Constants.MOD_ID.equals(sound.getNamespace()) && !bundled.isEmpty()) {
+            return bundled.contains(sound.getPath());
+        }
+        return KN8Constants.MOD_ID.equals(sound.getNamespace()) || BuiltInRegistries.SOUND_EVENT.containsKey(sound);
+    }
+
+    /** Eventos do {@code assets/kn8/sounds.json} que vai no jar; vazio se nao achar (nao bloqueia nada). */
+    public static Set<String> bundledSounds() {
+        try (InputStream in = DataValidation.class.getResourceAsStream("/assets/" + KN8Constants.MOD_ID
+                + "/sounds.json")) {
+            if (in == null) {
+                return Set.of();
+            }
+            JsonObject json = JsonParser.parseReader(new InputStreamReader(in, StandardCharsets.UTF_8))
+                    .getAsJsonObject();
+            return new HashSet<>(json.keySet());
+        } catch (Exception e) {
+            KN8Constants.LOGGER.warn("[kn8] sounds.json do mod ilegivel: {}", e.getMessage());
+            return Set.of();
+        }
     }
 
     /**

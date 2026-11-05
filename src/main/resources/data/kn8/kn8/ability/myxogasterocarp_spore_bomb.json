@@ -19,7 +19,7 @@
     }
   ],
   "camera_shake": 0.3,
-  "sound": "kn8:kaiju.roar",
+  "sound": "kn8:kaiju.slam",
   "behavior": {
     "priority": 5,
     "min_range": 6,

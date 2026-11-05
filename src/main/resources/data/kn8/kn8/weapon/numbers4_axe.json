@@ -80,7 +80,7 @@
           "intensity": 1.0
         }
       ],
-      "sound": "kn8:weapon.axe_special"
+      "sound": "kn8:technique.kikoru_thunder"
     },
     {
       "id": "water_skimmer",
@@ -99,7 +99,7 @@
           "intensity": 1.3
         }
       ],
-      "sound": "kn8:weapon.axe_heavy",
+      "sound": "kn8:technique.kikoru_swing",
       "slash": {
         "count": 1,
         "speed": 1.6,
@@ -132,7 +132,7 @@
           "intensity": 0.8
         }
       ],
-      "sound": "kn8:weapon.axe_heavy"
+      "sound": "kn8:technique.kikoru_thunder"
     },
     {
       "id": "rising_thunder",
@@ -154,7 +154,7 @@
           "intensity": 1.3
         }
       ],
-      "sound": "kn8:weapon.axe_heavy"
+      "sound": "kn8:technique.kikoru_swing"
     },
     {
       "id": "twin_swallows",
@@ -174,7 +174,7 @@
           "intensity": 1.3
         }
       ],
-      "sound": "kn8:weapon.axe_heavy",
+      "sound": "kn8:technique.kikoru_swing",
       "slash": {
         "count": 2,
         "speed": 1.6,
@@ -200,7 +200,7 @@
           "intensity": 1.3
         }
       ],
-      "sound": "kn8:weapon.axe_heavy",
+      "sound": "kn8:technique.kikoru_swing",
       "slash": {
         "count": 4,
         "speed": 1.6,
@@ -226,7 +226,7 @@
           "intensity": 1.3
         }
       ],
-      "sound": "kn8:weapon.axe_heavy",
+      "sound": "kn8:technique.kikoru_swing",
       "slash": {
         "count": 10,
         "speed": 1.6,

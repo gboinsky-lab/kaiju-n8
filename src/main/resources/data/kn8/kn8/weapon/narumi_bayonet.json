@@ -44,7 +44,7 @@
           "intensity": 1.2
         }
       ],
-      "sound": "kn8:weapon.sword_heavy",
+      "sound": "kn8:technique.narumi_thrust",
       "slash": {
         "count": 4
       }
@@ -68,7 +68,7 @@
           "intensity": 1.2
         }
       ],
-      "sound": "kn8:weapon.sword_heavy",
+      "sound": "kn8:technique.narumi_thrust",
       "slash": {
         "count": 3
       }
@@ -91,7 +91,7 @@
           "intensity": 1.2
         }
       ],
-      "sound": "kn8:weapon.sword_heavy",
+      "sound": "kn8:technique.narumi_thrust",
       "slash": {
         "count": 7
       }
@@ -113,7 +113,7 @@
           "intensity": 1.2
         }
       ],
-      "sound": "kn8:weapon.sword_heavy",
+      "sound": "kn8:technique.narumi_blast",
       "slash": {
         "count": 3,
         "spread_degrees": 4.0,
@@ -142,7 +142,7 @@
           "intensity": 1.2
         }
       ],
-      "sound": "kn8:weapon.sword_heavy",
+      "sound": "kn8:technique.narumi_blast",
       "slash": {
         "count": 6,
         "spread_degrees": 30.0,
@@ -173,7 +173,7 @@
           "intensity": 1.2
         }
       ],
-      "sound": "kn8:weapon.sword_heavy",
+      "sound": "kn8:technique.narumi_thrust",
       "slash": {
         "count": 3
       }

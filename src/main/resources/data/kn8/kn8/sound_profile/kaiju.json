@@ -1,0 +1,73 @@
+{
+  "abilities": {
+    "camponotus_acid_spray": {
+      "release": "kn8:kaiju.acid_spray"
+    },
+    "camponotus_reborn_acid_spray": {
+      "release": "kn8:kaiju.acid_spray"
+    },
+    "diclonius_atomic_breath": {
+      "windup": "kn8:kaiju.energy_charge",
+      "release": "kn8:kaiju.energy_beam"
+    },
+    "energy_blast": {
+      "windup": "kn8:kaiju.energy_charge",
+      "release": "kn8:kaiju.energy_beam"
+    },
+    "energy_blast_revived": {
+      "windup": "kn8:kaiju.energy_charge",
+      "release": "kn8:kaiju.energy_beam"
+    },
+    "finger_gun": {
+      "release": "kn8:kaiju.finger_gun"
+    },
+    "myxogasterocarp_spore_bomb": {
+      "windup": "kn8:kaiju.energy_charge",
+      "release": "kn8:kaiju.spore"
+    },
+    "no10_finger_cannon": {
+      "release": "kn8:kaiju.finger_gun"
+    },
+    "no10g_finger_cannon": {
+      "release": "kn8:kaiju.finger_gun"
+    },
+    "no13_throat_grab": {
+      "release": "kn8:kaiju.grab"
+    },
+    "no9_ant_acid_spray": {
+      "release": "kn8:kaiju.acid_spray"
+    },
+    "no9_black_multi_finger_gun": {
+      "release": "kn8:kaiju.finger_gun"
+    },
+    "no9_black_tendril": {
+      "release": "kn8:kaiju.grab"
+    },
+    "no9_fusion_hybrid_beam": {
+      "windup": "kn8:kaiju.energy_charge",
+      "release": "kn8:kaiju.energy_beam"
+    },
+    "no9_fusion_multi_finger_cannon": {
+      "release": "kn8:kaiju.finger_gun"
+    },
+    "no9_isao_sonic_blast": {
+      "release": "kn8:technique.isao_blast"
+    },
+    "phaneroplasmodium_spore_shot": {
+      "release": "kn8:kaiju.spore"
+    },
+    "philinosoma_spine_shot": {
+      "release": "kn8:kaiju.spine_shot"
+    },
+    "preondactyl_energy_beam": {
+      "windup": "kn8:kaiju.energy_charge",
+      "release": "kn8:kaiju.energy_beam"
+    },
+    "web_burst": {
+      "release": "kn8:kaiju.web_shot"
+    },
+    "web_shot": {
+      "release": "kn8:kaiju.web_shot"
+    }
+  }
+}
