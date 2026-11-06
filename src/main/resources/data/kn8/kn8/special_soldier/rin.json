@@ -46,7 +46,7 @@
   "kaiju_damage": 0.55,
   "aura": "kn8:rin_ember",
   "weapon": "kn8:rifle",
-  "height": 1.62,
+  "height": 1.65,
   "techniques": {
     "focused_shot": {
       "type": "slash",

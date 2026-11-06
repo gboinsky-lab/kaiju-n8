@@ -46,7 +46,7 @@
   "kaiju_damage": 0.6,
   "aura": "kn8:iharu_spark",
   "weapon": "kn8:shotgun",
-  "height": 1.7,
+  "height": 1.77,
   "techniques": {
     "single_minded_shot": {
       "type": "slash",

@@ -55,14 +55,14 @@ public final class HeightGameTests {
         });
     }
 
-    /** Hoshina: modelo de 1,85 m, altura da tabela 1,72 (height no special_soldier/hoshina.json). */
+    /** Hoshina: modelo de 1,85 m, altura da ORICON 1,71 (height no special_soldier/hoshina.json). */
     @GameTest(template = TEMPLATE)
     public static void hoshinaIsOneSeventyTwo(GameTestHelper helper) {
         HoshinaEntity hoshina = helper.spawn(KN8Entities.HOSHINA.get(), new BlockPos(4, 1, 4));
         hoshina.setNoAi(true);
         helper.runAfterDelay(3, () -> {
-            helper.assertTrue(Math.abs(hoshina.getBbHeight() - 1.72F) < TOLERANCE,
-                    "Hoshina deveria ter 1,72, tem " + hoshina.getBbHeight());
+            helper.assertTrue(Math.abs(hoshina.getBbHeight() - 1.71F) < TOLERANCE,
+                    "Hoshina deveria ter 1,71, tem " + hoshina.getBbHeight());
             hoshina.discard();
             helper.succeed();
         });

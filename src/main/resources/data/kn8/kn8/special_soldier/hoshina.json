@@ -139,7 +139,7 @@
     "decay_per_second": 2.0,
     "cooldown_reduction_at_max": 0.4
   },
-  "height": 1.72,
+  "height": 1.71,
   "tactics": {
     "aggression": 0.6,
     "preferred_distance": 3.0,

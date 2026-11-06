@@ -1,7 +1,7 @@
 {
-  "health": 420,
-  "armor": 17,
-  "speed": 0.33,
+  "health": 500,
+  "armor": 19,
+  "speed": 0.36,
   "follow_range": 48,
   "knockback_resistance": 0.5,
   "dash": {

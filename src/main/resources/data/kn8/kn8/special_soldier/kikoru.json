@@ -219,7 +219,7 @@
     "decay_per_second": 2.0,
     "cooldown_reduction_at_max": 0.35
   },
-  "height": 1.6,
+  "height": 1.57,
   "heavy": {
     "techniques": [
       "heavy_swing",

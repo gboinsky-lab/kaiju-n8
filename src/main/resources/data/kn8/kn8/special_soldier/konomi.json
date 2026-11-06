@@ -36,7 +36,7 @@
   "kaiju_damage": 0.0,
   "aura": "kn8:none",
   "weapon": "kn8:isao_fist",
-  "height": 1.55,
+  "height": 1.49,
   "techniques": {},
   "tactics": {
     "melee_counter": false

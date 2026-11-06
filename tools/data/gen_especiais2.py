@@ -131,7 +131,7 @@ def aoi():
 
 # --- Hakua Igarashi: tiros de fogo e o Incentivo Direto que cura o esquadrao aos poucos.
 def hakua():
-    c, f = "#FFC24A", "#FF7A2A"
+    c, f = "#8ECBE8", "#C9D3DD"
     tech = {
         "sincere_shot": shot(1.4, 6, 14, 45, 1, c),
         "direct_encouragement": shot(1.0, 10, 20, 360, 2, c),
@@ -140,7 +140,7 @@ def hakua():
     }
     tactics = {"damage_tolerance": 0.3, "safety_distance": 16.0, "dodge_chance": 0.75, "melee_counter": False,
                "protect_ally": 12.0, "exploit_openings": 1}
-    data = profile(300, 14, 0.31, 18, 36, 0.6, "kn8:hakua_glow", "kn8:rifle", 1.62, tech, tactics,
+    data = profile(300, 14, 0.31, 18, 36, 0.6, "kn8:hakua_glow", "kn8:rifle", 1.85, tech, tactics,
                    burn={"determination_barrage": 4},
                    rally={"direct_encouragement": {"radius": 12.0, "duration_ticks": 100, "regeneration": 2}})
     write("special_soldier", "hakua", data)
@@ -161,11 +161,11 @@ def hakua():
                                       up=0)],
         "counter": [L("sparks", "core", count=4, size=0.07, speed=0.5, lifetime=5, forward=1.0, up=1.1)],
     }
-    write("vfx_profile", "hakua", {"palette": {"primary": "#FF7A2A", "secondary": "#141212", "accent": "#FFC24A",
-                                               "core": "#FFF6DC"}, "material": "suit", "effects": effects})
-    write("aura", "hakua_glow", {"color": "#FFC24A", "secondary": "#FFF6DC", "style": "lightning", "min_release": 1,
+    write("vfx_profile", "hakua", {"palette": {"primary": "#C9D3DD", "secondary": "#141212", "accent": "#8ECBE8",
+                                               "core": "#F4FAFF"}, "material": "suit", "effects": effects})
+    write("aura", "hakua_glow", {"color": "#8ECBE8", "secondary": "#F4FAFF", "style": "lightning", "min_release": 1,
                                  "size": 0.85,
-                                 "bolts": {"color": "#FFD46A", "core": "#FFFFFF", "rate": 4, "length": 0.25,
+                                 "bolts": {"color": "#B8E2F6", "core": "#FFFFFF", "rate": 4, "length": 0.25,
                                            "branches": 0.4, "crawl": 0.5, "width": 0.045}})
     write("sound_profile", "hakua", {"techniques": {
         "sincere_shot": {"release": "kn8:weapon.rifle_shot"},
@@ -176,7 +176,7 @@ def hakua():
 
 # --- Kota Tachibana: espingarda na linha de frente, granada congelante [THE GAME] e protege quem esta perto.
 def kota():
-    c, ice = "#E8C060", "#8FD8FF"
+    c, ice = "#E8C060", "#C83A40"
     tech = {
         "steady_shot": shot(0.45, 6, 16, 45, 1, c, max_range=18.0, min_range=2.0, count=5, spread=12.0),
         "menacing_blow": shot(0.7, 10, 20, 140, 2, c, max_range=16.0, min_range=2.0, count=6, spread=14.0,
@@ -208,11 +208,11 @@ def kota():
         "solid_shot_impact": [L("sparks", "accent", count=3, size=0.06, speed=0.4, lifetime=4, forward=0, up=0)],
         "counter": [L("sparks", "core", count=4, size=0.07, speed=0.5, lifetime=5, forward=1.0, up=1.1)],
     }
-    write("vfx_profile", "kota", {"palette": {"primary": "#8FD8FF", "secondary": "#141618", "accent": "#E8C060",
-                                              "core": "#F0FAFF"}, "material": "suit", "effects": effects})
-    write("aura", "kota_frost", {"color": "#8FD8FF", "secondary": "#F0FAFF", "style": "lightning", "min_release": 1,
+    write("vfx_profile", "kota", {"palette": {"primary": "#C83A40", "secondary": "#141618", "accent": "#E8C060",
+                                              "core": "#E07832"}, "material": "suit", "effects": effects})
+    write("aura", "kota_frost", {"color": "#C83A40", "secondary": "#E07832", "style": "lightning", "min_release": 1,
                                  "size": 0.9,
-                                 "bolts": {"color": "#A8E4FF", "core": "#FFFFFF", "rate": 4, "length": 0.26,
+                                 "bolts": {"color": "#F09050", "core": "#FFFFFF", "rate": 4, "length": 0.26,
                                            "branches": 0.4, "crawl": 0.5, "width": 0.05}})
     write("sound_profile", "kota", {"techniques": {
         "steady_shot": {"release": "kn8:weapon.rifle_shot", "pitch": 0.8},
@@ -223,7 +223,7 @@ def kota():
 
 # --- Tae Nakanoshima: municao incendiaria e granada termica [THE GAME].
 def tae():
-    c, f = "#FF4A2A", "#FF9A3C"
+    c, f = "#B7A0D8", "#8A77B7"
     tech = {
         "aggressive_shot": shot(1.4, 6, 14, 45, 1, f),
         "blazing_fire_shot": shot(1.3, 8, 18, 140, 2, c),
@@ -257,11 +257,11 @@ def tae():
                                      up=0)],
         "counter": [L("sparks", "core", count=4, size=0.07, speed=0.5, lifetime=5, forward=1.0, up=1.1)],
     }
-    write("vfx_profile", "tae", {"palette": {"primary": "#FF4A2A", "secondary": "#161212", "accent": "#FF9A3C",
-                                             "core": "#FFF0DC"}, "material": "suit", "effects": effects})
-    write("aura", "tae_blaze", {"color": "#FF4A2A", "secondary": "#FFF0DC", "style": "lightning", "min_release": 1,
+    write("vfx_profile", "tae", {"palette": {"primary": "#B7A0D8", "secondary": "#161212", "accent": "#8A77B7",
+                                             "core": "#F8F4FF"}, "material": "suit", "effects": effects})
+    write("aura", "tae_blaze", {"color": "#B7A0D8", "secondary": "#F8F4FF", "style": "lightning", "min_release": 1,
                                 "size": 0.85,
-                                "bolts": {"color": "#FF6A40", "core": "#FFFFFF", "rate": 4, "length": 0.25,
+                                "bolts": {"color": "#D6C8F0", "core": "#FFFFFF", "rate": 4, "length": 0.25,
                                           "branches": 0.5, "crawl": 0.5, "width": 0.045}})
     write("sound_profile", "tae", {"techniques": {
         "aggressive_shot": {"release": "kn8:weapon.rifle_shot"},
@@ -272,7 +272,7 @@ def tae():
 
 # --- Ryo Ikaruga: comandante; a Ordem de disparo e o Zelo contagiante fortalecem quem esta perto.
 def ryo():
-    c = "#E0304A"
+    c = "#3F6FC0"
     tech = {
         "hot_blooded_shot": shot(1.4, 6, 14, 45, 1, c),
         "firing_command": shot(2.4, 12, 22, 160, 3, c, max_range=40.0, width=0.45),
@@ -306,11 +306,11 @@ def ryo():
                                      up=0)],
         "counter": [L("sparks", "core", count=4, size=0.07, speed=0.5, lifetime=5, forward=1.0, up=1.1)],
     }
-    write("vfx_profile", "ryo", {"palette": {"primary": "#1C1E22", "secondary": "#101114", "accent": "#E0304A",
-                                             "core": "#FFE8EC"}, "material": "suit", "effects": effects})
-    write("aura", "ryo_command", {"color": "#E0304A", "secondary": "#FFE8EC", "style": "lightning", "min_release": 1,
+    write("vfx_profile", "ryo", {"palette": {"primary": "#1C1E22", "secondary": "#101114", "accent": "#3F6FC0",
+                                             "core": "#EAFBFF"}, "material": "suit", "effects": effects})
+    write("aura", "ryo_command", {"color": "#3F6FC0", "secondary": "#EAFBFF", "style": "lightning", "min_release": 1,
                                   "size": 0.9,
-                                  "bolts": {"color": "#F05068", "core": "#FFFFFF", "rate": 4, "length": 0.26,
+                                  "bolts": {"color": "#50C9D8", "core": "#FFFFFF", "rate": 4, "length": 0.26,
                                             "branches": 0.3, "crawl": 0.5, "width": 0.045}})
     write("sound_profile", "ryo", {"techniques": {
         "hot_blooded_shot": {"release": "kn8:weapon.rifle_shot"},
@@ -321,7 +321,7 @@ def ryo():
 
 # --- Konomi Okonogi: operadora; nao luta (Miguel). Perfil so para o modelo, a altura e a vida.
 def konomi():
-    data = profile(220, 10, 0.28, 1, 1, 0.0, "kn8:none", "kn8:isao_fist", 1.55, {}, {"melee_counter": False},
+    data = profile(220, 10, 0.28, 1, 1, 0.0, "kn8:none", "kn8:isao_fist", 1.49, {}, {"melee_counter": False},
                    ranged=False)
     write("special_soldier", "konomi", data)
     write("vfx_profile", "konomi", {"palette": {"primary": "#EDEDED", "secondary": "#3A2A24", "accent": "#7FC8E8",

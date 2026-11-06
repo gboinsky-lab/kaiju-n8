@@ -2005,3 +2005,14 @@ Imagem: `docs/img/fusoes_no9.jpg`. Para ver a absorção num mundo com o datapac
 | 143.4 | Neural contra especiais | Socos em sequência, tentáculos à distância; abaixo de 70% distorção e cárcere; abaixo de 35% o Domínio Cerebral |
 | 143.5 | Couraçado: bater de frente e de costas | De frente leva bem menos (couraça e, a cada 18 s, a Muralha Negra com faíscas); de costas dano cheio; abaixo de 25% o Colapso Absoluto |
 | 143.6 | Entrar no servidor com os dois clientes | Entram normalmente (antes da correção caíam com "Failed to decode packet") |
+
+## 144. Etapa 7-A: números, alturas e auras
+
+Imagem: `docs/img/etapa7a_auras_alturas.jpg`.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 144.1 | `/summon` Hakua, Iharu, Rin, Kota, Ryo, Tae, Soichiro | Auras: Hakua prata/azul-claro, Iharu laranja, Rin rosa, Kota vermelho/laranja, Ryo azul-marinho/ciano, Tae lilás, Soichiro índigo |
+| 144.2 | Personagem parado sem inimigo e depois com um kaiju perto | Parado: aura fraca; em combate: mais raios; na técnica: pico |
+| 144.3 | Alturas lado a lado (Konomi, Kikoru, Rin, Mina, Hoshina, Reno, Narumi, Iharu, Kafka, Hakua) | Da menor (Konomi 1,49) à maior (Hakua 1,85) |
+| 144.4 | `/data get entity` na Camilly | Vida 500 |

@@ -2,6 +2,7 @@
   "health": 650,
   "armor": 20,
   "speed": 0.36,
+  "height": 1.75,
   "follow_range": 48,
   "knockback_resistance": 0.5,
   "release": 50,

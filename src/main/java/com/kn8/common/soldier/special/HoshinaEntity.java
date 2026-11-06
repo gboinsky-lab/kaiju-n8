@@ -106,6 +106,9 @@ public class HoshinaEntity extends SoldierEntity {
     private static final String TAG_FORM_MEMORY = "kn8_form_memory";
     private static final EntityDataAccessor<Float> ACTION_SPEED =
             SynchedEntityData.defineId(HoshinaEntity.class, EntityDataSerializers.FLOAT);
+    /** 7-A (aura por estado, Dossie de Personagens do Miguel): tecnica em andamento, para a aura ir ao pico. */
+    private static final EntityDataAccessor<Boolean> IN_TECHNIQUE =
+            SynchedEntityData.defineId(HoshinaEntity.class, EntityDataSerializers.BOOLEAN);
 
     /** 0.5.0-D2: acima disso o Hoshina corre (postura de corrida baixa); abaixo, anda agachado. */
     private static final double RUN_BLOCKS_PER_TICK = 0.12;
@@ -1338,6 +1341,10 @@ public class HoshinaEntity extends SoldierEntity {
                 setData(KN8Attachments.AURA, def.aura());
             }
         });
+        boolean inTechnique = isUsingTechnique();
+        if (inTechnique != entityData.get(IN_TECHNIQUE)) {
+            entityData.set(IN_TECHNIQUE, inTechnique);
+        }
         int release = release();
         if (release != lastVisualRelease) {
             lastVisualRelease = release;
@@ -1360,6 +1367,12 @@ public class HoshinaEntity extends SoldierEntity {
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
         builder.define(ACTION_SPEED, 1.0F);
+        builder.define(IN_TECHNIQUE, false);
+    }
+
+    /** 7-A: tecnica em andamento (lado do cliente tambem, pelo dado sincronizado). */
+    public boolean inTechniqueVisual() {
+        return entityData.get(IN_TECHNIQUE);
     }
 
     // --- GeckoLib ----------------------------------------------------------------------------------------------

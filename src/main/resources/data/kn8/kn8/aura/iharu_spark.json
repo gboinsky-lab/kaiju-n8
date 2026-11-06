@@ -1,11 +1,11 @@
 {
-  "color": "#FFE14A",
-  "secondary": "#FFF6A0",
+  "color": "#F07824",
+  "secondary": "#FFD45C",
   "style": "lightning",
   "min_release": 1,
   "size": 0.9,
   "bolts": {
-    "color": "#FFE860",
+    "color": "#FFB04A",
     "core": "#FFFFFF",
     "rate": 7,
     "length": 0.32,

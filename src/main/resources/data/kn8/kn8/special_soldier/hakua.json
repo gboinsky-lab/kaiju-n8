@@ -46,7 +46,7 @@
   "kaiju_damage": 0.6,
   "aura": "kn8:hakua_glow",
   "weapon": "kn8:rifle",
-  "height": 1.62,
+  "height": 1.85,
   "techniques": {
     "sincere_shot": {
       "type": "slash",

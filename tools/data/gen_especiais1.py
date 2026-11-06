@@ -74,11 +74,11 @@ def soichiro():
                                    L("crack", "secondary", "line", 3, 0.2, 0.0, 2.5, 30, 1.2, 0.02, edge="accent")],
         "counter": [cut(45, 1.8)],
     }
-    write("vfx_profile", "soichiro", {"palette": {"primary": "#1A1A1E", "secondary": "#0E0D10", "accent": "#B08AE6",
-                                                  "core": "#F6F0FF"}, "material": "suit", "effects": effects})
-    write("aura", "soichiro_lilac", {"color": "#C9A8E8", "secondary": "#F6F0FF", "style": "lightning",
+    write("vfx_profile", "soichiro", {"palette": {"primary": "#1A1A1E", "secondary": "#0E0D10", "accent": "#777DE0",
+                                                  "core": "#D9DCEB"}, "material": "suit", "effects": effects})
+    write("aura", "soichiro_lilac", {"color": "#6A74D0", "secondary": "#D9DCEB", "style": "lightning",
                                      "min_release": 1, "size": 0.95,
-                                     "bolts": {"color": "#D9C2F0", "core": "#FFFFFF", "rate": 5, "length": 0.28,
+                                     "bolts": {"color": "#777DE0", "core": "#FFFFFF", "rate": 5, "length": 0.28,
                                                "branches": 0.3, "crawl": 0.5, "width": 0.045}})
     write("sound_profile", "soichiro", {"techniques": {
         "poised_marksmanship": {"release": "kn8:weapon.pistol_shot"},
@@ -153,11 +153,11 @@ def rin():
                          L("pulse", "core", size=0.5, spread=0.5, lifetime=5, forward=1.0, up=1.1)],
         "counter": [L("sparks", "core", count=4, size=0.07, speed=0.5, lifetime=5, forward=1.0, up=1.1)],
     }
-    write("vfx_profile", "rin", {"palette": {"primary": "#2E3A2A", "secondary": "#121612", "accent": "#FF7A2A",
-                                             "core": "#FFF0D0"}, "material": "suit", "effects": effects})
-    write("aura", "rin_ember", {"color": "#FF7A2A", "secondary": "#FFF0D0", "style": "lightning", "min_release": 1,
+    write("vfx_profile", "rin", {"palette": {"primary": "#2E3A2A", "secondary": "#121612", "accent": "#D98AB8",
+                                             "core": "#F9F2F8"}, "material": "suit", "effects": effects})
+    write("aura", "rin_ember", {"color": "#D98AB8", "secondary": "#F9F2F8", "style": "lightning", "min_release": 1,
                                 "size": 0.85,
-                                "bolts": {"color": "#FF9A50", "core": "#FFFFFF", "rate": 4, "length": 0.25,
+                                "bolts": {"color": "#F0B8DC", "core": "#FFFFFF", "rate": 4, "length": 0.25,
                                           "branches": 0.3, "crawl": 0.5, "width": 0.045}})
     write("sound_profile", "rin", {"techniques": {
         "focused_shot": {"release": "kn8:weapon.rifle_shot"},
@@ -193,11 +193,11 @@ def iharu():
                             delay=3)],
         "counter": [L("bolt", "primary", "burst", 3, 0.06, 0.0, 1.0, 5, 1.0, 1.1)],
     }
-    write("vfx_profile", "iharu", {"palette": {"primary": "#FFE14A", "secondary": "#141414", "accent": "#FFF6A0",
+    write("vfx_profile", "iharu", {"palette": {"primary": "#F07824", "secondary": "#141414", "accent": "#FFD45C",
                                                "core": "#FFFFFF"}, "material": "energy", "effects": effects})
-    write("aura", "iharu_spark", {"color": "#FFE14A", "secondary": "#FFF6A0", "style": "lightning", "min_release": 1,
+    write("aura", "iharu_spark", {"color": "#F07824", "secondary": "#FFD45C", "style": "lightning", "min_release": 1,
                                   "size": 0.9,
-                                  "bolts": {"color": "#FFE860", "core": "#FFFFFF", "rate": 7, "length": 0.32,
+                                  "bolts": {"color": "#FFB04A", "core": "#FFFFFF", "rate": 7, "length": 0.32,
                                             "branches": 0.6, "crawl": 0.5, "width": 0.05}})
     write("sound_profile", "iharu", {"techniques": {
         "single_minded_shot": {"release": "kn8:weapon.rifle_shot"},

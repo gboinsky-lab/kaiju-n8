@@ -45,7 +45,7 @@ def miguel():
     }
     tactics = {"aggression": 0.8, "preferred_distance": 4.0, "lateral_step": True, "damage_tolerance": 0.2,
                "safety_distance": 9.0, "heavy_vs_big": 1, "dodge_chance": 0.7, "exploit_openings": 2}
-    data = profile(560, 20, 0.33, 40, 85, 1.05, "kn8:miguel_crimson", "kn8:miguel_scythe", 1.8, tech, tactics,
+    data = profile(560, 20, 0.34, 40, 85, 1.05, "kn8:miguel_crimson", "kn8:miguel_scythe", 1.8, tech, tactics,
                    ranged=False,
                    heavy={"techniques": ["reaper_eclipse", "core_piercing_shot"], "power": 3, "radius": 2.0},
                    heavy_guard={"factor": 0.5, "front_arc_degrees": 120.0, "cooldown_ticks": 40})
@@ -139,7 +139,7 @@ def camilly():
     }
     tactics = {"damage_tolerance": 0.3, "safety_distance": 14.0, "dodge_chance": 0.75, "protect_ally": 12.0,
                "exploit_openings": 2}
-    data = profile(420, 17, 0.33, 30, 70, 0.75, "kn8:camilly_rose", "kn8:camilly_rifle", 1.65, tech, tactics,
+    data = profile(500, 19, 0.36, 30, 70, 0.75, "kn8:camilly_rose", "kn8:camilly_rifle", 1.65, tech, tactics,
                    rally={"rose_cover_fire": {"radius": 10.0, "duration_ticks": 100, "resistance": 1}})
     # Guarda Reversa: aparar com a lamina lateral mais vezes.
     data["parry"]["chance"] = 0.3

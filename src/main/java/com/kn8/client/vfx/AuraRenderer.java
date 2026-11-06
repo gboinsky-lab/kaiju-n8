@@ -11,6 +11,7 @@ import com.kn8.common.data.KN8Data;
 import com.kn8.common.data.def.AuraDef;
 import com.kn8.core.vfx.VfxColors;
 import com.kn8.common.registry.KN8Attachments;
+import com.kn8.common.soldier.special.HoshinaEntity;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -18,6 +19,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -37,6 +39,10 @@ import net.neoforged.neoforge.client.event.ClientTickEvent;
  */
 @EventBusSubscriber(modid = KN8Constants.MOD_ID, value = Dist.CLIENT)
 public final class AuraRenderer {
+
+    /** 7-A: fracao da aura em repouso e em combate (o pico e a tecnica). */
+    private static final float REST = 0.3F;
+    private static final float COMBAT = 0.65F;
 
     /** Distancia maxima (ao quadrado) em que a aura e desenhada. */
     private static final double MAX_DISTANCE_SQR = 48.0 * 48.0;
@@ -81,8 +87,24 @@ public final class AuraRenderer {
             if (aura == null || release < aura.minRelease()) {
                 continue;
             }
-            draw(level, living, aura, aura.intensity(release), amount);
+            draw(level, living, aura, aura.intensity(release) * stateFactor(living), amount);
         }
+    }
+
+    /**
+     * 7-A (Dossie de Personagens do Miguel, Anexo B: "baixa intensidade fora de combate, pico durante tecnicas"):
+     * soldado especial fora de combate a {@link #REST}, em combate a {@link #COMBAT}, na tecnica cheia; kaiju e soldado
+     * comum pelo mesmo combate (sem tecnica); jogador cheio golpeando e {@link #COMBAT} parado (o Release dele ja e
+     * escolha dele).
+     */
+    static float stateFactor(LivingEntity living) {
+        if (living instanceof HoshinaEntity special && special.inTechniqueVisual()) {
+            return 1.0F;
+        }
+        if (living instanceof Mob mob) {
+            return mob.isAggressive() || mob.swinging ? COMBAT : REST;
+        }
+        return living.swinging ? 1.0F : COMBAT;
     }
 
     /** Desenha um tick da aura (publico para a previa de comando e para os soldados especiais). */

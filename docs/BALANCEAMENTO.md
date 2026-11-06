@@ -1421,6 +1421,16 @@ Jogador e personagem com o mesmo tamanho (`real_length_m` e `held_scale` em `too
 | Numbers 6 (armadura do Reno) | armadura 16, dureza 2,5, resistência ao calor 0,45, aura `reno_no6_ice` | `suit/numbers6_suit.json`, `workbench/numbers6_suit.json` |
 | Katana longa (Soshiro/Soichiro) | dano 10, alcance 3,8, combo da espada; especial Iai (`lunge` x2,2, 6 blocos, recarga 140); 1,0 m na mão; patente Vice-Capitão | `weapon/katana.json`, `rank/vice_capitao.json` |
 
+### Etapa 7-A: personagens mais fracos ao dossiê e alturas da ORICON (2026-11-06)
+
+| Personagem | Antes | Agora |
+|---|---|---|
+| Camilly | 420 / 17 / 0,33 | 500 / 19 / 0,36 |
+| Hoshina No. 10 | vel. 0,30 | vel. 0,35 |
+| Miguel | vel. 0,33 | vel. 0,34 |
+
+Alturas: Kafka 1,81, Mina 1,69, Reno e No. 6 1,74, Kikoru e No. 4 1,57, Hoshina e No. 10 1,71, Narumi e No. 1 1,75, Iharu 1,77, Rin 1,65, Konomi 1,49, Hakua 1,85. Aura por estado: fora de combate 30%, em combate 65%, na técnica 100% [SUPOSIÇÃO].
+
 ### Etapa 6: fusões do No. 9 (2026-11-06)
 
 Números do "Dossiê de Fusões" do Miguel. Nascem pela absorção do No. 11/15/14 derrotado (abaixo de 30%) e a 1% nas invasões grandes.
