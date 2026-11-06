@@ -31,7 +31,7 @@
   "group": {
     "role": "aggressor"
   },
-  "recovery_after_heavy_ticks": 24,
+  "recovery_after_heavy_ticks": 12,
   "look_speed": 10.0,
   "habits": {
     "window_ticks": 200,

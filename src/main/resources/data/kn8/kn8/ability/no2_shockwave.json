@@ -1,8 +1,8 @@
 {
   "type": "kn8:area_melee",
   "damage_multiplier": 1.6,
-  "radius": 9.0,
-  "windup_ticks": 16,
+  "radius": 14.0,
+  "windup_ticks": 12,
   "active_ticks": 4,
   "cooldown_ticks": 200,
   "animation": "action.roar",
@@ -22,6 +22,6 @@
   "sound": "kn8:kaiju.roar",
   "behavior": {
     "priority": 2,
-    "max_range": 8.0
+    "max_range": 12.0
   }
 }

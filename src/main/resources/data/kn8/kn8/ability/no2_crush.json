@@ -1,8 +1,8 @@
 {
   "type": "kn8:area_melee",
   "damage_multiplier": 2.5,
-  "radius": 4.5,
-  "windup_ticks": 20,
+  "radius": 7.0,
+  "windup_ticks": 16,
   "active_ticks": 4,
   "cooldown_ticks": 160,
   "animation": "action.slam",

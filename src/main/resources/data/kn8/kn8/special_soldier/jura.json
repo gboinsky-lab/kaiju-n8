@@ -33,7 +33,7 @@
   },
   "release": 50,
   "max_release": 90,
-  "kaiju_damage": 1.15,
+  "kaiju_damage": 0.7,
   "aura": "kn8:jura_flame",
   "weapon": "kn8:jura_flail",
   "height": 1.93,
