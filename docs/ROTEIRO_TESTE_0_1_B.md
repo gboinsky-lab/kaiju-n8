@@ -1943,3 +1943,15 @@ Imagem: `docs/img/miguel_camilly.jpg`. Modelos do Miguel e o dossie (kits [PROPO
 | 138.3 | Invasoes `no9_resurrection` (Miguel), `honju_rampage` e `tachikawa_city_raid` (Camilly) | Eles entram como defensores |
 | 138.4 | Bancada com patente Capitao | Foice-Armamento do Miguel (especial Eclipse do Ceifador na tecla R) e Rifle Rosa da Camilly fabricaveis |
 | 138.5 | Segundo cliente olhando | Os mesmos modelos, armas, auras e efeitos |
+
+## 139. NUMERADOS-A: No. 1, No. 11, No. 12 e No. 15 (forma kaiju e forma Kikoru)
+
+Imagem: `docs/img/numerados_a.jpg`. Modelos do Miguel de 2026-11-05 com o rig do Meshy; habilidades do dossie (CANON).
+
+| # | Passo | Esperado |
+|---|---|---|
+| 139.1 | `/summon kn8:kaiju_no1`, `kaiju_no11`, `kaiju_no12`, `kaiju_no15`, `kaiju_no15_kikoru` | No. 1 com 20 m (vermelho e preto, chifres), No. 11 azul com cauda de peixe, No. 12 cinza com antebracos-lamina, No. 15 palido com a cabeca de cerebro, forma Kikoru de uniforme escolar (1,6 m) |
+| 139.2 | No. 11 e No. 12 contra Hoshina, Kikoru e Mina | No. 11: onda d'agua em varrida (Lentidao), jato d'agua, esferas em leque, soco com o braco inchado; No. 12: cortes dos antebracos, rajada de cortes, espada de carne pesada, estocada e investida; os dois leem os habitos do alvo |
+| 139.3 | No. 1 e No. 15 contra especiais | No. 1: golpe quase sem preparo (ataque inevitavel), golpes no ponto fraco, feixe dos olhos rapido e leque de feixes; No. 15: feixe pela boca (unico ou em leque), conexao psiquica (Lentidao V), membro-machado, voo e mergulho |
+| 139.4 | Invasoes `ariake_assault` (No. 11, 35%), `tachikawa_raid` (No. 12, 35%; forma Kikoru do No. 15, 25%), `no10_assault` (No. 15, 30%), `mass_resurrection` (No. 1, 20%) | Eles podem aparecer nas ondas; aviso de ameaca grande quando aparecem |
+| 139.5 | Segundo cliente olhando | Os mesmos modelos, tamanhos e efeitos |

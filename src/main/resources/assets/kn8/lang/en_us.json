@@ -1459,5 +1459,10 @@
   "item.kn8.miguel_scythe": "Miguel's Scythe Arm",
   "item.kn8.camilly_rifle": "Camilly's Rose Rifle",
   "kn8.weapon.special.reaper_eclipse": "Reaper's Eclipse",
-  "kn8.weapon.special.reaper_eclipse.desc": "Spins the scythe, plants its tip in the ground and shakes everything around."
+  "kn8.weapon.special.reaper_eclipse.desc": "Spins the scythe, plants its tip in the ground and shakes everything around.",
+  "entity.kn8.kaiju_no1": "Kaiju No. 1",
+  "entity.kn8.kaiju_no11": "Kaiju No. 11",
+  "entity.kn8.kaiju_no12": "Kaiju No. 12",
+  "entity.kn8.kaiju_no15": "Kaiju No. 15",
+  "entity.kn8.kaiju_no15_kikoru": "Kaiju No. 15 (Kikoru form)"
 }

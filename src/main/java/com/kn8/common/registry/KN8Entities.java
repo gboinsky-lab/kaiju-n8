@@ -129,6 +129,21 @@ public final class KN8Entities {
     public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> KAIJU_NO13 = kaiju(
             "kaiju_no13", 0.8F, 2.2F);
     /**
+     * NUMERADOS-A (modelos do Miguel de 2026-11-05 com o rig do Meshy): No. 1 (olhos que preveem, 20 m), No. 11
+     * (hidrocinese), No. 12 (antebracos-lamina) e No. 15 (forma kaiju e forma Kikoru). Hitbox = modelo de 2 m (1,6 m
+     * na forma Kikoru); a altura real vem do {@code dimensions.scale} do kaiju/*.json.
+     */
+    public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> KAIJU_NO1 = kaiju(
+            "kaiju_no1", 0.8F, 2.0F);
+    public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> KAIJU_NO11 = kaiju(
+            "kaiju_no11", 0.8F, 2.0F);
+    public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> KAIJU_NO12 = kaiju(
+            "kaiju_no12", 0.8F, 2.0F);
+    public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> KAIJU_NO15 = kaiju(
+            "kaiju_no15", 0.8F, 2.0F);
+    public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> KAIJU_NO15_KIKORU = kaiju(
+            "kaiju_no15_kikoru", 0.6F, 1.6F);
+    /**
      * AJUSTES-2 (Miguel 2026-11-05): Kaiju No. 8 sem controle, inimigo, pequeno (3 m) e gigante (22 m). Arte do
      * No. 8 com a textura vermelha ({@link #MODEL_ALIASES}, {@link #textureSpecies}); escala no kaiju/*.json.
      */
@@ -419,7 +434,8 @@ public final class KN8Entities {
                     TRICHONEPHILA_HONJU, KAIJU_NO9, KAIJU_NO10_SMALL, KAIJU_NO10_GIANT,
                     PREONDACTYL, PHILINOSOMA, DICLONIUS, CAMPONOTUS, CAMPONOTUS_REBORN, PHANEROPLASMODIUM,
                     MYXOGASTEROCARP, KAIJU_LARVA, KAIJU_NO9_BLACK, KAIJU_NO9_FUSION, KAIJU_NO9_CAMPONOTUS,
-                    KAIJU_NO9_FUSION_GIANT, KAIJU_NO9_ISAO, KAIJU_NO13, KAIJU_NO8_RAMPAGE, KAIJU_NO8_RAMPAGE_GIANT);
+                    KAIJU_NO9_FUSION_GIANT, KAIJU_NO9_ISAO, KAIJU_NO13, KAIJU_NO8_RAMPAGE, KAIJU_NO8_RAMPAGE_GIANT,
+                    KAIJU_NO1, KAIJU_NO11, KAIJU_NO12, KAIJU_NO15, KAIJU_NO15_KIKORU);
 
     private KN8Entities() {
     }

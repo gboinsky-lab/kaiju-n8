@@ -92,6 +92,12 @@ SPECIES = {
     "konomi": {"items": True, "new_mesh": True, "arms_down": 10},
     "miguel": {"items": True, "new_mesh": True, "arms_down": 13},
     "camilly": {"items": True, "new_mesh": True, "arms_down": 12},
+    # NUMERADOS-A: numerados do anime (modelos do Miguel com o rig do Meshy), sem item na mao.
+    "kaiju_no1": {"items": False, "new_mesh": True, "arms_down": 14},
+    "kaiju_no11": {"items": False, "new_mesh": True, "arms_down": 16},
+    "kaiju_no12": {"items": False, "new_mesh": True, "arms_down": 16},
+    "kaiju_no15": {"items": False, "new_mesh": True, "arms_down": 14},
+    "kaiju_no15_kikoru": {"items": False, "new_mesh": True, "arms_down": 12},
 }
 # FIX-2: "legs_on_body" = pernas filhas do tronco, como no rig de antes (No. 10 e fusao): as animacoes deles inclinam o
 # tronco contando que as pernas vao junto; com as pernas na raiz a bacia abria ("o modelo parte no meio").

@@ -31,6 +31,11 @@
         {
           "species": "kn8:trichonephila",
           "count": 3
+        },
+        {
+          "species": "kn8:kaiju_no15_kikoru",
+          "count": 1,
+          "chance": 0.25
         }
       ],
       "delay_ticks": 500
@@ -49,6 +54,11 @@
           "species": "kn8:kaiju_no9_fusion_giant",
           "count": 1,
           "chance": 0.01
+        },
+        {
+          "species": "kn8:kaiju_no12",
+          "count": 1,
+          "chance": 0.35
         }
       ],
       "delay_ticks": 600

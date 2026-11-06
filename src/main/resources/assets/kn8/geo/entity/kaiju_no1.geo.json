@@ -1,0 +1,164 @@
+{
+  "format_version": "1.12.0",
+  "minecraft:geometry": [
+    {
+      "description": {
+        "identifier": "geometry.kaiju_no1",
+        "texture_width": 16,
+        "texture_height": 16,
+        "visible_bounds_width": 3,
+        "visible_bounds_height": 3,
+        "visible_bounds_offset": [
+          0,
+          1,
+          0
+        ]
+      },
+      "bones": [
+        {
+          "name": "root",
+          "pivot": [
+            -0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "name": "body",
+          "pivot": [
+            -0.107,
+            17.406,
+            -0.854
+          ],
+          "parent": "root"
+        },
+        {
+          "name": "chest",
+          "pivot": [
+            -0.087,
+            20.632,
+            -0.848
+          ],
+          "parent": "body"
+        },
+        {
+          "name": "head",
+          "pivot": [
+            -1.362,
+            26.174,
+            -1.899
+          ],
+          "parent": "chest"
+        },
+        {
+          "name": "arm_left",
+          "pivot": [
+            4.646,
+            24.06,
+            -0.35
+          ],
+          "parent": "chest"
+        },
+        {
+          "name": "forearm_left",
+          "pivot": [
+            4.977,
+            19.884,
+            -0.026
+          ],
+          "parent": "arm_left"
+        },
+        {
+          "name": "hand_left",
+          "pivot": [
+            6.821,
+            15.334,
+            -0.583
+          ],
+          "parent": "forearm_left"
+        },
+        {
+          "name": "leg_left",
+          "pivot": [
+            2.114,
+            15.665,
+            -0.854
+          ],
+          "parent": "root"
+        },
+        {
+          "name": "shin_left",
+          "pivot": [
+            3.191,
+            8.699,
+            -2.157
+          ],
+          "parent": "leg_left"
+        },
+        {
+          "name": "foot_left",
+          "pivot": [
+            3.789,
+            3.41,
+            0.06
+          ],
+          "parent": "shin_left"
+        },
+        {
+          "name": "arm_right",
+          "pivot": [
+            -4.627,
+            24.139,
+            -0.955
+          ],
+          "parent": "chest"
+        },
+        {
+          "name": "forearm_right",
+          "pivot": [
+            -4.862,
+            20.03,
+            -1.622
+          ],
+          "parent": "arm_right"
+        },
+        {
+          "name": "hand_right",
+          "pivot": [
+            -6.779,
+            15.509,
+            -0.425
+          ],
+          "parent": "forearm_right"
+        },
+        {
+          "name": "leg_right",
+          "pivot": [
+            -2.328,
+            15.665,
+            -0.854
+          ],
+          "parent": "root"
+        },
+        {
+          "name": "shin_right",
+          "pivot": [
+            -3.405,
+            8.699,
+            -2.157
+          ],
+          "parent": "leg_right"
+        },
+        {
+          "name": "foot_right",
+          "pivot": [
+            -3.614,
+            3.255,
+            0.06
+          ],
+          "parent": "shin_right"
+        }
+      ]
+    }
+  ]
+}

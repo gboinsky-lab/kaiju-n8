@@ -1421,6 +1421,16 @@ Jogador e personagem com o mesmo tamanho (`real_length_m` e `held_scale` em `too
 | Numbers 6 (armadura do Reno) | armadura 16, dureza 2,5, resistência ao calor 0,45, aura `reno_no6_ice` | `suit/numbers6_suit.json`, `workbench/numbers6_suit.json` |
 | Katana longa (Soshiro/Soichiro) | dano 10, alcance 3,8, combo da espada; especial Iai (`lunge` x2,2, 6 blocos, recarga 140); 1,0 m na mão; patente Vice-Capitão | `weapon/katana.json`, `rank/vice_capitao.json` |
 
+### NUMERADOS-A: No. 1, No. 11, No. 12 e No. 15 (2026-11-06) [SUPOSIÇÃO]
+
+| Kaiju | Altura | Vida / dano / armadura / vel. | Fortitude | Habilidades (multiplicador; recarga em ticks) |
+|---|---|---|---|---|
+| No. 1 | 20 m (tabela mestra) | 3.500 / 60 / 19 / 0,36 | 9,3 | Ataque Inevitável (1,6, preparo 3; 70), Golpe no Ponto Fraco (4 x 0,6; 110), Feixe da Retina (1,4; 50), Leque Preditivo (5 x 0,7; 140), Investida (1,3; 90); lê hábitos |
+| No. 11 | 4,5 m | 2.500 / 46 / 18 / 0,40 | 9,0 | Onda de Varredura (1,3, raio 6, Lentidão II, pesado; 110), Jato d'Água (1,5; 60), Esferas d'Água (3 x 0,8; 110), Soco Inchado (2,4, pesado; 140), rajada (4 x 0,5; 70); papel de apoio a 10 blocos |
+| No. 12 | 5 m | 2.600 / 48 / 19 / 0,42 | 9,0 | Antebraços-Lâmina (1,4; 50), Rajada de Lâminas (5 x 0,55; 80), Espada de Carne (2,4, pesado; 150), Estocada (1,8; 90), Investida (1,4; 100); lê hábitos |
+| No. 15 | 3,5 m | 2.400 / 46 / 18 / 0,42 | 9,0 | Feixe Bucal (2,2, pesado; 160), Feixe em Leque (5 x 0,7; 120), Conexão Psíquica (0,4, Lentidão V por 3 s; 300), Membro-Machado (2,0, pesado; 110), rajada (4 x 0,55; 70), Voo e Mergulho (1,6; 140); lê hábitos |
+| No. 15 (forma Kikoru) | 1,6 m | 1.800 / 40 / 17 / 0,44 | 9,0 | as mesmas do No. 15 |
+
 ### MIGUEL-CAMILLY: personagens originais (2026-11-05) [SUPOSIÇÃO]
 
 | Personagem | Vida / armadura / vel. | Release | `kaiju_damage` | Arma | Técnicas (multiplicador; recarga em ticks) |

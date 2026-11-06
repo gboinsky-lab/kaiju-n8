@@ -1459,5 +1459,10 @@
   "item.kn8.miguel_scythe": "Foice-Armamento do Miguel",
   "item.kn8.camilly_rifle": "Rifle Rosa da Camilly",
   "kn8.weapon.special.reaper_eclipse": "Eclipse do Ceifador",
-  "kn8.weapon.special.reaper_eclipse.desc": "Gira a foice, crava a ponta no chao e abala tudo em volta."
+  "kn8.weapon.special.reaper_eclipse.desc": "Gira a foice, crava a ponta no chao e abala tudo em volta.",
+  "entity.kn8.kaiju_no1": "Kaiju No. 1",
+  "entity.kn8.kaiju_no11": "Kaiju No. 11",
+  "entity.kn8.kaiju_no12": "Kaiju No. 12",
+  "entity.kn8.kaiju_no15": "Kaiju No. 15",
+  "entity.kn8.kaiju_no15_kikoru": "Kaiju No. 15 (forma Kikoru)"
 }

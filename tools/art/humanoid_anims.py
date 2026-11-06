@@ -948,6 +948,96 @@ def hoshina_no10_kneel(data):
     data["animations"][name] = anim
 
 
+# ------------------------------------------------------------------------------------------------ NUMERADOS-A
+# Numerados do anime (No. 1, 11, 12 e 15 nas duas formas): golpes montados por tipo a partir do JSON da habilidade
+# (tempo do impacto), com o corpo todo como o No. 13. "kind": claw, flurry, punch, slash (antebraco-lamina, mais
+# largo), wave (varrida com os dois bracos), beam (feixe pela boca/olhos: peito para tras e cabeca a frente), point
+# (braco esticado), charge, leap.
+UPRIGHT = {"body": [4, 0, 0], "chest": [4, 0, 0], "head": [-6, 0, 0],
+           "arm_left": [-12, 6, 8], "forearm_left": [-30, 0, 0], "hand_left": [-6, 0, 0],
+           "arm_right": [-12, -6, -8], "forearm_right": [-30, 0, 0], "hand_right": [-6, 0, 0],
+           "leg_left": [-8, 0, -3], "shin_left": [16, 0, 0], "foot_left": [-6, 0, 0],
+           "leg_right": [-6, 0, 3], "shin_right": [14, 0, 0], "foot_right": [-6, 0, 0], "body_pos": [0, -0.4, 0]}
+
+
+def numbered_move(base, kind, name):
+    if kind == "flurry":
+        times, step, end = multi_hits(name)
+        frames = [(0, base, BACK)]
+        for i, t in enumerate(times):
+            up, down = rake("right" if i % 2 == 0 else "left", base, 0.8, high=i % 2 == 0)
+            frames += [(t - step * 0.55, up, WIND), (t, down, STRIKE)]
+        return timeline(end, frames + [(end, base, BACK)])
+    if kind == "charge":
+        return charge(base, name)
+    if kind == "leap":
+        return pounce(base, name)
+    hit, end = ability(name)
+    if kind in ("claw", "slash"):
+        power = 1.0 if kind == "claw" else 1.3
+        up, down = rake("right", base, power)
+        return timeline(end, [(0, base, BACK), (hit * 0.7, up, WIND), (hit, down, STRIKE), (hit + 0.1, down, HOLD),
+                              (end, base, BACK)])
+    if kind == "punch":
+        return timeline(end, [(0, base, BACK), (hit * 0.7, cock_pose("right", lunge(base, 0.4), 1.6), WIND),
+                              (hit, punch_pose("right", lunge(base, 1.1), 1.6), STRIKE),
+                              (hit + 0.15, punch_pose("right", lunge(base, 1.1), 1.4), HOLD), (end, base, BACK)])
+    if kind == "wave":
+        load = offset(base, {"arm_left": [-60, -60, -40], "arm_right": [-70, -70, -20], "forearm_left": [-20, 0, 0],
+                             "forearm_right": [-20, 0, 0], "chest": [-6, -40, 0], "body": [0, -20, 0],
+                             "body_pos": [0, -1.0, 0]})
+        swing = offset(base, {"arm_left": [-70, 70, 20], "arm_right": [-60, 60, 40], "forearm_left": [-10, 0, 0],
+                              "forearm_right": [-10, 0, 0], "chest": [10, 40, 0], "body": [6, 20, 0],
+                              "body_pos": [0, -1.4, 0]})
+        return timeline(end, [(0, base, BACK), (hit * 0.75, load, WIND), (hit, swing, STRIKE),
+                              (hit + 0.2, swing, HOLD), (end, base, BACK)])
+    if kind == "beam":
+        load = offset(base, {"chest": [-22, 0, 0], "head": [-28, 0, 0], "arm_left": [20, 10, -30],
+                             "arm_right": [20, -10, 30], "body_pos": [0, -0.6, 0]})
+        fire = offset(base, {"chest": [16, 0, 0], "head": [14, 0, 0], "body": [6, 0, 0], "arm_left": [10, 10, -40],
+                             "arm_right": [10, -10, 40], "body_pos": [0, -0.9, 0.6]})
+        return timeline(end, [(0, base, BACK), (hit * 0.8, load, WIND), (hit, fire, STRIKE),
+                              (hit + 0.25, fire, HOLD), (end, base, BACK)])
+    if kind == "point":
+        aim = point(base, ("right",))
+        return timeline(end, [(0, base, BACK), (hit * 0.7, aim, WIND), (hit, point(base, ("right",), 25), STRIKE),
+                              (hit + 0.2, aim, HOLD), (end, base, BACK)])
+    raise ValueError(kind)
+
+
+def numbered_species(species, base, walk_args, moves):
+    def build(_profile):
+        p = species + "."
+        out = kaiju_common(p, base, gait(*walk_args[:1], base, **walk_args[1]))
+        claw = numbered_move(base, "claw", "claw")
+        out[p + "action.claw"] = claw
+        out[p + "action.attack"] = claw
+        for action, (kind, name) in moves.items():
+            out[p + "action." + action] = numbered_move(base, kind, name)
+        return out
+    return build
+
+
+WALK = (0.9, {"stride": 26, "knee": 50, "swing": 20, "elbow": 30, "bob": 0.8, "lean": 2, "twist": 4})
+NUMBERED = {
+    "kaiju_no1": numbered_species("kaiju_no1", UPRIGHT, WALK, {
+        "punch": ("punch", "no1_inevitable_strike"), "flurry": ("flurry", "no1_weak_point_strike"),
+        "beam": ("beam", "no1_retina_beam"), "charge": ("charge", "no1_sprint")}),
+    "kaiju_no11": numbered_species("kaiju_no11", UPRIGHT, WALK, {
+        "wave": ("wave", "no11_sweeping_wave"), "beam": ("beam", "no11_water_jet"),
+        "point": ("point", "no11_water_sphere"), "punch": ("punch", "no11_swollen_punch"),
+        "flurry": ("flurry", "no11_flurry")}),
+    "kaiju_no12": numbered_species("kaiju_no12", NO13_READY, WALK, {
+        "slash": ("slash", "no12_blade_arms"), "flurry": ("flurry", "no12_blade_flurry"),
+        "punch": ("punch", "no12_thrust"), "charge": ("charge", "no12_lunge")}),
+}
+for _form, _prefix in (("kaiju_no15", "no15"), ("kaiju_no15_kikoru", "no15k")):
+    NUMBERED[_form] = numbered_species(_form, UPRIGHT, WALK, {
+        "beam": ("beam", _prefix + "_mouth_beam"), "point": ("point", _prefix + "_psychic_link"),
+        "slash": ("slash", _prefix + "_limb_axe"), "flurry": ("flurry", _prefix + "_flurry"),
+        "leap": ("leap", _prefix + "_flight_dive")})
+
+
 # Especies so com a passada automatica (animacoes de arma medidas, Blockbench do Miguel, caudas): o que ja existe fica.
 ARTICULATE = {"soldier": False, "hoshina": False, "hoshina_no10": False, "kikoru": False, "kikoru_no4": False,
               "mina": False, "reno": False, "reno_no6": False, "narumi": False, "kafka": False,
@@ -958,7 +1048,7 @@ ARTICULATE = {"soldier": False, "hoshina": False, "hoshina_no10": False, "kikoru
 
 
 SPECIES = {"isao": isao, "kaiju_no13": kaiju_no13, "kaiju_no9_isao": kaiju_no9_isao, "kaiju_no8": kaiju_no8,
-           "kaiju_no9": kaiju_no9, "kaiju_no9_black": kaiju_no9_black}
+           "kaiju_no9": kaiju_no9, "kaiju_no9_black": kaiju_no9_black, **NUMBERED}
 
 
 def main():

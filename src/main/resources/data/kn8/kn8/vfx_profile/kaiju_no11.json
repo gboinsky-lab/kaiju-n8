@@ -1,0 +1,220 @@
+{
+  "palette": {
+    "primary": "#2E5A6A",
+    "secondary": "#16262E",
+    "accent": "#3FA8E8",
+    "core": "#E0F6FF"
+  },
+  "material": "scales",
+  "effects": {
+    "no11_sweeping_wave": [
+      {
+        "shape": "wave",
+        "color": "accent",
+        "pattern": "ring",
+        "count": 1,
+        "size": 0.5,
+        "speed": 0.0,
+        "spread": 4.0,
+        "lifetime": 14,
+        "forward": 1.5,
+        "up": 0.1
+      },
+      {
+        "shape": "band",
+        "color": "accent",
+        "pattern": "arc",
+        "count": 1,
+        "size": 0.8,
+        "speed": 0.0,
+        "spread": 3.5,
+        "lifetime": 12,
+        "forward": 1.5,
+        "up": 0.6,
+        "edge": "core"
+      },
+      {
+        "shape": "smoke",
+        "color": "core",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.4,
+        "speed": 0.04,
+        "spread": 1.2,
+        "lifetime": 18,
+        "forward": 1.5,
+        "up": 0.3
+      }
+    ],
+    "no11_water_jet_muzzle": [
+      {
+        "shape": "pulse",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.5,
+        "speed": 0.0,
+        "spread": 0.5,
+        "lifetime": 4,
+        "forward": 0.6,
+        "up": 1.6
+      },
+      {
+        "shape": "beam",
+        "color": "core",
+        "pattern": "line",
+        "count": 1,
+        "size": 0.08,
+        "speed": 0.0,
+        "spread": 2.0,
+        "lifetime": 4,
+        "forward": 0.6,
+        "up": 1.6
+      }
+    ],
+    "no11_water_sphere_muzzle": [
+      {
+        "shape": "pulse",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.6,
+        "speed": 0.0,
+        "spread": 0.6,
+        "lifetime": 5,
+        "forward": 0.8,
+        "up": 1.3
+      }
+    ],
+    "no11_swollen_punch": [
+      {
+        "shape": "pulse",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 1,
+        "size": 1.0,
+        "speed": 0.0,
+        "spread": 1.0,
+        "lifetime": 6,
+        "forward": 1.3,
+        "up": 1.1
+      },
+      {
+        "shape": "sparks",
+        "color": "core",
+        "pattern": "burst",
+        "count": 6,
+        "size": 0.08,
+        "speed": 0.6,
+        "spread": 1.0,
+        "lifetime": 6,
+        "forward": 1.3,
+        "up": 1.1
+      }
+    ],
+    "claw": [
+      {
+        "shape": "sparks",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 5,
+        "size": 0.08,
+        "speed": 0.5,
+        "spread": 1.0,
+        "lifetime": 6,
+        "forward": 1.0,
+        "up": 1.1
+      },
+      {
+        "shape": "pulse",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.6,
+        "speed": 0.0,
+        "spread": 0.6,
+        "lifetime": 5,
+        "forward": 1.0,
+        "up": 1.1
+      }
+    ],
+    "no11_water_jet": [
+      {
+        "shape": "sparks",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 5,
+        "size": 0.08,
+        "speed": 0.5,
+        "spread": 1.0,
+        "lifetime": 6,
+        "forward": 1.0,
+        "up": 1.1
+      },
+      {
+        "shape": "pulse",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.6,
+        "speed": 0.0,
+        "spread": 0.6,
+        "lifetime": 5,
+        "forward": 1.0,
+        "up": 1.1
+      }
+    ],
+    "no11_water_sphere": [
+      {
+        "shape": "sparks",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 5,
+        "size": 0.08,
+        "speed": 0.5,
+        "spread": 1.0,
+        "lifetime": 6,
+        "forward": 1.0,
+        "up": 1.1
+      },
+      {
+        "shape": "pulse",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.6,
+        "speed": 0.0,
+        "spread": 0.6,
+        "lifetime": 5,
+        "forward": 1.0,
+        "up": 1.1
+      }
+    ],
+    "no11_flurry": [
+      {
+        "shape": "sparks",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 5,
+        "size": 0.08,
+        "speed": 0.5,
+        "spread": 1.0,
+        "lifetime": 6,
+        "forward": 1.0,
+        "up": 1.1
+      },
+      {
+        "shape": "pulse",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.6,
+        "speed": 0.0,
+        "spread": 0.6,
+        "lifetime": 5,
+        "forward": 1.0,
+        "up": 1.1
+      }
+    ]
+  }
+}

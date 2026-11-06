@@ -81,6 +81,56 @@
     "web_shot": {
       "release": "kn8:kaiju.web_shot",
       "travel": "kn8:travel.organic"
+    },
+    "no1_retina_beam": {
+      "windup": "kn8:kaiju.energy_charge",
+      "release": "kn8:kaiju.energy_beam",
+      "travel": "kn8:travel.energy_beam"
+    },
+    "no1_predictive_volley": {
+      "windup": "kn8:kaiju.energy_charge",
+      "release": "kn8:kaiju.energy_beam",
+      "travel": "kn8:travel.energy_beam"
+    },
+    "no11_water_jet": {
+      "windup": "kn8:kaiju.energy_charge",
+      "release": "kn8:kaiju.energy_beam",
+      "travel": "kn8:travel.energy_beam"
+    },
+    "no11_water_sphere": {
+      "windup": "kn8:kaiju.energy_charge",
+      "release": "kn8:kaiju.energy_beam",
+      "travel": "kn8:travel.energy_beam"
+    },
+    "no15_mouth_beam": {
+      "windup": "kn8:kaiju.energy_charge",
+      "release": "kn8:kaiju.energy_beam",
+      "travel": "kn8:travel.energy_beam"
+    },
+    "no15_spread_beam": {
+      "windup": "kn8:kaiju.energy_charge",
+      "release": "kn8:kaiju.energy_beam",
+      "travel": "kn8:travel.energy_beam"
+    },
+    "no15_psychic_link": {
+      "windup": "kn8:kaiju.energy_charge",
+      "release": "kn8:kaiju.energy_beam",
+      "travel": "kn8:travel.energy_beam"
+    },
+    "no15k_mouth_beam": {
+      "windup": "kn8:kaiju.energy_charge",
+      "release": "kn8:kaiju.energy_beam",
+      "travel": "kn8:travel.energy_beam"
+    },
+    "no15k_spread_beam": {
+      "windup": "kn8:kaiju.energy_charge",
+      "release": "kn8:kaiju.energy_beam",
+      "travel": "kn8:travel.energy_beam"
+    },
+    "no15k_psychic_link": {
+      "windup": "kn8:kaiju.energy_charge",
+      "release": "kn8:kaiju.energy_beam",
+      "travel": "kn8:travel.energy_beam"
     }
   }
 }

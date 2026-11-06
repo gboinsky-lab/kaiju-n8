@@ -1,0 +1,22 @@
+{
+  "type": "kn8:sweep",
+  "damage_multiplier": 1.4,
+  "radius": 3.6,
+  "windup_ticks": 8,
+  "active_ticks": 2,
+  "cooldown_ticks": 50,
+  "animation": "action.slash",
+  "vfx": [
+    {
+      "effect": "kn8:impact",
+      "intensity": 0.9
+    }
+  ],
+  "camera_shake": 0.2,
+  "sound": "kn8:kaiju.claw",
+  "behavior": {
+    "priority": 3,
+    "arc_degrees": 150,
+    "arc_center": 0
+  }
+}

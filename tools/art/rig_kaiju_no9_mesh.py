@@ -68,9 +68,15 @@ SPECIES["kaiju_no13"] = {
     "hip_left": [-0.13, 0.95, 0], "knee_left": [-0.22, 0.55, 0], "foot_left": [-0.25, 0.06, 0],
     "hip_right": [0.13, 0.95, 0], "knee_right": [0.22, 0.55, 0], "foot_right": [0.25, 0.06, 0],
 }
+# NUMERADOS-A: numerados do anime com o rig do Meshy (o corte sai do .npz; estas juntas so de partida).
+SPECIES["kaiju_no1"] = {k: [v[0], v[1] * 1.0, v[2]] for k, v in SPECIES["kaiju_no9"].items()}
+SPECIES["kaiju_no11"] = {k: [v[0], v[1] * 1.0, v[2]] for k, v in SPECIES["kaiju_no9"].items()}
+SPECIES["kaiju_no12"] = {k: [v[0], v[1] * 1.0, v[2]] for k, v in SPECIES["kaiju_no9"].items()}
+SPECIES["kaiju_no15"] = {k: [v[0], v[1] * 1.0, v[2]] for k, v in SPECIES["kaiju_no9"].items()}
+SPECIES["kaiju_no15_kikoru"] = {k: [v[0], v[1] * 0.8, v[2]] for k, v in SPECIES["kaiju_no9"].items()}
 SKELETON = SPECIES[NAME]
 # Abaixo desta altura nada e cabeca (na forma preta o caminho pela pele levava os espinhos do peito para a cabeca).
-HEAD_MIN_Y = {"kaiju_no9_black": 1.62, "kaiju_no9_isao": 1.72, "kaiju_no13": 1.6}.get(NAME)
+HEAD_MIN_Y = {"kaiju_no9_black": 1.62, "kaiju_no15_kikoru": 1.3, "kaiju_no9_isao": 1.72, "kaiju_no13": 1.6}.get(NAME)
 SEEDS = [
     ("body", "pelvis", "chest", 0.0, 1.0), ("body", "chest", "neck", 0.0, 0.7),
     ("body", "chest", "shoulder_left", 0.0, 0.6), ("body", "chest", "shoulder_right", 0.0, 0.6),
