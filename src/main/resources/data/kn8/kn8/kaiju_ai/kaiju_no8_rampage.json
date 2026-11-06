@@ -2,5 +2,10 @@
   "chase_speed": 1.3,
   "group": {
     "role": "aggressor"
+  },
+  "control_resist": {
+    "step": 0.25,
+    "min": 0.25,
+    "reset_ticks": 600
   }
 }

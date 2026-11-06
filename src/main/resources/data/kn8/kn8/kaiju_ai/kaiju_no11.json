@@ -31,5 +31,10 @@
   "group": {
     "role": "support",
     "support_distance": 10.0
+  },
+  "control_resist": {
+    "step": 0.25,
+    "min": 0.25,
+    "reset_ticks": 600
   }
 }

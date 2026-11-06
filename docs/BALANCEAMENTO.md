@@ -1443,6 +1443,17 @@ Alturas: Kafka 1,81, Mina 1,69, Reno e No. 6 1,74, Kikoru e No. 4 1,57, Hoshina 
 | Veneno do Haruichi | 6/s por 80 ticks (Tiro de Precisão, Salva de Flechas); arco do jogador e tiro comum 3/s por 80 ticks; ignora a armadura | `on_hit` do `haruichi.json` e do `weapon/haruichi_bow.json` |
 | Escudo da Tae | Granada de Calor: Absorção de 8% da vida máxima e Regeneração I a 10 blocos por 160 ticks | `rally.heat_grenade` do `tae.json` |
 
+### Etapa 7-C: chefes, No. 15, No. 11, No. 1 e Myxogasterocarp (2026-11-06) [SUPOSIÇÃO todos os números]
+
+| O quê | Números | Onde |
+|---|---|---|
+| Resistência crescente dos chefes (todo numerado e o kaiju que está como chefe) | cada gelo/veneno/atordoamento seguido dura 25% menos (100, 75, 50, 25%), no mínimo 25%; 30 s sem receber aquele tipo zera | `control_resist` no `kaiju_ai` dos numerados, Honju, revivido e Tecedeira |
+| Ataque mental do No. 15 (Elo Psíquico) | 80 ticks: jogador com náusea e escuridão; mob larga o alvo e fica com Fraqueza II | `mental_ticks` em `ability/no15_psychic_link.json` (e `no15k_`) |
+| Ilusão do No. 15 | recarga 360, até 14 blocos; por 120 ticks metade dos golpes dos iludidos acerta uma imagem falsa | `ability/no15_illusion.json`, `illusion` no `kaiju_ai` |
+| Puxão do No. 11 (Jato d'Água) | 1,1 bloco/tick em direção ao No. 11 | `pull` em `ability/no11_water_jet.json` |
+| Previsão do No. 1 | o golpe do mesmo tipo do anterior (leve, pesado, a distância) é esquivado, um a cada 60 ticks; trocar de tipo (finta) deixa o No. 1 +25% vulnerável por 40 ticks | `foresight` no `kaiju_ai/kaiju_no1.json` |
+| Divisão do Myxogasterocarp | a 66% e 33% da vida para por 60 ticks e solta 2 Phaneroplasmodium; perder 15% do núcleo nesse tempo interrompe e atordoa 40 ticks | `split` no `kaiju_ai/myxogasterocarp.json` |
+
 
 ### Etapa 6: fusões do No. 9 (2026-11-06)
 

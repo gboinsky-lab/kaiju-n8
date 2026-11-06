@@ -200,6 +200,9 @@ public class KaijuProjectile extends Projectile implements TravelSoundSource {
             target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, ability.behavior().slowTicks(),
                     ability.behavior().slowLevel()));
         }
+        if (hurt && owner instanceof KaijuEntity kaiju) {
+            kaiju.applyAbilityEffects(target, ability.behavior());
+        }
     }
 
     private void report(boolean hit, boolean blocked) {

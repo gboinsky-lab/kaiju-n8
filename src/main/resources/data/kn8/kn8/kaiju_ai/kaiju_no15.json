@@ -82,5 +82,15 @@
         "back_off_ticks": 20
       }
     }
+  },
+  "control_resist": {
+    "step": 0.25,
+    "min": 0.25,
+    "reset_ticks": 600
+  },
+  "illusion": {
+    "miss_chance": 0.5,
+    "duration_ticks": 120,
+    "radius": 14.0
   }
 }

@@ -41,6 +41,8 @@ final class KaijuAbilities {
     static final String TYPE_LEAP = "leap";
     static final String TYPE_MULTI_HIT = "multi_hit";
     static final String TYPE_TELEPORT = "teleport";
+    /** Etapa 7-C: ilusao do No. 15 (ilude os inimigos em volta pelo {@code illusion} do {@code kaiju_ai}). */
+    static final String TYPE_ILLUSION = "illusion";
     /** Tentativas de achar lugar livre no teleporte. */
     private static final int TELEPORT_TRIES = 12;
     /** Tempo de voo do salto (ticks): define a parabola ate o alvo. */

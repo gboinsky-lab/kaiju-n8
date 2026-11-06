@@ -424,6 +424,201 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
         return level().getGameTime() < vulnerableUntil ? vulnerableMultiplier : 1.0F;
     }
 
+    // --- Etapa 7-C: resistencia de chefe, ilusao, previsao e divisao ------------------------------------------
+
+    private static final int CONTROL_FREEZE = 0;
+    private static final int CONTROL_POISON = 1;
+    private static final int CONTROL_STUN = 2;
+    /** Aplicacoes seguidas de cada tipo de controle e a ultima vez que cada um chegou. */
+    private final int[] controlApplied = new int[3];
+    private final long[] controlLast = {Long.MIN_VALUE / 2, Long.MIN_VALUE / 2, Long.MIN_VALUE / 2};
+
+    /**
+     * Etapa 7-C (Miguel: "bosses com resistencia progressiva"): duracao de um gelo/veneno/atordoamento pelo
+     * {@code control_resist} do {@code kaiju_ai}. So conta uma aplicacao nova quando o efeito nao esta ativo (as
+     * etapas do gelo do Reno e os tiros da rajada renovam o mesmo efeito).
+     */
+    private int resistControl(int kind, int ticks, boolean alreadyActive) {
+        KaijuAiDef.ControlResist resist = aiDef().controlResist();
+        if (!resist.active() || level().isClientSide() || ticks <= 0 || !isBossLike()) {
+            return ticks;
+        }
+        long now = level().getGameTime();
+        if (now - controlLast[kind] > resist.resetTicks()) {
+            controlApplied[kind] = 0;
+        }
+        float factor = resist.factor(controlApplied[kind]);
+        if (!alreadyActive) {
+            controlApplied[kind]++;
+        }
+        controlLast[kind] = now;
+        return Math.max(1, Math.round(ticks * factor));
+    }
+
+    /**
+     * Etapa 7-C: chefe para a resistencia crescente: todo numerado e qualquer kaiju que esteja como chefe (o Honju
+     * comum da rua nao).
+     */
+    public boolean isBossLike() {
+        return bossState != null || def().map(def -> def.kaijuClass() == com.kn8.common.data.def.KaijuClass.NUMBERED)
+                .orElse(false);
+    }
+
+    /** Etapa 7-C: aplicacoes seguidas de gelo (0), veneno (1) e atordoamento (2) que ja contam (GameTests). */
+    public int controlApplications(int kind) {
+        return controlApplied[kind];
+    }
+
+    @Override
+    public boolean addEffect(MobEffectInstance effect, @javax.annotation.Nullable Entity source) {
+        if (!level().isClientSide() && effect.getEffect().is(MobEffects.MOVEMENT_SLOWDOWN)
+                && aiDef().controlResist().active()) {
+            int ticks = resistControl(CONTROL_FREEZE, effect.getDuration(), hasEffect(MobEffects.MOVEMENT_SLOWDOWN));
+            effect = new MobEffectInstance(effect.getEffect(), ticks, effect.getAmplifier(), effect.isAmbient(),
+                    effect.isVisible(), effect.showIcon());
+        }
+        return super.addEffect(effect, source);
+    }
+
+    /** Etapa 7-C: inimigos iludidos pelo No. 15 e ate quando. */
+    private final java.util.Map<java.util.UUID, Long> illusioned = new java.util.HashMap<>();
+    /** Etapa 7-C: tipo do ultimo golpe de cada atacante (previsao do No. 1) e quando a proxima previsao sai. */
+    private final java.util.Map<java.util.UUID, String> lastHitKind = new java.util.HashMap<>();
+    private long foresightReady;
+
+    /** Etapa 7-C: ilude os inimigos em volta (habilidade {@code kn8:illusion}); devolve quantos. */
+    public int castIllusion() {
+        KaijuAiDef.Illusion illusion = aiDef().illusion();
+        if (!illusion.active()) {
+            return 0;
+        }
+        long until = level().getGameTime() + illusion.durationTicks();
+        int count = 0;
+        for (LivingEntity enemy : level().getEntitiesOfClass(LivingEntity.class, getBoundingBox()
+                .inflate(illusion.radius()), living -> living.isAlive() && !(living instanceof KaijuEntity)
+                        && living != this)) {
+            illusioned.put(enemy.getUUID(), until);
+            count++;
+        }
+        illusioned.values().removeIf(end -> end < level().getGameTime());
+        ServerLevel level = (ServerLevel) level();
+        // Imagens falsas: fumaca na cor do perfil em volta do kaiju (onde os iludidos vao bater).
+        for (int i = 0; i < 4; i++) {
+            double angle = Math.PI / 2.0 * i + random.nextDouble();
+            Vec3 at = position().add(Math.cos(angle) * getBbWidth(), getBbHeight() * 0.5, Math.sin(angle)
+                    * getBbWidth());
+            VfxService.keyed(level, VfxService.SMOKE, at, Vec3.ZERO, 1.2F, "#C8A8FF", getBbHeight());
+        }
+        AiTuning.logMove(this, "ilusao: " + count + " inimigo(s) iludido(s)");
+        return count;
+    }
+
+    public boolean isIllusioning(Entity enemy) {
+        Long until = illusioned.get(enemy.getUUID());
+        return until != null && until >= level().getGameTime();
+    }
+
+    /**
+     * Etapa 7-C: golpe desviado antes do dano: o atacante iludido acerta uma imagem falsa (No. 15) ou o No. 1 preve o
+     * golpe repetido e esquiva; a finta (tipo diferente do anterior) quebra a previsao e o deixa vulneravel.
+     */
+    private boolean deflected(DamageSource source) {
+        Entity attacker = source.getEntity();
+        if (!(attacker instanceof LivingEntity) || attacker instanceof KaijuEntity || attacker == this) {
+            return false;
+        }
+        ServerLevel level = (ServerLevel) level();
+        KaijuAiDef.Illusion illusion = aiDef().illusion();
+        if (illusion.active() && isIllusioning(attacker) && random.nextFloat() < illusion.missChance()) {
+            Vec3 ghost = position().add((random.nextDouble() - 0.5) * getBbWidth() * 2.0, getBbHeight() * 0.5,
+                    (random.nextDouble() - 0.5) * getBbWidth() * 2.0);
+            VfxService.keyed(level, VfxService.SMOKE, ghost, Vec3.ZERO, 0.8F, "#C8A8FF", getBbHeight());
+            return true;
+        }
+        KaijuAiDef.Foresight foresight = aiDef().foresight();
+        if (!foresight.enabled() || source.is(DamageTypeTags.IS_EXPLOSION)) {
+            return false;
+        }
+        String kind = No9Service.isRanged(source) ? "ranged" : CombatService.isHeavyHit(source) ? "heavy" : "light";
+        String last = lastHitKind.put(attacker.getUUID(), kind);
+        long now = level.getGameTime();
+        if (kind.equals(last) && now >= foresightReady && !isStaggered()) {
+            foresightReady = now + foresight.cooldownTicks();
+            // Previu: passo para o lado, longe da linha do golpe.
+            Vec3 away = position().subtract(attacker.position()).multiply(1.0, 0.0, 1.0);
+            Vec3 side = away.lengthSqr() < 1.0E-4 ? new Vec3(1.0, 0.0, 0.0)
+                    : new Vec3(-away.z, 0.0, away.x).normalize().scale(random.nextBoolean() ? 1.0 : -1.0);
+            setDeltaMovement(getDeltaMovement().add(side.scale(0.8)).add(0.0, 0.2, 0.0));
+            hurtMarked = true;
+            VfxService.keyed(level, VfxService.SMOKE, position().add(0.0, getBbHeight() * 0.5, 0.0), side, 0.8F,
+                    "#FFFFFF", getBbHeight());
+            AiTuning.logMove(this, "previsao: esquivou o golpe " + kind);
+            return true;
+        }
+        if (last != null && !kind.equals(last)) {
+            markVulnerable(foresight.feintTicks(), 1.0F + foresight.feintBonus());
+            AiTuning.logMove(this, "finta: previsao errou (" + last + " -> " + kind + ")");
+        }
+        return false;
+    }
+
+    /** Etapa 7-C: proxima fracao de vida da divisao, ate quando dura a divisao em curso e o nucleo no inicio dela. */
+    private int splitIndex;
+    private long splitUntil = Long.MIN_VALUE;
+    private float splitCoreStart;
+
+    public boolean isSplitting() {
+        return level().getGameTime() < splitUntil;
+    }
+
+    private void tickSplit() {
+        KaijuAiDef.Split split = aiDef().split();
+        if (!split.active() || !isAlive()) {
+            return;
+        }
+        long now = level().getGameTime();
+        ServerLevel level = (ServerLevel) level();
+        if (splitUntil != Long.MIN_VALUE) {
+            float lost = splitCoreStart - coreHealth();
+            if (maxCoreHealth() > 0 && lost >= maxCoreHealth() * split.interruptCore()) {
+                splitUntil = Long.MIN_VALUE;
+                staggerTicks = Math.max(staggerTicks, split.staggerTicks());
+                VfxService.play(level, VfxService.IMPACT, getBoundingBox().getCenter(), Vec3.ZERO, 2.0F, 0.0F, this);
+                AiTuning.logMove(this, "divisao interrompida pelo nucleo");
+                return;
+            }
+            getNavigation().stop();
+            if ((splitUntil - now) % 10 == 0) {
+                VfxService.keyed(level, VfxService.TELEGRAPH, position().add(0.0, 0.05, 0.0), Vec3.ZERO,
+                        getBbWidth() * 0.8F, "disc#C04060@10", 0.0F);
+            }
+            if (now >= splitUntil) {
+                splitUntil = Long.MIN_VALUE;
+                for (int i = 0; i < split.count(); i++) {
+                    double angle = Math.PI * 2.0 * i / split.count();
+                    net.minecraft.core.BlockPos at = net.minecraft.core.BlockPos.containing(position().add(
+                            Math.cos(angle) * getBbWidth(), 0.0, Math.sin(angle) * getBbWidth()));
+                    com.kn8.common.world.KaijuSpawner.spawn(level, split.into().get(), at).ifPresent(child -> {
+                        child.setTarget(getTarget());
+                        if (getPersistentData().contains("kn8_exam")) {
+                            child.getPersistentData().put("kn8_exam", getPersistentData().get("kn8_exam").copy());
+                        }
+                    });
+                }
+                VfxService.play(level, VfxService.EXPLOSION, getBoundingBox().getCenter(), Vec3.ZERO, 1.5F, 0.0F, this);
+                AiTuning.logMove(this, "dividiu: " + split.count() + " " + split.into().get());
+            }
+            return;
+        }
+        if (splitIndex < split.healthBelow().size()
+                && getHealth() <= getMaxHealth() * split.healthBelow().get(splitIndex)) {
+            splitIndex++;
+            splitUntil = now + split.channelTicks();
+            splitCoreStart = coreHealth();
+            AiTuning.logMove(this, "comecou a se dividir (" + split.channelTicks() + " ticks)");
+        }
+    }
+
     /** Etapa 7-B (marca do Ryo): bonus do proximo golpe de qualquer um e ate quando vale. */
     private float nextHitBonus;
     private long nextHitUntil = Long.MIN_VALUE;
@@ -467,7 +662,7 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
             poisonPerSecond = perSecond;
             poisonOwner = owner == null ? null : owner.getUUID();
         }
-        poisonUntil = Math.max(poisonUntil, now + ticks);
+        poisonUntil = Math.max(poisonUntil, now + resistControl(CONTROL_POISON, ticks, isPoisoned()));
     }
 
     public boolean isPoisoned() {
@@ -594,7 +789,8 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
     public void stagger(int ticks) {
         float factor = KaijuWounds.staggerMultiplier(activeWounds().stream()
                 .map(KaijuAiDef.Wound::staggerMultiplier).toList());
-        staggerTicks = Math.max(staggerTicks, Math.round(ticks * factor));
+        staggerTicks = Math.max(staggerTicks, Math.round(resistControl(CONTROL_STUN, ticks, staggerTicks > 0)
+                * factor));
     }
 
     public boolean isStaggered() {
@@ -693,6 +889,7 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
             tickWounds();
             tickShield();
             tickPoison();
+            tickSplit();
             tickHabits();
             tickGroup();
             RegionService.kaijuTick(this);
@@ -1056,6 +1253,13 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
                     AiTuning.logMove(this, "salto " + id + " cancelado: sem pouso");
                 }
             }
+            case KaijuAbilities.TYPE_ILLUSION -> {
+                // Etapa 7-C: sem dano e sem contar como falha; ilude quem esta perto.
+                pendingBlocked = true;
+                castIllusion();
+                VfxService.play((ServerLevel) level(), VfxService.TECHNIQUE, getBoundingBox().getCenter(),
+                        Vec3.ZERO, 1.0F, 0.0F, this, id.getPath());
+            }
             case KaijuAbilities.TYPE_TELEPORT -> {
                 // Pendencia do No. 14: sem dano e sem contar como falha (so reposiciona).
                 pendingBlocked = true;
@@ -1215,8 +1419,41 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
             Vec3 away = push.normalize();
             target.knockback(ServerConfig.ABILITY_KNOCKBACK.get(), -away.x, -away.z);
         }
+        if (hurt) {
+            applyAbilityEffects(target, ability.behavior());
+        }
         pendingLanded |= hurt;
         return hurt;
+    }
+
+    /**
+     * Etapa 7-C: efeitos da habilidade em quem foi atingido (golpe e projetil): puxao do No. 11 ({@code pull},
+     * velocidade em direcao ao kaiju) e ataque mental do No. 15 ({@code mental_ticks}: no jogador nausea e escuridao,
+     * no mob larga o alvo e fica com Fraqueza).
+     */
+    public void applyAbilityEffects(LivingEntity target, AbilityDef.Behavior behavior) {
+        if (behavior.pull() > 0.0F) {
+            Vec3 toward = position().add(0.0, getBbHeight() * 0.3, 0.0).subtract(target.position());
+            if (toward.lengthSqr() > 1.0E-4) {
+                target.setDeltaMovement(toward.normalize().scale(behavior.pull()).add(0.0, 0.25, 0.0));
+                target.hurtMarked = true;
+            }
+        }
+        if (behavior.mentalTicks() > 0) {
+            int ticks = behavior.mentalTicks();
+            if (target instanceof Player) {
+                target.addEffect(new MobEffectInstance(MobEffects.CONFUSION, ticks + 40, 0, false, false, true),
+                        this);
+                target.addEffect(new MobEffectInstance(MobEffects.DARKNESS, ticks, 0, false, false, true), this);
+            } else {
+                if (target instanceof Mob mob) {
+                    mob.setTarget(null);
+                }
+                target.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, ticks, 1, false, false, true), this);
+            }
+            VfxService.keyed((ServerLevel) level(), VfxService.SMOKE, target.getEyePosition(), Vec3.ZERO, 0.6F,
+                    "#C8A8FF", target.getBbHeight());
+        }
     }
 
     /**
@@ -1698,6 +1935,9 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
     /** Dano direto no corpo (explosao, fogo, queda, comandos, ou golpe em kaiju sem partes): multiplicador 1,0. */
     @Override
     public boolean hurt(DamageSource source, float amount) {
+        if (!level().isClientSide() && deflected(source)) {
+            return false;
+        }
         if (!level().isClientSide() && source.is(DamageTypeTags.IS_EXPLOSION)) {
             long now = level().getGameTime();
             if (now == lastExplosionTick) {
@@ -1740,7 +1980,7 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
      * armadura reduzia o golpe e o kaiju sobrevivia com o nucleo destruido).</p>
      */
     boolean hurtFromPart(KaijuPart part, DamageSource source, float amount) {
-        if (level().isClientSide()) {
+        if (level().isClientSide() || deflected(source)) {
             return false;
         }
         if (source.is(DamageTypeTags.IS_EXPLOSION)) {
@@ -2087,6 +2327,7 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
         super.addAdditionalSaveData(tag);
         tag.putFloat(TAG_CORE_HEALTH, coreHealth);
         tag.putBoolean(TAG_ENRAGED, enraged);
+        tag.putInt("kn8_split_index", splitIndex);
         // PM-2: ferimentos do encontro (tempo restante, nao o tick do mundo) e o dano ja acumulado em cada parte.
         ListTag woundTags = new ListTag();
         long now = level().getGameTime();
@@ -2119,6 +2360,7 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
             coreHealth = tag.getFloat(TAG_CORE_HEALTH);
         }
         enraged = tag.getBoolean(TAG_ENRAGED);
+        splitIndex = tag.getInt("kn8_split_index");
         rageApplied = false;
         wounds.clear();
         long now = level().getGameTime();

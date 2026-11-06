@@ -28,5 +28,16 @@
     "role": "support",
     "support_distance": 10.0,
     "leader": true
+  },
+  "split": {
+    "health_below": [
+      0.66,
+      0.33
+    ],
+    "channel_ticks": 60,
+    "into": "kn8:phaneroplasmodium",
+    "count": 2,
+    "interrupt_core": 0.15,
+    "stagger_ticks": 40
   }
 }

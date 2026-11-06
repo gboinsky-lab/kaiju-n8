@@ -42,9 +42,9 @@ public record AbilityDef(ResourceLocation type, float damageMultiplier, float ra
      */
     public record Behavior(float minRange, float maxRange, int priority, float healthBelow, float arcDegrees,
             float arcCenter, int hits, int hitInterval, float projectileSpeed, float projectileRange,
-            float explosionRadius, int color, int slowTicks, int slowLevel) {
+            float explosionRadius, int color, int slowTicks, int slowLevel, float pull, int mentalTicks) {
         public static final Behavior DEFAULT = new Behavior(0.0F, -1.0F, 0, 1.0F, 360.0F, 0.0F, 1, 4, 1.2F, 32.0F,
-                0.0F, 0xFFFFFF, 0, 0);
+                0.0F, 0xFFFFFF, 0, 0, 0.0F, 0);
         public static final Codec<Behavior> CODEC = RecordCodecBuilder.create(i -> i.group(
                 Codec.floatRange(0.0F, 128.0F).optionalFieldOf("min_range", 0.0F).forGetter(Behavior::minRange),
                 Codec.floatRange(-1.0F, 128.0F).optionalFieldOf("max_range", -1.0F).forGetter(Behavior::maxRange),
@@ -62,7 +62,11 @@ public record AbilityDef(ResourceLocation type, float damageMultiplier, float ra
                         .forGetter(Behavior::explosionRadius),
                 AuraDef.COLOR.optionalFieldOf("color", 0xFFFFFF).forGetter(Behavior::color),
                 Codec.intRange(0, 1200).optionalFieldOf("slow_ticks", 0).forGetter(Behavior::slowTicks),
-                Codec.intRange(0, 5).optionalFieldOf("slow_level", 0).forGetter(Behavior::slowLevel)
+                Codec.intRange(0, 5).optionalFieldOf("slow_level", 0).forGetter(Behavior::slowLevel),
+                // Etapa 7-C: puxao do No. 11 (velocidade em direcao ao kaiju, blocos/tick) e ataque mental do No. 15
+                // (ticks de confusao: nausea e escuridao no jogador; o mob larga o alvo e fica fraco).
+                Codec.floatRange(0.0F, 4.0F).optionalFieldOf("pull", 0.0F).forGetter(Behavior::pull),
+                Codec.intRange(0, 600).optionalFieldOf("mental_ticks", 0).forGetter(Behavior::mentalTicks)
         ).apply(i, Behavior::new));
     }
 

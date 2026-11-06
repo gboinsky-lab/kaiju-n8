@@ -2029,3 +2029,16 @@ Imagem: `docs/img/etapa7b_minigun_marcas.jpg`.
 | 145.4 | Soldado perto da Tae quando ela usa a Granada de Calor | Corações dourados (Absorção) e Regeneração |
 | 145.5 | Konomi na base com um kaiju à vista | O kaiju fica marcado (+8%) a cada 8 s, sem ela atacar |
 | 145.6 | Segundo cliente olhando | Os mesmos tiros, anéis e escudos |
+
+## 146. Etapa 7-C: chefes, No. 15, No. 11, No. 1 e Myxogasterocarp
+
+Imagem: `docs/img/etapa7c_chefes_controle.jpg`.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 146.1 | Congelar o mesmo numerado várias vezes seguidas (Reno, rifle do Numbers 6) | Cada lentidão dura menos que a anterior; um Honju comum não muda |
+| 146.2 | `/summon kn8:kaiju_no15` contra especiais | Fumaça lilás em volta dele (ilusão): parte dos golpes não tira vida; o Elo Psíquico deixa o jogador com náusea e escuridão e faz soldados largarem o alvo |
+| 146.3 | `/summon kn8:kaiju_no11` | O Jato d'Água puxa quem acerta para perto dele |
+| 146.4 | Bater no No. 1 sempre do mesmo jeito (só espada) | Ele esquiva a cada ~3 s; trocar de golpe (rifle, golpe pesado) acerta e o deixa mais vulnerável |
+| 146.5 | Baixar o Myxogasterocarp a 66% | Ele para com um disco vermelho no chão e solta 2 Phaneroplasmodium; acertar o núcleo nesse tempo interrompe |
+| 146.6 | Segundo cliente olhando | Os mesmos efeitos |

@@ -232,6 +232,44 @@
         "forward": 1.0,
         "up": 1.1
       }
+    ],
+    "no15k_illusion": [
+      {
+        "shape": "pulse",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 3,
+        "size": 1.2,
+        "speed": 0.0,
+        "spread": 2.5,
+        "lifetime": 14,
+        "forward": 0.8,
+        "up": 1.2
+      },
+      {
+        "shape": "smoke",
+        "color": "accent",
+        "pattern": "ring",
+        "count": 6,
+        "size": 0.8,
+        "speed": 0.02,
+        "spread": 2.5,
+        "lifetime": 30,
+        "forward": 0.0,
+        "up": 1.0
+      },
+      {
+        "shape": "bolt",
+        "color": "accent",
+        "pattern": "converge",
+        "count": 4,
+        "size": 0.06,
+        "speed": 0.0,
+        "spread": 2.0,
+        "lifetime": 8,
+        "forward": 0.0,
+        "up": 1.4
+      }
     ]
   }
 }

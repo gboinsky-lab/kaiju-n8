@@ -82,5 +82,16 @@
         "back_off_ticks": 20
       }
     }
+  },
+  "control_resist": {
+    "step": 0.25,
+    "min": 0.25,
+    "reset_ticks": 600
+  },
+  "foresight": {
+    "enabled": true,
+    "cooldown_ticks": 60,
+    "feint_bonus": 0.25,
+    "feint_ticks": 40
   }
 }

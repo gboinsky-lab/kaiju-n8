@@ -12,6 +12,8 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.minecraft.resources.ResourceLocation;
+
 /**
  * Perfil tatico de uma especie de kaiju ({@code data/<ns>/kn8/kaiju_ai/<id do kaiju>.json}, IA-4; plano de IA,
  * Parte 10). Separado do {@code kaiju/<id>.json} (o codec dele ja tem 16 campos). Nao muda vida, dano nem armadura,
@@ -57,6 +59,26 @@ public record KaijuAiDef(float circleChance, float circleDistance, int circleTic
         return ecology.shield();
     }
 
+    /** Etapa 7-C: resistencia crescente a gelo, veneno e atordoamento (chefes e numerados). */
+    public ControlResist controlResist() {
+        return ecology.controlResist();
+    }
+
+    /** Etapa 7-C: ilusao do No. 15 (golpes de quem esta iludido podem acertar uma imagem falsa). */
+    public Illusion illusion() {
+        return ecology.illusion();
+    }
+
+    /** Etapa 7-C: previsao do No. 1 (esquiva do golpe repetido, falha contra a finta). */
+    public Foresight foresight() {
+        return ecology.foresight();
+    }
+
+    /** Etapa 7-C: divisao do Myxogasterocarp (interrompida com dano no nucleo). */
+    public Split split() {
+        return ecology.split();
+    }
+
     /** PM-4: papel em grupo. */
     public Group group() {
         return ecology.group();
@@ -66,16 +88,112 @@ public record KaijuAiDef(float circleChance, float circleDistance, int circleTic
      * PM-4: blocos {@code terrain} e {@code group} do mesmo JSON (o codec do perfil ja tinha 15 campos: os dois entram
      * por um MapCodec achatado, sem mudar o formato do arquivo).
      */
-    public record Ecology(Terrain terrain, Group group, Guard guard, Shield shield) {
+    public record Ecology(Terrain terrain, Group group, Guard guard, Shield shield, ControlResist controlResist,
+            Illusion illusion, Foresight foresight, Split split) {
 
-        public static final Ecology NONE = new Ecology(Terrain.DEFAULT, Group.DEFAULT, Guard.NONE, Shield.NONE);
+        public static final Ecology NONE = new Ecology(Terrain.DEFAULT, Group.DEFAULT, Guard.NONE, Shield.NONE,
+                ControlResist.NONE, Illusion.NONE, Foresight.NONE, Split.NONE);
 
         public static final MapCodec<Ecology> MAP_CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
                 Terrain.CODEC.optionalFieldOf("terrain", Terrain.DEFAULT).forGetter(Ecology::terrain),
                 Group.CODEC.optionalFieldOf("group", Group.DEFAULT).forGetter(Ecology::group),
                 Guard.CODEC.optionalFieldOf("guard", Guard.NONE).forGetter(Ecology::guard),
-                Shield.CODEC.optionalFieldOf("shield", Shield.NONE).forGetter(Ecology::shield)
+                Shield.CODEC.optionalFieldOf("shield", Shield.NONE).forGetter(Ecology::shield),
+                ControlResist.CODEC.optionalFieldOf("control_resist", ControlResist.NONE)
+                        .forGetter(Ecology::controlResist),
+                Illusion.CODEC.optionalFieldOf("illusion", Illusion.NONE).forGetter(Ecology::illusion),
+                Foresight.CODEC.optionalFieldOf("foresight", Foresight.NONE).forGetter(Ecology::foresight),
+                Split.CODEC.optionalFieldOf("split", Split.NONE).forGetter(Ecology::split)
         ).apply(i, Ecology::new));
+    }
+
+    /**
+     * Etapa 7-C (Miguel, 2026-11-06: "bosses com resistencia progressiva a congelamento, veneno, stun"): cada
+     * aplicacao do mesmo tipo dura {@code step} a menos (fator 1, 1 - step, 1 - 2 step..., no minimo {@code min});
+     * {@code reset_ticks} sem receber aquele tipo zera a contagem. {@code step} 0 = sem resistencia.
+     */
+    public record ControlResist(float step, float min, int resetTicks) {
+
+        public static final ControlResist NONE = new ControlResist(0.0F, 1.0F, 600);
+
+        public static final Codec<ControlResist> CODEC = RecordCodecBuilder.create(i -> i.group(
+                Codec.floatRange(0.0F, 1.0F).optionalFieldOf("step", 0.0F).forGetter(ControlResist::step),
+                Codec.floatRange(0.0F, 1.0F).optionalFieldOf("min", 0.25F).forGetter(ControlResist::min),
+                Codec.intRange(1, 72000).optionalFieldOf("reset_ticks", 600).forGetter(ControlResist::resetTicks)
+        ).apply(i, ControlResist::new));
+
+        public boolean active() {
+            return step > 0.0F;
+        }
+
+        /** Fator da duracao na aplicacao de numero {@code applied} (0 = a primeira). */
+        public float factor(int applied) {
+            return Math.max(min, 1.0F - step * applied);
+        }
+    }
+
+    /**
+     * Etapa 7-C (No. 15: "ataque mental e ilusao"): a habilidade {@code kn8:illusion} ilude os inimigos a
+     * {@code radius} por {@code duration_ticks}; golpe de quem esta iludido erra (acerta uma imagem falsa) com
+     * {@code miss_chance}.
+     */
+    public record Illusion(float missChance, int durationTicks, float radius) {
+
+        public static final Illusion NONE = new Illusion(0.0F, 100, 12.0F);
+
+        public static final Codec<Illusion> CODEC = RecordCodecBuilder.create(i -> i.group(
+                Codec.floatRange(0.0F, 1.0F).optionalFieldOf("miss_chance", 0.0F).forGetter(Illusion::missChance),
+                Codec.intRange(1, 1200).optionalFieldOf("duration_ticks", 100).forGetter(Illusion::durationTicks),
+                Codec.floatRange(1.0F, 64.0F).optionalFieldOf("radius", 12.0F).forGetter(Illusion::radius)
+        ).apply(i, Illusion::new));
+
+        public boolean active() {
+            return missChance > 0.0F;
+        }
+    }
+
+    /**
+     * Etapa 7-C (No. 1: "previsao que falha contra fintas"): o kaiju le o golpe de quem ataca. O mesmo tipo de golpe
+     * (leve, pesado, a distancia) que o atacante usou da ultima vez e previsto e esquivado (um a cada
+     * {@code cooldown_ticks}); um tipo diferente do anterior e a finta: a previsao erra e o kaiju fica
+     * {@code feint_bonus} mais vulneravel por {@code feint_ticks}.
+     */
+    public record Foresight(boolean enabled, int cooldownTicks, float feintBonus, int feintTicks) {
+
+        public static final Foresight NONE = new Foresight(false, 60, 0.25F, 40);
+
+        public static final Codec<Foresight> CODEC = RecordCodecBuilder.create(i -> i.group(
+                Codec.BOOL.optionalFieldOf("enabled", false).forGetter(Foresight::enabled),
+                Codec.intRange(1, 1200).optionalFieldOf("cooldown_ticks", 60).forGetter(Foresight::cooldownTicks),
+                Codec.floatRange(0.0F, 2.0F).optionalFieldOf("feint_bonus", 0.25F).forGetter(Foresight::feintBonus),
+                Codec.intRange(1, 600).optionalFieldOf("feint_ticks", 40).forGetter(Foresight::feintTicks)
+        ).apply(i, Foresight::new));
+    }
+
+    /**
+     * Etapa 7-C (Myxogasterocarp: "se divide; destruir os nucleos interrompe a divisao"): ao passar de cada fracao de
+     * {@code health_below}, o kaiju comeca a se dividir por {@code channel_ticks} (parado, com aviso); no fim nascem
+     * {@code count} {@code into}. Se nesse tempo o nucleo perde {@code interrupt_core} da vida dele, a divisao e
+     * interrompida e o kaiju fica atordoado {@code stagger_ticks}.
+     */
+    public record Split(List<Float> healthBelow, int channelTicks, Optional<ResourceLocation> into, int count,
+            float interruptCore, int staggerTicks) {
+
+        public static final Split NONE = new Split(List.of(), 60, Optional.empty(), 2, 0.15F, 40);
+
+        public static final Codec<Split> CODEC = RecordCodecBuilder.create(i -> i.group(
+                Codec.floatRange(0.0F, 1.0F).listOf().optionalFieldOf("health_below", List.of())
+                        .forGetter(Split::healthBelow),
+                Codec.intRange(1, 600).optionalFieldOf("channel_ticks", 60).forGetter(Split::channelTicks),
+                ResourceLocation.CODEC.optionalFieldOf("into").forGetter(Split::into),
+                Codec.intRange(1, 8).optionalFieldOf("count", 2).forGetter(Split::count),
+                Codec.floatRange(0.0F, 1.0F).optionalFieldOf("interrupt_core", 0.15F).forGetter(Split::interruptCore),
+                Codec.intRange(0, 600).optionalFieldOf("stagger_ticks", 40).forGetter(Split::staggerTicks)
+        ).apply(i, Split::new));
+
+        public boolean active() {
+            return !healthBelow.isEmpty() && into.isPresent();
+        }
     }
 
     /**

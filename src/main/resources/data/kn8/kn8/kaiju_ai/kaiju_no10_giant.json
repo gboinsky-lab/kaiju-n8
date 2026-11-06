@@ -83,5 +83,10 @@
   "group": {
     "role": "aggressor",
     "leader": true
+  },
+  "control_resist": {
+    "step": 0.25,
+    "min": 0.25,
+    "reset_ticks": 600
   }
 }

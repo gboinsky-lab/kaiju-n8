@@ -21,6 +21,7 @@
     "projectile_range": 28,
     "color": "#E0C8FF",
     "slow_ticks": 60,
-    "slow_level": 5
+    "slow_level": 5,
+    "mental_ticks": 80
   }
 }
