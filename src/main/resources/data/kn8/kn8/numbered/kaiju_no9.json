@@ -69,6 +69,42 @@
       "self_health_below": 0.6,
       "carcass": true,
       "message": "kn8.no9.ant_form"
+    },
+    {
+      "species": [
+        "kn8:kaiju_no11"
+      ],
+      "into": "kn8:kaiju_no9_no11",
+      "seek_radius": 20,
+      "cast_ticks": 60,
+      "target_health_below": 0.3,
+      "self_health_below": 1.0,
+      "carcass": true,
+      "message": "kn8.no9.abyss_form"
+    },
+    {
+      "species": [
+        "kn8:kaiju_no15"
+      ],
+      "into": "kn8:kaiju_no9_no15",
+      "seek_radius": 20,
+      "cast_ticks": 60,
+      "target_health_below": 0.3,
+      "self_health_below": 1.0,
+      "carcass": true,
+      "message": "kn8.no9.neural_form"
+    },
+    {
+      "species": [
+        "kn8:kaiju_no14"
+      ],
+      "into": "kn8:kaiju_no9_no14",
+      "seek_radius": 20,
+      "cast_ticks": 60,
+      "target_health_below": 0.3,
+      "self_health_below": 1.0,
+      "carcass": true,
+      "message": "kn8.no9.armored_form"
     }
   ],
   "adaptation": {

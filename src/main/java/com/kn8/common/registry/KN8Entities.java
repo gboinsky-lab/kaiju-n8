@@ -125,6 +125,16 @@ public final class KN8Entities {
      */
     public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> KAIJU_NO9_ISAO = no9Form(
             "kaiju_no9_isao", 0.8F, 2.0F);
+    /**
+     * Etapa 6 (dossie de fusoes do Miguel, 2026-11-06): o No. 9 absorve o No. 11 (Abissal), o No. 15 (Neural) e o
+     * No. 14 (Couracado). Modelos de 2 m com o rig do Meshy; altura real pelo dimensions.scale.
+     */
+    public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> KAIJU_NO9_NO11 = no9Form(
+            "kaiju_no9_no11", 0.8F, 2.0F);
+    public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> KAIJU_NO9_NO15 = no9Form(
+            "kaiju_no9_no15", 0.8F, 2.0F);
+    public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> KAIJU_NO9_NO14 = no9Form(
+            "kaiju_no9_no14", 0.8F, 2.0F);
     /** 0.8-A: Kaiju No. 13 (criado pelo No. 9; humanoide palido de 2,2 m, rapido, agarra e soca). */
     public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> KAIJU_NO13 = kaiju(
             "kaiju_no13", 0.8F, 2.2F);
@@ -463,7 +473,8 @@ public final class KN8Entities {
                     KAIJU_NO9_FUSION_GIANT, KAIJU_NO9_ISAO, KAIJU_NO13, KAIJU_NO8_RAMPAGE, KAIJU_NO8_RAMPAGE_GIANT,
                     KAIJU_NO1, KAIJU_NO11, KAIJU_NO12, KAIJU_NO15, KAIJU_NO15_KIKORU,
                     KAIJU_NO2, KAIJU_NO6, KAIJU_NO14, POLYONAX, LACERTA_FRATRIS, IMITATIO_MANTIDIS,
-                    IMITATIO_MANTIDIS_GREEN, MAXILLA_CORNUTA, ANGUILLA_AMBULANS);
+                    IMITATIO_MANTIDIS_GREEN, MAXILLA_CORNUTA, ANGUILLA_AMBULANS, KAIJU_NO9_NO11, KAIJU_NO9_NO15,
+                    KAIJU_NO9_NO14);
 
     private KN8Entities() {
     }

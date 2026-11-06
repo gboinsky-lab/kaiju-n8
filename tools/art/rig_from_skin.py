@@ -98,6 +98,10 @@ SPECIES = {
     "kaiju_no12": {"items": False, "new_mesh": True, "arms_down": 16},
     "kaiju_no15": {"items": False, "new_mesh": True, "arms_down": 14},
     "kaiju_no15_kikoru": {"items": False, "new_mesh": True, "arms_down": 12},
+    # ETAPA 6: fusoes do No. 9 (com o No. 11, No. 15 e No. 14), modelos do Miguel em pose T.
+    "kaiju_no9_no11": {"items": False, "new_mesh": True, "arms_down": 16},
+    "kaiju_no9_no15": {"items": False, "new_mesh": True, "arms_down": 16},
+    "kaiju_no9_no14": {"items": False, "new_mesh": True, "arms_down": 16},
 }
 # FIX-2: "legs_on_body" = pernas filhas do tronco, como no rig de antes (No. 10 e fusao): as animacoes deles inclinam o
 # tronco contando que as pernas vao junto; com as pernas na raiz a bacia abria ("o modelo parte no meio").

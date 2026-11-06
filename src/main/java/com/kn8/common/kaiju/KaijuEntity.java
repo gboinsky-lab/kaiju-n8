@@ -427,7 +427,7 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
     @Override
     protected float getDamageAfterArmorAbsorb(DamageSource source, float amount) {
         // Aplicado aqui, nao no actuallyHurt: no NeoForge ele usa o conteiner de dano (bug da pele endurecida, 0.7-E).
-        return super.getDamageAfterArmorAbsorb(source, amount) * vulnerability() * frontGuard(source) * shieldFactor();
+        return super.getDamageAfterArmorAbsorb(source, amount) * vulnerability() * frontGuard(source) * shieldFactor(source);
     }
 
     /** Etapa 5: fim do ultimo ataque (aparo frontal fica aberto um tempo depois de cada ataque). */
@@ -449,12 +449,7 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
             return 1.0F;
         }
         Vec3 toAttacker = new Vec3(from.x - getX(), 0.0, from.z - getZ());
-        if (toAttacker.lengthSqr() < 1.0E-4) {
-            return 1.0F;
-        }
-        Vec3 facing = Vec3.directionFromRotation(0.0F, yBodyRot);
-        double cos = facing.dot(toAttacker.normalize());
-        if (cos < Math.cos(Math.toRadians(guard.frontArcDegrees() / 2.0))) {
+        if (toAttacker.lengthSqr() < 1.0E-4 || !inFrontArc(source, guard.frontArcDegrees())) {
             return 1.0F;
         }
         if (level() instanceof ServerLevel server && now - lastGuardEffect >= 10) {
@@ -463,6 +458,23 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
                     .add(0.0, getBbHeight() * 0.5, 0.0), toAttacker, 1.0F, 0.0F, this);
         }
         return guard.factor();
+    }
+
+    /** Etapa 5/6: o golpe vem de dentro do arco da frente (360 = qualquer lado; sem posicao de origem, nao)? */
+    private boolean inFrontArc(DamageSource source, float arcDegrees) {
+        if (arcDegrees >= 360.0F) {
+            return true;
+        }
+        Vec3 from = source.getSourcePosition();
+        if (from == null) {
+            return false;
+        }
+        Vec3 toAttacker = new Vec3(from.x - getX(), 0.0, from.z - getZ());
+        if (toAttacker.lengthSqr() < 1.0E-4) {
+            return false;
+        }
+        Vec3 facing = Vec3.directionFromRotation(0.0F, yBodyRot);
+        return facing.dot(toAttacker.normalize()) >= Math.cos(Math.toRadians(arcDegrees / 2.0));
     }
 
     /** Pendencia do No. 14: campo de forca ligado agora ({@code shield} do {@code kaiju_ai})? */
@@ -474,11 +486,11 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
     /** Pendencia do No. 14: com o escudo desligado, a janela exposta (3 s) e brecha para quem luta com ele. */
     public boolean isShieldDown() {
         KaijuAiDef.Shield shield = aiDef().shield();
-        return shield.active() && !shield.upAt(tickCount);
+        return shield.active() && shield.exposed() && !shield.upAt(tickCount);
     }
 
-    private float shieldFactor() {
-        if (!isShielded()) {
+    private float shieldFactor(DamageSource source) {
+        if (!isShielded() || !inFrontArc(source, aiDef().shield().frontArcDegrees())) {
             return 1.0F;
         }
         long now = level().getGameTime();

@@ -1031,6 +1031,17 @@ NUMBERED = {
         "slash": ("slash", "no12_blade_arms"), "flurry": ("flurry", "no12_blade_flurry"),
         "punch": ("punch", "no12_thrust"), "charge": ("charge", "no12_lunge")}),
 }
+# ETAPA 6: fusoes do No. 9 (dossie de fusoes do Miguel, 2026-11-06).
+NUMBERED["kaiju_no9_no11"] = numbered_species("kaiju_no9_no11", UPRIGHT, WALK, {
+    "slash": ("slash", "no9_abyss_blade"), "beam": ("beam", "no9_abyss_cannon"), "wave": ("wave", "no9_abyss_tail"),
+    "point": ("point", "no9_abyss_prison"), "deluge": ("wave", "no9_abyss_deluge")})
+NUMBERED["kaiju_no9_no15"] = numbered_species("kaiju_no9_no15", UPRIGHT, WALK, {
+    "flurry": ("flurry", "no9_neural_fists"), "point": ("point", "no9_neural_tentacles"),
+    "wave": ("wave", "no9_neural_distortion"), "beam": ("beam", "no9_neural_cage"),
+    "domain": ("flurry", "no9_neural_domain")})
+NUMBERED["kaiju_no9_no14"] = numbered_species("kaiju_no9_no14", UPRIGHT, WALK, {
+    "punch": ("punch", "no9_armored_rupture"), "burst": ("wave", "no9_armored_core_burst"),
+    "beam": ("beam", "no9_armored_lance"), "collapse": ("leap", "no9_armored_collapse")})
 for _form, _prefix in (("kaiju_no15", "no15"), ("kaiju_no15_kikoru", "no15k")):
     NUMBERED[_form] = numbered_species(_form, UPRIGHT, WALK, {
         "beam": ("beam", _prefix + "_mouth_beam"), "point": ("point", _prefix + "_psychic_link"),

@@ -21,7 +21,9 @@ public record DataSyncS2C(ResourceLocation registry, Tag data) implements Custom
 
     public static final StreamCodec<ByteBuf, DataSyncS2C> STREAM_CODEC = StreamCodec.composite(
             ResourceLocation.STREAM_CODEC, DataSyncS2C::registry,
-            ByteBufCodecs.TAG, DataSyncS2C::data,
+            // Sem o teto de 2 MB do TAG: os perfis visuais passaram dele na etapa 6 (o cliente caia ao entrar). O
+            // pacote vem so do servidor (mesmo formato na rede).
+            ByteBufCodecs.TRUSTED_TAG, DataSyncS2C::data,
             DataSyncS2C::new);
 
     @Override

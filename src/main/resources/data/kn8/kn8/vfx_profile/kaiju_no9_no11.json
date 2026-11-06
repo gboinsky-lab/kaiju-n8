@@ -1,0 +1,223 @@
+{
+  "palette": {
+    "primary": "#1E4FD8",
+    "secondary": "#F2F6FF",
+    "accent": "#46D3E2",
+    "core": "#FFFFFF"
+  },
+  "material": "energy",
+  "effects": {
+    "no9_abyss_blade": [
+      {
+        "shape": "band",
+        "color": "accent",
+        "pattern": "arc",
+        "count": 1,
+        "size": 0.7,
+        "speed": 0.0,
+        "spread": 3.0,
+        "lifetime": 9,
+        "forward": 1.2,
+        "up": 1.2,
+        "tilt": -15,
+        "edge": "core"
+      },
+      {
+        "shape": "smoke",
+        "color": "secondary",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.4,
+        "speed": 0.04,
+        "spread": 1.2,
+        "lifetime": 14,
+        "forward": 1.4,
+        "up": 1.0
+      }
+    ],
+    "no9_abyss_cannon_muzzle": [
+      {
+        "shape": "pulse",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.8,
+        "speed": 0.0,
+        "spread": 0.8,
+        "lifetime": 5,
+        "forward": 0.6,
+        "up": 1.7
+      },
+      {
+        "shape": "smoke",
+        "color": "secondary",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.4,
+        "speed": 0.05,
+        "spread": 0.8,
+        "lifetime": 14,
+        "forward": 0.8,
+        "up": 1.7
+      }
+    ],
+    "no9_abyss_tail": [
+      {
+        "shape": "band",
+        "color": "primary",
+        "pattern": "arc",
+        "count": 1,
+        "size": 0.8,
+        "speed": 0.0,
+        "spread": 3.2,
+        "lifetime": 10,
+        "forward": -1.0,
+        "up": 0.6,
+        "edge": "accent"
+      },
+      {
+        "shape": "wave",
+        "color": "accent",
+        "pattern": "ring",
+        "count": 1,
+        "size": 0.3,
+        "speed": 0.0,
+        "spread": 4.0,
+        "lifetime": 12,
+        "forward": 0,
+        "up": 0.05
+      }
+    ],
+    "no9_abyss_prison_muzzle": [
+      {
+        "shape": "pulse",
+        "color": "core",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.7,
+        "speed": 0.0,
+        "spread": 0.7,
+        "lifetime": 6,
+        "forward": 0.6,
+        "up": 1.4
+      }
+    ],
+    "no9_abyss_deluge": [
+      {
+        "shape": "wave",
+        "color": "accent",
+        "pattern": "ring",
+        "count": 1,
+        "size": 0.6,
+        "speed": 0.0,
+        "spread": 11.0,
+        "lifetime": 20,
+        "forward": 0,
+        "up": 0.05
+      },
+      {
+        "shape": "wave",
+        "color": "secondary",
+        "pattern": "ring",
+        "count": 1,
+        "size": 0.4,
+        "speed": 0.0,
+        "spread": 7.0,
+        "lifetime": 16,
+        "forward": 0,
+        "up": 0.05,
+        "delay": 6
+      },
+      {
+        "shape": "smoke",
+        "color": "secondary",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.8,
+        "speed": 0.06,
+        "spread": 4.0,
+        "lifetime": 26,
+        "forward": 0,
+        "up": 0.4
+      }
+    ],
+    "no9_abyss_cannon": [
+      {
+        "shape": "sparks",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 5,
+        "size": 0.08,
+        "speed": 0.5,
+        "spread": 1.0,
+        "lifetime": 6,
+        "forward": 1.0,
+        "up": 1.1
+      },
+      {
+        "shape": "pulse",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.6,
+        "speed": 0.0,
+        "spread": 0.6,
+        "lifetime": 5,
+        "forward": 1.0,
+        "up": 1.1
+      }
+    ],
+    "no9_abyss_prison": [
+      {
+        "shape": "sparks",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 5,
+        "size": 0.08,
+        "speed": 0.5,
+        "spread": 1.0,
+        "lifetime": 6,
+        "forward": 1.0,
+        "up": 1.1
+      },
+      {
+        "shape": "pulse",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.6,
+        "speed": 0.0,
+        "spread": 0.6,
+        "lifetime": 5,
+        "forward": 1.0,
+        "up": 1.1
+      }
+    ],
+    "claw": [
+      {
+        "shape": "sparks",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 5,
+        "size": 0.08,
+        "speed": 0.5,
+        "spread": 1.0,
+        "lifetime": 6,
+        "forward": 1.0,
+        "up": 1.1
+      },
+      {
+        "shape": "pulse",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.6,
+        "speed": 0.0,
+        "spread": 0.6,
+        "lifetime": 5,
+        "forward": 1.0,
+        "up": 1.1
+      }
+    ]
+  }
+}

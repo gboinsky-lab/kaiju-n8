@@ -1,0 +1,23 @@
+{
+  "type": "kn8:multi_hit",
+  "damage_multiplier": 0.5,
+  "radius": 4.5,
+  "windup_ticks": 5,
+  "active_ticks": 20,
+  "cooldown_ticks": 160,
+  "animation": "action.flurry",
+  "vfx": [
+    {
+      "effect": "kn8:impact",
+      "intensity": 0.6
+    }
+  ],
+  "camera_shake": 0.15,
+  "sound": "kn8:kaiju.claw",
+  "behavior": {
+    "priority": 2,
+    "max_range": 4.5,
+    "hits": 4,
+    "hit_interval": 5
+  }
+}

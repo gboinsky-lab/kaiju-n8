@@ -1421,6 +1421,16 @@ Jogador e personagem com o mesmo tamanho (`real_length_m` e `held_scale` em `too
 | Numbers 6 (armadura do Reno) | armadura 16, dureza 2,5, resistência ao calor 0,45, aura `reno_no6_ice` | `suit/numbers6_suit.json`, `workbench/numbers6_suit.json` |
 | Katana longa (Soshiro/Soichiro) | dano 10, alcance 3,8, combo da espada; especial Iai (`lunge` x2,2, 6 blocos, recarga 140); 1,0 m na mão; patente Vice-Capitão | `weapon/katana.json`, `rank/vice_capitao.json` |
 
+### Etapa 6: fusões do No. 9 (2026-11-06)
+
+Números do "Dossiê de Fusões" do Miguel. Nascem pela absorção do No. 11/15/14 derrotado (abaixo de 30%) e a 1% nas invasões grandes.
+
+| Fusão | Vida / dano / armadura / vel. | Altura | Ataques (multiplicador; recarga em ticks; fase) |
+|---|---|---|---|
+| Abissal (No. 9 + No. 11) | 7.200 / 62 / 22 / 0,38 | 3 m | Lâmina Abissal 1,35 (arco 6; 100), Canhão de Pressão 1,8 (18 blocos, carga 16; 220; abaixo de 65%), Cauda da Maré 1,55 (240°, raio 5; 180), Prisão Abissal 0,9 + Lentidão V 2,5 s (320; abaixo de 65%), Dilúvio 3 x 1,4 (raio 12; 1.100; abaixo de 30%); fica a ~10 blocos |
+| Neural (No. 9 + No. 15) | 6.800 / 58 / 21 / 0,42 | 3 m | Punhos 4 x 0,5 (160), Tentáculos 1,65 (14 blocos; 200), Distorção 0,55 (raio 9; 340; abaixo de 70%), Cárcere 3 x 0,6 + Lentidão V 2,2 s (380; abaixo de 70%), Domínio Cerebral 6 x 0,67 (raio 11; 1.200; abaixo de 35%); flanqueia |
+| Couraçado (No. 9 + No. 14) | 8.400 / 68 / 25 / 0,30 | 3,3 m | Punho de Ruptura 1,7 (140), Explosão de Núcleo 1,9 (raio 7; 320), Lança de Energia 2,0 (20 blocos, carga 20; 260), Colapso Absoluto 4,5 (raio 10, carga 40; 1.300; abaixo de 25%); Couraça −18% de frente; Muralha Negra −65% de frente por 3,5 s a cada 18 s |
+
 ### Etapa 5: kaiju de nome científico (2026-11-06)
 
 Números do "Balanceamento Completo dos Kaijus" v1.0 do Miguel (seção da 2ª temporada; T4/T5 = Honju). Modelos de 9 m (Polyonax 6 m) sem escala; hitbox no `kaiju/<id>.json`. Onde aparecem: última onda de uma invasão cada, com chance [SUPOSIÇÃO] (revisar na etapa 7).

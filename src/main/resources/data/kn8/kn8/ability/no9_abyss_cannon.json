@@ -1,0 +1,28 @@
+{
+  "type": "kn8:projectile",
+  "damage_multiplier": 1.8,
+  "windup_ticks": 16,
+  "active_ticks": 2,
+  "cooldown_ticks": 220,
+  "animation": "action.beam",
+  "vfx": [
+    {
+      "effect": "kn8:impact",
+      "intensity": 0.9
+    }
+  ],
+  "camera_shake": 0.2,
+  "sound": "kn8:kaiju.energy_beam",
+  "behavior": {
+    "priority": 4,
+    "min_range": 5,
+    "max_range": 18,
+    "projectile_speed": 3.0,
+    "projectile_range": 22,
+    "color": "#46D3E2",
+    "health_below": 0.65
+  },
+  "heavy": true,
+  "telegraph": "line",
+  "particles": "kn8:energy_charge"
+}

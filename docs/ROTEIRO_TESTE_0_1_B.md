@@ -1992,3 +1992,16 @@ Imagem: `docs/img/pendencias_no14_no2.jpg`.
 | 142.2 | Chegar a menos de 5 blocos do No. 14 | Ele some com um clarão e reaparece a ~12 blocos, no chão |
 | 142.3 | `/summon kn8:kaiju_no2` | Braços abaixados ao lado do corpo (não mais abertos), sem o poste preto acima da cabeça; soco e passada mexem os braços |
 | 142.4 | Segundo cliente olhando | Os mesmos efeitos e o mesmo modelo |
+
+## 143. Etapa 6: fusões do No. 9 (Abissal, Neural, Couraçado)
+
+Imagem: `docs/img/fusoes_no9.jpg`. Para ver a absorção num mundo com o datapack de duelos: `/datapack disable "file/kn8_duelo_isolado"`.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 143.1 | `/summon kn8:kaiju_no9_no11`, `kaiju_no9_no15`, `kaiju_no9_no14` | Abissal azul e branco com cauda de tubarão, Neural com o cérebro rosa e tentáculos, Couraçado branco e preto; ~3 m, braços abaixados |
+| 143.2 | `/summon kn8:kaiju_no9` e um `kaiju_no14` com 20% da vida perto | O No. 9 puxa com tentáculos, some na fumaça e surge o Couraçado com aviso no chat (o mesmo com o No. 11 e o No. 15) |
+| 143.3 | Abissal contra especiais | Lâmina d'água, cauda girando, de longe; abaixo de 65% canhão e prisão (lentidão); abaixo de 30% o Dilúvio com ondas grandes |
+| 143.4 | Neural contra especiais | Socos em sequência, tentáculos à distância; abaixo de 70% distorção e cárcere; abaixo de 35% o Domínio Cerebral |
+| 143.5 | Couraçado: bater de frente e de costas | De frente leva bem menos (couraça e, a cada 18 s, a Muralha Negra com faíscas); de costas dano cheio; abaixo de 25% o Colapso Absoluto |
+| 143.6 | Entrar no servidor com os dois clientes | Entram normalmente (antes da correção caíam com "Failed to decode packet") |

@@ -1,0 +1,28 @@
+{
+  "type": "kn8:area_melee",
+  "damage_multiplier": 4.5,
+  "radius": 10.0,
+  "windup_ticks": 40,
+  "active_ticks": 4,
+  "cooldown_ticks": 1300,
+  "animation": "action.collapse",
+  "telegraph": "ground_circle",
+  "heavy": true,
+  "vfx": [
+    {
+      "effect": "kn8:shockwave",
+      "intensity": 1.0
+    },
+    {
+      "effect": "kn8:dust",
+      "intensity": 0.8
+    }
+  ],
+  "camera_shake": 0.35,
+  "sound": "kn8:kaiju.slam",
+  "behavior": {
+    "priority": 5,
+    "max_range": 9.0,
+    "health_below": 0.25
+  }
+}

@@ -74,6 +74,9 @@ SPECIES["kaiju_no11"] = {k: [v[0], v[1] * 1.0, v[2]] for k, v in SPECIES["kaiju_
 SPECIES["kaiju_no12"] = {k: [v[0], v[1] * 1.0, v[2]] for k, v in SPECIES["kaiju_no9"].items()}
 SPECIES["kaiju_no15"] = {k: [v[0], v[1] * 1.0, v[2]] for k, v in SPECIES["kaiju_no9"].items()}
 SPECIES["kaiju_no15_kikoru"] = {k: [v[0], v[1] * 0.8, v[2]] for k, v in SPECIES["kaiju_no9"].items()}
+# ETAPA 6: fusoes do No. 9 com o rig do Meshy.
+for _fusion in ("kaiju_no9_no11", "kaiju_no9_no15", "kaiju_no9_no14"):
+    SPECIES[_fusion] = {k: list(v) for k, v in SPECIES["kaiju_no9"].items()}
 SKELETON = SPECIES[NAME]
 # Abaixo desta altura nada e cabeca (na forma preta o caminho pela pele levava os espinhos do peito para a cabeca).
 HEAD_MIN_Y = {"kaiju_no9_black": 1.62, "kaiju_no15_kikoru": 1.3, "kaiju_no9_isao": 1.72, "kaiju_no13": 1.6}.get(NAME)

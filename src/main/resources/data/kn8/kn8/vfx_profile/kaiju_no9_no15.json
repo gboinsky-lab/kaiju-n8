@@ -1,0 +1,207 @@
+{
+  "palette": {
+    "primary": "#7A2AA8",
+    "secondary": "#F2E6EE",
+    "accent": "#E040B0",
+    "core": "#FFE6F8"
+  },
+  "material": "energy",
+  "effects": {
+    "no9_neural_fists": [
+      {
+        "shape": "pulse",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.7,
+        "speed": 0.0,
+        "spread": 0.7,
+        "lifetime": 5,
+        "forward": 1.2,
+        "up": 1.1
+      },
+      {
+        "shape": "sparks",
+        "color": "core",
+        "pattern": "burst",
+        "count": 4,
+        "size": 0.07,
+        "speed": 0.5,
+        "spread": 1.0,
+        "lifetime": 6,
+        "forward": 1.2,
+        "up": 1.1
+      }
+    ],
+    "no9_neural_tentacles_muzzle": [
+      {
+        "shape": "bolt",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.07,
+        "speed": 0.0,
+        "spread": 1.2,
+        "lifetime": 6,
+        "forward": 0.6,
+        "up": 1.4
+      }
+    ],
+    "no9_neural_distortion": [
+      {
+        "shape": "pulse",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 1,
+        "size": 2.4,
+        "speed": 0.0,
+        "spread": 2.4,
+        "lifetime": 10,
+        "forward": 0,
+        "up": 1.6
+      },
+      {
+        "shape": "wave",
+        "color": "primary",
+        "pattern": "ring",
+        "count": 1,
+        "size": 0.4,
+        "speed": 0.0,
+        "spread": 9.0,
+        "lifetime": 16,
+        "forward": 0,
+        "up": 0.05
+      }
+    ],
+    "no9_neural_cage_muzzle": [
+      {
+        "shape": "pulse",
+        "color": "core",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.8,
+        "speed": 0.0,
+        "spread": 0.8,
+        "lifetime": 6,
+        "forward": 0.6,
+        "up": 1.6
+      }
+    ],
+    "no9_neural_domain": [
+      {
+        "shape": "wave",
+        "color": "accent",
+        "pattern": "ring",
+        "count": 1,
+        "size": 0.5,
+        "speed": 0.0,
+        "spread": 10.0,
+        "lifetime": 18,
+        "forward": 0,
+        "up": 0.05
+      },
+      {
+        "shape": "bolt",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 8,
+        "size": 0.08,
+        "speed": 0.0,
+        "spread": 4.0,
+        "lifetime": 10,
+        "forward": 0,
+        "up": 1.0
+      },
+      {
+        "shape": "pulse",
+        "color": "primary",
+        "pattern": "burst",
+        "count": 1,
+        "size": 3.0,
+        "speed": 0.0,
+        "spread": 3.0,
+        "lifetime": 12,
+        "forward": 0,
+        "up": 1.6
+      }
+    ],
+    "no9_neural_tentacles": [
+      {
+        "shape": "sparks",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 5,
+        "size": 0.08,
+        "speed": 0.5,
+        "spread": 1.0,
+        "lifetime": 6,
+        "forward": 1.0,
+        "up": 1.1
+      },
+      {
+        "shape": "pulse",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.6,
+        "speed": 0.0,
+        "spread": 0.6,
+        "lifetime": 5,
+        "forward": 1.0,
+        "up": 1.1
+      }
+    ],
+    "no9_neural_cage": [
+      {
+        "shape": "sparks",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 5,
+        "size": 0.08,
+        "speed": 0.5,
+        "spread": 1.0,
+        "lifetime": 6,
+        "forward": 1.0,
+        "up": 1.1
+      },
+      {
+        "shape": "pulse",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.6,
+        "speed": 0.0,
+        "spread": 0.6,
+        "lifetime": 5,
+        "forward": 1.0,
+        "up": 1.1
+      }
+    ],
+    "claw": [
+      {
+        "shape": "sparks",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 5,
+        "size": 0.08,
+        "speed": 0.5,
+        "spread": 1.0,
+        "lifetime": 6,
+        "forward": 1.0,
+        "up": 1.1
+      },
+      {
+        "shape": "pulse",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.6,
+        "speed": 0.0,
+        "spread": 0.6,
+        "lifetime": 5,
+        "forward": 1.0,
+        "up": 1.1
+      }
+    ]
+  }
+}

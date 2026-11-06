@@ -161,16 +161,20 @@ public record KaijuAiDef(float circleChance, float circleDistance, int circleTic
      * Kaiju No. 14 (Balanceamento Completo dos Kaijus do Miguel: "escudo reduz dano 35%; recarga exposta 3 s; escudo
      * alterna com janela vulneravel"): campo de forca ligado por {@code up_ticks}, depois desligado (janela exposta,
      * conta como brecha) por {@code down_ticks}, em ciclo. Ligado, todo dano leva {@code 1 - reduction}.
-     * {@code reduction} 0 = sem escudo.
+     * {@code reduction} 0 = sem escudo. Etapa 6 (Muralha Negra do No. 9 com o No. 14): {@code front_arc_degrees}
+     * (360 = todo lado) limita o escudo aos golpes da frente e {@code exposed} false = a janela desligada nao e brecha.
      */
-    public record Shield(float reduction, int upTicks, int downTicks) {
+    public record Shield(float reduction, int upTicks, int downTicks, float frontArcDegrees, boolean exposed) {
 
-        public static final Shield NONE = new Shield(0.0F, 200, 60);
+        public static final Shield NONE = new Shield(0.0F, 200, 60, 360.0F, true);
 
         public static final Codec<Shield> CODEC = RecordCodecBuilder.create(i -> i.group(
                 Codec.floatRange(0.0F, 0.95F).optionalFieldOf("reduction", 0.0F).forGetter(Shield::reduction),
                 Codec.intRange(1, 72000).optionalFieldOf("up_ticks", 200).forGetter(Shield::upTicks),
-                Codec.intRange(1, 72000).optionalFieldOf("down_ticks", 60).forGetter(Shield::downTicks)
+                Codec.intRange(1, 72000).optionalFieldOf("down_ticks", 60).forGetter(Shield::downTicks),
+                Codec.floatRange(10.0F, 360.0F).optionalFieldOf("front_arc_degrees", 360.0F)
+                        .forGetter(Shield::frontArcDegrees),
+                Codec.BOOL.optionalFieldOf("exposed", true).forGetter(Shield::exposed)
         ).apply(i, Shield::new));
 
         public boolean active() {

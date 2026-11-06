@@ -1473,5 +1473,11 @@
   "entity.kn8.imitatio_mantidis": "Imitatio Mantidis",
   "entity.kn8.imitatio_mantidis_green": "Imitatio Mantidis (green)",
   "entity.kn8.maxilla_cornuta": "Maxilla Cornuta",
-  "entity.kn8.anguilla_ambulans": "Anguilla Ambulans"
+  "entity.kn8.anguilla_ambulans": "Anguilla Ambulans",
+  "entity.kn8.kaiju_no9_no11": "Kaiju No. 9 Abyssal (fused with No. 11)",
+  "entity.kn8.kaiju_no9_no15": "Kaiju No. 9 Neural (fused with No. 15)",
+  "entity.kn8.kaiju_no9_no14": "Kaiju No. 9 Ironclad (fused with No. 14)",
+  "kn8.no9.abyss_form": "Kaiju No. 9 absorbed Kaiju No. 11 and became the Abyssal!",
+  "kn8.no9.neural_form": "Kaiju No. 9 absorbed Kaiju No. 15 and became the Neural!",
+  "kn8.no9.armored_form": "Kaiju No. 9 absorbed Kaiju No. 14 and became the Ironclad!"
 }

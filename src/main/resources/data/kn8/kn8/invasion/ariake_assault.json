@@ -65,6 +65,21 @@
           "species": "kn8:anguilla_ambulans",
           "count": 1,
           "chance": 0.35
+        },
+        {
+          "species": "kn8:kaiju_no9_no11",
+          "count": 1,
+          "chance": 0.01
+        },
+        {
+          "species": "kn8:kaiju_no9_no15",
+          "count": 1,
+          "chance": 0.01
+        },
+        {
+          "species": "kn8:kaiju_no9_no14",
+          "count": 1,
+          "chance": 0.01
         }
       ],
       "delay_ticks": 600

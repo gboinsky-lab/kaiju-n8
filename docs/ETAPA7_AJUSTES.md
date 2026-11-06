@@ -90,3 +90,19 @@ adaptativo (9.000); No. 3, 4, 5 e 7 (o doc diz para nao implementar).
 
 Onde cada um aparece (todos os novos ja estao numa invasao, com chance [SUPOSICAO]), matriz de duelos com os novos,
 R-1 (endurecimento) e R-2 (versao 1.0.0).
+
+## Respostas do Miguel (2026-11-06)
+
+1. Numerados: ficam como estao no mod.
+2. Kaiju menores: ficam como estao no mod.
+3. Personagens: os que estao mais fracos no mod sobem para o documento (Camilly 500 / 19 / 0,36, Hoshina No. 10
+   vel. 0,35, Miguel vel. 0,34); os que estao mais fortes ficam.
+4. Auras: seguir como o anime retrata (pesquisar por personagem; decisoes antigas de Mina verde e Narumi rosa a
+   conferir contra o anime).
+5. Alturas: aplicar as da ORICON.
+6. Mina: o Miguel faz o canhao grande depois (Keraunos fica para la). Rin: minigun com o modelo mandado
+   (`meshy_src/arma_rin_shinonome.glb`), superaquecimento e supressao. Personagens: marcacao do Narumi, analise da
+   Konomi, marca do Ryo, veneno do Haruichi, escudo da Tae. Numerados: resistencia crescente dos chefes, ataque
+   mental e ilusao do No. 15, puxao do No. 11, previsao do No. 1 que falha contra fintas. Myxogasterocarp: divisao
+   interrompida pelos nucleos. Auras por estado.
+7. Sem modelo: ok, ficam de fora.

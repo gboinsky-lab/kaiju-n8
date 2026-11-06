@@ -156,6 +156,31 @@
       "windup": "kn8:kaiju.energy_charge",
       "release": "kn8:kaiju.energy_beam",
       "travel": "kn8:travel.energy_beam"
+    },
+    "no9_abyss_cannon": {
+      "windup": "kn8:kaiju.energy_charge",
+      "release": "kn8:kaiju.energy_beam",
+      "travel": "kn8:travel.energy_beam"
+    },
+    "no9_abyss_prison": {
+      "windup": "kn8:kaiju.energy_charge",
+      "release": "kn8:kaiju.energy_beam",
+      "travel": "kn8:travel.energy_beam"
+    },
+    "no9_neural_tentacles": {
+      "windup": "kn8:kaiju.energy_charge",
+      "release": "kn8:kaiju.energy_beam",
+      "travel": "kn8:travel.energy_beam"
+    },
+    "no9_neural_cage": {
+      "windup": "kn8:kaiju.energy_charge",
+      "release": "kn8:kaiju.energy_beam",
+      "travel": "kn8:travel.energy_beam"
+    },
+    "no9_armored_lance": {
+      "windup": "kn8:kaiju.energy_charge",
+      "release": "kn8:kaiju.energy_beam",
+      "travel": "kn8:travel.energy_beam"
     }
   }
 }
