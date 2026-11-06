@@ -1539,3 +1539,20 @@ Nomes das técnicas do dossiê do Miguel (unidades de KAIJU NO. 8 THE GAME e câ
 | Haruichi Izumo | 350 / 16 / 0,31 | 18–36 | 0,6 | rifle | Personal Style Shot (1,5; 50), Precision Snipe (2,8 até 48 blocos; 140), Clearance (6 x 0,8; 160), Suppressive Stance (1,0, Força I e Velocidade I a 10 blocos por 6 s; 300), Manifold Arrow Salvo (9 flechas x 0,8, Lentidão II, vulnerável 1,1; 300) |
 | Bola de Ferro da Jura (jogador) | dano 12, alcance 3,6, perfil da espada | — | — | patente Capitão | Mergulho do Zênite (`ground_slam` 2,8, raio 4; 240) |
 
+
+## Matriz decidida (MATRIZ, 2026-11-06)
+
+Medidas e motivos em `docs/MATRIZ_DECISOES.md`; números aplicados por `tools/data/gen_matriz.py` (rodar por último).
+
+| O quê | Antes | Agora | Onde |
+|---|---|---|---|
+| Soichiro `kaiju_damage` | 1,1 | 0,75 | `special_soldier/soichiro.json` |
+| Jura `kaiju_damage` | 1,15 | 0,7 | `special_soldier/jura.json` |
+| Camilly `kaiju_damage` | 0,75 | 1,0 | `special_soldier/camilly.json` |
+| No. 2 onda de choque | raio 9, preparo 16, alcance 8 | raio 14, preparo 12, alcance 12 | `ability/no2_shockwave.json` |
+| No. 2 esmagamento | raio 4,5, preparo 20 | raio 7, preparo 16 | `ability/no2_crush.json` |
+| No. 6 avalanche | raio 5, preparo 22 | raio 7,5, preparo 16 | `ability/no6_avalanche.json` |
+| No. 6 campo congelante | raio 10, dano 0,35, alcance 9 | raio 14, dano 0,6, alcance 12 | `ability/no6_freezing_field.json` |
+| No. 2 / No. 6 janela parada depois do golpe pesado | 24 / 20 ticks | 12 / 12 | `kaiju_ai/kaiju_no2.json`, `kaiju_no6.json` |
+
+[SUPOSIÇÃO] todos os números. Contra o No. 13: Soichiro 2/1, Jura 3/0, Camilly 0/3 (No. 13 com 13–26%), Hoshina 7/0.

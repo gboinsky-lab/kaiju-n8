@@ -17,7 +17,7 @@ BASE = os.path.join(os.path.dirname(__file__), '..', '..', 'src', 'main', 'resou
 CHANGES = {
     'special_soldier/soichiro.json': {'kaiju_damage': 0.75},
     'special_soldier/jura.json': {'kaiju_damage': 0.7},
-    'special_soldier/camilly.json': {'kaiju_damage': 0.95},
+    'special_soldier/camilly.json': {'kaiju_damage': 1.0},
     'ability/no2_shockwave.json': {'radius': 14.0, 'windup_ticks': 12, 'behavior.max_range': 12.0},
     'ability/no2_crush.json': {'radius': 7.0, 'windup_ticks': 16},
     'ability/no6_avalanche.json': {'radius': 7.5, 'windup_ticks': 16},

@@ -43,7 +43,7 @@
   },
   "release": 30,
   "max_release": 70,
-  "kaiju_damage": 0.95,
+  "kaiju_damage": 1.0,
   "aura": "kn8:camilly_rose",
   "weapon": "kn8:camilly_rifle",
   "height": 1.65,

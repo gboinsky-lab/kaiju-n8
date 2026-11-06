@@ -2071,3 +2071,12 @@ Imagem: `docs/img/r1_invasao_save_antigo.jpg`.
 | 149.1 | Instalar o `kn8-1.0.0.jar` (com GeckoLib e Player Animation Library) no servidor e nos 2 clientes | Tela de mods mostra "Kaiju No. 8: Defense Force 1.0.0"; servidor sem arquivo com erro |
 | 149.2 | Passar o `docs/ROTEIRO_TESTE_1_0_0.md` inteiro | Todas as linhas OK ou com o problema anotado |
 | 149.3 | Ler o `docs/CHANGELOG_1_0_0.md` | Lista de mudanças completa e certa para distribuir |
+
+## 150. MATRIZ: decisões da matriz de duelos
+
+| # | Passo | Esperado |
+|---|---|---|
+| 150.1 | `/summon kn8:soichiro` e `/summon kn8:kaiju_no13` a 14 blocos | O Soichiro vence às vezes, em ~50 s, ou perde por pouco; nunca mais rápido que o Hoshina (~65 s) |
+| 150.2 | O mesmo com `kn8:jura` | Vence em ~65-75 s com pouca vida |
+| 150.3 | O mesmo com `kn8:camilly` | Perde, mas deixa o No. 13 com ~15-25% da vida |
+| 150.4 | `kn8:hoshina_no10` contra `kn8:kaiju_no2` e `kn8:kaiju_no6` a 30 blocos | A onda de choque e o campo congelante cobrem uma área bem maior que antes; o Hoshina ainda vence (ver o [DECIDIR] em `docs/MATRIZ_DECISOES.md`) |
