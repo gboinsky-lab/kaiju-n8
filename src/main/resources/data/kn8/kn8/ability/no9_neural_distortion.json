@@ -25,6 +25,7 @@
     "max_range": 8.0,
     "slow_ticks": 60,
     "slow_level": 1,
-    "health_below": 0.7
+    "health_below": 0.7,
+    "mental_ticks": 60
   }
 }

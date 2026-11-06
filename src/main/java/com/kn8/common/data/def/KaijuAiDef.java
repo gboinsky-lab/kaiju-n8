@@ -79,6 +79,10 @@ public record KaijuAiDef(float circleChance, float circleDistance, int circleTic
         return ecology.split();
     }
 
+    public Charges charges() {
+        return ecology.charges();
+    }
+
     /** PM-4: papel em grupo. */
     public Group group() {
         return ecology.group();
@@ -89,10 +93,10 @@ public record KaijuAiDef(float circleChance, float circleDistance, int circleTic
      * por um MapCodec achatado, sem mudar o formato do arquivo).
      */
     public record Ecology(Terrain terrain, Group group, Guard guard, Shield shield, ControlResist controlResist,
-            Illusion illusion, Foresight foresight, Split split) {
+            Illusion illusion, Foresight foresight, Split split, Charges charges) {
 
         public static final Ecology NONE = new Ecology(Terrain.DEFAULT, Group.DEFAULT, Guard.NONE, Shield.NONE,
-                ControlResist.NONE, Illusion.NONE, Foresight.NONE, Split.NONE);
+                ControlResist.NONE, Illusion.NONE, Foresight.NONE, Split.NONE, Charges.NONE);
 
         public static final MapCodec<Ecology> MAP_CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
                 Terrain.CODEC.optionalFieldOf("terrain", Terrain.DEFAULT).forGetter(Ecology::terrain),
@@ -103,7 +107,8 @@ public record KaijuAiDef(float circleChance, float circleDistance, int circleTic
                         .forGetter(Ecology::controlResist),
                 Illusion.CODEC.optionalFieldOf("illusion", Illusion.NONE).forGetter(Ecology::illusion),
                 Foresight.CODEC.optionalFieldOf("foresight", Foresight.NONE).forGetter(Ecology::foresight),
-                Split.CODEC.optionalFieldOf("split", Split.NONE).forGetter(Ecology::split)
+                Split.CODEC.optionalFieldOf("split", Split.NONE).forGetter(Ecology::split),
+                Charges.CODEC.optionalFieldOf("charges", Charges.NONE).forGetter(Ecology::charges)
         ).apply(i, Ecology::new));
     }
 
@@ -168,6 +173,38 @@ public record KaijuAiDef(float circleChance, float circleDistance, int circleTic
                 Codec.floatRange(0.0F, 2.0F).optionalFieldOf("feint_bonus", 0.25F).forGetter(Foresight::feintBonus),
                 Codec.intRange(1, 600).optionalFieldOf("feint_ticks", 40).forGetter(Foresight::feintTicks)
         ).apply(i, Foresight::new));
+    }
+
+    /**
+     * Fusoes do No. 9 (passivas com cargas [SUPOSICAO], o dossie nao veio com os numeros): {@code on_hit} cargas por
+     * golpe de habilidade que acerta, contadas em cada alvo (Pressao Abissal); com {@code max} o alvo leva
+     * {@code burst_damage} x o dano do kaiju e Lentidao {@code slow_level} por {@code slow_ticks}, e a contagem zera.
+     * {@code on_dodge} cargas no proprio kaiju por golpe desviado (previsao ou ilusao: Consciencia Expandida); com
+     * {@code max} o proximo golpe dele sai x {@code empower}. {@code decay_ticks} sem carga nova zera a contagem.
+     */
+    public record Charges(int max, int onHit, int onDodge, int decayTicks, float burstDamage, int slowTicks,
+            int slowLevel, float empower) {
+
+        public static final Charges NONE = new Charges(5, 0, 0, 200, 0.0F, 0, 0, 1.0F);
+
+        public static final Codec<Charges> CODEC = RecordCodecBuilder.create(i -> i.group(
+                Codec.intRange(1, 20).optionalFieldOf("max", 5).forGetter(Charges::max),
+                Codec.intRange(0, 10).optionalFieldOf("on_hit", 0).forGetter(Charges::onHit),
+                Codec.intRange(0, 10).optionalFieldOf("on_dodge", 0).forGetter(Charges::onDodge),
+                Codec.intRange(1, 72000).optionalFieldOf("decay_ticks", 200).forGetter(Charges::decayTicks),
+                Codec.floatRange(0.0F, 10.0F).optionalFieldOf("burst_damage", 0.0F).forGetter(Charges::burstDamage),
+                DefCodecs.TICKS.optionalFieldOf("slow_ticks", 0).forGetter(Charges::slowTicks),
+                Codec.intRange(0, 5).optionalFieldOf("slow_level", 0).forGetter(Charges::slowLevel),
+                Codec.floatRange(1.0F, 5.0F).optionalFieldOf("empower", 1.0F).forGetter(Charges::empower)
+        ).apply(i, Charges::new));
+
+        public boolean onTarget() {
+            return onHit > 0;
+        }
+
+        public boolean onSelf() {
+            return onDodge > 0;
+        }
     }
 
     /**
@@ -258,20 +295,31 @@ public record KaijuAiDef(float circleChance, float circleDistance, int circleTic
      * pesado, nucleo exposto), ate {@code open_after_attack_ticks} depois de cada ataque, nem golpe pesado (salvo
      * {@code blocks_heavy}). {@code factor} 1 = sem aparo.
      */
-    public record Guard(float factor, float frontArcDegrees, int openAfterAttackTicks, boolean blocksHeavy) {
+    public record Guard(float factor, float frontArcDegrees, int openAfterAttackTicks, boolean blocksHeavy,
+            float lowHealthBelow, float lowFactor) {
 
-        public static final Guard NONE = new Guard(1.0F, 120.0F, 30, false);
+        public static final Guard NONE = new Guard(1.0F, 120.0F, 30, false, 0.0F, 1.0F);
 
         public static final Codec<Guard> CODEC = RecordCodecBuilder.create(i -> i.group(
                 Codec.floatRange(0.0F, 1.0F).optionalFieldOf("factor", 1.0F).forGetter(Guard::factor),
                 Codec.floatRange(10.0F, 360.0F).optionalFieldOf("front_arc_degrees", 120.0F)
                         .forGetter(Guard::frontArcDegrees),
                 DefCodecs.TICKS.optionalFieldOf("open_after_attack_ticks", 30).forGetter(Guard::openAfterAttackTicks),
-                Codec.BOOL.optionalFieldOf("blocks_heavy", false).forGetter(Guard::blocksHeavy)
+                Codec.BOOL.optionalFieldOf("blocks_heavy", false).forGetter(Guard::blocksHeavy),
+                Codec.floatRange(0.0F, 1.0F).optionalFieldOf("low_health_below", 0.0F).forGetter(Guard::lowHealthBelow),
+                Codec.floatRange(0.0F, 1.0F).optionalFieldOf("low_factor", 1.0F).forGetter(Guard::lowFactor)
         ).apply(i, Guard::new));
 
         public boolean active() {
-            return factor < 1.0F;
+            return factor < 1.0F || lowFactor < 1.0F;
+        }
+
+        /**
+         * Fusoes (Couraca Adaptativa do Couracado): com a vida abaixo de {@code low_health_below} a guarda passa a
+         * {@code low_factor} (a couraca cede).
+         */
+        public float factorAt(float healthFraction) {
+            return healthFraction < lowHealthBelow ? lowFactor : factor;
         }
     }
 

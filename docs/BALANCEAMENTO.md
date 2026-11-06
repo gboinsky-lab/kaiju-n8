@@ -1567,3 +1567,20 @@ Medidas e motivos em `docs/MATRIZ_DECISOES.md`; números aplicados por `tools/da
 | Camilly distância | 14 (recua de 8) | 16 (recua de 10) | idem |
 
 [SUPOSIÇÃO] todos os números. Camilly × No. 13 1/2; Hoshina No. 10 × No. 2 e No. 6 ainda 3/0.
+
+## Fusões do No. 9: o que faltou da Etapa 6 (FUSOES-2, 2026-11-06)
+
+O dossiê de fusões não ficou salvo; as passivas foram propostas pelo nome (Miguel: "Proponha você"). Números em
+`tools/data/gen_fusoes.py`.
+
+| O quê | Valor | Onde |
+|---|---|---|
+| Pressão Abissal (Abissal) | cada golpe de habilidade que acerta põe 1 carga no alvo; com 4 (somem 30 s sem golpe novo), golpe de pressão de 0,8 × o dano e Lentidão II por 3 s | `kaiju_ai/kaiju_no9_no11.json` `charges` |
+| Consciência Expandida (Neural) | prevê o golpe repetido (como o No. 1, uma vez a cada 5 s; finta deixa +15% por 1,5 s); cada golpe previsto guarda 1 carga; com 3 (somem 20 s), o próximo golpe sai × 1,5 | `kaiju_ai/kaiju_no9_no15.json` `foresight`/`charges` |
+| Couraça Adaptativa (Couraçado) | 18% a menos de frente; abaixo de 65% da vida, 8% | `kaiju_ai/kaiju_no9_no14.json` `guard.low_*` |
+| Tentáculos Perfurantes (Neural) | puxam quem acertam (0,9) | `ability/no9_neural_tentacles.json` |
+| Distorção e Domínio (Neural) | controle mental: 60 e 80 ticks | `ability/no9_neural_distortion.json`, `no9_neural_domain.json` |
+
+[SUPOSIÇÃO] todos os números. Hoshina No. 10 × Abissal 2/0/1 (3 duelos; 5 golpes de pressão), × Neural 0/0/2 (9
+golpes fortes, a Neural fica com ~49%), × Couraçado 0/0/2 (fica com ~42%). Na 7-D: 0/1/2, 0/0/3 e 0/0/3 (24-29%); a
+diferença do Couraçado vem também da MATRIZ-2 (o Hoshina não sai mais andando de todo golpe pesado).

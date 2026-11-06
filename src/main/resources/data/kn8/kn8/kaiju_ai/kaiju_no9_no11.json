@@ -35,6 +35,14 @@
   "terrain": {
     "water_malus": 0.0
   },
+  "charges": {
+    "max": 4,
+    "on_hit": 1,
+    "decay_ticks": 600,
+    "burst_damage": 0.8,
+    "slow_ticks": 60,
+    "slow_level": 2
+  },
   "habits": {
     "window_ticks": 200,
     "sample_ticks": 10,

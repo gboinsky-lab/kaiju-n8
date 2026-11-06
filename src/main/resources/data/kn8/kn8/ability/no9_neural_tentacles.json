@@ -19,6 +19,7 @@
     "max_range": 14,
     "projectile_speed": 2.6,
     "projectile_range": 18,
-    "color": "#E040B0"
+    "color": "#E040B0",
+    "pull": 0.9
   }
 }

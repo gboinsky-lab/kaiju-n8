@@ -80,9 +80,99 @@ public final class No9FusionGameTests {
             ironclad.tickCount = 100;
             helper.assertTrue(!ironclad.isShielded() && !ironclad.isShieldDown(),
                     "Muralha aberta nao vira brecha");
+            // Couraca cede abaixo de 65%: de 18% para 8% a menos de frente.
+            float strong = ironclad.frontGuard(fromFrontSource);
+            ironclad.setHealth(ironclad.getMaxHealth() * 0.5F);
+            float weak = ironclad.frontGuard(fromFrontSource);
+            helper.assertTrue(Math.abs(strong - 0.82F) < 0.01F && Math.abs(weak - 0.92F) < 0.01F,
+                    "Couraca 0,82 -> 0,92 abaixo de 65%: " + strong + " -> " + weak);
             ironclad.discard();
             front.discard();
             back.discard();
+            helper.succeed();
+        });
+    }
+
+    /** Pressao Abissal: 3 golpes deixam 3 cargas; o quarto estoura (dano extra, Lentidao) e zera. */
+    @GameTest(template = TEMPLATE, batch = "kn8_fusao_pressao")
+    public static void abyssalPressureChargesBurstOnTheFourthHit(GameTestHelper helper) {
+        KaijuEntity abyss = KaijuSpawner.spawn(helper.getLevel(), KN8Constants.id("kaiju_no9_no11"),
+                helper.absolutePos(new BlockPos(3, 1, 7))).orElseThrow();
+        abyss.setNoAi(true);
+        IronGolem golem = helper.spawn(EntityType.IRON_GOLEM, new BlockPos(11, 1, 7));
+        golem.setNoAi(true);
+        helper.runAfterDelay(3, () -> {
+            var behavior = KN8Data.ABILITY.server().get(KN8Constants.id("no9_abyss_blade")).behavior();
+            for (int i = 0; i < 3; i++) {
+                abyss.applyAbilityEffects(golem, behavior);
+            }
+            helper.assertTrue(abyss.chargesOn(golem) == 3, "3 cargas, veio " + abyss.chargesOn(golem));
+            float before = golem.getHealth();
+            abyss.applyAbilityEffects(golem, behavior);
+            helper.assertTrue(abyss.chargesOn(golem) == 0, "Cargas zeram no estouro");
+            helper.assertTrue(golem.getHealth() < before, "Golpe de pressao fere: " + before + " -> "
+                    + golem.getHealth());
+            helper.assertTrue(golem.hasEffect(net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN),
+                    "Golpe de pressao deixa lento");
+            abyss.discard();
+            golem.discard();
+            helper.succeed();
+        });
+    }
+
+    /**
+     * Consciencia Expandida: o Neural preve o golpe repetido (um por 100 ticks); cada previsao guarda uma carga e,
+     * com 3, o proximo golpe dele sai x1,5 uma vez.
+     */
+    @GameTest(template = TEMPLATE, batch = "kn8_fusao_consciencia", timeoutTicks = 400)
+    public static void neuralDodgesChargeTheNextStrike(GameTestHelper helper) {
+        KaijuEntity neural = KaijuSpawner.spawn(helper.getLevel(), KN8Constants.id("kaiju_no9_no15"),
+                helper.absolutePos(new BlockPos(3, 1, 7))).orElseThrow();
+        neural.setNoAi(true);
+        IronGolem golem = helper.spawn(EntityType.IRON_GOLEM, new BlockPos(11, 1, 7));
+        golem.setNoAi(true);
+        int[] dodges = {0};
+        // Primeiro golpe marca o tipo; os seguintes do mesmo tipo sao previstos quando a recarga deixa.
+        for (int tick : new int[] {3, 5, 110, 220}) {
+            helper.runAfterDelay(tick, () -> {
+                float health = neural.getHealth();
+                neural.invulnerableTime = 0;
+                boolean hurt = neural.hurt(helper.getLevel().damageSources().mobAttack(golem), 1.0F);
+                if (!hurt && neural.getHealth() == health) {
+                    dodges[0]++;
+                }
+            });
+        }
+        helper.runAfterDelay(230, () -> {
+            helper.assertTrue(dodges[0] == 3, "3 golpes previstos, vieram " + dodges[0]);
+            helper.assertTrue(neural.isEmpowered(), "3 cargas deixam o proximo golpe forte");
+            helper.assertTrue(Math.abs(neural.consumeEmpower() - 1.5F) < 0.01F, "Golpe forte x1,5");
+            helper.assertTrue(!neural.isEmpowered() && neural.consumeEmpower() == 1.0F, "So um golpe forte");
+            neural.discard();
+            golem.discard();
+            helper.succeed();
+        });
+    }
+
+    /** Tentaculos do Neural puxam quem acertam e Distorcao/Dominio tomam a mente (controle mental). */
+    @GameTest(template = TEMPLATE, batch = "kn8_fusao_tentaculos")
+    public static void neuralTentaclesPullAndDomainControlsTheMind(GameTestHelper helper) {
+        KaijuEntity neural = KaijuSpawner.spawn(helper.getLevel(), KN8Constants.id("kaiju_no9_no15"),
+                helper.absolutePos(new BlockPos(3, 1, 7))).orElseThrow();
+        neural.setNoAi(true);
+        IronGolem golem = helper.spawn(EntityType.IRON_GOLEM, new BlockPos(11, 1, 7));
+        helper.runAfterDelay(3, () -> {
+            golem.setTarget(neural);
+            neural.applyAbilityEffects(golem, KN8Data.ABILITY.server().get(KN8Constants.id("no9_neural_tentacles"))
+                    .behavior());
+            helper.assertTrue(golem.getDeltaMovement().dot(neural.position().subtract(golem.position())) > 0.0,
+                    "Puxado para o Neural: " + golem.getDeltaMovement());
+            neural.applyAbilityEffects(golem, KN8Data.ABILITY.server().get(KN8Constants.id("no9_neural_domain"))
+                    .behavior());
+            helper.assertTrue(golem.getTarget() == null
+                    && golem.hasEffect(net.minecraft.world.effect.MobEffects.WEAKNESS), "Mente tomada: larga o alvo");
+            neural.discard();
+            golem.discard();
             helper.succeed();
         });
     }

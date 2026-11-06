@@ -533,7 +533,7 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
             Vec3 ghost = position().add((random.nextDouble() - 0.5) * getBbWidth() * 2.0, getBbHeight() * 0.5,
                     (random.nextDouble() - 0.5) * getBbWidth() * 2.0);
             VfxService.keyed(level, VfxService.SMOKE, ghost, Vec3.ZERO, 0.8F, "#C8A8FF", getBbHeight());
-            return true;
+            return dodged();
         }
         KaijuAiDef.Foresight foresight = aiDef().foresight();
         if (!foresight.enabled() || source.is(DamageTypeTags.IS_EXPLOSION)) {
@@ -553,13 +553,96 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
             VfxService.keyed(level, VfxService.SMOKE, position().add(0.0, getBbHeight() * 0.5, 0.0), side, 0.8F,
                     "#FFFFFF", getBbHeight());
             AiTuning.logMove(this, "previsao: esquivou o golpe " + kind);
-            return true;
+            return dodged();
         }
         if (last != null && !kind.equals(last)) {
             markVulnerable(foresight.feintTicks(), 1.0F + foresight.feintBonus());
             AiTuning.logMove(this, "finta: previsao errou (" + last + " -> " + kind + ")");
         }
         return false;
+    }
+
+    /** Fusoes: cargas da passiva em cada alvo (contagem, ultimo tick) e no proprio kaiju. */
+    private final java.util.Map<java.util.UUID, long[]> targetCharges = new java.util.HashMap<>();
+    private int selfCharges;
+    private long selfChargeTick;
+    private boolean empowered;
+
+    /** Fusoes (Consciencia Expandida): golpe desviado guarda carga; cheio, o proximo golpe sai mais forte. */
+    private boolean dodged() {
+        KaijuAiDef.Charges charges = aiDef().charges();
+        if (!charges.onSelf() || empowered) {
+            return true;
+        }
+        long now = level().getGameTime();
+        if (now - selfChargeTick > charges.decayTicks()) {
+            selfCharges = 0;
+        }
+        selfChargeTick = now;
+        selfCharges += charges.onDodge();
+        if (selfCharges >= charges.max()) {
+            selfCharges = 0;
+            empowered = true;
+            VfxService.keyed((ServerLevel) level(), VfxService.SMOKE, position().add(0.0, getBbHeight() * 0.6, 0.0),
+                    Vec3.ZERO, 1.2F, "#FFE6F8", getBbHeight());
+            AiTuning.logMove(this, "cargas cheias: proximo golpe x" + charges.empower());
+        }
+        return true;
+    }
+
+    /** Multiplicador do proximo golpe (gasta a carga cheia). */
+    public float consumeEmpower() {
+        if (!empowered) {
+            return 1.0F;
+        }
+        empowered = false;
+        return aiDef().charges().empower();
+    }
+
+    public int selfCharges() {
+        return selfCharges;
+    }
+
+    public boolean isEmpowered() {
+        return empowered;
+    }
+
+    /**
+     * Fusoes (Pressao Abissal): golpe de habilidade que acerta poe carga no alvo; cheio, o alvo leva o golpe de
+     * pressao e Lentidao e a contagem zera.
+     */
+    private void chargeTarget(LivingEntity target) {
+        KaijuAiDef.Charges charges = aiDef().charges();
+        if (!charges.onTarget() || !target.isAlive()) {
+            return;
+        }
+        long now = level().getGameTime();
+        targetCharges.values().removeIf(entry -> now - entry[1] > charges.decayTicks());
+        long[] entry = targetCharges.computeIfAbsent(target.getUUID(), id -> new long[2]);
+        entry[0] += charges.onHit();
+        entry[1] = now;
+        if (entry[0] < charges.max()) {
+            return;
+        }
+        targetCharges.remove(target.getUUID());
+        if (charges.slowTicks() > 0 && charges.slowLevel() > 0) {
+            target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, charges.slowTicks(),
+                    charges.slowLevel() - 1), this);
+        }
+        if (charges.burstDamage() > 0.0F) {
+            target.invulnerableTime = 0;
+            target.hurt(damageSources().mobAttack(this),
+                    (float) (getAttributeValue(Attributes.ATTACK_DAMAGE) * charges.burstDamage()));
+        }
+        VfxService.keyed((ServerLevel) level(), VfxService.SMOKE, target.position().add(0.0,
+                target.getBbHeight() * 0.5, 0.0), Vec3.ZERO, 1.0F, "#46D3E2", target.getBbHeight());
+        AiTuning.logMove(this, "cargas cheias no alvo: golpe de pressao");
+    }
+
+    /** Cargas da passiva num alvo (0 sem carga). */
+    public int chargesOn(LivingEntity target) {
+        long[] entry = targetCharges.get(target.getUUID());
+        return entry == null ? 0 : (int) entry[0];
     }
 
     /** Etapa 7-C: proxima fracao de vida da divisao, ate quando dura a divisao em curso e o nucleo no inicio dela. */
@@ -716,7 +799,7 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
             VfxService.play(server, VfxService.PARRY, position().add(toAttacker.normalize().scale(getBbWidth() * 0.5))
                     .add(0.0, getBbHeight() * 0.5, 0.0), toAttacker, 1.0F, 0.0F, this);
         }
-        return guard.factor();
+        return guard.factorAt(getHealth() / getMaxHealth());
     }
 
     /** Etapa 5/6: o golpe vem de dentro do arco da frente (360 = qualquer lado; sem posicao de origem, nao)? */
@@ -1423,7 +1506,8 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
             pendingBlocked = true;
             return false;
         }
-        float damage = (float) (getAttributeValue(Attributes.ATTACK_DAMAGE) * ability.damageMultiplier());
+        float damage = (float) (getAttributeValue(Attributes.ATTACK_DAMAGE) * ability.damageMultiplier())
+                * consumeEmpower();
         dealingHeavyHit = ability.heavy();
         boolean hurt;
         try {
@@ -1470,6 +1554,7 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
             VfxService.keyed((ServerLevel) level(), VfxService.SMOKE, target.getEyePosition(), Vec3.ZERO, 0.6F,
                     "#C8A8FF", target.getBbHeight());
         }
+        chargeTarget(target);
     }
 
     /**

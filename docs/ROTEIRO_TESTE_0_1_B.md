@@ -2088,3 +2088,14 @@ Imagem: `docs/img/r1_invasao_save_antigo.jpg`.
 | 151.1 | Soldados comuns perto de um `kn8:kaiju_no2` a 30 blocos | Quem está longe da borda da onda de choque (aviso no chão) fica e leva o golpe; quem está perto da borda sai andando |
 | 151.2 | `[soldierAi] dangerStepPerSpeed` = 10 no config | Os soldados voltam a sair de todo aviso, como antes |
 | 151.3 | `kn8:camilly` contra `kn8:kaiju_no13` a 14 blocos | Ela recua mais longe, apara e esquiva com frequência; vence às vezes |
+
+## 152. FUSOES-2: passivas, couraça, puxão e controle mental das fusões do No. 9
+
+| # | Passo | Esperado |
+|---|---|---|
+| 152.1 | `/summon kn8:kaiju_no9_no11` perto de soldados com `[kaijuAi] debugLog` ligado | Depois de 4 golpes da Abissal no mesmo alvo: fumaça ciano nele, dano extra e lentidão; log `cargas cheias no alvo` |
+| 152.2 | `/summon kn8:kaiju_no9_no15` e bater nele sempre com a mesma arma | Ele esquiva para o lado a cada ~5 s; depois de 3 esquivas, fumaça rosa clara e o próximo golpe dele tira mais (log `cargas cheias: proximo golpe x1.5`) |
+| 152.3 | Trocar de arma no meio (espada → rifle) | A esquiva erra (log `finta`) e ele leva mais por um instante |
+| 152.4 | Ser atingido pelos tentáculos do Neural | O jogador é puxado na direção dele |
+| 152.5 | Ficar no Domínio Cerebral ou na Distorção Neural (abaixo de 70%) | Náusea e escuridão no jogador; soldados largam o alvo e ficam fracos |
+| 152.6 | `/summon kn8:kaiju_no9_no14`, bater de frente com e sem `/data merge` deixando ~50% da vida | De frente ele leva um pouco mais abaixo de 65% (couraça cede) |

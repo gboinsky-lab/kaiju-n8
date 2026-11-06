@@ -37,7 +37,9 @@
     "factor": 0.82,
     "front_arc_degrees": 140.0,
     "open_after_attack_ticks": 20,
-    "blocks_heavy": true
+    "blocks_heavy": true,
+    "low_health_below": 0.65,
+    "low_factor": 0.92
   },
   "shield": {
     "reduction": 0.65,

@@ -44,6 +44,11 @@ def phase(ability, below):
     return ability
 
 
+def extra(ability, **behavior):
+    ability["behavior"].update(behavior)
+    return ability
+
+
 def fusion(health, damage, armor, speed, height, moves, tags):
     data = humanoid(health, damage, armor, speed, 9.6, height / 2.0, 2.0, moves, tags, 5, "medium")
     data["rage"] = {"health_below": 0.3, "damage_multiplier": 1.2, "speed_multiplier": 1.1,
@@ -78,8 +83,10 @@ def abyss():
                              L("smoke", "secondary", size=0.8, speed=0.06, spread=4.0, lifetime=26, forward=0,
                                up=0.4)],
     })
+    # Pressao Abissal [SUPOSICAO]: cada golpe que acerta poe uma carga no alvo (dura 30 s); com 4, golpe de pressao e Lentidao.
     ai_data = ai("support", group={"role": "support", "support_distance": 10.0}, terrain={"water_malus": 0.0},
-                 **SMART)
+                 charges={"max": 4, "on_hit": 1, "decay_ticks": 600, "burst_damage": 0.8, "slow_ticks": 60,
+                          "slow_level": 2}, **SMART)
     return "kaiju_no9_no11", moves, data, ai_data, vfx
 
 
@@ -87,12 +94,15 @@ def neural():
     pink = "#E040B0"
     moves = {
         "no9_neural_fists": flurry(0.5, 4.5, 4, 5, 160, "action.flurry", 2, 4.5),
-        "no9_neural_tentacles": projectile(1.65, 10, 200, "action.point", 3, 4, 14, pink, speed=2.6),
-        "no9_neural_distortion": phase(area(0.55, 9.0, 16, 340, "action.wave", 3, 8.0, sound="kn8:kaiju.roar",
-                                            slow_ticks=60, slow_level=1), 0.7),
+        # Tentaculos puxam quem acertam; Distorcao e Dominio tomam a mente (controle mental do No. 15).
+        "no9_neural_tentacles": extra(projectile(1.65, 10, 200, "action.point", 3, 4, 14, pink, speed=2.6),
+                                      pull=0.9),
+        "no9_neural_distortion": extra(phase(area(0.55, 9.0, 16, 340, "action.wave", 3, 8.0, sound="kn8:kaiju.roar",
+                                                  slow_ticks=60, slow_level=1), 0.7), mental_ticks=60),
         "no9_neural_cage": phase(projectile(0.6, 14, 380, "action.beam", 3, 3, 14, "#F7B8E8", speed=2.2, hits=3,
                                             arc_degrees=50, slow_ticks=44, slow_level=5), 0.7),
-        "no9_neural_domain": phase(flurry(0.67, 11.0, 6, 6, 1200, "action.domain", 5, 11.0), 0.35),
+        "no9_neural_domain": extra(phase(flurry(0.67, 11.0, 6, 6, 1200, "action.domain", 5, 11.0), 0.35),
+                                   mental_ticks=80),
     }
     data = fusion(6800.0, 58.0, 21.0, 0.42, 3.0, moves, ["intelligent", "fusion", "psychic"])
     vfx = palette("#7A2AA8", "#F2E6EE", pink, "#FFE6F8", "energy", {
@@ -107,7 +117,11 @@ def neural():
                               L("bolt", "accent", "burst", 8, 0.08, 0.0, 4.0, 10, 0, 1.0),
                               L("pulse", "primary", size=3.0, spread=3.0, lifetime=12, forward=0, up=1.6)],
     })
-    ai_data = ai("flanker", circle_chance=0.4, chase_speed=1.25, **SMART)
+    # Consciencia Expandida [SUPOSICAO]: preve o golpe repetido (como o No. 1, mais lenta) e cada golpe desviado guarda
+    # uma carga; com 3, o proximo golpe dela sai x1,5.
+    ai_data = ai("flanker", circle_chance=0.4, chase_speed=1.25,
+                 foresight={"enabled": True, "cooldown_ticks": 100, "feint_bonus": 0.15, "feint_ticks": 30},
+                 charges={"max": 3, "on_dodge": 1, "decay_ticks": 400, "empower": 1.5}, **SMART)
     return "kaiju_no9_no15", moves, data, ai_data, vfx
 
 
@@ -140,7 +154,7 @@ def armored():
     })
     ai_data = ai("aggressor", recovery_after_heavy_ticks=24, look_speed=10.0,
                  guard={"factor": 0.82, "front_arc_degrees": 140.0, "open_after_attack_ticks": 20,
-                        "blocks_heavy": True},
+                        "blocks_heavy": True, "low_health_below": 0.65, "low_factor": 0.92},
                  shield={"reduction": 0.65, "up_ticks": 70, "down_ticks": 290, "front_arc_degrees": 120.0,
                          "exposed": False}, **SMART)
     return "kaiju_no9_no14", moves, data, ai_data, vfx
@@ -187,6 +201,12 @@ def main():
             vfx["effects"].setdefault(name, HIT)
         vfx["effects"].setdefault("claw", HIT)
         write("kaiju", kaiju_id, data)
+        # Mantem o que os geradores seguintes poem no kaiju_ai (resistencia dos chefes da 7-C).
+        old = DATA / "kaiju_ai" / f"{kaiju_id}.json"
+        if old.exists():
+            previous = json.loads(old.read_text(encoding="utf-8"))
+            if "control_resist" in previous:
+                ai_data["control_resist"] = previous["control_resist"]
         write("kaiju_ai", kaiju_id, ai_data)
         write("numbered", kaiju_id, base)
         write("locomotion", kaiju_id, {"stride": round(1.4 * data["dimensions"]["scale"], 1)})

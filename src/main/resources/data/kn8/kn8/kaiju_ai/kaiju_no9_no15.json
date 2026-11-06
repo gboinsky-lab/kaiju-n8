@@ -31,6 +31,18 @@
   "group": {
     "role": "flanker"
   },
+  "foresight": {
+    "enabled": true,
+    "cooldown_ticks": 100,
+    "feint_bonus": 0.15,
+    "feint_ticks": 30
+  },
+  "charges": {
+    "max": 3,
+    "on_dodge": 1,
+    "decay_ticks": 400,
+    "empower": 1.5
+  },
   "habits": {
     "window_ticks": 200,
     "sample_ticks": 10,
