@@ -199,6 +199,33 @@ SPECIES = {
     # 0.7-A (modelos do Miguel, 2026-10-08): Philinosoma (Honju lagarto, 9 m, cauda longa para tras e para a direita)
     # e Diclonius (Honju em pe estilo Godzilla, 9 m, placas nas costas, cauda em S que sobe na ponta). Mesmos ossos
     # do Primigenius (geo inicial copiado do No. 10 pequeno); juntas medidas nas vistas com o esqueleto por cima.
+    # NUMERADOS-B (modelos do Miguel de 2026-11-05, sem rig): No. 2 (pose T, cauda longa para tras) e No. 6 (cauda
+    # dupla que sobe atras: as duas metades vao na mesma cadeia de cauda). Juntas medidas nas vistas do OBJ
+    # convertido (9 m; a altura real vem do dimensions.scale).
+    "kaiju_no2": {
+        "recenter_feet": True, "jaw_y": 8.0, "jaw_z": -1.16, "feet_max_z": -2.0,
+        "skeleton": {
+            "pelvis": [-0.02, 4.20, 0.74], "chest": [-0.02, 5.80, 0.14], "back": [-0.02, 7.00, 0.74],
+            "neck": [-0.02, 7.40, -0.46], "head": [-0.02, 8.30, -1.06],
+            "shoulder_left": [-1.52, 6.60, 0.14], "elbow_left": [-3.22, 6.60, 0.14], "hand_left": [-5.02, 6.50, 0.14],
+            "shoulder_right": [1.48, 6.60, 0.14], "elbow_right": [3.18, 6.60, 0.14], "hand_right": [4.98, 6.50, 0.14],
+            "hip_left": [-0.92, 3.80, 0.54], "knee_left": [-1.12, 2.00, 0.34], "foot_left": [-1.32, 0.20, -0.06],
+            "hip_right": [0.88, 3.80, 0.54], "knee_right": [1.08, 2.00, 0.34], "foot_right": [1.28, 0.20, -0.06],
+            "tail_base": [-0.02, 3.50, 2.24], "tail_mid": [-0.02, 1.80, 5.24], "tail_tip": [-0.02, 0.30, 8.94],
+        },
+    },
+    "kaiju_no6": {
+        "recenter_feet": True, "jaw_y": 6.4, "jaw_z": -0.63, "feet_max_z": 0.0,
+        "skeleton": {
+            "pelvis": [-0.02, 3.20, 1.37], "chest": [-0.02, 5.00, 1.07], "back": [-0.02, 6.50, 1.87],
+            "neck": [-0.02, 6.40, 0.27], "head": [-0.02, 6.90, -0.43],
+            "shoulder_left": [-1.62, 5.70, 1.07], "elbow_left": [-2.82, 5.70, 1.07], "hand_left": [-4.02, 5.50, 1.07],
+            "shoulder_right": [1.58, 5.70, 1.07], "elbow_right": [2.78, 5.70, 1.07], "hand_right": [3.98, 5.50, 1.07],
+            "hip_left": [-0.92, 3.00, 1.27], "knee_left": [-1.02, 1.70, 0.87], "foot_left": [-1.12, 0.20, 0.27],
+            "hip_right": [0.88, 3.00, 1.27], "knee_right": [0.98, 1.70, 0.87], "foot_right": [1.08, 0.20, 0.27],
+            "tail_base": [-0.02, 2.50, 2.67], "tail_mid": [-0.02, 3.50, 3.87], "tail_tip": [-0.02, 8.50, 4.17],
+        },
+    },
     "philinosoma": {
         "recenter_feet": True, "jaw_y": 6.8, "jaw_z": -2.55, "feet_max_z": -1.0,
         "skeleton": {

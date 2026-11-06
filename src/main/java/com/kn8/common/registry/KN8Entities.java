@@ -144,6 +144,16 @@ public final class KN8Entities {
     public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> KAIJU_NO15_KIKORU = kaiju(
             "kaiju_no15_kikoru", 0.6F, 1.6F);
     /**
+     * NUMERADOS-B (modelos do Miguel de 2026-11-05, sem rig): No. 2 (25 m) e No. 6 (22 m) nos ossos do Primigenius
+     * Honju (modelo de 9 m) e No. 14 (monolito que flutua, um osso so, 10 m). Altura real pelo dimensions.scale.
+     */
+    public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> KAIJU_NO2 = kaiju(
+            "kaiju_no2", 4.0F, 9.0F);
+    public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> KAIJU_NO6 = kaiju(
+            "kaiju_no6", 5.0F, 9.0F);
+    public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> KAIJU_NO14 = kaiju(
+            "kaiju_no14", 2.6F, 7.0F);
+    /**
      * AJUSTES-2 (Miguel 2026-11-05): Kaiju No. 8 sem controle, inimigo, pequeno (3 m) e gigante (22 m). Arte do
      * No. 8 com a textura vermelha ({@link #MODEL_ALIASES}, {@link #textureSpecies}); escala no kaiju/*.json.
      */
@@ -435,7 +445,8 @@ public final class KN8Entities {
                     PREONDACTYL, PHILINOSOMA, DICLONIUS, CAMPONOTUS, CAMPONOTUS_REBORN, PHANEROPLASMODIUM,
                     MYXOGASTEROCARP, KAIJU_LARVA, KAIJU_NO9_BLACK, KAIJU_NO9_FUSION, KAIJU_NO9_CAMPONOTUS,
                     KAIJU_NO9_FUSION_GIANT, KAIJU_NO9_ISAO, KAIJU_NO13, KAIJU_NO8_RAMPAGE, KAIJU_NO8_RAMPAGE_GIANT,
-                    KAIJU_NO1, KAIJU_NO11, KAIJU_NO12, KAIJU_NO15, KAIJU_NO15_KIKORU);
+                    KAIJU_NO1, KAIJU_NO11, KAIJU_NO12, KAIJU_NO15, KAIJU_NO15_KIKORU,
+                    KAIJU_NO2, KAIJU_NO6, KAIJU_NO14);
 
     private KN8Entities() {
     }

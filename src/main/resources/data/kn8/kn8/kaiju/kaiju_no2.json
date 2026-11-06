@@ -1,0 +1,106 @@
+{
+  "class": "numbered",
+  "fortitude": 9.4,
+  "size": "supergiant",
+  "dimensions": {
+    "width": 4.0,
+    "height": 9.0,
+    "scale": 2.7777777777777777
+  },
+  "overrides": {
+    "health": 2600.0,
+    "damage": 58.0,
+    "armor": 20.0
+  },
+  "speed": 0.28,
+  "intelligence": 4,
+  "parts": [
+    {
+      "name": "head",
+      "offset": [
+        0.0,
+        7.0200000000000005,
+        1.1
+      ],
+      "width": 1.4,
+      "height": 1.8,
+      "multiplier": 1.2
+    },
+    {
+      "name": "torso",
+      "offset": [
+        0.0,
+        2.6999999999999997,
+        0.0
+      ],
+      "width": 2.8,
+      "height": 4.5,
+      "multiplier": 1.0
+    },
+    {
+      "name": "core",
+      "offset": [
+        0.0,
+        4.95,
+        0.6
+      ],
+      "width": 1.0,
+      "height": 1.0,
+      "multiplier": 3.0,
+      "core": true
+    },
+    {
+      "name": "legs",
+      "offset": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "width": 3.2,
+      "height": 2.97,
+      "multiplier": 0.8
+    },
+    {
+      "name": "tail",
+      "offset": [
+        0.0,
+        0.4,
+        -3.2
+      ],
+      "width": 2.0,
+      "height": 2.6999999999999997,
+      "multiplier": 0.7
+    }
+  ],
+  "core": {
+    "health_fraction": 0.25,
+    "exposed_on": [
+      "heavy_hit"
+    ]
+  },
+  "abilities": [
+    "kn8:no2_punch",
+    "kn8:no2_crush",
+    "kn8:no2_shockwave",
+    "kn8:no2_mouth_discharge",
+    "kn8:no2_rush",
+    "kn8:no2_tail"
+  ],
+  "weaknesses": [],
+  "spawn": {
+    "natural": false
+  },
+  "rarity": "event",
+  "tags": [
+    "numbered",
+    "reptile",
+    "giant",
+    "tank"
+  ],
+  "rage": {
+    "health_below": 0.35,
+    "damage_multiplier": 1.15,
+    "speed_multiplier": 1.1,
+    "cooldown_multiplier": 0.75
+  }
+}

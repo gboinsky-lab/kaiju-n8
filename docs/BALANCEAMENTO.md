@@ -1421,6 +1421,16 @@ Jogador e personagem com o mesmo tamanho (`real_length_m` e `held_scale` em `too
 | Numbers 6 (armadura do Reno) | armadura 16, dureza 2,5, resistência ao calor 0,45, aura `reno_no6_ice` | `suit/numbers6_suit.json`, `workbench/numbers6_suit.json` |
 | Katana longa (Soshiro/Soichiro) | dano 10, alcance 3,8, combo da espada; especial Iai (`lunge` x2,2, 6 blocos, recarga 140); 1,0 m na mão; patente Vice-Capitão | `weapon/katana.json`, `rank/vice_capitao.json` |
 
+### NUMERADOS-B: No. 2, No. 6 e No. 14 (2026-11-06)
+
+Números do "Balanceamento Completo dos Kaijus" v1.0 do Miguel (`docs/referencias_balanceamento/`). Alturas: No. 2 25 m e No. 6 22 m (tabela mestra), No. 14 10 m [SUPOSIÇÃO].
+
+| Kaiju | Vida / dano / armadura / vel. | Tier | Habilidades (multiplicador; recarga em ticks) |
+|---|---|---|---|
+| No. 2 | 2.600 / 58 / 20 / 0,28 | T8+ | Soco 1,8 (pesado; 70), Esmagamento 2,5 (área 4,5; 160), Onda de choque 1,6 (área 9; 200), Descarga pela boca 3,2 (pesada, carga 24; 280), Investida 1,7 (140), Rabada 1,4 (90) |
+| No. 6 | 3.800 / 62 / 19 / 0,34 | T8+ | Garra 1,2 (50), Sopro gelado 6 x 0,5 com Lentidão II (160), Estaca de gelo 1,7 (110), Avalanche 2,4 com Lentidão III (200), Campo congelante 0,35 com Lentidão III por 5 s (área 10; 300), Rabada 1,5 (90) |
+| No. 14 | 3.000 / 50 / 24 / 0,30 | T8 | Raio pelas faces 1,5 (50), Salva 4 x 0,7 (160), Pulso 1,8 (área 4; 120), Campo esmagador 2,4 (área 6; 240), Teleporte curto 1,2 (200); armadura 24 no lugar do campo de força de 35% [DECIDIR] |
+
 ### NUMERADOS-A: No. 1, No. 11, No. 12 e No. 15 (2026-11-06) [SUPOSIÇÃO]
 
 | Kaiju | Altura | Vida / dano / armadura / vel. | Fortitude | Habilidades (multiplicador; recarga em ticks) |

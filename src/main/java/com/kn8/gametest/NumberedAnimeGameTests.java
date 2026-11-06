@@ -17,7 +17,7 @@ import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
 /**
- * NUMERADOS-A (modelos do Miguel de 2026-11-05): No. 1, No. 11, No. 12 e No. 15 (duas formas) com os dados, as
+ * NUMERADOS-A e B (modelos do Miguel de 2026-11-05): No. 1, 2, 6, 11, 12, 14 e 15 (duas formas) com os dados, as
  * habilidades do dossie (todas com receita visual quando atiram) e lugar nas invasoes; o No. 1 na altura da tabela
  * mestra (20 m).
  */
@@ -31,8 +31,10 @@ public final class NumberedAnimeGameTests {
     @GameTest(template = "empty_15x12x15", batch = "kn8_numerados_a")
     public static void animeNumberedKaijuHaveDataAndAppear(GameTestHelper helper) {
         List<EntityType<KaijuEntity>> types = List.of(KN8Entities.KAIJU_NO1.get(), KN8Entities.KAIJU_NO11.get(),
-                KN8Entities.KAIJU_NO12.get(), KN8Entities.KAIJU_NO15.get(), KN8Entities.KAIJU_NO15_KIKORU.get());
-        List<String> ids = List.of("kaiju_no1", "kaiju_no11", "kaiju_no12", "kaiju_no15", "kaiju_no15_kikoru");
+                KN8Entities.KAIJU_NO12.get(), KN8Entities.KAIJU_NO15.get(), KN8Entities.KAIJU_NO15_KIKORU.get(),
+                KN8Entities.KAIJU_NO2.get(), KN8Entities.KAIJU_NO6.get(), KN8Entities.KAIJU_NO14.get());
+        List<String> ids = List.of("kaiju_no1", "kaiju_no11", "kaiju_no12", "kaiju_no15", "kaiju_no15_kikoru",
+                "kaiju_no2", "kaiju_no6", "kaiju_no14");
         for (int i = 0; i < ids.size(); i++) {
             ResourceLocation id = KN8Constants.id(ids.get(i));
             KaijuDef def = KN8Data.KAIJU.server().get(id);

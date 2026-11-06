@@ -131,6 +131,31 @@
       "windup": "kn8:kaiju.energy_charge",
       "release": "kn8:kaiju.energy_beam",
       "travel": "kn8:travel.energy_beam"
+    },
+    "no2_mouth_discharge": {
+      "windup": "kn8:kaiju.energy_charge",
+      "release": "kn8:kaiju.energy_beam",
+      "travel": "kn8:travel.energy_beam"
+    },
+    "no6_frost_breath": {
+      "windup": "kn8:kaiju.energy_charge",
+      "release": "kn8:kaiju.energy_beam",
+      "travel": "kn8:travel.energy_beam"
+    },
+    "no6_ice_stake": {
+      "windup": "kn8:kaiju.energy_charge",
+      "release": "kn8:kaiju.energy_beam",
+      "travel": "kn8:travel.energy_beam"
+    },
+    "no14_face_beam": {
+      "windup": "kn8:kaiju.energy_charge",
+      "release": "kn8:kaiju.energy_beam",
+      "travel": "kn8:travel.energy_beam"
+    },
+    "no14_beam_volley": {
+      "windup": "kn8:kaiju.energy_charge",
+      "release": "kn8:kaiju.energy_beam",
+      "travel": "kn8:travel.energy_beam"
     }
   }
 }

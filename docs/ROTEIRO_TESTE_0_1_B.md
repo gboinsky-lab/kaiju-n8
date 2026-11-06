@@ -1955,3 +1955,16 @@ Imagem: `docs/img/numerados_a.jpg`. Modelos do Miguel de 2026-11-05 com o rig do
 | 139.3 | No. 1 e No. 15 contra especiais | No. 1: golpe quase sem preparo (ataque inevitavel), golpes no ponto fraco, feixe dos olhos rapido e leque de feixes; No. 15: feixe pela boca (unico ou em leque), conexao psiquica (Lentidao V), membro-machado, voo e mergulho |
 | 139.4 | Invasoes `ariake_assault` (No. 11, 35%), `tachikawa_raid` (No. 12, 35%; forma Kikoru do No. 15, 25%), `no10_assault` (No. 15, 30%), `mass_resurrection` (No. 1, 20%) | Eles podem aparecer nas ondas; aviso de ameaca grande quando aparecem |
 | 139.5 | Segundo cliente olhando | Os mesmos modelos, tamanhos e efeitos |
+
+## 140. NUMERADOS-B: No. 2, No. 6 e No. 14
+
+Imagem: `docs/img/numerados_b.jpg`. Modelos do Miguel de 2026-11-05 (sem rig); numeros do "Balanceamento Completo dos Kaijus" v1.0.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 140.1 | `/summon kn8:kaiju_no2`, `kaiju_no6`, `kaiju_no14` | No. 2 com 25 m (rochoso verde-oliva, cauda longa, bracos abertos), No. 6 com 22 m (preto com a cauda dupla subindo atras), No. 14 monolito preto com as mascaras, 10 m, flutuando acima do chao |
+| 140.2 | No. 2 contra especiais | Soco pesado, esmagamento com rachaduras, onda de choque grande, descarga amarela pela boca (carga longa), investida, rabada |
+| 140.3 | No. 6 contra especiais | Garra, sopro gelado em leque (Lentidao II), estaca de gelo, avalanche, campo congelante (Lentidao III por 5 s, nunca permanente), rabada |
+| 140.4 | No. 14 contra especiais | Raio vermelho pelas faces, salva girando, pulso em volta, campo esmagador que sobe e cai, teleporte curto; fica de longe (apoio) |
+| 140.5 | Invasoes `kaiju_horde` (No. 2, 15%), `mass_resurrection` (No. 6, 15%), `tachikawa_city_raid` (No. 14, 30%) | Podem aparecer na ultima onda |
+| 140.6 | Segundo cliente olhando | Os mesmos modelos, tamanhos e efeitos |
