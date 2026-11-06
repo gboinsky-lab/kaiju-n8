@@ -134,6 +134,14 @@ public record DangerZone(Kind kind, double cx, double cz, double radius, double 
         return Math.sqrt(sq(x - (cx + lx * t)) + sq(z - (cz + lz * t)));
     }
 
+    /**
+     * MATRIZ (Miguel 2026-11-06): da tempo de sair andando antes do impacto? Andando {@code blocksPerTick} por tick,
+     * em {@code ticksLeft} ticks cobre a distancia ate a borda. Sem tempo, o soldado fica e usa a guarda ou a esquiva.
+     */
+    public static boolean reachable(double exitDistance, int ticksLeft, double blocksPerTick) {
+        return exitDistance <= Math.max(0, ticksLeft) * Math.max(0.0, blocksPerTick);
+    }
+
     private static double wrap(double angle) {
         double a = angle % (Math.PI * 2.0);
         if (a > Math.PI) {

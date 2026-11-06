@@ -5,7 +5,8 @@ gen_miguel_camilly.py, gen_numerados_b.py). Muda so os campos listados e mantem 
 
 Decisoes medidas em docs/MATRIZ_DECISOES.md:
 - Soichiro e Jura (T5+ no dossie) continuam vencendo o No. 13, mas nao mais rapido que o Hoshina (o duelista).
-- Miguel e Camilly (comandantes T6) mais perto um do outro contra o No. 13.
+- Miguel e Camilly (comandantes T6) mais perto um do outro contra o No. 13; a Camilly com mais defesa (Miguel,
+  2026-11-06: "Mais defesa"): aparar, esquiva e distancia.
 - No. 2 e No. 6 (T8+): golpes de area no tamanho do corpo e janela parada menor depois do golpe pesado.
 """
 import json
@@ -17,7 +18,9 @@ BASE = os.path.join(os.path.dirname(__file__), '..', '..', 'src', 'main', 'resou
 CHANGES = {
     'special_soldier/soichiro.json': {'kaiju_damage': 0.75},
     'special_soldier/jura.json': {'kaiju_damage': 0.7},
-    'special_soldier/camilly.json': {'kaiju_damage': 1.0},
+    'special_soldier/camilly.json': {'kaiju_damage': 1.0, 'parry.chance': 0.45, 'parry.damage_factor': 0.3,
+                                     'dash.cooldown_ticks': 70, 'tactics.dodge_chance': 0.9,
+                                     'ranged.keep_distance': 16.0, 'ranged.retreat_distance': 10.0},
     'ability/no2_shockwave.json': {'radius': 14.0, 'windup_ticks': 12, 'behavior.max_range': 12.0},
     'ability/no2_crush.json': {'radius': 7.0, 'windup_ticks': 16},
     'ability/no6_avalanche.json': {'radius': 7.5, 'windup_ticks': 16},

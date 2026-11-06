@@ -52,4 +52,13 @@ class DangerZoneTest {
         double[] exit = DangerZone.disc(0, 0, 4).exit(0, 0, 0, 2);
         assertEquals(1.0, exit[1], 1.0E-9);
     }
+
+    @Test
+    void walksOutOnlyWithTime() {
+        // 6 blocos ate a borda, 0,9 bloco por tick: 7 ticks bastam, 6 nao.
+        assertTrue(DangerZone.reachable(6.0, 7, 0.9));
+        assertFalse(DangerZone.reachable(6.0, 6, 0.9));
+        assertFalse(DangerZone.reachable(1.0, 0, 0.9), "impacto agora");
+        assertFalse(DangerZone.reachable(1.0, 10, 0.0), "sem passo nao sai");
+    }
 }

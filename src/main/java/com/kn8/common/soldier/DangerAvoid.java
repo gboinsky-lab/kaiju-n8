@@ -2,6 +2,7 @@ package com.kn8.common.soldier;
 
 import java.util.Optional;
 
+import com.kn8.common.ai.AiTuning;
 import com.kn8.common.evacuation.CivilianEntity;
 import com.kn8.common.config.ServerConfig;
 import com.kn8.common.kaiju.KaijuEntity;
@@ -9,6 +10,7 @@ import com.kn8.core.kaiju.DangerZone;
 
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.AABB;
@@ -62,6 +64,13 @@ public final class DangerAvoid {
         Vec3 look = Vec3.directionFromRotation(0.0F, mob.getYRot());
         double[] exit = zone.exit(mob.getX(), mob.getZ(), -look.x, -look.z);
         double distance = zone.exitDistance(mob.getX(), mob.getZ(), margin);
+        // MATRIZ: so sai andando se der tempo de chegar fora antes do impacto; senao fica (guarda, esquiva).
+        int ticksLeft = ticksLeft(mob);
+        if (!DangerZone.reachable(distance, ticksLeft, walkPerTick(mob))) {
+            AiTuning.logMove(mob, "sem tempo de sair da area (" + String.format("%.1f", distance) + " blocos em "
+                    + ticksLeft + " ticks)");
+            return Optional.empty();
+        }
         for (double turn : TURNS) {
             Vec3 dir = new Vec3(exit[0], 0.0, exit[1]).yRot((float) Math.toRadians(turn));
             double step = distance / Math.max(0.3, Math.cos(Math.toRadians(turn)));
@@ -71,6 +80,25 @@ public final class DangerAvoid {
             }
         }
         return Optional.empty();
+    }
+
+    /** Ticks ate o impacto do golpe pesado cuja area pega o soldado (o menor, se houver mais de um). */
+    private static int ticksLeft(Mob mob) {
+        double margin = ServerConfig.SOLDIER_DANGER_MARGIN.get();
+        int best = Integer.MAX_VALUE;
+        for (KaijuEntity kaiju : mob.level().getEntitiesOfClass(KaijuEntity.class,
+                mob.getBoundingBox().inflate(SEARCH), KaijuEntity::isAlive)) {
+            if (kaiju.dangerZone().filter(z -> z.contains(mob.getX(), mob.getZ(), margin)).isPresent()) {
+                best = Math.min(best, kaiju.ticksToImpact().orElse(0));
+            }
+        }
+        return best == Integer.MAX_VALUE ? 0 : best;
+    }
+
+    /** Blocos por tick andando na velocidade de fuga: atributo x multiplicador da fuga x passo por velocidade. */
+    private static double walkPerTick(Mob mob) {
+        return mob.getAttributeValue(Attributes.MOVEMENT_SPEED) * ServerConfig.SOLDIER_DANGER_ESCAPE_SPEED.get()
+                * ServerConfig.SOLDIER_DANGER_STEP_PER_SPEED.get();
     }
 
     /**

@@ -301,6 +301,7 @@ public final class ServerConfig {
     public static final ModConfigSpec.BooleanValue SOLDIER_AVOID_DANGER;
     public static final ModConfigSpec.DoubleValue SOLDIER_DANGER_MARGIN;
     public static final ModConfigSpec.DoubleValue SOLDIER_DANGER_ESCAPE_SPEED;
+    public static final ModConfigSpec.DoubleValue SOLDIER_DANGER_STEP_PER_SPEED;
     public static final ModConfigSpec.DoubleValue SOLDIER_ALLY_LINE_SIDESTEP;
     public static final ModConfigSpec.DoubleValue SOLDIER_PROJECTILE_DODGE_RANGE;
 
@@ -1086,6 +1087,9 @@ public final class ServerConfig {
                 + " being prepared (the warning on the ground) with this much room to spare (blocks).", 1.5, 0.0, 8.0);
         SOLDIER_DANGER_ESCAPE_SPEED = doubleValue("dangerEscapeSpeed", "MOV-4: speed multiplier while leaving the area"
                 + " of a heavy attack.", 1.5, 0.5, 3.0);
+        SOLDIER_DANGER_STEP_PER_SPEED = doubleValue("dangerStepPerSpeed", "MATRIZ: blocks walked per tick per point of"
+                + " movement speed; a soldier only walks out of a heavy attack area if it reaches the edge before the"
+                + " impact (0 = never walks out).", 2.0, 0.0, 10.0);
         SOLDIER_ALLY_LINE_SIDESTEP = doubleValue("allyLineSidestep", "MOV-4: a shooter with an ally in its line of"
                 + " fire holds the shot and steps this many blocks aside.", 3.0, 0.0, 16.0);
         SOLDIER_PROJECTILE_DODGE_RANGE = doubleValue("projectileDodgeRange", "MOV-4: special soldiers watch kaiju"
