@@ -55,7 +55,7 @@ public final class InvasionGameTests {
         }
     }
 
-    @GameTest(template = TEMPLATE, batch = "kn8_invasion", timeoutTicks = 200)
+    @GameTest(template = TEMPLATE, batch = "kn8_invasion", timeoutTicks = 400)
     public static void invasionRunsWavesAndBreaks(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         BlockPos center = helper.absolutePos(new BlockPos(4, 1, 4));
@@ -71,15 +71,17 @@ public final class InvasionGameTests {
 
         helper.runAfterDelay(30, () -> {
             Invasion invasion = InvasionService.active(level).orElseThrow();
-            helper.assertTrue(invasion.phase() == Invasion.Phase.FIGHT, "Depois do aviso vem a onda");
-            helper.assertTrue(invasion.alive().size() == 3, "A primeira onda tem 3 Trichonephila, vieram "
-                    + invasion.alive().size());
-            killAlive(level, invasion);
+            helper.assertTrue(invasion.phase() == Invasion.Phase.FIGHT || invasion.phase() == Invasion.Phase.BREAK,
+                    "Depois do aviso vem a onda (fase " + invasion.phase() + ")");
+            helper.assertTrue(invasion.alive().size() + invasion.killed() == 3, "A primeira onda tem 3"
+                    + " Trichonephila, vieram " + (invasion.alive().size() + invasion.killed()));
         });
-        // Um kaiju pode terminar de carregar depois do primeiro abate: segunda passada antes de conferir.
-        helper.runAfterDelay(50, () -> InvasionService.active(level).ifPresent(invasion -> killAlive(level,
-                invasion)));
-        helper.runAfterDelay(85, () -> {
+        // R-1: o teste falhava 1 vez em 3-5 rodadas ("achados 0"): sob carga um kaiju da onda termina de carregar
+        // depois dos prazos fixos (50/85 ticks) e nao era abatido. Agora abate a cada tick o que ja carregou e espera
+        // a onda acabar ate o fim do prazo do teste.
+        helper.onEachTick(() -> InvasionService.active(level).filter(invasion -> invasion.phase()
+                == Invasion.Phase.FIGHT).ifPresent(invasion -> killAlive(level, invasion)));
+        helper.succeedWhen(() -> {
             Invasion invasion = InvasionService.active(level).orElseThrow();
             helper.assertTrue(invasion.phase() == Invasion.Phase.BREAK, "Onda eliminada: intervalo antes da proxima"
                     + " (fase " + invasion.phase() + ", vivos " + invasion.alive().size() + ", abatidos "
@@ -93,7 +95,6 @@ public final class InvasionGameTests {
             level.getEntitiesOfClass(Entity.class, area, entity -> entity instanceof KaijuEntity
                     || entity instanceof CarcassEntity || entity instanceof SoldierEntity).forEach(Entity::discard);
             forceChunks(level, center, false);
-            helper.succeed();
         });
     }
 }
