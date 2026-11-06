@@ -1979,5 +1979,5 @@ Imagem: `docs/img/especies_etapa5.jpg`. Modelos do Miguel de 2026-11-05 (sem rig
 | 141.2 | Cada um contra especiais (Hoshina, Kikoru, Narumi) | Andam com a passada; atacam com mordida, cauda, investida, pisão (aviso no chão), salto; a Anguilla solta a descarga ciano em anel; a Lacerta e a Imitatio rodeiam (flanco) |
 | 141.3 | Vida no `/data get entity` | Polyonax 520, Lacerta 310, Imitatio 390, Maxilla 650, Anguilla 480 |
 | 141.4 | Invasões `kaiju_horde`, `tachikawa_city_raid`, `honju_rampage`, `diclonius_attack`, `honju_assault`, `ariake_assault` | Podem aparecer na última onda (35-40%) |
-| 141.6 | Bater na Imitatio de frente e depois de costas (golpe leve) | De frente aparece o anel de aparo e o dano cai pela metade; de costas, logo depois de ela atacar ou com golpe pesado, dano cheio |
-| 141.5 | Segundo cliente olhando | Os mesmos modelos, ataques e efeitos |
+| 141.5 | Bater na Imitatio de frente e depois de costas (golpe leve) | De frente aparece o anel de aparo e o dano cai pela metade; de costas, logo depois de ela atacar ou com golpe pesado, dano cheio |
+| 141.6 | Segundo cliente olhando | Os mesmos modelos, ataques e efeitos |
