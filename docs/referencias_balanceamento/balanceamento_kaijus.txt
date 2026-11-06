@@ -1,0 +1,236 @@
+BALANCEAMENTO COMPLETODOS KAIJUS — KAIJU NO. 8
+Anime — temporadas 1 e 2 • Numerados e não numerados • Minecraft 1.21.1 / NeoForge / GeckoLib
+Versão 1.0 • 05/11/2026
+Documento de gameplay: HP, dano, armadura, velocidade, tiers e habilidades são propostas para o mod, não atributos oficiais da obra.
+1. Critérios e escala de referência
+Base de projeto preservada: Trichonephila 65 HP (Yoju de referência), Primigenius Yoju 220 HP, Primigenius Honju 360 HP, Trichonephila Honju 400/600 HP, Preondactyl 430 HP, No.10 gigante 4.600 HP e No.9 base 1.450 HP.
+Escala de tier: T1 ameaça/evento; T2 Yoju fraco; T3 Yoju forte/elite; T4 Honju comum; T5 Honju de elite; T6 Daikaiju menor/chefe de missão; T7 numerado; T8 numerado de alto risco; T9 fase final excepcional.
+HP é a vida total do mob. Dano base é referência de ataque comum; habilidades usam multiplicadores. Armadura e velocidade seguem os atributos existentes no mod.
+1 bloco ≈ 1 metro é convenção visual do projeto. Alturas canônicas não foram inventadas neste documento; medir os modelos ou usar escala definida em ficha separada.
+Os números abaixo são balanceamento proposto. Onde o anime mostra pouco do monstro, habilidades estão marcadas como perfil provisório para gameplay.
+2. Kaijus numerados — No.1 a No.15
+Inclui os quinze identificadores. No.3, No.4, No.5 e No.7 ficam como placeholders, pois não possuem perfil de combate visualmente estabelecido no anime até a 2ª temporada. No.1, No.2 e No.6 têm contexto/flashback e capacidades conhecidas, mas seus valores de combate continuam sendo propostas.
+Kaiju No.1
+Status de aparição: Referência visual/flashback; poder de percepção de sinais motores e antecipação.
+HP / dano / armadura / velocidade / tier: 1.900 / 42 / 18 / 0,36 / T8
+Paleta visual proposta: Índigo #4B3B8F / rosa #D879B8
+Ataques e habilidades: Leitura preditiva; golpe inevitável apenas se o alvo repetir padrão; contra-ataque 1,8x; apêndices 1,5x; pulso sensorial 2,2x.
+Comportamento e limite: Boss técnico. A previsão deve falhar contra fintas, ataques em área e padrões variados.
+Kaiju No.2
+Status de aparição: Referência/flashback; associado a força e impacto. Também base de arma numerada.
+HP / dano / armadura / velocidade / tier: 2.600 / 58 / 20 / 0,28 / T8+
+Paleta visual proposta: Verde-oliva #77852B / amarelo #E1C34D
+Ataques e habilidades: Soco 1,8x; esmagamento 2,5x; onda de choque 1,6x área; descarga 3,2x; investida 1,7x.
+Comportamento e limite: Boss tanque de impacto. Golpes fortes lentos, com janela de punição.
+Kaiju No.3
+Status de aparição: Sem perfil visual/combate identificável no anime até T2.
+HP / dano / armadura / velocidade / tier: — / — / — / — / Pendente
+Paleta visual proposta: Cinza provisório #777777
+Ataques e habilidades: Não atribuir habilidades canônicas. Criar apenas placeholder técnico até existir referência animada.
+Comportamento e limite: Não implementar como boss canon ainda.
+Kaiju No.4
+Status de aparição: Sem perfil visual/combate identificável no anime até T2; legado de arma numerada.
+HP / dano / armadura / velocidade / tier: — / — / — / — / Pendente
+Paleta visual proposta: Cinza provisório #777777
+Ataques e habilidades: Não atribuir habilidades canônicas. Se for necessário no mod, criar variante claramente marcada como original.
+Comportamento e limite: Não implementar como boss canon ainda.
+Kaiju No.5
+Status de aparição: Sem perfil visual/combate identificável no anime até T2.
+HP / dano / armadura / velocidade / tier: — / — / — / — / Pendente
+Paleta visual proposta: Cinza provisório #777777
+Ataques e habilidades: Sem habilidades canônicas confirmadas no anime. Placeholder apenas.
+Comportamento e limite: Aguardar design oficial.
+Kaiju No.6
+Status de aparição: Flashback/referência; associado a criocinese e arma usada por Reno.
+HP / dano / armadura / velocidade / tier: 3.800 / 62 / 19 / 0,34 / T8+
+Paleta visual proposta: Azul-gelo #8BDCF2 / violeta #7774C9
+Ataques e habilidades: Garra 1,2x; sopro 0,5x/s por 4s; estaca 1,7x; avalanche 2,4x; campo congelante 0,35x/s por 5s.
+Comportamento e limite: Boss de território. Resistência alta a congelamento; evitar congelar jogador sem telegraph.
+Kaiju No.7
+Status de aparição: Sem perfil visual/combate identificável no anime até T2.
+HP / dano / armadura / velocidade / tier: — / — / — / — / Pendente
+Paleta visual proposta: Cinza provisório #777777
+Ataques e habilidades: Não atribuir habilidades canônicas. Placeholder apenas.
+Comportamento e limite: Aguardar design oficial.
+Kaiju No.8
+Status de aparição: Kaiju do Kafka; transformação e combate corpo a corpo.
+HP / dano / armadura / velocidade / tier: 1.800 / 55 / 19 / 0,40 / T8
+Paleta visual proposta: Azul-ciano #27D9E8 / branco #F4FFFF
+Ataques e habilidades: Soco 1,0x; pesado 1,6x; Ground Smash 2,4x área (12s); rugido empurra (18s); agarrão 1,8x (14s); Dash Strike 1,5x (8s). Regen 3%/s abaixo de 50%.
+Comportamento e limite: Boss/jogável. Alta regeneração; reduzir cura durante stagger/execuções.
+Kaiju No.9
+Status de aparição: Organismo adaptativo; clones, fusões e evolução no anime.
+HP / dano / armadura / velocidade / tier: 1.450 base / 34,5 / 16 / 0,34 / T7
+Paleta visual proposta: Violeta escuro #4C315F / vermelho #B52A3B
+Ataques e habilidades: Golpe 1,0x; estocada 1,5x; tentáculo 1,2x; clone com 35% HP; absorção em fase; adaptação após observar padrão.
+Comportamento e limite: Boss por fases. Não usar imunidade total; adapta-se parcialmente e com atraso.
+Kaiju No.10
+Status de aparição: Combate corpo a corpo; forma gigante; tática e força bruta.
+HP / dano / armadura / velocidade / tier: 1.650 normal / 4.600 gigante / 39,5 / 54,5 / 17 / 18 / 0,35 / 0,27 / T7 / T7+
+Paleta visual proposta: Laranja queimado #C65A2D / preto #272126
+Ataques e habilidades: Punho 1,4x; investida 1,8x; esmagamento 2,5x; rugido 1,3x área; forma gigante: golpe 2,8x e onda 2,0x.
+Comportamento e limite: Boss em duas fases. A forma gigante é lenta, mas cada acerto deve ser ameaçador.
+Kaiju No.11
+Status de aparição: Hidrocinese; luta de controle e alcance.
+HP / dano / armadura / velocidade / tier: 2.900 / 48 / 18 / 0,38 / T8
+Paleta visual proposta: Azul-profundo #176B9B / ciano #46D3E2
+Ataques e habilidades: Jato 1,3x; chicote 1,5x; lança 1,8x; onda 2,2x (14s); redemoinho puxa por 2s.
+Comportamento e limite: Boss de distância. Dar tempo de reação a projéteis e puxão.
+Kaiju No.12
+Status de aparição: Evolução de combate e resposta técnica.
+HP / dano / armadura / velocidade / tier: 3.400 / 52 / 19 / 0,40 / T8+
+Paleta visual proposta: Prata #AEB7C7 / violeta #856CB5
+Ataques e habilidades: Corte 1,2x; combo 3x0,65x; investida 1,6x; contra-técnica 2,0x após observar duas repetições.
+Comportamento e limite: Duelista adaptativo. Adaptação parcial, com cooldown e limite de acúmulo.
+Kaiju No.13
+Status de aparição: Kaiju numerado apresentado no ataque em massa; perfil individual pouco detalhado no anime.
+HP / dano / armadura / velocidade / tier: 2.400 / 45 / 17 / 0,42 / T7+
+Paleta visual proposta: Verde ácido #8DAA3A / carvão #2B3028
+Ataques e habilidades: Garra 1,2x; salto/queda 1,9x área; mordida 1,5x; sequência de investidas 3x0,7x.
+Comportamento e limite: Boss agressivo de mobilidade. Menor resistência que No.11/12.
+Kaiju No.14
+Status de aparição: Kaiju numerado da onda de ataques; perfil específico pouco exposto.
+HP / dano / armadura / velocidade / tier: 3.000 / 50 / 19 / 0,30 / T8
+Paleta visual proposta: Preto #17171D / vermelho elétrico #E13B43
+Ataques e habilidades: Disparo de energia 1,5x; escudo reduz dano 35%; pulso 1,8x; área 2,4x; recarga exposta 3s.
+Comportamento e limite: Boss artilharia/defesa. Escudo alterna com janela vulnerável.
+Kaiju No.15
+Status de aparição: Kaiju numerado com foco em manipulação/confusão no confronto.
+HP / dano / armadura / velocidade / tier: 2.700 / 46 / 18 / 0,36 / T8
+Paleta visual proposta: Magenta #C33C91 / preto #19151D
+Ataques e habilidades: Ataque mental 0,4x/s por 3s; golpe 1,2x; ilusão de alvo; ruptura 2,0x; teleporte curto (10s).
+Comportamento e limite: Boss de confusão. Não inverter controles por longos períodos nem esconder telegraphs.
+3. Kaijus não numerados — espécies e variantes do anime
+Mysterious Larva / larva alada
+Identificação: Larva que infecta Kafka; entidade pequena e especial.
+HP / dano / armadura / velocidade / tier: 45 / 5 / 3 / 0,25 / T1
+Paleta visual proposta: Amarelo-pálido #D9D28A / verde-acinzentado #7B8C6B
+Ataques e habilidades: Mordida 0,6x; salto curto; tentativa de aderir ao rosto (evento narrativo, não combate padrão).
+Comportamento e limite: Criatura de evento; não tratar como Yoju de combate.
+Philinosoma
+Identificação: Kaiju da enciclopédia oficial, visto no início da série.
+HP / dano / armadura / velocidade / tier: 95 / 7 / 6 / 0,30 / T2
+Paleta visual proposta: Verde-oliva #78864A / areia #B7A36A
+Ataques e habilidades: Mordida 1,0x; investida 1,3x; cauda 0,8x; recuo defensivo.
+Comportamento e limite: Inimigo inicial rápido, HP baixo.
+Trichonephila
+Identificação: Kaiju aracnídeo; forma Yoju/Honju em ocorrências relacionadas.
+HP / dano / armadura / velocidade / tier: 400 / 15 / 13 / 0,29 / T4
+Paleta visual proposta: Vermelho-terra #A34D3D / preto #29252A
+Ataques e habilidades: Patas 4x0,45x; salto 1,5x; teia 0,5x/s por 3s; esmagamento 2,0x.
+Comportamento e limite: Honju de pressão e controle. Teia com resistência/escape.
+Primigenius Yoju
+Identificação: Versão menor do Primigenius.
+HP / dano / armadura / velocidade / tier: 220 / 10 / 11 / 0,23 / T3
+Paleta visual proposta: Marrom #79543A / osso #D5C2A0
+Ataques e habilidades: Cabeçada 1,2x; pisão 1,4x; investida 1,6x; recuo após carga.
+Comportamento e limite: Tanque pequeno; lento e previsível.
+Primigenius Honju
+Identificação: Grande espécime de força bruta.
+HP / dano / armadura / velocidade / tier: 360 / 13,8 / 12 / 0,25 / T4
+Paleta visual proposta: Marrom-escuro #68452F / osso #D7C6A4
+Ataques e habilidades: Cabeçada 1,4x; pisão 1,8x; carga 2,0x; rugido 0,8x área.
+Comportamento e limite: Honju básico; boa referência para testes de capitães.
+Primigenius ressurgido Yoju
+Identificação: Variante ressuscitada/reanimada.
+HP / dano / armadura / velocidade / tier: 310 / 12,8 / 12 / 0,24 / T3+
+Paleta visual proposta: Marrom púrpura #704C54 / vermelho apagado #A64D4D
+Ataques e habilidades: Ataques do Yoju; regeneração 1%/s; golpe frenético 1,5x.
+Comportamento e limite: Mais resistente que Yoju normal, sem regeneração excessiva.
+Primigenius revivido Honju
+Identificação: Variante ressuscitada de grande porte.
+HP / dano / armadura / velocidade / tier: 460 / 16,5 / 13 / 0,25 / T4+
+Paleta visual proposta: Marrom púrpura #704C54 / vermelho #B34B4B
+Ataques e habilidades: Cabeçada 1,5x; pisão 2,0x; carga 2,2x; regeneração 1%/s.
+Comportamento e limite: Honju de elite; resistência a stagger.
+Myxogasterocarp
+Identificação: Kaiju/plasmodial da operação de Sagamihara.
+HP / dano / armadura / velocidade / tier: 180 / 8 / 8 / 0,22 / T3
+Paleta visual proposta: Verde-lodo #758D43 / amarelo #C4B94C
+Ataques e habilidades: Massa expansiva 0,8x/s; divisão em massas menores; agarrão 1,0x; explosão de esporos 1,4x.
+Comportamento e limite: Boss de enxame/área. Destruir núcleos interrompe divisão.
+Phaneroplasmodium Yoju
+Identificação: Forma Yoju associada ao Myxogasterocarp.
+HP / dano / armadura / velocidade / tier: 55 / 4,5 / 5 / 0,34 / T2
+Paleta visual proposta: Verde-lodo #8AA64C / amarelo #D6CB62
+Ataques e habilidades: Contato 0,6x; salto 0,9x; divisão em dois fragmentos com 35% HP cada.
+Comportamento e limite: Pequeno e numeroso; não pode ter dano alto individual.
+Preondactyl
+Identificação: Kaiju voador com ataques de mergulho.
+HP / dano / armadura / velocidade / tier: 430 / 15,5 / 13 / 0,31 / 0,55 voo / T4
+Paleta visual proposta: Azul-petróleo #367A87 / cinza #A9B8B6
+Ataques e habilidades: Mergulho 2,0x; bicada 1,2x; rasante 1,5x; rajada de vento 0,8x área.
+Comportamento e limite: Boss aéreo; janela de pouso para punição.
+Diclonius
+Identificação: Kaiju listado em aparições do anime; detalhes visuais/combate limitados.
+HP / dano / armadura / velocidade / tier: 260 / 11 / 11 / 0,32 / T3+
+Paleta visual proposta: Cinza-violeta #777286 / areia #B6A98C
+Ataques e habilidades: Garra 1,2x; mordida 1,3x; salto 1,4x.
+Comportamento e limite: Perfil provisório; revisar com modelo/cena.
+Camponotus
+Identificação: Kaiju-formiga da 2ª temporada; enxame subterrâneo.
+HP / dano / armadura / velocidade / tier: 85 / 6,5 / 7 / 0,36 / T2
+Paleta visual proposta: Preto-carvão #272A25 / âmbar #B18A3C
+Ataques e habilidades: Mordida 0,8x; pinça 1,0x; investida 1,2x; bônus de +10% dano se 3+ formigas cercarem o alvo.
+Comportamento e limite: Unidade de enxame; perigosa em grupo, fraca isolada.
+Camponotus ressuscitado
+Identificação: Formiga modificada/ressuscitada pelo No.9.
+HP / dano / armadura / velocidade / tier: 170 / 10 / 10 / 0,38 / T3+
+Paleta visual proposta: Preto #211F25 / vermelho #A9343B
+Ataques e habilidades: Mordida 1,1x; pinça 1,3x; explosão de energia 1,8x; ligação ao No.9 (buff próximo).
+Comportamento e limite: Elite de enxame; telegraph claro para explosão.
+Polyonax
+Identificação: Kaiju da 2ª temporada, mostrado na onda de ataques.
+HP / dano / armadura / velocidade / tier: 520 / 18 / 14 / 0,30 / T5
+Paleta visual proposta: Verde-musgo #526B43 / osso #D1C9A7
+Ataques e habilidades: Golpe 1,4x; investida 1,8x; pisão 2,1x; varredura 1,5x área.
+Comportamento e limite: Honju/ameaça pesada. HP alto, ataques lentos e fortes.
+Lacerta Fratris
+Identificação: Kaiju da onda de ataques; espécie nomeada na enciclopédia do anime.
+HP / dano / armadura / velocidade / tier: 310 / 12 / 12 / 0,39 / T4
+Paleta visual proposta: Verde-répteis #4F8B58 / amarelo #C4C45D
+Ataques e habilidades: Mordida 1,2x; cauda 1,3x; salto lateral; combo 3x0,55x.
+Comportamento e limite: Predador móvel; HP moderado.
+Imitatio Mantidis
+Identificação: Kaiju da onda de ataques; perfil de predador com ataques cortantes.
+HP / dano / armadura / velocidade / tier: 390 / 15 / 13 / 0,44 / T4+
+Paleta visual proposta: Verde-escuro #3E7551 / marfim #D8D1A6
+Ataques e habilidades: Lâminas 2x0,9x; salto 1,4x; corte cruzado 1,8x; aparo parcial frontal.
+Comportamento e limite: Ágil e perigoso; vulnerável pelas costas e após combo.
+Maxilla Cornuta
+Identificação: Kaiju nomeado na onda de ataques.
+HP / dano / armadura / velocidade / tier: 650 / 21 / 15 / 0,27 / T5
+Paleta visual proposta: Carvão #383B3D / laranja #C77A3B
+Ataques e habilidades: Chifrada 1,8x; carga 2,3x; pisão 2,0x; rugido 1,0x área.
+Comportamento e limite: Bruiser de elite; investida longa com telegraph.
+Anguilla Ambulans
+Identificação: Kaiju aquático/serpentino; abatido por Keraunos a longa distância.
+HP / dano / armadura / velocidade / tier: 480 / 16 / 13 / 0,40 / T4+
+Paleta visual proposta: Azul-marinho #214D70 / ciano #57C9D8
+Ataques e habilidades: Mordida 1,4x; chicote 1,6x; descarga/onda 1,8x; mergulho e reposicionamento.
+Comportamento e limite: Boss de mobilidade; vulnerável após emergir/atacar.
+4. Formas, variantes e regras de spawn
+No.9 base, clone e fusões: tratar como entidades/fases distintas. Clone sugerido: 35% do HP do No.9 base; não somar HP de clone ao boss principal.
+No.10 normal e gigante: duas fases com troca de escala, alcance e velocidade. O gigante deve ter telegraphs maiores e recuperação após ataques.
+Primigenius normal, Yoju, ressurgido Yoju e revivido Honju: usar a mesma família de animações com multiplicadores e materiais distintos.
+Camponotus deve aparecer em grupos; o perigo cresce pela quantidade e flanqueamento, não por HP individual elevado.
+Phaneroplasmodium Yoju deve ser enxame; Myxogasterocarp atua como núcleo/entidade principal e sua divisão pode ser interrompida destruindo núcleos.
+Kaijus voadores como Preondactyl precisam de fases aéreas e pouso vulnerável; não manter voo permanente que impeça combate corpo a corpo.
+Monstros não identificados em flashbacks, visões, cadáveres ou ending podem existir como decoração/registro, mas não recebem stats individuais sem modelo/cena suficiente.
+5. Regras globais de combate
+Não usar apenas HP para diferenciar ameaças. Velocidade, alcance, mobilidade, armor, resistência a controle, número de alvos, destruição e IA definem o tier real.
+Referência de dano do jogador contra Kaiju: golpe comum até 12% do HP máximo; pesado até 15%; ultimate pode superar esse limite com cooldown alto e janela de vulnerabilidade.
+Bosses recebem resistência progressiva a congelamento, veneno, stun, knockback e puxões. Nenhum efeito de controle pode travar o boss indefinidamente.
+Telegraph de ataque pesado: 0,6–1,2s para ameaça T4/T5; 1,0–1,8s para numerados, ajustando conforme velocidade da animação.
+Hitbox ativa apenas durante a janela correta da animação GeckoLib. A hitbox não deve exceder muito a geometria visual da arma/corpo.
+Bosses devem ter pelo menos 2 fases se forem numerados ou ameaça de tier alto; mudar padrão de ataque, não apenas aumentar dano.
+Velocidade é multiplicador interno de movimento do mod, não m/s. Ajustar empiricamente com pathfinding e animação.
+6. Guia de cores e efeitos
+Paletas são propostas de direção visual para o mod. Não são cores oficiais de aura. Usar BaseColor, SecondaryColor, Intensity, ParticleDensity, ParticleSpeed, Radius, PulseFrequency, GroundEffect, MovementTrail, AttackEffect, ReleaseEffect, OverloadEffect e TransformationEffect.
+Intensidade sugerida: 0,10–0,25 em repouso; 0,35–0,60 em combate; 0,70–1,00 durante habilidade especial. Bosses grandes podem usar partículas maiores e menos numerosas para preservar desempenho.
+7. Cobertura do anime e fontes
+O catálogo do site oficial do anime lista Kaiju No.10, Preondactyl, Myxogasterocarp, Phaneroplasmodium Yoju, Kaiju No.8, No.9, Primigenius e suas variantes, Trichonephila, Philinosoma e a larva misteriosa. O catálogo de aparições da série até a temporada 2 acrescenta Camponotus, Polyonax, Lacerta Fratris, Imitatio Mantidis, Maxilla Cornuta e Anguilla Ambulans, além dos numerados No.11 a No.15.
+Referência oficial — Enciclopédia de Kaijus: https://kaiju-no8.net/en/special/detail_240416_01.html
+Site oficial — episódios e informações da série: https://kaiju-no8.net/en/
+Lista de aparições do anime e referências de episódios: https://wikizilla.org/wiki/Kaiju_No._8_(series)
+Limite de escopo: temporadas 1 e 2 e especial associado. Kaijus não identificados em imagens de ending, flashbacks ou cadáveres estão listados como visuais não catalogados, sem stats inventados. No.3/4/5/7 são placeholders, não perfis canon.

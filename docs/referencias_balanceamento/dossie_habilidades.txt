@@ -1,0 +1,812 @@
+KAIJU NO. 8
+Dossiê de habilidadese movimentos
+17 personagens e Kaijus  •  20 habilidades originais  •  2 armas personalizadas
+REFERÊNCIA PARA PROJETO DE MOD MINECRAFT
+Pesquisa consultada em 05 de novembro de 2026
+Como interpretar este documento
+CANON = informação do mangá/anime ou perfil oficial. THE GAME = nomes, efeitos e multiplicadores de habilidades de KAIJU NO. 8 THE GAME; são mecânicas de jogo e não devem ser tratadas como golpes canônicos do mangá. PROPOSTA ORIGINAL = habilidades inéditas criadas para Miguel e Camilly a partir das armas enviadas.
+Como a pesquisa foi organizada
+O objetivo é separar evidência da obra, adaptação de jogo e criação original.
+Não foi possível atribuir uma técnica nomeada do mangá/anime a todos os soldados. Quando a obra mostra apenas proficiência, função tática ou uso de equipamento, isso é descrito sem inventar um nome oficial.
+As fichas de THE GAME registram versões específicas de personagem, com ataques normais, habilidade de combate, ultimate, follow-up e passivas. Multiplicadores são os valores publicados para aquela unidade e podem mudar com atualização.
+Os números percentuais de dano do jogo são multiplicadores de atributos (ATK/DEF), não porcentagens de força física no universo do anime.
+As habilidades de Miguel e Camilly são criações novas para o mod. As imagens das armas foram fornecidas pelo usuário e usadas como referência visual.
+Importante sobre a palavra “todas”
+O mangá e o anime não apresentam um catálogo fechado de golpes para cada personagem. Por isso, o documento reúne os feitos e capacidades confirmados encontrados, os kits jogáveis consultados e deixa explícitas as lacunas. Não atribui ao cânone efeitos que só existem no jogo.
+Índice de conteúdo
+Parte
+Conteúdo
+I. Humanos
+Iharu, Haruichi, Aoi, Hakua, Soichiro, Kota, Tae, Ryo, Jura e Rin
+II. Kaijus
+Nº 1, Nº 2, Nº 6, Nº 11, Nº 12, Nº 14 e Nº 15
+III. Personagens originais
+Miguel — foice-armamento; Camilly — rifle-lâmina
+IV. Implementação no mod
+Combos, funções, efeitos e equilíbrio
+V. Fontes
+Referências oficiais, guias do jogo e fichas de poderes
+Iharu Furuhashi
+Oficial da Força de Defesa; atirador de curto/médio alcance e combatente de explosões de potência.
+MANGÁ / ANIME — MATERIAL CANÔNICO
+No mangá, destaca-se pelo fenômeno chamado Flash Adapter: em vez de manter uma liberação de potência estável, seu traje apresenta picos bruscos durante o combate. O aumento repentino de força e velocidade permite romper gelo e escapar de ataques de Kaiju.
+A evolução publicada de seu rendimento inclui 14% no início, 20% após treinamento e 24% como patamar estável em uma etapa da história; em combate, foi mostrado um pico de 42%. A fonte secundária mais recente descreve evolução posterior, mas o número exato deve ser conferido no capítulo correspondente antes de ser usado como estatística fixa.
+Usa rifle e, após treinamento, uma espingarda SG-1108 com munição eletrificada fornecida pela Izumo Tech. A eletrificação é particularmente adequada para interromper ou desgastar alvos.
+Limite do que é confirmado
+Não é um usuário de raio por natureza. A eletricidade das habilidades de THE GAME representa a munição/atributo do kit jogável; o traço canônico mais distintivo é a liberação de potência explosiva e irregular.
+KAIJU NO. 8 THE GAME — UNIDADE 4★ “LATENT TALENT” E 5★ “FLASH-FIERCE TALENT”
+Single-Minded Shot (Tiro de foco)  [THE GAME]
+Execução: Iharu estabiliza o rifle e dispara um projétil único contra um alvo.  Efeito: Ataque básico de tiro, 55% do ATK na versão 4★. [S2]
+Thunderbolt Blast (Explosão trovão)  [THE GAME]
+Execução: Dispara uma munição eletrificada em um único Kaiju.  Efeito: Tiro + eletricidade; 62% do ATK e chance base de 65% de Shock por 2 turnos. [S2]
+Rapid Thunderbolt (Trovão rápido)  [THE GAME]
+Execução: Concentra a mira e dispara uma descarga mais pesada no alvo.  Efeito: Tiro + eletricidade; 137% do ATK e reduz DEF em 21% por 2 turnos, com chance base de 80%. [S2]
+Caring Support (Cobertura cuidadosa)  [THE GAME]
+Execução: Intervém com um disparo de apoio quando um aliado abre a oportunidade.  Efeito: Follow-up de tiro, 55% do ATK. [S2]
+Gutsy Shot (Disparo corajoso)  [THE GAME]
+Execução: Disparo direto, sem preparação longa, contra um alvo.  Efeito: Ataque normal da versão 5★; tiro de alvo único. [S3]
+Conduct Round Sweep (Varredura de munição condutora)  [THE GAME]
+Execução: Atinge um inimigo e alcança os Kaijus adjacentes com uma descarga em cadeia.  Efeito: Tiro + raio; 79% do ATK no alvo e adjacentes, seguido de 5 acertos adicionais de raio a 4,2% do ATK cada. [S3]
+Lightning Blitz (Investida relâmpago)  [THE GAME]
+Execução: Iharu dispara uma sequência elétrica mais intensa, varrendo o alvo e a área adjacente.  Efeito: Tiro + raio; 183% do ATK, 10 acertos adicionais de 4,2% e adianta a próxima Blitz Turn. [S3]
+Fired-Up Support (Apoio eletrizante)  [THE GAME]
+Execução: Executa um disparo de assistência no alvo principal e atinge também os inimigos próximos.  Efeito: Follow-up: 48% do ATK no alvo e 24% nos adjacentes. [S3]
+Steeled Resolve (Determinação de aço)  [THE GAME]
+Execução: Iharu inicia a batalha com uma janela de ação especial; quando ela chega, executa um disparo de transbordamento.  Efeito: Blitz Turn com velocidade fixa; ataque de 110% no alvo, 55% nos adjacentes e 15 pequenos acertos adicionais de 3,3%. Aliados que causam dano adicional acumulam Menace. [S3]
+Haruichi Izumo
+Oficial da Força de Defesa; atirador de precisão, especialista em disciplina de tiro e suporte tático.
+MANGÁ / ANIME — MATERIAL CANÔNICO
+É um excelente estudante e atirador. No mangá, começa com liberação de 18% do traje e alcança 36% após o ataque à base de Tachikawa.
+Utiliza rifle em serviço. Após treinamento com a Segunda Divisão, recebe o arco AW-0027 e flechas envenenadas fornecidas pela Izumo Tech; sua principal demonstração é acertar alvos com precisão.
+Sua família controla a Izumo Tech, o que explica acesso a armamento desenvolvido especificamente para neutralização de Kaijus.
+Limite do que é confirmado
+O cânone mostra pontaria e uso de armas, mas não nomeia formalmente cada disparo do arco. Os nomes de ataques abaixo pertencem às versões jogáveis.
+KAIJU NO. 8 THE GAME — 4★ “THE CLEAN-CUT ELITE” E 5★ “CALCULATED CHOICE”
+Personal Style Shot (Disparo de estilo próprio)  [THE GAME]
+Execução: Disparo estável de rifle contra um único alvo.  Efeito: Ataque normal de tiro, 55% do ATK. [S4]
+Precision Snipe (Precisão de franco-atirador)  [THE GAME]
+Execução: Haruichi mira no centro do grupo e acerta o alvo principal, com impacto menor nos inimigos próximos.  Efeito: 66% do ATK no alvo e 29% nos adjacentes; chance base de 80% de reduzir ATK do alvo em 8,2% por 3 turnos. [S4]
+Clearance (Limpeza)  [THE GAME]
+Execução: Executa um disparo amplo para atingir todos os Kaijus e neutralizar uma vantagem ativa do alvo.  Efeito: 70% do ATK em área; remove aleatoriamente 1 buff de cada alvo atingido. [S4]
+Coordinated Shot (Disparo coordenado)  [THE GAME]
+Execução: Disparo sincronizado com a abertura criada por um aliado.  Efeito: Follow-up de tiro, 55% do ATK. [S4]
+Pace Control (Controle de ritmo)  [THE GAME]
+Execução: Haruichi controla o ritmo do confronto por tiros de contenção.  Efeito: Passiva: chance de 75% de reduzir a velocidade do alvo em 6% por 1 turno. [S4]
+Dexterous Snap-Shot (Disparo rápido e hábil)  [THE GAME]
+Execução: Ataque pontual com tiro curto e preciso.  Efeito: Ataque básico de tiro, 55% do ATK. [S5]
+Suppressive Stance (Postura de supressão)  [THE GAME]
+Execução: Haruichi muda para postura de cobertura e coordena um aliado escolhido.  Efeito: Aumenta dano da habilidade de combate, velocidade e dano crítico do aliado por 1 turno. [S5]
+Manifold Arrow Salvo (Salva de flechas múltiplas)  [THE GAME]
+Execução: O arco dispara uma sequência de flechas contra todos os Kaijus, cobrindo a área.  Efeito: Ultimate com crítico garantido; 69% do ATK em área e concede Assistance, aumentando o dano de todos os atributos do parceiro de batalha. [S5]
+Focused True-Shot (Tiro verdadeiro concentrado)  [THE GAME]
+Execução: Haruichi executa um disparo preciso como follow-up.  Efeito: 77% do ATK em um único alvo. [S5]
+Universal Support / State of Immersion / Composed Spirit / Unwavering Rapid-Fire  [THE GAME]
+Execução: Passivas de apoio: reforçam o parceiro, acumulam Clarity, iniciam com Assistance e aceleram o próximo turno após ataque normal.  Efeito: No conjunto 5★, o kit transforma Haruichi em suporte de atirador: concede ATK, dano de habilidade, bônus de dano e recuperação de SP quando Clarity atinge o máximo. [S5]
+Fontes: S1 | S4 | S5 | S17
+Aoi Kaguragi
+Oficial da Força de Defesa; ex-destaque da Força de Autodefesa Terrestre, disciplinado e fisicamente forte.
+MANGÁ / ANIME — MATERIAL CANÔNICO
+Foi destaque físico na antiga força terrestre japonesa e obteve excelente resultado em testes de aptidão. É reservado, calmo e valoriza trabalho em equipe.
+Sua liberação de traje é indicada como 15% inicialmente, chegando a 25% após treinamento de tiro.
+No mangá, recebe o Pile Driver PB-3115, arma de impacto fabricada pela Izumo Tech. Seu uso combina força corporal, aproximação e golpe de perfuração/impacto contra partes resistentes do Kaiju.
+Limite do que é confirmado
+O martelo/defensor com escudos e Wound pertence a uma variante dimensional de THE GAME. Não deve ser usado como substituto do Pile Driver PB-3115 do Aoi do mangá.
+KAIJU NO. 8 THE GAME — 4★ PADRÃO E 5★ DIMENSIONAL “FRUITS OF DILIGENCE”
+Military-Style Shot (Disparo de estilo militar)  [THE GAME]
+Execução: Disparo disciplinado de rifle, mantendo postura e controle de recuo.  Efeito: Ataque normal de tiro. [S6]
+Violent Wind Blast (Explosão de vento violento)  [THE GAME]
+Execução: Um tiro concentrado é acompanhado de uma descarga de vento contra o alvo.  Efeito: Tiro + vento; 74% do ATK e aplica Windbite por 2 turnos. [S6]
+Wild Shot (Disparo agressivo)  [THE GAME]
+Execução: Aoi acelera o ritmo e realiza um disparo de alto impacto.  Efeito: 165% do ATK e aumenta a própria velocidade em 25 por 2 turnos. [S6]
+Exemplary Shot (Disparo exemplar)  [THE GAME]
+Execução: Tiro de acompanhamento quando um companheiro cria uma abertura.  Efeito: Follow-up de tiro. [S6]
+Unparalleled Training (Treinamento incomparável)  [THE GAME]
+Execução: Aoi acumula experiência quebrando placas de proteção do inimigo.  Efeito: Passiva: cada placa destruída concede ATK +3,2% e DEF +1,6%, até 5 acúmulos. [S6]
+Steadfast Swing (Golpe firme)  [THE GAME]
+Execução: Na variante 5★, Aoi golpeia com seu martelo usando o peso do corpo.  Efeito: Ataque contundente calculado sobre DEF, 55% da DEF. [S7]
+Stalwart Stance (Postura inabalável)  [THE GAME]
+Execução: Aoi planta os pés e projeta uma barreira defensiva para todo o esquadrão.  Efeito: Cria escudo para todos os aliados por 3 turnos, escalando com DEF. [S7]
+Fortified Crushing Blow (Golpe esmagador reforçado)  [THE GAME]
+Execução: Carrega o martelo e acerta um golpe pesado no Kaiju, abrindo ferida.  Efeito: 249% da DEF; aplica Wound por 3 turnos e aumenta o dano recebido pelo inimigo. [S7]
+Skillful Bash (Golpe técnico)  [THE GAME]
+Execução: Golpe curto para interromper o avanço do alvo.  Efeito: Follow-up contundente e redução temporária do dano recebido por Aoi. [S7]
+Mastered Combat Style (Estilo de combate dominado)  [THE GAME]
+Execução: Aoi converte placas quebradas e exposição do núcleo em energia para proteger aliados.  Efeito: Passiva: ataques aliados contra Wound causam mais dano; Unyielding acumulado pode gerar escudo de equipe. [S7]
+Fontes: S1 | S6 | S7 | S18
+Hakua Igarashi
+Integrante da Terceira Divisão; irmã mais nova de Jura Igarashi, direta, animada e próxima de Kikoru e Akari.
+MANGÁ / ANIME — MATERIAL CANÔNICO
+Sua participação canônica a coloca como integrante da Terceira Divisão. Jura aconselha Hakua a entrar na divisão de Mina Ashiro, por quem tem grande respeito.
+Não há, nas fontes consultadas, uma técnica exclusiva nomeada e detalhada de Hakua no mangá/anime. Não atribuo a ela golpes de fogo, cura ou disparos especiais como fatos canônicos.
+Limite do que é confirmado
+O kit a seguir é da unidade 4★ de THE GAME. Os atributos Fire, cura de equipe e remoção de debuffs são mecânicas desta versão jogável, não habilidades comprovadas na história principal.
+KAIJU NO. 8 THE GAME — 4★ “SINCERITY AND POTENTIAL”
+Tiro Sincero (真率な射撃)  [THE GAME]
+Execução: Hakua dispara contra um único Kaiju com postura reta e sem hesitação.  Efeito: Ataque normal de tiro; dano escalado em 55% da DEF. [S8]
+Incentivo Direto (真っ直ぐな激励)  [THE GAME]
+Execução: Ela encoraja todos os aliados antes da próxima rodada.  Efeito: Aplica Patience por 2 turnos; ao chegar o turno do aliado, recupera HP equivalente a 5,3% da DEF de Hakua + 48. [S8]
+Rajada de Determinação (闘志一念の連射)  [THE GAME]
+Execução: Dispara uma sequência que atinge o alvo central e a área adjacente, com munição de fogo.  Efeito: Tiro + fogo; 94% da DEF em ataque de área. [S8]
+Perseguição Avançada (前のめりな追撃)  [THE GAME]
+Execução: Disparo de acompanhamento em uma abertura tática.  Efeito: Follow-up de tiro; 55% da DEF. [S8]
+明朗闊達 — passiva de ânimo aberto  [THE GAME]
+Execução: Hakua mantém o moral e o calor ofensivo da equipe, enquanto acompanha os aliados que estão sob Patience.  Efeito: Aumenta o dano Fire da equipe em 16,5%; quando um aliado com Patience usa Ultimate, Hakua recupera parte do HP dele. [S8]
+Passivas adicionais  [THE GAME]
+Execução: Sua resistência melhora enquanto está saudável; também aperfeiçoa a recuperação e remove efeitos negativos da equipe após usar a habilidade de suporte.  Efeito: DEF +25% acima de metade do HP; +10% de dano de ataques em área/blast para aliados; pode remover aleatoriamente 1 debuff/efeito negativo de todos após a habilidade de combate. [S8]
+Fontes: S1 | S8
+Soichiro Hoshina
+Capitão da Sexta Divisão; irmão mais velho de Soshiro Hoshina; mestre da técnica de espada da família Hoshina.
+MANGÁ / ANIME — MATERIAL CANÔNICO
+É uma figura de destaque das forças do oeste do Japão. O perfil oficial o descreve como mestre da Hoshina-Style Sword-Slay Technique.
+Usa uma espada longa como arma principal, mas também é proficiente com armas de fogo. Não deve ser confundido com Soshiro, vice-capitão da Terceira Divisão.
+Sua especialidade é leitura de abertura, técnica de corte e finalização eficiente, mantendo disciplina de espadachim.
+Limite do que é confirmado
+Os nomes e multiplicadores abaixo pertencem à unidade 5★ “Keystone of Western Japan” de THE GAME. A mecânica Mind’s Eye e os debuffs numéricos são adaptação do jogo.
+KAIJU NO. 8 THE GAME — 5★ “KEYSTONE OF WESTERN JAPAN”
+Poised Marksmanship (Pontaria serena)  [THE GAME]
+Execução: Começa com um disparo controlado de arma de fogo contra um alvo.  Efeito: Ataque normal de tiro, 55% do ATK. [S9]
+Prodigious Swordsmanship (Esgrima prodigiosa)  [THE GAME]
+Execução: Com Mind’s Eye ativo, a ação normal se transforma em uma sequência híbrida de tiro e corte, atingindo também os inimigos próximos.  Efeito: Ataque normal aprimorado: 66% do ATK no alvo e 33% nos adjacentes, dano Slash + Shot. [S9]
+Adaptive Stance (Postura adaptativa)  [THE GAME]
+Execução: Soichiro ajusta a guarda e combina corte e disparo para abrir uma brecha.  Efeito: 102% do ATK; ativa Mind’s Eye por 2 turnos. A mecânica pode reduzir DEF do alvo e, ao quebrar placa ou atingir núcleo exposto, aumenta crítico. [S9]
+Finishing Masterstroke (Golpe final magistral)  [THE GAME]
+Execução: Concentra toda a técnica em um corte de finalização contra um inimigo exposto.  Efeito: 397% do ATK em Slash; recebe multiplicador adicional contra Kaiju com núcleo exposto. [S9]
+Astute Strike (Golpe perspicaz)  [THE GAME]
+Execução: Corte curto de acompanhamento no momento em que o inimigo tenta recuperar a postura.  Efeito: 24% do ATK; reduz velocidade do alvo e aumenta o dano que ele recebe por 2 turnos. [S9]
+Responsive Blade (Lâmina responsiva)  [THE GAME]
+Execução: Soichiro reage ao sucesso dos aliados: quando um companheiro quebra uma placa ou faz follow-up, ele avança e contra-ataca.  Efeito: Passiva de cooperação: acumula bônus de dano para a equipe, adianta sua ordem de ação e pode ativar o próprio follow-up após o de outro aliado. [S9]
+Passivas adicionais  [THE GAME]
+Execução: Aprimoram a chance de aplicar efeitos, dano crítico, crítico dos follow-ups e potência dos follow-ups encadeados.  Efeito: Discerning Gaze, Single-Minded Focus e Vital Point Precision. [S9]
+Fontes: S1 | S9
+Kota Tachibana
+Líder de pelotão da Primeira Divisão; combatente de vanguarda, impulsivo e muito leal à equipe.
+MANGÁ / ANIME — MATERIAL CANÔNICO
+O perfil oficial do jogo descreve Kota avançando para a luta com um grito de guerra, abrindo caminho para o esquadrão e confiando no apoio dos companheiros.
+Na história, sua função é pressionar a linha de frente e criar espaço para os outros soldados. As fontes consultadas não atribuem a ele uma técnica nomeada exclusiva no mangá/anime.
+Limite do que é confirmado
+O congelamento e as granadas de gelo são parte do kit 4★ de THE GAME; não devem ser descritos como poder pessoal de Kota no cânone.
+KAIJU NO. 8 THE GAME — 4★ DEFENDER / SHOT + ICE
+Steady Shot (Disparo estável)  [THE GAME]
+Execução: Kota mantém a linha e dispara em um único alvo.  Efeito: Ataque normal de tiro, alvo único. [S10]
+Menacing Blow (Golpe intimidador)  [THE GAME]
+Execução: Um disparo pesado de contenção reduz a capacidade ofensiva do Kaiju.  Efeito: 118% do ATK e reduz o ATK inimigo em 9,6% por 3 turnos. [S10]
+Freeze Grenade (Granada congelante)  [THE GAME]
+Execução: Lança uma granada que explode em gelo sobre o alvo, travando sua movimentação.  Efeito: 153% do ATK com tiro + gelo; chance base de 80% de Freeze por 1 turno, atrasa a próxima ação em 30% e causa dano adicional de gelo. [S10]
+Solid Shot (Disparo sólido)  [THE GAME]
+Execução: Disparo de acompanhamento em um inimigo já pressionado.  Efeito: Follow-up de tiro. [S10]
+Absolute Conviction (Convicção absoluta)  [THE GAME]
+Execução: Kota assume a linha de frente e atrai ataques enquanto está em boas condições.  Efeito: Passiva: quando está com pelo menos 50% de HP, aumenta a chance de ser alvo; ao atacar inimigo debilitado, ganha escudo. [S10]
+Fierce Combat Style / Intimidating Presence / Swift Subjugation  [THE GAME]
+Execução: Enquanto protegido, resiste melhor a efeitos; antes do Ultimate ajusta a mira; após usar habilidade de combate reforça a própria defesa.  Efeito: Passivas que aumentam resistência a efeitos, acerto de efeitos e DEF. [S10]
+Fontes: S1 | S10
+Tae Nakanoshima
+Líder de pelotão da Terceira Divisão; personalidade franca e descontraída.
+MANGÁ / ANIME — MATERIAL CANÔNICO
+Sua função canônica é de liderança de pelotão na Terceira Divisão. O material consultado destaca seu comportamento direto e fácil convivência, sem apresentar uma técnica pessoal nomeada ou um poder extraordinário exclusivo.
+No combate, sua participação deve ser entendida como soldado treinada da Força de Defesa, com apoio de traje e armamento padrão.
+Limite do que é confirmado
+As munições de fogo e o efeito Burn são elementos da unidade 4★ de THE GAME; não são prova de pirocinese no mangá/anime.
+KAIJU NO. 8 THE GAME — 4★ ATTACKER / SHOT + FIRE
+Aggressive Shot (Disparo agressivo)  [THE GAME]
+Execução: Tiro ofensivo direto contra um único Kaiju.  Efeito: Ataque normal de tiro, 55% do ATK. [S11]
+Blazing Fire Shot (Disparo de fogo ardente)  [THE GAME]
+Execução: Tae dispara munição incendiária que deixa o alvo em combustão.  Efeito: 65% do ATK em tiro + fogo; chance base de 80% de Burn por 2 turnos, causando dano contínuo igual a 39% do ATK. [S11]
+Heat Grenade (Granada térmica)  [THE GAME]
+Execução: Ativa uma granada de calor e aproveita a explosão para concentrar fogo no alvo.  Efeito: Aumenta dano causado e multiplicador de dano contínuo por 3 turnos; depois causa 124% do ATK em tiro + fogo. [S11]
+Passionate Shot (Disparo apaixonado)  [THE GAME]
+Execução: Ataque de acompanhamento de tiro para manter pressão.  Efeito: Follow-up de tiro, 55% do ATK. [S11]
+Fervent Drive (Ímpeto fervoroso)  [THE GAME]
+Execução: Tae aproveita o estado de Burn no inimigo e aumenta sua própria ofensiva.  Efeito: Passiva: após ataque normal ou Ultimate contra alvo queimando, ATK +27,5% por 1 turno. [S11]
+Secret Motive / Overheated Fighting Spirit / Increasing Blaze  [THE GAME]
+Execução: Aumenta o dano contínuo e a precisão dos efeitos; quebrar placas acelera o próximo Ultimate.  Efeito: Passivas: +40% multiplicador de dano contínuo, +16% Effect Hit Rate e +10 de gauge por placa destruída. [S11]
+Fontes: S1 | S11
+Ryo Ikaruga
+Líder de pelotão da Terceira Divisão; comandante responsável, conhecido por ordens que motivam o grupo.
+MANGÁ / ANIME — MATERIAL CANÔNICO
+O perfil de personagem descreve Ryo como alguém que recebe frequentemente o comando geral de operações e inspira os soldados por meio de ordens intensas e motivadoras.
+Sua visão fraca exige lentes de contato, um detalhe de perfil, não uma fraqueza de combate formal. Não há no material consultado uma técnica nomeada exclusiva no mangá/anime.
+Limite do que é confirmado
+O kit 4★ transforma sua liderança em buffs de equipe. Esses percentuais e efeitos são exclusivamente mecânicas de THE GAME.
+KAIJU NO. 8 THE GAME — 4★ SUPPORTER / SHOT
+Hot-Blooded Shot (Disparo fervoroso)  [THE GAME]
+Execução: Ryo dispara contra um alvo enquanto mantém postura de comando.  Efeito: Ataque normal de tiro, alvo único. [S12]
+Firing Command (Ordem de disparo)  [THE GAME]
+Execução: Emite a ordem e executa um disparo potente, sincronizado com a equipe.  Efeito: 140% do ATK em um alvo; aumenta sua própria taxa de recarga do Ultimate em 10% por 2 turnos. [S12]
+Contagious Zeal (Zelo contagiante)  [THE GAME]
+Execução: Ryo transmite o ímpeto de combate aos demais integrantes do grupo.  Efeito: Ultimate de suporte: aumenta dano causado pelos outros aliados em 16,8% e reduz sua velocidade em 8,4%, ambos por 2 turnos. [S12]
+Passionate Shot (Disparo apaixonado)  [THE GAME]
+Execução: Disparo de acompanhamento acionado quando o grupo abre uma oportunidade.  Efeito: Follow-up de tiro, 55% do ATK. [S12]
+Proactive Command (Comando proativo)  [THE GAME]
+Execução: Mantém a equipe preparada e coordenada mesmo sem atacar diretamente.  Efeito: Passiva: ATK dos outros aliados +12,8%. [S12]
+Full-Throttle Motivation / Platoon Leader’s Innate Strength / Soulful Command  [THE GAME]
+Execução: Começa a luta com energia acumulada; seu tiro normal é mais forte; a entrada de uma nova onda fortalece o grupo.  Efeito: Passivas de gauge inicial, +40% de dano do ataque normal e +10% ATK para aliados no início da onda. [S12]
+Fontes: S1 | S12
+Jura Igarashi
+Capitã da Segunda Divisão; irmã mais velha de Hakua; uma das combatentes mais fortes da Força de Defesa.
+MANGÁ / ANIME — MATERIAL CANÔNICO
+O perfil oficial informa 193 cm de altura, força física notável e uma arma personalizada: uma enorme bola de ferro em chamas.
+É descrita como intensa, barulhenta e obstinada; não hesita em partir para o confronto direto. A arma favorece ataques de impacto e golpes de grande arco.
+Limite do que é confirmado
+Os valores de dano, Burn, Afterburn e buffs em equipe vêm da unidade 5★ de THE GAME. O cânone confirma a bola de ferro flamejante, mas não define esses efeitos numéricos.
+KAIJU NO. 8 THE GAME — 5★ “GRIT AND DUTY”
+Herculean Toss (Arremesso hercúleo)  [THE GAME]
+Execução: Jura gira o corpo e arremessa a bola de ferro com força contra um único Kaiju.  Efeito: Ataque contundente, 55% do ATK. [S13]
+Hot-Blooded Impact (Impacto de sangue quente)  [THE GAME]
+Execução: Antes do golpe, Jura incendeia o espírito da equipe; então lança a bola contra o alvo e a área adjacente.  Efeito: Blunt + Fire, 54% do ATK; concede Hot-Blooded a todos os aliados, aumentando dano, ATK e velocidade por 2 turnos. [S13]
+Zenith Plunge (Mergulho do zênite)  [THE GAME]
+Execução: Eleva a bola de ferro e a descarrega de cima para baixo, provocando impacto e calor no chão ao redor.  Efeito: Blunt + Fire, 146% do ATK no alvo e adjacente; 65% de chance de Burn por 3 turnos. [S13]
+Blazing Slugger (Rebatida flamejante)  [THE GAME]
+Execução: Golpe curto e concentrado com a bola de ferro, aproveitando a abertura de um aliado.  Efeito: Follow-up Blunt + Fire, 77% do ATK. [S13]
+Commanding Grit (Determinação de comando)  [THE GAME]
+Execução: Jura mantém a equipe em ritmo ofensivo e amplifica o dano contínuo de inimigos incendiados.  Efeito: Passiva: melhora Effect Hit Rate da equipe após ataque normal; Ultimate aplica Afterburn, que repete parte do dano contínuo recebido pelo alvo. [S13]
+Renowned Capability / Unflagging Spirit / Boundless Brawn  [THE GAME]
+Execução: Aumenta a recarga do Ultimate, reforça perfuração de defesa contra inimigos afetados e melhora o dano contínuo da equipe.  Efeito: Passivas adicionais vinculadas a turnos, Afterburn e Effect Hit Rate. [S13]
+Fontes: S1 | S13
+Rin Shinonome
+Líder de pelotão da Primeira Divisão; atiradora de alto nível, motivada a conquistar o reconhecimento de Gen Narumi.
+MANGÁ / ANIME — MATERIAL CANÔNICO
+É uma combatente competente da Primeira Divisão e busca aprimorar sua força para corresponder ao padrão exigido por Narumi.
+É associada a armamento de tiro de grande volume, especialmente metralhadora. Também recebeu treinamento de combate próximo com bastão, o que amplia sua capacidade caso a distância seja quebrada.
+Limite do que é confirmado
+Os estados Fury/Pride, dano adicional e efeitos de fogo detalhados abaixo são do kit de THE GAME, não uma transformação elemental canônica.
+KAIJU NO. 8 THE GAME — VARIANTES 5★ “ASPIRATION AND HONOR” E “CROSS-FORGED REFINEMENT”
+Focused Shot (Disparo focado)  [THE GAME]
+Execução: Rin seleciona um único alvo e dispara com controle de dispersão.  Efeito: Ataque normal, 55% do ATK. [S14]
+Thorough Sweep Fire (Varredura de fogo completa)  [THE GAME]
+Execução: Varre a área com tiros, atingindo todos os Kaijus presentes.  Efeito: Ataque Shot em área, 64% do ATK. [S14]
+Circular Barrage (Rajada circular)  [THE GAME]
+Execução: Executa uma sequência de tiros cobrindo todos os inimigos ao redor.  Efeito: Ultimate Shot em área, 84% do ATK. [S14]
+Agile Barrage (Rajada ágil)  [THE GAME]
+Execução: Follow-up de tiros rápidos distribuídos sobre todos os alvos.  Efeito: Dano de tiro em área, 22% do ATK. [S14]
+Battle-Hardened Experience (Experiência de combate)  [THE GAME]
+Execução: Cada ataque aumenta progressivamente a eficiência da próxima rajada.  Efeito: Passiva: dano causado +2,4% por ataque, até 5 acúmulos. [S14]
+Furious Fusillade (Fuzilaria furiosa)  [THE GAME]
+Execução: Na variante Cross-Forged, Rin abre com uma salva de tiros e fogo que alcança todos os inimigos.  Efeito: 34% de ATK em Shot + Fire na área, mais dano adicional no alvo principal. [S15]
+Incinerating Barrage (Rajada incineradora)  [THE GAME]
+Execução: Concentra uma sequência de tiros incendiários no inimigo prioritário.  Efeito: 283% de ATK em Shot + Fire e 210% adicionais no alvo principal. [S15]
+Relentless Volley (Salva implacável)  [THE GAME]
+Execução: Dispara uma sequência curta de acompanhamento no inimigo escolhido.  Efeito: Follow-up Shot + Fire, 77% do ATK. [S15]
+Dual Resonance — Fury / Pride  [THE GAME]
+Execução: Rin alterna entre um estado de ofensiva máxima e um estado de controle de recursos, conforme ativa habilidades e Ultimate.  Efeito: Fury aumenta ATK e dano de tiro e acrescenta acertos adicionais; após acumular Refinement e gastar a ultimate, entra em Pride, que recupera SP ao usar habilidade de combate. [S15]
+Fontes: S1 | S14 | S15 | S19
+II. Kaijus identificados
+Poderes, padrões de ataque e execução observada na obra. Os efeitos não descritos no mangá/anime não foram completados por especulação.
+Leitura das fichas
+Cada habilidade abaixo é descrita como movimento em combate: preparação, trajetória/efeito e função tática. “Limite observado” indica o que não é seguro extrapolar além do que foi mostrado.
+Kaiju No. 1
+Fortitude acima de 9,0 (fonte secundária cita o primeiro registro superior a 9,0)  |  Forma original do Kaiju
+Kaiju identificado neutralizado pela Força de Defesa e convertido na Numbers Weapon 1, hoje associada a Gen Narumi. O aspecto mais distinto do organismo original é a visão capaz de antecipar movimentos pela leitura de sinais biológicos.
+FORMA E LEITURA VISUAL
+Forma humanoide monstruosa de corpo escuro/cinzento e múltiplos olhos, com aparência ameaçadora. A habilidade mais importante está nos olhos, não em uma arma externa.
+HABILIDADES E EXECUÇÃO EM COMBATE
+Pseudo-precognição por retina  [CANON]
+Execução: O Kaiju observa o corpo do oponente e percebe impulsos sinápticos antes da ação muscular completar. A leitura permite deduzir a próxima trajetória do adversário e escolher um ponto de interceptação.  Efeito: Funciona como antecipação biológica de combate, não como visão sobrenatural do futuro. Permite ataques de alta precisão e esquivas antecipadas.
+Visão anatômica / identificação de pontos fracos  [CANON]
+Execução: A retina permite enxergar através de tecidos vivos e localizar estruturas vulneráveis. Em combate, o Kaiju escolhe articulações, pontos de conexão e áreas menos protegidas.  Efeito: Transforma a leitura visual em seleção de pontos de dano; é especialmente perigoso contra inimigos que repetem movimentos previsíveis.
+Ataque inevitável por leitura de impulso  [CANON]
+Execução: Depois de prever o início da ação inimiga, o Kaiju dispara ou golpeia antes que o adversário complete a esquiva.  Efeito: A precisão deriva da antecipação de movimentos. Não significa que o golpe seja literalmente impossível de evitar em toda situação.
+Limites / distinções importantes
+A percepção ampliada e a leitura de impulsos pertencem ao No. 1 original. A forma avançada de previsão da Numbers Weapon 1 usada por Gen, que também considera elétrons, temperatura e terreno, é uma evolução desenvolvida pelo usuário/arma e não deve ser atribuída integralmente ao Kaiju original.
+Fontes: S20
+Kaiju No. 2
+Fortitude não tratada aqui como número fixo; Daikaiju histórico  |  Forma original do Kaiju
+Grande Kaiju neutralizado no passado e convertido na Numbers Weapon 2, usada por Isao Shinomiya. A forma original era um monstro de força e durabilidade excepcionais, com descarga energética pela boca.
+FORMA E LEITURA VISUAL
+Criatura muito grande, com placas corporais de aspecto rochoso/armadurado, cauda e cabeça reptiliana. O equipamento derivado assume formato de armadura escura e manoplas.
+HABILIDADES E EXECUÇÃO EM COMBATE
+Força física colossal  [CANON]
+Execução: Avança diretamente e usa braços e massa corporal para esmagar ou afastar o alvo. O peso do corpo converte movimentos simples em impactos devastadores.  Efeito: Força de curta distância e capacidade de causar destruição estrutural.
+Resistência corporal  [CANON]
+Execução: Suporta ataques pesados antes de ceder, permitindo aproximar-se de alvos armados e responder com força bruta.  Efeito: Durabilidade elevada; não significa invulnerabilidade.
+Descarga de energia pela boca  [CANON]
+Execução: Acumula energia na região da boca e libera um ataque concentrado semelhante a uma descarga elétrica.  Efeito: Ataque de energia de médio/longo alcance. A evidência da forma original é a descarga bucal.
+Poder sônico da Numbers Weapon 2 — distinção  [CANON]
+Execução: Quando a energia do No. 2 é canalizada pelo equipamento de Isao, o usuário desfere impactos de onda sonora de grande alcance e pode erguer uma barreira defensiva.  Efeito: São recursos da forma weaponized/Numbers Weapon, não devem ser automaticamente catalogados como habilidade livre do Kaiju vivo.
+Limites / distinções importantes
+Não confundir descarga de energia bucal do monstro com todo o repertório da Numbers Weapon 2. O escudo e os golpes sônicos são descritos para o equipamento usado por Isao.
+Fontes: S21
+Kaiju No. 6
+Fortitude 9,6 — “Rei dos Kaijus”  |  Forma original do Kaiju
+Kaiju neutralizado dez anos antes dos eventos centrais. Sua catástrofe foi associada a uma nevasca devastadora em Odawara e à morte de Hikari Shinomiya. Seu cadáver foi convertido na Numbers Weapon 6, usada por Reno Ichikawa.
+FORMA E LEITURA VISUAL
+Forma monstruosa de grande porte, com corpo reptiliano/terópode, placas dorsais e presença associada ao frio extremo. A aparência de Reno com a armadura azulada é a forma weaponized, não o Kaiju vivo.
+HABILIDADES E EXECUÇÃO EM COMBATE
+Aura criogênica / nevasca  [CANON]
+Execução: A presença do Kaiju no campo de batalha está associada à formação de uma enorme tempestade de neve. O ambiente ao redor é tomado por frio intenso e visibilidade reduzida.  Efeito: Controle ambiental por frio/nevasca; o feito confirmado é a tempestade em larga escala.
+Força física e resistência  [CANON]
+Execução: Usa sua estrutura massiva e musculatura para avançar contra forças de defesa e resistir a ataques de alto nível.  Efeito: A escala de poder é indicada pela Fortitude 9,6 e pelo impacto histórico da catástrofe.
+Emissão de energia fria — forma weaponized  [CANON]
+Execução: A armadura forjada do corpo do No. 6 libera energia fria ao redor de Reno, permitindo ataques e congelamento em combate.  Efeito: É uma capacidade demonstrada pela Numbers Weapon 6. Não extrapolar automaticamente para projéteis de gelo ou criação livre de estruturas sem referência de cena.
+Limites / distinções importantes
+A obra sustenta nevasca e energia fria; não é seguro transformar isso em um conjunto de dezenas de feitiços de gelo. Para o mod, use a nevasca como área de perigo e o frio como efeito de controle.
+Fontes: S22
+Kaiju No. 11
+Fortitude 9,0  |  Forma original do Kaiju
+Kaiju criado por No. 9 para enfrentar Gen Narumi. Seu poder distintivo é a hidrocinese: controla volumes de água, inclusive água do oceano e do sistema de esgoto.
+FORMA E LEITURA VISUAL
+Anatomia com traços aquáticos e humanoides. O conceito visual é associado a peixe, mas luta em terra usando água do ambiente.
+HABILIDADES E EXECUÇÃO EM COMBATE
+Hidrocinese de grande volume  [CANON]
+Execução: Estende a manipulação para massas de água próximas, puxando e deslocando a água do ambiente para moldar o campo de batalha.  Efeito: Permite atacar e defender sem depender de água carregada pelo próprio corpo.
+Onda de varredura  [CANON]
+Execução: Ergue uma massa de água e a lança lateralmente ou em direção ao oponente para varrê-lo do chão.  Efeito: Ataque em área, desequilibra e interrompe avanço.
+Jato / corrente de água  [CANON]
+Execução: Concentra água em um fluxo estreito e dispara como uma corrente de alta pressão.  Efeito: Ataque linear, capaz de empurrar ou atingir alvos a distância.
+Esfera de água comprimida  [CANON]
+Execução: Condensa água em uma esfera densa e a lança como projétil.  Efeito: Projétil de impacto; pode ser disparado em sequência.
+Ampliação muscular dos braços  [CANON]
+Execução: Altera parcialmente a estrutura corporal, aumentando o volume dos braços antes de aplicar um soco.  Efeito: Aumenta o peso e a força do golpe físico.
+Resistência e força elevadas  [CANON]
+Execução: Absorve impactos, permanece na luta e contra-ataca com golpes pesados.  Efeito: Capacidade física de Daikaiju; não é invulnerável.
+Limites / distinções importantes
+A hidrocinese depende de água disponível no ambiente; não foi descrita como criação ilimitada de água do nada.
+Fontes: S23
+Kaiju No. 12
+Fortitude 9,0  |  Forma original do Kaiju
+Criado como versão melhorada do Kaiju No. 10 e especialmente adequado para enfrentar Soshiro Hoshina. Sua especialidade é combate de espada em curta distância e adaptação técnica.
+FORMA E LEITURA VISUAL
+Grande humanoide cinzento, musculoso, com cauda longa, cabeça quadrada e chifres laterais. Apresenta semelhança com o protótipo No. 10, mas com aprimoramentos.
+HABILIDADES E EXECUÇÃO EM COMBATE
+Metamorfose de antebraços em lâminas  [CANON]
+Execução: Transforma mãos e antebraços em lâminas orgânicas rígidas, usando-os como espadas curtas para cortar em sequência.  Efeito: Ataques rápidos de corte e defesa com os próprios membros.
+Espada de carne destacável  [CANON]
+Execução: Pode desprender/transformar uma das lâminas em uma espada orgânica maior, empunhada como arma independente.  Efeito: Aumenta alcance e poder de corte; a lâmina orgânica consegue danificar equipamento da Força de Defesa.
+Esgrima adaptativa  [CANON]
+Execução: Observa a postura do espadachim adversário, responde à troca de estilo e passa a imitar ou contrariar os movimentos usados contra ele.  Efeito: Adaptação no meio da luta. Tornou-se capaz de responder a mudanças de estilo de Soshiro.
+Regeneração e remodelagem  [CANON]
+Execução: Mesmo após ter um membro danificado ou cortado, remodela o corpo e pode recuperar o braço, convertendo-o novamente em lâmina.  Efeito: Recupera capacidade ofensiva e surpreende o adversário; não é regeneração instantânea ilimitada.
+Limites / distinções importantes
+A habilidade de espada é demonstrada em duelo contra Soshiro. A adaptação é tática e corporal; não significa que copie qualquer técnica instantaneamente ou sem observá-la.
+Fontes: S24
+Kaiju No. 14
+Fortitude 9,0  |  Forma original do Kaiju
+Kaiju criado por No. 9, visto como um monólito negro flutuante com quatro faces humanas nos cantos. Foi empregado contra Mina Ashiro e as defesas de Tachikawa.
+FORMA E LEITURA VISUAL
+Paralelepípedo/monólito preto flutuante, com quatro rostos humanos cinzentos nas extremidades. O visual é geométrico, diferente dos Kaijus humanoides.
+HABILIDADES E EXECUÇÃO EM COMBATE
+Levitação  [CANON]
+Execução: Mantém o bloco corporal suspenso e se desloca no ar, podendo atacar sem tocar o chão.  Efeito: Mobilidade aérea e posição difícil de alcançar por tropas terrestres.
+Teleporte de curta distância  [CANON]
+Execução: Desaparece de uma posição e reaparece próximo, quebrando a linha de mira antes de um disparo de precisão.  Efeito: Evasão contra atiradores e reposicionamento tático. O alcance observado é curto, não teleporte global.
+Feixes de energia pelas faces  [CANON]
+Execução: As bocas/rostos emitem raios destrutivos, direcionando ataques para alvos em ângulos diferentes.  Efeito: Ataque à distância e cobertura de múltiplas direções.
+Campo de força  [CANON]
+Execução: Envolve o corpo com uma barreira energética para resistir a mísseis e disparos de rifles convencionais.  Efeito: Defesa de área centrada no próprio Kaiju.
+Portal póstumo — intervenção externa  [CANON]
+Execução: Após ser declarado morto, o corpo foi usado por No. 9 para abrir um portal.  Efeito: É um uso do cadáver induzido por No. 9, não uma habilidade de combate autônoma comprovada de No. 14.
+Limites / distinções importantes
+Não confundir levitação com voo por asas. O portal após a morte foi forçado por No. 9 e deve ficar separado do kit individual do No. 14.
+Fontes: S25
+Kaiju No. 15
+Fortitude 9,0  |  Forma original do Kaiju
+Kaiju criado por No. 9 com aparência e comportamento planejados para enfrentar Kikoru Shinomiya. Sua ameaça mais singular é a manipulação psicológica conectada à mente da vítima.
+FORMA E LEITURA VISUAL
+Forma com características humanoides e capacidade de se transformar; também reproduz a aparência de Kikoru. Diferencia-se pela combinação de mobilidade, metamorfose e ataque psíquico.
+HABILIDADES E EXECUÇÃO EM COMBATE
+Voo  [CANON]
+Execução: Suspende o corpo e se desloca livremente no ar, acompanhando adversários de alta mobilidade.  Efeito: Mobilidade aérea; facilita perseguir alvos e atacar de ângulos elevados.
+Força e velocidade extremas  [CANON]
+Execução: Combina deslocamentos velozes com golpes de força suficiente para danificar estruturas e enfrentar uma usuária de Numbers Weapon.  Efeito: Pressão física de curta distância e perseguição rápida.
+Metamorfose de membros em armas  [CANON]
+Execução: Remodela braço ou outra parte do corpo em arma, podendo incorporar objeto próximo e criar, por exemplo, um machado gigante.  Efeito: Adaptação de alcance e forma de golpe.
+Regeneração  [CANON]
+Execução: Após perder um membro, reconstrói a parte danificada e retorna ao combate.  Efeito: Recuperação rápida, não elimina a necessidade de atingir o núcleo.
+Imitação da forma de Kikoru  [CANON]
+Execução: Assume uma forma humanoide semelhante a Kikoru, pois foi modelado a partir dela.  Efeito: Disfarce e recurso psicológico; não é cópia irrestrita de qualquer pessoa.
+Feixe de energia bucal  [CANON]
+Execução: Dispara energia pela boca; pode espalhar o ataque em vários feixes ou concentrá-lo em um raio único devastador.  Efeito: Ataque de área ou perfuração de grande potência.
+Conexão psicogênica  [CANON]
+Execução: Projeta um feixe que se conecta ao cérebro do alvo. A vítima fica paralisada enquanto a criatura acessa lembranças e emoções.  Efeito: Controle mental/psicológico por conexão energética; a vítima fica vulnerável durante o efeito.
+Leitura mental e indução de memória  [CANON]
+Execução: Investiga lembranças e subconsciente do alvo e força a reviver eventos dolorosos ou traumas.  Efeito: Ataque psicológico que explora medo, culpa e insegurança.
+Domínio mental e ilusões  [CANON]
+Execução: Constrói um espaço mental monocromático baseado nas memórias da vítima e manipula as imagens e cenários que ela percebe.  Efeito: Desorienta e prende psicologicamente o adversário, criando ilusões personalizadas.
+Limites / distinções importantes
+Não tratar a manipulação psicológica como telepatia universal sem contato. A descrição disponível liga o efeito a um feixe/conexão mental; sua eficiência contra qualquer alvo não é garantida.
+Fontes: S26
+III. Personagem original — Miguel
+Kit inédito para o mod. Conceito baseado na imagem da foice enviada pelo usuário.
+Figura 1 — Foice-armamento de Miguel (imagem de referência fornecida pelo usuário).
+Leitura da arma
+A imagem mostra uma foice tecnológica alongada, com lâmina curva e serrilhada/segmentada na cabeça, corpo central mecânico e empunhadura longa. Como o usuário definiu que a arma também dispara, o kit alterna golpes de arco amplo com tiros alinhados ao eixo da arma. Os efeitos de energia e munição abaixo são propostas para o mod, não poderes oficiais da obra.
+1. Corte Orbital Rubro  [PROPOSTA ORIGINAL]
+Execução: Miguel abaixa o centro de gravidade, gira o quadril e varre a foice em um arco horizontal de quase 180 graus. A lâmina deixa um rastro vermelho curto.  Efeito: Dano corpo a corpo em área curta; ideal para afastar Yojus, interromper investidas e acertar pernas ou caudas.
+2. Disparo pelo Eixo da Foice  [PROPOSTA ORIGINAL]
+Execução: Ele trava a lâmina para a frente, alinha o corpo da arma com o alvo e dispara um projétil único pela estrutura integrada.  Efeito: Ataque de precisão a média distância. O tiro tem recuo perceptível e interrompe inimigos leves.
+3. Gancho do Ceifador  [PROPOSTA ORIGINAL]
+Execução: Miguel gira a foice de lado e encaixa a ponta curva em uma articulação, chifre ou placa saliente; em seguida puxa o alvo para fora do equilíbrio.  Efeito: Controle de alvo: derruba ou puxa um inimigo médio, abrindo janela para finalização. Contra Daikaiju, serve para puxar um membro, não o corpo inteiro.
+4. Recuo Balístico  [PROPOSTA ORIGINAL]
+Execução: Dispara em ângulo descendente ou para trás no instante em que salta, usando o recuo da arma para deslocar o corpo lateralmente.  Efeito: Esquiva curta com reposicionamento; pode atravessar uma linha de ataque e terminar em posição de contra-ataque.
+5. Arco Ascendente  [PROPOSTA ORIGINAL]
+Execução: Começa com a lâmina próxima ao chão e executa um corte vertical de baixo para cima, terminando com a foice acima do ombro.  Efeito: Golpe de lançamento/atordoamento em inimigos pequenos ou médios; excelente para expor a parte inferior da carapaça.
+6. Tiro Perfurante de Núcleo  [PROPOSTA ORIGINAL]
+Execução: A foice se estabiliza; Miguel carrega a arma por um breve instante e dispara um projétil concentrado em linha reta para uma fissura da armadura.  Efeito: Alto dano em alvo único e bônus contra placas já quebradas. A carga deixa Miguel vulnerável enquanto mira.
+7. Dança de Dupla Ceifa  [PROPOSTA ORIGINAL]
+Execução: Miguel encadeia um corte horizontal, uma meia-volta com a lâmina invertida e um disparo rápido no fim do giro.  Efeito: Combo misto corpo a corpo + tiro; cobre um arco frontal e finaliza em alvo central.
+8. Trava e Execução  [PROPOSTA ORIGINAL]
+Execução: A ponta curva prende uma placa ou membro do Kaiju; Miguel aproxima o corpo, trava a arma e dispara à queima-roupa contra a abertura criada.  Efeito: Ataque de risco alto e recompensa alta; dano elevado em ponto vulnerável, mas requer inimigo imobilizado ou desequilibrado.
+9. Chuva de Estilhaços Rubros  [PROPOSTA ORIGINAL]
+Execução: Ele aponta a arma para cima e dispara uma munição de fragmentação que se abre no ar e cai em uma pequena área marcada.  Efeito: Ataque de zona: dano moderado em vários alvos e interrupção de criaturas pequenas. Não deve atravessar paredes.
+10. Ultimate — Eclipse do Ceifador  [PROPOSTA ORIGINAL]
+Execução: Miguel avança girando a foice em um círculo completo, crava a ponta no chão para estabilizar a arma e carrega um disparo perfurante que atravessa a linha frontal.  Efeito: Ultimate híbrida: corte em área curta seguido de tiro penetrante em linha. Se o núcleo estiver exposto, o projétil causa dano crítico ampliado; animação longa e janela de vulnerabilidade antes do disparo.
+IV. Personagem original — Camilly
+Kit inédito para o mod. Conceito baseado na imagem do rifle-lâmina enviada pelo usuário.
+Figura 2 — Rifle com lâmina lateral integrada de Camilly (imagem de referência fornecida pelo usuário).
+Leitura da arma
+A imagem mostra um rifle futurista de cano longo, estrutura vermelha/preta/prateada e uma lâmina lateral superior integrada ao corpo. O kit favorece média distância, tiros de contenção e transições rápidas para cortes de baioneta. A lâmina deve ser usada como parte da arma, sem transformar o rifle em uma espada independente.
+1. Tiro de Precisão Carmesim  [PROPOSTA ORIGINAL]
+Execução: Camilly encaixa a coronha no ombro, prende a respiração por um instante e dispara um projétil único na região já marcada do Kaiju.  Efeito: Tiro de alvo único, alta precisão e baixo espalhamento. Bônus contra pontos fracos identificados.
+2. Rajada de Supressão  [PROPOSTA ORIGINAL]
+Execução: Ela desloca o cano em pequenos movimentos horizontais e dispara uma rajada curta, sem perder completamente a mira.  Efeito: Ataque em cone estreito; reduz a velocidade de avanço de inimigos pequenos e cria cobertura para aliados.
+3. Corte Lateral de Baioneta  [PROPOSTA ORIGINAL]
+Execução: Camilly aproxima o rifle do corpo e usa a lâmina lateral para executar um corte diagonal de fora para dentro.  Efeito: Dano de corte em curta distância; rápido o suficiente para interromper um ataque leve.
+4. Investida de Baioneta  [PROPOSTA ORIGINAL]
+Execução: Avança com o rifle apontado, mantém a lâmina à frente e termina com uma estocada curta na articulação ou placa vulnerável.  Efeito: Investida linear que causa dano perfurante e empurra o alvo. Contra inimigos grandes, não atravessa o corpo; abre espaço.
+5. Guarda Reversa  [PROPOSTA ORIGINAL]
+Execução: Camilly gira o rifle transversalmente e usa a lâmina lateral para desviar uma garra ou golpe, terminando com um empurrão do corpo da arma.  Efeito: Parry defensivo: reduz dano recebido e aplica breve desequilíbrio se o tempo de execução for perfeito.
+6. Disparo Perfurante  [PROPOSTA ORIGINAL]
+Execução: Ela trava a arma, concentra energia no cano e dispara uma munição de penetração contra uma placa ou fissura.  Efeito: Alto dano em alvo único; bônus para quebrar placas. A preparação reduz mobilidade.
+7. Varredura Balística  [PROPOSTA ORIGINAL]
+Execução: Camilly desliza lateralmente, dispara em movimento e fecha a sequência com um corte amplo da lâmina integrada.  Efeito: Combo de mobilidade e área curta; ótimo para atravessar um grupo e sair pela lateral.
+8. Sequência Cruzada  [PROPOSTA ORIGINAL]
+Execução: Executa um corte lateral em diagonal, gira o rifle para o eixo de tiro e dispara imediatamente na abertura criada.  Efeito: Dano combinado de corte + tiro. A segunda parte tem bônus se o primeiro golpe acertar.
+9. Fogo de Cobertura  [PROPOSTA ORIGINAL]
+Execução: Camilly posiciona o rifle em linha baixa e dispara rajadas medidas para impedir que os Kaijus avancem sobre um aliado.  Efeito: Habilidade de suporte: cria zona de supressão, reduz pressão sobre aliados e facilita ressuscitar/retirar companheiros.
+10. Ultimate — Tempestade Carmesim  [PROPOSTA ORIGINAL]
+Execução: Ela marca o alvo com a mira, dispara uma salva concentrada em pontos diferentes da carapaça e, aproveitando a abertura, avança com um corte horizontal da lâmina lateral.  Efeito: Ultimate em duas etapas: tiros de precisão que quebram placas e golpe final corpo a corpo. Quanto mais placas destruídas pela salva, maior o dano do corte final.
+V. Diretrizes para transformar os kits em mecânicas de Minecraft
+Sugestões práticas de implementação, sem impor números finais de balanceamento.
+Personagem
+Função sugerida
+Identidade de combate
+Implementação sugerida
+Miguel
+Híbrido melee/ranged
+Combos de foice, gancho, disparo de linha, tiro carregado
+Alcance melee alto; tiros com recarga/energia; mobilidade por recuo
+Camilly
+Atiradora + baioneta
+Precisão, supressão, parry, combo corte-tiro
+Rifle de cadência média; lâmina com janela curta de parry; ultimate quebra-placa
+Iharu
+Burst / raio
+Tiros eletrificados e picos curtos de potência
+Aceleração curta, tempo de recarga; dano elétrico como munição
+Haruichi
+Precisão / suporte
+Tiros de rifle/arco e buff/debuff tático
+Acertos de ponto fraco, flecha de veneno, buff de companheiro
+Aoi
+Linha de frente / impacto
+Rifle e Pile Driver; variante de escudo apenas se importar a versão do jogo
+Animação pesada e golpe de perfuração com preparação
+Hakua
+Suporte / cura
+Incentivo e tiro de fogo apenas no kit de jogo
+Patience pode virar regeneração temporária ou limpeza de status
+Soichiro
+Espadachim / contra-ataque
+Postura adaptativa e follow-up após aliados
+Janela de leitura do alvo, corte preciso e bônus após quebra de placa
+Kota
+Defensor / gelo (jogo)
+Provocação, tiro de contenção e granada congelante
+Agro controlado, escudo e congelamento temporário
+Tae
+Dano contínuo / fogo (jogo)
+Munição incendiária e granada térmica
+Burn com duração clara e dano periódico
+Ryo
+Comandante / suporte
+Ordens que reforçam equipe
+Aura de buff em área e tiro para carregar Ultimate
+Jura
+Impacto / fogo
+Bola de ferro em arco amplo
+Hitbox grande, dano pesado, queimadura ao atingir o chão
+Rin
+Rajada / controle de área
+Metralhadora e cobertura de fogo
+Dispersão escalável, aquecimento ou consumo de munição
+Equilíbrio sugerido para habilidades originais
+Use 3 categorias de recarga: ataques básicos (0,5–2 s entre usos), habilidades comuns (8–16 s) e Ultimate (carga por acertos/energia ou recarga longa de 35–60 s). Ajuste o dano pelo papel: controle e suporte devem causar menos dano bruto; golpes carregados e ultimates podem ter maior dano, mas precisam de preparação ou risco. Esses intervalos são sugestões de design, não valores canônicos.
+Combos recomendados para os personagens originais
+Miguel — Gancho do Ceifador → Tiro Perfurante de Núcleo → Corte Orbital Rubro. O gancho expõe uma abertura, o tiro castiga o ponto vulnerável e o corte afasta outros inimigos.
+Camilly — Rajada de Supressão → Investida de Baioneta → Sequência Cruzada. A rajada impede avanço, a investida aproxima e o combo corte-tiro termina a execução.
+Equipe — Ryo ou Haruichi fornecem buff/abertura; Soichiro ou Miguel exploram o núcleo; Camilly mantém fogo de cobertura; Hakua sustenta o grupo. Evite que todos os personagens tenham o mesmo tipo de dano e função.
+Glossário rápido
+Flash Adapter: Fenômeno em que o usuário libera potência do traje em picos repentinos, em vez de manter um nível constante.
+Fortitude: Índice de ameaça/energia de um Kaiju identificado; não equivale diretamente a HP ou dano de jogo.
+Honju / Daikaiju: Classes de Kaiju de grande porte. A classificação não substitui o nome/número individual.
+Numbers Weapon: Equipamento produzido a partir de um Kaiju identificado neutralizado; pode manifestar capacidades do organismo de origem.
+PLT / Plate: Placa de proteção do Kaiju; no jogo, quebrar placas costuma ativar passivas ou expor o núcleo.
+Core Exposed: Estado em que o núcleo do Kaiju fica exposto, oferecendo uma janela de dano maior.
+DoT / Burn / Shock: Dano ao longo do tempo; estados de fogo e choque usados em certas unidades do jogo.
+Passiva / Follow-up: Efeito permanente/condicional e ataque automático de acompanhamento, respectivamente, no sistema de batalha do jogo.
+VI. Fontes e referências
+Consultadas em 05/11/2026. Para informações de poderes de personagens, prefira sempre conferir o capítulo do mangá indicado na própria ficha da fonte.
+[S1] Site oficial de KAIJU NO. 8 THE GAME — lista e perfis de personagens — https://www.kj8-thegame.com/en/
+[S2] Iharu Furuhashi 4★ — GameWith (Latent Talent) — https://gamewith.net/kj8-thegame/70146
+[S3] Iharu Furuhashi 5★ — GachaWiki (Flash-Fierce Talent) — https://gachawiki.net/kaiju8/characters/iharu-furuhashi-flash-fierce-talent
+[S4] Haruichi Izumo 4★ — GameWith (The Clean-Cut Elite) — https://gamewith.net/kj8-thegame/70145
+[S5] Haruichi Izumo 5★ — GameWith (Calculated Choice) — https://gamewith.net/kj8-thegame/73649
+[S6] Aoi Kaguragi 4★ — ficha de habilidades do THE GAME — https://www.gacha.gg/kaiju-no-8-the-game/characters/aoi-kaguragi
+[S7] Aoi Kaguragi 5★ — GameWith (Fruits of Diligence) — https://gamewith.net/kj8-thegame/73775
+[S8] Hakua Igarashi 4★ — GameWith (Sincerity and Potential) — https://gamewith.net/kj8-thegame/74073
+[S9] Soichiro Hoshina 5★ — GameWith (Keystone of Western Japan) — https://gamewith.net/kj8-thegame/75877
+[S10] Kota Tachibana 4★ — ficha de habilidades do THE GAME — https://www.gacha.gg/kaiju-no-8-the-game/characters/kota-tachibana
+[S11] Tae Nakanoshima 4★ — GameWith — https://gamewith.net/kj8-thegame/70138
+[S12] Ryo Ikaruga 4★ — ficha de habilidades do THE GAME — https://www.gacha.gg/kaiju-no-8-the-game/characters/ryo-ikaruga
+[S13] Jura Igarashi 5★ — GameWith (Grit and Duty) — https://gamewith.net/kj8-thegame/74074
+[S14] Rin Shinonome 5★ — GameWith (Aspiration and Honor) — https://gamewith.net/kj8-thegame/70153
+[S15] Rin Shinonome 5★ — GameWith (Cross-Forged Refinement) — https://gamewith.net/kj8-thegame/76183
+[S16] Iharu Furuhashi — resumo de capacidades do mangá — https://kaiju-no-8.fandom.com/wiki/Iharu_Furuhashi
+[S17] Haruichi Izumo — resumo de capacidades e AW-0027 — https://kaiju-no-8.fandom.com/wiki/Haruichi_Izumo
+[S18] Aoi Kaguragi — histórico de liberação do traje e PB-3115 — https://kaiju-no-8.fandom.com/wiki/Aoi_Kaguragi
+[S19] Rin Shinonome — resumo de combate e treinamento — https://kaiju-no-8.fandom.com/wiki/Rin_Shinonome
+[S20] Kaiju No. 1 — pseudo-precognição e retina — https://kaiju-no-8.fandom.com/wiki/Kaiju_No._1
+[S21] Kaiju No. 2 — energia original e capacidades da Numbers Weapon 2 — https://kaiju-no-8.fandom.com/wiki/Kaiju_No._2
+[S22] Kaiju No. 6 — Fortitude 9,6 e criocinese/nevasca — https://kaiju-no-8.fandom.com/wiki/Kaiju_No._6
+[S23] Kaiju No. 11 — hidrocinese e força física — https://kaiju-no-8.fandom.com/wiki/Kaiju_No._11
+[S24] Kaiju No. 12 — transformação de lâminas, esgrima e adaptação — https://kaiju-no-8.fandom.com/wiki/Kaiju_No._12
+[S25] Kaiju No. 14 — levitação, teleporte, feixes e campo de força — https://kaiju-no-8.fandom.com/wiki/Kaiju_No._14
+[S26] Kaiju No. 15 — metamorfose, regeneração e manipulação psicológica — https://kaiju-no-8.fandom.com/wiki/Kaiju_No._15
+ADENDO DE IMPLEMENTAÇÃO — REVISÃO 05/11/2026
+Este adendo complementa as fichas anteriores. Os dados já existentes foram preservados; os itens abaixo são requisitos técnicos e campos pendentes para a próxima etapa do desenvolvimento.
+Fichas reservadas — criações do projeto
+Estas entradas foram adicionadas como espaços de trabalho. Nenhuma aparência, estatística, habilidade, ataque ou comportamento foi inventado. As fichas serão completadas quando forem fornecidas imagens e referências visuais.
+Fusão No.9 + No.11
+Campo
+Estado atual
+Classificação
+Criação do projeto / ficha em preparação
+Aparência e silhueta
+Pendente — aguardar imagem de referência
+Altura e escala no Minecraft
+Pendente — definir após comparar com personagem humano
+HP / dano / armadura / velocidade
+Pendente — balancear após definir o conceito
+Ataques e habilidades
+Não definidos intencionalmente
+Animações e IA
+A definir após receber imagens e decidir o estilo de combate
+Observação: as quatro fusões do No.9 devem preservar elementos reconhecíveis dos dois kaijus de origem, mas a combinação visual e o kit serão decididos a partir das imagens enviadas.
+Fusão No.9 + No.12
+Campo
+Estado atual
+Classificação
+Criação do projeto / ficha em preparação
+Aparência e silhueta
+Pendente — aguardar imagem de referência
+Altura e escala no Minecraft
+Pendente — definir após comparar com personagem humano
+HP / dano / armadura / velocidade
+Pendente — balancear após definir o conceito
+Ataques e habilidades
+Não definidos intencionalmente
+Animações e IA
+A definir após receber imagens e decidir o estilo de combate
+Observação: as quatro fusões do No.9 devem preservar elementos reconhecíveis dos dois kaijus de origem, mas a combinação visual e o kit serão decididos a partir das imagens enviadas.
+Fusão No.9 + No.14
+Campo
+Estado atual
+Classificação
+Criação do projeto / ficha em preparação
+Aparência e silhueta
+Pendente — aguardar imagem de referência
+Altura e escala no Minecraft
+Pendente — definir após comparar com personagem humano
+HP / dano / armadura / velocidade
+Pendente — balancear após definir o conceito
+Ataques e habilidades
+Não definidos intencionalmente
+Animações e IA
+A definir após receber imagens e decidir o estilo de combate
+Observação: as quatro fusões do No.9 devem preservar elementos reconhecíveis dos dois kaijus de origem, mas a combinação visual e o kit serão decididos a partir das imagens enviadas.
+Fusão No.9 + No.15
+Campo
+Estado atual
+Classificação
+Criação do projeto / ficha em preparação
+Aparência e silhueta
+Pendente — aguardar imagem de referência
+Altura e escala no Minecraft
+Pendente — definir após comparar com personagem humano
+HP / dano / armadura / velocidade
+Pendente — balancear após definir o conceito
+Ataques e habilidades
+Não definidos intencionalmente
+Animações e IA
+A definir após receber imagens e decidir o estilo de combate
+Observação: as quatro fusões do No.9 devem preservar elementos reconhecíveis dos dois kaijus de origem, mas a combinação visual e o kit serão decididos a partir das imagens enviadas.
+Kaiju No.16
+Campo
+Estado atual
+Classificação
+Criação do projeto / ficha em preparação
+Aparência e silhueta
+Pendente — aguardar imagem de referência
+Altura e escala no Minecraft
+Pendente — definir após comparar com personagem humano
+HP / dano / armadura / velocidade
+Pendente — balancear após definir o conceito
+Ataques e habilidades
+Não definidos intencionalmente
+Animações e IA
+A definir após receber imagens e decidir o estilo de combate
+Observação: as quatro fusões do No.9 devem preservar elementos reconhecíveis dos dois kaijus de origem, mas a combinação visual e o kit serão decididos a partir das imagens enviadas.
+Kaiju No.17
+Campo
+Estado atual
+Classificação
+Criação do projeto / ficha em preparação
+Aparência e silhueta
+Pendente — aguardar imagem de referência
+Altura e escala no Minecraft
+Pendente — definir após comparar com personagem humano
+HP / dano / armadura / velocidade
+Pendente — balancear após definir o conceito
+Ataques e habilidades
+Não definidos intencionalmente
+Animações e IA
+A definir após receber imagens e decidir o estilo de combate
+Observação: as quatro fusões do No.9 devem preservar elementos reconhecíveis dos dois kaijus de origem, mas a combinação visual e o kit serão decididos a partir das imagens enviadas.
+Kaiju No.18
+Campo
+Estado atual
+Classificação
+Criação do projeto / ficha em preparação
+Aparência e silhueta
+Pendente — aguardar imagem de referência
+Altura e escala no Minecraft
+Pendente — definir após comparar com personagem humano
+HP / dano / armadura / velocidade
+Pendente — balancear após definir o conceito
+Ataques e habilidades
+Não definidos intencionalmente
+Animações e IA
+A definir após receber imagens e decidir o estilo de combate
+Observação: as quatro fusões do No.9 devem preservar elementos reconhecíveis dos dois kaijus de origem, mas a combinação visual e o kit serão decididos a partir das imagens enviadas.
+Kaiju No.20
+Campo
+Estado atual
+Classificação
+Criação do projeto / ficha em preparação
+Aparência e silhueta
+Pendente — aguardar imagem de referência
+Altura e escala no Minecraft
+Pendente — definir após comparar com personagem humano
+HP / dano / armadura / velocidade
+Pendente — balancear após definir o conceito
+Ataques e habilidades
+Não definidos intencionalmente
+Animações e IA
+A definir após receber imagens e decidir o estilo de combate
+Observação: as quatro fusões do No.9 devem preservar elementos reconhecíveis dos dois kaijus de origem, mas a combinação visual e o kit serão decididos a partir das imagens enviadas.
+GUIA TÉCNICO DE ANIMAÇÃO, COMBATE E CORREÇÕES
+Escopo: aplicar este checklist a todos os personagens humanos, formas transformadas, kaijus numerados, kaijus não numerados e personagens originais. É uma especificação de implementação para o mod; não altera por si só o cânone nem os valores de balanceamento já registrados.
+1. Animação de personagens — padrão obrigatório
+Grupo de animações
+Animações/estados que devem existir
+Critério de qualidade
+Locomoção
+Idle respirando; caminhada; corrida; sprint; strafe; virar; parar; iniciar movimento; recuo; salto/queda quando aplicável.
+Transições suaves, sem deslizar os pés; velocidade visual sincronizada à velocidade real.
+Combate corpo a corpo
+Preparação (wind-up); golpe; recuperação; combo; ataque pesado; ataque no ar; esquiva; bloqueio/parry; stagger; knockback.
+Cada golpe tem janela ativa de hitbox; dano não ocorre durante a preparação ou recuperação.
+Armas de fogo
+Empunhar; mirar; disparar; recuo; recarregar; alternar mira; correr com arma; golpe de coronha/baioneta se aplicável.
+Boca do cano alinhada ao projétil; recuo proporcional; personagem mantém a mira no alvo.
+Poderes/energia
+Carregar; concentrar; disparar; manter canalização; dissipar; sobrecarga; falha/interrupção.
+Efeito visual cresce durante a carga e termina junto com o evento de ataque.
+Reações
+Levar dano leve/pesado; bloquear; congelar; queimar; envenenar; atordoar; morrer; vitória/recuperação.
+Prioridade de reação evita tocar animações incompatíveis ao mesmo tempo.
+Transformações
+Preparação; transformação; forma completa; destransformação; sobrecarga/limite.
+Escala, hitbox, câmera, áudio e controlador de animação mudam em sincronia.
+Implementação GeckoLib: separar controllers por função (locomoção, upper-body/arma, ação/ataque e reação, quando o rig permitir). Usar animações em loop apenas para estados contínuos. Ataques e eventos únicos devem ser não-looping e possuir keyframes/eventos para som, partículas, disparo, hitbox e impacto. Evitar que o controller de idle sobrescreva um ataque.
+Sincronização multiplayer: o servidor valida início, alvo, alcance, cooldown e dano. O cliente reproduz a animação e os efeitos sincronizados por evento; não confiar apenas no cliente para aplicar dano ou destruir blocos.
+2. Movimentação e sensação de peso
+Sincronizar a velocidade da animação com a velocidade do mob. Ajustar frequência dos passos para caminhada, corrida e sprint; impedir foot sliding.
+Adicionar aceleração e desaceleração curtas, curvas com inclinação do tronco e antecipação de movimento. Criaturas pesadas viram mais lentamente e têm maior inércia; unidades ágeis mudam de direção mais rápido.
+Dash e esquiva devem ter início, deslocamento e recuperação definidos. Aplicar invulnerabilidade apenas na janela prevista e nunca durante toda a animação.
+Saltos, aterrissagens e quedas devem considerar massa/tamanho: criaturas grandes têm aterrissagem mais lenta, impacto visual maior e partículas adequadas; humanos têm movimentos mais rápidos e compactos.
+Evitar teleporte visual: se for necessário reposicionar durante uma animação, limitar a distância e validar colisão no servidor. Para ataques com avanço, usar movimento controlado e colisão real, não apenas deslocar o modelo.
+3. Ataques de energia e destruição do ambiente
+Etapa
+Comportamento recomendado
+Carga
+Partículas convergem para a mão, arma, boca ou núcleo correto; luz/áudio aumentam gradualmente; permitir interrupção quando o ataque for interrompível.
+Disparo/impacto
+Projétil ou raio segue direção validada; aplicar dano, empurrão e efeitos em área com limites claros. O ponto de impacto deve coincidir com o visual.
+Destruição
+Criar perfil por ataque: raio, profundidade, força, blocos permitidos, blocos imunes e limite máximo de blocos afetados por tick.
+Pós-impacto
+Partículas de poeira/destroços, crateras ou marcas temporárias, som e onda de choque. Evitar partículas permanentes e excesso de entidades.
+Persistência
+Efeitos de chão devem expirar; fogo, gelo, corrosão ou energia só permanecem se a habilidade especificar isso.
+Segurança e desempenho: destruição de blocos deve ser configurável (ativada/desativada), limitada por raio e quantidade, executada no servidor e protegida por regras de claim/proteção. Não destruir bedrock, blocos de estrutura, blocos protegidos, blocos de comando ou inventários. Preferir lista branca de blocos destrutíveis e drops controlados; evitar atualizar milhares de blocos no mesmo tick.
+Perfis de destruição sugeridos: impacto leve (rachadura/partículas sem remover blocos); impacto médio (quebra pequena e localizada); explosão pesada (área maior com limite rígido); raio contínuo (faixa estreita por segmentos); ataque de chefe (cenário/decoração temporária ou destruição limitada por fase). O perfil deve ser definido por habilidade, não apenas pelo dano.
+4. Posição e encaixe das armas nas mãos
+Criar bones/locators dedicados no rig: mão direita, mão esquerda, empunhadura principal, mão de apoio, costas/arma guardada e ponto de disparo. Usar nomes consistentes entre modelos.
+Ajustar posição, rotação e escala local da arma no locator, não compensar erros movendo o braço inteiro. Conferir frente, lado e costas e durante idle, corrida, mira, ataque e recarga.
+Armas de duas mãos precisam de duas ancoragens: mão dominante dirige a arma e a mão de apoio acompanha o foregrip/segunda empunhadura. Corrigir o IK ou a pose da mão de apoio para não atravessar o modelo.
+Foices, espadas e armas longas: conferir pivô no ponto real de empunhadura e arco de rotação para evitar que a lâmina atravesse o corpo ou gire em torno do centro do modelo.
+Armas de fogo: o muzzle/locator do cano deve ser a origem do projétil, flash, fumaça e som posicional. Não disparar do centro do peito ou da câmera.
+Validar a mão correta por personagem e por forma. Se o personagem trocar de arma, atualizar locator, pose e animação juntos; ocultar o modelo antigo para evitar duplicação.
+Teste de encaixe
+Aprovação
+Idle e caminhada
+A arma permanece presa à mão, sem tremer ou atravessar o corpo.
+Mira e disparo
+Cano aponta para a direção do projétil; flash nasce na boca do cano.
+Combo e ataque pesado
+A lâmina/arma percorre um arco coerente e não atravessa o chão de forma involuntária.
+Duas mãos
+Ambas as mãos tocam as empunhaduras nos keyframes de uso.
+Troca/arma guardada
+A arma aparece uma única vez e no local correto.
+5. Escala visual, tamanho e hitboxes
+Não corrigir tamanho apenas aumentando o modelo inteiro. Manter separados: escala do modelo/render, altura visual desejada, hitbox de colisão, alcance de ataque, altura dos olhos/câmera e posição dos efeitos. A convenção do projeto continua sendo aproximadamente 1 bloco = 1 metro, mas a medida final deve ser validada dentro do jogo.
+Usar uma referência humana padrão em pé para comparar todos os modelos; medir do pé ao topo da cabeça/chifre, sem incluir efeitos temporários.
+Ajustar primeiro a escala do renderer e a origem/pivô do modelo; depois configurar largura/altura da hitbox e eye height separadamente.
+Verificar que pés tocam o chão, centro de massa está sobre a base e a entidade não afunda nem flutua. Corrigir o pivot/root bone quando necessário.
+Testar portas, corredores, escadas, água, blocos baixos e combate em espaços fechados. Criaturas grandes podem precisar de navegação especial e colisão que não bloqueie a própria animação.
+Definir alcance de golpe a partir da arma/membro e do frame ativo, não só do tamanho total do modelo. Evitar hitbox gigante que acerte atrás do personagem.
+6. IA individual — comportamento por função
+A IA deve ser montada por perfis e objetivos, com prioridades claras. Cada personagem deve reconhecer alvos, distância, linha de visão, aliados, obstáculos, cooldowns e fase de combate. Evitar que todos persigam o jogador em linha reta.
+Arquétipo / personagens aplicáveis
+Comportamento esperado
+Atiradora de elite — Mina
+Manter distância e linha de visão; procurar posição elevada/segura; mirar antes de disparar; priorizar alvos grandes/perigosos; recuar se cercada; recarregar em janela segura.
+Espadachim técnico — Hoshina
+Fechar distância com cuidado; observar ataques do alvo; esquivar/parry em janela; executar combos curtos; recuar após sequência; alternar postura conforme tamanho do inimigo.
+Combatente adaptativo — Kafka/No.8
+Avançar e pressionar; usar golpes pesados contra alvos resistentes; esquivar de ataques telegrafados; usar agarrão apenas em alvos compatíveis; mudar padrão em transformação.
+Atirador/controle — Reno/No.6
+Manter distância média; usar tiros para interromper; reservar congelamento para ameaças prioritárias; evitar repetir controle continuamente em chefes.
+Combatentes de linha — Iharu, Aoi e demais soldados
+Manter formação/esquadrão; cobrir aliados; alternar tiro e reposicionamento; não ocupar o mesmo ponto; priorizar ameaças que atacam aliados.
+Comandante/apoio — personagens de suporte
+Dar prioridade a objetivos, marcação e suporte; manter aliados no alcance; não perseguir isoladamente um chefe para longe do grupo.
+Kaiju veloz/caçador
+Flanquear, avançar em rajadas, recuar após errar e escolher alvos vulneráveis; não ficar preso tentando atravessar paredes.
+Kaiju pesado/colossal
+Aproximar-se com passos largos, ataques telegrafados e área de impacto; virar lentamente; destruir apenas blocos autorizados; reagir a dano com stagger limitado.
+Kaiju de longo alcance/energia
+Manter distância, carregar ataques com aviso visual, procurar linha de visão e mudar de posição quando pressionado.
+Kaiju chefe/adaptativo
+Fases com limiares de vida; variar combos; evitar repetição perfeita; resistir gradualmente a controle; chamar reforços apenas se previsto na ficha.
+Para cada entidade, configurar alvos válidos, alcance de detecção, alcance de perseguição, distância preferida, velocidade de navegação, memória de alvo, cooldown de troca de alvo, chance de esquiva e prioridades de ataque. A ficha individual deve indicar quais objetivos são permitidos; não ativar todas as ações para todos.
+7. Mapeamento inicial por personagem
+Personagem / grupo
+Correções prioritárias a verificar
+Kafka / Kaiju No.8
+Diferença clara entre locomoção humana e forma kaiju; transformação sem salto de posição; golpes com peso; esmagamento com impacto no chão; agarrão apenas em alvos compatíveis.
+Mina Ashiro
+Rifle alinhado ao ombro e mão de apoio; mira estável; origem do disparo no cano; recuo; reposicionamento para linha de visão e distância segura.
+Reno / No.6
+Rifle encaixado; animação de tiro; projéteis de gelo saem do cano; congelamento com duração limitada; forma No.6 com postura e escala próprias.
+Hoshina / forma No.10
+Duas espadas com pivôs corretos; combos alternados; janelas de parry; deslocamento curto e rápido; evitar deslizar durante cortes.
+Iharu e soldados com rifle/espingarda
+Mira, recuo e recarga individual; formação de esquadrão; cobertura e reposicionamento; não disparar através de obstáculos.
+Gen, Isao e usuários de armamento pesado
+Animação de preparação e recuperação mais pesada; arma presa ao corpo/mãos; impactos com recuo; IA que respeite alcance e tempo de carga.
+Miguel — foice-armamento
+Pivô no cabo; alternância correta entre foice e disparo; arco de corte sem atravessar o corpo; muzzle alinhado; IA híbrida alterna distância curta e média.
+Camilly — rifle-lâmina
+Rifle alinhado ao ombro e lâmina lateral na mão/posição correta; alternar tiro e corte sem duplicar arma; IA ágil de médio alcance e contra-ataque com timing.
+Kaijus numerados e não numerados
+Aplicar perfil conforme anatomia e estilo da ficha: quadrúpede, bípede, voador, veloz, tanque, atirador ou chefe; ajustar pivôs, colisão e navegação por espécie.
+8. Plano de testes e critérios de conclusão
+Teste visual em idle, caminhada, corrida, ataque leve, ataque pesado, habilidade, ultimate, dano recebido, morte e transformação.
+Teste de arma em vista frontal, lateral e traseira; conferir mão, pivô, muzzle e animação com a arma em movimento.
+Teste de escala lado a lado com um jogador padrão; conferir altura, largura, hitbox, alcance e altura dos olhos.
+Teste de IA em arena aberta e ambiente com obstáculos: aquisição de alvo, perseguição, ataque, recuo, troca de alvo, navegação e retorno ao combate.
+Teste de destruição com configuração ligada/desligada, proteção de terreno, limite de blocos, drops e desempenho com vários efeitos simultâneos.
+Teste multiplayer: animações e efeitos sincronizados; dano, cooldown e destruição validados pelo servidor; sem duplicação de projéteis ou efeitos.
+Critério de aprovação: nenhum personagem deve ser considerado finalizado enquanto tiver arma flutuando/atravessando a mão, pés deslizando de forma evidente, hitbox incompatível com o corpo, ataques sem janela de acerto definida, destruição sem limite ou IA presa em obstáculos/repetindo uma única ação.

@@ -1,0 +1,655 @@
+DOSSIÊ DE ALTURAS, AURAS E BALANCEAMENTO
+KAIJU NO. 8 — MOD MINECRAFT / NEOFORGE / GECKOLIB
+Base antiga preservada + Miguel e Camilly | 05/11/2026
+1. Convenções
+RECUPERADO: atributos antigos do mod; preservar como base.
+PROPOSTA: aura, dano por golpe, cooldowns e ajustes acrescentados agora; testar antes de aplicar.
+CANON: altura publicada em fonte de perfil. PENDENTE: altura não confirmada; medir o modelo.
+Escala visual do projeto: 1 bloco ≈ 1 metro. Renderer, hitbox e altura visual devem ser ajustados separadamente.
+Multiplicadores de dano são aplicados sobre o dano-base da arma/personagem. Stamina e cooldowns devem ser controlados separadamente.
+2. Personagens humanos — altura, status, aura e ataques
+Kafka Hibino / No. 8
+Altura: 181 cm (humano)
+Status: Humano 24 HP, arm. 6, vel. 0,30. No.8: 1.800 HP, dano base 55, arm.19, vel.0,40, regen 3%/s abaixo de 50%, T8.
+Aura: Azul-ciano/branco; núcleo no peito, pulso crescente na transformação e rastro curto nos movimentos.
+Ataques / cooldowns: Soco 1,0x; pesado 1,6x; Ground Smash 2,4x em área (CD 12s); Roar empurra/interrompe (18s); Grab/Throw 1,8x (14s); Dash Strike 1,5x (8s).
+Função e limites: Brigador de corpo a corpo. Dano alto e regeneração, mas menos versátil que No.9.
+Mina Ashiro
+Altura: 169 cm
+Status: 420 HP, arm.20, vel.0,30, T6.
+Aura: Dourado/branco; linhas convergem para a mira; brilho concentrado no cano.
+Ataques / cooldowns: Rifle 1,0x; tiro preciso 1,8x; tiro carregado 3,0x; Keraunos 5,0x contra Daikaiju/2,5x contra menores (CD 18–24s).
+Função e limites: Sniper anti-Daikaiju; exige linha de visão e preparação; fraca em curta distância.
+Reno Ichikawa
+Altura: 174 cm
+Status: 360 HP, arm.17, vel.0,31, T5. No.6: 650 HP, arm.20, vel.0,36, T7.
+Aura: Azul-gelo/ciano; cristais, geada no chão e rastro frio; aura mais densa com No.6.
+Ataques / cooldowns: Rifle 1,0x; rajada 1,4x; precisão 1,8x; Ice Shot 1,5x + lentidão; Freeze Field 0,7x/s por 4s (CD 16s). Bosses recebem duração reduzida.
+Função e limites: Controle de campo e suporte. Congelamento de boss não pode ser permanente.
+Kikoru Shinomiya
+Altura: 157 cm
+Status: 390 HP, arm.18, vel.0,34, T5. No.4: 580 HP, arm.20, vel.0,44, T7.
+Aura: Rosa-magenta/branco; partículas em lâmina; rastro de dash; asas luminosas na forma No.4.
+Ataques / cooldowns: Machado 1,5x; pesado 2,2x; mergulho 2,8x; dash 1,6x; ataque aéreo 2,4x (CD 10s).
+Função e limites: DPS móvel; vulnerável na aterrissagem.
+Soshiro Hoshina
+Altura: 171 cm
+Status: 460 HP, arm.20, vel.0,30, T5+. No.10: 520 HP, vel.0,35, T7.
+Aura: Violeta/prata; arcos de corte e pós-imagem curta; No.10 adiciona pulsos carmesim.
+Ataques / cooldowns: Corte 0,75x; combo 3x0,55x; pesado 1,5x; Kaeshi-uchi 2,0x; Tail Sweep 1,6x área. Parry CD 4s; especial 10s.
+Função e limites: Duelista técnico. Preservar os testes antigos; não aumentar atributos indiscriminadamente.
+Gen Narumi
+Altura: 175 cm
+Status: 480 HP, arm.20, vel.0,32, T6. No.1: 650 HP, vel.0,36, T7.
+Aura: Vermelho/preto; retículas, linhas de trajetória e pulsos no visor.
+Ataques / cooldowns: Tiro 1,0x; rajada 1,3x; corte 1,4x; contra-ataque previsto 2,0x; marcação concede +15% dano aliado por 5s (CD 8s).
+Função e limites: Técnico; previsão melhora leitura/esquiva, nunca concede invulnerabilidade.
+Isao Shinomiya
+Altura: 190 cm
+Status: 520 HP, arm.20, vel.0,29, T6. No.2: 700 HP, vel.0,32, T7+.
+Aura: Âmbar/grafite; ondas concêntricas e aura densa nos punhos.
+Ataques / cooldowns: Soco 1,3x; manopla 2,0x; onda 1,6x área; carga 3,0x (CD 20s).
+Função e limites: Tanque de impacto; lento e com preparação nos ataques fortes.
+Iharu Furuhashi
+Altura: 177 cm
+Status: 300 HP, arm.14, vel.0,33, T4.
+Aura: Laranja-avermelhado/amarelo; faíscas rápidas; aura aumenta em sequências.
+Ataques / cooldowns: Escopeta 1,0x; concentrado 1,7x; eletrificado 1,4x + choque curto (CD 9s); sequência 3x0,65x.
+Função e limites: Burst de curta/média distância; defesa e precisão inferiores aos capitães.
+Haruichi Izumo
+Altura: 178 cm
+Status: 290 HP, arm.14, vel.0,31, T4.
+Aura: Verde-esmeralda/dourado; partículas curvas e marca tóxica discreta.
+Ataques / cooldowns: Tiro 1,0x; tóxico 0,8x + veneno 4s (CD 12s); perfurante 1,5x; chuva 4x0,55x (CD 16s).
+Função e limites: Atirador/suporte; bosses reduzem duração e acúmulo do veneno.
+Aoi Kaguragi
+Altura: 183 cm
+Status: 330 HP, arm.16, vel.0,28, T4.
+Aura: Azul-aço/branco; pulsos mecânicos e faíscas durante carga da PB-3115.
+Ataques / cooldowns: Arma 1,0x; PB-3115 duas estacas 2x1,5x; perfuração carregada 3,5x; onda 1,2x área (CD 14s).
+Função e limites: Bruiser pesado; perfuração/stagger altos, mas lento e vulnerável na carga.
+Eiji Hasegawa
+Altura: 210 cm (listado por ORICON)
+Status: 400 HP, arm.18, vel.0,28, T5.
+Aura: Cinza-azulado/âmbar; aura larga e estável; pulsos de comando.
+Ataques / cooldowns: Metralhadoras 6x0,35x; rajada focada 2,0x; golpe 1,5x; ordem +10% defesa aliados por 6s (CD 18s).
+Função e limites: Tanque/comandante; resistente, baixa mobilidade.
+Rin Shinonome
+Altura: 165 cm
+Status: 300 HP, arm.14, vel.0,31, T4.
+Aura: Rosa-frio/branco; linhas de mira e clarão de rajada.
+Ataques / cooldowns: Minigun 8x0,25x; rajada 12x0,22x; supressão -15% velocidade inimiga por 2s (CD 10s); superaquecimento após 5s.
+Função e limites: DPS/supressão; controlar precisão e superaquecimento.
+Kota Tachibana
+Altura: Não localizada; medir modelo
+Status: 310 HP, arm.15, vel.0,30, T4.
+Aura: Vermelho-escuro/laranja; flash de disparo e partículas de impacto.
+Ataques / cooldowns: Escopeta 1,0x; curta distância 1,8x; interrupção 1,2x + stagger (CD 8s).
+Função e limites: Dano próximo; eficiência cai com distância.
+Hakua Igarashi
+Altura: 185 cm (fonte secundária; confirmar)
+Status: 300 HP, arm.14, vel.0,31, T4.
+Aura: Prata/azul-claro; aura fina, brilho na mira e rastro curto de esquiva.
+Ataques / cooldowns: Rifle 1,0x; mirado 1,6x; rajada 3x0,55x; cobertura 0,8x + supressão (CD 12s).
+Função e limites: Atirador equilibrado; dano estável.
+Ryo Ikaruga
+Altura: Não localizada; medir modelo
+Status: 310 HP, arm.15, vel.0,31, T4.
+Aura: Azul-marinho/ciano; pulsos retos e marca de alvo.
+Ataques / cooldowns: Rifle 1,0x; rajada 3x0,55x; perfurante 1,7x; marca +20% no próximo ataque (CD 10s).
+Função e limites: Atirador tático; melhor contra alvo marcado.
+Tae Nakanoshima
+Altura: Não localizada; medir modelo
+Status: 260 HP, arm.12, vel.0,29, T3.
+Aura: Lilás/branco; partículas suaves e círculo de suporte.
+Ataques / cooldowns: Disparo 1,0x; cobertura 0,8x; cura 6% HP aliado ou escudo 8% por 5s (CD 18s).
+Função e limites: Suporte; baixo dano direto.
+Jura Igarashi
+Altura: Não localizada; medir modelo
+Status: 450 HP, arm.19, vel.0,30, T5+. Arma de bola de ferro é variante de THE GAME, não assumir como canon do mangá.
+Aura: Vermelho-alaranjado/carvão; brasas e círculo de calor no impacto.
+Ataques / cooldowns: Ataque pesado 1,6x; giro 1,3x área; esmagamento 2,5x; variante do jogo: impacto flamejante 2,0x + queimadura 3s (CD 14s).
+Função e limites: Bruiser de área; giro lento e previsível.
+Hikari Shinomiya
+Altura: Não localizada; medir modelo
+Status: 500 HP, arm.20, vel.0,40, T6.
+Aura: Branco-dourado/azul; asas luminosas e trilha de voo.
+Ataques / cooldowns: Lança 1,2x; investida 1,8x; mergulho 2,5x; corte aéreo 1,6x (CD 12s).
+Função e limites: Especialista aérea; vulnerável ao pousar.
+Soichiro Hoshina
+Altura: Não localizada; medir modelo
+Status: 450 HP, arm.19, vel.0,31, T5+.
+Aura: Índigo/prata; arcos longos de lâmina e pulsação lenta.
+Ataques / cooldowns: Corte longo 1,4x; combo 2x0,9x; descendente 1,8x; aparo 1,6x (CD 5s).
+Função e limites: Espadachim de alcance; perfil separado de Soshiro.
+Jugo Ogata
+Altura: Não localizada; medir modelo
+Status: 430 HP, arm.18, vel.0,29, T5.
+Aura: Bronze/vermelho; aura baixa e pesada; ondas lentas.
+Ataques / cooldowns: Ataque pesado 1,6x; carregado 2,4x; investida 1,5x (CD 14s).
+Função e limites: Lutador pesado; ataques telegrafados.
+Juzo Nogizaka
+Altura: Não localizada; medir modelo
+Status: 300 HP, arm.15, vel.0,28, T3+.
+Aura: Verde-escuro/dourado; aura contida e marcas de comando.
+Ataques / cooldowns: Disparo 1,0x; ataque 0,8x; ordem +12% precisão/defesa por 6s (CD 18s).
+Função e limites: Comando/apoio; não compete com elite.
+Konomi Okonogi
+Altura: 149 cm
+Status: 220 HP, arm.10, vel.0,28, T2.
+Aura: Ciano/branco; anéis de radar e pontos de dados; sem trilha ofensiva.
+Ataques / cooldowns: Sem combo corpo a corpo; análise marca inimigo 8s e aliados causam +8% dano (CD 20s).
+Função e limites: Operadora; deve ficar fora da linha de frente.
+Akari Minase
+Altura: Não localizada; medir modelo
+Status: 280 HP, arm.13, vel.0,30, T3+.
+Aura: Amarelo-claro/coral; brilho de mira e partículas leves.
+Ataques / cooldowns: Rifle 1,0x; tiro preciso 1,5x; esquiva defensiva (CD 7s).
+Função e limites: Soldado de linha; precisão e mobilidade.
+Miguel — personagem original
+Altura: Altura do modelo ainda não confirmada; sugestão de referência: 1,80 m (1,80 bloco)
+Status: Proposta comandante: 520 HP; armadura 20; velocidade 0,34; stamina 150; tier T6/Comandante. Dano-base corpo a corpo 10; tiro base 8.
+Aura: Vermelho-rubi/preto; núcleo vermelho no eixo da foice; partículas em meia-lua; trilha de corte carmesim; aura intensifica no modo de disparo carregado.
+Ataques / cooldowns: Foice — corte rápido 1,0x (CD 0,6s); corte amplo 1,6x (CD 4s); giro circular 1,3x em área (CD 9s); estocada/gancho 1,8x (CD 7s). Disparo — tiro único 1,2x (CD 1,2s); rajada de 3 projéteis 0,65x cada (CD 6s); tiro carregado 2,5x (CD 14s). Ultimate: Eclipse Carmesim — sequência de 3 cortes + disparo final, total 5,0x, CD 45s; interrompível durante carga.
+Função e limites: Comandante híbrido de alcance variável. Alta pressão e versatilidade; não deve superar Mina em dano anti-Daikaiju nem Hoshina em parry/duelo. Disparo carregado consome 30 stamina; ultimate 60.
+Camilly — personagem original
+Altura: Altura do modelo ainda não confirmada; sugestão de referência: 1,68 m (1,68 bloco)
+Status: Proposta comandante: 500 HP; armadura 19; velocidade 0,36; stamina 160; tier T6/Comandante. Dano-base tiro 9; lâmina 11.
+Aura: Rosa-magenta/preto com núcleo branco; partículas angulares; rastro de projéteis e arco luminoso na lâmina lateral; aura pulsa em rajadas curtas.
+Ataques / cooldowns: Tiro preciso 1,0x (CD 0,8s); rajada tripla 0,7x cada (CD 5s); tiro perfurante 2,0x (CD 10s); lâmina lateral 1,3x; combo lâmina 3x0,65x; contra-corte 1,8x se acertar janela de timing (CD 7s). Skill: Ricochete Tático — 3 tiros que mudam ângulo, 0,9x cada (CD 13s). Ultimate: Linha de Ruptura — tiro perfurante 2,8x + avanço e corte 2,2x, total 5,0x (CD 45s).
+Função e limites: Comandante ágil de médio alcance. Mais móvel que Miguel, menos dano de área; não deve superar Mina em longo alcance nem Hoshina em combate de espada. Contra-corte exige timing.
+3. Kaijus numerados — altura, aura e ataques
+Kaiju No.1
+Altura: Altura não confirmada; medir modelo
+Status: Perfil antigo: percepção/predição; HP individual não recuperado.
+Aura: Índigo/rosa; pontos oculares e linhas de previsão.
+Ataques: Golpe 1,0x; leitura melhora evasão; contra-ataque 1,8x; apêndices 1,5x. PROPOSTA.
+Função/limites: Boss sensorial; não esquiva de tudo.
+Kaiju No.2
+Altura: Altura não confirmada; medir modelo
+Status: Perfil antigo: força/energia/ondas de choque. No.9 absorção No.2: 7.500 HP, dano 72, arm.20, vel.0,38.
+Aura: Verde-oliva/amarelo; pressão densa e ondas circulares.
+Ataques: Soco 1,8x; esmagamento 2,5x; onda 1,6x área; descarga 3,2x. PROPOSTA.
+Função/limites: Boss de impacto; janela após golpes pesados.
+Kaiju No.6
+Altura: Altura não confirmada; medir modelo
+Status: Perfil antigo: criocinese; stats individuais pendentes.
+Aura: Azul-gelo/violeta; cristais, neblina e geada.
+Ataques: Garra 1,2x; sopro 0,5x/s por 4s; estaca 1,7x; avalanche 2,4x. PROPOSTA.
+Função/limites: Controle territorial; congelamento de boss limitado.
+Kaiju No.11
+Altura: Altura não confirmada; medir modelo
+Status: Perfil antigo: hidrocinese; stats individuais pendentes.
+Aura: Azul-profundo/ciano; redemoinhos e gotas orbitais.
+Ataques: Jato 1,3x; chicote 1,5x; lança 1,8x; onda 2,2x (CD 14s). PROPOSTA.
+Função/limites: Controle de distância; vulnerável após ataques de pressão.
+Kaiju No.12
+Altura: Altura não confirmada; medir modelo
+Status: Perfil antigo: evolução de combate; stats individuais pendentes.
+Aura: Prata/violeta; linhas segmentadas que pulsam após dano.
+Ataques: Corte 1,2x; combo 3x0,65x; investida 1,6x; contra-técnica 2,0x após observar padrão. PROPOSTA.
+Função/limites: Duelista adaptativo; nunca imunidade total.
+Kaiju No.14
+Altura: Altura não confirmada; medir modelo
+Status: Perfil antigo: ameaça específica; stats individuais pendentes.
+Aura: Preto/vermelho elétrico; aura vertical e distorção no ar.
+Ataques: Energia 1,5x; escudo reduz dano 35%; pulso 1,8x; área 2,4x. PROPOSTA.
+Função/limites: Boss de artilharia/defesa; alterna escudo e ataque.
+Kaiju No.15
+Altura: Altura não confirmada; medir modelo
+Status: Perfil antigo: pressão psicológica; stats individuais pendentes.
+Aura: Magenta/preto; névoa fina e distorção visual.
+Ataques: Ataque mental 0,4x/s por 3s; golpe 1,2x; ilusão; ruptura 2,0x. PROPOSTA.
+Função/limites: Boss de confusão; efeitos devem ser legíveis.
+4. Kaijus gerais e formas do No.9 — valores recuperados
+Entidade
+HP
+Dano base
+Armadura
+Velocidade
+Tier
+Trichonephila Yoju
+65
+4,2
+7
+0,31
+T2
+Primigenius Yoju
+220
+10,0
+11
+0,23
+T3
+Primigenius ressurgido
+310
+12,8
+12
+0,24
+T3+
+Primigenius Honju
+360
+13,8
+12
+0,25
+T4
+Primigenius revivido Honju
+460
+16,5
+13
+0,25
+T4+
+Trichonephila Honju
+400 / 600 boss
+15,0
+13
+0,29
+T4
+Preondactyl
+430
+15,5
+13
+0,31 / 0,55 voo
+T4
+No.10 pequeno
+1.650
+39,5
+17
+0,35
+T7
+No.10 gigante
+4.600
+54,5
+18
+0,27
+T7+
+No.9 base
+1.450
+34,5
+16
+0,34
+T7
+No.9 preto original
+2.200
+42
+17
+0,36
+T8
+No.9 fusão No.10
+5.400
+58
+19
+0,38
+T8+
+No.9 fusão Formiga
+3.200
+46
+18
+0,45
+T8
+No.9 vermelho/evoluído
+6.200
+63
+20
+0,40
+T9
+No.9 absorção No.2/Isao
+7.500
+72
+20
+0,38
+T9
+No.9 final adaptativo
+9.000
+82
+20
+0,42
+T9+
+5. Regras globais de balanceamento
+Não balancear apenas por HP: considerar dano, alcance, velocidade, mobilidade, regeneração, resistência, destruição e IA.
+Golpe comum do jogador: teto de referência 12% da vida máxima do Kaiju; golpe pesado até 15%; ultimate pode ultrapassar com janela e cooldown.
+Bosses devem mudar padrões por fase, não apenas ganhar HP e dano.
+Congelamento, veneno, stun e controle recebem duração reduzida e resistência progressiva em bosses.
+Hitbox ofensiva deve acompanhar a janela ativa da animação; não conceder alcance gratuito pela hitbox global.
+Preservar testes antigos do Hoshina: não buffar indiscriminadamente. Hoshina normal vence Primigenius Honju rapidamente; vence No.9 em 31–34s; perde para No.10 gigante; Hoshina + No.10 vence No.10 gigante em cerca de 1 minuto.
+Miguel e Camilly ficam no patamar de comandante T6, mas com funções diferentes: Miguel híbrido/pressão e Camilly ágil/precisão. Nenhum substitui Mina como anti-Daikaiju ou Hoshina como duelista.
+Auras devem escalar com Release e estado de combate: baixa intensidade fora de combate, pico durante técnicas, sobrecarga visual apenas acima do limite pessoal.
+6. Antigo x novo
+RECUPERADO: HP, armadura, velocidade, tiers, Release, limites de dano, resultados de teste do Hoshina, No.9 em formas múltiplas, No.10 pequeno/gigante, escalas de Yoju/Honju/Daikaiju e estrutura CharacterAuraProfile.
+NOVO: fichas individuais de aura, ataques e cooldowns complementares; perfis de Miguel e Camilly em T6/Comandante. Alturas não confirmadas continuam pendentes, sem números inventados.
+7. Fontes e proveniência
+Alturas de Kafka, Mina, Reno, Kikoru, Soshiro Hoshina, Iharu, Haruichi, Aoi, Konomi, Gen, Eiji, Rin e Isao foram reunidas a partir do guia de personagens da ORICON/Japan Anime News. Alturas de personagens sem dado confiável permanecem pendentes.
+Fonte: ORICON NEWS / Japan Anime News — Kaiju No. 8 Characters List: https://www.oricon-group.com/news/5086/
+Site oficial do anime para elenco e perfis: https://kaiju-no8.net/en/
+Os valores de combate são parâmetros do mod, não estatísticas oficiais da obra.
+ANEXO A — PALETAS DE CORES E AURAS (HEX)
+As cores abaixo são propostas visuais para o mod, não cores oficiais de energia declaradas pela obra. Usar como paleta-base e ajustar após comparar com os modelos/texturas finais.
+Personagens humanos e originais
+Kafka / No.8 — Primária: Azul-ciano #27D9E8 | Secundária: Branco #F4FFFF | Acento: Azul-profundo #145C91. VFX: Núcleo no peito; pulsos de transformação; rastro curto; ondas de choque.
+Mina Ashiro — Primária: Dourado #F5C542 | Secundária: Branco #FFF7D6 | Acento: Âmbar #C58B24. VFX: Linhas de mira convergentes; brilho no cano; clarão concentrado no disparo carregado.
+Reno / No.6 — Primária: Azul-gelo #8EDCF5 | Secundária: Ciano #36BFD8 | Acento: Branco #EAFBFF. VFX: Cristais, geada no chão e névoa; forma No.6 aumenta densidade e brilho.
+Kikoru / No.4 — Primária: Rosa-magenta #F05AA8 | Secundária: Branco #FFF4FA | Acento: Rosa-claro #FFB7DA. VFX: Partículas em lâmina, rastro de dash e asas luminosas na forma No.4.
+Soshiro Hoshina / No.10 — Primária: Violeta #8B65D8 | Secundária: Prata #D8D8E8 | Acento: Carmesim #B82D4B. VFX: Arcos finos de corte e pós-imagem; No.10 acrescenta pulsos carmesim.
+Gen Narumi / No.1 — Primária: Vermelho #C62835 | Secundária: Preto #17151B | Acento: Vermelho-claro #FF5A62. VFX: Retículas, linhas de trajetória e pulsos no visor.
+Isao / No.2 — Primária: Âmbar #D99A32 | Secundária: Grafite #30343B | Acento: Dourado #F4C66A. VFX: Ondas concêntricas e aura densa nos punhos.
+Iharu Furuhashi — Primária: Laranja #F07824 | Secundária: Vermelho #C83C28 | Acento: Amarelo #FFD45C. VFX: Faíscas rápidas; pulsos crescem em sequências.
+Haruichi Izumo — Primária: Verde-esmeralda #269B67 | Secundária: Dourado #D9C45A | Acento: Verde-escuro #14583E. VFX: Partículas curvas e marca tóxica discreta.
+Aoi Kaguragi — Primária: Azul-aço #557D9A | Secundária: Branco #E6F1F7 | Acento: Azul-escuro #263E52. VFX: Pulsos mecânicos e faíscas durante a carga da PB-3115.
+Eiji Hasegawa — Primária: Cinza-azulado #71899A | Secundária: Âmbar #D7A34A | Acento: Aço #354653. VFX: Aura larga e estável; pulsos de comando.
+Rin Shinonome — Primária: Rosa-frio #D98AB8 | Secundária: Branco #F9F2F8 | Acento: Violeta #8E5C9E. VFX: Linhas de mira e clarão de rajada; brilho aumenta com superaquecimento.
+Kota Tachibana — Primária: Vermelho-escuro #8E2632 | Secundária: Laranja #E07832 | Acento: Carvão #28252A. VFX: Flash de disparo e partículas curtas de impacto.
+Hakua Igarashi — Primária: Prata #C9D3DD | Secundária: Azul-claro #8ECBE8 | Acento: Branco #F4FAFF. VFX: Aura fina, brilho na mira e rastro curto de esquiva.
+Ryo Ikaruga — Primária: Azul-marinho #243E68 | Secundária: Ciano #50C9D8 | Acento: Branco #EAFBFF. VFX: Pulsos retos e linhas entre mira e alvo marcado.
+Tae Nakanoshima — Primária: Lilás #B7A0D8 | Secundária: Branco #F8F4FF | Acento: Lavanda #8A77B7. VFX: Partículas suaves e círculo de suporte ao curar/gerar escudo.
+Jura Igarashi — Primária: Vermelho-alaranjado #D85A2A | Secundária: Carvão #332923 | Acento: Brasa #FF9A3C. VFX: Brasas e círculo de calor no impacto; variante THE GAME separada.
+Hikari Shinomiya — Primária: Branco-dourado #F5E7B0 | Secundária: Azul #5DA9E9 | Acento: Dourado #D5B45C. VFX: Asas luminosas e trilha de voo.
+Soichiro Hoshina — Primária: Índigo #4852A0 | Secundária: Prata #D9DCEB | Acento: Azul-violeta #777DE0. VFX: Arcos longos de lâmina e pulsação lenta.
+Jugo Ogata — Primária: Bronze #A66C3B | Secundária: Vermelho #9E382F | Acento: Cobre #D18A4B. VFX: Aura baixa e pesada; ondas lentas e poeira.
+Juzo Nogizaka — Primária: Verde-escuro #315B45 | Secundária: Dourado #B9A64A | Acento: Oliva #78834A. VFX: Aura contida e marcas de comando.
+Konomi Okonogi — Primária: Ciano #54C8D8 | Secundária: Branco #E9FCFF | Acento: Azul #347D9B. VFX: Anéis de radar e pontos de dados; sem trilha ofensiva.
+Akari Minase — Primária: Amarelo-claro #F2D76A | Secundária: Coral #E98A73 | Acento: Branco #FFF8E5. VFX: Brilho de mira e partículas leves.
+Miguel (original) — Primária: Vermelho-rubi #B51F35 | Secundária: Preto #17151A | Acento: Carmesim #E33B4B / núcleo #FF6B73. VFX: Núcleo no eixo da foice; partículas em meia-lua; trilha de corte carmesim.
+Camilly (original) — Primária: Rosa-magenta #D94A9A | Secundária: Preto #1B1720 | Acento: Branco-núcleo #FFF4FA / rosa #FF78C8. VFX: Partículas angulares; rastro de projéteis; arco luminoso na lâmina lateral.
+Kaijus numerados
+Kaiju No.1 — Primária: Índigo #4B3B8F | Secundária: Rosa #D879B8. VFX: Pontos oculares e linhas de previsão.
+Kaiju No.2 — Primária: Verde-oliva #77852B | Secundária: Amarelo #E1C34D. VFX: Pressão densa, ondas circulares e fissuras no solo.
+Kaiju No.6 — Primária: Azul-gelo #8BDCF2 | Secundária: Violeta #7774C9. VFX: Cristais, neblina e geada.
+Kaiju No.11 — Primária: Azul-profundo #176B9B | Secundária: Ciano #46D3E2. VFX: Redemoinhos e gotas orbitais.
+Kaiju No.12 — Primária: Prata #AEB7C7 | Secundária: Violeta #856CB5. VFX: Linhas segmentadas que pulsam após receber dano.
+Kaiju No.14 — Primária: Preto #17171D | Secundária: Vermelho elétrico #E13B43. VFX: Aura vertical e distorção no ar.
+Kaiju No.15 — Primária: Magenta #C33C91 | Secundária: Preto #19151D. VFX: Névoa fina, distorção visual e ecos de silhueta.
+ANEXO B — PARÂMETROS DO CharacterAuraProfile
+Aplicar os seguintes campos em todos os personagens. A ficha individual define as cores e a descrição do efeito; os valores abaixo são faixas iniciais para padronizar a implementação.
+Campo
+Parâmetro / regra
+BaseColor / SecondaryColor
+Cores primária e secundária da ficha; armazenar em RGB/ARGB ou hexadecimal convertido.
+Intensity
+Repouso: 0,10–0,25; combate: 0,35–0,60; técnica/ultimate: 0,70–1,00.
+ParticleDensity
+Repouso 0–5 partículas/s; combate 6–14; técnica 15–28. Ajustar por personagem e desempenho.
+ParticleSpeed
+Tanques: 0,4–0,8; padrão: 0,8–1,4; ágeis: 1,4–2,2 unidades/s.
+Radius
+Repouso: 0,15–0,35 m além da silhueta; técnica: 0,5–1,2 m, sem esconder o modelo.
+PulseFrequency
+Repouso: 0,4–0,8 Hz; combate: 1–2 Hz; carga/ultimate: 2–4 Hz.
+GroundEffect
+Somente quando justificado por gelo, calor, impacto, energia ou transformação.
+MovementTrail
+Ativar apenas em dash, voo, corrida especial ou deslocamento energizado.
+AttackEffect
+Sincronizar com o frame ativo da animação e com a hitbox; nunca antecipar dano visualmente.
+ReleaseEffect
+Aumentar intensidade/densidade conforme Release, sem saturar a tela.
+OverloadEffect
+Ativar apenas quando Release ultrapassar o limite pessoal; usar distorção e partículas instáveis.
+TransformationEffect
+Transição curta de entrada/saída; limpar partículas quando o estado terminar.
+ANEXO C — CHECKLIST DE IMPLEMENTAÇÃO
+Cada personagem possui um CharacterAuraProfile próprio, com paleta HEX e efeitos específicos.
+Partículas e trilhas são controladas pelo estado: idle, combat, attack, release, overload e transformation.
+Hitbox ativa somente durante a janela correta da animação GeckoLib.
+Cooldowns, stamina e dano são independentes; multiplicadores aplicados sobre dano-base definido.
+Bosses têm resistência progressiva a congelamento, veneno, stun e controle.
+Escala do renderer, bounding box, eye height, alcance e colisão são configurados separadamente.
+Alturas pendentes permanecem pendentes até receber referência ou medição do modelo.
+Elementos exclusivos de Kaiju No. 8 THE GAME permanecem identificados como variantes, sem serem apresentados como canon do anime/mangá.
+ADENDO DE IMPLEMENTAÇÃO — REVISÃO 05/11/2026
+Este adendo complementa as fichas anteriores. Os dados já existentes foram preservados; os itens abaixo são requisitos técnicos e campos pendentes para a próxima etapa do desenvolvimento.
+Fichas reservadas — criações do projeto
+Estas entradas foram adicionadas como espaços de trabalho. Nenhuma aparência, estatística, habilidade, ataque ou comportamento foi inventado. As fichas serão completadas quando forem fornecidas imagens e referências visuais.
+Fusão No.9 + No.11
+Campo
+Estado atual
+Classificação
+Criação do projeto / ficha em preparação
+Aparência e silhueta
+Pendente — aguardar imagem de referência
+Altura e escala no Minecraft
+Pendente — definir após comparar com personagem humano
+HP / dano / armadura / velocidade
+Pendente — balancear após definir o conceito
+Ataques e habilidades
+Não definidos intencionalmente
+Animações e IA
+A definir após receber imagens e decidir o estilo de combate
+Observação: as quatro fusões do No.9 devem preservar elementos reconhecíveis dos dois kaijus de origem, mas a combinação visual e o kit serão decididos a partir das imagens enviadas.
+Fusão No.9 + No.12
+Campo
+Estado atual
+Classificação
+Criação do projeto / ficha em preparação
+Aparência e silhueta
+Pendente — aguardar imagem de referência
+Altura e escala no Minecraft
+Pendente — definir após comparar com personagem humano
+HP / dano / armadura / velocidade
+Pendente — balancear após definir o conceito
+Ataques e habilidades
+Não definidos intencionalmente
+Animações e IA
+A definir após receber imagens e decidir o estilo de combate
+Observação: as quatro fusões do No.9 devem preservar elementos reconhecíveis dos dois kaijus de origem, mas a combinação visual e o kit serão decididos a partir das imagens enviadas.
+Fusão No.9 + No.14
+Campo
+Estado atual
+Classificação
+Criação do projeto / ficha em preparação
+Aparência e silhueta
+Pendente — aguardar imagem de referência
+Altura e escala no Minecraft
+Pendente — definir após comparar com personagem humano
+HP / dano / armadura / velocidade
+Pendente — balancear após definir o conceito
+Ataques e habilidades
+Não definidos intencionalmente
+Animações e IA
+A definir após receber imagens e decidir o estilo de combate
+Observação: as quatro fusões do No.9 devem preservar elementos reconhecíveis dos dois kaijus de origem, mas a combinação visual e o kit serão decididos a partir das imagens enviadas.
+Fusão No.9 + No.15
+Campo
+Estado atual
+Classificação
+Criação do projeto / ficha em preparação
+Aparência e silhueta
+Pendente — aguardar imagem de referência
+Altura e escala no Minecraft
+Pendente — definir após comparar com personagem humano
+HP / dano / armadura / velocidade
+Pendente — balancear após definir o conceito
+Ataques e habilidades
+Não definidos intencionalmente
+Animações e IA
+A definir após receber imagens e decidir o estilo de combate
+Observação: as quatro fusões do No.9 devem preservar elementos reconhecíveis dos dois kaijus de origem, mas a combinação visual e o kit serão decididos a partir das imagens enviadas.
+Kaiju No.16
+Campo
+Estado atual
+Classificação
+Criação do projeto / ficha em preparação
+Aparência e silhueta
+Pendente — aguardar imagem de referência
+Altura e escala no Minecraft
+Pendente — definir após comparar com personagem humano
+HP / dano / armadura / velocidade
+Pendente — balancear após definir o conceito
+Ataques e habilidades
+Não definidos intencionalmente
+Animações e IA
+A definir após receber imagens e decidir o estilo de combate
+Observação: as quatro fusões do No.9 devem preservar elementos reconhecíveis dos dois kaijus de origem, mas a combinação visual e o kit serão decididos a partir das imagens enviadas.
+Kaiju No.17
+Campo
+Estado atual
+Classificação
+Criação do projeto / ficha em preparação
+Aparência e silhueta
+Pendente — aguardar imagem de referência
+Altura e escala no Minecraft
+Pendente — definir após comparar com personagem humano
+HP / dano / armadura / velocidade
+Pendente — balancear após definir o conceito
+Ataques e habilidades
+Não definidos intencionalmente
+Animações e IA
+A definir após receber imagens e decidir o estilo de combate
+Observação: as quatro fusões do No.9 devem preservar elementos reconhecíveis dos dois kaijus de origem, mas a combinação visual e o kit serão decididos a partir das imagens enviadas.
+Kaiju No.18
+Campo
+Estado atual
+Classificação
+Criação do projeto / ficha em preparação
+Aparência e silhueta
+Pendente — aguardar imagem de referência
+Altura e escala no Minecraft
+Pendente — definir após comparar com personagem humano
+HP / dano / armadura / velocidade
+Pendente — balancear após definir o conceito
+Ataques e habilidades
+Não definidos intencionalmente
+Animações e IA
+A definir após receber imagens e decidir o estilo de combate
+Observação: as quatro fusões do No.9 devem preservar elementos reconhecíveis dos dois kaijus de origem, mas a combinação visual e o kit serão decididos a partir das imagens enviadas.
+Kaiju No.20
+Campo
+Estado atual
+Classificação
+Criação do projeto / ficha em preparação
+Aparência e silhueta
+Pendente — aguardar imagem de referência
+Altura e escala no Minecraft
+Pendente — definir após comparar com personagem humano
+HP / dano / armadura / velocidade
+Pendente — balancear após definir o conceito
+Ataques e habilidades
+Não definidos intencionalmente
+Animações e IA
+A definir após receber imagens e decidir o estilo de combate
+Observação: as quatro fusões do No.9 devem preservar elementos reconhecíveis dos dois kaijus de origem, mas a combinação visual e o kit serão decididos a partir das imagens enviadas.
+GUIA TÉCNICO DE ANIMAÇÃO, COMBATE E CORREÇÕES
+Escopo: aplicar este checklist a todos os personagens humanos, formas transformadas, kaijus numerados, kaijus não numerados e personagens originais. É uma especificação de implementação para o mod; não altera por si só o cânone nem os valores de balanceamento já registrados.
+1. Animação de personagens — padrão obrigatório
+Grupo de animações
+Animações/estados que devem existir
+Critério de qualidade
+Locomoção
+Idle respirando; caminhada; corrida; sprint; strafe; virar; parar; iniciar movimento; recuo; salto/queda quando aplicável.
+Transições suaves, sem deslizar os pés; velocidade visual sincronizada à velocidade real.
+Combate corpo a corpo
+Preparação (wind-up); golpe; recuperação; combo; ataque pesado; ataque no ar; esquiva; bloqueio/parry; stagger; knockback.
+Cada golpe tem janela ativa de hitbox; dano não ocorre durante a preparação ou recuperação.
+Armas de fogo
+Empunhar; mirar; disparar; recuo; recarregar; alternar mira; correr com arma; golpe de coronha/baioneta se aplicável.
+Boca do cano alinhada ao projétil; recuo proporcional; personagem mantém a mira no alvo.
+Poderes/energia
+Carregar; concentrar; disparar; manter canalização; dissipar; sobrecarga; falha/interrupção.
+Efeito visual cresce durante a carga e termina junto com o evento de ataque.
+Reações
+Levar dano leve/pesado; bloquear; congelar; queimar; envenenar; atordoar; morrer; vitória/recuperação.
+Prioridade de reação evita tocar animações incompatíveis ao mesmo tempo.
+Transformações
+Preparação; transformação; forma completa; destransformação; sobrecarga/limite.
+Escala, hitbox, câmera, áudio e controlador de animação mudam em sincronia.
+Implementação GeckoLib: separar controllers por função (locomoção, upper-body/arma, ação/ataque e reação, quando o rig permitir). Usar animações em loop apenas para estados contínuos. Ataques e eventos únicos devem ser não-looping e possuir keyframes/eventos para som, partículas, disparo, hitbox e impacto. Evitar que o controller de idle sobrescreva um ataque.
+Sincronização multiplayer: o servidor valida início, alvo, alcance, cooldown e dano. O cliente reproduz a animação e os efeitos sincronizados por evento; não confiar apenas no cliente para aplicar dano ou destruir blocos.
+2. Movimentação e sensação de peso
+Sincronizar a velocidade da animação com a velocidade do mob. Ajustar frequência dos passos para caminhada, corrida e sprint; impedir foot sliding.
+Adicionar aceleração e desaceleração curtas, curvas com inclinação do tronco e antecipação de movimento. Criaturas pesadas viram mais lentamente e têm maior inércia; unidades ágeis mudam de direção mais rápido.
+Dash e esquiva devem ter início, deslocamento e recuperação definidos. Aplicar invulnerabilidade apenas na janela prevista e nunca durante toda a animação.
+Saltos, aterrissagens e quedas devem considerar massa/tamanho: criaturas grandes têm aterrissagem mais lenta, impacto visual maior e partículas adequadas; humanos têm movimentos mais rápidos e compactos.
+Evitar teleporte visual: se for necessário reposicionar durante uma animação, limitar a distância e validar colisão no servidor. Para ataques com avanço, usar movimento controlado e colisão real, não apenas deslocar o modelo.
+3. Ataques de energia e destruição do ambiente
+Etapa
+Comportamento recomendado
+Carga
+Partículas convergem para a mão, arma, boca ou núcleo correto; luz/áudio aumentam gradualmente; permitir interrupção quando o ataque for interrompível.
+Disparo/impacto
+Projétil ou raio segue direção validada; aplicar dano, empurrão e efeitos em área com limites claros. O ponto de impacto deve coincidir com o visual.
+Destruição
+Criar perfil por ataque: raio, profundidade, força, blocos permitidos, blocos imunes e limite máximo de blocos afetados por tick.
+Pós-impacto
+Partículas de poeira/destroços, crateras ou marcas temporárias, som e onda de choque. Evitar partículas permanentes e excesso de entidades.
+Persistência
+Efeitos de chão devem expirar; fogo, gelo, corrosão ou energia só permanecem se a habilidade especificar isso.
+Segurança e desempenho: destruição de blocos deve ser configurável (ativada/desativada), limitada por raio e quantidade, executada no servidor e protegida por regras de claim/proteção. Não destruir bedrock, blocos de estrutura, blocos protegidos, blocos de comando ou inventários. Preferir lista branca de blocos destrutíveis e drops controlados; evitar atualizar milhares de blocos no mesmo tick.
+Perfis de destruição sugeridos: impacto leve (rachadura/partículas sem remover blocos); impacto médio (quebra pequena e localizada); explosão pesada (área maior com limite rígido); raio contínuo (faixa estreita por segmentos); ataque de chefe (cenário/decoração temporária ou destruição limitada por fase). O perfil deve ser definido por habilidade, não apenas pelo dano.
+4. Posição e encaixe das armas nas mãos
+Criar bones/locators dedicados no rig: mão direita, mão esquerda, empunhadura principal, mão de apoio, costas/arma guardada e ponto de disparo. Usar nomes consistentes entre modelos.
+Ajustar posição, rotação e escala local da arma no locator, não compensar erros movendo o braço inteiro. Conferir frente, lado e costas e durante idle, corrida, mira, ataque e recarga.
+Armas de duas mãos precisam de duas ancoragens: mão dominante dirige a arma e a mão de apoio acompanha o foregrip/segunda empunhadura. Corrigir o IK ou a pose da mão de apoio para não atravessar o modelo.
+Foices, espadas e armas longas: conferir pivô no ponto real de empunhadura e arco de rotação para evitar que a lâmina atravesse o corpo ou gire em torno do centro do modelo.
+Armas de fogo: o muzzle/locator do cano deve ser a origem do projétil, flash, fumaça e som posicional. Não disparar do centro do peito ou da câmera.
+Validar a mão correta por personagem e por forma. Se o personagem trocar de arma, atualizar locator, pose e animação juntos; ocultar o modelo antigo para evitar duplicação.
+Teste de encaixe
+Aprovação
+Idle e caminhada
+A arma permanece presa à mão, sem tremer ou atravessar o corpo.
+Mira e disparo
+Cano aponta para a direção do projétil; flash nasce na boca do cano.
+Combo e ataque pesado
+A lâmina/arma percorre um arco coerente e não atravessa o chão de forma involuntária.
+Duas mãos
+Ambas as mãos tocam as empunhaduras nos keyframes de uso.
+Troca/arma guardada
+A arma aparece uma única vez e no local correto.
+5. Escala visual, tamanho e hitboxes
+Não corrigir tamanho apenas aumentando o modelo inteiro. Manter separados: escala do modelo/render, altura visual desejada, hitbox de colisão, alcance de ataque, altura dos olhos/câmera e posição dos efeitos. A convenção do projeto continua sendo aproximadamente 1 bloco = 1 metro, mas a medida final deve ser validada dentro do jogo.
+Usar uma referência humana padrão em pé para comparar todos os modelos; medir do pé ao topo da cabeça/chifre, sem incluir efeitos temporários.
+Ajustar primeiro a escala do renderer e a origem/pivô do modelo; depois configurar largura/altura da hitbox e eye height separadamente.
+Verificar que pés tocam o chão, centro de massa está sobre a base e a entidade não afunda nem flutua. Corrigir o pivot/root bone quando necessário.
+Testar portas, corredores, escadas, água, blocos baixos e combate em espaços fechados. Criaturas grandes podem precisar de navegação especial e colisão que não bloqueie a própria animação.
+Definir alcance de golpe a partir da arma/membro e do frame ativo, não só do tamanho total do modelo. Evitar hitbox gigante que acerte atrás do personagem.
+6. IA individual — comportamento por função
+A IA deve ser montada por perfis e objetivos, com prioridades claras. Cada personagem deve reconhecer alvos, distância, linha de visão, aliados, obstáculos, cooldowns e fase de combate. Evitar que todos persigam o jogador em linha reta.
+Arquétipo / personagens aplicáveis
+Comportamento esperado
+Atiradora de elite — Mina
+Manter distância e linha de visão; procurar posição elevada/segura; mirar antes de disparar; priorizar alvos grandes/perigosos; recuar se cercada; recarregar em janela segura.
+Espadachim técnico — Hoshina
+Fechar distância com cuidado; observar ataques do alvo; esquivar/parry em janela; executar combos curtos; recuar após sequência; alternar postura conforme tamanho do inimigo.
+Combatente adaptativo — Kafka/No.8
+Avançar e pressionar; usar golpes pesados contra alvos resistentes; esquivar de ataques telegrafados; usar agarrão apenas em alvos compatíveis; mudar padrão em transformação.
+Atirador/controle — Reno/No.6
+Manter distância média; usar tiros para interromper; reservar congelamento para ameaças prioritárias; evitar repetir controle continuamente em chefes.
+Combatentes de linha — Iharu, Aoi e demais soldados
+Manter formação/esquadrão; cobrir aliados; alternar tiro e reposicionamento; não ocupar o mesmo ponto; priorizar ameaças que atacam aliados.
+Comandante/apoio — personagens de suporte
+Dar prioridade a objetivos, marcação e suporte; manter aliados no alcance; não perseguir isoladamente um chefe para longe do grupo.
+Kaiju veloz/caçador
+Flanquear, avançar em rajadas, recuar após errar e escolher alvos vulneráveis; não ficar preso tentando atravessar paredes.
+Kaiju pesado/colossal
+Aproximar-se com passos largos, ataques telegrafados e área de impacto; virar lentamente; destruir apenas blocos autorizados; reagir a dano com stagger limitado.
+Kaiju de longo alcance/energia
+Manter distância, carregar ataques com aviso visual, procurar linha de visão e mudar de posição quando pressionado.
+Kaiju chefe/adaptativo
+Fases com limiares de vida; variar combos; evitar repetição perfeita; resistir gradualmente a controle; chamar reforços apenas se previsto na ficha.
+Para cada entidade, configurar alvos válidos, alcance de detecção, alcance de perseguição, distância preferida, velocidade de navegação, memória de alvo, cooldown de troca de alvo, chance de esquiva e prioridades de ataque. A ficha individual deve indicar quais objetivos são permitidos; não ativar todas as ações para todos.
+7. Mapeamento inicial por personagem
+Personagem / grupo
+Correções prioritárias a verificar
+Kafka / Kaiju No.8
+Diferença clara entre locomoção humana e forma kaiju; transformação sem salto de posição; golpes com peso; esmagamento com impacto no chão; agarrão apenas em alvos compatíveis.
+Mina Ashiro
+Rifle alinhado ao ombro e mão de apoio; mira estável; origem do disparo no cano; recuo; reposicionamento para linha de visão e distância segura.
+Reno / No.6
+Rifle encaixado; animação de tiro; projéteis de gelo saem do cano; congelamento com duração limitada; forma No.6 com postura e escala próprias.
+Hoshina / forma No.10
+Duas espadas com pivôs corretos; combos alternados; janelas de parry; deslocamento curto e rápido; evitar deslizar durante cortes.
+Iharu e soldados com rifle/espingarda
+Mira, recuo e recarga individual; formação de esquadrão; cobertura e reposicionamento; não disparar através de obstáculos.
+Gen, Isao e usuários de armamento pesado
+Animação de preparação e recuperação mais pesada; arma presa ao corpo/mãos; impactos com recuo; IA que respeite alcance e tempo de carga.
+Miguel — foice-armamento
+Pivô no cabo; alternância correta entre foice e disparo; arco de corte sem atravessar o corpo; muzzle alinhado; IA híbrida alterna distância curta e média.
+Camilly — rifle-lâmina
+Rifle alinhado ao ombro e lâmina lateral na mão/posição correta; alternar tiro e corte sem duplicar arma; IA ágil de médio alcance e contra-ataque com timing.
+Kaijus numerados e não numerados
+Aplicar perfil conforme anatomia e estilo da ficha: quadrúpede, bípede, voador, veloz, tanque, atirador ou chefe; ajustar pivôs, colisão e navegação por espécie.
+8. Plano de testes e critérios de conclusão
+Teste visual em idle, caminhada, corrida, ataque leve, ataque pesado, habilidade, ultimate, dano recebido, morte e transformação.
+Teste de arma em vista frontal, lateral e traseira; conferir mão, pivô, muzzle e animação com a arma em movimento.
+Teste de escala lado a lado com um jogador padrão; conferir altura, largura, hitbox, alcance e altura dos olhos.
+Teste de IA em arena aberta e ambiente com obstáculos: aquisição de alvo, perseguição, ataque, recuo, troca de alvo, navegação e retorno ao combate.
+Teste de destruição com configuração ligada/desligada, proteção de terreno, limite de blocos, drops e desempenho com vários efeitos simultâneos.
+Teste multiplayer: animações e efeitos sincronizados; dano, cooldown e destruição validados pelo servidor; sem duplicação de projéteis ou efeitos.
+Critério de aprovação: nenhum personagem deve ser considerado finalizado enquanto tiver arma flutuando/atravessando a mão, pés deslizando de forma evidente, hitbox incompatível com o corpo, ataques sem janela de acerto definida, destruição sem limite ou IA presa em obstáculos/repetindo uma única ação.
