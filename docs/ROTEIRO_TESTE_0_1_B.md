@@ -2108,3 +2108,13 @@ Imagem: `docs/img/r1_invasao_save_antigo.jpg`.
 | 153.2 | Deixar o No. 12 abaixo de metade da vida e parar de bater | Ele se cura aos poucos (efeito de regeneração) |
 | 153.3 | `/summon kn8:kaiju_no15_kikoru` e bater até metade da vida | Mensagem "O disfarce caiu..." (também para quem está em espectador) e a forma kaiju do No. 15 surge no lugar com metade da vida |
 | 153.4 | `/summon kn8:kaiju_no11` longe da água e depois na beira de um lago ou na chuva | Perto da água os golpes dele tiram mais e saem mais seguidos |
+
+## 154. TENTACULOS: tentáculos do Neural com ossos próprios
+
+| # | Passo | Esperado |
+|---|---|---|
+| 154.1 | `/summon kn8:kaiju_no9_no15` e olhar parado | Os quatro tentáculos (dois saindo das costas para os lados, dois descendo do quadril) balançam sozinhos, a ponta atrasada em relação à base; braços e pernas parados não os arrastam |
+| 154.2 | Andar perto dele (ou deixá-lo perseguir um soldado) | Tentáculos balançam mais rápido e mais largo enquanto ele anda |
+| 154.3 | Esperar o golpe de tentáculos (alvo a 4-10 blocos) | Os tentáculos sobem para trás e chicoteiam para a frente juntos no momento do tiro rosa que puxa o alvo |
+| 154.4 | Deixá-lo abaixo de 35% (Domínio) | Um lado chicoteia a cada golpe, alternando esquerda e direita |
+| 154.5 | Bater nele | Os tentáculos dão um tranco para trás junto com o corpo; nenhum buraco nem pedaço solto aparece no corpo |

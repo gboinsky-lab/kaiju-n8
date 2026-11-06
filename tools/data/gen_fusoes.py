@@ -95,7 +95,7 @@ def neural():
     moves = {
         "no9_neural_fists": flurry(0.5, 4.5, 4, 5, 160, "action.flurry", 2, 4.5),
         # Tentaculos puxam quem acertam; Distorcao e Dominio tomam a mente (controle mental do No. 15).
-        "no9_neural_tentacles": extra(projectile(1.65, 10, 200, "action.point", 3, 4, 14, pink, speed=2.6),
+        "no9_neural_tentacles": extra(projectile(1.65, 10, 200, "action.tentacles", 3, 4, 14, pink, speed=2.6),
                                       pull=0.9),
         "no9_neural_distortion": extra(phase(area(0.55, 9.0, 16, 340, "action.wave", 3, 8.0, sound="kn8:kaiju.roar",
                                                   slow_ticks=60, slow_level=1), 0.7), mental_ticks=60),

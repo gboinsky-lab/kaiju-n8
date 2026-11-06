@@ -18,6 +18,7 @@ gen_vault_animations): estas animacoes substituem as de mesmo nome.
 Uso: python3 tools/art/humanoid_anims.py [especie...]   (padrao: todas as de SPECIES)
 """
 import json
+import math
 import sys
 from pathlib import Path
 
@@ -1035,10 +1036,100 @@ NUMBERED = {
 NUMBERED["kaiju_no9_no11"] = numbered_species("kaiju_no9_no11", UPRIGHT, WALK, {
     "slash": ("slash", "no9_abyss_blade"), "beam": ("beam", "no9_abyss_cannon"), "wave": ("wave", "no9_abyss_tail"),
     "point": ("point", "no9_abyss_prison"), "deluge": ("wave", "no9_abyss_deluge")})
-NUMBERED["kaiju_no9_no15"] = numbered_species("kaiju_no9_no15", UPRIGHT, WALK, {
+_NEURAL = numbered_species("kaiju_no9_no15", UPRIGHT, WALK, {
     "flurry": ("flurry", "no9_neural_fists"), "point": ("point", "no9_neural_tentacles"),
+    "tentacles": ("point", "no9_neural_tentacles"),
     "wave": ("wave", "no9_neural_distortion"), "beam": ("beam", "no9_neural_cage"),
     "domain": ("flurry", "no9_neural_domain")})
+
+
+# TENTACULOS (Miguel, 2026-11-06): os quatro tentaculos do Neural tem ossos proprios (neural_tentacles.py), base e
+# ponta. Do lado esquerdo, +Y leva o tentaculo para a frente e +Z abaixa o de cima / abre o de baixo para o lado; o
+# direito e o espelho (mirror). Balanco continuo parado e andando (a ponta atrasada em relacao a base), chicotada no
+# golpe de tentaculos, um lado por golpe no Dominio, abertos para cima na Distorcao e no Carcere, tranco ao apanhar.
+TENTACLE_BONES = [f"tentacle_{level}_{side}{tip}" for level in ("upper", "lower") for side in ("left", "right")
+                  for tip in ("", "_tip")]
+
+
+def tentacle_pose(upper, upper_tip, lower, lower_tip, side="left"):
+    pose = {"tentacle_upper_left": upper, "tentacle_upper_left_tip": upper_tip,
+            "tentacle_lower_left": lower, "tentacle_lower_left_tip": lower_tip}
+    return pose if side == "left" else mirror(pose)
+
+
+def both(*args):
+    return {**tentacle_pose(*args), **tentacle_pose(*args, side="right")}
+
+
+TENTACLE_REST = both([0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0])
+
+
+def tentacle_sway(length, amplitude, samples=12):
+    """Laco: cada tentaculo balanca para a frente/tras e sobe/desce, a ponta atrasada; o lado direito um quarto de
+    volta adiantado (nao balancam espelhados)."""
+    frames = []
+    for i in range(samples + 1):
+        t = length * i / samples
+        pose = {}
+        for side, shift in (("left", 0.0), ("right", math.pi / 2)):
+            a = 2 * math.pi * i / samples + shift
+            pose.update(tentacle_pose(
+                [0, amplitude * math.sin(a), amplitude * 0.7 * math.cos(a)],
+                [0, amplitude * 1.8 * math.sin(a - 0.9), amplitude * 0.6 * math.cos(a - 0.9)],
+                [amplitude * 0.6 * math.sin(a + 1.0), amplitude * 0.8 * math.sin(a), amplitude * 0.6 * math.cos(a)],
+                [amplitude * 1.2 * math.sin(a), amplitude * 1.4 * math.sin(a - 0.9), 0], side))
+        frames.append((t, pose, HOLD))
+    return timeline(length, frames, loop=True)["bones"]
+
+
+def tentacle_action(name, anim):
+    """Tentaculos de cada acao do Neural (sem mexer no corpo, ja montado por numbered_move)."""
+    end = anim["animation_length"]
+    kind = name.rsplit(".", 1)[-1]
+    if kind in ("tentacles", "point"):
+        hit, _ = ability("no9_neural_tentacles")
+        wind = both([0, -30, -20], [0, -25, 0], [0, -20, 25], [0, -20, 0])
+        lash = both([0, 60, 10], [0, 45, 0], [0, 50, -5], [0, 40, 0])
+        frames = [(0, TENTACLE_REST, BACK), (hit * 0.7, wind, WIND), (hit, lash, STRIKE),
+                  (hit + 0.2, both([0, 52, 6], [0, 35, 0], [0, 42, -3], [0, 30, 0]), HOLD), (end, TENTACLE_REST, BACK)]
+    elif kind == "domain":
+        times, step, _ = multi_hits("no9_neural_domain")
+        frames = [(0, TENTACLE_REST, BACK)]
+        for i, t in enumerate(times):
+            side, other = ("left", "right") if i % 2 == 0 else ("right", "left")
+            strike = {**tentacle_pose([0, 65, 15], [0, 45, 0], [0, 55, 0], [0, 40, 0], side),
+                      **tentacle_pose([0, -25, -15], [0, -20, 0], [0, -15, 20], [0, -15, 0], other)}
+            load = {**tentacle_pose([0, -25, -20], [0, -20, 0], [0, -15, 20], [0, -15, 0], side),
+                    **tentacle_pose([0, 10, 0], [0, 10, 0], [0, 10, 0], [0, 10, 0], other)}
+            frames += [(t - step * 0.55, load, WIND), (t, strike, STRIKE)]
+        frames.append((end, TENTACLE_REST, BACK))
+    elif kind in ("wave", "beam"):
+        hit, _ = ability("no9_neural_distortion" if kind == "wave" else "no9_neural_cage")
+        spread = both([0, 15, -40], [0, 10, -25], [0, 0, 35], [0, 0, 20])
+        frames = [(0, TENTACLE_REST, BACK), (hit * 0.8, spread, WIND), (hit, both([0, 25, -50], [0, 20, -30],
+                  [0, 10, 45], [0, 10, 25]), STRIKE), (min(end, hit + 0.3), spread, HOLD), (end, TENTACLE_REST, BACK)]
+    elif kind == "hurt":
+        frames = [(0, TENTACLE_REST, BACK), (0.08, both([0, -15, -12], [0, -20, 0], [8, -10, 10], [10, -10, 0]), WIND),
+                  (end, TENTACLE_REST, BACK)]
+    else:
+        # Golpes com os bracos: os tentaculos acompanham, um pouco para tras e abertos.
+        frames = [(0, TENTACLE_REST, BACK), (end * 0.4, both([0, -12, -8], [0, -10, 0], [0, -8, 12], [0, -8, 0]), WIND),
+                  (end, TENTACLE_REST, BACK)]
+    return timeline(end, frames)["bones"]
+
+
+def neural(profile):
+    out = _NEURAL(profile)
+    for name, anim in out.items():
+        if ".movement." in name:
+            amplitude = 7 if name.endswith("idle") else 12
+            anim["bones"].update(tentacle_sway(anim["animation_length"], amplitude))
+        else:
+            anim["bones"].update(tentacle_action(name, anim))
+    return out
+
+
+NUMBERED["kaiju_no9_no15"] = neural
 NUMBERED["kaiju_no9_no14"] = numbered_species("kaiju_no9_no14", UPRIGHT, WALK, {
     "punch": ("punch", "no9_armored_rupture"), "burst": ("wave", "no9_armored_core_burst"),
     "beam": ("beam", "no9_armored_lance"), "collapse": ("leap", "no9_armored_collapse")})

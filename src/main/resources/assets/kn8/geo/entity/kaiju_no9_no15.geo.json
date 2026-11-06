@@ -157,6 +157,78 @@
             0.061
           ],
           "parent": "shin_right"
+        },
+        {
+          "name": "tentacle_upper_left",
+          "pivot": [
+            0.219,
+            18.332,
+            2.837
+          ],
+          "parent": "chest"
+        },
+        {
+          "name": "tentacle_upper_left_tip",
+          "pivot": [
+            7.214,
+            19.822,
+            1.681
+          ],
+          "parent": "tentacle_upper_left"
+        },
+        {
+          "name": "tentacle_upper_right",
+          "pivot": [
+            -0.219,
+            18.332,
+            2.837
+          ],
+          "parent": "chest"
+        },
+        {
+          "name": "tentacle_upper_right_tip",
+          "pivot": [
+            -7.214,
+            19.822,
+            1.681
+          ],
+          "parent": "tentacle_upper_right"
+        },
+        {
+          "name": "tentacle_lower_left",
+          "pivot": [
+            1.248,
+            16.104,
+            1.258
+          ],
+          "parent": "body"
+        },
+        {
+          "name": "tentacle_lower_left_tip",
+          "pivot": [
+            6.062,
+            12.849,
+            1.898
+          ],
+          "parent": "tentacle_lower_left"
+        },
+        {
+          "name": "tentacle_lower_right",
+          "pivot": [
+            -1.248,
+            16.104,
+            1.258
+          ],
+          "parent": "body"
+        },
+        {
+          "name": "tentacle_lower_right_tip",
+          "pivot": [
+            -6.062,
+            12.849,
+            1.898
+          ],
+          "parent": "tentacle_lower_right"
         }
       ]
     }
