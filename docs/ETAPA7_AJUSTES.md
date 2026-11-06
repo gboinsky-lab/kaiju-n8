@@ -73,8 +73,8 @@ Mina 1,69 (mod 1,75), Reno 1,74 (1,75), Kikoru 1,57 (1,60), Hoshina 1,71 (1,72),
 - Rin: minigun (8 x 0,25) com superaquecimento depois de 5 s e supressao -15% de velocidade (mod: rifle).
 - Narumi: marcacao que da +15% de dano aos aliados por 5 s.
 - Konomi: analise que marca o inimigo por 8 s e da +8% de dano aos aliados.
-- Ryo: marca +20% no proximo ataque; Kota: interrupcao com stagger; Haruichi: veneno 4 s (o mod tem a flecha
-  envenenada? conferir); Tae: escudo de 8% alem da cura.
+- Ryo: marca +20% no proximo ataque; Kota: interrupcao com stagger; Haruichi: veneno 4 s (as flechas
+  envenenadas do mod nao aplicam veneno); Tae: escudo de 8% alem da cura.
 - Bosses com resistencia progressiva a congelamento, veneno, stun e controle (duracao menor a cada aplicacao).
 - No. 1: previsao que falha contra fintas e ataques em area; No. 12: adaptacao parcial com limite; No. 15: ataque
   mental 0,4x/s por 3 s e ilusao; No. 11: puxao.
