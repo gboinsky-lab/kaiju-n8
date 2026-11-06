@@ -162,4 +162,16 @@ public final class BossControlGameTests {
             helper.succeed();
         });
     }
+
+    @GameTest(template = TEMPLATE, batch = "kn8_7d_apoio")
+    public static void supportRoleNeedsAnUnlockedRangedAttack(GameTestHelper helper) {
+        KaijuEntity abyss = kaiju(helper, "kaiju_no9_no11", new BlockPos(7, 1, 7));
+        helper.runAfterDelay(3, () -> {
+            helper.assertFalse(abyss.hasUsableRangedAttack(), "Abissal com a vida cheia nao tem tiro liberado");
+            abyss.setHealth(abyss.getMaxHealth() * 0.5F);
+            helper.assertTrue(abyss.hasUsableRangedAttack(), "Abaixo de 65% o canhao e a prisao liberam");
+            abyss.discard();
+            helper.succeed();
+        });
+    }
 }

@@ -971,6 +971,22 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
     }
 
     /** MOV-3: a especie tem ataque a distancia (projetil): contra ela os atiradores usam cobertura. */
+    /**
+     * Etapa 7-D: tem golpe a distancia que a vida atual ja libera ({@code behavior.health_below})? A Abissal (fusao do
+     * No. 9) e de apoio, mas os tiros so saem abaixo de 65%: com a vida cheia ela recuava do alvo de perto sem ter o
+     * que atirar, ate perde-lo (visto na matriz de duelos da 7-D).
+     */
+    public boolean hasUsableRangedAttack() {
+        float fraction = getMaxHealth() > 0 ? getHealth() / getMaxHealth() : 1.0F;
+        for (ResourceLocation id : def().map(KaijuDef::abilities).orElse(List.of())) {
+            if (KN8Data.ABILITY.get(id, false).map(ability -> KaijuAbilities.TYPE_PROJECTILE.equals(
+                    ability.type().getPath()) && fraction <= ability.behavior().healthBelow()).orElse(false)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean hasRangedAttack() {
         for (ResourceLocation id : def().map(KaijuDef::abilities).orElse(List.of())) {
             if (KN8Data.ABILITY.get(id, false).map(ability -> KaijuAbilities.TYPE_PROJECTILE.equals(

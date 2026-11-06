@@ -223,7 +223,7 @@ final class KaijuCombatGoal extends Goal {
         // PM-5: chefe numa fase com preferred_distance segura essa distancia enquanto tem tiro pronto; sem tiro
         // pronto, avanca como sempre (nao fica parado esperando a recarga).
         double bossHold = BossService.preferredDistance(kaiju);
-        boolean support = group.support() && kaiju.hasRangedAttack();
+        boolean support = group.support() && kaiju.hasUsableRangedAttack();
         boolean bossRanged = !support && bossHold > 0 && kaiju.hasReadyRangedAbility();
         if (bossRanged != bossHolding) {
             bossHolding = bossRanged;
