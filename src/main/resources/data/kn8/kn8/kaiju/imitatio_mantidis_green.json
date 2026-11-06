@@ -1,0 +1,84 @@
+{
+  "class": "honju",
+  "fortitude": 6.0,
+  "size": "large",
+  "dimensions": {
+    "width": 4.0,
+    "height": 8.0
+  },
+  "overrides": {
+    "health": 390.0,
+    "damage": 15.0,
+    "armor": 13.0
+  },
+  "speed": 0.44,
+  "intelligence": 3,
+  "parts": [
+    {
+      "name": "head",
+      "offset": [
+        0.0,
+        6.0,
+        1.0
+      ],
+      "width": 1.6,
+      "height": 2.0,
+      "multiplier": 1.2
+    },
+    {
+      "name": "torso",
+      "offset": [
+        0.0,
+        2.4,
+        0.0
+      ],
+      "width": 3.0,
+      "height": 4.0,
+      "multiplier": 1.0
+    },
+    {
+      "name": "core",
+      "offset": [
+        0.0,
+        4.0,
+        0.8
+      ],
+      "width": 1.2,
+      "height": 1.2,
+      "multiplier": 3.0,
+      "core": true
+    },
+    {
+      "name": "legs",
+      "offset": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "width": 3.6,
+      "height": 2.64,
+      "multiplier": 0.8
+    }
+  ],
+  "core": {
+    "health_fraction": 0.25,
+    "exposed_on": [
+      "heavy_hit"
+    ]
+  },
+  "abilities": [
+    "kn8:mantidis_green_blades",
+    "kn8:mantidis_green_leap",
+    "kn8:mantidis_green_cross_cut"
+  ],
+  "weaknesses": [],
+  "dismantle": "kn8:primigenius_honju",
+  "spawn": {
+    "natural": false
+  },
+  "rarity": "rare",
+  "tags": [
+    "insect",
+    "blade"
+  ]
+}

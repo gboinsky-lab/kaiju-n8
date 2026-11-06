@@ -1968,3 +1968,15 @@ Imagem: `docs/img/numerados_b.jpg`. Modelos do Miguel de 2026-11-05 (sem rig); n
 | 140.4 | No. 14 contra especiais | Raio vermelho pelas faces, salva girando, pulso em volta, campo esmagador que sobe e cai, teleporte curto; fica de longe (apoio) |
 | 140.5 | Invasoes `kaiju_horde` (No. 2, 15%), `mass_resurrection` (No. 6, 15%), `tachikawa_city_raid` (No. 14, 30%) | Podem aparecer na ultima onda |
 | 140.6 | Segundo cliente olhando | Os mesmos modelos, tamanhos e efeitos |
+
+## 141. Etapa 5: kaiju de nome científico (Polyonax, Lacerta Fratris, Imitatio Mantidis, Maxilla Cornuta, Anguilla Ambulans)
+
+Imagem: `docs/img/especies_etapa5.jpg`. Modelos do Miguel de 2026-11-05 (sem rig) nos ossos e animações do Philinosoma; números do "Balanceamento Completo dos Kaijus" v1.0.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 141.1 | `/summon kn8:polyonax`, `lacerta_fratris`, `imitatio_mantidis`, `imitatio_mantidis_green`, `maxilla_cornuta`, `anguilla_ambulans` | Polyonax quadrúpede escuro com espinhos roxos e cauda curva; Lacerta em pé, vermelho-escuro com espinhos; Imitatio preto e verde com lâminas laranja; Maxilla de pescoço longo, laranja e branco com chifres; Anguilla azul com quatro garras e corpo de enguia em S |
+| 141.2 | Cada um contra especiais (Hoshina, Kikoru, Narumi) | Andam com a passada; atacam com mordida, cauda, investida, pisão (aviso no chão), salto; a Anguilla solta a descarga ciano em anel; a Lacerta e a Imitatio rodeiam (flanco) |
+| 141.3 | Vida no `/data get entity` | Polyonax 520, Lacerta 310, Imitatio 390, Maxilla 650, Anguilla 480 |
+| 141.4 | Invasões `kaiju_horde`, `tachikawa_city_raid`, `honju_rampage`, `diclonius_attack`, `honju_assault`, `ariake_assault` | Podem aparecer na última onda (35-40%) |
+| 141.5 | Segundo cliente olhando | Os mesmos modelos, ataques e efeitos |

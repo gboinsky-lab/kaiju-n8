@@ -22,6 +22,11 @@
         {
           "species": "kn8:primigenius_resurrected",
           "count": 2
+        },
+        {
+          "species": "kn8:imitatio_mantidis",
+          "count": 1,
+          "chance": 0.35
         }
       ],
       "delay_ticks": 600

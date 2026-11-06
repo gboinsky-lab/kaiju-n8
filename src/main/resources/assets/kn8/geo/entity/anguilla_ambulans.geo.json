@@ -1,0 +1,164 @@
+{
+  "format_version": "1.12.0",
+  "minecraft:geometry": [
+    {
+      "description": {
+        "identifier": "geometry.anguilla_ambulans",
+        "texture_width": 16,
+        "texture_height": 16,
+        "visible_bounds_width": 12.2,
+        "visible_bounds_height": 12.2,
+        "visible_bounds_offset": [
+          0,
+          4.5,
+          0
+        ]
+      },
+      "bones": [
+        {
+          "name": "root",
+          "pivot": [
+            -0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "name": "body",
+          "pivot": [
+            -0.0,
+            56.0,
+            -36.8
+          ],
+          "parent": "root"
+        },
+        {
+          "name": "head",
+          "pivot": [
+            -0.0,
+            118.4,
+            -44.8
+          ],
+          "parent": "body"
+        },
+        {
+          "name": "jaw",
+          "pivot": [
+            -0.0,
+            129.6,
+            -60.8
+          ],
+          "parent": "head"
+        },
+        {
+          "name": "fin_left",
+          "pivot": [
+            8.0,
+            142.4,
+            -49.6
+          ],
+          "parent": "head"
+        },
+        {
+          "name": "fin_right",
+          "pivot": [
+            -8.0,
+            142.4,
+            -49.6
+          ],
+          "parent": "head"
+        },
+        {
+          "name": "arm_left",
+          "pivot": [
+            24.0,
+            112.0,
+            -40.0
+          ],
+          "parent": "body"
+        },
+        {
+          "name": "arm_right",
+          "pivot": [
+            -24.0,
+            112.0,
+            -40.0
+          ],
+          "parent": "body"
+        },
+        {
+          "name": "forearm_left",
+          "pivot": [
+            48.0,
+            108.8,
+            -40.0
+          ],
+          "parent": "arm_left"
+        },
+        {
+          "name": "forearm_right",
+          "pivot": [
+            -48.0,
+            108.8,
+            -40.0
+          ],
+          "parent": "arm_right"
+        },
+        {
+          "name": "leg_left",
+          "pivot": [
+            9.6,
+            40.0,
+            -44.8
+          ],
+          "parent": "body"
+        },
+        {
+          "name": "leg_right",
+          "pivot": [
+            -9.6,
+            40.0,
+            -44.8
+          ],
+          "parent": "body"
+        },
+        {
+          "name": "tail_1",
+          "pivot": [
+            -8.0,
+            24.0,
+            -25.6
+          ],
+          "parent": "body"
+        },
+        {
+          "name": "tail_2",
+          "pivot": [
+            -56.033,
+            24.0,
+            5.556
+          ],
+          "parent": "tail_1"
+        },
+        {
+          "name": "tail_3",
+          "pivot": [
+            -42.491,
+            24.0,
+            49.137
+          ],
+          "parent": "tail_2"
+        },
+        {
+          "name": "tail_4",
+          "pivot": [
+            12.211,
+            31.678,
+            55.103
+          ],
+          "parent": "tail_3"
+        }
+      ]
+    }
+  ]
+}

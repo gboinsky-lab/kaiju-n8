@@ -1,0 +1,85 @@
+{
+  "class": "honju",
+  "fortitude": 6.2,
+  "size": "large",
+  "dimensions": {
+    "width": 5.0,
+    "height": 9.0
+  },
+  "overrides": {
+    "health": 480.0,
+    "damage": 16.0,
+    "armor": 13.0
+  },
+  "speed": 0.4,
+  "intelligence": 3,
+  "parts": [
+    {
+      "name": "head",
+      "offset": [
+        0.0,
+        6.75,
+        1.5
+      ],
+      "width": 2.0,
+      "height": 2.25,
+      "multiplier": 1.2
+    },
+    {
+      "name": "torso",
+      "offset": [
+        0.0,
+        2.6999999999999997,
+        0.0
+      ],
+      "width": 3.75,
+      "height": 4.5,
+      "multiplier": 1.0
+    },
+    {
+      "name": "core",
+      "offset": [
+        0.0,
+        4.5,
+        0.8
+      ],
+      "width": 1.2,
+      "height": 1.2,
+      "multiplier": 3.0,
+      "core": true
+    },
+    {
+      "name": "legs",
+      "offset": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "width": 4.5,
+      "height": 2.97,
+      "multiplier": 0.8
+    }
+  ],
+  "core": {
+    "health_fraction": 0.25,
+    "exposed_on": [
+      "heavy_hit"
+    ]
+  },
+  "abilities": [
+    "kn8:anguilla_bite",
+    "kn8:anguilla_whip",
+    "kn8:anguilla_discharge",
+    "kn8:anguilla_dive"
+  ],
+  "weaknesses": [],
+  "dismantle": "kn8:primigenius_honju",
+  "spawn": {
+    "natural": false
+  },
+  "rarity": "rare",
+  "tags": [
+    "serpent",
+    "aquatic"
+  ]
+}

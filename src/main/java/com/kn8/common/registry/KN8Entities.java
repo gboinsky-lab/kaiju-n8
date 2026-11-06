@@ -154,6 +154,22 @@ public final class KN8Entities {
     public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> KAIJU_NO14 = kaiju(
             "kaiju_no14", 2.6F, 7.0F);
     /**
+     * Etapa 5 (modelos do Miguel de 2026-11-05, sem rig): Honju da onda de ataques da 2a temporada nos ossos e
+     * animacoes do Philinosoma. Imitatio Mantidis em duas cores (preto e verde: Miguel quer as duas).
+     */
+    public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> POLYONAX = kaiju(
+            "polyonax", 5.0F, 5.5F);
+    public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> LACERTA_FRATRIS = kaiju(
+            "lacerta_fratris", 4.5F, 8.0F);
+    public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> IMITATIO_MANTIDIS = kaiju(
+            "imitatio_mantidis", 4.0F, 8.0F);
+    public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> IMITATIO_MANTIDIS_GREEN = kaiju(
+            "imitatio_mantidis_green", 4.0F, 8.0F);
+    public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> MAXILLA_CORNUTA = kaiju(
+            "maxilla_cornuta", 3.5F, 9.0F);
+    public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> ANGUILLA_AMBULANS = kaiju(
+            "anguilla_ambulans", 5.0F, 9.0F);
+    /**
      * AJUSTES-2 (Miguel 2026-11-05): Kaiju No. 8 sem controle, inimigo, pequeno (3 m) e gigante (22 m). Arte do
      * No. 8 com a textura vermelha ({@link #MODEL_ALIASES}, {@link #textureSpecies}); escala no kaiju/*.json.
      */
@@ -446,7 +462,8 @@ public final class KN8Entities {
                     MYXOGASTEROCARP, KAIJU_LARVA, KAIJU_NO9_BLACK, KAIJU_NO9_FUSION, KAIJU_NO9_CAMPONOTUS,
                     KAIJU_NO9_FUSION_GIANT, KAIJU_NO9_ISAO, KAIJU_NO13, KAIJU_NO8_RAMPAGE, KAIJU_NO8_RAMPAGE_GIANT,
                     KAIJU_NO1, KAIJU_NO11, KAIJU_NO12, KAIJU_NO15, KAIJU_NO15_KIKORU,
-                    KAIJU_NO2, KAIJU_NO6, KAIJU_NO14);
+                    KAIJU_NO2, KAIJU_NO6, KAIJU_NO14, POLYONAX, LACERTA_FRATRIS, IMITATIO_MANTIDIS,
+                    IMITATIO_MANTIDIS_GREEN, MAXILLA_CORNUTA, ANGUILLA_AMBULANS);
 
     private KN8Entities() {
     }

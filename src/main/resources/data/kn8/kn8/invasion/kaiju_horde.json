@@ -32,6 +32,11 @@
           "species": "kn8:kaiju_no2",
           "count": 1,
           "chance": 0.15
+        },
+        {
+          "species": "kn8:polyonax",
+          "count": 1,
+          "chance": 0.4
         }
       ],
       "boss": "kn8:honju",

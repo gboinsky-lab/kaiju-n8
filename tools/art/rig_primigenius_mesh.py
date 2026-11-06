@@ -238,6 +238,82 @@ SPECIES = {
             "tail_base": [0.6, 3.0, 2.75], "tail_mid": [1.0, 1.5, 6.25], "tail_tip": [1.5, 0.5, 10.55],
         },
     },
+    # Etapa 5 (kaiju de nome cientifico do Miguel, 2026-11-05, sem rig): ossos e animacoes do Philinosoma; juntas
+    # medidas nas vistas depois do prepare (Polyonax quadrupede girado 6 graus, patas da frente nos bracos; Maxilla
+    # pescoco longo, patas da frente nos bracos; Anguilla com o corpo de enguia em S na cauda; Imitatio sem cauda). Modelos de blocos soltos: "bridge".
+    "polyonax": {
+        "bridge": 0.3, "yaw_deg": -6, "recenter_feet": True, "jaw_y": 3.4, "jaw_z": -5.3,
+        "skeleton": {
+            "pelvis": [0, 3.0, 1.8], "chest": [0, 3.3, -2.0], "back": [0, 5.0, 0.0],
+            "neck": [0, 3.8, -4.0], "head": [0, 3.7, -5.5],
+            "shoulder_left": [-1.7, 3.0, -2.3], "elbow_left": [-2.0, 1.5, -2.5], "hand_left": [-2.4, 0.2, -2.8],
+            "shoulder_right": [1.7, 3.0, -2.3], "elbow_right": [2.0, 1.5, -2.5], "hand_right": [2.2, 0.2, -2.6],
+            "hip_left": [-1.6, 2.8, 1.8], "knee_left": [-2.0, 1.4, 2.3], "foot_left": [-2.4, 0.2, 2.6],
+            "hip_right": [1.6, 2.8, 1.8], "knee_right": [2.0, 1.4, 2.3], "foot_right": [1.9, 0.2, 2.8],
+            "tail_base": [0, 2.5, 4.0], "tail_mid": [1.5, 1.5, 6.0], "tail_bend": [5.0, 1.3, 6.5],
+            "tail_tip": [8.8, 1.1, 1.5],
+        },
+    },
+    "lacerta_fratris": {
+        "bridge": 0.3, "recenter_feet": True, "jaw_y": 6.6, "jaw_z": -5.5,
+        "skeleton": {
+            "pelvis": [0.5, 3.0, 0.0], "chest": [0.5, 4.8, -2.5], "back": [0.6, 5.5, -1.0],
+            "neck": [0.5, 6.2, -4.5], "head": [0.5, 7.0, -6.0], "shoulder_left": [-0.8, 5.3, -3.5],
+            "elbow_left": [-1.8, 4.6, -4.0], "hand_left": [-2.0, 4.0, -5.0], "shoulder_right": [2.0, 5.3, -3.5],
+            "elbow_right": [2.8, 4.6, -4.2], "hand_right": [3.0, 3.8, -5.5], "hip_left": [-0.4, 3.0, -1.0],
+            "knee_left": [-0.6, 1.6, -2.2], "foot_left": [-1.8, 0.2, -1.6], "hip_right": [1.6, 3.0, -1.0],
+            "knee_right": [2.1, 1.6, -2.2], "foot_right": [2.4, 0.2, -2.5], "tail_base": [0.6, 2.8, 1.5],
+            "tail_mid": [0.8, 1.2, 3.5], "tail_bend": [2.0, 1.2, 5.5], "tail_tip": [3.5, 3.3, 6.3],
+        },
+    },
+    "maxilla_cornuta": {
+        "bridge": 0.3, "recenter_feet": True, "jaw_y": 8.2, "jaw_z": -9.0,
+        "skeleton": {
+            "pelvis": [0, 4.0, 0.0], "chest": [0, 4.5, -4.5], "back": [0, 5.0, -2.0],
+            "neck": [0, 6.5, -6.5], "head": [0, 8.5, -8.8], "shoulder_left": [-1.3, 4.2, -5.0],
+            "elbow_left": [-1.5, 2.8, -5.5], "hand_left": [-1.6, 1.1, -6.0], "shoulder_right": [1.3, 4.2, -5.0],
+            "elbow_right": [1.5, 2.8, -5.5], "hand_right": [1.6, 1.1, -6.0], "hip_left": [-1.2, 3.8, 0.0],
+            "knee_left": [-1.4, 2.0, 0.3], "foot_left": [-1.5, 0.2, 0.0], "hip_right": [1.2, 3.8, 0.0],
+            "knee_right": [1.4, 2.0, 0.3], "foot_right": [1.5, 0.2, 0.0], "tail_base": [0, 4.5, 1.5],
+            "tail_mid": [0, 3.8, 4.0], "tail_tip": [0, 3.0, 7.0],
+        },
+    },
+    "anguilla_ambulans": {
+        "bridge": 0.3, "recenter_feet": True, "jaw_y": 8.1, "jaw_z": -3.8,
+        "skeleton": {
+            "pelvis": [0, 3.5, -2.3], "chest": [0, 6.0, -2.5], "back": [0, 6.8, -1.8],
+            "neck": [0, 7.4, -2.8], "head": [0, 8.4, -3.4], "shoulder_left": [-1.5, 7.0, -2.5],
+            "elbow_left": [-3.0, 6.8, -2.5], "hand_left": [-4.5, 6.0, -3.0], "shoulder_right": [1.5, 7.0, -2.5],
+            "elbow_right": [3.0, 6.8, -2.5], "hand_right": [4.5, 6.0, -3.0], "hip_left": [-0.6, 2.5, -2.8],
+            "knee_left": [-1.8, 1.2, -4.0], "foot_left": [-3.2, 0.6, -5.5], "hip_right": [0.6, 2.5, -2.8],
+            "knee_right": [1.4, 1.2, -4.2], "foot_right": [2.2, 0.6, -5.8], "tail_base": [0.5, 1.5, -1.6],
+            "tail_mid": [4.2, 1.5, 0.8], "tail_bend": [2.5, 1.5, 3.3], "tail_tip": [-4.3, 2.5, 3.6],
+        },
+    },
+    "imitatio_mantidis": {
+        "bridge": 0.3, "recenter_feet": True, "jaw_y": 6.6, "jaw_z": -1.0,
+        "skeleton": {
+            "pelvis": [0, 3.9, 0.5], "chest": [0, 5.5, 0.3], "back": [0, 6.2, 0.8],
+            "neck": [0, 6.6, -0.2], "head": [0, 7.3, -0.8], "shoulder_left": [-1.3, 6.0, 0.0],
+            "elbow_left": [-2.3, 5.2, -1.8], "hand_left": [-2.8, 3.5, -3.0], "shoulder_right": [1.3, 6.0, 0.0],
+            "elbow_right": [2.3, 5.2, -1.8], "hand_right": [2.8, 3.5, -3.0], "hip_left": [-0.6, 3.8, 0.5],
+            "knee_left": [-1.5, 2.5, 0.3], "foot_left": [-1.7, 0.2, 0.5], "hip_right": [0.6, 3.8, 0.5],
+            "knee_right": [1.5, 2.5, 0.3], "foot_right": [1.7, 0.2, 0.5], "tail_base": [0, 3.6, 1.0],
+            "tail_mid": [0, 3.4, 1.2], "tail_tip": [0, 3.3, 1.3],
+        },
+    },
+    "imitatio_mantidis_green": {
+        "bridge": 0.3, "recenter_feet": True, "jaw_y": 6.6, "jaw_z": -1.6,
+        "skeleton": {
+            "pelvis": [0, 3.9, 0.5], "chest": [0, 5.5, 0.3], "back": [0, 6.2, 0.8],
+            "neck": [0, 6.6, -0.4], "head": [0, 7.3, -1.4], "shoulder_left": [-1.3, 6.0, 0.0],
+            "elbow_left": [-2.3, 5.2, -1.8], "hand_left": [-2.8, 3.5, -3.0], "shoulder_right": [1.3, 6.0, 0.0],
+            "elbow_right": [2.3, 5.2, -1.8], "hand_right": [2.8, 3.5, -3.0], "hip_left": [-0.6, 3.8, 0.5],
+            "knee_left": [-1.6, 2.2, 0.8], "foot_left": [-2.0, 0.2, 0.0], "hip_right": [0.6, 3.8, 0.5],
+            "knee_right": [1.6, 2.2, 0.8], "foot_right": [2.0, 0.2, 0.0], "tail_base": [0, 3.6, 1.0],
+            "tail_mid": [0, 3.4, 1.2], "tail_tip": [0, 3.3, 1.3],
+        },
+    },
     "diclonius": {
         "recenter_feet": True, "jaw_y": 7.4, "jaw_z": -2.3, "feet_max_z": -1.0,
         "skeleton": {
@@ -290,6 +366,13 @@ def split_skeleton(mesh, cfg):
     wf = welded[faces]
     edges = np.vstack([wf[:, [0, 1]], wf[:, [1, 2]], wf[:, [2, 0]]])
     length = np.linalg.norm(position[edges[:, 0]] - position[edges[:, 1]], axis=1) + 1e-6
+    if cfg.get("bridge"):
+        # Modelos "blocky" (etapa 5) sao blocos soltos: sem ligar os vizinhos no espaco o caminho pela superficie
+        # nao sai do bloco da semente e quase tudo caia no tronco. Liga vertices a menos de "bridge" metros.
+        from scipy.spatial import cKDTree
+        pairs = cKDTree(position).query_pairs(cfg["bridge"], output_type="ndarray")
+        edges = np.vstack([edges, pairs])
+        length = np.concatenate([length, np.linalg.norm(position[pairs[:, 0]] - position[pairs[:, 1]], axis=1) + 1e-6])
     graph = coo_matrix((length, (edges[:, 0], edges[:, 1])), shape=(count, count)).tocsr()
     seeds, owners = [], []
     # Chifres com ponta no esqueleto: osso proprio pela superficie (a cabeca do Honju e torta, plano nao serve).

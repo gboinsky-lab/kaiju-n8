@@ -37,6 +37,11 @@
         {
           "species": "kn8:camponotus",
           "count": 3
+        },
+        {
+          "species": "kn8:imitatio_mantidis_green",
+          "count": 1,
+          "chance": 0.35
         }
       ],
       "delay_ticks": 600

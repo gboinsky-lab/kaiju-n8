@@ -1,0 +1,17 @@
+{
+  "bones": {
+    "body": "kn8:meshes/lacerta_fratris/body.obj",
+    "head": "kn8:meshes/lacerta_fratris/head.obj",
+    "jaw": "kn8:meshes/lacerta_fratris/jaw.obj",
+    "arm_left": "kn8:meshes/lacerta_fratris/arm_left.obj",
+    "arm_right": "kn8:meshes/lacerta_fratris/arm_right.obj",
+    "forearm_left": "kn8:meshes/lacerta_fratris/forearm_left.obj",
+    "forearm_right": "kn8:meshes/lacerta_fratris/forearm_right.obj",
+    "leg_left": "kn8:meshes/lacerta_fratris/leg_left.obj",
+    "leg_right": "kn8:meshes/lacerta_fratris/leg_right.obj",
+    "tail_1": "kn8:meshes/lacerta_fratris/tail_1.obj",
+    "tail_2": "kn8:meshes/lacerta_fratris/tail_2.obj",
+    "tail_3": "kn8:meshes/lacerta_fratris/tail_3.obj",
+    "tail_4": "kn8:meshes/lacerta_fratris/tail_4.obj"
+  }
+}

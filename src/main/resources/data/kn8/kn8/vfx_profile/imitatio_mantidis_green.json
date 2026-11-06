@@ -1,0 +1,97 @@
+{
+  "palette": {
+    "primary": "#3E7551",
+    "secondary": "#1F3A28",
+    "accent": "#D8D1A6",
+    "core": "#FFFBEA"
+  },
+  "material": "chitin",
+  "effects": {
+    "mantidis_green_blades": [
+      {
+        "shape": "band",
+        "color": "accent",
+        "pattern": "arc",
+        "count": 1,
+        "size": 0.5,
+        "speed": 0.0,
+        "spread": 2.2,
+        "lifetime": 8,
+        "forward": 1.0,
+        "up": 1.4,
+        "tilt": 25,
+        "edge": "core"
+      }
+    ],
+    "mantidis_green_leap": [
+      {
+        "shape": "wave",
+        "color": "accent",
+        "pattern": "ring",
+        "count": 1,
+        "size": 0.4,
+        "speed": 0.0,
+        "spread": 3.5,
+        "lifetime": 14,
+        "forward": 1.0,
+        "up": 0.05
+      },
+      {
+        "shape": "crack",
+        "color": "secondary",
+        "pattern": "line",
+        "count": 5,
+        "size": 0.3,
+        "speed": 0.0,
+        "spread": 3.0,
+        "lifetime": 36,
+        "forward": 1.0,
+        "up": 0.02,
+        "edge": "accent"
+      },
+      {
+        "shape": "smoke",
+        "color": "primary",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.5,
+        "speed": 0.05,
+        "spread": 1.4,
+        "lifetime": 24,
+        "forward": 1.0,
+        "up": 0.2
+      }
+    ],
+    "mantidis_green_cross_cut": [
+      {
+        "shape": "band",
+        "color": "accent",
+        "pattern": "arc",
+        "count": 1,
+        "size": 0.6,
+        "speed": 0.0,
+        "spread": 2.6,
+        "lifetime": 9,
+        "forward": 1.2,
+        "up": 1.4,
+        "tilt": -35,
+        "edge": "core"
+      },
+      {
+        "shape": "band",
+        "color": "accent",
+        "pattern": "arc",
+        "count": 1,
+        "size": 0.6,
+        "speed": 0.0,
+        "spread": 2.6,
+        "lifetime": 9,
+        "forward": 1.2,
+        "up": 1.4,
+        "delay": 2,
+        "tilt": 35,
+        "edge": "core"
+      }
+    ]
+  }
+}

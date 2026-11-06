@@ -1,0 +1,85 @@
+{
+  "class": "honju",
+  "fortitude": 6.6,
+  "size": "large",
+  "dimensions": {
+    "width": 3.5,
+    "height": 9.0
+  },
+  "overrides": {
+    "health": 650.0,
+    "damage": 21.0,
+    "armor": 15.0
+  },
+  "speed": 0.27,
+  "intelligence": 3,
+  "parts": [
+    {
+      "name": "head",
+      "offset": [
+        0.0,
+        6.75,
+        4.0
+      ],
+      "width": 1.4000000000000001,
+      "height": 2.25,
+      "multiplier": 1.2
+    },
+    {
+      "name": "torso",
+      "offset": [
+        0.0,
+        2.6999999999999997,
+        0.0
+      ],
+      "width": 2.625,
+      "height": 4.5,
+      "multiplier": 1.0
+    },
+    {
+      "name": "core",
+      "offset": [
+        0.0,
+        4.5,
+        0.8
+      ],
+      "width": 1.2,
+      "height": 1.2,
+      "multiplier": 3.0,
+      "core": true
+    },
+    {
+      "name": "legs",
+      "offset": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "width": 3.15,
+      "height": 2.97,
+      "multiplier": 0.8
+    }
+  ],
+  "core": {
+    "health_fraction": 0.25,
+    "exposed_on": [
+      "heavy_hit"
+    ]
+  },
+  "abilities": [
+    "kn8:maxilla_horn",
+    "kn8:maxilla_charge",
+    "kn8:maxilla_stomp",
+    "kn8:maxilla_roar"
+  ],
+  "weaknesses": [],
+  "dismantle": "kn8:primigenius_honju",
+  "spawn": {
+    "natural": false
+  },
+  "rarity": "rare",
+  "tags": [
+    "reptile",
+    "horned"
+  ]
+}

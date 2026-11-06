@@ -32,6 +32,11 @@
           "species": "kn8:kaiju_no14",
           "count": 1,
           "chance": 0.3
+        },
+        {
+          "species": "kn8:lacerta_fratris",
+          "count": 1,
+          "chance": 0.4
         }
       ],
       "delay_ticks": 500

@@ -18,6 +18,11 @@
         {
           "species": "kn8:primigenius",
           "count": 2
+        },
+        {
+          "species": "kn8:maxilla_cornuta",
+          "count": 1,
+          "chance": 0.4
         }
       ],
       "boss": "kn8:honju",

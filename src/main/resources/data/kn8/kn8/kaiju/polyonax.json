@@ -1,0 +1,85 @@
+{
+  "class": "honju",
+  "fortitude": 6.4,
+  "size": "large",
+  "dimensions": {
+    "width": 5.0,
+    "height": 5.5
+  },
+  "overrides": {
+    "health": 520.0,
+    "damage": 18.0,
+    "armor": 14.0
+  },
+  "speed": 0.3,
+  "intelligence": 3,
+  "parts": [
+    {
+      "name": "head",
+      "offset": [
+        0.0,
+        4.125,
+        3.5
+      ],
+      "width": 2.0,
+      "height": 1.375,
+      "multiplier": 1.2
+    },
+    {
+      "name": "torso",
+      "offset": [
+        0.0,
+        1.65,
+        0.0
+      ],
+      "width": 3.75,
+      "height": 2.75,
+      "multiplier": 1.0
+    },
+    {
+      "name": "core",
+      "offset": [
+        0.0,
+        2.75,
+        0.8
+      ],
+      "width": 1.2,
+      "height": 1.2,
+      "multiplier": 3.0,
+      "core": true
+    },
+    {
+      "name": "legs",
+      "offset": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "width": 4.5,
+      "height": 1.8150000000000002,
+      "multiplier": 0.8
+    }
+  ],
+  "core": {
+    "health_fraction": 0.25,
+    "exposed_on": [
+      "heavy_hit"
+    ]
+  },
+  "abilities": [
+    "kn8:polyonax_strike",
+    "kn8:polyonax_rush",
+    "kn8:polyonax_stomp",
+    "kn8:polyonax_sweep"
+  ],
+  "weaknesses": [],
+  "dismantle": "kn8:primigenius_honju",
+  "spawn": {
+    "natural": false
+  },
+  "rarity": "rare",
+  "tags": [
+    "reptile",
+    "quadruped"
+  ]
+}

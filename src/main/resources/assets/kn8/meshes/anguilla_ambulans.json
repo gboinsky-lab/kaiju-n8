@@ -1,0 +1,17 @@
+{
+  "bones": {
+    "body": "kn8:meshes/anguilla_ambulans/body.obj",
+    "head": "kn8:meshes/anguilla_ambulans/head.obj",
+    "jaw": "kn8:meshes/anguilla_ambulans/jaw.obj",
+    "arm_left": "kn8:meshes/anguilla_ambulans/arm_left.obj",
+    "arm_right": "kn8:meshes/anguilla_ambulans/arm_right.obj",
+    "forearm_left": "kn8:meshes/anguilla_ambulans/forearm_left.obj",
+    "forearm_right": "kn8:meshes/anguilla_ambulans/forearm_right.obj",
+    "leg_left": "kn8:meshes/anguilla_ambulans/leg_left.obj",
+    "leg_right": "kn8:meshes/anguilla_ambulans/leg_right.obj",
+    "tail_1": "kn8:meshes/anguilla_ambulans/tail_1.obj",
+    "tail_2": "kn8:meshes/anguilla_ambulans/tail_2.obj",
+    "tail_3": "kn8:meshes/anguilla_ambulans/tail_3.obj",
+    "tail_4": "kn8:meshes/anguilla_ambulans/tail_4.obj"
+  }
+}

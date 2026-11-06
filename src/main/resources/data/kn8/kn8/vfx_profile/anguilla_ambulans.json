@@ -1,0 +1,129 @@
+{
+  "palette": {
+    "primary": "#214D70",
+    "secondary": "#10263A",
+    "accent": "#57C9D8",
+    "core": "#E0FAFF"
+  },
+  "material": "scales",
+  "effects": {
+    "anguilla_bite": [
+      {
+        "shape": "sparks",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 5,
+        "size": 0.08,
+        "speed": 0.5,
+        "spread": 1.0,
+        "lifetime": 6,
+        "forward": 1.0,
+        "up": 1.1
+      },
+      {
+        "shape": "pulse",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.6,
+        "speed": 0.0,
+        "spread": 0.6,
+        "lifetime": 5,
+        "forward": 1.0,
+        "up": 1.1
+      }
+    ],
+    "anguilla_whip": [
+      {
+        "shape": "band",
+        "color": "secondary",
+        "pattern": "arc",
+        "count": 1,
+        "size": 0.8,
+        "speed": 0.0,
+        "spread": 3.0,
+        "lifetime": 10,
+        "forward": -1.0,
+        "up": 0.6,
+        "edge": "accent"
+      }
+    ],
+    "anguilla_discharge": [
+      {
+        "shape": "wave",
+        "color": "accent",
+        "pattern": "ring",
+        "count": 1,
+        "size": 0.4,
+        "speed": 0.0,
+        "spread": 5.5,
+        "lifetime": 16,
+        "forward": 0,
+        "up": 0.05
+      },
+      {
+        "shape": "bolt",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 8,
+        "size": 0.08,
+        "speed": 0.0,
+        "spread": 3.0,
+        "lifetime": 8,
+        "forward": 0,
+        "up": 1.0
+      },
+      {
+        "shape": "pulse",
+        "color": "core",
+        "pattern": "burst",
+        "count": 1,
+        "size": 1.4,
+        "speed": 0.0,
+        "spread": 1.4,
+        "lifetime": 6,
+        "forward": 0,
+        "up": 1.6
+      }
+    ],
+    "anguilla_dive": [
+      {
+        "shape": "wave",
+        "color": "accent",
+        "pattern": "ring",
+        "count": 1,
+        "size": 0.4,
+        "speed": 0.0,
+        "spread": 3.5,
+        "lifetime": 14,
+        "forward": 1.0,
+        "up": 0.05
+      },
+      {
+        "shape": "crack",
+        "color": "secondary",
+        "pattern": "line",
+        "count": 5,
+        "size": 0.3,
+        "speed": 0.0,
+        "spread": 3.0,
+        "lifetime": 36,
+        "forward": 1.0,
+        "up": 0.02,
+        "edge": "accent"
+      },
+      {
+        "shape": "smoke",
+        "color": "primary",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.5,
+        "speed": 0.05,
+        "spread": 1.4,
+        "lifetime": 24,
+        "forward": 1.0,
+        "up": 0.2
+      }
+    ]
+  }
+}

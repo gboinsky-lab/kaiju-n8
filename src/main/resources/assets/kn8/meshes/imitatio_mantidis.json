@@ -1,0 +1,17 @@
+{
+  "bones": {
+    "body": "kn8:meshes/imitatio_mantidis/body.obj",
+    "head": "kn8:meshes/imitatio_mantidis/head.obj",
+    "jaw": "kn8:meshes/imitatio_mantidis/jaw.obj",
+    "arm_left": "kn8:meshes/imitatio_mantidis/arm_left.obj",
+    "arm_right": "kn8:meshes/imitatio_mantidis/arm_right.obj",
+    "forearm_left": "kn8:meshes/imitatio_mantidis/forearm_left.obj",
+    "forearm_right": "kn8:meshes/imitatio_mantidis/forearm_right.obj",
+    "leg_left": "kn8:meshes/imitatio_mantidis/leg_left.obj",
+    "leg_right": "kn8:meshes/imitatio_mantidis/leg_right.obj",
+    "tail_1": "kn8:meshes/imitatio_mantidis/tail_1.obj",
+    "tail_2": "kn8:meshes/imitatio_mantidis/tail_2.obj",
+    "tail_3": "kn8:meshes/imitatio_mantidis/tail_3.obj",
+    "tail_4": "kn8:meshes/imitatio_mantidis/tail_4.obj"
+  }
+}
