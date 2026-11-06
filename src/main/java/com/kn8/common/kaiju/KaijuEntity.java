@@ -427,7 +427,42 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
     @Override
     protected float getDamageAfterArmorAbsorb(DamageSource source, float amount) {
         // Aplicado aqui, nao no actuallyHurt: no NeoForge ele usa o conteiner de dano (bug da pele endurecida, 0.7-E).
-        return super.getDamageAfterArmorAbsorb(source, amount) * vulnerability();
+        return super.getDamageAfterArmorAbsorb(source, amount) * vulnerability() * frontGuard(source);
+    }
+
+    /** Etapa 5: fim do ultimo ataque (aparo frontal fica aberto um tempo depois de cada ataque). */
+    private long lastAttackEnd = Long.MIN_VALUE / 2;
+    /** Etapa 5: ultimo efeito de aparo (um a cada 10 ticks, sem encher a tela nas rajadas). */
+    private long lastGuardEffect;
+
+    /**
+     * Etapa 5 (Imitatio Mantidis): aparo frontal parcial do {@code kaiju_ai} ({@link KaijuAiDef.Guard}). Devolve o
+     * multiplicador do dano: {@code factor} com o golpe vindo da frente e a guarda fechada, senao 1.
+     */
+    public float frontGuard(DamageSource source) {
+        KaijuAiDef.Guard guard = aiDef().guard();
+        Vec3 from = source.getSourcePosition();
+        long now = level().getGameTime();
+        if (!guard.active() || from == null || isUsingAbility() || isOpen()
+                || now - lastAttackEnd < guard.openAfterAttackTicks()
+                || (!guard.blocksHeavy() && CombatService.isHeavyHit(source))) {
+            return 1.0F;
+        }
+        Vec3 toAttacker = new Vec3(from.x - getX(), 0.0, from.z - getZ());
+        if (toAttacker.lengthSqr() < 1.0E-4) {
+            return 1.0F;
+        }
+        Vec3 facing = Vec3.directionFromRotation(0.0F, yBodyRot);
+        double cos = facing.dot(toAttacker.normalize());
+        if (cos < Math.cos(Math.toRadians(guard.frontArcDegrees() / 2.0))) {
+            return 1.0F;
+        }
+        if (level() instanceof ServerLevel server && now - lastGuardEffect >= 10) {
+            lastGuardEffect = now;
+            VfxService.play(server, VfxService.PARRY, position().add(toAttacker.normalize().scale(getBbWidth() * 0.5))
+                    .add(0.0, getBbHeight() * 0.5, 0.0), toAttacker, 1.0F, 0.0F, this);
+        }
+        return guard.factor();
     }
 
     /** GDD secao 12: golpe pesado expoe o nucleo por alguns ticks (multiplicador extra do config). */
@@ -861,6 +896,7 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
     }
 
     private void endAbility() {
+        lastAttackEnd = level().getGameTime();
         if (leapAbility == null && multiHitsLeft <= 0) {
             finishUse();
         }

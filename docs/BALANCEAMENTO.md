@@ -1429,7 +1429,7 @@ Números do "Balanceamento Completo dos Kaijus" v1.0 do Miguel (seção da 2ª t
 |---|---|---|---|---|
 | Polyonax | 520 / 18 / 14 / 0,30 | T5 | Golpe 1,4 (50), Investida 1,8 (140), Pisão 2,1 (área 4,5; 160), Varredura 1,5 (pesada, arco 200; 100) | `kaiju_horde` (40%) |
 | Lacerta Fratris | 310 / 12 / 12 / 0,39 | T4 | Mordida 1,2 (40), Cauda 1,3 (70), Salto lateral 0,8 (120), Combo 3 x 0,55 (90); flanqueia | `tachikawa_city_raid` (40%) |
-| Imitatio Mantidis (preto e verde) | 390 / 15 / 13 / 0,44 | T4+ | Lâminas 2 x 0,9 (60), Salto 1,4 (140), Corte cruzado 1,8 (pesado; 110); aparo frontal parcial [DECIDIR] (por ora armadura 13) | preto `honju_rampage` (35%), verde `diclonius_attack` (35%) |
+| Imitatio Mantidis (preto e verde) | 390 / 15 / 13 / 0,44 | T4+ | Lâminas 2 x 0,9 (60), Salto 1,4 (140), Corte cruzado 1,8 (pesado; 110); aparo frontal parcial: de frente (120°) leva 50%; costas, atacando, 30 ticks depois do ataque e golpe pesado passam (`guard` no `kaiju_ai`) | preto `honju_rampage` (35%), verde `diclonius_attack` (35%) |
 | Maxilla Cornuta | 650 / 21 / 15 / 0,27 | T5 | Chifrada 1,8 (pesada; 60), Carga 2,3 (aviso na linha; 180), Pisão 2,0 (área 4,5; 160), Rugido 1,0 (área 8; 220) | `honju_assault` (40%) |
 | Anguilla Ambulans | 480 / 16 / 13 / 0,40 | T4+ | Mordida 1,4 (45), Chicote 1,6 (arco 200; 80), Descarga 1,8 com Lentidão II (área 6; 180), Mergulho 1,0 (salto; 160); anda na água sem custo | `ariake_assault` (35%) |
 

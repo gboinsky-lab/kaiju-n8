@@ -9,8 +9,8 @@ existem; animacoes do Philinosoma (bite, charge, punch, roar, slam, spine_shot, 
 
 - Polyonax (T5, quadrupede pesado): golpe 1,4x, investida 1,8x, pisao 2,1x, varredura 1,5x em area.
 - Lacerta Fratris (T4, predador movel): mordida 1,2x, cauda 1,3x, salto lateral, combo 3 x 0,55x.
-- Imitatio Mantidis (T4+, agil): laminas 2 x 0,9x, salto 1,4x, corte cruzado 1,8x; o aparo frontal parcial fica
-  [DECIDIR] (codigo novo), por ora armadura 13.
+- Imitatio Mantidis (T4+, agil): laminas 2 x 0,9x, salto 1,4x, corte cruzado 1,8x; aparo frontal parcial (bloco
+  `guard` do kaiju_ai: de frente leva 50%; costas, depois do ataque e golpe pesado passam).
 - Maxilla Cornuta (T5, bruiser): chifrada 1,8x, carga 2,3x (aviso na linha), pisao 2,0x, rugido 1,0x em area.
 - Anguilla Ambulans (T4+, mobilidade): mordida 1,4x, chicote 1,6x, descarga/onda 1,8x em area, mergulho (salto).
 
@@ -119,7 +119,9 @@ def mantidis(green):
     vfx = palette(*colors, "#D8D1A6", "#FFFBEA", "chitin", {
         f"{prefix}_blades": [L("band", "accent", "arc", 1, 0.5, 0.0, 2.2, 8, 1.0, 1.4, tilt=25, edge="core")],
         f"{prefix}_leap": stomp(), f"{prefix}_cross_cut": cut})
-    ai_data = ai("flanker", circle_chance=0.6, chase_speed=1.35)
+    # Aparo frontal parcial (documento): de frente leva metade; costas, atacando, guarda aberta e golpe pesado passam.
+    ai_data = ai("flanker", circle_chance=0.6, chase_speed=1.35,
+                 guard={"factor": 0.5, "front_arc_degrees": 120.0, "open_after_attack_ticks": 30})
     return moves, data, ai_data, vfx
 
 

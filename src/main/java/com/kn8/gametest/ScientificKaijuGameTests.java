@@ -13,13 +13,16 @@ import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.monster.Husk;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
 /**
  * Etapa 5 (modelos do Miguel de 2026-11-05): Polyonax, Lacerta Fratris, Imitatio Mantidis (preto e verde), Maxilla
  * Cornuta e Anguilla Ambulans com os numeros do Balanceamento Completo dos Kaijus, habilidades, perfil visual e lugar
- * numa invasao; nascem com a hitbox do registro.
+ * numa invasao; nascem com a hitbox do registro. A Imitatio Mantidis apara de frente (metade do dano), nao pelas
+ * costas.
  */
 @GameTestHolder(KN8Constants.MOD_ID)
 @PrefixGameTestTemplate(false)
@@ -60,6 +63,39 @@ public final class ScientificKaijuGameTests {
                         IDS.get(i) + " com a vida do documento: " + kaiju.getMaxHealth());
                 kaiju.discard();
             }
+            helper.succeed();
+        });
+    }
+
+    @GameTest(template = "empty_15x12x15", batch = "kn8_especies_aparo")
+    public static void mantisParriesFromTheFrontOnly(GameTestHelper helper) {
+        KaijuEntity mantis = helper.spawn(KN8Entities.IMITATIO_MANTIDIS.get(), new BlockPos(7, 1, 7));
+        mantis.setNoAi(true);
+        Husk front = helper.spawn(EntityType.HUSK, new BlockPos(7, 1, 2));
+        Husk back = helper.spawn(EntityType.HUSK, new BlockPos(7, 1, 12));
+        front.setNoAi(true);
+        back.setNoAi(true);
+        helper.runAfterDelay(2, () -> {
+            // Virada para o husk da frente (Z menor = norte, giro 180).
+            mantis.setYRot(180.0F);
+            mantis.setYBodyRot(180.0F);
+            mantis.yBodyRotO = 180.0F;
+            Vec3 facing = Vec3.directionFromRotation(0.0F, mantis.yBodyRot);
+            helper.assertTrue(facing.z < -0.9, "Imitatio virada para o norte: " + facing);
+            float before = mantis.getHealth();
+            mantis.invulnerableTime = 0;
+            mantis.hurt(helper.getLevel().damageSources().mobAttack(front), 40.0F);
+            float fromFront = before - mantis.getHealth();
+            float middle = mantis.getHealth();
+            mantis.invulnerableTime = 0;
+            mantis.hurt(helper.getLevel().damageSources().mobAttack(back), 40.0F);
+            float fromBack = middle - mantis.getHealth();
+            helper.assertTrue(fromFront > 0.0F && fromBack > 0.0F, "Os dois ferem: " + fromFront + " " + fromBack);
+            helper.assertTrue(Math.abs(fromFront - fromBack * 0.5F) < 0.5F,
+                    "De frente leva metade: frente " + fromFront + ", costas " + fromBack);
+            mantis.discard();
+            front.discard();
+            back.discard();
             helper.succeed();
         });
     }

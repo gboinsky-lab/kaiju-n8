@@ -47,6 +47,11 @@ public record KaijuAiDef(float circleChance, float circleDistance, int circleTic
         return ecology.terrain();
     }
 
+    /** Etapa 5: aparo frontal parcial. */
+    public Guard guard() {
+        return ecology.guard();
+    }
+
     /** PM-4: papel em grupo. */
     public Group group() {
         return ecology.group();
@@ -56,13 +61,14 @@ public record KaijuAiDef(float circleChance, float circleDistance, int circleTic
      * PM-4: blocos {@code terrain} e {@code group} do mesmo JSON (o codec do perfil ja tinha 15 campos: os dois entram
      * por um MapCodec achatado, sem mudar o formato do arquivo).
      */
-    public record Ecology(Terrain terrain, Group group) {
+    public record Ecology(Terrain terrain, Group group, Guard guard) {
 
-        public static final Ecology NONE = new Ecology(Terrain.DEFAULT, Group.DEFAULT);
+        public static final Ecology NONE = new Ecology(Terrain.DEFAULT, Group.DEFAULT, Guard.NONE);
 
         public static final MapCodec<Ecology> MAP_CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
                 Terrain.CODEC.optionalFieldOf("terrain", Terrain.DEFAULT).forGetter(Ecology::terrain),
-                Group.CODEC.optionalFieldOf("group", Group.DEFAULT).forGetter(Ecology::group)
+                Group.CODEC.optionalFieldOf("group", Group.DEFAULT).forGetter(Ecology::group),
+                Guard.CODEC.optionalFieldOf("guard", Guard.NONE).forGetter(Ecology::guard)
         ).apply(i, Ecology::new));
     }
 
@@ -118,6 +124,30 @@ public record KaijuAiDef(float circleChance, float circleDistance, int circleTic
 
         public boolean flanker() {
             return "flanker".equals(role);
+        }
+    }
+
+    /**
+     * Etapa 5 (Imitatio Mantidis, "aparo parcial frontal; vulneravel pelas costas e apos combo" no Balanceamento
+     * Completo dos Kaijus do Miguel): golpe que vem de dentro do arco da frente ({@code front_arc_degrees}) leva so
+     * {@code factor} do dano. Nao apara pelas costas, atacando, com a guarda aberta (atordoado, janela do golpe
+     * pesado, nucleo exposto), ate {@code open_after_attack_ticks} depois de cada ataque, nem golpe pesado (salvo
+     * {@code blocks_heavy}). {@code factor} 1 = sem aparo.
+     */
+    public record Guard(float factor, float frontArcDegrees, int openAfterAttackTicks, boolean blocksHeavy) {
+
+        public static final Guard NONE = new Guard(1.0F, 120.0F, 30, false);
+
+        public static final Codec<Guard> CODEC = RecordCodecBuilder.create(i -> i.group(
+                Codec.floatRange(0.0F, 1.0F).optionalFieldOf("factor", 1.0F).forGetter(Guard::factor),
+                Codec.floatRange(10.0F, 360.0F).optionalFieldOf("front_arc_degrees", 120.0F)
+                        .forGetter(Guard::frontArcDegrees),
+                DefCodecs.TICKS.optionalFieldOf("open_after_attack_ticks", 30).forGetter(Guard::openAfterAttackTicks),
+                Codec.BOOL.optionalFieldOf("blocks_heavy", false).forGetter(Guard::blocksHeavy)
+        ).apply(i, Guard::new));
+
+        public boolean active() {
+            return factor < 1.0F;
         }
     }
 
