@@ -1443,6 +1443,10 @@ Alturas: Kafka 1,81, Mina 1,69, Reno e No. 6 1,74, Kikoru e No. 4 1,57, Hoshina 
 | Veneno do Haruichi | 6/s por 80 ticks (Tiro de Precisão, Salva de Flechas); arco do jogador e tiro comum 3/s por 80 ticks; ignora a armadura | `on_hit` do `haruichi.json` e do `weapon/haruichi_bow.json` |
 | Escudo da Tae | Granada de Calor: Absorção de 8% da vida máxima e Regeneração I a 10 blocos por 160 ticks | `rally.heat_grenade` do `tae.json` |
 
+### Etapa 7-D: invasões e matriz com os novos (2026-11-06)
+
+Relatório completo em `docs/ETAPA7D_MATRIZ.md` (41 confrontos x 3 duelos, servidor dedicado). Nenhum número de personagem ou kaiju mudou (respostas 1 a 3 do Miguel). Mudanças: **No. 14** saiu do ataque à cidade de Tachikawa (nível 3, 30%) e entrou no Raide de Tachikawa (nível 6, 25%); **papel de apoio** dos kaiju só com tiro que a vida atual libera (a Abissal fugia do alvo com a vida cheia). Resumo: especiais novos vencem o Primigenius Honju (35/36); contra o No. 13 só Soichiro, Jura e Miguel vencem; Hoshina vence os seis kaiju de nome científico (21/21); Hoshina No. 10 vence No. 2, No. 6, No. 12 e as duas formas do No. 15, fica dividido com No. 1, No. 11 e No. 14 e perde para as três fusões.
+
 ### Etapa 7-C: chefes, No. 15, No. 11, No. 1 e Myxogasterocarp (2026-11-06) [SUPOSIÇÃO todos os números]
 
 | O quê | Números | Onde |

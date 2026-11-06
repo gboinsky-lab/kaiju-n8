@@ -2042,3 +2042,14 @@ Imagem: `docs/img/etapa7c_chefes_controle.jpg`.
 | 146.4 | Bater no No. 1 sempre do mesmo jeito (só espada) | Ele esquiva a cada ~3 s; trocar de golpe (rifle, golpe pesado) acerta e o deixa mais vulnerável |
 | 146.5 | Baixar o Myxogasterocarp a 66% | Ele para com um disco vermelho no chão e solta 2 Phaneroplasmodium; acertar o núcleo nesse tempo interrompe |
 | 146.6 | Segundo cliente olhando | Os mesmos efeitos |
+
+## 147. Etapa 7-D: invasões e matriz com os novos
+
+Imagem: `docs/img/etapa7d_abissal_corrigida.jpg`. Relatório: `docs/ETAPA7D_MATRIZ.md`.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 147.1 | `/kn8 invasion start tachikawa_city_raid` (várias vezes) | Nunca aparece o No. 14 |
+| 147.2 | `/kn8 invasion start tachikawa_raid` (várias vezes) | Às vezes (25%) o No. 14 na última onda, com o aviso de ameaça grande |
+| 147.3 | `/summon kn8:kaiju_no9_no11` perto de um especial de perto (Hoshina No. 10) | A Abissal luta colada; só depois de baixar de 65% passa a manter distância e atirar |
+| 147.4 | Comparar com o relatório | Os resultados de cada personagem novo contra o Honju e o No. 13 parecem certos para o papel deles? |

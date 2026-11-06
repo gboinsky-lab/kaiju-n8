@@ -49,7 +49,8 @@ para fora da area medida) ou tempo, **D** = personagem morto. Vida que sobrou em
 | hoshina_no10 | kaiju_no1 | 2 / 0 / 1 | D 34s A 0% B 43%, V 45s A 28% B 0%, V 43s A 4% B 0% |
 | hoshina_no10 | kaiju_no2 | 3 / 0 / 0 | V 43s A 84% B 0%, V 40s A 86% B 0%, V 41s A 66% B 0% |
 | hoshina_no10 | kaiju_no6 | 3 / 0 / 0 | V 50s A 68% B 0%, V 48s A 82% B 0%, V 54s A 89% B 0% |
-| hoshina_no10 | kaiju_no9_no11 | 1 / 1 / 1 | E 20s A 90% B 0%, D 37s A 0% B 93%, V 19s A 89% B 0% |
+| hoshina_no10 | kaiju_no9_no11 (antes da correcao) | 1 / 1 / 1 | E 20s A 90% B 0%, D 37s A 0% B 93%, V 19s A 89% B 0% |
+| hoshina_no10 | kaiju_no9_no11 (corrigida) | 0 / 1 / 2 | E 108s A 19% B 0% (retirada), D 131s A 0% B 50%, D 119s A 0% B 50% |
 | hoshina_no10 | kaiju_no9_no15 | 0 / 0 / 3 | D 98s A 0% B 46%, D 73s A 0% B 53%, D 81s A 0% B 47% |
 | hoshina_no10 | kaiju_no9_no14 | 0 / 0 / 3 | D 200s A 0% B 24%, D 291s A 0% B 26%, D 242s A 0% B 29% |
 
@@ -65,10 +66,12 @@ para fora da area medida) ou tempo, **D** = personagem morto. Vida que sobrou em
   divisao em 22-28 s (os filhotes nascem e morrem). Dentro do papel (vice-capitao acima de Honju comum).
 - **Hoshina No. 10 x numerados do anime (T8):** vence o No. 2 (25 m), o No. 6 (22 m), o No. 12 e as duas formas do
   No. 15 com 60-90% da vida; fica dividido com o No. 1 (2/3), o No. 11 (1/3) e o No. 14 (1 V, 1 E por teleporte, 1 D);
-  perde para as fusoes Neural (0/3, ela com ~50%) e Couracado (0/3 em 200-290 s, ele com ~27%). A Abissal deu 1 V, 1 E
-  e 1 D, mas o V e o E sairam em ~20 s com o Hoshina a 90% e a fusao tem 7.200 de vida: leitura suspeita (o mais
-  provavel e a fusao sair da area medida, com uma carcaca de outro duelo na area), so o D (fusao com 93%) e confiavel;
-  [A CONFERIR] em jogo.
+  perde para as fusoes Neural (0/3, ela com ~50%) e Couracado (0/3 em 200-290 s, ele com ~27%). A Abissal deu
+  1 V, 1 E e 1 D na primeira rodada, mas V e E em ~20 s com o Hoshina a 90% nao batiam com 7.200 de vida: conferido
+  em jogo com os 2 clientes, ela **fugia do Hoshina** (papel de apoio de grupo, mas os tiros dela so saem abaixo de
+  65% da vida: recuava sem ter o que atirar ate perder o alvo, a ~140 blocos, com 97%). **Corrigido**
+  (`KaijuEntity.hasUsableRangedAttack`: apoio so com tiro que a vida atual libera); remedido: **0 / 1 / 2** em 108-131 s
+  (o E e a retirada do No. 9 a 15%, com o Hoshina a 97 de vida; nas derrotas ela fica com 50%).
   Os gigantes No. 2 e No. 6 rendem menos que o tier (o alvo grande e facil de acertar e eles erram o humano no chao);
   o No. 11 (2.500 de vida) e o mais duro dos numerados simples. Pela resposta 1 ("numerados ficam como estao"), nada
   mudou: [DECIDIR] se o No. 2 e o No. 6 devem ganhar mais dano/alcance contra alvo pequeno.
