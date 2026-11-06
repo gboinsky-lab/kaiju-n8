@@ -1,8 +1,12 @@
 // src/main/java/com/kn8/common/numbered/KaijuNo10Entity.java
 package com.kn8.common.numbered;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.kn8.common.kaiju.KaijuEntity;
 
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
 
@@ -18,6 +22,8 @@ public class KaijuNo10Entity extends KaijuEntity {
     int combatTicks;
     int idleTicks;
     boolean transformed;
+    /** NUMERADOS-C: marcas da adaptacao por tipo de golpe (No. 12), como as do No. 9. */
+    final Map<String, long[]> adaptation = new HashMap<>();
 
     public KaijuNo10Entity(EntityType<? extends KaijuEntity> type, Level level) {
         super(type, level);
@@ -33,5 +39,12 @@ public class KaijuNo10Entity extends KaijuEntity {
 
     public int combatTicks() {
         return combatTicks;
+    }
+
+    /** NUMERADOS-C: adaptacao do numbered/<id>.json depois da armadura (como no No. 9; sem o bloco, nada muda). */
+    @Override
+    protected float getDamageAfterArmorAbsorb(DamageSource source, float amount) {
+        float afterArmor = super.getDamageAfterArmorAbsorb(source, amount);
+        return level().isClientSide() ? afterArmor : No9Service.adapt(this, adaptation, source, afterArmor);
     }
 }

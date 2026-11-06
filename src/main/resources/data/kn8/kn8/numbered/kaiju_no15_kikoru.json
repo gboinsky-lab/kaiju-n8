@@ -1,0 +1,12 @@
+{
+  "command_radius": 0.0,
+  "flee_health": 0.0,
+  "transform": {
+    "into": "kn8:kaiju_no15",
+    "after_combat_ticks": 72000,
+    "health_below": 0.5,
+    "health_fraction": 0.5,
+    "destruction_radius": 0.0,
+    "message": "kn8.no15.true_form"
+  }
+}

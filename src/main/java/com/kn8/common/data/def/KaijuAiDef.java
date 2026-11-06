@@ -83,6 +83,10 @@ public record KaijuAiDef(float circleChance, float circleDistance, int circleTic
         return ecology.charges();
     }
 
+    public Water water() {
+        return ecology.water();
+    }
+
     /** PM-4: papel em grupo. */
     public Group group() {
         return ecology.group();
@@ -93,10 +97,10 @@ public record KaijuAiDef(float circleChance, float circleDistance, int circleTic
      * por um MapCodec achatado, sem mudar o formato do arquivo).
      */
     public record Ecology(Terrain terrain, Group group, Guard guard, Shield shield, ControlResist controlResist,
-            Illusion illusion, Foresight foresight, Split split, Charges charges) {
+            Illusion illusion, Foresight foresight, Split split, Charges charges, Water water) {
 
         public static final Ecology NONE = new Ecology(Terrain.DEFAULT, Group.DEFAULT, Guard.NONE, Shield.NONE,
-                ControlResist.NONE, Illusion.NONE, Foresight.NONE, Split.NONE, Charges.NONE);
+                ControlResist.NONE, Illusion.NONE, Foresight.NONE, Split.NONE, Charges.NONE, Water.NONE);
 
         public static final MapCodec<Ecology> MAP_CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
                 Terrain.CODEC.optionalFieldOf("terrain", Terrain.DEFAULT).forGetter(Ecology::terrain),
@@ -108,7 +112,8 @@ public record KaijuAiDef(float circleChance, float circleDistance, int circleTic
                 Illusion.CODEC.optionalFieldOf("illusion", Illusion.NONE).forGetter(Ecology::illusion),
                 Foresight.CODEC.optionalFieldOf("foresight", Foresight.NONE).forGetter(Ecology::foresight),
                 Split.CODEC.optionalFieldOf("split", Split.NONE).forGetter(Ecology::split),
-                Charges.CODEC.optionalFieldOf("charges", Charges.NONE).forGetter(Ecology::charges)
+                Charges.CODEC.optionalFieldOf("charges", Charges.NONE).forGetter(Ecology::charges),
+                Water.CODEC.optionalFieldOf("water", Water.NONE).forGetter(Ecology::water)
         ).apply(i, Ecology::new));
     }
 
@@ -173,6 +178,35 @@ public record KaijuAiDef(float circleChance, float circleDistance, int circleTic
                 Codec.floatRange(0.0F, 2.0F).optionalFieldOf("feint_bonus", 0.25F).forGetter(Foresight::feintBonus),
                 Codec.intRange(1, 600).optionalFieldOf("feint_ticks", 40).forGetter(Foresight::feintTicks)
         ).apply(i, Foresight::new));
+    }
+
+    /**
+     * NUMERADOS-C (No. 11, hidrocinese que depende de agua [SUPOSICAO]): com agua perto (dentro dela, na chuva ou
+     * bloco de agua ate {@code radius} blocos, conferido a cada segundo) os golpes saem x {@code wet_damage} e as
+     * recargas x {@code wet_cooldown}; seco, os golpes saem x {@code dry_damage}. {@code radius} 0 = sem o bloco.
+     */
+    public record Water(float radius, float wetDamage, float wetCooldown, float dryDamage) {
+
+        public static final Water NONE = new Water(0.0F, 1.0F, 1.0F, 1.0F);
+
+        public static final Codec<Water> CODEC = RecordCodecBuilder.create(i -> i.group(
+                Codec.floatRange(0.0F, 16.0F).optionalFieldOf("radius", 0.0F).forGetter(Water::radius),
+                Codec.floatRange(0.1F, 5.0F).optionalFieldOf("wet_damage", 1.0F).forGetter(Water::wetDamage),
+                Codec.floatRange(0.1F, 5.0F).optionalFieldOf("wet_cooldown", 1.0F).forGetter(Water::wetCooldown),
+                Codec.floatRange(0.1F, 5.0F).optionalFieldOf("dry_damage", 1.0F).forGetter(Water::dryDamage)
+        ).apply(i, Water::new));
+
+        public boolean active() {
+            return radius > 0.0F;
+        }
+
+        public float damage(boolean wet) {
+            return wet ? wetDamage : dryDamage;
+        }
+
+        public float cooldown(boolean wet) {
+            return wet ? wetCooldown : 1.0F;
+        }
     }
 
     /**

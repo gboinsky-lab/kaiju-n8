@@ -562,6 +562,42 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
         return false;
     }
 
+    /** NUMERADOS-C: agua perto (bloco water do kaiju_ai), conferida uma vez por segundo. */
+    private boolean wet;
+    private long wetCheckedAt = Long.MIN_VALUE / 2;
+
+    /** NUMERADOS-C (No. 11): ha agua perto? Dentro dela, na chuva ou bloco de agua no raio do kaiju_ai. */
+    public boolean isNearWater() {
+        KaijuAiDef.Water water = aiDef().water();
+        if (!water.active()) {
+            return false;
+        }
+        long now = level().getGameTime();
+        if (now - wetCheckedAt < 20) {
+            return wet;
+        }
+        wetCheckedAt = now;
+        wet = isInWaterOrRain() || waterAround(water.radius());
+        return wet;
+    }
+
+    private boolean waterAround(float radius) {
+        int r = Mth.ceil(radius);
+        BlockPos feet = blockPosition();
+        for (BlockPos pos : BlockPos.betweenClosed(feet.offset(-r, -2, -r), feet.offset(r, 1, r))) {
+            if (level().getFluidState(pos).is(net.minecraft.tags.FluidTags.WATER)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /** NUMERADOS-C: multiplicador dos golpes pela agua (1 sem o bloco water). */
+    public float waterDamageFactor() {
+        KaijuAiDef.Water water = aiDef().water();
+        return water.active() ? water.damage(isNearWater()) : 1.0F;
+    }
+
     /** Fusoes: cargas da passiva em cada alvo (contagem, ultimo tick) e no proprio kaiju. */
     private final java.util.Map<java.util.UUID, long[]> targetCharges = new java.util.HashMap<>();
     private int selfCharges;
@@ -1170,6 +1206,10 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
                 .map(KaijuDef.Rage::cooldownMultiplier).orElse(1.0F) : 1.0F);
         // PM-5: a fase do chefe muda o ritmo (cooldown_multiplier da fase atual do boss/*.json).
         cooldown *= BossService.cooldownMultiplier(this);
+        // NUMERADOS-C: com agua perto o No. 11 recarrega mais rapido.
+        if (aiDef().water().active()) {
+            cooldown *= aiDef().water().cooldown(isNearWater());
+        }
         abilityReadyAt.put(id, now + duration + Math.round(cooldown));
         triggerAnim("action", ability.animation());
         // IA-6: golpe pesado avisa com som e marca a area ameacada durante o preparo (KaijuTelegraph). SONS: o
@@ -1507,7 +1547,7 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
             return false;
         }
         float damage = (float) (getAttributeValue(Attributes.ATTACK_DAMAGE) * ability.damageMultiplier())
-                * consumeEmpower();
+                * consumeEmpower() * waterDamageFactor();
         dealingHeavyHit = ability.heavy();
         boolean hurt;
         try {

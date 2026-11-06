@@ -332,6 +332,11 @@ public final class No9Service {
      * {@code decay_ticks} sem levar esse tipo. Faiscas cinzentas avisam que ele esta se adaptando.
      */
     static float adapt(KaijuNo9Entity no9, DamageSource source, float amount) {
+        return adapt(no9, no9.adaptation, source, amount);
+    }
+
+    /** NUMERADOS-C: a mesma analise para qualquer numerado com {@code adaptation} (No. 12), memoria dele. */
+    static float adapt(KaijuEntity no9, Map<String, long[]> memory, DamageSource source, float amount) {
         Optional<NumberedDef.Adaptation> found = def(no9).flatMap(NumberedDef::adaptation);
         if (found.isEmpty() || amount <= 0 || !(no9.level() instanceof ServerLevel level)) {
             return amount;
@@ -341,8 +346,8 @@ public final class No9Service {
         String kind = attackKind(source);
         // IA-6 (Parte 12: memoria limitada, com expiracao): tipos ja esquecidos saem e, no limite do config, o tipo
         // mais antigo e esquecido; a reducao continua com o teto do JSON (nunca imunidade).
-        forget(no9.adaptation, kind, now, adaptation.decayTicks(), ServerConfig.AI_ADAPTATION_MEMORY.get());
-        long[] marks = no9.adaptation.computeIfAbsent(kind, key -> new long[] {0, now});
+        forget(memory, kind, now, adaptation.decayTicks(), ServerConfig.AI_ADAPTATION_MEMORY.get());
+        long[] marks = memory.computeIfAbsent(kind, key -> new long[] {0, now});
         marks[0] = Math.max(0, marks[0] - (now - marks[1]) / Math.max(1, adaptation.decayTicks()));
         marks[0]++;
         marks[1] = now;

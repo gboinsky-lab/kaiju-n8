@@ -145,13 +145,15 @@ public final class KN8Entities {
      */
     public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> KAIJU_NO1 = kaiju(
             "kaiju_no1", 0.8F, 2.0F);
-    public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> KAIJU_NO11 = kaiju(
+    // NUMERADOS-C: No. 11, No. 12 e No. 15 na classe do No. 10 (regeneracao, adaptacao e troca de forma pelo
+    // numbered/<id>.json, quando houver arquivo).
+    public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> KAIJU_NO11 = numbered(
             "kaiju_no11", 0.8F, 2.0F);
-    public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> KAIJU_NO12 = kaiju(
+    public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> KAIJU_NO12 = numbered(
             "kaiju_no12", 0.8F, 2.0F);
-    public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> KAIJU_NO15 = kaiju(
+    public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> KAIJU_NO15 = numbered(
             "kaiju_no15", 0.8F, 2.0F);
-    public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> KAIJU_NO15_KIKORU = kaiju(
+    public static final DeferredHolder<EntityType<?>, EntityType<KaijuEntity>> KAIJU_NO15_KIKORU = numbered(
             "kaiju_no15_kikoru", 0.6F, 1.6F);
     /**
      * NUMERADOS-B (modelos do Miguel de 2026-11-05, sem rig): No. 2 (25 m) e No. 6 (22 m) nos ossos do Primigenius

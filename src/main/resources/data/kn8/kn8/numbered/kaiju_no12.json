@@ -1,0 +1,17 @@
+{
+  "command_radius": 0.0,
+  "flee_health": 0.0,
+  "regeneration": {
+    "below": 0.5,
+    "per_second": 0.012,
+    "fast_below": 0.2,
+    "fast_per_second": 0.025,
+    "delay_after_hit_ticks": 20
+  },
+  "adaptation": {
+    "per_hit": 0.03,
+    "max_reduction": 0.3,
+    "decay_ticks": 120,
+    "ranged_factor": 1.0
+  }
+}

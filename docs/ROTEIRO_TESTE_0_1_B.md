@@ -2099,3 +2099,12 @@ Imagem: `docs/img/r1_invasao_save_antigo.jpg`.
 | 152.4 | Ser atingido pelos tentáculos do Neural | O jogador é puxado na direção dele |
 | 152.5 | Ficar no Domínio Cerebral ou na Distorção Neural (abaixo de 70%) | Náusea e escuridão no jogador; soldados largam o alvo e ficam fracos |
 | 152.6 | `/summon kn8:kaiju_no9_no14`, bater de frente com e sem `/data merge` deixando ~50% da vida | De frente ele leva um pouco mais abaixo de 65% (couraça cede) |
+
+## 153. NUMERADOS-C: No. 12, No. 15 e No. 11
+
+| # | Passo | Esperado |
+|---|---|---|
+| 153.1 | `/summon kn8:kaiju_no12` e bater nele sempre com a mesma arma | Cada golpe tira um pouco menos (fumaça cinza no corpo); trocar de arma volta a tirar o normal |
+| 153.2 | Deixar o No. 12 abaixo de metade da vida e parar de bater | Ele se cura aos poucos (efeito de regeneração) |
+| 153.3 | `/summon kn8:kaiju_no15_kikoru` e bater até metade da vida | Mensagem "O disfarce caiu..." e a forma kaiju do No. 15 surge no lugar com metade da vida |
+| 153.4 | `/summon kn8:kaiju_no11` longe da água e depois na beira de um lago ou na chuva | Perto da água os golpes dele tiram mais e saem mais seguidos |

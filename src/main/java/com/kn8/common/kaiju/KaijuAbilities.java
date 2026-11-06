@@ -194,7 +194,7 @@ final class KaijuAbilities {
         Vec3 aim = target != null && target.isAlive()
                 ? target.getBoundingBox().getCenter().subtract(mouth) : kaiju.bodyForward();
         float damage = (float) (kaiju.getAttributeValue(Attributes.ATTACK_DAMAGE) * ability.damageMultiplier())
-                * kaiju.consumeEmpower();
+                * kaiju.consumeEmpower() * kaiju.waterDamageFactor();
         // Balanceamento v1.2 (Multi-Finger Gun/Cannon): com behavior.hits > 1 saem varios tiros juntos, abertos em
         // leque na horizontal por arc_degrees (360 = todos na mesma linha); cada tiro tem o dano inteiro.
         int shots = ability.behavior().hits();

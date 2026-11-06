@@ -1584,3 +1584,17 @@ O dossiê de fusões não ficou salvo; as passivas foram propostas pelo nome (Mi
 [SUPOSIÇÃO] todos os números. Hoshina No. 10 × Abissal 2/0/1 (3 duelos; 5 golpes de pressão), × Neural 0/0/2 (9
 golpes fortes, a Neural fica com ~49%), × Couraçado 0/0/2 (fica com ~42%). Na 7-D: 0/1/2, 0/0/3 e 0/0/3 (24-29%); a
 diferença do Couraçado vem também da MATRIZ-2 (o Hoshina não sai mais andando de todo golpe pesado).
+
+## Numerados do anime: o que faltou (NUMERADOS-C, 2026-11-06)
+
+Números em `tools/data/gen_numerados_c.py`. A precognição do No. 1 já tinha entrado na 7-C (`foresight`).
+
+| O quê | Valor | Onde |
+|---|---|---|
+| No. 12: regeneração | abaixo de 50%: 1,2% por s; abaixo de 20%: 2,5% por s; espera 1 s depois de cada golpe | `numbered/kaiju_no12.json` |
+| No. 12: adaptação | cada golpe do mesmo tipo tira 3% a menos, até 30% (some 1 marca a cada 6 s sem esse golpe) | idem |
+| No. 15: forma Kikoru (disfarce) | abaixo de 50% revela a forma kaiju, que nasce no lugar com metade da vida, com aviso no chat | `numbered/kaiju_no15_kikoru.json` |
+| No. 11: hidrocinese | com água a até 6 blocos (ou dentro dela, ou na chuva): golpes × 1,3 e recargas × 0,75; seco: golpes × 0,85 | `kaiju_ai/kaiju_no11.json` `water` |
+
+[SUPOSIÇÃO] todos os números. Hoshina No. 10 × No. 12: 3/0/0 em 46-54 s com 38-57% da vida (antes 39-40 s com
+59-77%); × No. 11 no seco: 1/0/2 (antes 1/0/2); Hoshina × forma Kikoru: o disfarce cai e o No. 15 aparece (log da IA).
