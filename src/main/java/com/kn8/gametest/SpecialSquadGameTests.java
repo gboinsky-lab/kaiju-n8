@@ -101,9 +101,13 @@ public final class SpecialSquadGameTests {
         HoshinaEntity kikoru = helper.spawn(KN8Entities.KIKORU_NO4.get(), new BlockPos(2, 1, 4));
         IronGolem golem = helper.spawn(EntityType.IRON_GOLEM, new BlockPos(6, 1, 4));
         golem.setNoAi(true);
+        // R-1 (falhou 1 vez em 6 rodadas): a altura de partida era lida com a Kikoru ainda no ar (y -58,1) e ela as
+        // vezes derrubava o golem antes de decolar (sem alvo, pousa). Golem imune (continua alvo) e a partida = chao.
+        golem.addEffect(new net.minecraft.world.effect.MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 1200, 4,
+                false, false));
         double[] start = new double[1];
         helper.runAfterDelay(SETTLE, () -> {
-            start[0] = kikoru.getY();
+            start[0] = golem.getY();
             kikoru.setTarget(golem);
         });
         helper.succeedWhen(() -> helper.assertTrue(kikoru.isNoGravity() && kikoru.getY() > start[0] + 1.0,

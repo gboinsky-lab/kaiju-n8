@@ -2053,3 +2053,13 @@ Imagem: `docs/img/etapa7d_abissal_corrigida.jpg`. Relatório: `docs/ETAPA7D_MATR
 | 147.2 | `/kn8 invasion start tachikawa_raid` (várias vezes) | Às vezes (25%) o No. 14 na última onda, com o aviso de ameaça grande |
 | 147.3 | `/summon kn8:kaiju_no9_no11` perto de um especial de perto (Hoshina No. 10) | A Abissal luta colada; só depois de baixar de 65% passa a manter distância e atirar |
 | 147.4 | Comparar com o relatório | Os resultados de cada personagem novo contra o Honju e o No. 13 parecem certos para o papel deles? |
+
+## 148. R-1: endurecimento
+
+Imagem: `docs/img/r1_invasao_save_antigo.jpg`.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 148.1 | Abrir um mundo salvo por uma versão anterior do mod | Abre sem erro; carreira, Release e esquadrão continuam |
+| 148.2 | Pôr um JSON quebrado num datapack do mundo (ex.: `data/kn8/kn8/weapon/teste.json` com `"base_damage": -5`) e `/reload` | O log diz o arquivo e o motivo; o servidor continua; o resto dos dados funciona |
+| 148.3 | `/kn8 invasion start kn8:tachikawa_raid ~ ~ ~` com 2 jogadores perto | As 3 ondas sem travar (no teste: 4-13 ms por tick, limite 50) |
