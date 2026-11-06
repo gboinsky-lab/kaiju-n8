@@ -45,7 +45,7 @@
   "max_release": 70,
   "kaiju_damage": 0.55,
   "aura": "kn8:rin_ember",
-  "weapon": "kn8:rifle",
+  "weapon": "kn8:rin_minigun",
   "height": 1.65,
   "techniques": {
     "focused_shot": {
@@ -145,6 +145,34 @@
       "priority": 5,
       "hit_interval": 4,
       "final_knockback": 0.8
+    },
+    "minigun_barrage": {
+      "type": "slash",
+      "hits": [
+        0.25,
+        0.25,
+        0.25,
+        0.25,
+        0.25,
+        0.25,
+        0.25,
+        0.25
+      ],
+      "hit_interval": 3,
+      "windup_ticks": 6,
+      "duration_ticks": 32,
+      "cooldown_ticks": 100,
+      "min_range": 3.0,
+      "max_range": 30.0,
+      "priority": 2,
+      "slash": {
+        "count": 1,
+        "speed": 4.0,
+        "range": 40.0,
+        "width": 0.25,
+        "color": 14256824,
+        "bullet": true
+      }
     }
   },
   "tactics": {
@@ -156,5 +184,19 @@
   },
   "burn": {
     "incinerating_barrage": 3
+  },
+  "on_hit": {
+    "minigun_barrage": {
+      "slow_ticks": 30,
+      "slow_level": 1
+    },
+    "thorough_sweep_fire": {
+      "slow_ticks": 30,
+      "slow_level": 1
+    },
+    "circular_barrage": {
+      "slow_ticks": 30,
+      "slow_level": 1
+    }
   }
 }

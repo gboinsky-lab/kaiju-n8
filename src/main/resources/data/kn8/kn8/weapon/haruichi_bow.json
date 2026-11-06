@@ -18,5 +18,9 @@
   },
   "sounds": {
     "shot": "kn8:technique.narumi_shot"
+  },
+  "on_hit": {
+    "poison_ticks": 80,
+    "poison_per_second": 3.0
   }
 }

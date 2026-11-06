@@ -30,7 +30,9 @@ public enum CombatResult {
     /** COMBATE-4: tecnica de ultimo recurso (Thunder Emperor) pedida com a vida acima do limite. */
     DENIED_NEEDS_LOW_HEALTH,
     /** COMBATE-5: tecnica do ultimo estagio (Juni-hitoe) sem o traje ou fora da forca total. */
-    DENIED_NEEDS_STAGE;
+    DENIED_NEEDS_STAGE,
+    /** Etapa 7-B: arma automatica (minigun da Rin) superaquecida, esfriando. */
+    OVERHEATED;
 
     public static CombatResult byIndex(int index) {
         CombatResult[] values = values();

@@ -2016,3 +2016,16 @@ Imagem: `docs/img/etapa7a_auras_alturas.jpg`.
 | 144.2 | Personagem parado sem inimigo e depois com um kaiju perto | Parado: aura fraca; em combate: mais raios; na técnica: pico |
 | 144.3 | Alturas lado a lado (Konomi, Kikoru, Rin, Mina, Hoshina, Reno, Narumi, Iharu, Kafka, Hakua) | Da menor (Konomi 1,49) à maior (Hakua 1,85) |
 | 144.4 | `/data get entity` na Camilly | Vida 500 |
+
+## 145. Etapa 7-B: minigun da Rin, marcas, veneno e escudo
+
+Imagem: `docs/img/etapa7b_minigun_marcas.jpg`.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 145.1 | Minigun da Rin na mão, segurar o clique esquerdo mirando um kaiju | Tiro contínuo (~10/s), o pente desce de 120, risco do tiro sem cobrir a tela; o kaiju fica com Lentidão |
+| 145.2 | Continuar segurando | Depois de ~5 s "Superaquecida: esfriando" e a arma para por 3 s; a stamina não cai |
+| 145.3 | `/summon` Rin, Tae, Ryo, Narumi e Haruichi perto de um Honju | Rin com a minigun; anel amarelo no chão do kaiju quando o Narumi ou o Ryo marcam; o Haruichi envenena (fumaça verde a cada segundo) |
+| 145.4 | Soldado perto da Tae quando ela usa a Granada de Calor | Corações dourados (Absorção) e Regeneração |
+| 145.5 | Konomi na base com um kaiju à vista | O kaiju fica marcado (+8%) a cada 8 s, sem ela atacar |
+| 145.6 | Segundo cliente olhando | Os mesmos tiros, anéis e escudos |

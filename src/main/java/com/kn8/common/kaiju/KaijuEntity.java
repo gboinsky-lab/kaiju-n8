@@ -424,10 +424,74 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
         return level().getGameTime() < vulnerableUntil ? vulnerableMultiplier : 1.0F;
     }
 
+    /** Etapa 7-B (marca do Ryo): bonus do proximo golpe de qualquer um e ate quando vale. */
+    private float nextHitBonus;
+    private long nextHitUntil = Long.MIN_VALUE;
+    /** Etapa 7-B (flechas do Haruichi): veneno ativo (dano por segundo, ate quando, de quem). */
+    private float poisonPerSecond;
+    private long poisonUntil = Long.MIN_VALUE;
+    private java.util.UUID poisonOwner;
+
+    /** Etapa 7-B: o proximo golpe no kaiju (de qualquer um) bate {@code 1 + bonus} vezes; o maior bonus vale. */
+    public void markNextHit(float bonus, int ticks) {
+        long now = level().getGameTime();
+        if (now >= nextHitUntil || bonus >= nextHitBonus) {
+            nextHitBonus = bonus;
+        }
+        nextHitUntil = Math.max(nextHitUntil, now + ticks);
+    }
+
+    public boolean hasNextHitMark() {
+        return level().getGameTime() < nextHitUntil && nextHitBonus > 0.0F;
+    }
+
+    /** Gasta a marca do proximo golpe (fator do dano). */
+    private float consumeNextHit() {
+        if (!hasNextHitMark()) {
+            return 1.0F;
+        }
+        float factor = 1.0F + nextHitBonus;
+        nextHitBonus = 0.0F;
+        nextHitUntil = Long.MIN_VALUE;
+        return factor;
+    }
+
+    /**
+     * Etapa 7-B: veneno de verdade (o Veneno vanilla tira 1 a cada 25 ticks e nao mata: num kaiju de centenas de
+     * vida nao faz nada). Por {@code ticks}, {@code perSecond} de dano uma vez por segundo, pela armadura; o maior
+     * veneno ativo vale e o tempo renova.
+     */
+    public void poison(float perSecond, int ticks, Entity owner) {
+        long now = level().getGameTime();
+        if (now >= poisonUntil || perSecond >= poisonPerSecond) {
+            poisonPerSecond = perSecond;
+            poisonOwner = owner == null ? null : owner.getUUID();
+        }
+        poisonUntil = Math.max(poisonUntil, now + ticks);
+    }
+
+    public boolean isPoisoned() {
+        return level().getGameTime() < poisonUntil && poisonPerSecond > 0.0F;
+    }
+
+    private void tickPoison() {
+        if (!isPoisoned() || tickCount % 20 != 0 || !isAlive()) {
+            return;
+        }
+        ServerLevel level = (ServerLevel) level();
+        Entity owner = poisonOwner == null ? null : level.getEntity(poisonOwner);
+        DamageSource source = owner == null ? damageSources().magic() : damageSources().indirectMagic(owner, owner);
+        invulnerableTime = 0;
+        hurt(source, poisonPerSecond);
+        com.kn8.common.vfx.VfxService.keyed(level, com.kn8.common.vfx.VfxService.SMOKE,
+                getBoundingBox().getCenter(), Vec3.ZERO, 0.6F, "#6FD04A", getBbHeight());
+    }
+
     @Override
     protected float getDamageAfterArmorAbsorb(DamageSource source, float amount) {
         // Aplicado aqui, nao no actuallyHurt: no NeoForge ele usa o conteiner de dano (bug da pele endurecida, 0.7-E).
-        return super.getDamageAfterArmorAbsorb(source, amount) * vulnerability() * frontGuard(source) * shieldFactor(source);
+        return super.getDamageAfterArmorAbsorb(source, amount) * vulnerability() * frontGuard(source) * shieldFactor(source)
+                * (source.getEntity() != null ? consumeNextHit() : 1.0F);
     }
 
     /** Etapa 5: fim do ultimo ataque (aparo frontal fica aberto um tempo depois de cada ataque). */
@@ -489,7 +553,7 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
         return shield.active() && shield.exposed() && !shield.upAt(tickCount);
     }
 
-    private float shieldFactor(DamageSource source) {
+    public float shieldFactor(DamageSource source) {
         if (!isShielded() || !inFrontArc(source, aiDef().shield().frontArcDegrees())) {
             return 1.0F;
         }
@@ -628,6 +692,7 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
             }
             tickWounds();
             tickShield();
+            tickPoison();
             tickHabits();
             tickGroup();
             RegionService.kaijuTick(this);

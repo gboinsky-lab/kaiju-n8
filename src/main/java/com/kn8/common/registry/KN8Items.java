@@ -53,6 +53,9 @@ public final class KN8Items {
     /** ESPECIAIS-2: espingarda do Iharu e do Kota, arco AW-0027 do Haruichi e Pile Driver PB-3115 do Aoi. */
     public static final DeferredItem<WeaponItem> SHOTGUN =
             ITEMS.register("shotgun", () -> new WeaponItem(new Item.Properties()));
+    /** Etapa 7-B: minigun da Rin Shinonome (modelo do Miguel), automatica, com superaquecimento e supressao. */
+    public static final DeferredItem<WeaponItem> RIN_MINIGUN =
+            ITEMS.register("rin_minigun", () -> new WeaponItem(new Item.Properties()));
     public static final DeferredItem<WeaponItem> HARUICHI_BOW =
             ITEMS.register("haruichi_bow", () -> new WeaponItem(new Item.Properties()));
     public static final DeferredItem<WeaponItem> AOI_PILE_BUNKER =
@@ -95,6 +98,9 @@ public final class KN8Items {
             ITEMS.register("rifle_magazine", () -> new MagazineItem(new Item.Properties()));
     public static final DeferredItem<MagazineItem> PISTOL_MAGAZINE =
             ITEMS.register("pistol_magazine", () -> new MagazineItem(new Item.Properties()));
+    /** Etapa 7-B: cinto de 120 balas de rifle da minigun da Rin. */
+    public static final DeferredItem<MagazineItem> MINIGUN_BELT =
+            ITEMS.register("minigun_belt", () -> new MagazineItem(new Item.Properties()));
     public static final DeferredItem<Item> RIFLE_AMMO = ITEMS.registerSimpleItem("rifle_ammo");
     public static final DeferredItem<Item> PISTOL_AMMO = ITEMS.registerSimpleItem("pistol_ammo");
 
@@ -246,6 +252,7 @@ public final class KN8Items {
                         output.accept(KATANA.get());
                         output.accept(JURA_FLAIL.get());
                         output.accept(SHOTGUN.get());
+                        output.accept(RIN_MINIGUN.get());
                         output.accept(HARUICHI_BOW.get());
                         output.accept(AOI_PILE_BUNKER.get());
                         output.accept(MIGUEL_SCYTHE.get());
@@ -258,6 +265,7 @@ public final class KN8Items {
                         output.accept(NUMBERS4_AXE.get());
                         output.accept(full(RIFLE_MAGAZINE.get(), parameters));
                         output.accept(full(PISTOL_MAGAZINE.get(), parameters));
+                        output.accept(full(MINIGUN_BELT.get(), parameters));
                         output.accept(RIFLE_AMMO.get());
                         output.accept(PISTOL_AMMO.get());
                         output.accept(KAIJU_TISSUE.get());

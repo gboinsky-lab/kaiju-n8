@@ -55,6 +55,28 @@ public class KonomiEntity extends HoshinaEntity {
         return InteractionResult.sidedSuccess(level().isClientSide());
     }
 
+    /** Etapa 7-B: chave da analise no bloco {@code on_hit} do perfil. */
+    public static final String ANALYSIS = "analysis";
+
+    /**
+     * Etapa 7-B (Miguel, 2026-11-06: "analise da Konomi"): pelo radar da base, todo kaiju ate o {@code follow_range}
+     * do perfil que ela ve fica marcado ({@code on_hit.analysis}: +8% de dano de todos por 8 s), renovado quando a
+     * marca acaba. Ela continua sem atacar.
+     */
+    @Override
+    protected void tickExtra(long now) {
+        com.kn8.common.data.def.HitEffect analysis = onHit(ANALYSIS);
+        if (analysis.isEmpty() || analysis.markTicks() <= 0 || now % analysis.markTicks() != 0) {
+            return;
+        }
+        float radius = profile().map(def -> def.followRange()).orElse(48.0F);
+        for (com.kn8.common.kaiju.KaijuEntity kaiju : level().getEntitiesOfClass(
+                com.kn8.common.kaiju.KaijuEntity.class, getBoundingBox().inflate(radius),
+                kaiju -> kaiju.isAlive() && hasLineOfSight(kaiju))) {
+            com.kn8.common.combat.HitEffects.apply(kaiju, analysis, this);
+        }
+    }
+
     @Override
     public boolean canJoinSquad() {
         return false;

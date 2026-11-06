@@ -3,6 +3,7 @@ package com.kn8.client.combat;
 
 import org.lwjgl.glfw.GLFW;
 
+import com.kn8.common.data.def.WeaponDef;
 import com.kn8.KN8Constants;
 import com.kn8.common.combat.CombatAction;
 import com.kn8.common.combat.CombatInputC2S;
@@ -106,6 +107,7 @@ public final class CombatInput {
             return;
         }
         if (event.isAttack()) {
+            lastAutoShot = clientTicks;
             send(CombatAction.LIGHT, true, 0, 0);
         } else if (event.isUseItem()) {
             // 0.1-B: segurar o clique direito carrega; o golpe sai ao soltar (CHARGE_RELEASE no tick do cliente).
@@ -120,6 +122,27 @@ public final class CombatInput {
         }
         event.setCanceled(true);
         event.setSwingHand(false);
+    }
+
+    /** Etapa 7-B: tick do cliente do ultimo tiro automatico pedido. */
+    private static long lastAutoShot;
+
+    /**
+     * Etapa 7-B (minigun da Rin): arma {@code automatic} atira enquanto o botao de ataque esta segurado, um pedido a
+     * cada acao {@code light} (o vanilla so manda o clique). O servidor confere pente, calor e o tempo da acao.
+     */
+    private static void autoFire(Minecraft minecraft, LocalPlayer player) {
+        if (minecraft.screen != null || !minecraft.options.keyAttack.isDown()) {
+            return;
+        }
+        CombatService.heldWeapon(player).filter(weapon -> weapon.automatic().isPresent()).ifPresent(weapon -> {
+            WeaponDef.Action light = weapon.actions().get("light");
+            int interval = light == null ? 4 : Math.max(1, light.durationTicks());
+            if (clientTicks - lastAutoShot >= interval) {
+                lastAutoShot = clientTicks;
+                send(CombatAction.LIGHT, true, 0, 0);
+            }
+        });
     }
 
     /** Blocos do kn8 que se usam com o clique direito mesmo de arma na mao. */
@@ -161,6 +184,7 @@ public final class CombatInput {
                 send(CombatAction.NEXT_TECHNIQUE, true, player.isShiftKeyDown() ? -1 : 1, 0);
             }
         }
+        autoFire(minecraft, player);
         boolean wantBlock = armed && minecraft.screen == null && BLOCK_KEY.isDown();
         if (wantBlock != blockSent) {
             blockSent = wantBlock;

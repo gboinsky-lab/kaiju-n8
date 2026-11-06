@@ -82,7 +82,8 @@ public final class KN8Network {
     // 37 = COMBATE-5: CombatResult.DENIED_NEEDS_STAGE e weapon.stages (Juni-hitoe do jogador no ultimo estagio).
     // 41 = AJUSTES: AuraChoiceC2S (o jogador escolhe a cor da aura na aba Perfil).
     // 40 = HOST: PowerView com o Release do hospedeiro (decimos) e KaijuFormC2S.partial (Shift + B).
-    private static final String PROTOCOL_VERSION = "41";
+    // 42 = Etapa 7-B: CombatResult.OVERHEATED e weapon.on_hit/automatic no registro de armas (minigun da Rin).
+    private static final String PROTOCOL_VERSION = "42";
 
     /** Diagnostico: 20 por segundo, rajada de 40. */
     private static final C2SGuard.Limit DEBUG_LIMIT = new C2SGuard.Limit(20, 40);

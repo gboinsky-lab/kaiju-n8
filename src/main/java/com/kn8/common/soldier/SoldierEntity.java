@@ -876,6 +876,30 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
 
     // --- combate -----------------------------------------------------------------------------------------------
 
+    /** Etapa 7-B: calor da arma automatica (minigun da Rin), como no jogador ({@code CombatService.heatUp}). */
+    private float gunHeat;
+    private long gunLastShotEnd = Long.MIN_VALUE;
+    private long overheatUntil = Long.MIN_VALUE;
+
+    private void heatUp(WeaponDef.Automatic auto, long now, int duration) {
+        long idle = gunLastShotEnd == Long.MIN_VALUE ? Long.MAX_VALUE / 4 : Math.max(0, now - gunLastShotEnd);
+        gunHeat = Math.max(0.0F, gunHeat - auto.coolPerTick() * idle) + duration;
+        gunLastShotEnd = now + duration;
+        if (gunHeat >= auto.overheatTicks()) {
+            gunHeat = 0.0F;
+            overheatUntil = now + duration + auto.cooldownTicks();
+            VfxService.play((ServerLevel) level(), VfxService.OVERHEAT, getEyePosition(), getLookAngle(), 1.0F, 0.0F,
+                    this);
+            level().playSound(null, getX(), getEyeY(), getZ(), SoundEvents.FIRE_EXTINGUISH, SoundSource.HOSTILE,
+                    0.8F, 0.7F);
+        }
+    }
+
+    /** Etapa 7-B: a arma automatica superaqueceu e esta esfriando (GameTests). */
+    public boolean isOverheated() {
+        return level().getGameTime() < overheatUntil;
+    }
+
     public boolean isActing() {
         return timeline.isActive(level().getGameTime());
     }
@@ -906,8 +930,15 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
         if (currentWeapon != null && currentWeapon.style() == WeaponDef.Style.FIREARM && !checkMagazine(now)) {
             return false;
         }
+        if (currentWeapon != null && currentWeapon.automatic().isPresent() && now < overheatUntil) {
+            return false;
+        }
         if (!timeline.tryStart(now, "attack", duration, Math.max(0, impact))) {
             return false;
+        }
+        if (currentWeapon != null) {
+            final int shot = duration;
+            currentWeapon.automatic().ifPresent(auto -> heatUp(auto, now, shot));
         }
         if (currentWeapon != null && currentWeapon.style() == WeaponDef.Style.FIREARM && rounds > 0) {
             rounds--;
@@ -978,6 +1009,10 @@ public class SoldierEntity extends PathfinderMob implements GeoEntity {
             struck = kaiju;
         }
         if (struck.hurt(damageSources().mobAttack(this), damage)) {
+            // Etapa 7-B: supressao, veneno e marcas da arma (on_hit do JSON), como no jogador.
+            if (currentWeapon != null && struck instanceof LivingEntity living) {
+                com.kn8.common.combat.HitEffects.apply(living, currentWeapon.onHit(), this);
+            }
             VfxService.play(level, firearm ? VfxService.IMPACT : VfxService.SLASH, hit.get().getBoundingBox()
                     .getCenter(), aim.normalize(), 0.8F, 0.0F, this);
             if (!firearm && currentWeapon != null) {

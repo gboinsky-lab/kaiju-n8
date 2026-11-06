@@ -31,6 +31,10 @@ public final class CombatState {
     long dodgeStartTick = NEVER;
     boolean perfectDodgeUsed;
     long criticalUntilTick = NEVER;
+    /** Etapa 7-B: calor da arma automatica (ticks atirando), fim do ultimo tiro e fim do superaquecimento. */
+    float gunHeat;
+    long gunLastShotEnd = NEVER;
+    long overheatUntilTick = NEVER;
     /** Inicio do ataque carregado em andamento (NEVER = nao esta carregando). */
     long chargeStartTick = NEVER;
     /** COMBATE-1: tick em que cada tecnica (id) volta a ficar pronta; recarga propria por tecnica. */

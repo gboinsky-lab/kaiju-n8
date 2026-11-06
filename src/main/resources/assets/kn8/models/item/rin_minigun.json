@@ -1,0 +1,131 @@
+{
+  "loader": "neoforge:obj",
+  "model": "kn8:models/item/rin_minigun.obj",
+  "flip_v": true,
+  "automatic_culling": false,
+  "textures": {
+    "texture": "kn8:item/rin_minigun",
+    "particle": "kn8:item/rin_minigun"
+  },
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [
+        0,
+        90,
+        0
+      ],
+      "translation": [
+        0.0,
+        0.72,
+        -7.16
+      ],
+      "scale": [
+        0.85,
+        0.85,
+        0.85
+      ]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [
+        0,
+        -90,
+        0
+      ],
+      "translation": [
+        0.0,
+        0.72,
+        -7.16
+      ],
+      "scale": [
+        0.85,
+        0.85,
+        0.85
+      ]
+    },
+    "firstperson_righthand": {
+      "rotation": [
+        0,
+        93,
+        0
+      ],
+      "translation": [
+        -1.251,
+        3.6,
+        -2.793
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ]
+    },
+    "firstperson_lefthand": {
+      "rotation": [
+        0,
+        -93,
+        0
+      ],
+      "translation": [
+        -1.251,
+        3.6,
+        -2.793
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ]
+    },
+    "ground": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        2,
+        0
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ]
+    },
+    "gui": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        -2.531,
+        1.625,
+        0
+      ],
+      "scale": [
+        0.692,
+        0.692,
+        0.692
+      ]
+    },
+    "fixed": {
+      "rotation": [
+        0,
+        180,
+        0
+      ],
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    }
+  }
+}

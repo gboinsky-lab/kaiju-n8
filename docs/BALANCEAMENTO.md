@@ -1430,6 +1430,19 @@ Jogador e personagem com o mesmo tamanho (`real_length_m` e `held_scale` em `too
 | Miguel | vel. 0,33 | vel. 0,34 |
 
 Alturas: Kafka 1,81, Mina 1,69, Reno e No. 6 1,74, Kikoru e No. 4 1,57, Hoshina e No. 10 1,71, Narumi e No. 1 1,75, Iharu 1,77, Rin 1,65, Konomi 1,49, Hakua 1,85. Aura por estado: fora de combate 30%, em combate 65%, na técnica 100% [SUPOSIÇÃO].
+### Etapa 7-B: minigun da Rin, marcas, veneno e escudo (2026-11-06) [SUPOSIÇÃO todos os números]
+
+| O quê | Números | Onde |
+|---|---|---|
+| Minigun da Rin (jogador e NPC) | dano 6 x 0,4 por tiro, um tiro a cada 2 ticks segurando o botão, alcance 40; cinto de 120 balas de rifle; superaquece com 100 ticks (5 s) atirando, esfria 60 ticks (3 s); não gasta stamina; patente Vice-Capitão | `weapon/rin_minigun.json`, `weapon_profile/minigun.json`, `workbench/rin_minigun.json`, `workbench/minigun_belt.json` |
+| Supressão (minigun, Varredura, Rajada Circular, Rajada da Minigun) | Lentidão I (-15%) por 30 ticks, renovada a cada tiro | `on_hit` da arma e do `special_soldier/rin.json` |
+| Rajada da Minigun (NPC) | 8 x 0,25, um a cada 3 ticks, recarga 100, 3-30 blocos | `special_soldier/rin.json` |
+| Marcação do Narumi | +15% de dano de todos por 100 ticks (Tiro da Baioneta; no No. 1 também a Estocada no Ponto Fraco) | `on_hit` do `narumi.json`/`narumi_no1.json` |
+| Análise da Konomi | +8% por 160 ticks, renovada, em todo kaiju que ela vê até o `follow_range` | `on_hit.analysis` do `konomi.json` |
+| Marca do Ryo | +20% no próximo golpe de qualquer um, vale 200 ticks (Tiro Apaixonado) | `on_hit` do `ryo.json` |
+| Veneno do Haruichi | 6/s por 80 ticks (Tiro de Precisão, Salva de Flechas); arco do jogador e tiro comum 3/s por 80 ticks; ignora a armadura | `on_hit` do `haruichi.json` e do `weapon/haruichi_bow.json` |
+| Escudo da Tae | Granada de Calor: Absorção de 8% da vida máxima e Regeneração I a 10 blocos por 160 ticks | `rally.heat_grenade` do `tae.json` |
+
 
 ### Etapa 6: fusões do No. 9 (2026-11-06)
 

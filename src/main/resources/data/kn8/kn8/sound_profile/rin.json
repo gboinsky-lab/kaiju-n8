@@ -15,6 +15,9 @@
     },
     "baton_strike": {
       "release": "kn8:weapon.fist_swing"
+    },
+    "minigun_barrage": {
+      "release": "kn8:weapon.rifle_shot"
     }
   }
 }

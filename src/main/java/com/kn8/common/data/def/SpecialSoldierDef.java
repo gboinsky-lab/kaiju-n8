@@ -116,7 +116,7 @@ public record SpecialSoldierDef(float health, float armor, float speed, float fo
             Optional<Transform> transform, Optional<Regeneration> regeneration, float height,
             Optional<Ranged> ranged, Optional<Heavy> heavy, Map<String, Integer> techniqueUses,
             Optional<HeavyGuard> heavyGuard, Tactics tactics, Rhythm rhythm, Map<String, Float> lowHealth,
-            boolean sureHit, Map<String, Integer> burn, Map<String, Rally> rally) {
+            boolean sureHit, Effects effects) {
         public static final MapCodec<Growth> MAP_CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
                 Escalation.CODEC.optionalFieldOf("escalation", Escalation.NONE).forGetter(Growth::escalation),
                 Numbers10.CODEC.optionalFieldOf("numbers10").forGetter(Growth::numbers10),
@@ -134,11 +134,23 @@ public record SpecialSoldierDef(float health, float armor, float speed, float fo
                 Codec.unboundedMap(Codec.STRING, Codec.floatRange(0.0F, 1.0F)).optionalFieldOf("low_health", Map.of())
                         .forGetter(Growth::lowHealth),
                 Codec.BOOL.optionalFieldOf("sure_hit", false).forGetter(Growth::sureHit),
-                Codec.unboundedMap(Codec.STRING, Codec.intRange(1, 30)).optionalFieldOf("burn", Map.of())
-                        .forGetter(Growth::burn),
-                Codec.unboundedMap(Codec.STRING, Rally.CODEC).optionalFieldOf("rally", Map.of())
-                        .forGetter(Growth::rally)
+                Effects.MAP_CODEC.forGetter(Growth::effects)
         ).apply(i, Growth::new));
+    }
+
+    /**
+     * Etapa 7-B: efeitos das tecnicas nos alvos e nos aliados, achatados no mesmo nivel do JSON (o {@link Growth}
+     * chegou ao limite de 16 campos do {@code RecordCodecBuilder}): {@code burn}, {@code rally} e {@code on_hit}.
+     */
+    public record Effects(Map<String, Integer> burn, Map<String, Rally> rally, Map<String, HitEffect> onHit) {
+        public static final MapCodec<Effects> MAP_CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
+                Codec.unboundedMap(Codec.STRING, Codec.intRange(1, 30)).optionalFieldOf("burn", Map.of())
+                        .forGetter(Effects::burn),
+                Codec.unboundedMap(Codec.STRING, Rally.CODEC).optionalFieldOf("rally", Map.of())
+                        .forGetter(Effects::rally),
+                Codec.unboundedMap(Codec.STRING, HitEffect.CODEC).optionalFieldOf("on_hit", Map.of())
+                        .forGetter(Effects::onHit)
+        ).apply(i, Effects::new));
     }
 
     /**
@@ -148,25 +160,33 @@ public record SpecialSoldierDef(float health, float armor, float speed, float fo
      * ESPECIAIS-2: {@code resistance} (Postura inabalavel do Aoi, escudo da equipe) e {@code regeneration}
      * (Incentivo Direto da Hakua, cura aos poucos), tambem em niveis.
      */
-    public record Rally(float radius, int durationTicks, int strength, int speed, int resistance, int regeneration) {
+    public record Rally(float radius, int durationTicks, int strength, int speed, int resistance, int regeneration,
+            float shield) {
         public static final Codec<Rally> CODEC = RecordCodecBuilder.create(i -> i.group(
                 Codec.floatRange(0.0F, 32.0F).optionalFieldOf("radius", 0.0F).forGetter(Rally::radius),
                 DefCodecs.TICKS.fieldOf("duration_ticks").forGetter(Rally::durationTicks),
                 Codec.intRange(0, 4).optionalFieldOf("strength", 0).forGetter(Rally::strength),
                 Codec.intRange(0, 4).optionalFieldOf("speed", 0).forGetter(Rally::speed),
                 Codec.intRange(0, 4).optionalFieldOf("resistance", 0).forGetter(Rally::resistance),
-                Codec.intRange(0, 4).optionalFieldOf("regeneration", 0).forGetter(Rally::regeneration)
+                Codec.intRange(0, 4).optionalFieldOf("regeneration", 0).forGetter(Rally::regeneration),
+                // Etapa 7-B (escudo da Tae): Absorcao de shield x vida maxima de cada aliado (arredonda para cima, em 4).
+                Codec.floatRange(0.0F, 1.0F).optionalFieldOf("shield", 0.0F).forGetter(Rally::shield)
         ).apply(i, Rally::new));
     }
 
     /** ESPECIAIS-1: segundos de fogo no alvo atingido pela tecnica (bloco {@code burn}; 0 = sem fogo). */
     public int burnSeconds(String techniqueId) {
-        return growth.burn().getOrDefault(techniqueId, 0);
+        return growth.effects().burn().getOrDefault(techniqueId, 0);
     }
 
     /** ESPECIAIS-1: incentivo aos aliados no inicio da tecnica (bloco {@code rally}). */
     public Optional<Rally> rally(String techniqueId) {
-        return Optional.ofNullable(growth.rally().get(techniqueId));
+        return Optional.ofNullable(growth.effects().rally().get(techniqueId));
+    }
+
+    /** Etapa 7-B: efeito da tecnica em quem leva o golpe ou o tiro (bloco {@code on_hit}). */
+    public HitEffect onHit(String techniqueId) {
+        return growth.effects().onHit().getOrDefault(techniqueId, HitEffect.NONE);
     }
 
     /**

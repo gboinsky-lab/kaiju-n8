@@ -46,7 +46,22 @@ import net.minecraft.util.StringRepresentable;
 public record WeaponDef(ResourceLocation item, float baseDamage, float reach, Style style,
         Map<String, Action> actions, List<Float> combo, Map<String, ResourceLocation> sounds,
         Optional<Special> special, Optional<ResourceLocation> profile, List<Special> techniques,
-        Map<String, Float> lowHealth, Map<String, Stage> stages, boolean sureHit) {
+        Map<String, Float> lowHealth, Map<String, Stage> stages, boolean sureHit, HitEffect onHit,
+        Optional<Automatic> automatic) {
+
+    /**
+     * Etapa 7-B (minigun da Rin): arma automatica. Segurando o botao, um tiro a cada acao {@code light}; depois de
+     * {@code overheat_ticks} atirando sem parar a arma superaquece e nao atira por {@code cooldown_ticks}. Parado,
+     * esfria {@code cool_per_tick} por tick.
+     */
+    public record Automatic(int overheatTicks, int cooldownTicks, float coolPerTick) {
+        public static final Codec<Automatic> CODEC = RecordCodecBuilder.create(i -> i.group(
+                Codec.intRange(1, 1200).fieldOf("overheat_ticks").forGetter(Automatic::overheatTicks),
+                Codec.intRange(1, 1200).fieldOf("cooldown_ticks").forGetter(Automatic::cooldownTicks),
+                Codec.floatRange(0.0F, 10.0F).optionalFieldOf("cool_per_tick", 1.0F).forGetter(Automatic::coolPerTick)
+        ).apply(i, Automatic::new));
+    }
+
 
     /**
      * COMBATE-5 (Miguel, 2026-10-29: Juni-hitoe "apenas no ultimo estagio do Hoshina"): tecnica que so sai com o traje
@@ -204,6 +219,8 @@ public record WeaponDef(ResourceLocation item, float baseDamage, float reach, St
                     .forGetter(WeaponDef::lowHealth),
             Codec.unboundedMap(Codec.STRING, Stage.CODEC).optionalFieldOf("stages", Map.of())
                     .forGetter(WeaponDef::stages),
-            Codec.BOOL.optionalFieldOf("sure_hit", false).forGetter(WeaponDef::sureHit)
+            Codec.BOOL.optionalFieldOf("sure_hit", false).forGetter(WeaponDef::sureHit),
+            HitEffect.CODEC.optionalFieldOf("on_hit", HitEffect.NONE).forGetter(WeaponDef::onHit),
+            Automatic.CODEC.optionalFieldOf("automatic").forGetter(WeaponDef::automatic)
     ).apply(i, WeaponDef::new));
 }

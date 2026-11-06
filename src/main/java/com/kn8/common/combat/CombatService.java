@@ -39,6 +39,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
@@ -67,6 +68,8 @@ public final class CombatService {
     private static final float SHOT_SOUND_VOLUME = 1.0F;
     private static final float SWING_SOUND_VOLUME = 0.7F;
     private static final double MUZZLE_DISTANCE = 1.2;
+    /** Etapa 7-B: onde comeca o risco do tiro da arma automatica (blocos a frente do olho). */
+    private static final double AUTOMATIC_TRACER_START = 3.0;
     /** PM-1: receita do perfil visual do jogador para a esquiva perfeita (sem ela, o efeito comum do parry). */
     private static final String PERFECT_DODGE_RECIPE = "perfect_dodge";
     /** Som do parry mais agudo: a esquiva perfeita soa diferente do parry. */
@@ -178,12 +181,19 @@ public final class CombatService {
             return false;
         }
         if (state.blocking || state.timeline.isActive(now)) {
-            reply(player, request, WeaponHandling.RELOAD.equals(state.timeline.actionId())
-                    ? CombatResult.RELOADING : CombatResult.DENIED_BUSY);
+            boolean reloading = WeaponHandling.RELOAD.equals(state.timeline.actionId());
+            // Etapa 7-B: a arma automatica pede um tiro a cada acao; um pedido que chega um tick cedo nao e erro do
+            // jogador (sem "Ocupado" piscando na barra).
+            if (reloading || weapon.get().automatic().isEmpty()) {
+                reply(player, request, reloading ? CombatResult.RELOADING : CombatResult.DENIED_BUSY);
+            }
             return false;
         }
         boolean firearm = weapon.get().style() == WeaponDef.Style.FIREARM;
         CombatResult blocked = firearm ? WeaponHandling.canFire(player, state, weapon.get(), now) : null;
+        if (blocked == null && weapon.get().automatic().isPresent() && now < state.overheatUntilTick) {
+            blocked = CombatResult.OVERHEATED;
+        }
         if (blocked != null) {
             reply(player, request, blocked);
             return false;
@@ -191,7 +201,9 @@ public final class CombatService {
         double cost = LIGHT.equals(actionName) ? ServerConfig.LIGHT_STAMINA_COST.get()
                 : extraMultiplier > 1.0F ? ServerConfig.CHARGED_STAMINA_COST.get()
                 : ServerConfig.HEAVY_STAMINA_COST.get();
-        boolean hasStamina = PowerService.tryConsumeStamina(player, cost);
+        // Etapa 7-B: a arma automatica nao gasta stamina por tiro (10 tiros/s esvaziariam a barra); o limite dela e o
+        // superaquecimento.
+        boolean hasStamina = weapon.get().automatic().isPresent() || PowerService.tryConsumeStamina(player, cost);
         double slowdown = ServerConfig.NO_STAMINA_SLOWDOWN.get();
         // 0.5.0-D7 (Miguel): com mais Release o golpe fica mais rapido (duracao e impacto); a animacao acompanha.
         double speed = releaseSpeed(player);
@@ -205,6 +217,8 @@ public final class CombatService {
         if (firearm) {
             WeaponHandling.spendRound(player, state, weapon.get(), now);
         }
+        boolean overheated = weapon.get().automatic().map(auto -> heatUp(player, state, auto, now, duration))
+                .orElse(false);
         float combo = 1.0F;
         if (LIGHT.equals(actionName) && !firearm) {
             state.comboStep = CombatMath.nextComboStep(state.comboStep, state.lastLightEndTick, now,
@@ -235,8 +249,42 @@ public final class CombatService {
                             : weaponSound(weapon.get(), "swing", KN8Sounds.BLADE_SWING.get()),
                     SoundSource.PLAYERS, SWING_SOUND_VOLUME, 1.0F);
         }
-        reply(player, request, hasStamina ? CombatResult.OK : CombatResult.SLOWED_NO_STAMINA);
+        reply(player, request, overheated ? CombatResult.OVERHEATED
+                : hasStamina ? CombatResult.OK : CombatResult.SLOWED_NO_STAMINA);
         return true;
+    }
+
+    /**
+     * Etapa 7-B (minigun da Rin): soma o tiro ao calor da arma automatica (esfria pelo tempo parado desde o ultimo
+     * tiro). Passou de {@code overheat_ticks}: superaquece por {@code cooldown_ticks}; devolve true nesse tiro.
+     */
+    private static boolean heatUp(ServerPlayer player, CombatState state, WeaponDef.Automatic auto, long now,
+            int duration) {
+        long idle = state.gunLastShotEnd == CombatState.NEVER ? Long.MAX_VALUE / 4 : Math.max(0, now
+                - state.gunLastShotEnd);
+        state.gunHeat = Math.max(0.0F, state.gunHeat - auto.coolPerTick() * idle) + duration;
+        state.gunLastShotEnd = now + duration;
+        if (state.gunHeat < auto.overheatTicks()) {
+            return false;
+        }
+        state.gunHeat = 0.0F;
+        state.overheatUntilTick = now + duration + auto.cooldownTicks();
+        ServerLevel level = (ServerLevel) player.level();
+        VfxService.play(level, VfxService.OVERHEAT, player.getEyePosition().add(player.getLookAngle()
+                .scale(MUZZLE_DISTANCE)), player.getLookAngle(), 1.0F, 0.0F, player);
+        level.playSound(null, player.getX(), player.getEyeY(), player.getZ(), SoundEvents.FIRE_EXTINGUISH,
+                SoundSource.PLAYERS, 0.8F, 0.7F);
+        return true;
+    }
+
+    /** Etapa 7-B: a arma automatica na mao esta superaquecida? (GameTests e HUD) */
+    public static boolean overheated(ServerPlayer player) {
+        return now(player) < state(player).overheatUntilTick;
+    }
+
+    /** Etapa 7-B: calor da arma automatica (ticks atirando sem esfriar; GameTests). */
+    public static float gunHeat(ServerPlayer player) {
+        return state(player).gunHeat;
     }
 
     /** Todo tick do servidor: resolve o impacto no tick exato (publico para os GameTests). */
@@ -510,9 +558,13 @@ public final class CombatService {
         if (firearm) {
             shotEffects(player, weapon, eye, found.map(Entity::getBoundingBox).map(box -> box.getCenter())
                     .orElse(eye.add(look.scale(weapon.reach()))));
-            // 0.1-B: clarao e fumaca na boca do cano.
-            VfxService.play((ServerLevel) player.level(), VfxService.WEAPON_FIRE, eye.add(look.scale(MUZZLE_DISTANCE)),
-                    look, 1.0F, 0.0F, player);
+            // 0.1-B: clarao e fumaca na boca do cano. Etapa 7-B: na arma automatica um a cada 4 tiros e menor (a 10
+            // tiros/s o clarao cobria a tela em 1a pessoa; visto em jogo).
+            boolean automatic = weapon.automatic().isPresent();
+            if (!automatic || player.tickCount % 8 < 2) {
+                VfxService.play((ServerLevel) player.level(), VfxService.WEAPON_FIRE,
+                        eye.add(look.scale(MUZZLE_DISTANCE)), look, automatic ? 0.5F : 1.0F, 0.0F, player);
+            }
             // PM-7: precisao (acerto = o raio pegou um kaiju ou uma parte dele).
             MissionService.onShot(player, found.map(hit -> hit instanceof PartEntity<?> part ? part.getParent() : hit)
                     .filter(KaijuEntity.class::isInstance).isPresent());
@@ -539,6 +591,10 @@ public final class CombatService {
             kaiju.exposeCore(ServerConfig.CORE_EXPOSED_TICKS.get());
         }
         if (target.hurt(player.damageSources().playerAttack(player), damage)) {
+            // Etapa 7-B: supressao, veneno e marcas da arma (on_hit do JSON).
+            if (root instanceof LivingEntity living) {
+                HitEffects.apply(living, weapon.onHit(), player);
+            }
             // 0.1-B: impacto no alvo; corte da lamina (mais forte no pesado e no critico).
             Vec3 hitPoint = target.getBoundingBox().getCenter();
             VfxService.play((ServerLevel) player.level(), firearm ? VfxService.IMPACT : VfxService.SLASH, hitPoint,
@@ -584,6 +640,16 @@ public final class CombatService {
             return;
         }
         // VFX-R2: risco desenhado no cliente (antes, pontos de CRIT ao longo do caminho).
+        if (weapon.automatic().isPresent()) {
+            // Etapa 7-B: saindo do olho (ou da boca do cano, ainda perto da camera), 10 riscos por segundo viravam uma
+            // faixa branca cobrindo a tela em 1a pessoa (visto em jogo): na arma automatica o risco comeca 3 blocos
+            // adiante, na linha do tiro.
+            Vec3 path = to.subtract(from);
+            if (path.length() <= AUTOMATIC_TRACER_START + 1.0) {
+                return;
+            }
+            from = from.add(path.normalize().scale(AUTOMATIC_TRACER_START));
+        }
         VfxService.keyed(level, VfxService.TRACER, from, to.subtract(from), 1.0F, "", 0.0F);
     }
 

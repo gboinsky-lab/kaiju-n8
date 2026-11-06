@@ -1,0 +1,23 @@
+{
+  "result": "kn8:rin_minigun",
+  "category": "weapon",
+  "order": 21,
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 14
+    },
+    {
+      "item": "kn8:muscle_fiber",
+      "count": 6
+    },
+    {
+      "item": "kn8:core_fragment",
+      "count": 3
+    },
+    {
+      "item": "minecraft:redstone",
+      "count": 6
+    }
+  ]
+}

@@ -233,6 +233,12 @@ public class HoshinaEntity extends SoldierEntity {
     protected void onTechniqueStart(String id, LivingEntity target, int firstHitTicks) {
     }
 
+    /** Etapa 7-B: efeito da tecnica em quem leva o golpe ou o tiro ({@code on_hit} do perfil). */
+    public com.kn8.common.data.def.HitEffect onHit(String id) {
+        return id == null ? com.kn8.common.data.def.HitEffect.NONE
+                : profile().map(def -> def.onHit(id)).orElse(com.kn8.common.data.def.HitEffect.NONE);
+    }
+
     /** ESPECIAIS-1: segundos de fogo da tecnica (golpe e tiro; {@code burn} do perfil). */
     public int burnSeconds(String id) {
         return id == null ? 0 : profile().map(def -> def.burnSeconds(id)).orElse(0);
@@ -268,6 +274,12 @@ public class HoshinaEntity extends SoldierEntity {
             if (value.regeneration() > 0) {
                 ally.addEffect(new MobEffectInstance(MobEffects.REGENERATION, value.durationTicks(),
                         value.regeneration() - 1, false, false, true));
+            }
+            if (value.shield() > 0.0F) {
+                // Etapa 7-B (escudo da Tae): Absorcao da vanilla, 4 de vida por nivel, ate shield x vida maxima.
+                int levels = Math.max(1, (int) Math.ceil(ally.getMaxHealth() * value.shield() / 4.0F));
+                ally.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, value.durationTicks(),
+                        Math.min(255, levels - 1), false, false, true));
             }
         }
         AiTuning.logMove(this, "incentivo " + id + ": " + allies.size() + " aliado(s)");
@@ -996,6 +1008,8 @@ public class HoshinaEntity extends SoldierEntity {
         if (burn > 0) {
             target.igniteForSeconds(burn);
         }
+        // Etapa 7-B: lentidao, veneno e marcas da tecnica (bloco on_hit do perfil).
+        com.kn8.common.combat.HitEffects.apply(target, onHit(techniqueId), this);
         ServerLevel level = (ServerLevel) level();
         // IA-2 (Miguel): golpe pesado dos especiais pesados quebra o que estiver em volta do ponto do golpe.
         heavy.ifPresent(value -> DestructionService.request(level, target.position(),

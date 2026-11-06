@@ -222,6 +222,31 @@
       ],
       "real_length_m": 1.6
     },
+    "rin_minigun": {
+      "_comment": "Etapa 7-B: minigun da Rin Shinonome (modelo do Miguel, 2026-11-06), canos ao longo de -X, caixa de municao embaixo; 1,3 m [SUPOSICAO]",
+      "source": "arma_rin_shinonome.glb",
+      "length_axis": "x",
+      "tip": "-",
+      "up_axis": "y",
+      "length_m": 1.3,
+      "grip_from_tip": 0.82,
+      "grip_from_bottom": 0.45,
+      "texture": 512,
+      "orientation": "horizontal",
+      "hand_grip": [
+        -0.1,
+        0.3,
+        0.5
+      ],
+      "first_person_scale": 0.5,
+      "item_length": 1.3,
+      "thickness": 1.0,
+      "held_scale": [
+        1.0,
+        1.0
+      ],
+      "real_length_m": 1.3
+    },
     "haruichi_bow": {
       "_comment": "ESPECIAIS-2: arco AW-0027 do Haruichi (modelo do Miguel), segurado pelo meio, 1,1 m [SUPOSICAO]",
       "source": "haruichi_bow.glb",

@@ -149,5 +149,11 @@
       "strength": 2,
       "speed": 1
     }
+  },
+  "on_hit": {
+    "passionate_shot": {
+      "next_hit_bonus": 0.2,
+      "next_hit_ticks": 200
+    }
   }
 }

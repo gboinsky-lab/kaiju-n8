@@ -324,6 +324,8 @@ public class SlashProjectile extends Projectile implements TravelSoundSource {
             if (seconds > 0) {
                 target.igniteForSeconds(seconds);
             }
+            // Etapa 7-B: lentidao, veneno e marcas da tecnica (on_hit do perfil de quem atirou).
+            HitEffects.apply(target, special.onHit(vfxKey), special);
         }
     }
 

@@ -1,0 +1,26 @@
+{
+  "item": "kn8:rin_minigun",
+  "base_damage": 6,
+  "reach": 40.0,
+  "style": "firearm",
+  "profile": "kn8:minigun",
+  "actions": {
+    "light": {
+      "multiplier": 0.4,
+      "duration_ticks": 2,
+      "impact_tick": 1
+    }
+  },
+  "sounds": {
+    "shot": "kn8:weapon.rifle_shot"
+  },
+  "on_hit": {
+    "slow_ticks": 30,
+    "slow_level": 1
+  },
+  "automatic": {
+    "overheat_ticks": 100,
+    "cooldown_ticks": 60,
+    "cool_per_tick": 1.0
+  }
+}

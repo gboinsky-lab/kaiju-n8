@@ -1,0 +1,41 @@
+{
+  "hands": "two",
+  "stance": false,
+  "draw": {
+    "ticks": 12,
+    "sound": "minecraft:item.armor.equip_iron"
+  },
+  "reload": {
+    "magazine": 120,
+    "magazine_item": "kn8:minigun_belt",
+    "ammo_item": "kn8:rifle_ammo",
+    "stages": [
+      {
+        "name": "eject",
+        "ticks": 10,
+        "sound": "minecraft:item.crossbow.loading_start"
+      },
+      {
+        "name": "insert",
+        "ticks": 30,
+        "sound": "minecraft:item.crossbow.loading_middle"
+      },
+      {
+        "name": "chamber",
+        "ticks": 8,
+        "sound": "minecraft:item.crossbow.loading_end"
+      }
+    ]
+  },
+  "recoil": {
+    "pitch": 0.35,
+    "yaw": 0.25,
+    "recover_ticks": 2,
+    "body_kick": 0.3
+  },
+  "first_person": false,
+  "npc": {
+    "arm_pose": "rifle",
+    "spare_magazines": 3
+  }
+}

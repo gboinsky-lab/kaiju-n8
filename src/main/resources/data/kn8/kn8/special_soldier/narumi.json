@@ -235,5 +235,11 @@
     "factor": 0.5,
     "front_arc_degrees": 120.0,
     "cooldown_ticks": 40
+  },
+  "on_hit": {
+    "bayonet_shot": {
+      "mark_ticks": 100,
+      "mark_bonus": 0.15
+    }
   }
 }

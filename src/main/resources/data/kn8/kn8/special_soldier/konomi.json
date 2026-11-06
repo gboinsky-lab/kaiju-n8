@@ -40,5 +40,11 @@
   "techniques": {},
   "tactics": {
     "melee_counter": false
+  },
+  "on_hit": {
+    "analysis": {
+      "mark_ticks": 160,
+      "mark_bonus": 0.08
+    }
   }
 }

@@ -304,6 +304,58 @@
         "forward": 1.0,
         "up": 1.1
       }
+    ],
+    "minigun_barrage": [
+      {
+        "shape": "flash",
+        "color": "core",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.25,
+        "speed": 0.0,
+        "spread": 0.25,
+        "lifetime": 2,
+        "forward": 0.9,
+        "up": 1.35
+      },
+      {
+        "shape": "sparks",
+        "color": "accent",
+        "pattern": "line",
+        "count": 3,
+        "size": 0.06,
+        "speed": 0.5,
+        "spread": 1.0,
+        "lifetime": 4,
+        "forward": 0.9,
+        "up": 1.35
+      },
+      {
+        "shape": "smoke",
+        "color": "#9A9A9A",
+        "pattern": "burst",
+        "count": 1,
+        "size": 0.2,
+        "speed": 0.02,
+        "spread": 0.2,
+        "lifetime": 12,
+        "forward": 0.9,
+        "up": 1.35
+      }
+    ],
+    "minigun_barrage_impact": [
+      {
+        "shape": "sparks",
+        "color": "accent",
+        "pattern": "burst",
+        "count": 3,
+        "size": 0.05,
+        "speed": 0.4,
+        "spread": 0.5,
+        "lifetime": 4,
+        "forward": 0.8,
+        "up": 1.2
+      }
     ]
   }
 }

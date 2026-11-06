@@ -66,15 +66,15 @@ public final class No9FusionGameTests {
             // Muralha Negra fechada (70 ticks do ciclo) e couraca frontal.
             ironclad.tickCount = 10;
             helper.assertTrue(ironclad.isShielded() && !ironclad.isShieldDown(), "Muralha fechada e sem brecha");
-            float before = ironclad.getHealth();
-            ironclad.invulnerableTime = 0;
-            ironclad.hurt(helper.getLevel().damageSources().mobAttack(front), 200.0F);
-            float fromFront = before - ironclad.getHealth();
-            float middle = ironclad.getHealth();
-            ironclad.invulnerableTime = 0;
-            ironclad.hurt(helper.getLevel().damageSources().mobAttack(back), 200.0F);
-            float fromBack = middle - ironclad.getHealth();
-            // 0,82 x 0,35 = 0,29 de frente; a pele endurecida das formas do No. 9 pode tirar mais de um dos dois.
+            // 7-B: pelos fatores (o dano real passa pela pele endurecida das formas do No. 9, que e aleatoria e
+            // derrubava o teste quando endurecia o golpe das costas).
+            net.minecraft.world.damagesource.DamageSource fromFrontSource =
+                    helper.getLevel().damageSources().mobAttack(front);
+            net.minecraft.world.damagesource.DamageSource fromBackSource =
+                    helper.getLevel().damageSources().mobAttack(back);
+            float fromFront = ironclad.frontGuard(fromFrontSource) * ironclad.shieldFactor(fromFrontSource);
+            float fromBack = ironclad.frontGuard(fromBackSource) * ironclad.shieldFactor(fromBackSource);
+            // 0,82 x 0,35 = 0,29 de frente; de costas 1.
             helper.assertTrue(fromBack > 0.0F && fromFront > 0.0F && fromFront < fromBack * 0.45F,
                     "De frente leva bem menos: frente " + fromFront + ", costas " + fromBack);
             ironclad.tickCount = 100;

@@ -143,8 +143,11 @@
   },
   "rally": {
     "heat_grenade": {
-      "duration_ticks": 120,
-      "strength": 1
+      "radius": 10.0,
+      "duration_ticks": 160,
+      "strength": 1,
+      "regeneration": 1,
+      "shield": 0.08
     }
   }
 }
