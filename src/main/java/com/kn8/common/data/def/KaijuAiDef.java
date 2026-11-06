@@ -52,6 +52,11 @@ public record KaijuAiDef(float circleChance, float circleDistance, int circleTic
         return ecology.guard();
     }
 
+    /** Pendencia do No. 14: campo de forca que alterna com a janela vulneravel. */
+    public Shield shield() {
+        return ecology.shield();
+    }
+
     /** PM-4: papel em grupo. */
     public Group group() {
         return ecology.group();
@@ -61,14 +66,15 @@ public record KaijuAiDef(float circleChance, float circleDistance, int circleTic
      * PM-4: blocos {@code terrain} e {@code group} do mesmo JSON (o codec do perfil ja tinha 15 campos: os dois entram
      * por um MapCodec achatado, sem mudar o formato do arquivo).
      */
-    public record Ecology(Terrain terrain, Group group, Guard guard) {
+    public record Ecology(Terrain terrain, Group group, Guard guard, Shield shield) {
 
-        public static final Ecology NONE = new Ecology(Terrain.DEFAULT, Group.DEFAULT, Guard.NONE);
+        public static final Ecology NONE = new Ecology(Terrain.DEFAULT, Group.DEFAULT, Guard.NONE, Shield.NONE);
 
         public static final MapCodec<Ecology> MAP_CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
                 Terrain.CODEC.optionalFieldOf("terrain", Terrain.DEFAULT).forGetter(Ecology::terrain),
                 Group.CODEC.optionalFieldOf("group", Group.DEFAULT).forGetter(Ecology::group),
-                Guard.CODEC.optionalFieldOf("guard", Guard.NONE).forGetter(Ecology::guard)
+                Guard.CODEC.optionalFieldOf("guard", Guard.NONE).forGetter(Ecology::guard),
+                Shield.CODEC.optionalFieldOf("shield", Shield.NONE).forGetter(Ecology::shield)
         ).apply(i, Ecology::new));
     }
 
@@ -148,6 +154,32 @@ public record KaijuAiDef(float circleChance, float circleDistance, int circleTic
 
         public boolean active() {
             return factor < 1.0F;
+        }
+    }
+
+    /**
+     * Kaiju No. 14 (Balanceamento Completo dos Kaijus do Miguel: "escudo reduz dano 35%; recarga exposta 3 s; escudo
+     * alterna com janela vulneravel"): campo de forca ligado por {@code up_ticks}, depois desligado (janela exposta,
+     * conta como brecha) por {@code down_ticks}, em ciclo. Ligado, todo dano leva {@code 1 - reduction}.
+     * {@code reduction} 0 = sem escudo.
+     */
+    public record Shield(float reduction, int upTicks, int downTicks) {
+
+        public static final Shield NONE = new Shield(0.0F, 200, 60);
+
+        public static final Codec<Shield> CODEC = RecordCodecBuilder.create(i -> i.group(
+                Codec.floatRange(0.0F, 0.95F).optionalFieldOf("reduction", 0.0F).forGetter(Shield::reduction),
+                Codec.intRange(1, 72000).optionalFieldOf("up_ticks", 200).forGetter(Shield::upTicks),
+                Codec.intRange(1, 72000).optionalFieldOf("down_ticks", 60).forGetter(Shield::downTicks)
+        ).apply(i, Shield::new));
+
+        public boolean active() {
+            return reduction > 0.0F;
+        }
+
+        /** O escudo esta ligado neste tick da vida do kaiju (comeca ligado)? */
+        public boolean upAt(int age) {
+            return age % (upTicks + downTicks) < upTicks;
         }
     }
 

@@ -203,7 +203,7 @@ SPECIES = {
     # dupla que sobe atras: as duas metades vao na mesma cadeia de cauda). Juntas medidas nas vistas do OBJ
     # convertido (9 m; a altura real vem do dimensions.scale).
     "kaiju_no2": {
-        "recenter_feet": True, "jaw_y": 8.0, "jaw_z": -1.16, "feet_max_z": -2.0,
+        "recenter_feet": True, "jaw_y": 8.0, "jaw_z": -1.16, "feet_max_z": -2.0, "arms_down": 25, "bridge": 0.3, "arm_min_x": 1.4, "arm_outer_x": 1.8, "max_edge": 2.5,
         "skeleton": {
             "pelvis": [-0.02, 4.20, 0.74], "chest": [-0.02, 5.80, 0.14], "back": [-0.02, 7.00, 0.74],
             "neck": [-0.02, 7.40, -0.46], "head": [-0.02, 8.30, -1.06],
@@ -406,6 +406,16 @@ def split_skeleton(mesh, cfg):
         min_y, radius = cfg["head_cylinder"]
         near = np.hypot(x - skeleton["head"][0], z - skeleton["head"][2]) < radius
         labels[(labels == "body") & (y > min_y) & near] = "head"
+    if "arm_min_x" in cfg:
+        # Pose T com "bridge" (No. 2): espinhos das costas perto do ombro iam para o braco; braco so fora do tronco.
+        arm = np.isin(labels, ["arm_left", "arm_right", "forearm_left", "forearm_right"])
+        labels[arm & (np.abs(x - skeleton["pelvis"][0]) < cfg["arm_min_x"])] = "body"
+        # Braco do modelo de blocos = caixas longas (faces de 7 m do ombro a mao) que ficavam no tronco pela maioria
+        # dos vertices: fora do ombro e acima da cintura e braco.
+        dx = x - skeleton["pelvis"][0]
+        outer = (labels == "body") & (np.abs(dx) > cfg["arm_outer_x"]) & (y > skeleton["pelvis"][1] + 1.0)
+        labels[outer & (dx < 0)] = "arm_left"
+        labels[outer & (dx > 0)] = "arm_right"
     head = labels == "head"
     head_dx = x - skeleton["head"][0]
     labels[head & (y < cfg["jaw_y"]) & (z < cfg["jaw_z"])] = "jaw"
@@ -417,6 +427,34 @@ def split_skeleton(mesh, cfg):
     tail = labels == "tail"
     labels[tail] = [f"tail_{min(4, int(tail_param(point, skeleton) * 4) + 1)}" for point in centers[tail]]
     return labels
+
+
+def lower_arms(vertices, uvs, normals, faces, labels, cfg):
+    """Pose T -> bracos abaixados (No. 2: o modelo veio de bracos abertos): as faces de arm_* e forearm_* giram no
+    plano da frente em volta do ombro ate o ombro -> mao ficar a "arms_down" graus da vertical. Os vertices dessas
+    faces sao copiados (o corte no ombro ja separa as pecas; a tampa do cap_holes fecha); cotovelo e mao do esqueleto
+    giram junto para os pivos."""
+    skeleton = dict(cfg["skeleton"])
+    vertices, uvs, normals, faces = vertices.copy(), uvs.copy(), normals.copy(), faces.copy()
+    for side in ("left", "right"):
+        shoulder = np.array(skeleton[f"shoulder_{side}"], dtype=float)
+        direction = np.array(skeleton[f"hand_{side}"], dtype=float) - shoulder
+        current = np.arctan2(direction[0], -direction[1])
+        angle = np.radians(cfg["arms_down"]) * np.sign(direction[0]) - current
+        c, s_ = np.cos(angle), np.sin(angle)
+        rot = np.array([[c, -s_, 0], [s_, c, 0], [0, 0, 1]])
+        mask = np.isin(labels, [f"arm_{side}", f"forearm_{side}"])
+        used = np.unique(faces[mask])
+        new = np.arange(len(vertices), len(vertices) + len(used))
+        remap = dict(zip(used.tolist(), new.tolist()))
+        vertices = np.vstack([vertices, (vertices[used] - shoulder) @ rot.T + shoulder])
+        uvs = np.vstack([uvs, uvs[used]])
+        normals = np.vstack([normals, normals[used] @ rot.T])
+        faces[mask] = np.vectorize(remap.get)(faces[mask])
+        for joint in (f"elbow_{side}", f"hand_{side}"):
+            skeleton[joint] = ((np.array(skeleton[joint]) - shoulder) @ rot.T + shoulder).tolist()
+        print(f"braco {side} abaixado {np.degrees(angle):.0f} graus")
+    return vertices, uvs, normals, faces, {**cfg, "skeleton": skeleton}
 
 
 def shift_head(vertices, faces, labels, cfg):
@@ -616,6 +654,13 @@ def main():
     source = ROOT / "tools/art/converted" / name
     vertices, uvs, normals, faces = read_obj(source / f"{name}.obj")
     vertices, normals = prepare(vertices, normals, cfg)
+    if "max_edge" in cfg:
+        # No. 2: a reducao do Meshy deixou triangulos de ate 7,5 m atravessando o corpo (o "poste" acima da cabeca e a
+        # barra no peito com os bracos abaixados); faces com lado maior que max_edge saem.
+        edge = np.max([np.linalg.norm(vertices[faces[:, a]] - vertices[faces[:, b]], axis=1)
+                       for a, b in ((0, 1), (1, 2), (2, 0))], axis=0)
+        print(f"faces longas removidas: {int(np.sum(edge > cfg['max_edge']))}")
+        faces = faces[edge <= cfg["max_edge"]]
     skeleton_mode = "skeleton" in cfg
     labels = (split_skeleton if skeleton_mode else split)((vertices, uvs, normals, faces), cfg)
     # Hierarquia e ordem dos ossos do modelo de cubos (as animacoes usam estes nomes).
@@ -623,6 +668,8 @@ def main():
     old_bones = old_geo["minecraft:geometry"][0]["bones"]
     if "head_shift" in cfg:
         vertices, cfg = shift_head(vertices, faces, labels, cfg)
+    if "arms_down" in cfg:
+        vertices, uvs, normals, faces, cfg = lower_arms(vertices, uvs, normals, faces, labels, cfg)
     points = (pivots_skeleton if skeleton_mode else pivots)(vertices, faces, labels, cfg)
     # Tampa os cortes das juntas com a cor da pele em volta (sem isso o ombro "abre" no slam e mostra o oco).
     vertices, uvs, normals, faces, labels = cap_holes(vertices, uvs, normals, faces, labels)

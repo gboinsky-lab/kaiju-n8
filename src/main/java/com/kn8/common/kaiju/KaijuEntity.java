@@ -427,7 +427,7 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
     @Override
     protected float getDamageAfterArmorAbsorb(DamageSource source, float amount) {
         // Aplicado aqui, nao no actuallyHurt: no NeoForge ele usa o conteiner de dano (bug da pele endurecida, 0.7-E).
-        return super.getDamageAfterArmorAbsorb(source, amount) * vulnerability() * frontGuard(source);
+        return super.getDamageAfterArmorAbsorb(source, amount) * vulnerability() * frontGuard(source) * shieldFactor();
     }
 
     /** Etapa 5: fim do ultimo ataque (aparo frontal fica aberto um tempo depois de cada ataque). */
@@ -465,6 +465,46 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
         return guard.factor();
     }
 
+    /** Pendencia do No. 14: campo de forca ligado agora ({@code shield} do {@code kaiju_ai})? */
+    public boolean isShielded() {
+        KaijuAiDef.Shield shield = aiDef().shield();
+        return shield.active() && shield.upAt(tickCount);
+    }
+
+    /** Pendencia do No. 14: com o escudo desligado, a janela exposta (3 s) e brecha para quem luta com ele. */
+    public boolean isShieldDown() {
+        KaijuAiDef.Shield shield = aiDef().shield();
+        return shield.active() && !shield.upAt(tickCount);
+    }
+
+    private float shieldFactor() {
+        if (!isShielded()) {
+            return 1.0F;
+        }
+        long now = level().getGameTime();
+        if (level() instanceof ServerLevel server && now - lastGuardEffect >= 10 && VfxService.hasRecipe(this,
+                "shield_hit")) {
+            lastGuardEffect = now;
+            VfxService.play(server, VfxService.TECHNIQUE, position().add(0.0, getBbHeight() * 0.5, 0.0),
+                    bodyForward(), 1.0F, 0.0F, this, "shield_hit");
+        }
+        return 1.0F - aiDef().shield().reduction();
+    }
+
+    /** Efeito do escudo: a cada segundo ligado e um estouro ao desligar (receitas "shield" e "shield_break"). */
+    private void tickShield() {
+        KaijuAiDef.Shield shield = aiDef().shield();
+        if (!shield.active() || !(level() instanceof ServerLevel server)) {
+            return;
+        }
+        boolean up = shield.upAt(tickCount);
+        String key = up && tickCount % 20 == 0 ? "shield" : !up && shield.upAt(tickCount - 1) ? "shield_break" : null;
+        if (key != null && VfxService.hasRecipe(this, key)) {
+            VfxService.play(server, VfxService.TECHNIQUE, position().add(0.0, getBbHeight() * 0.5, 0.0), bodyForward(),
+                    1.0F, 0.0F, this, key);
+        }
+    }
+
     /** GDD secao 12: golpe pesado expoe o nucleo por alguns ticks (multiplicador extra do config). */
     public void exposeCore(int ticks) {
         coreExposedUntil = Math.max(coreExposedUntil, level().getGameTime() + ticks);
@@ -496,7 +536,8 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
     /** MOV-5B: guarda aberta (janela depois do golpe pesado ou atordoado): brecha para quem luta de perto. */
     public boolean isOpen() {
         // MOV-5G (Isao: o Thunder Emperor quebra a guarda e expoe o nucleo): nucleo exposto tambem e brecha.
-        return staggerTicks > 0 || level().getGameTime() < openUntil || isParalyzed() || isCoreExposed();
+        return staggerTicks > 0 || level().getGameTime() < openUntil || isParalyzed() || isCoreExposed()
+                || isShieldDown();
     }
 
     /**
@@ -574,6 +615,7 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
                 staggerTicks--;
             }
             tickWounds();
+            tickShield();
             tickHabits();
             tickGroup();
             RegionService.kaijuTick(this);
@@ -935,6 +977,13 @@ public class KaijuEntity extends PathfinderMob implements GeoEntity {
                     // MOV-6: o alvo mudou de lugar no preparo e o pouso ficou ruim (teto, parede, vazio): nao salta.
                     pendingBlocked = true;
                     AiTuning.logMove(this, "salto " + id + " cancelado: sem pouso");
+                }
+            }
+            case KaijuAbilities.TYPE_TELEPORT -> {
+                // Pendencia do No. 14: sem dano e sem contar como falha (so reposiciona).
+                pendingBlocked = true;
+                if (!KaijuAbilities.teleport(this, id, ability, abilityTarget)) {
+                    AiTuning.logMove(this, "teleporte " + id + " sem lugar livre");
                 }
             }
             case KaijuAbilities.TYPE_MULTI_HIT -> {

@@ -9,8 +9,9 @@ Vida, dano, armadura, velocidade e multiplicadores pelo "Balanceamento Completo 
   investida 1,7x; tanque com janela depois dos golpes fortes.
 - No. 6 (rei dos kaiju, frio): garra 1,2x, sopro gelado em rajada, estaca de gelo 1,7x, avalanche 2,4x, campo
   congelante (Lentidao); territorial, congelamento curto (nunca permanente).
-- No. 14 (monolito): raios pelas faces 1,5x, salva para os lados, pulso 1,8x, area 2,4x, teleporte curto (salto).
-  Campo de forca de 35% fica [DECIDIR] (precisa de codigo novo); por ora armadura alta.
+- No. 14 (monolito): raios pelas faces 1,5x, salva para os lados, pulso 1,8x, area 2,4x, teleporte curto de verdade
+  (`kn8:teleport`: com o alvo perto some e reaparece a 12 blocos) e campo de forca de 35% que alterna com a janela
+  exposta de 3 s (`shield` no kaiju_ai; armadura 19 do documento).
 
 Uso: python3 tools/data/gen_numerados_b.py   (depois: rig_primigenius_mesh.py kaiju_no2|kaiju_no6 e
 rig_monolith_mesh.py)
@@ -22,6 +23,14 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 from gen_numerados_a import (DATA, L, SMART, ai, area, charge, leap, melee, palette, projectile,  # noqa: E402
                              sweep, write)
+
+
+def teleport(distance, cooldown, anim, prio, min_range, max_range):
+    """kn8:teleport (No. 14): some e reaparece a `distance` blocos do alvo; sem dano."""
+    return {"type": "kn8:teleport", "damage_multiplier": 0.0, "radius": distance, "windup_ticks": 8,
+            "active_ticks": 2, "cooldown_ticks": cooldown, "animation": anim, "vfx": [], "camera_shake": 0.0,
+            "sound": "kn8:kaiju.energy_charge",
+            "behavior": {"priority": prio, "min_range": min_range, "max_range": max_range}}
 
 
 def kaiju(health, damage, armor, speed, fortitude, scale, width, height, abilities, tags, parts, size):
@@ -125,9 +134,9 @@ def no14():
                                        arc_degrees=60),
         "no14_pulse": area(1.8, 4.0, 12, 120, "action.pulse", 3, 3.5, sound="kn8:kaiju.energy_beam"),
         "no14_crushing_field": area(2.4, 6.0, 24, 240, "action.slam", 4, 5.0),
-        "no14_blink": leap(1.2, 200, "action.leap", 2, 8, 18),
+        "no14_blink": teleport(12.0, 160, "action.leap", 4, 0, 5),
     }
-    data = kaiju(3000.0, 50.0, 24.0, 0.30, 9.0, 10.0 / 7.0, 2.6, 7.0, moves, ["construct", "levitating"], [
+    data = kaiju(3000.0, 50.0, 19.0, 0.30, 9.0, 10.0 / 7.0, 2.6, 7.0, moves, ["construct", "levitating"], [
         {"name": "faces", "offset": [0.0, 5.2, 0.0], "width": 2.8, "height": 1.8, "multiplier": 1.3},
         {"name": "torso", "offset": [0.0, 1.0, 0.0], "width": 2.6, "height": 4.2, "multiplier": 1.0},
         {"name": "core", "offset": [0.0, 3.6, 0.9], "width": 0.9, "height": 0.9, "multiplier": 3.0, "core": True}],
@@ -144,10 +153,19 @@ def no14():
         "no14_crushing_field": [L("wave", "accent", "ring", 1, 0.5, 0.0, 6.0, 16, 0, 0.05),
                                 L("crack", "secondary", "line", 6, 0.3, 0.0, 5.0, 40, 0, 0.02, edge="accent"),
                                 L("bolt", "accent", "burst", 6, 0.08, 0.0, 2.0, 8, 0, 0.5)],
-        "no14_blink": [L("flash", "accent", size=1.0, spread=1.0, lifetime=3, forward=0, up=1.0),
-                       L("bolt", "accent", "converge", 4, 0.07, 0.0, 1.4, 6, 0, 1.0)],
+        "no14_blink": [L("flash", "accent", size=1.0, spread=1.0, lifetime=3, forward=0, up=0),
+                       L("bolt", "accent", "converge", 4, 0.07, 0.0, 1.4, 6, 0, 0),
+                       L("pulse", "accent", size=1.6, spread=1.6, lifetime=6, forward=0, up=0)],
+        # Campo de forca: anel fraco a cada segundo ligado, estalo no golpe aparado e estouro ao desligar.
+        "shield": [L("pulse", "accent", size=2.6, spread=2.6, lifetime=12, forward=0, up=0)],
+        "shield_hit": [L("pulse", "core", size=1.4, spread=1.4, lifetime=5, forward=0, up=0),
+                       L("sparks", "accent", count=5, size=0.08, speed=0.5, spread=1.4, lifetime=6, forward=0, up=0)],
+        "shield_break": [L("flash", "accent", size=1.6, spread=1.6, lifetime=4, forward=0, up=0),
+                         L("bolt", "accent", "burst", 8, 0.08, 0.0, 2.6, 8, 0, 0),
+                         L("wave", "accent", "ring", 1, 0.3, 0.0, 4.0, 12, 0, 0)],
     })
-    ai_data = ai("support", group={"role": "support", "support_distance": 12.0}, **SMART)
+    ai_data = ai("support", group={"role": "support", "support_distance": 12.0},
+                 shield={"reduction": 0.35, "up_ticks": 200, "down_ticks": 60}, **SMART)
     ai_data["wounds"] = {"max_active": 1, "parts": [
         {"part": "faces", "threshold": 0.12, "duration_ticks": 200, "stagger_ticks": 20, "stagger_multiplier": 1.3,
          "disables": ["kn8:projectile"]}]}

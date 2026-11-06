@@ -24,6 +24,11 @@
     "role": "support",
     "support_distance": 12.0
   },
+  "shield": {
+    "reduction": 0.35,
+    "up_ticks": 200,
+    "down_ticks": 60
+  },
   "habits": {
     "window_ticks": 200,
     "sample_ticks": 10,

@@ -40,6 +40,9 @@ final class KaijuAbilities {
     static final String TYPE_PROJECTILE = "projectile";
     static final String TYPE_LEAP = "leap";
     static final String TYPE_MULTI_HIT = "multi_hit";
+    static final String TYPE_TELEPORT = "teleport";
+    /** Tentativas de achar lugar livre no teleporte. */
+    private static final int TELEPORT_TRIES = 12;
     /** Tempo de voo do salto (ticks): define a parabola ate o alvo. */
     private static final int LEAP_FLIGHT_TICKS = 16;
     /** Fisica vanilla no ar: gravidade e freio vertical/horizontal por tick. */
@@ -213,6 +216,35 @@ final class KaijuAbilities {
     static Vec3 mouth(KaijuEntity kaiju) {
         return kaiju.position().add(kaiju.bodyForward().scale(kaiju.getBbWidth() * 0.5))
                 .add(0, kaiju.getBbHeight() * 0.75, 0);
+    }
+
+    /**
+     * {@code kn8:teleport} (pendencia do No. 14, dossie CANON: "teleporte curto"): some e reaparece a {@code radius}
+     * blocos do alvo, num lado sorteado, em chao livre (o {@code randomTeleport} do vanilla procura o chao e confere a
+     * colisao). Receita "<habilidade>" do perfil visual na saida e na chegada. Devolve se achou lugar.
+     */
+    static boolean teleport(KaijuEntity kaiju, ResourceLocation id, AbilityDef ability, LivingEntity target) {
+        if (!(kaiju.level() instanceof ServerLevel server)) {
+            return false;
+        }
+        Vec3 from = kaiju.position();
+        Vec3 center = target != null && target.isAlive() ? target.position() : from;
+        double distance = Math.max(3.0, ability.radius());
+        for (int i = 0; i < TELEPORT_TRIES; i++) {
+            double angle = kaiju.getRandom().nextDouble() * Math.PI * 2.0;
+            double x = center.x + Math.cos(angle) * distance;
+            double z = center.z + Math.sin(angle) * distance;
+            if (kaiju.randomTeleport(x, center.y + 4.0, z, false)) {
+                Vec3 up = new Vec3(0.0, kaiju.getBbHeight() * 0.5, 0.0);
+                VfxService.play(server, VfxService.TECHNIQUE, from.add(up), kaiju.bodyForward(), 1.0F, 0.0F, kaiju,
+                        id.getPath());
+                VfxService.play(server, VfxService.TECHNIQUE, kaiju.position().add(up), kaiju.bodyForward(), 1.0F,
+                        0.0F, kaiju, id.getPath());
+                kaiju.getNavigation().stop();
+                return true;
+            }
+        }
+        return false;
     }
 
     /** {@code kn8:leap}: pula numa parabola ate o alvo; o dano em area sai na aterrissagem ({@link #land}). */

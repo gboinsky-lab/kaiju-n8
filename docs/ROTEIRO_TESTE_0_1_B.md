@@ -1981,3 +1981,14 @@ Imagem: `docs/img/especies_etapa5.jpg`. Modelos do Miguel de 2026-11-05 (sem rig
 | 141.4 | Invasões `kaiju_horde`, `tachikawa_city_raid`, `honju_rampage`, `diclonius_attack`, `honju_assault`, `ariake_assault` | Podem aparecer na última onda (35-40%) |
 | 141.5 | Bater na Imitatio de frente e depois de costas (golpe leve) | De frente aparece o anel de aparo e o dano cai pela metade; de costas, logo depois de ela atacar ou com golpe pesado, dano cheio |
 | 141.6 | Segundo cliente olhando | Os mesmos modelos, ataques e efeitos |
+
+## 142. Pendências: campo de força e teleporte do No. 14, braços do No. 2
+
+Imagem: `docs/img/pendencias_no14_no2.jpg`.
+
+| # | Passo | Esperado |
+|---|---|---|
+| 142.1 | `/summon kn8:kaiju_no14` e atacar | Anel vermelho do campo de força a cada segundo; golpes com um estalo e dano menor (−35%) por 10 s; depois um estouro de raios e 3 s sem campo (dano cheio; os especiais pressionam) |
+| 142.2 | Chegar a menos de 5 blocos do No. 14 | Ele some com um clarão e reaparece a ~12 blocos, no chão |
+| 142.3 | `/summon kn8:kaiju_no2` | Braços abaixados ao lado do corpo (não mais abertos), sem o poste preto acima da cabeça; soco e passada mexem os braços |
+| 142.4 | Segundo cliente olhando | Os mesmos efeitos e o mesmo modelo |

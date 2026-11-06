@@ -1,28 +1,17 @@
 {
-  "type": "kn8:leap",
-  "damage_multiplier": 1.2,
-  "radius": 2.0,
+  "type": "kn8:teleport",
+  "damage_multiplier": 0.0,
+  "radius": 12.0,
   "windup_ticks": 8,
-  "active_ticks": 20,
-  "cooldown_ticks": 200,
+  "active_ticks": 2,
+  "cooldown_ticks": 160,
   "animation": "action.leap",
-  "telegraph": "ground_circle",
-  "heavy": true,
-  "vfx": [
-    {
-      "effect": "kn8:impact",
-      "intensity": 0.9
-    },
-    {
-      "effect": "kn8:dust",
-      "intensity": 0.8
-    }
-  ],
-  "camera_shake": 0.3,
-  "sound": "kn8:kaiju.leap",
+  "vfx": [],
+  "camera_shake": 0.0,
+  "sound": "kn8:kaiju.energy_charge",
   "behavior": {
-    "priority": 2,
-    "min_range": 8,
-    "max_range": 18
+    "priority": 4,
+    "min_range": 0,
+    "max_range": 5
   }
 }
