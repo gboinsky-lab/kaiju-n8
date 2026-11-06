@@ -74,3 +74,40 @@ como T8+ é preciso mudar o código [DECIDIR]:
   senão o soldado usa a guarda ou a esquiva.
 - **(b)** Deixar como está: o gigante é ameaça de grupo e de destruição nas invasões, e o Hoshina No. 10 derruba
   gigantes, como o No. 10 gigante.
+
+## Segunda rodada (Miguel 2026-11-06: "Só sai se der tempo" e "Mais defesa")
+
+### Saída da área do golpe pesado só com tempo
+
+`DangerAvoid.exitSpot` agora confere se dá tempo de chegar à borda da área antes do impacto. A conta é: distância
+até a borda ≤ ticks que faltam × velocidade × `[soldierAi] dangerStepPerSpeed` 2,0. A regra pura é
+`DangerZone.reachable` (JUnit). Sem tempo, o soldado fica, e o especial ainda tem a guarda, a esquiva e o
+contra-ataque. Vale para todo kaiju com golpe pesado. Com 0 no config, o soldado nunca sai andando; com 10, volta a
+sair sempre, como antes.
+
+| Duelo | Regra desligada | Regra ligada |
+|---|---|---|
+| Hoshina No. 10 × No. 2 | 3 V, Hoshina com 55-77% | 3 V, Hoshina com 60-88% |
+| Hoshina No. 10 × No. 6 | 3 V, Hoshina com 38-76% | 3 V |
+| Hoshina × No. 13 | 7 V | 3 V |
+| Hoshina × No. 10 pequeno | 4 V, Hoshina com 33-64% | 6 V / 1 D, Hoshina com 19-72% |
+| Hoshina No. 10 × No. 10 gigante | 3 V | 3 V |
+| Mina × No. 10 pequeno | 4/10 (MOV-5D) | 2 V / 1 D |
+
+No log, em 3 duelos contra o No. 2 o Hoshina No. 10 ficou 41 vezes sem tempo de sair e saiu andando 107 vezes. Mesmo
+assim vence os gigantes: a guarda da cauda segura golpe pesado de fora da frente, a guarda contra golpe pesado reduz
+pela metade o que vem de frente, e o contra-ataque (Kaeshi-uchi) tem invulnerabilidade. É o kit dele, não a
+saída a pé. Fazer o No. 2 e o No. 6 renderem como T8+ contra ele pediria mexer nessas defesas [DECIDIR].
+
+### Camilly com mais defesa
+
+Aparar 30% → 45% (o golpe aparado passa com 30% em vez de 40%), esquiva 0,75 → 0,9 com recarga de 100 → 70 ticks,
+e distância do alvo 14 → 16 (recua a partir de 10, antes 8). Dano contra kaiju continua 1,0.
+
+| | Contra o No. 13 |
+|---|---|
+| Camilly antes (0,75) | 3 D, o No. 13 fica com 40-50% |
+| Camilly só com o dano 1,0 | 3 D, o No. 13 fica com 13-26% |
+| **Camilly com mais defesa** | **1 V / 2 D** |
+| Mina (T6, atiradora) | 1 V / 2 D |
+| Miguel (T6) | 3 V |

@@ -2080,3 +2080,11 @@ Imagem: `docs/img/r1_invasao_save_antigo.jpg`.
 | 150.2 | O mesmo com `kn8:jura` | Vence em ~65-75 s com pouca vida |
 | 150.3 | O mesmo com `kn8:camilly` | Perde, mas deixa o No. 13 com ~15-25% da vida |
 | 150.4 | `kn8:hoshina_no10` contra `kn8:kaiju_no2` e `kn8:kaiju_no6` a 30 blocos | A onda de choque e o campo congelante cobrem uma área bem maior que antes; o Hoshina ainda vence (ver o [DECIDIR] em `docs/MATRIZ_DECISOES.md`) |
+
+## 151. MATRIZ-2: saída da área só com tempo e Camilly com mais defesa
+
+| # | Passo | Esperado |
+|---|---|---|
+| 151.1 | Soldados comuns perto de um `kn8:kaiju_no2` a 30 blocos | Quem está longe da borda da onda de choque (aviso no chão) fica e leva o golpe; quem está perto da borda sai andando |
+| 151.2 | `[soldierAi] dangerStepPerSpeed` = 10 no config | Os soldados voltam a sair de todo aviso, como antes |
+| 151.3 | `kn8:camilly` contra `kn8:kaiju_no13` a 14 blocos | Ela recua mais longe, apara e esquiva com frequência; vence às vezes |

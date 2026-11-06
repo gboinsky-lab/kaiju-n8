@@ -1556,3 +1556,14 @@ Medidas e motivos em `docs/MATRIZ_DECISOES.md`; números aplicados por `tools/da
 | No. 2 / No. 6 janela parada depois do golpe pesado | 24 / 20 ticks | 12 / 12 | `kaiju_ai/kaiju_no2.json`, `kaiju_no6.json` |
 
 [SUPOSIÇÃO] todos os números. Contra o No. 13: Soichiro 2/1, Jura 3/0, Camilly 0/3 (No. 13 com 13–26%), Hoshina 7/0.
+
+### Segunda rodada (MATRIZ-2)
+
+| O quê | Antes | Agora | Onde |
+|---|---|---|---|
+| Saída da área do golpe pesado | sempre | só se a borda está a ≤ ticks × velocidade × 2,0 | `[soldierAi] dangerStepPerSpeed` |
+| Camilly aparar | 30%, passa 40% | 45%, passa 30% | `special_soldier/camilly.json` |
+| Camilly esquiva | 0,75, recarga 100 | 0,9, recarga 70 | idem |
+| Camilly distância | 14 (recua de 8) | 16 (recua de 10) | idem |
+
+[SUPOSIÇÃO] todos os números. Camilly × No. 13 1/2; Hoshina No. 10 × No. 2 e No. 6 ainda 3/0.
