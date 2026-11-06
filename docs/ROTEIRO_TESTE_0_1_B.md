@@ -2106,5 +2106,5 @@ Imagem: `docs/img/r1_invasao_save_antigo.jpg`.
 |---|---|---|
 | 153.1 | `/summon kn8:kaiju_no12` e bater nele sempre com a mesma arma | Cada golpe tira um pouco menos (fumaça cinza no corpo); trocar de arma volta a tirar o normal |
 | 153.2 | Deixar o No. 12 abaixo de metade da vida e parar de bater | Ele se cura aos poucos (efeito de regeneração) |
-| 153.3 | `/summon kn8:kaiju_no15_kikoru` e bater até metade da vida | Mensagem "O disfarce caiu..." e a forma kaiju do No. 15 surge no lugar com metade da vida |
+| 153.3 | `/summon kn8:kaiju_no15_kikoru` e bater até metade da vida | Mensagem "O disfarce caiu..." (também para quem está em espectador) e a forma kaiju do No. 15 surge no lugar com metade da vida |
 | 153.4 | `/summon kn8:kaiju_no11` longe da água e depois na beira de um lago ou na chuva | Perto da água os golpes dele tiram mais e saem mais seguidos |

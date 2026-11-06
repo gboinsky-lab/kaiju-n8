@@ -104,9 +104,11 @@ public final class No10Service {
         }
         Component message = Component.translatable(transform.message()).withStyle(ChatFormatting.DARK_RED,
                 ChatFormatting.BOLD);
-        for (ServerPlayer player : level.getEntitiesOfClass(ServerPlayer.class,
-                no10.getBoundingBox().inflate(ANNOUNCE_RADIUS))) {
-            player.sendSystemMessage(message);
+        // Todo jogador no raio, espectador tambem (o getEntitiesOfClass deixa os espectadores de fora).
+        for (ServerPlayer player : level.players()) {
+            if (player.distanceToSqr(no10) <= ANNOUNCE_RADIUS * ANNOUNCE_RADIUS) {
+                player.sendSystemMessage(message);
+            }
         }
         if (no10.getPersistentData().getBoolean(InvasionService.TAG)) {
             InvasionService.release(level, no10.getUUID());
