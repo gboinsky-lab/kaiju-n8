@@ -2063,3 +2063,11 @@ Imagem: `docs/img/r1_invasao_save_antigo.jpg`.
 | 148.1 | Abrir um mundo salvo por uma versão anterior do mod | Abre sem erro; carreira, Release e esquadrão continuam |
 | 148.2 | Pôr um JSON quebrado num datapack do mundo (ex.: `data/kn8/kn8/weapon/teste.json` com `"base_damage": -5`) e `/reload` | O log diz o arquivo e o motivo; o servidor continua; o resto dos dados funciona |
 | 148.3 | `/kn8 invasion start kn8:tachikawa_raid ~ ~ ~` com 2 jogadores perto | As 3 ondas sem travar (no teste: 4-13 ms por tick, limite 50) |
+
+## 149. R-2: versão 1.0.0
+
+| # | Passo | Esperado |
+|---|---|---|
+| 149.1 | Instalar o `kn8-1.0.0.jar` (com GeckoLib e Player Animation Library) no servidor e nos 2 clientes | Tela de mods mostra "Kaiju No. 8: Defense Force 1.0.0"; servidor sem arquivo com erro |
+| 149.2 | Passar o `docs/ROTEIRO_TESTE_1_0_0.md` inteiro | Todas as linhas OK ou com o problema anotado |
+| 149.3 | Ler o `docs/CHANGELOG_1_0_0.md` | Lista de mudanças completa e certa para distribuir |

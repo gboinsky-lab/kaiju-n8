@@ -202,3 +202,5 @@ e os modelos provisórios (asas e cauda do jogador, Narumi No. 1, Isao sem o Num
 - Armas no tamanho da tabela do Miguel (jogador e NPC iguais); forma do jogador com a altura do No. 8 NPC.
 - Base dentro da cidade: anel de até 8 peças encostadas na base.
 - Próximas: **R-1**, **R-2**.
+
+- **R-2 feita (2026-11-06):** versão 1.0.0, `docs/CHANGELOG_1_0_0.md`, `docs/ROTEIRO_TESTE_1_0_0.md` e o jar final. O plano 1.0.0 terminou.
