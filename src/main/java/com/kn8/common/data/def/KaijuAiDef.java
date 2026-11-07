@@ -87,6 +87,14 @@ public record KaijuAiDef(float circleChance, float circleDistance, int circleTic
         return ecology.water();
     }
 
+    /**
+     * GIGANTES-2 (Miguel, 2026-11-07: "subir o dano deles contra os especiais"): todo dano deste kaiju (golpe,
+     * area, tiro) em soldado especial sai multiplicado por {@code special_damage}; jogador e soldado comum nao mudam.
+     */
+    public float specialDamage() {
+        return ecology.specialDamage();
+    }
+
     /** PM-4: papel em grupo. */
     public Group group() {
         return ecology.group();
@@ -97,10 +105,11 @@ public record KaijuAiDef(float circleChance, float circleDistance, int circleTic
      * por um MapCodec achatado, sem mudar o formato do arquivo).
      */
     public record Ecology(Terrain terrain, Group group, Guard guard, Shield shield, ControlResist controlResist,
-            Illusion illusion, Foresight foresight, Split split, Charges charges, Water water) {
+            Illusion illusion, Foresight foresight, Split split, Charges charges, Water water,
+            float specialDamage) {
 
         public static final Ecology NONE = new Ecology(Terrain.DEFAULT, Group.DEFAULT, Guard.NONE, Shield.NONE,
-                ControlResist.NONE, Illusion.NONE, Foresight.NONE, Split.NONE, Charges.NONE, Water.NONE);
+                ControlResist.NONE, Illusion.NONE, Foresight.NONE, Split.NONE, Charges.NONE, Water.NONE, 1.0F);
 
         public static final MapCodec<Ecology> MAP_CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
                 Terrain.CODEC.optionalFieldOf("terrain", Terrain.DEFAULT).forGetter(Ecology::terrain),
@@ -113,7 +122,9 @@ public record KaijuAiDef(float circleChance, float circleDistance, int circleTic
                 Foresight.CODEC.optionalFieldOf("foresight", Foresight.NONE).forGetter(Ecology::foresight),
                 Split.CODEC.optionalFieldOf("split", Split.NONE).forGetter(Ecology::split),
                 Charges.CODEC.optionalFieldOf("charges", Charges.NONE).forGetter(Ecology::charges),
-                Water.CODEC.optionalFieldOf("water", Water.NONE).forGetter(Ecology::water)
+                Water.CODEC.optionalFieldOf("water", Water.NONE).forGetter(Ecology::water),
+                Codec.floatRange(0.1F, 10.0F).optionalFieldOf("special_damage", 1.0F)
+                        .forGetter(Ecology::specialDamage)
         ).apply(i, Ecology::new));
     }
 

@@ -1278,6 +1278,10 @@ public class HoshinaEntity extends SoldierEntity {
             return false;
         }
         float dealt = heavyGuard(source, amount, now);
+        // GIGANTES-2: kaiju com special_damage no kaiju_ai bate mais forte em soldado especial (No. 2 e No. 6).
+        if (source.getEntity() instanceof KaijuEntity attacker) {
+            dealt *= attacker.aiDef().specialDamage();
+        }
         Optional<SpecialSoldierDef.Parry> parry = profile().map(SpecialSoldierDef::parry);
         if (parry.isPresent() && source.getEntity() instanceof KaijuEntity kaiju
                 && !source.is(DamageTypeTags.IS_PROJECTILE) && !source.is(DamageTypeTags.IS_EXPLOSION)
