@@ -124,3 +124,16 @@ Decisão do Miguel: a guarda contra golpe pesado e a guarda da cauda não segura
 | Hoshina No. 10 x No. 10 gigante | 3 V | 3 V em 52-62 s, 60-75% (sem mudança: fora da tag) |
 
 As guardas pesavam pouco: o Hoshina No. 10 sai mais ferido, mas ainda vence os dois. [DECIDIR] o próximo passo.
+
+## GIGANTES-2 (2026-11-07): dano contra especiais
+
+Decisão do Miguel (opção 2): o No. 2 e o No. 6 batem mais forte em soldados especiais (`special_damage` no
+`kaiju_ai`; jogador e soldado comum iguais). Três duelos por valor:
+
+| Multiplicador | Hoshina No. 10 x No. 2 | Hoshina No. 10 x No. 6 |
+|---|---|---|
+| x1,5 | 3 V (23-53% da vida) | 2 V / 1 D |
+| x2,5 | **3 D** (duas com o No. 2 a 7%) | 2 V / 1 D (10-20% da vida) |
+| x3,0 | — | **3 D** |
+
+Ficou No. 2 x2,5 e No. 6 x3,0. O No. 10 gigante não mudou (o Hoshina No. 10 continua vencendo).

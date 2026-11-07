@@ -1598,3 +1598,9 @@ Números em `tools/data/gen_numerados_c.py`. A precognição do No. 1 já tinha 
 
 [SUPOSIÇÃO] todos os números. Hoshina No. 10 × No. 12: 3/0/0 em 46-54 s com 38-57% da vida (antes 39-40 s com
 59-77%); × No. 11 no seco: 1/0/2 (antes 1/0/2); Hoshina × forma Kikoru: o disfarce cai e o No. 15 aparece (log da IA).
+
+### GIGANTES e GIGANTES-2: No. 2 e No. 6 contra soldados especiais (2026-11-07)
+
+- Tag `kn8:breaks_guards` (No. 2, No. 6): golpes e tiros deles passam pela guarda contra golpe pesado e pela guarda da cauda do Hoshina No. 10.
+- `special_damage` no `kaiju_ai` (multiplica todo dano do kaiju em soldado especial; jogador e soldado comum iguais): No. 2 **2,5**, No. 6 **3,0** (`tools/data/gen_matriz.py`).
+- Resultado (3 duelos): Hoshina No. 10 perde para o No. 2 e para o No. 6 (0/0/3 cada); contra o No. 10 gigante continua vencendo (3/0/0). Medidas em `docs/MATRIZ_DECISOES.md` [SUPOSIÇÃO números].
