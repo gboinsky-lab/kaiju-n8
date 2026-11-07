@@ -90,5 +90,5 @@
     "min": 0.25,
     "reset_ticks": 600
   },
-  "special_damage": 2.5
+  "special_damage": 3.0
 }

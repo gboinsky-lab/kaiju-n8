@@ -26,7 +26,7 @@ CHANGES = {
     'ability/no6_avalanche.json': {'radius': 7.5, 'windup_ticks': 16},
     'ability/no6_freezing_field.json': {'radius': 14.0, 'damage_multiplier': 0.6, 'behavior.max_range': 12.0},
     'kaiju_ai/kaiju_no2.json': {'recovery_after_heavy_ticks': 12, 'special_damage': 2.5},
-    'kaiju_ai/kaiju_no6.json': {'recovery_after_heavy_ticks': 12, 'special_damage': 2.5},
+    'kaiju_ai/kaiju_no6.json': {'recovery_after_heavy_ticks': 12, 'special_damage': 3.0},
 }
 
 
