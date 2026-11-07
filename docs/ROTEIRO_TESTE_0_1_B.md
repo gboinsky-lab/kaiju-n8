@@ -2118,3 +2118,11 @@ Imagem: `docs/img/r1_invasao_save_antigo.jpg`.
 | 154.3 | Esperar o golpe de tentáculos (alvo a 4-10 blocos) | Os tentáculos sobem para trás e chicoteiam para a frente juntos no momento do tiro rosa que puxa o alvo |
 | 154.4 | Deixá-lo abaixo de 35% (Domínio) | Um lado chicoteia a cada golpe, alternando esquerda e direita |
 | 154.5 | Bater nele | Os tentáculos dão um tranco para trás junto com o corpo; nenhum buraco nem pedaço solto aparece no corpo |
+
+## 155. GIGANTES: No. 2 e No. 6 passam pelas guardas
+
+| # | Passo | Esperado |
+|---|---|---|
+| 155.1 | `/summon kn8:hoshina_no10` e `/summon kn8:kaiju_no6` a ~30 blocos; olhar a luta | Golpes pesados e tiros do No. 6 tiram vida cheia do Hoshina No. 10: sem o anel de aparo nem a faísca vermelha da cauda |
+| 155.2 | O mesmo com o `kn8:kaiju_no10_giant` | A cauda e a guarda continuam segurando (faísca vermelha, aparo) como antes |
+| 155.3 | O mesmo com o `kn8:kaiju_no2` | Igual ao 155.1 |

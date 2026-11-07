@@ -111,3 +111,16 @@ e distância do alvo 14 → 16 (recua a partir de 10, antes 8). Dano contra kaij
 | **Camilly com mais defesa** | **1 V / 2 D** |
 | Mina (T6, atiradora) | 1 V / 2 D |
 | Miguel (T6) | 3 V |
+
+## GIGANTES (2026-11-07): guarda sem segurar gigante
+
+Decisão do Miguel: a guarda contra golpe pesado e a guarda da cauda não seguram golpes do No. 2 e do No. 6 (tag
+`kn8:breaks_guards`). O Kaeshi-uchi não mudou. Três duelos cada, servidor dedicado, datapack de isolamento ligado:
+
+| Confronto | Antes (MATRIZ-2) | Agora |
+|---|---|---|
+| Hoshina No. 10 x No. 2 | 3 V, 55-77% da vida | 3 V em 36-42 s, 30-67% |
+| Hoshina No. 10 x No. 6 | 3 V, 38-76% | 3 V em 52-59 s, 32-65% |
+| Hoshina No. 10 x No. 10 gigante | 3 V | 3 V em 52-62 s, 60-75% (sem mudança: fora da tag) |
+
+As guardas pesavam pouco: o Hoshina No. 10 sai mais ferido, mas ainda vence os dois. [DECIDIR] o próximo passo.
