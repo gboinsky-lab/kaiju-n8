@@ -111,6 +111,39 @@ public final class HoshinaNo10GameTests {
         });
     }
 
+    /**
+     * GIGANTES (Miguel, 2026-11-06): tiro de No. 6 vindo das costas passa pela guarda da cauda; o mesmo tiro de um
+     * Primigenius e guardado. O No. 2 e o No. 6 estao na tag kn8:breaks_guards; o No. 10 gigante nao (papel mantido).
+     */
+    @GameTest(template = TEMPLATE)
+    public static void tailGuardDoesNotHoldGiants(GameTestHelper helper) {
+        HoshinaNo10Entity vsGiant = no10(helper, new BlockPos(2, 1, 4));
+        HoshinaNo10Entity vsSmall = no10(helper, new BlockPos(6, 1, 4));
+        KaijuEntity giant = KN8Entities.KAIJU_NO6.get().create(helper.getLevel());
+        KaijuEntity small = KN8Entities.PRIMIGENIUS.get().create(helper.getLevel());
+        helper.runAfterDelay(SETTLE, () -> {
+            helper.assertTrue(giant.getType().is(HoshinaEntity.BREAKS_GUARDS)
+                    && KN8Entities.KAIJU_NO2.get().is(HoshinaEntity.BREAKS_GUARDS), "No. 2 e No. 6 quebram a guarda");
+            helper.assertFalse(KN8Entities.KAIJU_NO10_GIANT.get().is(HoshinaEntity.BREAKS_GUARDS),
+                    "O No. 10 gigante nao deveria quebrar a guarda (papel do Hoshina No. 10 mantido)");
+            HoshinaNo10Entity[] targets = {vsGiant, vsSmall};
+            KaijuEntity[] owners = {giant, small};
+            for (int i = 0; i < targets.length; i++) {
+                HoshinaNo10Entity hoshina = targets[i];
+                hoshina.setYRot(0.0F);
+                hoshina.setYBodyRot(0.0F);
+                Arrow arrow = new Arrow(EntityType.ARROW, helper.getLevel());
+                Vec3 at = hoshina.position().add(0, 1, -3);
+                arrow.setPos(at.x, at.y, at.z);
+                hoshina.invulnerableTime = 0;
+                hoshina.hurt(helper.getLevel().damageSources().arrow(arrow, owners[i]), ARROW_DAMAGE);
+            }
+            helper.assertTrue(vsGiant.guards() == 0 && vsSmall.guards() == 1, "A cauda so guarda o tiro do kaiju"
+                    + " menor: gigante " + vsGiant.guards() + ", Primigenius " + vsSmall.guards());
+            helper.succeed();
+        });
+    }
+
     @GameTest(template = TEMPLATE, timeoutTicks = 120)
     public static void juniHitoeNeedsFullReleaseAndExposesTheCore(GameTestHelper helper) {
         HoshinaNo10Entity hoshina = no10(helper, new BlockPos(1, 1, 4));

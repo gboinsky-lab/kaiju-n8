@@ -193,7 +193,8 @@ public class HoshinaNo10Entity extends HoshinaEntity {
         boolean heavyHit = source.getEntity() instanceof KaijuEntity && CombatService.isHeavyHit(source);
         boolean heavy = heavyHit && ServerConfig.TAIL_GUARD_BLOCKS_HEAVY.get();
         boolean threat = heavy || (source.is(DamageTypeTags.IS_PROJECTILE) && !heavyHit);
-        if (n10.isPresent() && threat && now >= guardReadyAt && !isInvulnerableNow()) {
+        // GIGANTES (Miguel, 2026-11-06): a cauda nao segura golpe nem tiro de kaiju da tag kn8:breaks_guards.
+        if (n10.isPresent() && threat && !breaksGuards(source) && now >= guardReadyAt && !isInvulnerableNow()) {
             SpecialSoldierDef.Tail tail = n10.get().tail();
             double half = Math.toRadians(tail.frontArcDegrees() / 2.0);
             if (facingCosine(source.getSourcePosition()) < Math.cos(half)) {

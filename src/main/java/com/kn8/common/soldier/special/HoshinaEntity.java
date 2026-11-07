@@ -46,6 +46,7 @@ import com.kn8.core.power.PowerMath;
 import com.kn8.core.soldier.TechniqueMath;
 
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -55,6 +56,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
@@ -167,6 +169,21 @@ public class HoshinaEntity extends SoldierEntity {
     /** IA-3: guarda contra golpe pesado (heavy_guard do perfil) e quantas vezes defendeu (GameTests). */
     private long heavyGuardReadyAt;
     private int heavyGuards;
+
+    /**
+     * GIGANTES (Miguel, 2026-11-06: "guarda sem segurar gigante"): golpe e tiro de kaiju desta tag de tipo de entidade
+     * (No. 2 e No. 6; dados, para crescer sem codigo) passam pela guarda contra golpe pesado e pela guarda da cauda do
+     * Hoshina No. 10. Por especie e nao por altura: o No. 10 gigante (24 m) e maior que o No. 6 e o papel dele contra
+     * o Hoshina No. 10 continua (decisao de 2026-10-07).
+     */
+    public static final TagKey<EntityType<?>> BREAKS_GUARDS = TagKey.create(Registries.ENTITY_TYPE,
+            KN8Constants.id("breaks_guards"));
+
+    /** O golpe vem de um kaiju grande demais para ser segurado (tag {@link #BREAKS_GUARDS}). */
+    public static boolean breaksGuards(DamageSource source) {
+        Entity attacker = source.getEntity();
+        return attacker != null && attacker.getType().is(BREAKS_GUARDS);
+    }
     private long counterStrikeAt = -1;
     private LivingEntity counterTarget;
     private int lastVisualRelease = -1;
@@ -1288,7 +1305,7 @@ public class HoshinaEntity extends SoldierEntity {
         Optional<SpecialSoldierDef.HeavyGuard> guard = profile().flatMap(SpecialSoldierDef::heavyGuard);
         Vec3 from = source.getSourcePosition();
         if (guard.isEmpty() || from == null || now < heavyGuardReadyAt || !(source.getEntity() instanceof KaijuEntity)
-                || !CombatService.isHeavyHit(source)) {
+                || !CombatService.isHeavyHit(source) || breaksGuards(source)) {
             return amount;
         }
         Vec3 look = getViewVector(1.0F);
