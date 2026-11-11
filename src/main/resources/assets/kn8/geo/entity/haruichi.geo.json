@@ -87,6 +87,15 @@
           "parent": "root"
         },
         {
+          "name": "coat_left",
+          "pivot": [
+            1.393,
+            12.495,
+            -0.966
+          ],
+          "parent": "root"
+        },
+        {
           "name": "shin_left",
           "pivot": [
             1.974,
@@ -142,6 +151,15 @@
         },
         {
           "name": "leg_right",
+          "pivot": [
+            -1.253,
+            12.482,
+            -0.966
+          ],
+          "parent": "root"
+        },
+        {
+          "name": "coat_right",
           "pivot": [
             -1.253,
             12.482,

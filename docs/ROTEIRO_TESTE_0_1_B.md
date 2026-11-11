@@ -2170,5 +2170,6 @@ Imagem: `docs/img/r1_invasao_save_antigo.jpg`.
 | 159.1 | `/summon kn8:soichiro` com um kaiju a ~30 blocos; olhar de lado enquanto ele corre ate o kaiju | Rabo de cavalo inteiro atras da cabeca; nenhum pedaco lilas ou do casaco saindo com a perna |
 | 159.2 | Hakua, Kota, Aoi e Reno correndo ate um kaiju | Cinto e barra da jaqueta parados com o tronco, sem lascas saindo da coxa |
 | 159.3 | `/summon kn8:philinosoma`, `kn8:preondactyl` e `kn8:primigenius_revived`; rodear cada um | Sem lasca fina atravessando a barriga (Philinosoma), a asa esquerda (Preondactyl) ou a cabeca (revivido) |
-| 159.4 | Haruichi correndo (de lado) | Sem a lasca da coxa direita ate o chao; as abas do casaco ainda giram com as coxas ([DECIDIR]) |
+| 159.4 | Haruichi correndo (de lado) | Abas de tras do casaco acompanham a coxa pela metade, como uma saia; sem laminas saindo do joelho; arco com ~1,3 m, menor que ele |
+| 159.6 | Qualquer personagem com rig correndo e golpeando (Kota, Isao, Kikoru, Hoshina) | Sem laminas finas saindo do joelho, tornozelo, cotovelo ou punho ao dobrar |
 | 159.5 | No. 1, No. 15 na forma Kikoru e No. 9 Neural andando | Sem pedaco solto do quadril ou do braco direito |

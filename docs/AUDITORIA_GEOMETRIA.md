@@ -26,8 +26,9 @@ Mede as 70 malhas do jogo (kaiju, personagens, trajes e acessorios), osso por os
   blocos separados por 8 a 18 cm, e isso faz parte do desenho do modelo.
 - **Juntas:** joelho e quadril abrem de 3,6 a 7,6 px correndo (Haruichi 7,6, Soichiro 7,4, Reno 6,2, Isao 6,0).
   Isso e normal em peca rigida da GeckoLib. A tampa fecha o corte, entao nao fica buraco aberto.
-- **Casaco longo do Haruichi:** as abas de tras estao nos ossos das coxas e giram com elas ao correr, formando
-  lascas na previa. Mudar isso exige uma decisao de desenho (ver [DECIDIR] no `docs/AUDITORIA_MESTRE.md` secao 11).
+- **Casaco longo do Haruichi (feito, Miguel 2026-11-11: opcao b):** as abas de tras viraram os ossos `coat_left/right`
+  (`tools/art/coat_bones.py`), que giram metade da coxa; e os triangulos que atravessavam as juntas foram cortados no
+  plano delas (`tools/art/joint_split.py`, todos os modelos com rig).
 
 ## Tabela
 

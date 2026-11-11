@@ -14,6 +14,8 @@
     "hand_right": "kn8:meshes/haruichi/hand_right.obj",
     "leg_right": "kn8:meshes/haruichi/leg_right.obj",
     "shin_right": "kn8:meshes/haruichi/shin_right.obj",
-    "foot_right": "kn8:meshes/haruichi/foot_right.obj"
+    "foot_right": "kn8:meshes/haruichi/foot_right.obj",
+    "coat_left": "kn8:meshes/haruichi/coat_left.obj",
+    "coat_right": "kn8:meshes/haruichi/coat_right.obj"
   }
 }

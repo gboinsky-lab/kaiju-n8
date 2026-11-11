@@ -265,8 +265,9 @@ correcoes:
   rabo de cavalo inteiro.
 - **Ficou de proposito:** postes escondidos (Myxogasterocarp), tampas planas no lugar certo, blocos separados dos
   kaiju de blocos e juntas de 3,6 a 7,6 px correndo (peca rigida; a tampa fecha o corte).
-- **[DECIDIR] casaco longo do Haruichi:** as abas de tras estao nos ossos das coxas e giram com elas ao correr.
-  Opcoes: (a) abas no tronco (ficam paradas e a perna atravessa ao correr); (b) ossos proprios de aba que seguem a
-  coxa pela metade, como uma saia; (c) deixar como esta.
+- **Casaco longo do Haruichi (Miguel: opcao b):** abas de tras em ossos proprios que seguem a coxa pela metade
+  (`tools/art/coat_bones.py`). Os espetos que restavam eram triangulos da reducao do Meshy atravessando a junta:
+  cortados no plano da junta em todos os 40 modelos com rig (`tools/art/joint_split.py`). Arco do Haruichi reduzido
+  para 1,3 m (Miguel: "pode reduzir"). Ainda pontuda: a barra dentada do casaco com a perna bem para tras.
 
 Nao conferido: o resto dos personagens correndo e lutando em jogo (so na previa), e os kaiju de blocos em animacao.
