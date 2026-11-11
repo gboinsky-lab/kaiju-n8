@@ -248,3 +248,25 @@ item; armas de formato proprio herdavam a pegada de outra. Correcao por personag
 
 Nao conferido em jogo: andando, correndo, golpeando e as armas na mao do jogador (o manuseio do jogador com arco,
 minigun, foice, bola e Pile Driver e a Fase 3-A). As tecnicas continuam com as poses de antes durante o golpe.
+
+
+## 11. Fase 2-C feita: geometria de todos os modelos (2026-11-11)
+
+Auditoria em lote das 70 malhas (`tools/art/mesh_audit.py`, relatorio em `docs/AUDITORIA_GEOMETRIA.md`). Achados e
+correcoes:
+
+- **Postes** (tampas da conversao esticadas pelo corpo): o Philinosoma, a asa do Preondactyl, a cabeca do
+  Primigenius revivido e a coxa do Haruichi tinham lascas visiveis. Foram apagadas so as faces
+  (`mesh_audit.py --fix-poles`), e a previa nao mostra buraco depois.
+- **Pedacos no osso errado** (achado na previa de corrida): o rig automatico do Meshy pos o rabo de cavalo e as tiras
+  do casaco do Soichiro na coxa, e ao correr eles saiam girando. O mesmo acontecia com pedacos acima do quadril na
+  Hakua, Kota, Aoi, Reno, No. 1, No. 15 Kikoru e no braco do Neural. `tools/art/rig_strays.py` passa esses pedacos
+  ao osso do tronco mais perto (rodar depois do rig da especie). Conferido em jogo: o Soichiro correndo fica com o
+  rabo de cavalo inteiro.
+- **Ficou de proposito:** postes escondidos (Myxogasterocarp), tampas planas no lugar certo, blocos separados dos
+  kaiju de blocos e juntas de 3,6 a 7,6 px correndo (peca rigida; a tampa fecha o corte).
+- **[DECIDIR] casaco longo do Haruichi:** as abas de tras estao nos ossos das coxas e giram com elas ao correr.
+  Opcoes: (a) abas no tronco (ficam paradas e a perna atravessa ao correr); (b) ossos proprios de aba que seguem a
+  coxa pela metade, como uma saia; (c) deixar como esta.
+
+Nao conferido: o resto dos personagens correndo e lutando em jogo (so na previa), e os kaiju de blocos em animacao.

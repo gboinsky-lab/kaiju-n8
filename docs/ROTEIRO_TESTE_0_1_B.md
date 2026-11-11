@@ -2162,3 +2162,13 @@ Imagem: `docs/img/r1_invasao_save_antigo.jpg`.
 | 158.9 | Kikoru (e Kikoru No. 4) | Machado em guarda baixa, cabeca perto do chao a frente, maos no meio do cabo |
 | 158.10 | Mina: soltar um kaiju perto dela | Canhao na horizontal no quadril; nos tiros das tecnicas ela ajoelha (joelho direito no chao) e volta a ficar de pe |
 | 158.11 | Jogador com a foice, a espingarda e a bola | Mesmas mudancas de modelo (lamina para baixo, espingarda fina, bola menor) |
+
+## 159. FASE 2-C: geometria dos modelos
+
+| # | Passo | Esperado |
+|---|---|---|
+| 159.1 | `/summon kn8:soichiro` com um kaiju a ~30 blocos; olhar de lado enquanto ele corre ate o kaiju | Rabo de cavalo inteiro atras da cabeca; nenhum pedaco lilas ou do casaco saindo com a perna |
+| 159.2 | Hakua, Kota, Aoi e Reno correndo ate um kaiju | Cinto e barra da jaqueta parados com o tronco, sem lascas saindo da coxa |
+| 159.3 | `/summon kn8:philinosoma`, `kn8:preondactyl` e `kn8:primigenius_revived`; rodear cada um | Sem lasca fina atravessando a barriga (Philinosoma), a asa esquerda (Preondactyl) ou a cabeca (revivido) |
+| 159.4 | Haruichi correndo (de lado) | Sem a lasca da coxa direita ate o chao; as abas do casaco ainda giram com as coxas ([DECIDIR]) |
+| 159.5 | No. 1, No. 15 na forma Kikoru e No. 9 Neural andando | Sem pedaco solto do quadril ou do braco direito |
