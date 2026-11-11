@@ -2135,3 +2135,14 @@ Imagem: `docs/img/r1_invasao_save_antigo.jpg`.
 | 156.2 | O mesmo com o `kn8:kaiju_no2` | Igual: o No. 2 vence |
 | 156.3 | Jogador sem criativo levando um golpe do No. 6 | Mesmo dano de antes (o aumento é só contra soldados especiais) |
 | 156.4 | Hoshina No. 10 contra o `kn8:kaiju_no10_giant` | Como antes: o Hoshina No. 10 vence |
+
+## 157. FASE 2-A: armaduras inteiras no jogador
+
+| # | Passo | Esperado |
+|---|---|---|
+| 157.1 | Vestir cada armadura (`/item replace entity @s armor.chest with kn8:<id>`: `mk1`, `mk1_reinforced`, `numbers4_suit`, `numbers6_suit`, `numbers10_suit`) e olhar de frente, de costas e de lado (F5) | Superficie inteira das placas, sem pontas saindo de uma caixa preta; as costas do Numbers 6 tem as tiras pretas do proprio modelo |
+| 157.2 | Numbers 10 | Tronco vermelho, pernas escuras com as linhas ciano separadas (nao uma massa so), cauda balancando |
+| 157.3 | Numbers 4 | Mascara cobrindo a boca, casaco branco, asas nas costas |
+| 157.4 | Andar, correr, agachar e golpear com cada uma | As placas acompanham bracos e pernas sem abrir buraco |
+| 157.5 | Primeira pessoa | O braco da armadura aparece na mao, na cor dela |
+| 157.6 | Mk1 | Igual a antes (ja estava bom) |

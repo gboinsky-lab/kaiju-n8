@@ -43,12 +43,21 @@ MIN_BOX = {"body": (10 / 16, 6 / 16, 0.0), "right_arm": (6 / 16, 6 / 16, -1 / 16
 # Altura de cada fatia do ajuste de largura (blocos = 1 px).
 SLICE = 1 / 16
 MAX_STRETCH = 1.8
+HEAD_STRETCH = 3.2
 # 0.5.0-B (traje de corpo inteiro, Biblioteca v21): "segunda pele" escura em volta de cada parte do jogador, um pouco
 # maior que a camada externa da skin (0,25 px), para a skin nunca aparecer pelos vaos da malha do Meshy. Caixas do
 # HumanoidModel em px (x0, y0, z0, largura, altura, profundidade), no espaco local da ModelPart.
 LINER_BOXES = {"body": (-4, 0, -2, 8, 12, 4), "right_arm": (-3, -2, -2, 4, 12, 4), "left_arm": (-1, -2, -2, 4, 12, 4),
                "right_leg": (-2, 0, -2, 4, 12, 4), "left_leg": (-2, 0, -2, 4, 12, 4)}
 LINER_INFLATE_PX = 0.3
+# AJUSTE-2A: casca do traje shell_px alem da segunda pele, medida pela camada de dentro de cada fatia (percentil) e
+# sem mexer no miolo (raio normalizado abaixo de SHELL_CORE).
+SHELL_PX = 0.4
+SHELL_PERCENTILE = 12
+SHELL_CORE = 0.25
+# AJUSTE-2A: peca menor que isto (blocos, em qualquer eixo) anda inteira; a escala dela fica neste limite.
+RIGID_MAX_SPAN = 8 / 16
+RIGID_MAX_SCALE = 1.6
 # Cortes medidos na vista de frente de cada traje (metros do OBJ convertido): borda de dentro dos bracos por altura
 # (altura acima da qual vale, |x|), ponta dos dedos e quadril.
 SUITS = {
@@ -64,12 +73,12 @@ SUITS = {
     # aos pes em 1,5 m. "drop" tira o pino marrom do manequim do Meshy no pescoco; "head" vai no osso da cabeca
     # (capacete); "leg_core" = so as botas vao nas pernas (o casaco longo fica no tronco: pernas andam por
     # dentro dele); "tail" = acima da gola ou sem par espelhado no lado esquerdo (osso proprio preso ao tronco, balanca).
-    "numbers4_suit": {"max_stretch": 3.2, "arm_inner_x": [(1.30, 0.235), (0.0, 0.26)], "hand_min_y": 0.90, "hip_y": 1.02,
+    "numbers4_suit": {"max_stretch": 1.5, "arm_inner_x": [(1.30, 0.235), (0.0, 0.26)], "hand_min_y": 0.90, "hip_y": 1.02,
                       "head": {"min_y": 1.57, "max_abs_x": 0.20}, "head_box": (9.5 / 16, 9.5 / 16),
                       "leg_core": {"boot_y": 0.26}, "liner": True},
-    "numbers6_suit": {"max_stretch": 3.2, "arm_inner_x": [(1.30, 0.205), (0.0, 0.22)], "hand_min_y": 0.86, "hip_y": 0.86,
+    "numbers6_suit": {"max_stretch": 1.5, "arm_inner_x": [(1.30, 0.205), (0.0, 0.22)], "hand_min_y": 0.86, "hip_y": 0.86,
                       "drop": [{"min_y": 1.50, "max_abs_x": 0.10}], "liner": True},
-    "numbers10_suit": {"max_stretch": 3.2, "arm_inner_x": [(1.30, 0.235), (0.0, 0.26)], "hand_min_y": 0.86, "hip_y": 0.86,
+    "numbers10_suit": {"max_stretch": 1.5, "arm_inner_x": [(1.30, 0.235), (0.0, 0.26)], "hand_min_y": 0.86, "hip_y": 0.86,
                        "drop": [{"min_y": 1.48, "max_abs_x": 0.08, "max_z": 0.10}],
                        "tail": {"above_y": 1.62, "asym": 0.03, "from_y": 0.70, "max_x": -0.15, "tip_x": -0.28},
                        "liner": True},
@@ -184,9 +193,15 @@ def fit_box(points, min_width, min_depth, center_x, max_stretch=MAX_STRETCH):
                         axis=1)
 
     factors, centers = smooth(factors), smooth(centers)
+    # AJUSTE-2A: escala interpolada pela altura de cada vertice (antes era a da fatia inteira: um triangulo com
+    # cantos em fatias vizinhas era esticado de um jeito em cada canto e virava uma lasca).
+    mids = low[1] + (np.arange(slices) + 0.5) * SLICE
+    y = points[:, 1]
+    fx, fz = (np.interp(y, mids, factors[:, i]) for i in (0, 1))
+    cx, cz = (np.interp(y, mids, centers[:, i]) for i in (0, 1))
     out = points.copy()
-    out[:, 0] = (points[:, 0] - centers[index, 0]) * factors[index, 0] + center_x
-    out[:, 2] = (points[:, 2] - centers[index, 1]) * factors[index, 1]
+    out[:, 0] = (points[:, 0] - cx) * fx + center_x
+    out[:, 2] = (points[:, 2] - cz) * fz
     print(f"  escala x ate {factors[:, 0].max():.2f}, z ate {factors[:, 1].max():.2f}")
     return out
 
@@ -198,7 +213,11 @@ def main():
     vertices, uvs, normals, faces = read_obj(source / f"{name}.obj")
     faces = drop_faces(vertices, faces, cfg)
     labels = split(vertices, faces, cfg)
-    vertices, uvs, normals, faces, labels = cap_holes(vertices, uvs, normals, faces, labels)
+    if not cfg.get("liner"):
+        # AJUSTE-2A: so sem a segunda pele. Com ela o oco ja nao aparece, e nos modelos de placas soltas o contorno
+        # aberto de cada placa (gola, barra do casaco) virava um leque de uma cor so: os triangulos escuros enormes do
+        # peito do Numbers 10.
+        vertices, uvs, normals, faces, labels = cap_holes(vertices, uvs, normals, faces, labels)
     model = to_model(vertices)
     model_normals = np.stack([-normals[:, 0], -normals[:, 1], normals[:, 2]], axis=1)
     out_dir = ASSETS / "meshes/suit" / name
@@ -229,7 +248,13 @@ def main():
             points[used], part_normals[used] = straighten(model[used], model_normals[used], np.array(pivot))
         local = points - np.array(pivot)
         box = (*cfg["head_box"], 0.0) if part == "head" else MIN_BOX[part]
-        local[used] = fit_box(local[used], *box, cfg.get("max_stretch", MAX_STRETCH))
+        before = local[used].copy()
+        # AJUSTE-2A: a gola/mascara precisa passar da cabeca do jogador (8 px + a camada do chapeu): escala propria.
+        stretch = cfg.get("head_stretch", HEAD_STRETCH) if part == "head" else cfg.get("max_stretch", MAX_STRETCH)
+        local[used] = fit_box(local[used], *box, stretch)
+        if cfg.get("liner") and part in LINER_BOXES:
+            local[used] = push_out(local[used], part, cfg.get("shell_px", SHELL_PX))
+        local[used] = rigid_pieces(before, local[used], used, part_faces)
         reach = cfg.get("arm_reach")
         if reach and part.endswith("_arm"):
             # 0.5.0-B: a manga do Mk1 novo terminava antes da mao do jogador (a mao da skin aparecia): estica o braco
@@ -253,6 +278,77 @@ def main():
     texture = ASSETS / "textures/models/suit" / f"{name}.png"
     texture.parent.mkdir(parents=True, exist_ok=True)
     Image.fromarray(np.clip(padded, 0, 255).astype(np.uint8)).convert("RGBA").save(texture)
+
+
+def rigid_pieces(before, after, used, part_faces):
+    """AJUSTE-2A: peca solta pequena (placa, bloco da perna do Numbers 10) anda inteira: o centro vai para onde o ajuste
+    mandou e a forma so muda de escala em X/Z, igual em toda a peca. O ajuste por altura (fit_box/push_out) entortava
+    cada bloco (cada altura com outra escala e outro centro) e os blocos viravam lascas. Malha continua grande (Mk1)
+    continua com o ajuste por altura."""
+    from scipy.sparse import coo_matrix
+    from scipy.sparse.csgraph import connected_components
+    local_index = {v: i for i, v in enumerate(used)}
+    faces = np.vectorize(local_index.get)(part_faces)
+    _, welded = np.unique(np.round(before, 5), axis=0, return_inverse=True)
+    welded = welded.reshape(-1)
+    wf = welded[faces]
+    size = welded.max() + 1
+    rows = np.concatenate([wf[:, 0], wf[:, 1], wf[:, 2]])
+    cols = np.concatenate([wf[:, 1], wf[:, 2], wf[:, 0]])
+    _, piece = connected_components(coo_matrix((np.ones(len(rows)), (rows, cols)), shape=(size, size)),
+                                    directed=False)
+    piece = piece[welded]
+    out = after.copy()
+    moved = 0
+    for label in np.unique(piece):
+        member = piece == label
+        span = before[member].max(axis=0) - before[member].min(axis=0)
+        if span.max() > RIGID_MAX_SPAN or member.sum() < 3:
+            continue
+        c0, c1 = before[member].mean(axis=0), after[member].mean(axis=0)
+        scale = np.ones(3)
+        for axis in (0, 2):
+            spread = before[member, axis].std()
+            if spread > 1e-6:
+                scale[axis] = np.clip(after[member, axis].std() / spread, 1.0 / RIGID_MAX_SCALE, RIGID_MAX_SCALE)
+        out[member] = c1 + (before[member] - c0) * scale
+        moved += 1
+    print(f"  {moved} pecas rigidas")
+    return out
+
+
+def push_out(points, part, shell_px):
+    """AJUSTE-2A: casca do traje por fora da segunda pele. O encaixe acima so garante a largura do traje; onde a
+    superficie fica por dentro da caixa da segunda pele ela some e so as pontas das placas atravessam (o traje parecia
+    estilhacado: 30-69% da superficie escondida nos Numbers e no Mk1 Reforcado). Cada vertice anda para fora a partir
+    do eixo da parte, na medida que falta para a camada de dentro (percentil SHELL_PERCENTILE da fatia) passar a
+    segunda pele em shell_px; a ordem das camadas fica (as placas continuam por cima), as placas nao incham, so andam."""
+    x0, y0, z0, w, h, d = LINER_BOXES[part]
+    margin = LINER_INFLATE_PX + shell_px
+    cx, cz = (x0 + w / 2) / 16, (z0 + d / 2) / 16
+    hw, hd = (w / 2 + margin) / 16, (d / 2 + margin) / 16
+    dx, dz = points[:, 0] - cx, points[:, 2] - cz
+    radius = np.maximum(np.abs(dx) / hw, np.abs(dz) / hd)
+    low, high = points[:, 1].min(), points[:, 1].max()
+    slices = max(1, int(np.ceil((high - low) / SLICE)))
+    index = np.clip(((points[:, 1] - low) / SLICE).astype(int), 0, slices - 1)
+    gaps = np.zeros(slices)
+    for k in range(slices):
+        member = radius[(index == k) & (radius > SHELL_CORE)]
+        if len(member) >= 3:
+            gaps[k] = max(0.0, 1.0 - np.percentile(member, SHELL_PERCENTILE))
+    gaps = np.convolve(np.pad(gaps, 2, mode="edge"), np.ones(5) / 5, "valid")
+    mids = low + (np.arange(slices) + 0.5) * SLICE
+    gap = np.interp(points[:, 1], mids, gaps)
+    # Pontos perto do eixo sao o miolo (por dentro de tudo): ficam onde estao, com passagem suave ate a casca (um corte
+    # seco no SHELL_CORE esticava os triangulos entre o miolo e a casca em pontas).
+    weight = np.clip((radius - SHELL_CORE) / SHELL_CORE, 0.0, 1.0)
+    scale = (radius + gap * weight) / np.maximum(radius, 1e-6)
+    out = points.copy()
+    out[:, 0] = cx + dx * scale
+    out[:, 2] = cz + dz * scale
+    print(f"  casca empurrada ate {gap.max() * hw * 16:.2f} px")
+    return out
 
 
 def tail_root(model, tail_faces):

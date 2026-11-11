@@ -87,7 +87,7 @@ Numbers 10, Numbers 4, Numbers 6, traje de treino).
    um jeito em cada canto e vira uma lasca.
 3. Nas armaduras grandes (Numbers 10) o limite de esticamento 3,2 x incha as placas e junta as pernas.
 
-**Correcao proposta (sem trocar nenhuma armadura):** alvo do encaixe 1 px por fora da segunda pele; escala
+**Feito na Fase 2-A (ver secao 9).** Correcao proposta (sem trocar nenhuma armadura): alvo do encaixe 1 px por fora da segunda pele; escala
 interpolada por vertice pela altura, em vez de por fatia; esticamento limitado por parte; conferir as 6 de frente,
 costas, andando, agachado, em combate e em 1a pessoa. A malha original do Meshy nao muda (so a conversao).
 
@@ -171,7 +171,30 @@ GameTests, matriz de duelos, invasao grande com 2 clientes, desempenho, relatori
 Fora das fases por enquanto: entradas de chefe e finalizacoes com camera mexem no jogo de todos os jogadores do
 servidor; proponho depois da Fase 4.
 
-## 7. Perguntas para o Miguel
+## 7. Respostas do Miguel (2026-11-11)
+
+1. **Epic Fight:** mantem o combate atual e melhora.
+2. **Tamanhos:** a espingarda (Kota e Iharu) so esta grossa demais: afinar, sem mudar o comprimento. A minigun da Rin
+   e a bola da Jura: tamanho a criterio do Claude.
+3. **Cabeca:** cada armadura cobre o que o modelo dela cobre (ex.: a da Kikoru, Numbers 4, so a boca). Nada de
+   capacete inventado.
+4. **Mina:** atira ajoelhada, segurando o canhao na frente e atras.
+5. **Morte dos kaiju:** animacao de morte antes de virar carcaca.
+
+**Itens da secao 5 (fora do documento):** encaixados nas fases (o Miguel deixou a criterio):
+
+| Item | Fase |
+|---|---|
+| Animacao de morte (64 modelos) | 4-A (kaiju) e 3-E (soldados/especiais) |
+| Corrida dos kaiju | 4-B |
+| Dano por direcao | 3-B (impacto) e 4-C (reacoes) |
+| Sons proprios de espingarda, minigun, arco, foice, bola, Pile Driver | 3-D |
+| Manuseio proprio (postura, saque, recarga) | 3-A |
+| Capacete | resolvido pela resposta 3 (o que o modelo cobre) |
+| Hit-stop | 3-B |
+| Empurrao dos golpes comuns | 3-B (configuravel, sem tirar a decisao antiga do soldado) |
+
+## 8. Perguntas que foram feitas ao Miguel
 
 1. **Epic Fight:** manter o combate atual e melhorar (recomendado) ou integrar o Epic Fight?
 2. **Tamanhos:** a tabela de 2026-11-05 deu 1,6 m para a espingarda e 2,4 m para a bola da Jura. Qual tamanho voce
@@ -181,3 +204,25 @@ servidor; proponho depois da Fase 4.
 4. **Mina:** o canhao fica no quadril (como na obra) ou no ombro/apoiado no braco?
 5. **Morte dos kaiju:** animacao antes de virar carcaca, ou a carcaca continua tombando por codigo e so ganha um
    efeito melhor?
+
+## 9. Fase 2-A feita: armaduras (2026-11-11)
+
+Causa real e correcao, tudo na conversao (`tools/art/rig_suit_mesh.py`); nenhum modelo original, textura, item ou
+codigo Java mudou:
+
+1. **Casca por fora da segunda pele** (`push_out`): cada vertice anda para fora a partir do eixo da parte ate a
+   camada de dentro de cada fatia passar a segunda pele em `SHELL_PX` 0,4 px, sem inflar as placas (ordem das
+   camadas mantida; miolo perto do eixo fica, com passagem suave). Superficie escondida: Mk1 Reforcado 33-41% ->
+   6-22%, Numbers 6 30-56% -> 19-30% (o resto e o lado de dentro das placas e o boneco de exposicao do Meshy).
+2. **Escala interpolada pela altura de cada vertice** no `fit_box` (antes uma por fatia: triangulo com cantos em
+   fatias vizinhas virava lasca).
+3. **Pecas soltas andam inteiras** (`rigid_pieces`): placa ou bloco menor que 8 px vai para onde o ajuste mandou e so
+   muda de escala em X/Z, igual na peca toda (o ajuste por altura entortava os blocos do Numbers 10 e do Numbers 4).
+4. **Sem o fechamento de buracos** nas armaduras com segunda pele (o contorno aberto de cada placa virava um leque
+   de uma cor so: os triangulos escuros enormes do peito do Numbers 10).
+5. **Esticamento 3,2 -> 1,5** nos tres Numbers (era o que inchava o Numbers 10; a casca agora resolve a segunda
+   pele), com a gola/mascara do Numbers 4 em 3,2 (`HEAD_STRETCH`).
+
+Visto em jogo com servidor dedicado + 2 clientes (`docs/img/fase2a_armaduras_antes_depois.jpg`: em cima antes, em
+baixo depois): as cinco de frente, costas e lado, andando, agachado, com a espada e em 1a pessoa. Nao conferido: golpe a golpe e com
+skin de braco fino (Alex).
