@@ -2146,3 +2146,19 @@ Imagem: `docs/img/r1_invasao_save_antigo.jpg`.
 | 157.4 | Andar, correr, agachar e golpear com cada uma | As placas acompanham bracos e pernas sem abrir buraco |
 | 157.5 | Primeira pessoa | O braco da armadura aparece na mao, na cor dela |
 | 157.6 | Mk1 | Igual a antes (ja estava bom) |
+
+## 158. FASE 2-B: armas dos 11 personagens
+
+| # | Passo | Esperado |
+|---|---|---|
+| 158.1 | `/summon kn8:<nome>` de cada um: `miguel`, `kota`, `iharu`, `aoi`, `haruichi`, `rin`, `jura`, `soichiro`, `narumi`, `kikoru`, `mina`; olhar de frente e de lado (F5 em espectador) | Arma na mao certa, sem atravessar o corpo |
+| 158.2 | Miguel | Foice com a parte grande da lamina para baixo |
+| 158.3 | Kota e Iharu | Espingarda mais fina, mesmo comprimento |
+| 158.4 | Aoi | Pile Driver na horizontal a frente do peito, estaca para a frente |
+| 158.5 | Haruichi | Arco em pe, segurado pelo meio, braco estendido a frente |
+| 158.6 | Rin | Minigun no quadril com o cano na horizontal para a frente |
+| 158.7 | Jura | Bola menor, pendurada pela corda ao lado do corpo, sem enterrar no chao |
+| 158.8 | Soichiro e Narumi | Katana para cima e para a frente sem cruzar o rosto; baioneta baixa para a frente com as duas maos |
+| 158.9 | Kikoru (e Kikoru No. 4) | Machado em guarda baixa, cabeca perto do chao a frente, maos no meio do cabo |
+| 158.10 | Mina: soltar um kaiju perto dela | Canhao na horizontal no quadril; nos tiros das tecnicas ela ajoelha (joelho direito no chao) e volta a ficar de pe |
+| 158.11 | Jogador com a foice, a espingarda e a bola | Mesmas mudancas de modelo (lamina para baixo, espingarda fina, bola menor) |

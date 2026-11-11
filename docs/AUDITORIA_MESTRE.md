@@ -226,3 +226,25 @@ codigo Java mudou:
 Visto em jogo com servidor dedicado + 2 clientes (`docs/img/fase2a_armaduras_antes_depois.jpg`: em cima antes, em
 baixo depois): as cinco de frente, costas e lado, andando, agachado, com a espada e em 1a pessoa. Nao conferido: golpe a golpe e com
 skin de braco fino (Alex).
+
+## 10. Fase 2-B feita: armas dos 11 personagens (2026-11-11)
+
+Causa geral: as posturas de braco sao por familia (rifle, spear, katana, flail...) e cada arma usa o display do
+item; armas de formato proprio herdavam a pegada de outra. Correcao por personagem em `tools/art/weapon_grips.py`
+(bracos e giro do item nas posturas parado/andando/correndo/combate, escolhidos na previa do `rig_audit.py`):
+
+| Personagem | Antes | Agora |
+|---|---|---|
+| Miguel | lamina grande para cima | modelo girado 180 graus no comprimento (`flip_up`): lamina para baixo |
+| Kota, Iharu | espingarda grossa | `thickness` 0,6, mesmo comprimento |
+| Aoi | Pile Driver atravessado no peito | na horizontal a frente do peito, estaca para a frente |
+| Haruichi | arco segurado como rifle | arco em pe pelo meio, braco estendido (punho a 0,3 px do cabo) |
+| Rin | minigun apontando para o chao | no quadril, cano na horizontal |
+| Jura | bola de ~1,5 m cobrindo o corpo | 1,2 m na mao (bola ~0,8 m), pendurada pela corda ao lado |
+| Soichiro | katana cruzando o rosto | para cima e para a frente, ao lado |
+| Narumi | baioneta para tras/atravessada | baixa, duas maos, para a frente |
+| Kikoru (e No. 4) | machado na horizontal, mao na ponta | guarda baixa (cabeca perto do chao a frente), maos no meio do cabo |
+| Mina | canhao inclinado | na horizontal no quadril (frente e tras); ajoelhada nas tecnicas de tiro |
+
+Nao conferido em jogo: andando, correndo, golpeando e as armas na mao do jogador (o manuseio do jogador com arco,
+minigun, foice, bola e Pile Driver e a Fase 3-A). As tecnicas continuam com as poses de antes durante o golpe.

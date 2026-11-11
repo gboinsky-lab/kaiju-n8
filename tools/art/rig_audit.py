@@ -31,6 +31,8 @@ ASSETS = ROOT / "src/main/resources/assets/kn8"
 
 # Mesma conta do SoldierRenderer (HAND_DOWN, HAND_FORWARD, SOLDIER_ITEM_SCALE).
 HAND_DOWN, HAND_FORWARD, SOLDIER_ITEM_SCALE = 1 / 16, 2 / 16, 0.85
+REAL_SIZE = {v.split(':')[1] for v in json.loads((ROOT / 'src/main/resources/data/kn8/tags/item/real_size_weapons.json')
+             .read_text(encoding='utf-8'))['values']}
 
 # Arma de cada especie (special_soldier/<id>.json; a do Hoshina vai nas duas maos) e familia das animacoes de braco.
 WEAPONS = {"hoshina": ("blade", {"item_right": "hoshina_sword", "item_left": "hoshina_sword"}),
@@ -39,7 +41,12 @@ WEAPONS = {"hoshina": ("blade", {"item_right": "hoshina_sword", "item_left": "ho
            "mina": ("cannon", {"item_right": "mina_cannon"}), "reno": ("rifle", {"item_right": "rifle"}),
            "reno_no6": ("rifle", {"item_right": "rifle"}), "narumi": ("spear", {"item_right": "narumi_bayonet"}),
            "kafka": ("rifle", {"item_right": "rifle"}), "soldier": ("rifle", {"item_right": "rifle"}),
-           "kaiju_no8": ("fists", {}), "isao": ("fists", {})}
+           "kaiju_no8": ("fists", {}), "isao": ("fists", {}),
+           # FASE 2-B: os personagens das armas que o Miguel pediu para corrigir.
+           "miguel": ("spear", {"item_right": "miguel_scythe"}), "kota": ("rifle", {"item_right": "shotgun"}),
+           "iharu": ("rifle", {"item_right": "shotgun"}), "aoi": ("spear", {"item_right": "aoi_pile_bunker"}),
+           "haruichi": ("rifle", {"item_right": "haruichi_bow"}), "rin": ("rifle", {"item_right": "rin_minigun"}),
+           "jura": ("flail", {"item_right": "jura_flail"}), "soichiro": ("katana", {"item_right": "katana"})}
 
 
 def arm_root(bones, item_bone):
@@ -123,7 +130,8 @@ class Audit(Rig):
         k = np.array(rot.get(bone, np.zeros(3)), float)
         anim = ph.Rz(math.radians(-k[1])) @ ph.Ry(math.radians(-k[2])) @ ph.Rx(math.radians(-k[0]))
         scale = disp["thirdperson_righthand"]["scale"][0]
-        s = min(SOLDIER_ITEM_SCALE, scale) / scale
+        # FASE 2-B: como o SoldierRenderer, armas da tag kn8:real_size_weapons nao encolhem para 0,85.
+        s = 1.0 if name in REAL_SIZE else min(SOLDIER_ITEM_SCALE, scale) / scale
         m = base @ rto @ ph.T(0, -HAND_DOWN, -HAND_FORWARD) @ ph.Rx(-math.pi / 2) @ anim @ ph.S(s, s, s) \
             @ ph.display(disp, "thirdperson_righthand")
         return ph.apply(m, tris), m

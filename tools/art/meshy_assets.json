@@ -179,7 +179,7 @@
       "real_length_m": 1.8
     },
     "jura_flail": {
-      "_comment": "ESPECIAIS-1: bola de ferro da Jura Igarashi (modelo do Miguel; o laco grande da corda solta saiu: bola, corda curta e cabo). Segurada pelo cabo da corda (Miguel), a bola a frente; 1,1 m [SUPOSICAO]",
+      "_comment": "ESPECIAIS-1: bola de ferro da Jura Igarashi (modelo do Miguel; o laco grande da corda solta saiu: bola, corda curta e cabo). Segurada pelo cabo da corda (Miguel), a bola a frente; 1,1 m [SUPOSICAO]; FASE 2-B: 1,2 m na mao (bola ~0,8 m: com 2,4 a bola cobria o corpo e enterrava no chao)",
       "source": "jura_flail.glb",
       "length_axis": "x",
       "tip": "-",
@@ -192,13 +192,13 @@
       "item_length": 1.6,
       "thickness": 1.0,
       "held_scale": [
-        1.765,
-        1.547
+        0.883,
+        0.774
       ],
-      "real_length_m": 2.4
+      "real_length_m": 1.2
     },
     "shotgun": {
-      "_comment": "ESPECIAIS-2: espingarda SG-1108 do Iharu e do Kota (modelo do Miguel), 1,0 m",
+      "_comment": "ESPECIAIS-2: espingarda SG-1108 do Iharu e do Kota (modelo do Miguel), 1,0 m; FASE 2-B (Miguel 2026-11-11): so mais fina, thickness 0,6, comprimento igual",
       "source": "shotgun.glb",
       "length_axis": "x",
       "tip": "-",
@@ -215,7 +215,7 @@
       ],
       "first_person_scale": 0.7,
       "item_length": 1.6,
-      "thickness": 1.0,
+      "thickness": 0.6,
       "held_scale": [
         1.176,
         1.086
@@ -287,6 +287,7 @@
     },
     "miguel_scythe": {
       "_comment": "MIGUEL-CAMILLY: foice-armamento do Miguel (modelo dele, 2026-11-05), em pe em Y com a lamina para +Y; mao no cabo de baixo",
+      "flip_up": true,
       "source": "arma_miguel.glb",
       "length_axis": "y",
       "tip": "+",

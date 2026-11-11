@@ -135,6 +135,10 @@ def weapon_frame(spec, vertices):
     rotation[:, length_axis] = diagonal * tip_sign
     rotation[:, up_axis] = across
     rotation[:, side_axis] = depth
+    if spec.get("flip_up"):
+        # FASE 2-B: gira 180 graus em volta do comprimento (foice do Miguel: a lamina grande para baixo).
+        rotation[:, up_axis] = -rotation[:, up_axis]
+        rotation[:, side_axis] = -rotation[:, side_axis]
     # Garante base direita (sem espelhar o modelo).
     if np.linalg.det(rotation) < 0:
         rotation[:, side_axis] = -rotation[:, side_axis]
